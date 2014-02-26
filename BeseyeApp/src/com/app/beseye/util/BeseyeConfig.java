@@ -13,22 +13,21 @@ public class BeseyeConfig {
 	
 	//relay wifi AP info
 
-	static public final boolean REDDOT_DEMO = false;
-	static public final String RELAY_AP_SSID = "beseye";//"raylios WiFi";
-	static public final String RELAY_AP_PW = "0630BesEye";//"whoisyourdaddy";
+	static public final boolean REDDOT_DEMO = true;
+	static public final String RELAY_AP_SSID = "beseye";//"raylios WiFi";//
+	static public final String RELAY_AP_PW = "0630BesEye";//"whoisyourdaddy";//
 	
 	static public final String TMP_CAM_ID = "BeseyeCam001";
 	static public final String TMP_CAM_NAME = "reddot";
 	static public final String TMP_CAM_SN = "BE00000001PN";
 	static public final String TMP_CAM_MAC = "93:be:22:fa:10:88";
 	
-	static public final String[] DEMO_STREAM_PATH = {//"rtmp://54.250.149.50:554/live-origin/_definst_/mystream7_aac",
-													 //"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac",
+	static public final String[] DEMO_STREAM_PATH = {//"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac",
 													 //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4",
 													 //"rtsp://admin:password@192.168.2.2/h264_2",
 													 //"rtmp://54.238.191.39:1935/live-edge/mystream5_aac"/*,
 													 //"rtmp://54.250.149.50/live-origin/mystream3_aac",
-													 "rtsp://admin:password@192.168.3.100/h264"//00:0C:43:30:50:D0
+													 "rtsp://admin:password@192.168.12.184/h264_2"//00:0C:43:30:50:D0
 													 ,"rtsp://admin:password@192.168.12.186/h264_2"//00:0C:43:30:50:28
 													 ,"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
 													 //,"rtsp://admin:password@192.168.6.204/h264"													
@@ -45,7 +44,6 @@ public class BeseyeConfig {
 //													 "rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:08
 //													,"rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:B8
 													 //"rtsp://admin:password@192.168.12.184/h264_2"//00:0C:43:30:50:D0
-"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac",
 													"rtsp://admin:password@192.168.2.54/h264"//00:0C:43:30:50:28
 													 };
 	static public final List<String> STREAM_PATH_LIST = new ArrayList<String>();
