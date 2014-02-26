@@ -24,7 +24,6 @@ LOCAL_SRC_FILES := $(SRC_PATH)/ffmpeg_ext.c \
  
 #LOCAL_SHARE_LIBRARIES := libSDL2
 
-
 LOCAL_C_INCLUDES := $(STREAMING_PATH) \
 					$(STREAMING_PATH)/header \
 					$(STREAMING_PATH)/include \

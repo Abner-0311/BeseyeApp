@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DIR_OPENSSL=`cd ../../../openssl-1.0.1e/build_android;pwd`
-DIR_APP=`cd ../../../../../BS_HomeSecurity_V1_Android/BeseyeApp/jni/main;pwd`
+DIR_APP=`cd ../../../../BeseyeApp/jni/main;pwd`
 
 DEST=`pwd`/build_android && rm -rf $DEST
 
