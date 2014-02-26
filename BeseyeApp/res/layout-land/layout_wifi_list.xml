@@ -1,0 +1,14 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+	<ListView 
+	    android:id="@+id/lst_wifi_list"
+	    android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:divider="@color/wifi_list_item_divider_color"
+    	android:dividerHeight="1dp"
+    	android:duplicateParentState="false">
+	</ListView>
+</RelativeLayout>

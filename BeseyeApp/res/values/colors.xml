@@ -1,0 +1,40 @@
+<resources>
+    
+    <color name="word_black">#ff000000</color>
+    <color name="word_gray">#888888</color>
+    <color name="word_gray_disabled">#bebebe</color>
+    <color name="word_white">#ffffff</color>
+    
+    <color name="beseye_color">#00c6c4</color>
+    <color name="beseye_color_gray">#595757</color>
+    <color name="beseye_opening_color">@color/beseye_color</color>
+    
+    <color name="liveview_font_normal_color">#727171</color>
+    <color name="liveview_font_disabled_color">#88727171</color>
+    <color name="liveview_background">#e5e5e5</color>
+    
+    <color name="liveview_power_state_font_color">#787777</color>
+    <color name="liveview_power_state_sub_font_color">#a0a0a0</color>
+
+    <color name="listview_item_main_font_color">@color/beseye_color</color>
+    <color name="listview_item_sub_font_color">#88727171</color>
+    
+    <color name="listview_item_backgroundcolor">#e5e5e4</color>
+    <color name="listview_item_backgroundcolor_selected">#44e5e5e4</color>
+    
+    <color name="wifi_list_item_bg_color">#F0EFEF</color>
+    <color name="wifi_list_item_bg_color_selected">@color/beseye_color</color>
+    <color name="wifi_list_item_divider_color">#d5d5d5</color>
+    <color name="wifi_list_item_main_font_color">@color/beseye_color_gray</color>
+    <color name="wifi_list_item_sub_font_color">#a8a8a6</color>
+    
+    <color name="wifi_info_dialog_title_font_color">@color/beseye_color</color>
+    <color name="wifi_info_dialog_btn_font_color">@color/beseye_color_gray</color>
+    <color name="wifi_info_dialog_line_color">#d5d5d5</color>
+    
+    <color name="wifi_info_dialog_attr_font_color">@color/beseye_color_gray</color>
+    <color name="wifi_info_dialog_sub_attr_font_color">#a8a8a6</color>
+    
+    <color name="cam_info_dialog_attr_font_color">@color/beseye_color_gray</color>
+    <color name="cam_info_dialog_sub_attr_font_color">#1b1b1b</color>
+</resources>

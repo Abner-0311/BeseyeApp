@@ -1,0 +1,12 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".MainActivity" >
+	<com.app.beseye.widget.BeseyeSwitchBtn 
+	    android:id="@+id/sb_wifi_btn"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding">
+	</com.app.beseye.widget.BeseyeSwitchBtn>
+</RelativeLayout>

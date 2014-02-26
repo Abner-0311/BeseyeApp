@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name_alpha">Beseye(α)</string>
+    <string name="app_name">Beseye</string>
+    <string name="crash_toast_text"></string>
+    
+    <string name="connect">Connect</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="password">Password</string>
+    <string name="show_password">Show password</string>
+    
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="event_cam_view">Event</string>
+    <string name="event_go_live">Go Live</string>
+    <string name="camerview_init_date">---.--.----</string>
+    <string name="camerview_init_time">--:--:-- --</string>
+    <string name="can_power_state_off">The cam is off</string>
+    <string name="can_power_state_disconnect">This cam is not connected</string>
+
+    <string name="menu_scan">Scan</string>
+    <string name="network_avoid_poor_network">Avoid poor internet connection&#8230;</string>
+    <string name="network_authenticating">Authenticating&#8230;</string>
+    <string name="network_obtaining_ip">Obtaining IP address&#8230;</string>
+    <string name="network_connecting">Connecting&#8230;</string>
+    <string name="network_connected">Connected</string>
+    <string name="network_disconnecting">Disconnecting&#8230;</string>
+    <string name="network_disconnected">Disconnected</string>
+    <string name="network_suspended">Suspended</string>
+    <string name="network_failed">Failed</string>
+    <string name="network_idle">Idle</string>
+    <string name="network_blocked">Blocked</string>
+    <string name="network_scanning">Scanning&#8230;</string>
+    <string name="network_secure_with">Secured with %s </string>
+    
+    <string name="dialog_title_warning">Warning</string>
+    <string name="dialog_no_connectivity">Please check out your network connection.</string>
+    <string name="dialog_loading">Loading&#8230;</string>
+    <string name="dialog_wifi_turning_on">Turning on Wifi&#8230;</string>
+    <string name="dialog_wifi_scanning">Wifi scanning&#8230;</string>
+    <string name="dialog_wifi_setting">Wifi setting&#8230;</string>
+    <string name="dialog_wifi_fail_on">Can not turn on wifi, please check wifi status on your device.</string>
+    <string name="dialog_wifi_fail_scan">Can not scan wifi, please check wifi status on your device.</string>
+    <string name="dialog_wifi_incorrect_password">The network password you typed is incorrect. Please try again.</string>
+    <string name="dialog_wifi_incorrect_password_wep">Unable to connect due to an incorrect password or network issues.\nWould you like to try again?</string>
+    
+    <string name="dialog_wifi_fail_to_connect">Can not connect to Wifi AP [%s].\nPlease check if it is available.</string>
+    <string name="dialog_wifi_invalid_connectivity">Wifi AP %s has connectivity issue. Please choose another Wifi AP or try again.</string>
+    
+    <string name="dialog_wifi_ap_signal">Signal strength</string>
+    <string name="dialog_wifi_ap_signal_Excellent">Excellent</string>
+    <string name="dialog_wifi_ap_signal_Good">Good</string>
+    <string name="dialog_wifi_ap_signal_Fair">Fair</string>
+    <string name="dialog_wifi_ap_signal_Poor">Poor</string>
+    <string name="dialog_wifi_ap_security">Security</string>
+    <string name="dialog_wifi_ap_security_none">None</string>
+    
+    <string name="dialog_wifi_ap_key_index">Key index</string>
+    
+    <string name="cam_setting_title">Settings</string>
+	<string name="cam_setting_title_power">Camera power</string>
+	<string name="cam_setting_title_power_desc">Beseye is %s</string>
+	<string name="cam_setting_title_power_on">on</string>
+	<string name="cam_setting_title_power_off">off</string>
+	<string name="cam_setting_title_power_disconnected">disconnected</string>
+    
+	<string name="cam_setting_title_video_upside_down">Video upside-down</string>
+	<string name="cam_setting_title_wifi_setting">Wifi setting</string>
+	<string name="cam_setting_title_cam_info">Camera information</string>
+	
+	<string name="cam_info_cam_name">Camera name</string>
+	<string name="cam_info_sn">Serial number</string>
+	<string name="cam_info_mac">MAC address</string>
+	
+	<string name="streaming_playing_error">Invalid streaming path or server error. Please try again later.</string>
+	<string name="streaming_error_no_network">Please check out your network connection.</string>
+	<string name="streaming_error_unknown">Unknown error. Please try again later.</string>
+	<string name="streaming_error_low_mem">App is unstable due to low memory. Please relaunch it again.</string>
+</resources>
