@@ -14,8 +14,8 @@ public class BeseyeConfig {
 	//relay wifi AP info
 
 	static public final boolean REDDOT_DEMO = true;
-	static public final String RELAY_AP_SSID = "beseye";//"raylios WiFi";//
-	static public final String RELAY_AP_PW = "0630BesEye";//"whoisyourdaddy";//
+	static public final String RELAY_AP_SSID = "beseye";//"raylios WiFi";
+	static public final String RELAY_AP_PW = "0630BesEye";//"whoisyourdaddy";
 	
 	static public final String TMP_CAM_ID = "BeseyeCam001";
 	static public final String TMP_CAM_NAME = "reddot";
