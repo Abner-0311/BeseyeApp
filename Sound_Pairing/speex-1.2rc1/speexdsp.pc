@@ -1,0 +1,15 @@
+# libspeexdsp pkg-config source file
+
+prefix=/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/build_android
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: speexdsp
+Description: Speexdsp is a speech processing library that goes along with the Speex codec
+Version: 1.2rc1
+Requires: 
+Conflicts:
+Libs: -L${libdir} -lspeexdsp
+Libs.private: -lm
+Cflags: -I${includedir}

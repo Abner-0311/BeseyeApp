@@ -1,0 +1,276 @@
+sndfilehandle.o: sndfilehandle.cc \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cstdio \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/c++config.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/os_defines.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/cpu_defines.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cstddef \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs_elf.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/machine/_types.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/stdint.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/posix_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/stddef.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/compiler.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/asm/posix_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/asm/types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/machine/kernel.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/sysmacros.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cstring \
+ /tmp/libsndfile/bin/../sysroot/usr/include/string.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/malloc.h ../src/sndfile.hh \
+ ../src/sndfile.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/string \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stringfwd.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/char_traits.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_algobase.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/functexcept.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/exception_defines.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/cpp_type_traits.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/ext/type_traits.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/ext/numeric_traits.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_pair.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/move.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/concept_check.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_iterator_base_types.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_iterator_base_funcs.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_iterator.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/debug/debug.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/postypes.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cwchar \
+ /tmp/libsndfile/bin/../sysroot/usr/include/wchar.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/time.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/time.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/time.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/asm/siginfo.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/asm-generic/siginfo.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/allocator.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/c++allocator.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/ext/new_allocator.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/new \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/exception \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/localefwd.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/c++locale.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/clocale \
+ /tmp/libsndfile/bin/../sysroot/usr/include/locale.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/iosfwd \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cctype \
+ /tmp/libsndfile/bin/../sysroot/usr/include/ctype.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/ostream_insert.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cxxabi-forced.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_function.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/backward/binders.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/basic_string.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/ext/atomicity.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/gthr.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/gthr-default.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/pthread.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/signal.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/limits.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/syslimits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/limits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/limits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/limits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/machine/internal_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/machine/limits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/syslimits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/asm/signal.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/asm-generic/signal.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sched.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/unistd.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/select.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/sysconf.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/capability.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/pathconf.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/atomic_word.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/initializer_list \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/basic_string.tcc
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cstdio:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/c++config.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/os_defines.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/cpu_defines.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cstddef:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs_elf.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/machine/_types.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/stdint.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/posix_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/stddef.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/compiler.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/asm/posix_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/asm/types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/machine/kernel.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/sysmacros.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cstring:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/string.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/malloc.h:
+
+../src/sndfile.hh:
+
+../src/sndfile.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/string:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stringfwd.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/char_traits.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_algobase.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/functexcept.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/exception_defines.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/cpp_type_traits.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/ext/type_traits.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/ext/numeric_traits.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_pair.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/move.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/concept_check.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_iterator_base_types.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_iterator_base_funcs.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_iterator.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/debug/debug.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/postypes.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cwchar:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/wchar.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/time.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/time.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/time.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/asm/siginfo.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/asm-generic/siginfo.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/allocator.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/c++allocator.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/ext/new_allocator.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/new:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/exception:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/localefwd.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/c++locale.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/clocale:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/locale.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/iosfwd:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cctype:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/ctype.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/ostream_insert.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/cxxabi-forced.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/stl_function.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/backward/binders.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/basic_string.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/ext/atomicity.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/gthr.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/gthr-default.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/pthread.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/signal.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/limits.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/syslimits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/limits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/limits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/limits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/machine/internal_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/machine/limits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/syslimits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/asm/signal.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/asm-generic/signal.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sched.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/unistd.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/select.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/sysconf.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/capability.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/pathconf.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/arm-linux-androideabi/bits/atomic_word.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/initializer_list:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/../../../../arm-linux-androideabi/include/c++/4.4.3/bits/basic_string.tcc:

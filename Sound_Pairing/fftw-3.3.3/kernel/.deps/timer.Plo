@@ -1,0 +1,139 @@
+timer.lo: timer.c ifftw.h ../config.h \
+ /tmp/aubio/bin/../sysroot/usr/include/stdlib.h \
+ /tmp/aubio/bin/../sysroot/usr/include/sys/cdefs.h \
+ /tmp/aubio/bin/../sysroot/usr/include/sys/cdefs_elf.h \
+ /tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h \
+ /tmp/aubio/bin/../sysroot/usr/include/string.h \
+ /tmp/aubio/bin/../sysroot/usr/include/malloc.h \
+ /tmp/aubio/bin/../sysroot/usr/include/alloca.h \
+ /tmp/aubio/bin/../sysroot/usr/include/strings.h \
+ /tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h \
+ /tmp/aubio/bin/../sysroot/usr/include/stdint.h \
+ /tmp/aubio/bin/../sysroot/usr/include/sys/_types.h \
+ /tmp/aubio/bin/../sysroot/usr/include/machine/_types.h \
+ /tmp/aubio/bin/../sysroot/usr/include/linux/posix_types.h \
+ /tmp/aubio/bin/../sysroot/usr/include/linux/stddef.h \
+ /tmp/aubio/bin/../sysroot/usr/include/linux/compiler.h \
+ /tmp/aubio/bin/../sysroot/usr/include/asm/posix_types.h \
+ /tmp/aubio/bin/../sysroot/usr/include/asm/types.h \
+ /tmp/aubio/bin/../sysroot/usr/include/linux/types.h \
+ /tmp/aubio/bin/../sysroot/usr/include/machine/kernel.h \
+ /tmp/aubio/bin/../sysroot/usr/include/sys/sysmacros.h \
+ /tmp/aubio/bin/../sysroot/usr/include/memory.h \
+ /tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h \
+ /tmp/aubio/bin/../sysroot/usr/include/inttypes.h \
+ /tmp/aubio/bin/../sysroot/usr/include/sys/time.h \
+ /tmp/aubio/bin/../sysroot/usr/include/linux/time.h \
+ /tmp/aubio/bin/../sysroot/usr/include/time.h \
+ /tmp/aubio/bin/../sysroot/usr/include/asm/siginfo.h \
+ /tmp/aubio/bin/../sysroot/usr/include/asm-generic/siginfo.h \
+ /tmp/aubio/bin/../sysroot/usr/include/unistd.h \
+ /tmp/aubio/bin/../sysroot/usr/include/sys/select.h \
+ /tmp/aubio/bin/../sysroot/usr/include/signal.h \
+ /tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/limits.h \
+ /tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/syslimits.h \
+ /tmp/aubio/bin/../sysroot/usr/include/limits.h \
+ /tmp/aubio/bin/../sysroot/usr/include/sys/limits.h \
+ /tmp/aubio/bin/../sysroot/usr/include/linux/limits.h \
+ /tmp/aubio/bin/../sysroot/usr/include/machine/internal_types.h \
+ /tmp/aubio/bin/../sysroot/usr/include/machine/limits.h \
+ /tmp/aubio/bin/../sysroot/usr/include/sys/syslimits.h \
+ /tmp/aubio/bin/../sysroot/usr/include/asm/signal.h \
+ /tmp/aubio/bin/../sysroot/usr/include/asm-generic/signal.h \
+ /tmp/aubio/bin/../sysroot/usr/include/sys/sysconf.h \
+ /tmp/aubio/bin/../sysroot/usr/include/linux/capability.h \
+ /tmp/aubio/bin/../sysroot/usr/include/pathconf.h cycle.h
+
+ifftw.h:
+
+../config.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/stdlib.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/sys/cdefs.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/sys/cdefs_elf.h:
+
+/tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/string.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/malloc.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/alloca.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/strings.h:
+
+/tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/stdint.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/sys/_types.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/machine/_types.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/linux/posix_types.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/linux/stddef.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/linux/compiler.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/asm/posix_types.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/asm/types.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/linux/types.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/machine/kernel.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/sys/sysmacros.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/memory.h:
+
+/tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/inttypes.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/sys/time.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/linux/time.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/time.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/asm/siginfo.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/asm-generic/siginfo.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/unistd.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/sys/select.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/signal.h:
+
+/tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/limits.h:
+
+/tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/syslimits.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/limits.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/sys/limits.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/linux/limits.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/machine/internal_types.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/machine/limits.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/sys/syslimits.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/asm/signal.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/asm-generic/signal.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/sys/sysconf.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/linux/capability.h:
+
+/tmp/aubio/bin/../sysroot/usr/include/pathconf.h:
+
+cycle.h:

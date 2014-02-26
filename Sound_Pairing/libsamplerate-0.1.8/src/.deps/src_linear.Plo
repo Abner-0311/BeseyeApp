@@ -1,0 +1,106 @@
+src_linear.lo: src_linear.c \
+ /tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/sys/cdefs.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/sys/cdefs_elf.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/sys/_types.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/machine/_types.h \
+ /tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h \
+ /tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h \
+ /tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/stdint.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/linux/posix_types.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/linux/stddef.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/linux/compiler.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/asm/posix_types.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/asm/types.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/linux/types.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/machine/kernel.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/sys/sysmacros.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/stdlib.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/string.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/malloc.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/alloca.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/strings.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/memory.h config.h \
+ float_cast.h /tmp/libsamplerate/bin/../sysroot/usr/include/math.h \
+ /tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/limits.h \
+ /tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/syslimits.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/limits.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/sys/limits.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/linux/limits.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/machine/internal_types.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/machine/limits.h \
+ /tmp/libsamplerate/bin/../sysroot/usr/include/sys/syslimits.h common.h \
+ samplerate.h
+
+/tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/sys/cdefs.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/sys/cdefs_elf.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/sys/_types.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/machine/_types.h:
+
+/tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h:
+
+/tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h:
+
+/tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/stdint.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/linux/posix_types.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/linux/stddef.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/linux/compiler.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/asm/posix_types.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/asm/types.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/linux/types.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/machine/kernel.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/sys/sysmacros.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/stdlib.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/string.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/malloc.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/alloca.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/strings.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/memory.h:
+
+config.h:
+
+float_cast.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/math.h:
+
+/tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/limits.h:
+
+/tmp/libsamplerate/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/syslimits.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/limits.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/sys/limits.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/linux/limits.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/machine/internal_types.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/machine/limits.h:
+
+/tmp/libsamplerate/bin/../sysroot/usr/include/sys/syslimits.h:
+
+common.h:
+
+samplerate.h:

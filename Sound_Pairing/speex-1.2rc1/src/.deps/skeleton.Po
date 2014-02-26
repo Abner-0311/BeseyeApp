@@ -1,0 +1,90 @@
+skeleton.o: skeleton.c \
+ /private/tmp/speex/bin/../sysroot/usr/include/stdlib.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/android/api-level.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stddef.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/string.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/malloc.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/alloca.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/strings.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/types.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdint.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/stdint.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/machine/_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/posix_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/stddef.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/compiler.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/asm/posix_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/asm/types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/machine/kernel.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/sysmacros.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/memory.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/stdio.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdarg.h \
+ /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/libogg-1.3.0/build_android/include/ogg/ogg.h \
+ /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/libogg-1.3.0/build_android/include/ogg/os_types.h \
+ /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/libogg-1.3.0/build_android/include/ogg/config_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/inttypes.h skeleton.h
+
+/private/tmp/speex/bin/../sysroot/usr/include/stdlib.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/android/api-level.h:
+
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stddef.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/string.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/malloc.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/alloca.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/strings.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/types.h:
+
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdint.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/stdint.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/_types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/machine/_types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/linux/posix_types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/linux/stddef.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/linux/compiler.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/asm/posix_types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/asm/types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/linux/types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/machine/kernel.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/sysmacros.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/memory.h:
+
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/stdio.h:
+
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdarg.h:
+
+/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/libogg-1.3.0/build_android/include/ogg/ogg.h:
+
+/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/libogg-1.3.0/build_android/include/ogg/os_types.h:
+
+/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/libogg-1.3.0/build_android/include/ogg/config_types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/inttypes.h:
+
+skeleton.h:

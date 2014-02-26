@@ -1,0 +1,113 @@
+pcm.lo: pcm.c sfconfig.h config.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/math.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs_elf.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/stdint.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/machine/_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/posix_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/stddef.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/compiler.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/asm/posix_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/asm/types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/machine/kernel.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/sysmacros.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/limits.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/syslimits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/limits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/limits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/limits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/machine/internal_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/machine/limits.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/syslimits.h sndfile.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h \
+ sfendian.h /tmp/libsndfile/bin/../sysroot/usr/include/byteswap.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/endian.h common.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/stdlib.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/string.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/malloc.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/alloca.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/strings.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/memory.h
+
+sfconfig.h:
+
+config.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/math.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs_elf.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/stdint.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/machine/_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/posix_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/stddef.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/compiler.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/asm/posix_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/asm/types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/machine/kernel.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/sysmacros.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/limits.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/syslimits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/limits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/limits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/limits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/machine/internal_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/machine/limits.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/syslimits.h:
+
+sndfile.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h:
+
+sfendian.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/byteswap.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/endian.h:
+
+common.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/stdlib.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/string.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/malloc.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/alloca.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/strings.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/memory.h:

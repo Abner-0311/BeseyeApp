@@ -1,0 +1,57 @@
+GSM610/gsm_encode.lo: GSM610/gsm_encode.c GSM610/gsm610_priv.h \
+ GSM610/gsm.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs_elf.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/machine/_types.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h \
+ /tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/stdint.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/posix_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/stddef.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/compiler.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/asm/posix_types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/asm/types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/linux/types.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/machine/kernel.h \
+ /tmp/libsndfile/bin/../sysroot/usr/include/sys/sysmacros.h
+
+GSM610/gsm610_priv.h:
+
+GSM610/gsm.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/cdefs_elf.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/machine/_types.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h:
+
+/tmp/libsndfile/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/stdint.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/posix_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/stddef.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/compiler.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/asm/posix_types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/asm/types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/linux/types.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/machine/kernel.h:
+
+/tmp/libsndfile/bin/../sysroot/usr/include/sys/sysmacros.h:

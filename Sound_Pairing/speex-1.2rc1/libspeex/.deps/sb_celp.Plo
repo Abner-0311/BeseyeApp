@@ -1,0 +1,155 @@
+sb_celp.lo: sb_celp.c ../config.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/math.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/android/api-level.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/types.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stddef.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdint.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/stdint.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/machine/_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/posix_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/stddef.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/compiler.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/asm/posix_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/asm/types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/machine/kernel.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/sysmacros.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/limits.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/syslimits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/limits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/limits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/limits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/machine/internal_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/machine/limits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/syslimits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/asm/page.h sb_celp.h \
+ modes.h ../include/speex/speex.h ../include/speex/speex_bits.h \
+ ../include/speex/speex_types.h ../include/speex/speex_config_types.h \
+ arch.h nb_celp.h ../include/speex/speex_callbacks.h \
+ ../include/speex/speex.h vbr.h filters.h lpc.h lsp.h stack_alloc.h \
+ cb_search.h quant_lsp.h vq.h ltp.h math_approx.h os_support.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/string.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/malloc.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/stdio.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdarg.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/stdlib.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/alloca.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/strings.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/memory.h
+
+../config.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/math.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/android/api-level.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/types.h:
+
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stddef.h:
+
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdint.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/stdint.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/_types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/machine/_types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/linux/posix_types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/linux/stddef.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/linux/compiler.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/asm/posix_types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/asm/types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/linux/types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/machine/kernel.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/sysmacros.h:
+
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/limits.h:
+
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/syslimits.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/limits.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/limits.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/linux/limits.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/machine/internal_types.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/machine/limits.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/sys/syslimits.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/asm/page.h:
+
+sb_celp.h:
+
+modes.h:
+
+../include/speex/speex.h:
+
+../include/speex/speex_bits.h:
+
+../include/speex/speex_types.h:
+
+../include/speex/speex_config_types.h:
+
+arch.h:
+
+nb_celp.h:
+
+../include/speex/speex_callbacks.h:
+
+../include/speex/speex.h:
+
+vbr.h:
+
+filters.h:
+
+lpc.h:
+
+lsp.h:
+
+stack_alloc.h:
+
+cb_search.h:
+
+quant_lsp.h:
+
+vq.h:
+
+ltp.h:
+
+math_approx.h:
+
+os_support.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/string.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/malloc.h:
+
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/stdio.h:
+
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdarg.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/stdlib.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/alloca.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/strings.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/memory.h:
