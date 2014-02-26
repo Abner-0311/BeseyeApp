@@ -1,0 +1,15 @@
+eclipse.preferences.version=1
+environment/project/com.android.toolchain.gcc.1982120657/CROSS_COMPILE/delimiter=\:
+environment/project/com.android.toolchain.gcc.1982120657/CROSS_COMPILE/operation=append
+environment/project/com.android.toolchain.gcc.1982120657/CROSS_COMPILE/value=arm-linux-androideabi-
+environment/project/com.android.toolchain.gcc.1982120657/CRYPTO/delimiter=\:
+environment/project/com.android.toolchain.gcc.1982120657/CRYPTO/operation=append
+environment/project/com.android.toolchain.gcc.1982120657/CRYPTO/value=OPENSSL
+environment/project/com.android.toolchain.gcc.1982120657/INC/delimiter=\:
+environment/project/com.android.toolchain.gcc.1982120657/INC/operation=append
+environment/project/com.android.toolchain.gcc.1982120657/INC/value="-I/Users/Abner/Documents/Develop/openssl-1.0.1e/build/include"
+environment/project/com.android.toolchain.gcc.1982120657/XLDFLAGS/delimiter=\:
+environment/project/com.android.toolchain.gcc.1982120657/XLDFLAGS/operation=append
+environment/project/com.android.toolchain.gcc.1982120657/XLDFLAGS/value="-L/Users/Abner/Documents/Develop/openssl-1.0.1e/build/lib"
+environment/project/com.android.toolchain.gcc.1982120657/append=true
+environment/project/com.android.toolchain.gcc.1982120657/appendContributed=true

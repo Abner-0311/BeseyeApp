@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+	<RelativeLayout 
+	    android:id="@+id/surface_holder"
+	    android:layout_width="424px"
+	    android:layout_height="240px"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentBottom="true"
+	    android:layout_marginRight="80dp">
+	</RelativeLayout>
+	
+	<RelativeLayout 
+	    android:id="@+id/surface_holder2"
+	    android:layout_width="640px"
+	    android:layout_height="360px">
+	</RelativeLayout>
+	<ImageView  
+	    android:id="@+id/frame" 
+	    android:layout_width="wrap_content" 		
+	    android:layout_height="wrap_content"
+	    android:layout_centerInParent="true"
+	    android:background="#ff555555"
+	    android:visibility="gone">
+	    
+	</ImageView>
+	<Button android:text="Live1" 
+	    	android:id="@+id/frame_adv" 
+	    	android:layout_width="wrap_content" 
+	    	android:layout_height="wrap_content" 
+	    	android:layout_alignParentRight="true">
+	</Button>
+	
+	<Button android:text="Add1" 
+	    android:layout_width="wrap_content" 
+	    android:id="@+id/btn_add1" 
+	    android:layout_height="wrap_content" 
+	    android:layout_toLeftOf="@+id/frame_adv"></Button>
+	
+	<Button android:text="Pause1" 
+	    android:layout_width="wrap_content" 
+	    android:id="@+id/btn_pause1" 
+	    android:layout_height="wrap_content" 
+	    android:layout_toLeftOf="@+id/btn_add1"></Button>
+	
+	<Button android:text="Resume1" 
+	    android:layout_width="wrap_content" 
+	    android:id="@+id/btn_resume1" 
+	    android:layout_height="wrap_content" 
+	    android:layout_toLeftOf="@+id/btn_pause1"></Button>
+		
+	<Button android:text="Live2" 
+	    android:layout_width="wrap_content" 
+	    android:id="@+id/frame_live2" 
+	    android:layout_height="wrap_content" 
+	    android:layout_alignParentRight="true" 
+	    android:layout_below="@+id/frame_adv"></Button>
+	
+	<Button android:text="Pause2" 
+	    android:layout_width="wrap_content" 
+	    android:id="@+id/btn_pause2" 
+	    android:layout_height="wrap_content" 
+	    android:layout_toLeftOf="@+id/frame_live2"
+	    android:layout_alignBottom="@+id/frame_live2"></Button>
+	
+	<Button android:text="Resume2" 
+	    android:layout_width="wrap_content" 
+	    android:id="@+id/btn_resume2" 
+	    android:layout_height="wrap_content" 
+	    android:layout_toLeftOf="@+id/btn_pause2"
+	    android:layout_alignBottom="@+id/frame_live2"></Button>
+	
+	<Button android:text="LiveAll" 
+	    android:layout_width="wrap_content" 
+	    android:id="@+id/frame_liveAll" 
+	    android:layout_height="wrap_content" 
+	    android:layout_alignParentRight="true" 
+	    android:layout_below="@+id/frame_live2"></Button>
+	
+	<Button android:text="Talk" android:id="@+id/frame_fwd" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_below="@+id/frame_liveAll"></Button>
+	<Button android:text="Stop" android:layout_width="wrap_content" android:id="@+id/frame_back" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_below="@+id/frame_fwd" android:visibility="gone"></Button>
+	
+	<Button android:text="Stop1" android:layout_width="wrap_content" android:id="@+id/btn_stop1" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_below="@+id/frame_back"></Button>
+	<Button android:text="Stop2" android:layout_width="wrap_content" android:id="@+id/btn_stop2" android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_below="@+id/btn_stop1"></Button>
+</RelativeLayout>

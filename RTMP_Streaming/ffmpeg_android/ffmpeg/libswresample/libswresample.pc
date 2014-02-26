@@ -1,0 +1,14 @@
+prefix=/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/ffmpeg_android/build/ffmpeg/armv7
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libswresample
+Description: FFmpeg audio rescaling library
+Version: 0.15.100
+Requires: 
+Requires.private: libavutil = 51.65.100
+Conflicts:
+Libs: -L${libdir} -lswresample 
+Libs.private: -lm
+Cflags: -I${includedir}

@@ -1,0 +1,8 @@
+/build
+/hashswf.o
+/librtmp.a
+/log.o
+/parseurl.o
+/rtmp.o
+/amf.o
+/build_android
