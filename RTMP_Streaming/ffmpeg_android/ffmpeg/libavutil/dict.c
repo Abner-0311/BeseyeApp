@@ -111,10 +111,11 @@ void av_dict_free(AVDictionary **pm)
 
     if (m) {
         while(m->count--) {
-            av_free(m->elems[m->count].key);
             //Abner workaround 20140218
             if(0 != strcmp(m->elems[m->count].key, "holder"))
                 av_free(m->elems[m->count].value);
+
+            av_free(m->elems[m->count].key);
         }
         av_free(m->elems);
     }
