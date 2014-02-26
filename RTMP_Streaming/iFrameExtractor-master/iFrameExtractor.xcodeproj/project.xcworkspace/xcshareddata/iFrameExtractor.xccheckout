@@ -5,7 +5,7 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>892142BD-FE2F-4563-BA95-4B37D78D4CC5</string>
+	<string>890110A5-1C4D-461A-AB53-B234C0DB2DD6</string>
 	<key>IDESourceControlProjectName</key>
 	<string>iFrameExtractor</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
@@ -14,26 +14,26 @@
 		<string>https://github.com/BesEye/BS_HomeSecurity_App_Modules.git</string>
 		<key>9A54B7CE-40E5-4E8A-A77A-CD55BC62403B</key>
 		<string>ssh://github.com/BesEye/BS_HomeSecurity_V1_Android.git</string>
-		<key>C7916BAD-69CD-4AC6-BCD0-82A6C26CA808</key>
-		<string>https://github.com/BesEye/BS_HomeSecurity_App_Modules.git</string>
+		<key>C9B052F7-99D6-459F-BBF0-1B91A06A2E54</key>
+		<string>https://github.com/BesEye/HomeSecurity_FE_Android.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>RTMP_Streaming/iFrameExtractor-master/iFrameExtractor.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>2AFE23E9-7A8E-4A7F-BD07-334FF16E9975</key>
-		<string>../../../..</string>
+		<string>../../../../../BS_HomeSecurity_App_Modules</string>
 		<key>9A54B7CE-40E5-4E8A-A77A-CD55BC62403B</key>
 		<string>../../../../../BS_HomeSecurity_V1_Android</string>
-		<key>C7916BAD-69CD-4AC6-BCD0-82A6C26CA808</key>
-		<string>../../../openssl-1.0.1e</string>
+		<key>C9B052F7-99D6-459F-BBF0-1B91A06A2E54</key>
+		<string>../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/BesEye/BS_HomeSecurity_App_Modules.git</string>
+	<string>https://github.com/BesEye/HomeSecurity_FE_Android.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>2AFE23E9-7A8E-4A7F-BD07-334FF16E9975</string>
+	<string>C9B052F7-99D6-459F-BBF0-1B91A06A2E54</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -56,9 +56,9 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>C7916BAD-69CD-4AC6-BCD0-82A6C26CA808</string>
+			<string>C9B052F7-99D6-459F-BBF0-1B91A06A2E54</string>
 			<key>IDESourceControlWCCName</key>
-			<string>openssl-1.0</string>
+			<string>HomeSecurity_FE_Android</string>
 		</dict>
 	</array>
 </dict>
