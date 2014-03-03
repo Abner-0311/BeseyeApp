@@ -1,6 +1,22 @@
 package com.app.beseye.pairing;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.nio.ByteBuffer;
+
+import org.java_websocket.WebSocket;
+import org.java_websocket.WebSocketImpl;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.framing.FrameBuilder;
+import org.java_websocket.framing.Framedata;
+import org.java_websocket.handshake.ServerHandshake;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,8 +36,10 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private native static boolean nativeClassInit();
 	private native boolean playCode(String strCode, boolean bNeedEncode);
 	private native void finishPlayCode();
+	private native void swTest();
 	
     static {
+    	System.loadLibrary("websockets");
     	System.loadLibrary("soundpairing");
     	if (!nativeClassInit())
 			throw new RuntimeException("Native Init Failed");
@@ -37,6 +55,14 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		if(null != mBtnPLayTone){
 			mBtnPLayTone.setOnClickListener(this);
 		}
+		
+		new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				swTest();
+			}}).start();
+	
 	}
 	
 	@Override
@@ -118,3 +144,4 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
     	Log.i(TAG, "onErrCorrectionCode(), strCode:["+strCode+"]\n, strEC:["+strEC+"]\n, strEncodeMark:["+strEncodeMark+"]\n");
 	}
 }
+
