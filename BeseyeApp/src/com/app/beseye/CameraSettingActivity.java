@@ -190,6 +190,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 							if(null != etCamName){
 								Log.i(TAG, "onDismiss(), cam name is "+etCamName.getText().toString());
 								CamSettingMgr.getInstance().setCamName(TMP_CAM_ID, etCamName.getText().toString());
+								if(ASSIGN_ST_PATH){
+									STREAM_PATH_LIST.set(0, CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
+								}
 								setResult(RESULT_OK);
 							}
 						}});
@@ -211,8 +214,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			if(null != viewRet){
 				EditText etCamName = (EditText)viewRet.findViewById(R.id.et_cam_name);
 				if(null != etCamName){
-					etCamName.setText(TMP_CAM_NAME/*CamSettingMgr.getInstance().getCamName(TMP_CAM_ID)*/);
-					etCamName.setFocusable(false);
+					etCamName.setText(CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
+					if(!ASSIGN_ST_PATH)
+						etCamName.setFocusable(false);
 				}
 				
 				TextView txtSN = (TextView)viewRet.findViewById(R.id.txt_sn_value);

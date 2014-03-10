@@ -196,7 +196,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mTxtDate = (TextView)findViewById(R.id.txt_streaming_date);
 		mTxtTime = (TextView)findViewById(R.id.txt_streaming_time);
 		mTxtCamName = (TextView)findViewById(R.id.txt_cam_name);
-		if(null != mTxtCamName){
+		if(!ASSIGN_ST_PATH && null != mTxtCamName){
 			mTxtCamName.setOnClickListener(this);
 		}
 		
@@ -974,10 +974,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						iErrStrId = R.string.streaming_error_no_network;//workaround
 					}
 					
-					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(iErrStrId));
-					showMyDialog(DIALOG_ID_WARNING, b);
-			    	closeStreaming();
+					if(!ASSIGN_ST_PATH){
+						Bundle b = new Bundle();
+						b.putString(KEY_WARNING_TEXT, getResources().getString(iErrStrId));
+						showMyDialog(DIALOG_ID_WARNING, b);
+				    	closeStreaming();
+					}
+					
 				}});
     	}
     }

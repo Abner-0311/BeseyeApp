@@ -1,9 +1,13 @@
 package com.app.beseye.util;
 
+import static com.app.beseye.util.BeseyeConfig.TMP_CAM_ID;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.app.beseye.setting.CamSettingMgr;
 
 public class BeseyeConfig {
 	static public final String TAG = "BesEye";
@@ -13,12 +17,14 @@ public class BeseyeConfig {
 	
 	//relay wifi AP info
 
+	static public final boolean ASSIGN_ST_PATH = false;
+	
 	static public final boolean REDDOT_DEMO = false;
 	static public final String RELAY_AP_SSID = "beseye";//"raylios WiFi";
 	static public final String RELAY_AP_PW = "0630BesEye";//"whoisyourdaddy";
 	
 	static public final String TMP_CAM_ID = "BeseyeCam001";
-	static public final String TMP_CAM_NAME = "reddot";
+	static public final String TMP_CAM_NAME = "rtsp://admin:password@192.168.3.100/h264";
 	static public final String TMP_CAM_SN = "BE00000001PN";
 	static public final String TMP_CAM_MAC = "93:be:22:fa:10:88";
 	
@@ -27,6 +33,8 @@ public class BeseyeConfig {
 													 //"rtsp://admin:password@192.168.2.2/h264_2",
 													 //"rtmp://54.238.191.39:1935/live-edge/mystream5_aac"/*,
 													 //"rtmp://54.250.149.50/live-origin/mystream3_aac",
+													 "rtmp://192.168.2.145/proxypublish/stream1 live=1",
+													 "rtmp://54.250.149.50/livetest/test_crtmpserver",
 													 "rtsp://admin:password@192.168.12.184/h264_2"//00:0C:43:30:50:D0
 													 ,"rtsp://admin:password@192.168.12.186/h264_2"//00:0C:43:30:50:28
 													 ,"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
@@ -55,6 +63,8 @@ public class BeseyeConfig {
 				REDDOT_STREAM_PATH_MAP.put(REDDOT_STREAM_PATH[i-1], "No. "+i);
 			}
 		}else{
+			if(ASSIGN_ST_PATH)
+				STREAM_PATH_LIST.add(CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
 			for(int i = 0; i< DEMO_STREAM_PATH.length;i++){
 				STREAM_PATH_LIST.add(DEMO_STREAM_PATH[i]);
 			}
