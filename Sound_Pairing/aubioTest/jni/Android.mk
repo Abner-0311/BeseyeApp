@@ -55,6 +55,7 @@ LOCAL_C_INCLUDES 	   := $(LOCAL_PATH)\
 						  $(LOCAL_PATH)/zxing/common/reedsolomon \
 						  $(LOCAL_PATH)/http_cgi_lib/inc \
 						  $(LOCAL_PATH)/cam-handler/inc \
+						  $(LOCAL_PATH)/ws-client/inc \
 						  $(LOCAL_PATH)/cam-handler/inc/network \
 						  
 #LOCAL_STATIC_LIBRARIES := audacityFFT
@@ -66,6 +67,7 @@ LOCAL_LDLIBS           := -L$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/us
 						  -lcurl \
 						  -ljson-c \
 					      -ljson \
+					      -lfftw3 \
 					      -llog \
 					      -lz \
 					      -ldl \

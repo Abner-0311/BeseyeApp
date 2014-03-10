@@ -25,7 +25,7 @@ bool lessEqualThan(double a, double b) {
 
 long getTickCount()
 {
-	return clock();
+	return clock()/1000L;
 }
 
 msec_t time_ms(void){

@@ -1,6 +1,7 @@
 #include "FreqAnalyzer.h"
 #include "AudioBufferMgr.h"
 #include <climits>
+#include "fftw3.h"
 #include <zxing/common/Array.h>
 #include <zxing/common/reedsolomon/ReedSolomonDecoder.h>
 
@@ -1709,7 +1710,12 @@ float *FreqAnalyzer::win = NULL;
 double FreqAnalyzer::wss ;
 int FreqAnalyzer::windowFunc = 3;//hannings
 
+double *inBuffer2 = NULL;
+double *outBuffer2 = NULL;
+static fftw_plan plan_forward;
+
 void FreqAnalyzer::initAudacity(){
+
 	if(NULL == inBuffer){
 		inBuffer = (float*)malloc(sFrameSize*sizeof(float));
 	}
@@ -1717,6 +1723,16 @@ void FreqAnalyzer::initAudacity(){
 	if(NULL == outBuffer){
 		outBuffer = (float*)malloc(sFrameSize*sizeof(float));//new float[sFrameSize];
 	}
+
+//	if(NULL == inBuffer2){
+//		inBuffer2 = (double*)malloc(sFrameSize*sizeof(double));
+//	}
+//
+//	if(NULL == outBuffer2){
+//		outBuffer2 = (double*)malloc(sFrameSize*sizeof(double));//new float[sFrameSize];
+//	}
+//
+//	plan_forward = fftw_plan_r2r_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_R2HC, FFTW_ESTIMATE );
 
 	if(NULL == win){
 		win = (float*)malloc(sFrameSize*sizeof(float));//new float[sFrameSize];
@@ -1774,9 +1790,13 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 		initAudacity();
 	}
 
+	long lTickCount = getTickCount();
 	performSpeexPreprocess(&bytes[0], bReset, speexPrep);
+	LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms\n", (getTickCount() - lTickCount));
 
-	performWindowFunc(win);
+//	lTickCount = getTickCount();
+//	performWindowFunc(win);
+//	LOGE("performAudacityFFT(), performWindowFunc takes %ld ms\n", (getTickCount() - lTickCount));
 
 	int iDx = 0;
 	int iDx2 = 0;
@@ -1786,12 +1806,29 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 	if(0 < bytes->size()){
 		int i=0;
+
+
 		for (i = 0; i < sFrameSize; i++)
 			inBuffer[i] = win[i] * bytes[i];
 
+		//LOGE("performAudacityFFT(), inBuffer takes %ld ms\n", (getTickCount() - lTickCount));
+
+		lTickCount = getTickCount();
 		PowerSpectrum(sFrameSize, inBuffer, outBuffer);
+		LOGE("performAudacityFFT(), PowerSpectrum takes %ld ms\n", (getTickCount() - lTickCount));
 
 		fRet = outBuffer[0];
+//		for (i = 0; i < sFrameSize; i++)
+//			inBuffer2[0] =  bytes[i];
+//
+//		lTickCount = getTickCount();
+//		LOGE("performAudacityFFT(), before fftw_execute\n");
+//
+//		fftw_execute ( plan_forward );
+//
+//		LOGE("performAudacityFFT(), fftw_execute takes %ld ms\n", (getTickCount() - lTickCount));
+//
+//		fRet = fabs(outBuffer2[0]);
 		for (i = sLowPassIndex; i < sHalfFrameSize && i <= sHighPassIndex; i++){
 			//LOGE("analyzeAudioViaAudacity+, outBuffer[%d] = %f\n", i, outBuffer[i]);
 			if(outBuffer[i] > fRet){

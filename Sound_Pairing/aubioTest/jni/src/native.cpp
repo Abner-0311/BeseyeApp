@@ -529,42 +529,42 @@ void callbackFuncTest(void* data, const char* jsonRet){
 
 JNIEXPORT jint JNICALL Java_com_example_aubiotest_AubioTestActivity_startAutoTest(JNIEnv * env, jobject thisObj, jstring strCurCode, jint iDigitalToTest){
 	DECLARE_JNIENV_WITH_RETURN()
-//	mThisObj = (jobject)(env->NewGlobalRef(thisObj));
-//	char *nativeString = (char *)jni_env->GetStringUTFChars( strCurCode, 0);
-//	string curCode(nativeString?nativeString:"");
-//	LOGE("startAutoTest+, strCurCode:[%s]\n", curCode.c_str());
-//	jni_env->ReleaseStringUTFChars( strCurCode, nativeString);
-//	bool ret = AudioTest::getInstance()->startAutoTest(curCode, iDigitalToTest);
-//	return ret;
+	mThisObj = (jobject)(env->NewGlobalRef(thisObj));
+	char *nativeString = (char *)jni_env->GetStringUTFChars( strCurCode, 0);
+	string curCode(nativeString?nativeString:"");
+	LOGE("startAutoTest+, strCurCode:[%s]\n", curCode.c_str());
+	jni_env->ReleaseStringUTFChars( strCurCode, nativeString);
+	bool ret = AudioTest::getInstance()->startAutoTest(curCode, iDigitalToTest);
+	return ret;
 
-	Cam_Event_Mgr_Init();
-
-	sleep(2);
-
-	CAM_Event event;
-	event.event_type = CAM_CTRL_EVT_DATETIME_GET;
-	event.callbackFunc = callbackFuncTest;
-	int64_t event_id  = Cam_Event_Mgr_PushEvent(&event);
-	LOGE("event_id:%lld", event_id);
-	return 0;
+//	Cam_Event_Mgr_Init();
+//
+//	sleep(2);
+//
+//	CAM_Event event;
+//	event.event_type = CAM_CTRL_EVT_DATETIME_GET;
+//	event.callbackFunc = callbackFuncTest;
+//	int64_t event_id  = Cam_Event_Mgr_PushEvent(&event);
+//	LOGE("event_id:%lld", event_id);
+//	return 0;
 }
 
 JNIEXPORT jint JNICALL Java_com_example_aubiotest_AubioTestActivity_stopAutoTest(JNIEnv * env, jobject thisObj){
 	DECLARE_JNIENV_WITH_RETURN()
-	static int iii = 0;
-	if(iii == 0){
-		int i = 0;
-		while(i++ < 10){
-			CAM_Event event;
-			event.event_type = CAM_CTRL_EVT_DATETIME_GET;
-			event.callbackFunc = callbackFuncTest;
-			int64_t event_id  = Cam_Event_Mgr_PushEvent(&event);
-			LOGE("event_id:%lld\n", event_id);
-		}
-		iii =1;
-	}else{
-		Cam_Event_Mgr_Deinit();
-	}
+//	static int iii = 0;
+//	if(iii == 0){
+//		int i = 0;
+//		while(i++ < 10){
+//			CAM_Event event;
+//			event.event_type = CAM_CTRL_EVT_DATETIME_GET;
+//			event.callbackFunc = callbackFuncTest;
+//			int64_t event_id  = Cam_Event_Mgr_PushEvent(&event);
+//			LOGE("event_id:%lld\n", event_id);
+//		}
+//		iii =1;
+//	}else{
+//		Cam_Event_Mgr_Deinit();
+//	}
 	return AudioTest::getInstance()->stopAutoTest();
 }
 
