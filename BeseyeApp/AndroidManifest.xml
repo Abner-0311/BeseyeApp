@@ -45,10 +45,13 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light" 
         android:name=".BeseyeApplication">
-        <!--change the android:name="com.app.beseye.test.TestActivity" below for UI test-->
-        <!--Original android:name="com.app.beseye.MainActivity"-->
+        <!--change the android:name=".test.TestActivity" below for UI test-->
+        
+        <!--Original android:name=".OpeningPage"
+        	android:screenOrientation="landscape"
+        -->
         <activity
-            android:name=".OpeningPage"
+            android:name=".test.TestActivity"
             android:configChanges="locale|orientation" 
             android:screenOrientation="landscape" 
             android:theme="@style/Theme.BesEye">
