@@ -25,6 +25,7 @@
 #define  LOGI(...)  printf(__VA_ARGS__)
 #define  LOGW(...)  printf(__VA_ARGS__)
 #define  LOGE(...)  fprintf(stderr, __VA_ARGS__)
+
 #endif
 
 #define GEN_TONE_ONLY //for client side

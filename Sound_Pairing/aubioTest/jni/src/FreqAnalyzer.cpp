@@ -1710,9 +1710,13 @@ float *FreqAnalyzer::win = NULL;
 double FreqAnalyzer::wss ;
 int FreqAnalyzer::windowFunc = 3;//hannings
 
+#define FFTW_TRIAL
+
+#ifdef FFTW_TRIAL
 double *inBuffer2 = NULL;
 double *outBuffer2 = NULL;
 static fftw_plan plan_forward;
+#endif
 
 void FreqAnalyzer::initAudacity(){
 
@@ -1724,15 +1728,17 @@ void FreqAnalyzer::initAudacity(){
 		outBuffer = (float*)malloc(sFrameSize*sizeof(float));//new float[sFrameSize];
 	}
 
-//	if(NULL == inBuffer2){
-//		inBuffer2 = (double*)malloc(sFrameSize*sizeof(double));
-//	}
-//
-//	if(NULL == outBuffer2){
-//		outBuffer2 = (double*)malloc(sFrameSize*sizeof(double));//new float[sFrameSize];
-//	}
-//
-//	plan_forward = fftw_plan_r2r_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_R2HC, FFTW_ESTIMATE );
+#ifdef FFTW_TRIAL
+	if(NULL == inBuffer2){
+		inBuffer2 = (double*)malloc(sFrameSize*sizeof(double));
+	}
+
+	if(NULL == outBuffer2){
+		outBuffer2 = (double*)malloc(sFrameSize*sizeof(double));
+	}
+
+	plan_forward = fftw_plan_r2r_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_R2HC, FFTW_ESTIMATE );
+#endif
 
 	if(NULL == win){
 		win = (float*)malloc(sFrameSize*sizeof(float));//new float[sFrameSize];
@@ -1761,6 +1767,20 @@ void FreqAnalyzer::deinitAudacity(){
 		free(outBuffer);
 		outBuffer = NULL;
 	}
+
+#ifdef FFTW_TRIAL
+	fftw_destroy_plan ( plan_forward );
+
+	if(NULL != inBuffer2){
+		free(inBuffer2);
+		inBuffer2 = NULL;
+	}
+
+	if(NULL != outBuffer2){
+		free(outBuffer2);
+		outBuffer2 = NULL;
+	}
+#endif
 
 	if(NULL == win){
 		free(win);
@@ -1792,7 +1812,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 	long lTickCount = getTickCount();
 	performSpeexPreprocess(&bytes[0], bReset, speexPrep);
-	LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms\n", (getTickCount() - lTickCount));
+	//LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms\n", (getTickCount() - lTickCount));
 
 //	lTickCount = getTickCount();
 //	performWindowFunc(win);
@@ -1806,29 +1826,46 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 	if(0 < bytes->size()){
 		int i=0;
+		static long sTotalTime1=0, sTotalTime2=0;
+#ifdef FFTW_TRIAL
 
+		for (i = 0; i < sFrameSize; i++)
+			inBuffer2[i] =  bytes[i];
 
+		lTickCount = getTickCount();
+		//LOGE("performAudacityFFT(), before fftw_execute\n");
+
+		fftw_execute ( plan_forward );
+		//LOGE("performAudacityFFT(), fftw_execute takes %ld ms\n", (getTickCount() - lTickCount));
+
+		fRet = outBuffer2[0] * outBuffer2[0] + outBuffer2[sHalfFrameSize + 1] * outBuffer2[sHalfFrameSize + 1];//outBuffer[0];//fabs(outBuffer2[0]);
+		for (i = sLowPassIndex; i < sHalfFrameSize && i <= sHighPassIndex; i++){
+			//LOGE("analyzeAudioViaAudacity+, outBuffer[%d] = %f\n", i, outBuffer[i]);
+			float fRetTmp = outBuffer2[i] * outBuffer2[i] + outBuffer2[sHalfFrameSize + 1 - i] * outBuffer2[sHalfFrameSize + 1 - i];
+			if(fRetTmp > fRet){
+				iDx5 = iDx4;
+				iDx4 = iDx3;
+				iDx3 = iDx2;
+				iDx2 = iDx;
+				iDx  = i;
+				fRet = fRetTmp;
+			}
+		}
+		sTotalTime1+=(getTickCount() - lTickCount);
+
+//#else
+		lTickCount = getTickCount();
 		for (i = 0; i < sFrameSize; i++)
 			inBuffer[i] = win[i] * bytes[i];
 
 		//LOGE("performAudacityFFT(), inBuffer takes %ld ms\n", (getTickCount() - lTickCount));
 
-		lTickCount = getTickCount();
+
 		PowerSpectrum(sFrameSize, inBuffer, outBuffer);
-		LOGE("performAudacityFFT(), PowerSpectrum takes %ld ms\n", (getTickCount() - lTickCount));
+		//LOGE("performAudacityFFT(), PowerSpectrum takes %ld ms\n", (getTickCount() - lTickCount));
 
 		fRet = outBuffer[0];
-//		for (i = 0; i < sFrameSize; i++)
-//			inBuffer2[0] =  bytes[i];
-//
-//		lTickCount = getTickCount();
-//		LOGE("performAudacityFFT(), before fftw_execute\n");
-//
-//		fftw_execute ( plan_forward );
-//
-//		LOGE("performAudacityFFT(), fftw_execute takes %ld ms\n", (getTickCount() - lTickCount));
-//
-//		fRet = fabs(outBuffer2[0]);
+
 		for (i = sLowPassIndex; i < sHalfFrameSize && i <= sHighPassIndex; i++){
 			//LOGE("analyzeAudioViaAudacity+, outBuffer[%d] = %f\n", i, outBuffer[i]);
 			if(outBuffer[i] > fRet){
@@ -1841,6 +1878,9 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 			}
 		}
 
+		sTotalTime2 += (getTickCount() - lTickCount);
+#endif
+		LOGE("performAudacityFFT(), Spectrum takes [%ld, %ld] ms\n", sTotalTime1, sTotalTime2);
 		if(NULL != iDxValues){
 			iDxValues[0] = iDx;
 			iDxValues[1] = iDx2;

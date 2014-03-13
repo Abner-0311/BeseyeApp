@@ -35,7 +35,12 @@ using zxing::RS_DECODE_ERROR;
 // VC++
 using zxing::GenericGF;
 
-ReedSolomonDecoder::ReedSolomonDecoder(Ref<GenericGF> field_) : field(field_), mRSDecodeErr(DE_ERROR_NONE) {}
+ReedSolomonDecoder::ReedSolomonDecoder(Ref<GenericGF> field_) : field(field_), mRSDecodeErr(DE_ERROR_NONE) {
+	if(field.empty()){
+		//if field is empty, assign the default one
+		field = Ref<GenericGF>(new GenericGF(0x011D, 256, 0));
+	}
+}
 
 ReedSolomonDecoder::~ReedSolomonDecoder() {
 }

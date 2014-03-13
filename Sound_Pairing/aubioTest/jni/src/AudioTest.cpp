@@ -137,7 +137,7 @@ bool AudioTest::startGenerateTone(string strInitCode, int iDigitalToTest){
 	int errno = 0;
 	//LOGE("AudioTest::startGenerateTone(),  mControlThread,%d\n", mControlThread);
 	if(!mControlThread){
-		this->strInitCode = strInitCode;
+		this->strInitCode = "0123456789abcdef";//strInitCode;
 		miDigitalToTest = iDigitalToTest;
 		if (0 != (errno = pthread_create(&mControlThread, NULL, AudioTest::runAutoTestControl, this))) {
 			LOGE("AudioTest::startAutoTet(), error when create mControlThread,%d\n", errno);

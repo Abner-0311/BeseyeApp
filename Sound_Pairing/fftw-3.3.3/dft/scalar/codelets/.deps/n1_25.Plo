@@ -1,33 +1,32 @@
-n1_25.lo: n1_25.c ../../../dft/codelet-dft.h ../../../kernel/ifftw.h \
- ../../../config.h /tmp/aubio/bin/../sysroot/usr/include/stdlib.h \
- /tmp/aubio/bin/../sysroot/usr/include/sys/cdefs.h \
- /tmp/aubio/bin/../sysroot/usr/include/sys/cdefs_elf.h \
- /tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h \
- /tmp/aubio/bin/../sysroot/usr/include/string.h \
- /tmp/aubio/bin/../sysroot/usr/include/malloc.h \
- /tmp/aubio/bin/../sysroot/usr/include/alloca.h \
- /tmp/aubio/bin/../sysroot/usr/include/strings.h \
- /tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h \
- /tmp/aubio/bin/../sysroot/usr/include/stdint.h \
- /tmp/aubio/bin/../sysroot/usr/include/sys/_types.h \
- /tmp/aubio/bin/../sysroot/usr/include/machine/_types.h \
- /tmp/aubio/bin/../sysroot/usr/include/linux/posix_types.h \
- /tmp/aubio/bin/../sysroot/usr/include/linux/stddef.h \
- /tmp/aubio/bin/../sysroot/usr/include/linux/compiler.h \
- /tmp/aubio/bin/../sysroot/usr/include/asm/posix_types.h \
- /tmp/aubio/bin/../sysroot/usr/include/asm/types.h \
- /tmp/aubio/bin/../sysroot/usr/include/linux/types.h \
- /tmp/aubio/bin/../sysroot/usr/include/machine/kernel.h \
- /tmp/aubio/bin/../sysroot/usr/include/sys/sysmacros.h \
- /tmp/aubio/bin/../sysroot/usr/include/memory.h \
- /tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h \
- /tmp/aubio/bin/../sysroot/usr/include/inttypes.h \
- /tmp/aubio/bin/../sysroot/usr/include/sys/time.h \
- /tmp/aubio/bin/../sysroot/usr/include/linux/time.h \
- /tmp/aubio/bin/../sysroot/usr/include/time.h \
- /tmp/aubio/bin/../sysroot/usr/include/asm/siginfo.h \
- /tmp/aubio/bin/../sysroot/usr/include/asm-generic/siginfo.h \
- ../../../dft/scalar/n.h
+n1_25.lo n1_25.o: n1_25.c ../../../dft/codelet-dft.h \
+  ../../../kernel/ifftw.h ../../../config.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/stdlib.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/features.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/uClibc_config.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/cdefs.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/include/stddef.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/types.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/types.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/kernel_types.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/pthreadtypes.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/sched.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/time.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/endian.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/endian.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/select.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/select.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/sigset.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/time.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/sysmacros.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/alloca.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/include/stdarg.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/stdint.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/wchar.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/wordsize.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/inttypes.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/time.h \
+  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/uClibc_clk_tck.h \
+  ../../../dft/scalar/n.h
 
 ../../../dft/codelet-dft.h:
 
@@ -35,60 +34,56 @@ n1_25.lo: n1_25.c ../../../dft/codelet-dft.h ../../../kernel/ifftw.h \
 
 ../../../config.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/stdlib.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/stdlib.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/sys/cdefs.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/features.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/sys/cdefs_elf.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/uClibc_config.h:
 
-/tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/cdefs.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/string.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/include/stddef.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/malloc.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/types.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/alloca.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/types.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/strings.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/kernel_types.h:
 
-/tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/pthreadtypes.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/stdint.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/sched.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/sys/_types.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/time.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/machine/_types.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/endian.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/linux/posix_types.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/endian.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/linux/stddef.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/select.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/linux/compiler.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/select.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/asm/posix_types.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/sigset.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/asm/types.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/time.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/linux/types.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/sysmacros.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/machine/kernel.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/alloca.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/sys/sysmacros.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/include/stdarg.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/memory.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/stdint.h:
 
-/tmp/aubio/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/wchar.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/inttypes.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/wordsize.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/sys/time.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/inttypes.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/linux/time.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/time.h:
 
-/tmp/aubio/bin/../sysroot/usr/include/time.h:
-
-/tmp/aubio/bin/../sysroot/usr/include/asm/siginfo.h:
-
-/tmp/aubio/bin/../sysroot/usr/include/asm-generic/siginfo.h:
+/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/uClibc_clk_tck.h:
 
 ../../../dft/scalar/n.h:

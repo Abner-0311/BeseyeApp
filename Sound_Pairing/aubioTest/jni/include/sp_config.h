@@ -112,7 +112,7 @@ public:
 	static const double dStartValue = 2500.0;
 	static const double dEndValue = 4000.0;//10500.0;
 	static const int iDigitalToTest = 3;
-	static const int MAX_ENCODE_DATA_LEN = 16;//127;
+	static const int MAX_ENCODE_DATA_LEN = 4;//16;//127;
 	static const double EC_RATIO = 0.25f;
 
 	static string PREFIX_DECODE;
