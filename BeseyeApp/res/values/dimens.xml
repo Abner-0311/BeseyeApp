@@ -6,6 +6,8 @@
     
     <dimen name="liveview_navbar_height_landscape">60dp</dimen>
     <dimen name="liveview_toolbar_height_landscape">50dp</dimen>
+    <dimen name="liveview_toolbar_height_portrait">112dp</dimen>
+    <dimen name="liveview_footer_height_portrait">56dp</dimen>
     
     <dimen name="liveview_navbar_font_size_large">22sp</dimen>
     <dimen name="liveview_navbar_font_size">16sp</dimen>
