@@ -24,6 +24,7 @@ LOCAL_CPPFLAGS 		   += -fexceptions
 LOCAL_SRC_FILES        := http_cgi_lib/src/http_cgi.c \
 						  cam-handler/src/network/event.c \
 						  cam-handler/src/network/network.c \
+						  cam-handler/src/json_utils.c \
 						  cam-handler/src/main.c \
 						  cam-handler/src/delegate/cam_controller.cpp \
 						  cam-handler/src/event_queue/event_queue_handler.cpp \
@@ -37,6 +38,11 @@ LOCAL_SRC_FILES        := http_cgi_lib/src/http_cgi.c \
 						  zxing/common/reedsolomon/ReedSolomonEncoder.cpp \
 						  zxing/common/reedsolomon/ReedSolomonDecoder.cpp \
 						  zxing/common/reedsolomon/ReedSolomonException.cpp \
+						  src/preprocess/mdf.c \
+						  src/preprocess/smallft.c \
+						  src/preprocess/fftwrap.c \
+						  src/preprocess/filterbank.c \
+						  src/preprocess/preprocess.c \
 						  src/utils.cpp \
 						  src/sp_config.cpp \
 						  src/AudioBufferMgr.cpp \
@@ -50,6 +56,8 @@ LOCAL_C_INCLUDES 	   := $(LOCAL_PATH)\
 						  $(LOCAL_PATH)/include/speex \
 						  $(LOCAL_PATH)/include/curl \
 						  $(LOCAL_PATH)/include/json-c \
+						  $(LOCAL_PATH)/src \
+						  $(LOCAL_PATH)/src/preprocess \
 						  $(LOCAL_PATH)/zxing \
 						  $(LOCAL_PATH)/zxing/common \
 						  $(LOCAL_PATH)/zxing/common/reedsolomon \
@@ -62,7 +70,6 @@ LOCAL_C_INCLUDES 	   := $(LOCAL_PATH)\
 
 LOCAL_LDLIBS           := -L$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/usr/lib \
 						  -L$(LOCAL_PATH) \
-						  -lspeexdsp \
 						  -lm \
 						  -lcurl \
 						  -ljson-c \

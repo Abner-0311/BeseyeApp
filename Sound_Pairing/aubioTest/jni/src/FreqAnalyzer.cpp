@@ -1661,17 +1661,17 @@ void FreqAnalyzer::setSpeexPreprocess(SpeexPreprocessState* sps){
 			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_AGC_LEVEL, &sAGCLevel);
 		}
 
-		if(sEnableDeverb){
-			int i=1;
-			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB, &i);
-			if(0 < sDeverbDecay){
-				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_DECAY, &sDeverbDecay);
-			}
-
-			if(0 < sDeverbLevel){
-				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_LEVEL, &sDeverbLevel);
-			}
-		}
+//		if(sEnableDeverb){
+//			int i=1;
+//			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB, &i);
+//			if(0 < sDeverbDecay){
+//				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_DECAY, &sDeverbDecay);
+//			}
+//
+//			if(0 < sDeverbLevel){
+//				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_LEVEL, &sDeverbLevel);
+//			}
+//		}
 	}
 }
 
@@ -1710,7 +1710,7 @@ float *FreqAnalyzer::win = NULL;
 double FreqAnalyzer::wss ;
 int FreqAnalyzer::windowFunc = 3;//hannings
 
-#define FFTW_TRIAL
+//#define FFTW_TRIAL
 
 #ifdef FFTW_TRIAL
 double *inBuffer2 = NULL;
@@ -1853,7 +1853,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 		}
 		sTotalTime1+=(getTickCount() - lTickCount);
 
-//#else
+#else
 		lTickCount = getTickCount();
 		for (i = 0; i < sFrameSize; i++)
 			inBuffer[i] = win[i] * bytes[i];

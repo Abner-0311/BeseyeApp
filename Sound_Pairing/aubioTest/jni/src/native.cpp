@@ -303,7 +303,7 @@ public:
 	virtual ~OnPlayToneCallbackReceiver(){};
 
 	virtual void onStartGen(string strCode){
-		//LOGW("onStartGen()");
+		LOGW("onStartGen()");
 		DECLARE_JNIENV_WITHOUT_RETURN()
 		jstring code = (jstring)jni_env->NewStringUTF(strCode.c_str());
 		jni_env->CallStaticVoidMethod(mActivityClass, midOnStartGen, code);
@@ -338,14 +338,16 @@ public:
 };
 
 static OnPlayToneCallbackReceiver* sOnPlayToneCallbackReceiver = new OnPlayToneCallbackReceiver();
-
+#endif
 JNIEXPORT jboolean JNICALL Java_com_example_aubiotest_AubioTestActivity_playCode(JNIEnv * env, jobject thisObj, jstring strCode, jboolean bNeedEncode){
 	DECLARE_JNIENV_WITH_RETURN()
 	SoundPair_Config::init();
 	char *code = (char *)jni_env->GetStringUTFChars( strCode, 0);
 	string curCode(code);
 	jni_env->ReleaseStringUTFChars( strCode, code);
+#ifdef GEN_TONE_ONLY
 	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
+#endif
 	return FreqGenerator::getInstance()->playCode2(curCode, bNeedEncode);
 }
 
@@ -354,7 +356,7 @@ JNIEXPORT void JNICALL Java_com_example_aubiotest_AubioTestActivity_finishPlayCo
 	FreqGenerator::getInstance()->stopPlay2();
 	SoundPair_Config::uninit();
 }
-#endif
+//
 #ifndef GEN_TONE_ONLY
 
 int Delegate_OpenAudioRecordDevice(int sampleRate, int is16Bit){
