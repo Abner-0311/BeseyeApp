@@ -146,7 +146,8 @@
 
 	    <LinearLayout
 	        android:layout_width="match_parent"
-	        android:layout_height="@dimen/liveview_footer_height_portrait" >
+	        android:layout_height="@dimen/liveview_footer_height_portrait"
+	        android:background="#ffffff" >
 
 	        <View
 	            android:layout_width="0dp"
@@ -209,7 +210,7 @@
 	            android:id="@+id/ImageView02"
 	            android:layout_width="match_parent"
 	            android:layout_height="1dp"
-	            android:src="@color/beseye_color_gray" />
+	            android:src="@color/liveview_power_state_sub_font_color" />
 	        
 	    </LinearLayout>
 
@@ -226,7 +227,7 @@
 	            android:layout_weight="1" />
 
 	        <TextView
-	            android:id="@+id/TextView02"
+	            android:id="@+id/txt_events"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_gravity="center"
@@ -244,7 +245,7 @@
 	            android:layout_width="1dp"
 	            android:layout_height="match_parent"
 	            android:layout_gravity="center"
-	            android:src="@color/beseye_color_gray" />
+	            android:src="@color/liveview_power_state_sub_font_color" />
 
 	        <View
 	            android:layout_width="0dp"
@@ -252,7 +253,7 @@
 	            android:layout_weight="1" />
 
 	        <TextView
-	            android:id="@+id/TextView01"
+	            android:id="@+id/txt_go_live"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_gravity="center"
