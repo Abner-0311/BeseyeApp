@@ -21,7 +21,14 @@ LOCAL_MODULE           := soundpairing
 
 LOCAL_CPPFLAGS 		   += -fexceptions
 
-LOCAL_SRC_FILES        := http_cgi_lib/src/http_cgi.c \
+LOCAL_SRC_FILES        := src/preprocess/kiss_fft.c \
+						  src/preprocess/kiss_fftr.c \
+						  src/preprocess/mdf.c \
+						  src/preprocess/smallft.c \
+						  src/preprocess/fftwrap.c \
+						  src/preprocess/filterbank.c \
+						  src/preprocess/preprocess.c \
+						  http_cgi_lib/src/http_cgi.c \
 						  cam-handler/src/network/event.c \
 						  cam-handler/src/network/network.c \
 						  cam-handler/src/json_utils.c \
@@ -38,11 +45,6 @@ LOCAL_SRC_FILES        := http_cgi_lib/src/http_cgi.c \
 						  zxing/common/reedsolomon/ReedSolomonEncoder.cpp \
 						  zxing/common/reedsolomon/ReedSolomonDecoder.cpp \
 						  zxing/common/reedsolomon/ReedSolomonException.cpp \
-						  src/preprocess/mdf.c \
-						  src/preprocess/smallft.c \
-						  src/preprocess/fftwrap.c \
-						  src/preprocess/filterbank.c \
-						  src/preprocess/preprocess.c \
 						  src/utils.cpp \
 						  src/sp_config.cpp \
 						  src/AudioBufferMgr.cpp \

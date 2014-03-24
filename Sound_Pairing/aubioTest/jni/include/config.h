@@ -21,15 +21,15 @@
 #define CAM_AUDIO
 
 #ifndef LOGD
-#define  LOGD(...)  //printf(__VA_ARGS__)
-#define  LOGI(...)  printf(__VA_ARGS__)
-#define  LOGW(...)  printf(__VA_ARGS__)
-#define  LOGE(...)  fprintf(stderr, __VA_ARGS__)
+#define  LOGD(fmt, args...)  //printf(__VA_ARGS__)
+#define  LOGI(fmt, args...)  printf("[%s][%d][%s()], " fmt, __FILE__, \
+        					 __LINE__, __FUNCTION__, ##args);
+#define  LOGW(fmt, args...)  printf("[%s][%d][%s()], " fmt, __FILE__, \
+        					 __LINE__, __FUNCTION__, ##args);
+#define  LOGE(fmt, args...)  fprintf(stderr, "[%s][%d][%s()], " fmt, __FILE__, \
+							 __LINE__, __FUNCTION__, ##args);
 
 #endif
-
-#define GEN_TONE_ONLY //for client side
-
 #define CAM_URL "127.0.0.1"
 #endif
 

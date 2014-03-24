@@ -141,27 +141,31 @@ ArrayRef<short> AudioBufferMgr::getAvailableBuf(){
 	ArrayRef<short> buf = NULL;
 	LOGD("getAvailableBuf()+\n");
 	pthread_mutex_lock(&mSrcBufMux);
-#ifdef ANDROID
-	if(-1 == miPivotRecording){
-		LOGE("getAvailableBuf(), buffer is out, need to wait for reset\n");
-	}else{
-		buf = mAvailalbeBufList[miPivotRecording];
-		//Log.i(TAG, "getAvailableBuf(), get buffer at pos "+miPivotRecording);
-		if(miPivotRecording == AudioBufferMgr::MAX_QUEUE_SIZE -1){
-			LOGE("getAvailableBuf(), buffer is out\n");
-			miPivotRecording = -1;
-		}else
-			miPivotRecording = (++miPivotRecording)%AudioBufferMgr::MAX_QUEUE_SIZE;
+//#ifdef ANDROID
+		static int iHaveShowWarning = 0;
+		if(-1 == miPivotRecording){
+				if(0==iHaveShowWarning)
+						LOGE("getAvailableBuf(), buffer is out, need to wait for reset\n");
+				iHaveShowWarning = 1;
+		}else{
+				iHaveShowWarning = 0;
+				buf = mAvailalbeBufList[miPivotRecording];
+				//Log.i(TAG, "getAvailableBuf(), get buffer at pos "+miPivotRecording);
+				if(miPivotRecording == AudioBufferMgr::MAX_QUEUE_SIZE -1){
+						LOGE("getAvailableBuf(), buffer is out\n");
+						miPivotRecording = -1;
+				}else
+						miPivotRecording = (++miPivotRecording)%AudioBufferMgr::MAX_QUEUE_SIZE;
 
-		if(miPivotRecording == miPivotAnalysis){
-			//Log.w(TAG, "getAvailableBuf(), meet non-analyzed buf, push it\n");
-			miPivotAnalysis = (++miPivotAnalysis)%AudioBufferMgr::MAX_QUEUE_SIZE;
+				if(miPivotRecording == miPivotAnalysis){
+						//Log.w(TAG, "getAvailableBuf(), meet non-analyzed buf, push it\n");
+						miPivotAnalysis = (++miPivotAnalysis)%AudioBufferMgr::MAX_QUEUE_SIZE;
+				}
 		}
-	}
-#else
-	buf = mAvailalbeBufList[miPivotRecording];
-	miPivotRecording = (++miPivotRecording)%AudioBufferMgr::MAX_QUEUE_SIZE;
-#endif
+//#else
+//      buf = mAvailalbeBufList[miPivotRecording];
+//      miPivotRecording = (++miPivotRecording)%AudioBufferMgr::MAX_QUEUE_SIZE;
+//#endif
 	pthread_mutex_unlock(&mSrcBufMux);
 	LOGD("getAvailableBuf()-\n");
 	return buf;

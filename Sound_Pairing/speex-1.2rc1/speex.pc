@@ -1,6 +1,6 @@
 # libspeex pkg-config source file
 
-prefix=/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/build_android
+prefix=/usr
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
