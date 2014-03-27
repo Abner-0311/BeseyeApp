@@ -8,6 +8,7 @@
     <color name="beseye_color">#00c6c4</color>
     <color name="beseye_color_gray">#595757</color>
     <color name="beseye_opening_color">@color/beseye_color</color>
+    <color name="background_white">#ffffff</color>
     
     <color name="liveview_font_normal_color">#727171</color>
     <color name="liveview_font_disabled_color">#88727171</color>

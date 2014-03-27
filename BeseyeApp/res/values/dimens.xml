@@ -56,4 +56,13 @@
     
     <dimen name="caminfo_dialog_item_height">70dp</dimen>
     
+    <dimen name="login_logo_marginTop">48dp</dimen>
+    <dimen name="login_marginSmall">8dp</dimen>
+    <dimen name="login_marginMedium">16dp</dimen>
+    <dimen name="login_marginLarge">24dp</dimen>
+    <dimen name="login_marginXLarge">32dp</dimen>
+    <dimen name="login_fontMedium">19sp</dimen>
+    <dimen name="login_fontNormal">15sp</dimen>
+    <dimen name="login_fontSmall">13sp</dimen>
+    
 </resources>
