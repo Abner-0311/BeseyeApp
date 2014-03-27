@@ -51,7 +51,7 @@
         	android:screenOrientation="landscape"
         -->
         <activity
-            android:name=".test.TestActivity"
+            android:name=".OpeningPage"
             android:configChanges="locale|orientation" 
             android:screenOrientation="landscape" 
             android:theme="@style/Theme.BesEye">

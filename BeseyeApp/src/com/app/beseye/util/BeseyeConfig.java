@@ -17,14 +17,14 @@ public class BeseyeConfig {
 	
 	//relay wifi AP info
 
-	static public final boolean ASSIGN_ST_PATH = false;
+	static public final boolean ASSIGN_ST_PATH = true;
 	
-	static public final boolean REDDOT_DEMO = false;
-	static public final String RELAY_AP_SSID = "beseye";//"raylios WiFi";
-	static public final String RELAY_AP_PW = "0630BesEye";//"whoisyourdaddy";
+	static public final boolean REDDOT_DEMO = true;
+	static public final String RELAY_AP_SSID = "raylios WiFi";
+	static public final String RELAY_AP_PW = "whoisyourdaddy";
 	
 	static public final String TMP_CAM_ID = "BeseyeCam001";
-	static public final String TMP_CAM_NAME = "rtsp://admin:password@192.168.3.100/h264";
+	static public final String TMP_CAM_NAME = "rtsp://admin:password@192.168.2.145/h264";
 	static public final String TMP_CAM_SN = "BE00000001PN";
 	static public final String TMP_CAM_MAC = "93:be:22:fa:10:88";
 	
@@ -52,7 +52,7 @@ public class BeseyeConfig {
 //													 "rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:08
 //													,"rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:B8
 													 //"rtsp://admin:password@192.168.12.184/h264_2"//00:0C:43:30:50:D0
-													"rtsp://admin:password@192.168.2.54/h264"//00:0C:43:30:50:28
+													"rtsp://admin:password@192.168.2.145/h264"//00:0C:43:30:50:28
 													 };
 	static public final List<String> STREAM_PATH_LIST = new ArrayList<String>();
 	static public final Map<String, String> REDDOT_STREAM_PATH_MAP = new HashMap<String, String>();
