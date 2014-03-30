@@ -271,23 +271,23 @@ public class SessionMgr {
 		mSessionData = data;
 	}
 	
-	static public boolean isVip(){
-		if(sSessionMgr!=null){
-			try {
-				JSONObject obj = new JSONObject(sSessionMgr.getOwnerInfo());
-				String isVipString = BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.USER_IS_VIP);
-				if(isVipString.compareTo("1")==0)
-					return true;
+//	static public boolean isVip(){
+//		if(sSessionMgr!=null){
+//			try {
+//				JSONObject obj = new JSONObject(sSessionMgr.getOwnerInfo());
+//				String isVipString = BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.USER_IS_VIP);
+//				if(isVipString.compareTo("1")==0)
+//					return true;
+////					return false;
+//				else
 //					return false;
-				else
-					return false;
-			} catch (JSONException e1) {
-				e1.printStackTrace();
-				return false;
-			}
-		}
-		return false;
-	}
+//			} catch (JSONException e1) {
+//				e1.printStackTrace();
+//				return false;
+//			}
+//		}
+//		return false;
+//	}
 	
 	private WeakReference<ISessionUpdateCallback> mSessionUpdateCallback;
 	public void registerSessionUpdateCallback(ISessionUpdateCallback cb){

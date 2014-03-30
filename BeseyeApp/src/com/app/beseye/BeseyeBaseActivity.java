@@ -2,6 +2,13 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONObject;
+
+import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
+
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 
@@ -11,14 +18,16 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
-public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener{
+public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, OnHttpTaskCallback{
 	protected boolean mbFirstResume = true;
 	protected boolean mActivityDestroy = false;
 	protected boolean mActivityResume = false;
@@ -54,9 +63,11 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected void onStop() {
 		super.onStop();
 	}
-
+	
 	@Override
 	protected void onDestroy() {
+		clearLastAsyncTask();
+		cancelRunningTasks();
 		super.onDestroy();
 		mActivityDestroy = true;
 	}
@@ -237,6 +248,143 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 
 	@Override
 	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/*
+	 * Well manage the async tasks
+	 * Cancel it if we don't need to run it after finishing this page
+	 */
+    private Map<AsyncTask, AsyncTaskParams> mMapCurAsyncTasks;
+    private AsyncTask mLastAsyncTask = null;
+    private AsyncTaskParams mLastTaskParams = null;
+    
+    static class AsyncTaskParams{
+    	AsyncTaskParams(boolean bCancelWhenDestroy, String... strArgs){
+    		this.bCancelWhenDestroy = bCancelWhenDestroy;
+    		this.strArgs = strArgs;
+    	}
+    	boolean bCancelWhenDestroy= false;
+    	String[] strArgs;
+    }
+    
+    public void monitorAsyncTask(AsyncTask task, boolean bCancelWhenDestroy, String... strArgs){
+    	if(null != task){
+    		if(null != mMapCurAsyncTasks){
+        		mMapCurAsyncTasks.put(task, new AsyncTaskParams(bCancelWhenDestroy, strArgs));
+        	}
+    		task.execute(strArgs);
+    	}
+    }
+    
+    protected void cancelRunningTasks(){
+    	if(null != mMapCurAsyncTasks){
+    		for(AsyncTask task:mMapCurAsyncTasks.keySet()){
+    			AsyncTaskParams params = mMapCurAsyncTasks.get(task);
+    			if((null == params || true == params.bCancelWhenDestroy) && AsyncTask.Status.FINISHED != task.getStatus())
+    				task.cancel(true);
+    		}
+    		mMapCurAsyncTasks.clear();
+    	} 
+    }
+    
+    protected void recordLastAsyncTask(AsyncTask task){
+    	//the task is still executed after clone
+//    	try {
+//    		if(null != task){
+//    			mLastAsyncTask = (AsyncTask) ((iKalaHttpTask)task).clone();
+//    			mLastTaskParams = mMapCurAsyncTasks.get(task);
+//    		}
+//		} catch (CloneNotSupportedException e) {
+//			e.printStackTrace();
+//		}
+    }
+    
+    protected void clearLastAsyncTask(){
+    	mLastAsyncTask = null;
+    	mLastTaskParams = null;
+    }
+    
+    protected void onRetryHttpTask(){
+    	if(null != mLastAsyncTask){
+    		//TODO: how to clone a AsyncTask
+//    		if(null != mLastTaskParams)
+//    			monitorAsyncTask(mLastAsyncTask, mLastTaskParams.bCancelWhenDestroy, mLastTaskParams.strArgs);
+//    		else
+//    			monitorAsyncTask(mLastAsyncTask, true);
+    	}else{
+    		//The basic handle: simulate the scenario of page begin
+//		if(checkHost())
+//			onSessionComplete();
+    	}
+    }
+    
+    protected void onRetryLaterHttpTask(){
+    	//The basic handle: close current page
+    	finish();
+    }
+    
+	public void onShowDialog(AsyncTask task, final int iDialogId, final int iTitleRes, final int iMsgRes){
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+				Bundle b = null;
+				if(0 < iTitleRes || 0 < iMsgRes){
+					b = new Bundle();
+					b.putInt("iTitleRes", iTitleRes);
+					b.putInt("iMsgRes", iMsgRes);	
+				}
+				showMyDialog(iDialogId, b);
+			}});
+	}
+	
+	public void onShowDialog(AsyncTask task, final int iDialogId, final String strTitleRes, final String strMsgRes){
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+				Bundle b = null;
+				b = new Bundle();
+				b.putString("strTitleRes", strTitleRes);
+				b.putString("strMsgRes", strMsgRes);	
+				showMyDialog(iDialogId, b);
+			}});
+	}
+
+	@Override
+	public void onDismissDialog(AsyncTask task, final int iDialogId) {
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+				dismissMyDialog(iDialogId);
+			}});
+	}
+
+	@Override
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
+			String strMsg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+		if(null != mMapCurAsyncTasks){
+			mMapCurAsyncTasks.remove(task);
+		}
+	}
+
+	@Override
+	public void onToastShow(AsyncTask task,final String strMsg) {
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+					Toast.makeText(BeseyeBaseActivity.this, strMsg, Toast.LENGTH_LONG).show();
+			}});
+	}
+
+	@Override
+	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
 		// TODO Auto-generated method stub
 		
 	}
