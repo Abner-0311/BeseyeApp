@@ -1141,12 +1141,12 @@ void FreqAnalyzer::regenDecode(){
 
 vector<Ref<CodeRecord> > FreqAnalyzer::getLstCodeRecordByOffset(vector<Ref<CodeRecord> > lstCodeRecord, int iOffset){
 	vector<Ref<CodeRecord> > retLst;
-	LOGI("getLstCodeRecordByOffset(), iOffset:%d\n", iOffset);
+	LOGD("getLstCodeRecordByOffset(), iOffset:%d\n", iOffset);
 	int iSize = lstCodeRecord.size();
-	LOGI("getLstCodeRecordByOffset(),iSize:%d\n", iSize);
+	LOGD("getLstCodeRecordByOffset(),iSize:%d\n", iSize);
 	for(int idx = 0; idx + 1 < iSize;idx++){
 		int iCurSize = retLst.size();
-		LOGI("getLstCodeRecordByOffset(), idx:%d, iCurSize:%d, iSize:%d\n", idx, iCurSize, iSize);
+		LOGD("getLstCodeRecordByOffset(), idx:%d, iCurSize:%d, iSize:%d\n", idx, iCurSize, iSize);
 		if(0 < iOffset){
 			retLst.push_back(CodeRecord::combineNewCodeRecord(lstCodeRecord.at(idx), lstCodeRecord.at(idx+1), iOffset, getToneIdxByCode((0 < iCurSize)?retLst.at(iCurSize-1)->strCdoe:"")));
 		}else if(0 > iOffset){
@@ -1663,10 +1663,11 @@ void FreqAnalyzer::setSpeexPreprocess(SpeexPreprocessState* sps){
 			//speex_preprocess_ctl(sps, SPEEX_PREPROCESS_GET_NOISE_SUPPRESS, &iRet);
 			//LOGI("recordAudio+, SPEEX_PREPROCESS_GET_NOISE_SUPPRESS:%d\n", iRet);
 
-			iRet = sNSIndex;
-			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &iRet);
+//			iRet = sNSIndex;
+//			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &iRet);
 		}
 
+		//Not used in FIXED-POINT
 		if(sAGCLevel >0){
 			int i=1;
 			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_AGC, &i);
@@ -1676,13 +1677,13 @@ void FreqAnalyzer::setSpeexPreprocess(SpeexPreprocessState* sps){
 		if(sEnableDeverb){
 			int i=1;
 			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB, &i);
-			if(0 < sDeverbDecay){
-				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_DECAY, &sDeverbDecay);
-			}
-
-			if(0 < sDeverbLevel){
-				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_LEVEL, &sDeverbLevel);
-			}
+//			if(0 < sDeverbDecay){
+//				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_DECAY, &sDeverbDecay);
+//			}
+//
+//			if(0 < sDeverbLevel){
+//				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_LEVEL, &sDeverbLevel);
+//			}
 		}
 	}
 }
@@ -1828,7 +1829,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 	performSpeexPreprocess(&bytes[0], bReset, speexPrep);
 	long lDelta = (getTickCount() - lTickCount);
 	lTotalTime+=lDelta;
-	LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(lCount++));
+	LOGD("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(lCount++));
 
 //	lTickCount = getTickCount();
 //	performWindowFunc(win);
@@ -1896,7 +1897,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 		sTotalTime2 += (getTickCount() - lTickCount);
 #endif
-		LOGE("performAudacityFFT(), Spectrum takes [%ld, %ld] ms\n", sTotalTime1, sTotalTime2);
+		LOGD("performAudacityFFT(), Spectrum takes [%ld, %ld] ms\n", sTotalTime1, sTotalTime2);
 		if(NULL != iDxValues){
 			iDxValues[0] = iDx;
 			iDxValues[1] = iDx2;
