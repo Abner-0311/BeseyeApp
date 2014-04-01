@@ -151,23 +151,27 @@ HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/missing --run aclocal-1.8
+ACLOCAL = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/missing --run aclocal-1.8
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/missing --run tar
+AMTAR = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/missing --run tar
 AR = arm-linux-androideabi-ar
 AS = as
-AUTOCONF = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/missing --run autoconf
-AUTOHEADER = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/missing --run autoheader
-AUTOMAKE = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/missing --run automake-1.8
+AUTOCONF = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/missing --run autoconf
+AUTOHEADER = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/missing --run autoheader
+AUTOMAKE = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/missing --run automake-1.8
 AWK = awk
 BUILD_KISS_FFT_FALSE = 
 BUILD_KISS_FFT_TRUE = #
 BUILD_SMALLFT_FALSE = #
 BUILD_SMALLFT_TRUE = 
+<<<<<<< HEAD
 CC = ccache arm-linux-androideabi-gcc
+=======
+CC = arm-linux-androideabi-gcc
+>>>>>>> remotes/origin/develop
 CCDEPMODE = depmode=gcc3
-CFLAGS = -I/Users/Abner/Documents/Develop/libogg-1.3.1/build/armv7/include -fvisibility=hidden
+CFLAGS = -I/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/libogg-1.3.0/build_android/include -fvisibility=hidden
 CPP = arm-linux-androideabi-cpp
 CPPFLAGS = 
 CXX = arm-linux-androideabi-g++
@@ -195,7 +199,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-LDFLAGS = -L/Users/Abner/Documents/Develop/libogg-1.3.1/build/armv7/lib
+LDFLAGS = -L/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/libogg-1.3.0/build_android/lib
 LIBOBJS = 
 LIBS = -lm 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
@@ -204,12 +208,12 @@ LTLIBOBJS =
 MAINT = #
 MAINTAINER_MODE_FALSE = 
 MAINTAINER_MODE_TRUE = #
-MAKEINFO = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/missing --run makeinfo
+MAKEINFO = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/missing --run makeinfo
 NMEDIT = 
 OBJDUMP = objdump
 OBJEXT = o
-OGG_CFLAGS = -I/usr/include
-OGG_LIBS = -L/usr/lib -logg
+OGG_CFLAGS = -I/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/build_android/include
+OGG_LIBS = -L/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/build_android/lib -logg
 PACKAGE = speex
 PACKAGE_BUGREPORT = 
 PACKAGE_NAME = 
@@ -217,7 +221,7 @@ PACKAGE_STRING =
 PACKAGE_TARNAME = 
 PACKAGE_VERSION = 
 PATH_SEPARATOR = :
-PKG_CONFIG = /usr/local/bin/pkg-config
+PKG_CONFIG = /opt/local/bin/pkg-config
 RANLIB = arm-linux-androideabi-ranlib
 SED = /usr/bin/sed
 SET_MAKE = 
@@ -241,10 +245,10 @@ am__include = include
 am__leading_dot = .
 am__quote = 
 bindir = ${exec_prefix}/bin
-build = i386-apple-darwin13.1.0
+build = i386-apple-darwin13.0.0
 build_alias = 
 build_cpu = i386
-build_os = darwin13.1.0
+build_os = darwin13.0.0
 build_vendor = apple
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
@@ -259,7 +263,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/install-sh
+install_sh = /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -268,7 +272,7 @@ mandir = ${datarootdir}/man
 mkdir_p = $(install_sh) -d
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr
+prefix = /Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/build_android
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
@@ -277,7 +281,11 @@ src = src
 sysconfdir = ${prefix}/etc
 target_alias = arm-linux
 EXTRA_DIST = echo_diagnostic.m
+<<<<<<< HEAD
 INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I$(top_builddir) -I/usr/include -I/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/include
+=======
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I$(top_builddir) -I/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/build_android/include 
+>>>>>>> remotes/origin/develop
 lib_LTLIBRARIES = libspeex.la libspeexdsp.la
 
 # Sources for compilation in the library

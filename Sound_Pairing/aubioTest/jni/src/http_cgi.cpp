@@ -11,8 +11,6 @@
 #include <json-c/json.h>
 
 #include "http_cgi.h"
-#include "config.h"
-
 long bytesWritten = 0;
 long bytesRead = 0;
 

@@ -25,8 +25,12 @@ export CFLAGS="-I/Users/Abner/Documents/Develop/libogg-1.3.1/build/armv7/include
 
 export LDFLAGS="-L/Users/Abner/Documents/Develop/libogg-1.3.1/build/armv7/lib"
 
+<<<<<<< HEAD
 ./configure --prefix=$PREFIX --host=arm-linux --target=arm-linux --enable-shared=no
 # --enable-fixed-point --with-fft=gpl-fftw3 
+=======
+./configure --prefix=$PREFIX --host=arm-linux --target=arm-linux --enable-shared=no 
+>>>>>>> remotes/origin/develop
 
   make clean
   make -j4 || exit 1

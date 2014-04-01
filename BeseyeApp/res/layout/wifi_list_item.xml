@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/cl_wifi_list_item_bg"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity" >
+
     <View 
         android:layout_width="1dp"
     	android:layout_height="@dimen/wifi_list_item_height"/>
     <ImageView 
-        android:id="@+id/iv_signal_strength"
+        android:id="@+id/iv_camerapower_on"
         android:layout_width="wrap_content"
    		android:layout_height="wrap_content" 
    		android:layout_centerVertical="true"
@@ -22,7 +23,7 @@
    		android:layout_height="wrap_content" 
    		android:layout_centerVertical="true"
    		android:layout_marginRight="16dp" 
-   		android:layout_toLeftOf="@+id/iv_signal_strength"
+   		android:layout_toLeftOf="@+id/iv_camerapower_on"
         android:src="@drawable/sl_wifi_lock_icon"/>
     
     <RelativeLayout 
@@ -47,6 +48,6 @@
 	   		android:textSize="@dimen/wifi_list_item_sub_font_size"
 	   		android:textColor="@color/cl_wifi_list_sub_font_color"
 	   		android:layout_below="@+id/txt_ssid"
-	   		android:text="@string/network_connected"/>
+	   		android:text="@string/network_connected" />
     </RelativeLayout>
 </RelativeLayout>

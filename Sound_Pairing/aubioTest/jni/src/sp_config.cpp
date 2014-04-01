@@ -155,15 +155,14 @@ void SoundPair_Config::init(){
 			  };
 
 	int iDx = 0;
-	double dOffset = 0;//BIN_SIZE;//cam
 
 	//0~9
 	for(char i = 0x30; i<= 0x39 ; i++, dValue+=dDelta, iDx++){
 		string strCode;
 		strCode.push_back(i);
 		sCodeTable.push_back(strCode);
-		sAlphabetTable.insert(std::pair<string, double>(strCode, freqs[iDx]+dOffset));
-		sFreqRangeTable.push_back(Ref<FreqRange>(new FreqRange(freqs[iDx]+dOffset, (AUBIO_FFT?BIN_SIZE/*0.5*(freqs[iDx]/600.0f)*/:BIN_SIZE), strCode)));
+		sAlphabetTable.insert(std::pair<string, double>(strCode, freqs[iDx]));
+		sFreqRangeTable.push_back(Ref<FreqRange>(new FreqRange(freqs[iDx], (AUBIO_FFT?BIN_SIZE/*0.5*(freqs[iDx]/600.0f)*/:BIN_SIZE), strCode)));
 	}
 
 	//A~I
@@ -171,8 +170,8 @@ void SoundPair_Config::init(){
 		string strCode;
 		strCode.push_back(i);
 		sCodeTable.push_back(strCode);
-		sAlphabetTable.insert(std::pair<string, double>(strCode, freqs[iDx]+dOffset));
-		sFreqRangeTable.push_back(Ref<FreqRange>(new FreqRange(freqs[iDx]+dOffset, (AUBIO_FFT?BIN_SIZE/*0.5*(freqs[iDx]/600.0f)*/:BIN_SIZE), strCode)));
+		sAlphabetTable.insert(std::pair<string, double>(strCode, freqs[iDx]));
+		sFreqRangeTable.push_back(Ref<FreqRange>(new FreqRange(freqs[iDx], (AUBIO_FFT?BIN_SIZE/*0.5*(freqs[iDx]/600.0f)*/:BIN_SIZE), strCode)));
 	}
 
 	int iCodeTblSIze = sCodeTable.size();
