@@ -39,40 +39,11 @@ Sound_Pairing/speex-1.2rc1/libspeex/.deps/bits.Plo
 
 *.Po
 
-BeseyeApp/.DS_Store
+__MAXOSX
+.DS_Store
 
-BeseyeApp/.DS_Store
+*/.DS_Store
+.DS_Store
+.DS_Store?
 
-BeseyeApp/jni/.DS_Store
-
-BeseyeApp/jni/SDL/.DS_Store
-
-BeseyeApp/jni/SDL/.DS_Store
-
-BeseyeApp/jni/soundpairing/zxing/.DS_Store
-
-BeseyeApp/src/com/app/beseye/receiver/.DS_Store
-
-BeseyeApp/src/com/app/beseye/receiver/.DS_Store
-
-BeseyeApp/res/drawable/.DS_Store
-
-BeseyeApp/res/drawable-xhdpi/.DS_Store
-
-BeseyeApp/res/.DS_Store
-
-BeseyeApp/jni/streaming/source/.DS_Store
-
-BeseyeApp/jni/streaming/include/libavutil/.DS_Store
-
-BeseyeApp/jni/streaming/include/.DS_Store
-
-BeseyeApp/jni/streaming/.DS_Store
-
-BeseyeApp/jni/streaming/.DS_Store
-
-BeseyeApp/jni/soundpairing/zxing/common/reedsolomon/.DS_Store
-
-BeseyeApp/jni/soundpairing/zxing/common/.DS_Store
-
-BeseyeApp/jni/soundpairing/zxing/common/.DS_Store
+*.so
