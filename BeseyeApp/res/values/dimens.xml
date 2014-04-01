@@ -6,6 +6,8 @@
     
     <dimen name="liveview_navbar_height_landscape">60dp</dimen>
     <dimen name="liveview_toolbar_height_landscape">50dp</dimen>
+    <dimen name="liveview_toolbar_height_portrait">112dp</dimen>
+    <dimen name="liveview_footer_height_portrait">56dp</dimen>
     
     <dimen name="liveview_navbar_font_size_large">22sp</dimen>
     <dimen name="liveview_navbar_font_size">16sp</dimen>
@@ -54,6 +56,17 @@
     
     <dimen name="caminfo_dialog_item_height">70dp</dimen>
     
+<<<<<<< HEAD
     <dimen name="setting_list_item_main_title_font_size">18sp</dimen>
+=======
+    <dimen name="login_logo_marginTop">48dp</dimen>
+    <dimen name="login_marginSmall">8dp</dimen>
+    <dimen name="login_marginMedium">16dp</dimen>
+    <dimen name="login_marginLarge">24dp</dimen>
+    <dimen name="login_marginXLarge">32dp</dimen>
+    <dimen name="login_fontMedium">19sp</dimen>
+    <dimen name="login_fontNormal">15sp</dimen>
+    <dimen name="login_fontSmall">13sp</dimen>
+>>>>>>> refs/remotes/origin/develop
     
 </resources>
