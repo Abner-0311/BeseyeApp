@@ -1,7 +1,7 @@
 cb_search.lo: cb_search.c ../config.h cb_search.h \
  ../include/speex/speex_bits.h arch.h ../include/speex/speex_types.h \
- ../include/speex/speex_config_types.h fixed_generic.h filters.h \
- stack_alloc.h vq.h math_approx.h os_support.h \
+ ../include/speex/speex_config_types.h filters.h stack_alloc.h vq.h \
+ math_approx.h os_support.h \
  /tmp/speex/bin/../sysroot/usr/include/string.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
@@ -37,8 +37,6 @@ arch.h:
 ../include/speex/speex_types.h:
 
 ../include/speex/speex_config_types.h:
-
-fixed_generic.h:
 
 filters.h:
 

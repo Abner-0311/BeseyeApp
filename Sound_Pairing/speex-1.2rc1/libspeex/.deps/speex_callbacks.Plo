@@ -1,8 +1,8 @@
 speex_callbacks.lo: speex_callbacks.c ../config.h \
  ../include/speex/speex_callbacks.h ../include/speex/speex.h \
  ../include/speex/speex_bits.h ../include/speex/speex_types.h \
- ../include/speex/speex_config_types.h arch.h fixed_generic.h \
- os_support.h /tmp/speex/bin/../sysroot/usr/include/string.h \
+ ../include/speex/speex_config_types.h arch.h os_support.h \
+ /tmp/speex/bin/../sysroot/usr/include/string.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
  /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h \
@@ -39,8 +39,6 @@ speex_callbacks.lo: speex_callbacks.c ../config.h \
 ../include/speex/speex_config_types.h:
 
 arch.h:
-
-fixed_generic.h:
 
 os_support.h:
 

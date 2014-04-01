@@ -1,7 +1,7 @@
 stereo.lo: stereo.c ../config.h ../include/speex/speex_stereo.h \
  ../include/speex/speex_types.h ../include/speex/speex_config_types.h \
  ../include/speex/speex_bits.h ../include/speex/speex_callbacks.h \
- ../include/speex/speex.h math_approx.h arch.h fixed_generic.h vq.h \
+ ../include/speex/speex.h math_approx.h arch.h vq.h \
  /tmp/speex/bin/../sysroot/usr/include/math.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
@@ -52,8 +52,6 @@ stereo.lo: stereo.c ../config.h ../include/speex/speex_stereo.h \
 math_approx.h:
 
 arch.h:
-
-fixed_generic.h:
 
 vq.h:
 

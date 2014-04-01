@@ -68,10 +68,10 @@ AUTOCONF = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurit
 AUTOHEADER = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/missing --run autoheader
 AUTOMAKE = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/missing --run automake-1.8
 AWK = awk
-BUILD_KISS_FFT_FALSE = #
-BUILD_KISS_FFT_TRUE = 
-BUILD_SMALLFT_FALSE = 
-BUILD_SMALLFT_TRUE = #
+BUILD_KISS_FFT_FALSE = 
+BUILD_KISS_FFT_TRUE = #
+BUILD_SMALLFT_FALSE = #
+BUILD_SMALLFT_TRUE = 
 CC = ccache arm-linux-androideabi-gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -I/Users/Abner/Documents/Develop/libogg-1.3.1/build/armv7/include -fvisibility=hidden
@@ -94,8 +94,8 @@ EGREP = /usr/bin/grep -E
 EXEEXT = 
 F77 = 
 FFLAGS = 
-FFT_CFLAGS = 
-FFT_LIBS = 
+FFT_CFLAGS = -I/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/include
+FFT_LIBS = -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 FFT_PKGCONFIG = 
 GREP = /usr/bin/grep
 INSTALL_DATA = ${INSTALL} -m 644

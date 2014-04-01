@@ -92,8 +92,6 @@
 #define SQR16(x) (MULT16_16((x),(x)))
 #define SQR16_Q15(x) (MULT16_16_Q15((x),(x)))
 
-#define FIXED_POINT
-
 #ifdef FIXED_POINT
 static inline spx_word16_t DIV32_16_Q8(spx_word32_t a, spx_word32_t b)
 {

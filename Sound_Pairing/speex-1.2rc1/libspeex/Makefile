@@ -73,8 +73,8 @@ libspeexdsp_la_LIBADD =
 am__libspeexdsp_la_SOURCES_DIST = preprocess.c jitter.c mdf.c \
 	fftwrap.c filterbank.c resample.c buffer.c scal.c smallft.c \
 	kiss_fft.c _kiss_fft_guts.h kiss_fft.h kiss_fftr.c kiss_fftr.h
-##am__objects_1 = smallft.lo
-am__objects_1 = kiss_fft.lo kiss_fftr.lo
+am__objects_1 = smallft.lo
+#am__objects_1 = kiss_fft.lo kiss_fftr.lo
 am_libspeexdsp_la_OBJECTS = preprocess.lo jitter.lo mdf.lo fftwrap.lo \
 	filterbank.lo resample.lo buffer.lo scal.lo $(am__objects_1)
 libspeexdsp_la_OBJECTS = $(am_libspeexdsp_la_OBJECTS)
@@ -161,10 +161,10 @@ AUTOCONF = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurit
 AUTOHEADER = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/missing --run autoheader
 AUTOMAKE = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/speex-1.2rc1/missing --run automake-1.8
 AWK = awk
-BUILD_KISS_FFT_FALSE = #
-BUILD_KISS_FFT_TRUE = 
-BUILD_SMALLFT_FALSE = 
-BUILD_SMALLFT_TRUE = #
+BUILD_KISS_FFT_FALSE = 
+BUILD_KISS_FFT_TRUE = #
+BUILD_SMALLFT_FALSE = #
+BUILD_SMALLFT_TRUE = 
 CC = ccache arm-linux-androideabi-gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -I/Users/Abner/Documents/Develop/libogg-1.3.1/build/armv7/include -fvisibility=hidden
@@ -187,8 +187,8 @@ EGREP = /usr/bin/grep -E
 EXEEXT = 
 F77 = 
 FFLAGS = 
-FFT_CFLAGS = 
-FFT_LIBS = 
+FFT_CFLAGS = -I/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/include
+FFT_LIBS = -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 FFT_PKGCONFIG = 
 GREP = /usr/bin/grep
 INSTALL_DATA = ${INSTALL} -m 644
@@ -277,7 +277,7 @@ src = src
 sysconfdir = ${prefix}/etc
 target_alias = arm-linux
 EXTRA_DIST = echo_diagnostic.m
-INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I$(top_builddir) -I/usr/include 
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I$(top_builddir) -I/usr/include -I/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/include
 lib_LTLIBRARIES = libspeex.la libspeexdsp.la
 
 # Sources for compilation in the library
@@ -289,8 +289,8 @@ libspeex_la_SOURCES = cb_search.c 	exc_10_32_table.c 	exc_8_128_table.c \
 	speex_callbacks.c speex_header.c window.c
 
 #FFTSRC = 
-##FFTSRC = smallft.c
-FFTSRC = kiss_fft.c _kiss_fft_guts.h kiss_fft.h kiss_fftr.c kiss_fftr.h 
+FFTSRC = smallft.c
+#FFTSRC = kiss_fft.c _kiss_fft_guts.h kiss_fft.h kiss_fftr.c kiss_fftr.h 
 libspeexdsp_la_SOURCES = preprocess.c jitter.c mdf.c fftwrap.c filterbank.c resample.c buffer.c scal.c $(FFTSRC)
 noinst_HEADERS = arch.h 	cb_search_arm4.h 	cb_search_bfin.h 	cb_search_sse.h \
 		filters.h 	filters_arm4.h 	filters_bfin.h 	filters_sse.h 	fixed_arm4.h \
@@ -309,11 +309,11 @@ testenc_wb_LDADD = libspeex.la
 testenc_uwb_SOURCES = testenc_uwb.c
 testenc_uwb_LDADD = libspeex.la
 testdenoise_SOURCES = testdenoise.c
-testdenoise_LDADD = libspeexdsp.la 
+testdenoise_LDADD = libspeexdsp.la -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 testecho_SOURCES = testecho.c
-testecho_LDADD = libspeexdsp.la 
+testecho_LDADD = libspeexdsp.la -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 testjitter_SOURCES = testjitter.c
-testjitter_LDADD = libspeexdsp.la 
+testjitter_LDADD = libspeexdsp.la -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 all: all-am
 
 .SUFFIXES:

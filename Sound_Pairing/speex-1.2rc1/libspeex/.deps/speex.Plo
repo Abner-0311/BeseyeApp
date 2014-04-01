@@ -1,6 +1,6 @@
 speex.lo: speex.c ../config.h modes.h ../include/speex/speex.h \
  ../include/speex/speex_bits.h ../include/speex/speex_types.h \
- ../include/speex/speex_config_types.h arch.h fixed_generic.h \
+ ../include/speex/speex_config_types.h arch.h \
  /tmp/speex/bin/../sysroot/usr/include/math.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
@@ -47,8 +47,6 @@ modes.h:
 ../include/speex/speex_config_types.h:
 
 arch.h:
-
-fixed_generic.h:
 
 /tmp/speex/bin/../sysroot/usr/include/math.h:
 

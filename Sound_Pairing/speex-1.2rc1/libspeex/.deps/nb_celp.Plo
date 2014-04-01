@@ -25,9 +25,9 @@ nb_celp.lo: nb_celp.c ../config.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/syslimits.h nb_celp.h modes.h \
  ../include/speex/speex.h ../include/speex/speex_bits.h \
  ../include/speex/speex_types.h ../include/speex/speex_config_types.h \
- arch.h fixed_generic.h ../include/speex/speex_callbacks.h \
- ../include/speex/speex.h vbr.h filters.h lpc.h lsp.h ltp.h quant_lsp.h \
- cb_search.h stack_alloc.h vq.h math_approx.h os_support.h \
+ arch.h ../include/speex/speex_callbacks.h ../include/speex/speex.h vbr.h \
+ filters.h lpc.h lsp.h ltp.h quant_lsp.h cb_search.h stack_alloc.h vq.h \
+ math_approx.h os_support.h \
  /tmp/speex/bin/../sysroot/usr/include/string.h \
  /tmp/speex/bin/../sysroot/usr/include/malloc.h \
  /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h \
@@ -100,8 +100,6 @@ modes.h:
 ../include/speex/speex_config_types.h:
 
 arch.h:
-
-fixed_generic.h:
 
 ../include/speex/speex_callbacks.h:
 

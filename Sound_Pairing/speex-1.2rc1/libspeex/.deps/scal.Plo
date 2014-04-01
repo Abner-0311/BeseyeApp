@@ -1,6 +1,6 @@
 scal.lo: scal.c ../config.h ../include/speex/speex_echo.h \
  ../include/speex/speex_types.h ../include/speex/speex_config_types.h \
- vorbis_psy.h arch.h fixed_generic.h os_support.h \
+ vorbis_psy.h arch.h os_support.h \
  /tmp/speex/bin/../sysroot/usr/include/string.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
@@ -45,8 +45,6 @@ scal.lo: scal.c ../config.h ../include/speex/speex_echo.h \
 vorbis_psy.h:
 
 arch.h:
-
-fixed_generic.h:
 
 os_support.h:
 

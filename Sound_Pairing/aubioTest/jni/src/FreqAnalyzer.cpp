@@ -899,7 +899,7 @@ int FreqAnalyzer::segmentCheck(bool bForcePerform){
 				int iOffset = ( (i*iPart) > SoundPair_Config::FRAME_SIZE_REC-1)?SoundPair_Config::FRAME_SIZE_REC-1:i*iPart ;// fmin((int) (i*iPart),SoundPair_Config::FRAME_SIZE_REC-1);
 
 				AudioBufferMgr::getInstance()->getBufByIndex(iBufIdxTOCheck, iOffset, bufSegment);
-				//LOGE("segmentCheck(), bufSegment[iOffset]:"+bufSegment[std::abs(iOffset)]);
+				//LOGE("segmentCheck(), bufSegment[iOffset]:%d", bufSegment[std::abs(iOffset)]);
 				if(mIFreqAnalyzeResultCBListener){
 					float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, 0 == i, NULL);
 					LOGD("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d\n",iBufIdxTOCheck,freq, iOffset);
@@ -1723,7 +1723,7 @@ float *FreqAnalyzer::win = NULL;
 double FreqAnalyzer::wss ;
 int FreqAnalyzer::windowFunc = 3;//hannings
 
-//#define FFTW_TRIAL
+#define FFTW_TRIAL
 
 #ifdef FFTW_TRIAL
 double *inBuffer2 = NULL;
@@ -1906,13 +1906,13 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 			iDxValues[4] = iDx5;
 		}
 
-		if(0 < iLastDet){
-			//LOGE("performAudacityFFT()-------------------------, iLastDetTone = [%.2f]=>%d, iDx0~5 = [%d, %d, %d, %d, %d]\n", iLastDet*sBinSize, iLastDet, iDx, iDx2, iDx3, iDx4, iDx5);
-			if(iDx > 0 && iDx2 >0 && iLastDet > 0 && (iDx - iLastDet <=1 && iDx - iLastDet >= -1) && (iDx - iDx2 >=2 || iDx - iDx2 <= -2)){
-				LOGE("performAudacityFFT()^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^, iLastDetTone=%.2f, change from %.2f to %.2f \n", iLastDet*sBinSize, iDx*sBinSize,  iDx2*sBinSize);
-				iDx = iDx2;
-			}
-		}
+//		if(0 < iLastDet){
+//			//LOGE("performAudacityFFT()-------------------------, iLastDetTone = [%.2f]=>%d, iDx0~5 = [%d, %d, %d, %d, %d]\n", iLastDet*sBinSize, iLastDet, iDx, iDx2, iDx3, iDx4, iDx5);
+//			if(iDx > 0 && iDx2 >0 && iLastDet > 0 && (iDx - iLastDet <=1 && iDx - iLastDet >= -1) && (iDx - iDx2 >=2 || iDx - iDx2 <= -2)){
+//				LOGE("performAudacityFFT()^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^, iLastDetTone=%.2f, change from %.2f to %.2f \n", iLastDet*sBinSize, iDx*sBinSize,  iDx2*sBinSize);
+//				iDx = iDx2;
+//			}
+//		}
 	}else{
 		LOGE("performAudacityFFT(), bytes is null\n");
 	}

@@ -1,5 +1,5 @@
 fftwrap.lo: fftwrap.c ../config.h arch.h ../include/speex/speex_types.h \
- ../include/speex/speex_config_types.h fixed_generic.h os_support.h \
+ ../include/speex/speex_config_types.h os_support.h \
  /tmp/speex/bin/../sysroot/usr/include/string.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
@@ -22,7 +22,7 @@ fftwrap.lo: fftwrap.c ../config.h arch.h ../include/speex/speex_types.h \
  /tmp/speex/bin/../sysroot/usr/include/stdlib.h \
  /tmp/speex/bin/../sysroot/usr/include/alloca.h \
  /tmp/speex/bin/../sysroot/usr/include/strings.h \
- /tmp/speex/bin/../sysroot/usr/include/memory.h kiss_fftr.h kiss_fft.h \
+ /tmp/speex/bin/../sysroot/usr/include/memory.h smallft.h \
  /tmp/speex/bin/../sysroot/usr/include/math.h \
  /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/limits.h \
  /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/syslimits.h \
@@ -40,8 +40,6 @@ arch.h:
 ../include/speex/speex_types.h:
 
 ../include/speex/speex_config_types.h:
-
-fixed_generic.h:
 
 os_support.h:
 
@@ -91,9 +89,7 @@ os_support.h:
 
 /tmp/speex/bin/../sysroot/usr/include/memory.h:
 
-kiss_fftr.h:
-
-kiss_fft.h:
+smallft.h:
 
 /tmp/speex/bin/../sysroot/usr/include/math.h:
 

@@ -75,7 +75,7 @@ public:
 	static const bool SEGMENT_OFFSET_FEATURE = true;
 	static const bool AUBIO_FFT = false;
 	static const bool ENABLE_LV_DISPLAY = false;
-	static const int SEG_SES_OFFSET = 3;
+	static const int SEG_SES_OFFSET = 5;
 
 	static const string BT_MSG_ACK;
 	static const string BT_MSG_PURE;

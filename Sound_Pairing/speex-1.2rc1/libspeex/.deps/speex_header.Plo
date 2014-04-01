@@ -1,6 +1,6 @@
 speex_header.lo: speex_header.c ../config.h arch.h \
  ../include/speex/speex_types.h ../include/speex/speex_config_types.h \
- fixed_generic.h ../include/speex/speex_header.h ../include/speex/speex.h \
+ ../include/speex/speex_header.h ../include/speex/speex.h \
  ../include/speex/speex_bits.h os_support.h \
  /tmp/speex/bin/../sysroot/usr/include/string.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
@@ -33,8 +33,6 @@ arch.h:
 ../include/speex/speex_types.h:
 
 ../include/speex/speex_config_types.h:
-
-fixed_generic.h:
 
 ../include/speex/speex_header.h:
 

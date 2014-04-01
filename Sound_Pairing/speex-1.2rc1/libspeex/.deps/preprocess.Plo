@@ -25,7 +25,7 @@ preprocess.lo: preprocess.c ../config.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/syslimits.h \
  ../include/speex/speex_preprocess.h ../include/speex/speex_types.h \
  ../include/speex/speex_config_types.h ../include/speex/speex_echo.h \
- arch.h fixed_generic.h fftwrap.h filterbank.h math_approx.h os_support.h \
+ arch.h fftwrap.h filterbank.h math_approx.h os_support.h \
  /tmp/speex/bin/../sysroot/usr/include/string.h \
  /tmp/speex/bin/../sysroot/usr/include/malloc.h \
  /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h \
@@ -94,8 +94,6 @@ preprocess.lo: preprocess.c ../config.h \
 ../include/speex/speex_echo.h:
 
 arch.h:
-
-fixed_generic.h:
 
 fftwrap.h:
 

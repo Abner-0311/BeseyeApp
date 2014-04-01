@@ -172,19 +172,19 @@ void spx_ifft(void *table, spx_word16_t *in, spx_word16_t *out)
 struct fftw_config {
   float *in;
   float *out;
-  fftwf_plan fft;
-  fftwf_plan ifft;
+  fftw_plan fft;
+  fftw_plan ifft;
   int N;
 };
 
 void *spx_fft_init(int size)
 {
   struct fftw_config *table = (struct fftw_config *) speex_alloc(sizeof(struct fftw_config));
-  table->in = fftwf_malloc(sizeof(float) * (size+2));
-  table->out = fftwf_malloc(sizeof(float) * (size+2));
+  table->in = fftw_malloc(sizeof(float) * (size+2));
+  table->out = fftw_malloc(sizeof(float) * (size+2));
 
-  table->fft = fftwf_plan_dft_r2c_1d(size, table->in, (fftwf_complex *) table->out, FFTW_PATIENT);
-  table->ifft = fftwf_plan_dft_c2r_1d(size, (fftwf_complex *) table->in, table->out, FFTW_PATIENT);
+  table->fft = fftw_plan_dft_r2c_1d(size, table->in, (fftw_complex *) table->out, FFTW_PATIENT);
+  table->ifft = fftw_plan_dft_c2r_1d(size, (fftw_complex *) table->in, table->out, FFTW_PATIENT);
 
   table->N = size;
   return table;
@@ -193,10 +193,10 @@ void *spx_fft_init(int size)
 void spx_fft_destroy(void *table)
 {
   struct fftw_config *t = (struct fftw_config *) table;
-  fftwf_destroy_plan(t->fft);
-  fftwf_destroy_plan(t->ifft);
-  fftwf_free(t->in);
-  fftwf_free(t->out);
+  fftw_destroy_plan(t->fft);
+  fftw_destroy_plan(t->ifft);
+  fftw_free(t->in);
+  fftw_free(t->out);
   speex_free(table);
 }
 
@@ -212,7 +212,7 @@ void spx_fft(void *table, spx_word16_t *in, spx_word16_t *out)
   for(i=0;i<N;++i)
     iptr[i]=in[i] * m;
 
-  fftwf_execute(t->fft);
+  fftw_execute(t->fft);
 
   out[0] = optr[0];
   for(i=1;i<N;++i)
@@ -233,7 +233,7 @@ void spx_ifft(void *table, spx_word16_t *in, spx_word16_t *out)
     iptr[i+1] = in[i];
   iptr[N+1] = 0.0f;
 
-  fftwf_execute(t->ifft);
+  fftw_execute(t->ifft);
   
   for(i=0;i<N;++i)
     out[i] = optr[i];
@@ -308,7 +308,7 @@ void spx_ifft(void *table, spx_word16_t *in, spx_word16_t *out)
 #endif
 
 
-#ifdef FIXED_POINT
+#ifndef FIXED_POINT
 /*#include "smallft.h"*/
 
 

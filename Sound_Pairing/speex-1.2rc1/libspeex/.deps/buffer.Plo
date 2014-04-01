@@ -23,7 +23,7 @@ buffer.lo: buffer.c ../config.h os_support.h \
  /tmp/speex/bin/../sysroot/usr/include/strings.h \
  /tmp/speex/bin/../sysroot/usr/include/memory.h arch.h \
  ../include/speex/speex_types.h ../include/speex/speex_config_types.h \
- fixed_generic.h ../include/speex/speex_buffer.h
+ ../include/speex/speex_buffer.h
 
 ../config.h:
 
@@ -80,7 +80,5 @@ arch.h:
 ../include/speex/speex_types.h:
 
 ../include/speex/speex_config_types.h:
-
-fixed_generic.h:
 
 ../include/speex/speex_buffer.h:
