@@ -35,6 +35,8 @@
     <color name="wifi_info_dialog_attr_font_color">@color/beseye_color_gray</color>
     <color name="wifi_info_dialog_sub_attr_font_color">#a8a8a6</color>
     
+    <color name="setting_info_dialog_title_font_color">#898989</color>
+    
     <color name="cam_info_dialog_attr_font_color">@color/beseye_color_gray</color>
     <color name="cam_info_dialog_sub_attr_font_color">#1b1b1b</color>
 </resources>

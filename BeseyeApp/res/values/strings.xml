@@ -60,7 +60,18 @@
     <string name="dialog_wifi_ap_key_index">Key index</string>
     
     <string name="cam_setting_title">Settings</string>
+    <string name="cam_setting_title_power_setting">Power settings</string>
 	<string name="cam_setting_title_power">Camera power</string>
+	<string name="cam_setting_title_power_time">Power schedule</string>
+	<string name="cam_setting_title_location">Location aware</string>
+	<string name="cam_setting_title_notification_setting">Notification settings</string>
+	<string name="cam_setting_title_notification_event">Notification events</string>
+	<string name="cam_setting_title_family_recognition">Family recognition</string>
+	<string name="cam_setting_title_hardware_setting">Hardware settings</string>
+	<string name="cam_setting_title_hardware_setting_inf">Hardware settings</string>
+	<string name="cam_setting_title_special_functions">Special function</string>
+	<string name="cam_setting_title_emergency_siren">Emergency siren</string>
+	<string name="cam_setting_title_camera_inf">Camera information</string>
 	<string name="cam_setting_title_power_desc">Beseye is %s</string>
 	<string name="cam_setting_title_power_on">on</string>
 	<string name="cam_setting_title_power_off">off</string>

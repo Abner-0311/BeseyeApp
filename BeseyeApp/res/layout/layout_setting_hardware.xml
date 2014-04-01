@@ -1,0 +1,111 @@
+<LinearLayout 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+	    xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical">
+        <RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/setting_wifi_title_bg"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+		    
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_centerVertical="true">
+		        <TextView 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/setting_list_item_main_title_font_size"
+			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_special_functions"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/setting_inf_bg_white"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <ImageView
+		        android:id="@+id/iv_setting_emergency_siren"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+		        android:src="@drawable/setting_inside_icon" />
+
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_toLeftOf="@+id/iv_setting_emergency_siren"
+		   		android:layout_centerVertical="true">
+		        <TextView
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_emergency_siren"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/setting_inf_bg_white"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <ImageView
+		        android:id="@+id/iv_setting_camera_inf"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+		        android:src="@drawable/setting_inside_icon" />
+
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_toLeftOf="@+id/iv_setting_camera_inf"
+		   		android:layout_centerVertical="true">
+		        <TextView 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_camera_inf"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+</LinearLayout>
+
+
+
+   
+		
+	
+ 
+
+
