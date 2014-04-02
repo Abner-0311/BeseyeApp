@@ -893,7 +893,6 @@ int FreqAnalyzer::segmentCheck(bool bForcePerform){
 				int iOffset = ( (i*iPart) > SoundPair_Config::FRAME_SIZE_REC-1)?SoundPair_Config::FRAME_SIZE_REC-1:i*iPart ;// fmin((int) (i*iPart),SoundPair_Config::FRAME_SIZE_REC-1);
 
 				AudioBufferMgr::getInstance()->getBufByIndex(iBufIdxTOCheck, iOffset, bufSegment);
-<<<<<<< HEAD
 				//LOGE("segmentCheck(), bufSegment[iOffset]:%d", bufSegment[std::abs(iOffset)]);
 				if(mIFreqAnalyzeResultCBListener){
 					float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, 0 == i, NULL);
@@ -903,15 +902,6 @@ int FreqAnalyzer::segmentCheck(bool bForcePerform){
 						LOGE("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d, iRet:[%d]\n",iBufIdxTOCheck, freq, iOffset, iRet);
 						break;
 					}
-=======
-				//LOGE("segmentCheck(), bufSegment[iOffset]:"+bufSegment[std::abs(iOffset)]);
-				float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, 0 == i, NULL);
-				LOGD("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d\n",iBufIdxTOCheck,freq, iOffset);
-				if(0.0 >= freq || false == firstFR->withinFreqRange(freq)){
-					iRet= iOffset - SoundPair_Config::SEG_SES_OFFSET*iPart;//Math.max(iOffset - 3*iPart, 0)+(bWithinSecondRange?SoundPair_Config::FRAME_SIZE_REC:0);//fmin(iOffset + iPart, 0);
-					LOGE("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d, iRet:[%d]\n",iBufIdxTOCheck, freq, iOffset, iRet);
-					break;
->>>>>>> remotes/origin/develop
 				}
 			}
 			LOGD("segmentCheck(), takes %lld ms at %d\n", (time_ms() - lTsBegin), mSessionBeginBufIdx);
@@ -1823,15 +1813,13 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 		initAudacity();
 	}
 
+	static long lTotalTime = 0, lCount = 0;
+
 	long lTickCount = getTickCount();
 	performSpeexPreprocess(&bytes[0], bReset, speexPrep);
-<<<<<<< HEAD
 	long lDelta = (getTickCount() - lTickCount);
 	lTotalTime+=lDelta;
 	LOGD("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(lCount++));
-=======
-	//LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms\n", (getTickCount() - lTickCount));
->>>>>>> remotes/origin/develop
 
 //	lTickCount = getTickCount();
 //	performWindowFunc(win);
@@ -1871,8 +1859,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 			}
 		}
 		sTotalTime1+=(getTickCount() - lTickCount);
-
-//#else
+#else
 		lTickCount = getTickCount();
 		for (i = 0; i < sFrameSize; i++)
 			inBuffer[i] = win[i] * bytes[i];

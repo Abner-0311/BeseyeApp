@@ -24,10 +24,7 @@ LOCAL_CPPFLAGS 		   += -fexceptions
 LOCAL_SRC_FILES        := http_cgi_lib/src/http_cgi.c \
 						  cam-handler/src/network/event.c \
 						  cam-handler/src/network/network.c \
-<<<<<<< HEAD
 						  common/src/json_utils.c \
-=======
->>>>>>> remotes/origin/develop
 						  cam-handler/src/main.c \
 						  cam-handler/src/delegate/cam_controller.cpp \
 						  cam-handler/src/event_queue/event_queue_handler.cpp \
