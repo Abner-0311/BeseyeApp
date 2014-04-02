@@ -94,4 +94,9 @@
 	<string name="streaming_error_no_network">Please check out your network connection.</string>
 	<string name="streaming_error_unknown">Unknown error. Please try again later.</string>
 	<string name="streaming_error_low_mem">App is unstable due to low memory. Please relaunch it again.</string>
+	
+	<string name="signup_paring_title_1">Waking up camera by Let it bee</string>
+	<string name="signup_paring_title_2">Please hold on</string>
+	<string name="signup_paring_percentage">100%</string>
+	
 </resources>

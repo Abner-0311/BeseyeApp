@@ -1,0 +1,97 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color"
+    android:orientation="vertical" >
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/signup_paring_container" >
+    
+    	<TextView
+        android:id="@+id/tv_Let_it_bee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/signup_paring_margin_small"
+        android:text="@string/signup_paring_title_1"
+        android:textColor="@color/word_gray" />
+    
+    <TextView
+        android:id="@+id/tv_please_hold_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tv_Let_it_bee"
+        android:text="@string/signup_paring_title_2"
+        android:textColor="@color/word_gray" />
+    
+    <ImageView
+        android:id="@+id/iv_paring_cam_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/signup_paring_margin_medium"
+        android:layout_below="@+id/tv_please_hold_on"
+        android:src="@drawable/signup_voice_beseyecam" />
+
+    <ImageView
+        android:id="@+id/iv_paring_cam_sonar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/signup_paring_margin_small"
+        android:layout_below="@+id/iv_paring_cam_icon"
+        android:src="@drawable/signup_voice_sonar_top" />
+    
+    <ImageView
+        android:id="@+id/iv_paring_bg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/signup_voice_twopeople" />
+
+    <ImageView
+        android:id="@+id/iv_paring_phone_sonar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/iv_paring_phone_icon"
+        android:layout_marginBottom="@dimen/signup_paring_margin_small"
+        android:src="@drawable/signup_voice_sonar_bottom" />
+    
+    <ImageView
+        android:id="@+id/iv_paring_phone_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/tv_percentage_label"
+        android:layout_marginBottom="@dimen/signup_paring_margin_medium"
+        android:src="@drawable/signup_voice_iphone" />
+
+
+    <TextView
+        android:id="@+id/tv_percentage_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/signup_paring_percentage"
+        android:layout_marginBottom="@dimen/signup_paring_margin_label_bottom"
+        android:textColor="@color/word_gray" />
+    
+    </RelativeLayout>
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>
