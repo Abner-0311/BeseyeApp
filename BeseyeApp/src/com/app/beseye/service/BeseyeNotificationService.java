@@ -578,7 +578,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	private void setLastNotifyItem(JSONObject notifyObj){
 		if(null != notifyObj){
-			mLastNotifyId = BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_ID);
+			//mLastNotifyId = BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_ID);
 			BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_LAST_NOTIFY_ID, mLastNotifyId);
 			
 			mLastNotifyUpdateTime = BeseyeJSONUtil.getJSONLong(notifyObj, UPDATE_TIME);

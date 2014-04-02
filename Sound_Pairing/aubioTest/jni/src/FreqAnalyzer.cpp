@@ -543,10 +543,8 @@ void FreqAnalyzer::appendRet(string strCode){
 				mLastAbandant = "0";
 				msbDecode.str("");
 				msbDecode.clear();
-				if(mIFreqAnalyzeResultCBListener){
-					mIFreqAnalyzeResultCBListener->onDetectStart();
-					mIFreqAnalyzeResultCBListener->onSetResult("", "", "", !mbNeedToAutoCorrection, mprevMatchRet);
-				}
+				mIFreqAnalyzeResultCBListener->onDetectStart();
+				mIFreqAnalyzeResultCBListener->onSetResult("", "", "", !mbNeedToAutoCorrection, mprevMatchRet);
 
 				Ref<CodeRecord> lastTwoRec = mCodeRecordList[mCodeRecordList.size()-2];
 				LOGE("appendRet(), lastTwoRec:%s\n", (lastTwoRec)?lastTwoRec->toString().c_str():"null");
@@ -612,8 +610,7 @@ void FreqAnalyzer::appendRet(string strCode){
 				checkResult(optimizeDecodeString(iIndex));
 				mFreqRecordList.clear();
 			}else{
-				if(mIFreqAnalyzeResultCBListener)
-					mIFreqAnalyzeResultCBListener->onAppendResult(strCode);
+				mIFreqAnalyzeResultCBListener->onAppendResult(strCode);
 				//msbDecode.append(strCode);
 			}
 		}
@@ -621,8 +618,7 @@ void FreqAnalyzer::appendRet(string strCode){
 		if(-1 < msbDecode.str().rfind(SoundPair_Config::PEER_SIGNAL)){
 			msbDecode.str("");
 			msbDecode.clear();
-			if(mIFreqAnalyzeResultCBListener)
-				mIFreqAnalyzeResultCBListener->onSetResult(SoundPair_Config::PEER_SIGNAL, "", "", !mbNeedToAutoCorrection, mprevMatchRet);
+			mIFreqAnalyzeResultCBListener->onSetResult(SoundPair_Config::PEER_SIGNAL, "", "", !mbNeedToAutoCorrection, mprevMatchRet);
 		}
 	}
 }
@@ -809,11 +805,9 @@ int FreqAnalyzer::segmentCheckOnFirst(bool bForcePerform){
 			iRet = idxFirstDetect;
 
 			AudioBufferMgr::getInstance()->getBufByIndex(iBufIdxTOCheck, idxFirstDetect, bufSegment);
-			if(mIFreqAnalyzeResultCBListener){
-				mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, false, NULL);
-				float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, false, NULL);
-				LOGE("segmentCheckOnFirst(), iBufIdxTOCheck:%d, freq:%f, iRet:%d\n",iBufIdxTOCheck, freq, iRet);
-			}
+			mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, false, NULL);
+			float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, false, NULL);
+			LOGE("segmentCheckOnFirst(), iBufIdxTOCheck:%d, freq:%f, iRet:%d\n",iBufIdxTOCheck, freq, iRet);
 		}
 
 		if(bCapture == false){
@@ -899,7 +893,8 @@ int FreqAnalyzer::segmentCheck(bool bForcePerform){
 				int iOffset = ( (i*iPart) > SoundPair_Config::FRAME_SIZE_REC-1)?SoundPair_Config::FRAME_SIZE_REC-1:i*iPart ;// fmin((int) (i*iPart),SoundPair_Config::FRAME_SIZE_REC-1);
 
 				AudioBufferMgr::getInstance()->getBufByIndex(iBufIdxTOCheck, iOffset, bufSegment);
-				//LOGE("segmentCheck(), bufSegment[iOffset]:"+bufSegment[std::abs(iOffset)]);
+<<<<<<< HEAD
+				//LOGE("segmentCheck(), bufSegment[iOffset]:%d", bufSegment[std::abs(iOffset)]);
 				if(mIFreqAnalyzeResultCBListener){
 					float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, 0 == i, NULL);
 					LOGD("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d\n",iBufIdxTOCheck,freq, iOffset);
@@ -908,6 +903,15 @@ int FreqAnalyzer::segmentCheck(bool bForcePerform){
 						LOGE("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d, iRet:[%d]\n",iBufIdxTOCheck, freq, iOffset, iRet);
 						break;
 					}
+=======
+				//LOGE("segmentCheck(), bufSegment[iOffset]:"+bufSegment[std::abs(iOffset)]);
+				float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, 0 == i, NULL);
+				LOGD("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d\n",iBufIdxTOCheck,freq, iOffset);
+				if(0.0 >= freq || false == firstFR->withinFreqRange(freq)){
+					iRet= iOffset - SoundPair_Config::SEG_SES_OFFSET*iPart;//Math.max(iOffset - 3*iPart, 0)+(bWithinSecondRange?SoundPair_Config::FRAME_SIZE_REC:0);//fmin(iOffset + iPart, 0);
+					LOGE("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d, iRet:[%d]\n",iBufIdxTOCheck, freq, iOffset, iRet);
+					break;
+>>>>>>> remotes/origin/develop
 				}
 			}
 			LOGD("segmentCheck(), takes %lld ms at %d\n", (time_ms() - lTsBegin), mSessionBeginBufIdx);
@@ -1082,8 +1086,7 @@ void FreqAnalyzer::checkResult(string strDecode){
 		LOGI("checkResult(), strRet:"+strRet+\n", mstrCodeTrace:"+mstrCodeTrace);
 		performAutoCorrection();
 	}else*/{
-		if(mIFreqAnalyzeResultCBListener)
-			mIFreqAnalyzeResultCBListener->onSetResult(strRet, strDecode, strDecodeUnmark, !mbNeedToAutoCorrection, mprevMatchRet);
+		mIFreqAnalyzeResultCBListener->onSetResult(strRet, strDecode, strDecodeUnmark, !mbNeedToAutoCorrection, mprevMatchRet);
 		if(false == canPerformAutoCorrection()){
 			//set mIFreqAnalyzeResultCBListener as NULL, if it's one self analyzer
 			mIFreqAnalyzeResultCBListener = NULL;
@@ -1141,12 +1144,12 @@ void FreqAnalyzer::regenDecode(){
 
 vector<Ref<CodeRecord> > FreqAnalyzer::getLstCodeRecordByOffset(vector<Ref<CodeRecord> > lstCodeRecord, int iOffset){
 	vector<Ref<CodeRecord> > retLst;
-	LOGI("getLstCodeRecordByOffset(), iOffset:%d\n", iOffset);
+	LOGD("getLstCodeRecordByOffset(), iOffset:%d\n", iOffset);
 	int iSize = lstCodeRecord.size();
-	LOGI("getLstCodeRecordByOffset(),iSize:%d\n", iSize);
+	LOGD("getLstCodeRecordByOffset(),iSize:%d\n", iSize);
 	for(int idx = 0; idx + 1 < iSize;idx++){
 		int iCurSize = retLst.size();
-		LOGI("getLstCodeRecordByOffset(), idx:%d, iCurSize:%d, iSize:%d\n", idx, iCurSize, iSize);
+		LOGD("getLstCodeRecordByOffset(), idx:%d, iCurSize:%d, iSize:%d\n", idx, iCurSize, iSize);
 		if(0 < iOffset){
 			retLst.push_back(CodeRecord::combineNewCodeRecord(lstCodeRecord.at(idx), lstCodeRecord.at(idx+1), iOffset, getToneIdxByCode((0 < iCurSize)?retLst.at(iCurSize-1)->strCdoe:"")));
 		}else if(0 > iOffset){
@@ -1216,15 +1219,12 @@ void FreqAnalyzer::autoCorrection(MatchRetSet* prevMatchRet){
 							AudioBufferMgr::getInstance()->getBufByIndex(fr->miBufIndex, iOffset, bufSegment);
 							if(bFirstTime){
 								//Workaround
-								if(mIFreqAnalyzeResultCBListener){
-									mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, true, NULL);
-									bFirstTime = false;
-								}
+								mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, true, NULL);
+								bFirstTime = false;
 							}
-							if(mIFreqAnalyzeResultCBListener){
-								float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, fr->mlTs, false, fr->miFFTValues);
-								selfFreqAnalyzer->analyze(fr->mlTs, freq, fr->miBufIndex, fr->miFFTValues);
-							}
+
+							float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, fr->mlTs, false, fr->miFFTValues);
+							selfFreqAnalyzer->analyze(fr->mlTs, freq, fr->miBufIndex, fr->miFFTValues);
 						}else{
 							selfFreqAnalyzer->analyze(fr->mlTs, 0.0, -1, fr->miFFTValues);
 						}
@@ -1663,10 +1663,11 @@ void FreqAnalyzer::setSpeexPreprocess(SpeexPreprocessState* sps){
 			//speex_preprocess_ctl(sps, SPEEX_PREPROCESS_GET_NOISE_SUPPRESS, &iRet);
 			//LOGI("recordAudio+, SPEEX_PREPROCESS_GET_NOISE_SUPPRESS:%d\n", iRet);
 
-			iRet = sNSIndex;
-			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &iRet);
+//			iRet = sNSIndex;
+//			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &iRet);
 		}
 
+		//Not used in FIXED-POINT
 		if(sAGCLevel >0){
 			int i=1;
 			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_AGC, &i);
@@ -1676,13 +1677,13 @@ void FreqAnalyzer::setSpeexPreprocess(SpeexPreprocessState* sps){
 		if(sEnableDeverb){
 			int i=1;
 			speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB, &i);
-			if(0 < sDeverbDecay){
-				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_DECAY, &sDeverbDecay);
-			}
-
-			if(0 < sDeverbLevel){
-				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_LEVEL, &sDeverbLevel);
-			}
+//			if(0 < sDeverbDecay){
+//				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_DECAY, &sDeverbDecay);
+//			}
+//
+//			if(0 < sDeverbLevel){
+//				speex_preprocess_ctl(sps, SPEEX_PREPROCESS_SET_DEREVERB_LEVEL, &sDeverbLevel);
+//			}
 		}
 	}
 }
@@ -1722,7 +1723,7 @@ float *FreqAnalyzer::win = NULL;
 double FreqAnalyzer::wss ;
 int FreqAnalyzer::windowFunc = 3;//hannings
 
-//#define FFTW_TRIAL
+#define FFTW_TRIAL
 
 #ifdef FFTW_TRIAL
 double *inBuffer2 = NULL;
@@ -1822,13 +1823,15 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 		initAudacity();
 	}
 
-	static long lCount = 1;
-	static long lTotalTime = 0;
 	long lTickCount = getTickCount();
 	performSpeexPreprocess(&bytes[0], bReset, speexPrep);
+<<<<<<< HEAD
 	long lDelta = (getTickCount() - lTickCount);
 	lTotalTime+=lDelta;
-	LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(lCount++));
+	LOGD("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(lCount++));
+=======
+	//LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms\n", (getTickCount() - lTickCount));
+>>>>>>> remotes/origin/develop
 
 //	lTickCount = getTickCount();
 //	performWindowFunc(win);
@@ -1869,7 +1872,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 		}
 		sTotalTime1+=(getTickCount() - lTickCount);
 
-#else
+//#else
 		lTickCount = getTickCount();
 		for (i = 0; i < sFrameSize; i++)
 			inBuffer[i] = win[i] * bytes[i];
@@ -1896,7 +1899,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 		sTotalTime2 += (getTickCount() - lTickCount);
 #endif
-		LOGE("performAudacityFFT(), Spectrum takes [%ld, %ld] ms\n", sTotalTime1, sTotalTime2);
+		LOGD("performAudacityFFT(), Spectrum takes [%ld, %ld] ms\n", sTotalTime1, sTotalTime2);
 		if(NULL != iDxValues){
 			iDxValues[0] = iDx;
 			iDxValues[1] = iDx2;
@@ -1905,13 +1908,13 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 			iDxValues[4] = iDx5;
 		}
 
-		if(0 < iLastDet){
-			//LOGE("performAudacityFFT()-------------------------, iLastDetTone = [%.2f]=>%d, iDx0~5 = [%d, %d, %d, %d, %d]\n", iLastDet*sBinSize, iLastDet, iDx, iDx2, iDx3, iDx4, iDx5);
-			if(iDx > 0 && iDx2 >0 && iLastDet > 0 && (iDx - iLastDet <=1 && iDx - iLastDet >= -1) && (iDx - iDx2 >=2 || iDx - iDx2 <= -2)){
-				LOGE("performAudacityFFT()^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^, iLastDetTone=%.2f, change from %.2f to %.2f \n", iLastDet*sBinSize, iDx*sBinSize,  iDx2*sBinSize);
-				iDx = iDx2;
-			}
-		}
+//		if(0 < iLastDet){
+//			//LOGE("performAudacityFFT()-------------------------, iLastDetTone = [%.2f]=>%d, iDx0~5 = [%d, %d, %d, %d, %d]\n", iLastDet*sBinSize, iLastDet, iDx, iDx2, iDx3, iDx4, iDx5);
+//			if(iDx > 0 && iDx2 >0 && iLastDet > 0 && (iDx - iLastDet <=1 && iDx - iLastDet >= -1) && (iDx - iDx2 >=2 || iDx - iDx2 <= -2)){
+//				LOGE("performAudacityFFT()^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^, iLastDetTone=%.2f, change from %.2f to %.2f \n", iLastDet*sBinSize, iDx*sBinSize,  iDx2*sBinSize);
+//				iDx = iDx2;
+//			}
+//		}
 	}else{
 		LOGE("performAudacityFFT(), bytes is null\n");
 	}

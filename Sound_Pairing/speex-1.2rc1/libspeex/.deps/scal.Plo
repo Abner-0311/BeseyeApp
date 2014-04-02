@@ -1,6 +1,7 @@
 scal.lo: scal.c ../config.h ../include/speex/speex_echo.h \
  ../include/speex/speex_types.h ../include/speex/speex_config_types.h \
- vorbis_psy.h arch.h fixed_generic.h os_support.h \
+ vorbis_psy.h arch.h os_support.h \
+<<<<<<< HEAD
  /tmp/speex/bin/../sysroot/usr/include/string.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
@@ -33,6 +34,43 @@ scal.lo: scal.c ../config.h ../include/speex/speex_echo.h \
  /tmp/speex/bin/../sysroot/usr/include/machine/internal_types.h \
  /tmp/speex/bin/../sysroot/usr/include/machine/limits.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/syslimits.h
+=======
+ /private/tmp/speex/bin/../sysroot/usr/include/string.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/android/api-level.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stddef.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/malloc.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/stdio.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/types.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdint.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/stdint.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/machine/_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/posix_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/stddef.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/compiler.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/asm/posix_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/asm/types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/machine/kernel.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/sysmacros.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdarg.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/stdlib.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/alloca.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/strings.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/memory.h smallft.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/math.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/limits.h \
+ /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/syslimits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/limits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/limits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/linux/limits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/machine/internal_types.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/machine/limits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/sys/syslimits.h \
+ /private/tmp/speex/bin/../sysroot/usr/include/asm/page.h
+>>>>>>> remotes/origin/develop
 
 ../config.h:
 
@@ -46,72 +84,76 @@ vorbis_psy.h:
 
 arch.h:
 
-fixed_generic.h:
-
 os_support.h:
 
-/tmp/speex/bin/../sysroot/usr/include/string.h:
+/private/tmp/speex/bin/../sysroot/usr/include/string.h:
 
-/tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h:
+/private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h:
 
-/tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h:
+/private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h:
 
-/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h:
+/private/tmp/speex/bin/../sysroot/usr/include/android/api-level.h:
 
-/tmp/speex/bin/../sysroot/usr/include/malloc.h:
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stddef.h:
 
-/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h:
+/private/tmp/speex/bin/../sysroot/usr/include/malloc.h:
 
-/tmp/speex/bin/../sysroot/usr/include/sys/_types.h:
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/stdio.h:
 
-/tmp/speex/bin/../sysroot/usr/include/machine/_types.h:
+/private/tmp/speex/bin/../sysroot/usr/include/sys/types.h:
 
-/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h:
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdint.h:
 
-/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h:
+/private/tmp/speex/bin/../sysroot/usr/include/stdint.h:
 
-/tmp/speex/bin/../sysroot/usr/include/stdint.h:
+/private/tmp/speex/bin/../sysroot/usr/include/sys/_types.h:
 
-/tmp/speex/bin/../sysroot/usr/include/linux/posix_types.h:
+/private/tmp/speex/bin/../sysroot/usr/include/machine/_types.h:
 
-/tmp/speex/bin/../sysroot/usr/include/linux/stddef.h:
+/private/tmp/speex/bin/../sysroot/usr/include/linux/posix_types.h:
 
-/tmp/speex/bin/../sysroot/usr/include/linux/compiler.h:
+/private/tmp/speex/bin/../sysroot/usr/include/linux/stddef.h:
 
-/tmp/speex/bin/../sysroot/usr/include/asm/posix_types.h:
+/private/tmp/speex/bin/../sysroot/usr/include/linux/compiler.h:
 
-/tmp/speex/bin/../sysroot/usr/include/asm/types.h:
+/private/tmp/speex/bin/../sysroot/usr/include/asm/posix_types.h:
 
-/tmp/speex/bin/../sysroot/usr/include/linux/types.h:
+/private/tmp/speex/bin/../sysroot/usr/include/asm/types.h:
 
-/tmp/speex/bin/../sysroot/usr/include/machine/kernel.h:
+/private/tmp/speex/bin/../sysroot/usr/include/linux/types.h:
 
-/tmp/speex/bin/../sysroot/usr/include/sys/sysmacros.h:
+/private/tmp/speex/bin/../sysroot/usr/include/machine/kernel.h:
 
-/tmp/speex/bin/../sysroot/usr/include/stdlib.h:
+/private/tmp/speex/bin/../sysroot/usr/include/sys/sysmacros.h:
 
-/tmp/speex/bin/../sysroot/usr/include/alloca.h:
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdarg.h:
 
-/tmp/speex/bin/../sysroot/usr/include/strings.h:
+/private/tmp/speex/bin/../sysroot/usr/include/stdlib.h:
 
-/tmp/speex/bin/../sysroot/usr/include/memory.h:
+/private/tmp/speex/bin/../sysroot/usr/include/alloca.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/strings.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/memory.h:
 
 smallft.h:
 
-/tmp/speex/bin/../sysroot/usr/include/math.h:
+/private/tmp/speex/bin/../sysroot/usr/include/math.h:
 
-/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/limits.h:
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/limits.h:
 
-/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/syslimits.h:
+/private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/syslimits.h:
 
-/tmp/speex/bin/../sysroot/usr/include/limits.h:
+/private/tmp/speex/bin/../sysroot/usr/include/limits.h:
 
-/tmp/speex/bin/../sysroot/usr/include/sys/limits.h:
+/private/tmp/speex/bin/../sysroot/usr/include/sys/limits.h:
 
-/tmp/speex/bin/../sysroot/usr/include/linux/limits.h:
+/private/tmp/speex/bin/../sysroot/usr/include/linux/limits.h:
 
-/tmp/speex/bin/../sysroot/usr/include/machine/internal_types.h:
+/private/tmp/speex/bin/../sysroot/usr/include/machine/internal_types.h:
 
-/tmp/speex/bin/../sysroot/usr/include/machine/limits.h:
+/private/tmp/speex/bin/../sysroot/usr/include/machine/limits.h:
 
-/tmp/speex/bin/../sysroot/usr/include/sys/syslimits.h:
+/private/tmp/speex/bin/../sysroot/usr/include/sys/syslimits.h:
+
+/private/tmp/speex/bin/../sysroot/usr/include/asm/page.h:

@@ -17,11 +17,20 @@ export NM=arm-linux-androideabi-nm
 
 PREFIX=/usr
 
+export FFT_CFLAGS="-I/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/include"
+export FFT_LIBS="-L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3"
+
+
 export CFLAGS="-I/Users/Abner/Documents/Develop/libogg-1.3.1/build/armv7/include" 
 
 export LDFLAGS="-L/Users/Abner/Documents/Develop/libogg-1.3.1/build/armv7/lib"
 
-./configure --prefix=$PREFIX --host=arm-linux --target=arm-linux --enable-shared=no --enable-fixed-point 
+<<<<<<< HEAD
+./configure --prefix=$PREFIX --host=arm-linux --target=arm-linux --enable-shared=no
+# --enable-fixed-point --with-fft=gpl-fftw3 
+=======
+./configure --prefix=$PREFIX --host=arm-linux --target=arm-linux --enable-shared=no 
+>>>>>>> remotes/origin/develop
 
   make clean
   make -j4 || exit 1

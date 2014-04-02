@@ -13,8 +13,8 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.app.beseye.httptask.BeseyeHttpTask;
-import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
+import com.app.beseye.httptask.BeseyeHttpWifiTask;
+import com.app.beseye.httptask.BeseyeHttpWifiTask.OnHttpTaskCallback;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.NetPingTask;
@@ -184,7 +184,7 @@ public class WifiAPSetupDelegator implements OnSupplicantStatusChangeCallback, O
 	private WifiAPInfo mTargetWifiAPInfo;
 	private WIFI_AP_SETUP_STATE mWifiApSetupState = WIFI_AP_SETUP_STATE.UNINIT;
 	private WIFI_AP_SETUP_ERROR mWifiApSetupError = WIFI_AP_SETUP_ERROR.ERROR_NONE;
-	private BeseyeHttpTask mRelayAPSetupTask;
+	private BeseyeHttpWifiTask mRelayAPSetupTask;
 	
 	public WifiAPSetupDelegator(WifiAPInfo wifiAPInfo, OnWifiApSetupCallback listener){
 		mOnWifiApSetupCallbackListener = new WeakReference<OnWifiApSetupCallback>(listener);
@@ -393,7 +393,7 @@ public class WifiAPSetupDelegator implements OnSupplicantStatusChangeCallback, O
 			if(null != mRelayAPSetupTask){
 				mRelayAPSetupTask.cancel(true);
 			}
-			mRelayAPSetupTask = new BeseyeHttpTask(this);
+			mRelayAPSetupTask = new BeseyeHttpWifiTask(this);
 			mRelayAPSetupTask.execute(mTargetWifiAPInfo.SSID, mTargetWifiAPInfo.BSSID, String.valueOf(NetworkMgr.getChannelFromFrequency(mTargetWifiAPInfo.frequency)), mTargetWifiAPInfo.password, mTargetWifiAPInfo.cipher, String.valueOf(mTargetWifiAPInfo.wepkeyIdx+1));
 			
 		}else{

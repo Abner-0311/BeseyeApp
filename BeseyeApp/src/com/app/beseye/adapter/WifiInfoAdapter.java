@@ -79,7 +79,7 @@ public class WifiInfoAdapter extends BaseAdapter {
 					if(null != holder){						
 						holder.mtxtSSID = (TextView) convertView.findViewById(R.id.txt_ssid);
 						holder.mtxtSecure = (TextView) convertView.findViewById(R.id.txt_secure);
-						holder.mivSignalLevel = (ImageView) convertView.findViewById(R.id.iv_signal_strength);
+						holder.mivSignalLevel = (ImageView) convertView.findViewById(R.id.iv_camerapower_on);
 						holder.mivSecure = (ImageView) convertView.findViewById(R.id.iv_wifi_secure);
 						convertView.setTag(holder);
 					}

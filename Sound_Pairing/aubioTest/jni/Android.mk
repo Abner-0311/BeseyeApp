@@ -21,17 +21,13 @@ LOCAL_MODULE           := soundpairing
 
 LOCAL_CPPFLAGS 		   += -fexceptions
 
-LOCAL_SRC_FILES        := src/preprocess/kiss_fft.c \
-						  src/preprocess/kiss_fftr.c \
-						  src/preprocess/mdf.c \
-						  src/preprocess/smallft.c \
-						  src/preprocess/fftwrap.c \
-						  src/preprocess/filterbank.c \
-						  src/preprocess/preprocess.c \
-						  http_cgi_lib/src/http_cgi.c \
+LOCAL_SRC_FILES        := http_cgi_lib/src/http_cgi.c \
 						  cam-handler/src/network/event.c \
 						  cam-handler/src/network/network.c \
-						  cam-handler/src/json_utils.c \
+<<<<<<< HEAD
+						  common/src/json_utils.c \
+=======
+>>>>>>> remotes/origin/develop
 						  cam-handler/src/main.c \
 						  cam-handler/src/delegate/cam_controller.cpp \
 						  cam-handler/src/event_queue/event_queue_handler.cpp \
@@ -58,11 +54,10 @@ LOCAL_C_INCLUDES 	   := $(LOCAL_PATH)\
 						  $(LOCAL_PATH)/include/speex \
 						  $(LOCAL_PATH)/include/curl \
 						  $(LOCAL_PATH)/include/json-c \
-						  $(LOCAL_PATH)/src \
-						  $(LOCAL_PATH)/src/preprocess \
 						  $(LOCAL_PATH)/zxing \
 						  $(LOCAL_PATH)/zxing/common \
 						  $(LOCAL_PATH)/zxing/common/reedsolomon \
+						  $(LOCAL_PATH)/common/inc \
 						  $(LOCAL_PATH)/http_cgi_lib/inc \
 						  $(LOCAL_PATH)/cam-handler/inc \
 						  $(LOCAL_PATH)/ws-client/inc \
@@ -72,6 +67,7 @@ LOCAL_C_INCLUDES 	   := $(LOCAL_PATH)\
 
 LOCAL_LDLIBS           := -L$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/usr/lib \
 						  -L$(LOCAL_PATH) \
+						  -lspeexdsp \
 						  -lm \
 						  -lcurl \
 						  -ljson-c \

@@ -1,5 +1,5 @@
 vbr.lo: vbr.c ../config.h vbr.h arch.h ../include/speex/speex_types.h \
- ../include/speex/speex_config_types.h fixed_generic.h \
+ ../include/speex/speex_config_types.h \
  /tmp/speex/bin/../sysroot/usr/include/math.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
@@ -34,8 +34,6 @@ arch.h:
 ../include/speex/speex_types.h:
 
 ../include/speex/speex_config_types.h:
-
-fixed_generic.h:
 
 /tmp/speex/bin/../sysroot/usr/include/math.h:
 

@@ -1,7 +1,6 @@
 resample.lo: resample.c ../config.h ../include/speex/speex_resampler.h \
  ../include/speex/speex_types.h ../include/speex/speex_config_types.h \
- arch.h fixed_generic.h os_support.h \
- /tmp/speex/bin/../sysroot/usr/include/string.h \
+ arch.h os_support.h /tmp/speex/bin/../sysroot/usr/include/string.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
  /tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
  /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h \
@@ -43,8 +42,6 @@ resample.lo: resample.c ../config.h ../include/speex/speex_resampler.h \
 ../include/speex/speex_config_types.h:
 
 arch.h:
-
-fixed_generic.h:
 
 os_support.h:
 

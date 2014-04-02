@@ -392,12 +392,12 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 		
 		 mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        // If the adapter is null, then Bluetooth is not supported
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
+	        // If the adapter is null, then Bluetooth is not supported
+	        if (mBluetoothAdapter == null) {
+	            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+	            finish();
+	            return;
+	        }
 		
 		FreqAnalyzer.getInstance().setIFreqAnalyzeResultCB(this);
 		
@@ -1123,7 +1123,9 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 		
     	Log.i(TAG, "onBTMsgReceived(), bIsReceiverMode = "+bIsReceiverMode+", mstrCurTransferTs = ["+mstrCurTransferTs+"], \n msg = ["+strMsg+"]");
     	
-    	if(bIsSenderMode){
+    	/*if(bIsReceiverMode){
+    		
+    	}else */if(bIsSenderMode){
     		if(null != strMsg){
     			if(strMsg.startsWith(BT_MSG_SET_VOLUME)){
     				int iEndIdx = strMsg.indexOf(BT_MSG_SET_VOLUME_END);
@@ -1202,9 +1204,11 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 	public void sendBTMsg(String strMsg){
 		final boolean bIsSenderMode = isSenderMode();
     	//final boolean bIsReceiverMode = isReceiverMode();
-		Log.i(TAG, "sendBTMsg(), bIsSenderMode = "+bIsSenderMode+", strMsg:"+strMsg);
     	
-    	if(bIsSenderMode){
+    	/*if(bIsReceiverMode){
+    		
+    		
+    	}else */if(bIsSenderMode){
     		sendMessage(strMsg);
     	}else{
     		if(null == mstrCurTransferCode){

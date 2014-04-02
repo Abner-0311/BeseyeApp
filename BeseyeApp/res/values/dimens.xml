@@ -56,6 +56,7 @@
     
     <dimen name="caminfo_dialog_item_height">70dp</dimen>
     
+    <dimen name="setting_list_item_main_title_font_size">18sp</dimen>
     <dimen name="login_logo_marginTop">48dp</dimen>
     <dimen name="login_marginSmall">8dp</dimen>
     <dimen name="login_marginMedium">16dp</dimen>

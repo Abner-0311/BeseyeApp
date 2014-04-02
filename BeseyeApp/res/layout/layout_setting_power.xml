@@ -1,0 +1,148 @@
+<LinearLayout 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+	    xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical">
+        <RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/setting_wifi_title_bg"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+		    
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_centerVertical="true">
+		        <TextView 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/setting_list_item_main_title_font_size"
+			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_power_setting"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/setting_inf_bg_white"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <com.app.beseye.widget.BeseyeSwitchBtn 
+			    android:id="@+id/sb_camera_switch"
+			    android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:layout_alignParentRight="true"
+		    	android:layout_centerVertical="true"
+		    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding">
+			</com.app.beseye.widget.BeseyeSwitchBtn>
+		    
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_centerVertical="true">
+		        <TextView 
+			       	android:id="@+id/txt_power_title"
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_power"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+		<RelativeLayout
+		    android:id="@+id/vg_power_schedule" 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/setting_inf_bg_white"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <ImageView
+		        android:id="@+id/iv_power_schedule_inf"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+		        android:src="@drawable/sl_setting_inside_icon"
+		        android:duplicateParentState="true"/>
+
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_toLeftOf="@+id/iv_power_schedule_inf"
+		   		android:layout_centerVertical="true">
+		        <TextView
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_power_time"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/setting_inf_bg_white"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <ImageView
+		        android:id="@+id/iv_location_aware_inf"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+		        android:src="@drawable/setting_inside_icon" />
+
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_toLeftOf="@+id/iv_location_aware_inf"
+		   		android:layout_centerVertical="true">
+		        <TextView 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_location"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+</LinearLayout>
+
+
+
+   
+		
+	
+ 
+
+
