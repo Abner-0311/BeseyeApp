@@ -2,7 +2,6 @@ package com.app.beseye.httptask;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -32,15 +31,9 @@ import javax.net.ssl.X509TrustManager;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
-import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
@@ -56,7 +49,6 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
@@ -69,7 +61,6 @@ import org.json.JSONObject;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -83,7 +74,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	
 	public static final String FAKE_HOST_ADDR  = "http://swf01.nh.ikala.tv/";
 	public static final String HINET_HOST_ADDR = "http://ap.hinet.sbf.ikala.tv/";
-	public static String HOST_ADDR = "http://54.199.158.71/"; //= /*"http://210.64.138.164:5080/";*/"http://song81.corp.ikala.tv:5080/"; /*"http://192.168.0.61:3000/";//*///Internal;
+	public static String HOST_ADDR = "http://54.199.158.71:3000/"; //= /*"http://210.64.138.164:5080/";*/"http://song81.corp.ikala.tv:5080/"; /*"http://192.168.0.61:3000/";//*///Internal;
 	
 	static{
 		checkHostAddr();

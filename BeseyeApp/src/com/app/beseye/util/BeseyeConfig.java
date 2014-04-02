@@ -33,6 +33,7 @@ public class BeseyeConfig {
 													 //"rtsp://admin:password@192.168.2.2/h264_2",
 													 //"rtmp://54.238.191.39:1935/live-edge/mystream5_aac"/*,
 													 //"rtmp://54.250.149.50/live-origin/mystream3_aac",
+													 "rtsp://admin:password@192.168.2.145/h264",
 													 "rtmp://192.168.2.145/proxypublish/stream1 live=1",
 													 "rtmp://54.250.149.50/livetest/test_crtmpserver",
 													 "rtsp://admin:password@192.168.12.184/h264_2"//00:0C:43:30:50:D0

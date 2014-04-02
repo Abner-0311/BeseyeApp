@@ -74,6 +74,12 @@ public class BeseyeJSONUtil {
 	public static final String WIFI_KEY 				= "Key";
 	public static final String WIFI_SECU 				= "Security";
 	
+	public static final String WIFI_SSIDLST 			= "SSIDList";
+	public static final String WIFI_SSIDLST_ID 			= "ssid";
+	public static final String WIFI_SSIDLST_SGL 		= "signal";
+	public static final String WIFI_SSIDLST_SEC 		= "sec";
+	public static final String WIFI_SSIDLST_USED 		= "CurrentUsed";
+	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "GCMProjectID";
 	public static final String PS_REG_ID 				= "RegisterID";

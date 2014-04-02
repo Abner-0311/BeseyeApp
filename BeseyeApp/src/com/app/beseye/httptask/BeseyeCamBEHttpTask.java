@@ -23,6 +23,13 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_RECONN_MM 		= "cam/%s/reconnectmm";
 	
 	static private final String URL_CAM_WIFI_CONFIG 	= "cam/%s/wifi/config";
+	static private final String URL_CAM_WIFI_SSIDLST 	= "cam/%s/wifi/ssidlist";
+	
+	static private final String URL_CAM_SYS_INFO 		= "cam/%s/sysinfo";
+	static private final String URL_CAM_DATETIME 		= "cam/%s/datetime";
+	
+	static private final String URL_CAM_DATETIME_CONFIG = "cam/%s/datetime/config";
+	static private final String URL_CAM_DATETIME_NTP_CONFIG = "cam/%s/datetime/ntpconfig";
 	
 	public static class GetCamSetupTask extends BeseyeHttpTask{
 		public GetCamSetupTask(OnHttpTaskCallback cb) {
@@ -353,6 +360,39 @@ public class BeseyeCamBEHttpTask  {
 				e.printStackTrace();
 			}
 			return null;
+		}
+	}
+	
+	public static class GetWiFiSSIDListTask extends BeseyeHttpTask{
+		public GetWiFiSSIDListTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_WIFI_SSIDLST, strParams[0]));
+		}
+	}
+	
+	public static class GetDateTimeTask extends BeseyeHttpTask{
+		public GetDateTimeTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_DATETIME, strParams[0]));
+		}
+	}
+	
+	public static class GetSystemInfoTask extends BeseyeHttpTask{
+		public GetSystemInfoTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_SYS_INFO, strParams[0]));
 		}
 	}
 }
