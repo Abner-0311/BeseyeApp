@@ -77,7 +77,7 @@ LOCAL_LDLIBS           := -L$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/us
 						  -lcurl \
 						  -ljson-c \
 					      -ljson \
-					      -lfftw3 \
+					      -lfftw3f \
 					      -llog \
 					      -lz \
 					      -ldl \

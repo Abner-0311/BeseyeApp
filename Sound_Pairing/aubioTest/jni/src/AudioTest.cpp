@@ -98,6 +98,7 @@ bool AudioTest::startAutoTest(string strInitCode, int iDigitalToTest){
 #ifndef ANDROID
 	if(bRet){
 		LOGI("startAutoTest(), begin join\n");
+		FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(this);
 		pthread_join(mBufRecordThread, NULL);
 		pthread_join(mAnalysisThread, NULL);
 		LOGE("startAutoTest(), end join\n");
@@ -208,7 +209,6 @@ void* AudioTest::runAutoTestControl(void* userdata){
 
 	FreqAnalyzer::getInstance()->setSenderMode(/*isSenderMode*/false);
 	FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(tester);
-
 
 	if(!bIsReceiverMode)
 		FreqGenerator::getInstance()->setOnPlayToneCallback(tester);
@@ -385,6 +385,7 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 	Ref<BufRecord> buf;
 
 	while(!tester->mbStopAnalysisThreadFlag){
+		//LOGE("runAudioBufAnalysis()+1\n");
 		int iSessionOffset = FreqAnalyzer::getInstance()->getSessionOffset();
 		LOGD("runAudioBufAnalysis(), iSessionOffset:%d\n", iSessionOffset);
 

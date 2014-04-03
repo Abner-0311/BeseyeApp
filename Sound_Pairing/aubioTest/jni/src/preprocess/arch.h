@@ -43,7 +43,7 @@
 #define SPEEX_VERSION "speex-1.2beta3"  /**< Speex version string. */
 #endif
 
-#include "preprocess/config.h"
+//#include "preprocess/config.h"
 
 /* A couple test to catch stupid option combinations */
 #ifdef FIXED_POINT

@@ -45,6 +45,7 @@
 #include <math.h>
 
 #include "FFT.h"
+#include "utils.h"
 
 int **gFFTBitTable = NULL;
 const int MaxFastBits = 16;
@@ -149,10 +150,17 @@ void FFT(int NumSamples,
    double angle_numerator = 2.0 * M_PI;
    double tr, ti;                /* temp real, temp imaginary */
 
+   static long lTotal_1 = 0, lTotal_2 = 0, lTotal_3 = 0, lTotal_4 = 0;
+   static long lCount2 = 0;
+   long lTickCount = getTickCount();
+
    if (!IsPowerOfTwo(NumSamples)) {
       fprintf(stderr, "%d is not a power of two\n", NumSamples);
       exit(1);
    }
+
+   lTotal_1 += (getTickCount() - lTickCount);
+   lTickCount = getTickCount();
 
    if (!gFFTBitTable)
       InitFFT();
@@ -162,6 +170,8 @@ void FFT(int NumSamples,
 
    NumBits = NumberOfBitsNeeded(NumSamples);
 
+   lTotal_2 += (getTickCount() - lTickCount);
+   lTickCount = getTickCount();
    /*
     **   Do simultaneous data copy and bit-reversal ordering into outputs...
     */
@@ -172,6 +182,8 @@ void FFT(int NumSamples,
       ImagOut[j] = (ImagIn == NULL) ? 0.0 : ImagIn[i];
    }
 
+   lTotal_3 += (getTickCount() - lTickCount);
+   lTickCount = getTickCount();
    /*
     **   Do the FFT itself...
     */
@@ -219,6 +231,9 @@ void FFT(int NumSamples,
       BlockEnd = BlockSize;
    }
 
+   lTotal_4 += (getTickCount() - lTickCount);
+   lCount2++;
+   LOGE("FFT(), -------------->[%ld , %ld , %ld , %ld ]\n", (lTotal_1/lCount2), (lTotal_2/lCount2), (lTotal_3/lCount2), (lTotal_4/lCount2));
    /*
       **   Need to normalize if inverse transform...
     */
@@ -385,6 +400,8 @@ void InverseRealFFT(int NumSamples, float *RealIn, float *ImagIn, float *RealOut
  * of its code.
  */
 
+#include "fftw3.h"
+
 void PowerSpectrum(int NumSamples, float *In, float *Out)
 {
 #ifdef EXPERIMENTAL_USE_REALFFTF
@@ -412,22 +429,38 @@ void PowerSpectrum(int NumSamples, float *In, float *Out)
 
 #else // EXPERIMENTAL_USE_REALFFTF
 
+   long lTickCount = getTickCount();
+
    int Half = NumSamples / 2;
    int i;
 
    float theta = M_PI / Half;
 
-   float *tmpReal = new float[Half];
-   float *tmpImag = new float[Half];
-   float *RealOut = new float[Half];
-   float *ImagOut = new float[Half];
+   static float *tmpReal = new float[Half];
+   static float *tmpImag = new float[Half];
+   static float *RealOut = new float[Half];
+   static float *ImagOut = new float[Half];
+   static long lTotal1 = 0, lTotal2 = 0, lTotal3 = 0, lTotal4 = 0;
+   static long lCount = 0;
+
+   lTotal1 += (getTickCount() - lTickCount);
+   //LOGE("PowerSpectrum(), 1 takes %ld ms\n", (getTickCount() - lTickCount));
+   lTickCount = getTickCount();
 
    for (i = 0; i < Half; i++) {
       tmpReal[i] = In[2 * i];
       tmpImag[i] = In[2 * i + 1];
    }
 
+   lTotal2 += (getTickCount() - lTickCount);
+   //LOGE("PowerSpectrum(), 2 takes %ld ms\n", (getTickCount() - lTickCount));
+   lTickCount = getTickCount();
+
    FFT(Half, 0, tmpReal, tmpImag, RealOut, ImagOut);
+
+   lTotal3 += (getTickCount() - lTickCount);
+   //LOGE("PowerSpectrum(), 3 takes %ld ms\n", (getTickCount() - lTickCount));
+   lTickCount = getTickCount();
 
    float wtemp = float (sin(0.5 * theta));
 
@@ -439,6 +472,8 @@ void PowerSpectrum(int NumSamples, float *In, float *Out)
    int i3;
 
    float h1r, h1i, h2r, h2i, rt, it;
+
+   lTickCount = getTickCount();
 
    for (i = 1; i < Half / 2; i++) {
 
@@ -463,18 +498,124 @@ void PowerSpectrum(int NumSamples, float *In, float *Out)
       wi = wi * wpr + wtemp * wpi + wi;
    }
 
+   lTotal4 += (getTickCount() - lTickCount);
+   lCount++;
+   LOGE("PowerSpectrum(), [%ld , %ld , %ld , %ld ]\n", (lTotal1/lCount), (lTotal2/lCount), (lTotal3/lCount), (lTotal4/lCount));
+
    rt = (h1r = RealOut[0]) + ImagOut[0];
    it = h1r - ImagOut[0];
    Out[0] = rt * rt + it * it;
+
+   lTickCount = getTickCount();
 
    rt = RealOut[Half / 2];
    it = ImagOut[Half / 2];
    Out[Half / 2] = rt * rt + it * it;
 
-   delete[]tmpReal;
-   delete[]tmpImag;
-   delete[]RealOut;
-   delete[]ImagOut;
+   lTickCount = getTickCount();
+
+//   delete[]tmpReal;
+//   delete[]tmpImag;
+//   delete[]RealOut;
+//   delete[]ImagOut;
+
+//   static fftwf_plan plan_forward;
+//   static float *tmpOut = NULL;
+//   static int s_init = 0;
+//   if(!s_init){
+//
+//	   tmpOut = (float *)malloc(NumSamples* sizeof(float));
+//	   plan_forward = fftwf_plan_r2r_1d ( NumSamples, In, tmpOut, FFTW_R2HC, FFTW_ESTIMATE);
+//	   s_init = 1;
+//   }
+//
+//   long lTickCount = getTickCount();
+//
+//   int Half = NumSamples / 2;
+//   int i;
+//
+//   float theta = M_PI / Half;
+//
+////   float *tmpReal = new float[Half];
+////   float *tmpImag = new float[Half];
+////   float *RealOut = new float[Half];
+////   float *ImagOut = new float[Half];
+//
+//   LOGE("PowerSpectrum(), 1 takes %ld ms\n", (getTickCount() - lTickCount));
+//   lTickCount = getTickCount();
+//
+////   for (i = 0; i < Half; i++) {
+////      tmpReal[i] = In[2 * i];
+////      tmpImag[i] = In[2 * i + 1];
+////   }
+//
+//   LOGE("PowerSpectrum(), 2 takes %ld ms\n", (getTickCount() - lTickCount));
+//   lTickCount = getTickCount();
+//
+////   FFT(Half, 0, tmpReal, tmpImag, RealOut, ImagOut);
+//   fftwf_execute ( plan_forward );
+//
+//   LOGE("PowerSpectrum(), 3 takes %ld ms\n", (getTickCount() - lTickCount));
+//   lTickCount = getTickCount();
+//
+//   float wtemp = float (sin(0.5 * theta));
+//
+//   float wpr = -2.0 * wtemp * wtemp;
+//   float wpi = -1.0 * float (sin(theta));
+//   float wr = 1.0 + wpr;
+//   float wi = wpi;
+//
+//   int i3;
+//
+//   float h1r, h1i, h2r, h2i, rt, it;
+//
+//   LOGE("PowerSpectrum(), 4 takes %ld ms\n", (getTickCount() - lTickCount));
+//   lTickCount = getTickCount();
+//
+//   for (i = 1; i < Half / 2; i++) {
+//
+//      i3 = Half - i;
+//
+//      h1r = 0.5 * (tmpOut[2*i] + tmpOut[2*i3]);
+//      h1i = 0.5 * (tmpOut[2*i+1] - tmpOut[2*i3-1]);
+//      h2r = 0.5 * (tmpOut[2*i+1] + tmpOut[2*i3-1]);
+//      h2i = -0.5 * (tmpOut[2*i] - tmpOut[2*i3]);
+//
+//      rt = h1r + wr * h2r - wi * h2i;
+//      it = h1i + wr * h2i + wi * h2r;
+//
+//      Out[i] = rt * rt + it * it;
+//
+//      rt = h1r - wr * h2r + wi * h2i;
+//      it = -h1i + wr * h2i + wi * h2r;
+//
+//      Out[i3] = rt * rt + it * it;
+//
+//      wr = (wtemp = wr) * wpr - wi * wpi + wr;
+//      wi = wi * wpr + wtemp * wpi + wi;
+//   }
+//
+//   LOGE("PowerSpectrum(), 5 takes %ld ms\n", (getTickCount() - lTickCount));
+//   lTickCount = getTickCount();
+//
+//   rt = (h1r = Out[0]) + Out[1];
+//   it = h1r - Out[1];
+//   Out[0] = rt * rt + it * it;
+//
+//   LOGE("PowerSpectrum(), 6 takes %ld ms\n", (getTickCount() - lTickCount));
+//   lTickCount = getTickCount();
+//
+//   rt = Out[Half];
+//   it = Out[Half / 2 +1];
+//   Out[Half / 2] = rt * rt + it * it;
+//
+//   LOGE("PowerSpectrum(), 7 takes %ld ms\n", (getTickCount() - lTickCount));
+//   lTickCount = getTickCount();
+//
+////   delete[]tmpReal;
+////   delete[]tmpImag;
+////   delete[]RealOut;
+////   delete[]ImagOut;
 #endif // EXPERIMENTAL_USE_REALFFTF
 }
 
