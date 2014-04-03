@@ -1713,16 +1713,17 @@ float *FreqAnalyzer::win = NULL;
 double FreqAnalyzer::wss ;
 int FreqAnalyzer::windowFunc = 3;//hannings
 
-#define FFTW_TRIAL
+//#define FFTW_TRIAL
 
 #ifdef FFTW_TRIAL
 double *inBuffer2 = NULL;
 double *outBuffer2 = NULL;
+//fftw_complex *outBuffer2 = NULL;
 static fftw_plan plan_forward;
 #endif
 
 void FreqAnalyzer::initAudacity(){
-
+	LOGE("initAudacity(), ++\n");
 	if(NULL == inBuffer){
 		inBuffer = (float*)malloc(sFrameSize*sizeof(float));
 	}
@@ -1737,10 +1738,18 @@ void FreqAnalyzer::initAudacity(){
 	}
 
 	if(NULL == outBuffer2){
+		//outBuffer2 = fftw_alloc_complex(sFrameSize);//
 		outBuffer2 = (double*)malloc(sFrameSize*sizeof(double));
+		memset((void *)outBuffer2, 0, sizeof(double) * sFrameSize);
+		LOGE("initAudacity(), fftw_plan_r2r_1d+\n");
+		plan_forward = fftw_plan_r2r_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_R2HC, FFTW_ESTIMATE);
+		LOGE("initAudacity(), fftw_plan_r2r_1d-\n");
+		//plan_forward = fftw_plan_r2r_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_R2HC, FFTW_ESTIMATE );
+		//L
+		//plan_forward = fftw_plan_dft_r2c_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_ESTIMATE );
+		//
 	}
 
-	plan_forward = fftw_plan_r2r_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_R2HC, FFTW_ESTIMATE );
 #endif
 
 	if(NULL == win){
@@ -1758,6 +1767,8 @@ void FreqAnalyzer::initAudacity(){
 	   wss = 4.0 / (wss*wss);
 	else
 	   wss = 1.0;
+
+	LOGE("initAudacity(), --\n");
 }
 
 void FreqAnalyzer::deinitAudacity(){
@@ -1781,6 +1792,7 @@ void FreqAnalyzer::deinitAudacity(){
 
 	if(NULL != outBuffer2){
 		free(outBuffer2);
+		//fftw_free(outBuffer2);
 		outBuffer2 = NULL;
 	}
 #endif
@@ -1804,10 +1816,10 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 	//LOGE("performAudacityFFT+\n");
 
 	float fRet = 0.0;
-	if(bReset){
-		deinitAudacity();
-		initAudacity();
-	}
+//	if(bReset){
+//		deinitAudacity();
+//		initAudacity();
+//	}
 
 	if(NULL == inBuffer){
 		initAudacity();
@@ -1819,7 +1831,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 	performSpeexPreprocess(&bytes[0], bReset, speexPrep);
 	long lDelta = (getTickCount() - lTickCount);
 	lTotalTime+=lDelta;
-	LOGD("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(lCount++));
+	LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(lCount++));
 
 //	lTickCount = getTickCount();
 //	performWindowFunc(win);
@@ -1837,11 +1849,9 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 #ifdef FFTW_TRIAL
 
 		for (i = 0; i < sFrameSize; i++)
-			inBuffer2[i] =  bytes[i];
+			inBuffer2[i] =  bytes[i]* win[i];
 
 		lTickCount = getTickCount();
-		//LOGE("performAudacityFFT(), before fftw_execute\n");
-
 		fftw_execute ( plan_forward );
 		//LOGE("performAudacityFFT(), fftw_execute takes %ld ms\n", (getTickCount() - lTickCount));
 
@@ -1859,6 +1869,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 			}
 		}
 		sTotalTime1+=(getTickCount() - lTickCount);
+
 #else
 		lTickCount = getTickCount();
 		for (i = 0; i < sFrameSize; i++)
@@ -1886,7 +1897,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 		sTotalTime2 += (getTickCount() - lTickCount);
 #endif
-		LOGD("performAudacityFFT(), Spectrum takes [%ld, %ld] ms\n", sTotalTime1, sTotalTime2);
+		LOGI("performAudacityFFT(), Spectrum takes [%ld, %ld] ms\n", sTotalTime1, sTotalTime2);
 		if(NULL != iDxValues){
 			iDxValues[0] = iDx;
 			iDxValues[1] = iDx2;
