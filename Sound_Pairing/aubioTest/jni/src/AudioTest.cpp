@@ -197,7 +197,7 @@ bool AudioTest::stopAnalyzeTone(){
 }
 
 void* AudioTest::runAutoTestControl(void* userdata){
-//#ifndef CAM_AUDIO
+#ifndef CAM_AUDIO
 	LOGE("runAutoTestControl()+\n");
 	AudioTest* tester = (AudioTest*)userdata;
 	const bool bIsSenderMode = tester->isSenderMode();
@@ -254,7 +254,7 @@ void* AudioTest::runAutoTestControl(void* userdata){
 	LOGE("runAutoTestControl()---\n");
 	tester->mControlThread = 0;
 	Delegate_detachCurrentThread();
-//#endif
+#endif
 }
 
 const int TABLE_SIZE = 8;
@@ -475,7 +475,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"strDecodeMark    = ["<<strDecodeMark<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					LOGE(strLog.str().c_str());
+					LOGE("%s", strLog.str().c_str());
 
 					Delegate_FeedbackMatchResult(curCode, curECCode, curEncodeMark, strCode, strDecodeUnmark, strDecodeMark, DESC_MATCH, bFromAutoCorrection);
 				}else{
@@ -488,7 +488,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"Difference       = ["<<findDifference(curEncodeMark, strDecodeMark)<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					LOGE(strLog.str().c_str());
+					LOGE("%s", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_EC){
 							adaptPrevMatchRet(prevMatchRet);
@@ -513,7 +513,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"Difference       = ["<<findDifference(curEncodeMark, strDecodeMark)<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					LOGE(strLog.str().c_str());
+					LOGE("%s", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_EC){
 							adaptPrevMatchRet(prevMatchRet);
@@ -536,7 +536,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"Difference       = ["<<findDifference(curEncodeMark, strDecodeMark)<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					LOGE(strLog.str().c_str());
+					LOGE("%s", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
 							adaptPrevMatchRet(prevMatchRet);
@@ -572,7 +572,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 							"curEncodeMark    = ["<<curEncodeMark<<"], \n" <<
 							"tmpRet           = ["<<tmpRet<<"]\n" <<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"]";
-					LOGE(strLog.str().c_str());
+					LOGE("%s", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
 							adaptPrevMatchRet(prevMatchRet);
@@ -593,7 +593,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 							"curEncodeMark    = ["<<curEncodeMark<<"], \n" <<
 							"tmpRet           = ["<<tmpRet<<"]\n" <<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"]";
-					LOGE(strLog.str().c_str());
+					LOGE("%s", strLog.str().c_str());
 
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
@@ -616,7 +616,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 						"curEncodeMark    = ["<<curEncodeMark<<"], \n" <<
 						"tmpRet           = ["<<tmpRet<<"]\n" <<
 						"strDecodeUnmark  = ["<<strDecodeUnmark<<"]";
-				LOGE(strLog.str().c_str());
+				LOGE("%s", strLog.str().c_str());
 
 				if(bFromAutoCorrection){
 					if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
