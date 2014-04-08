@@ -1,0 +1,112 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_white"
+    tools:context=".MainActivity" >
+
+    <ImageView
+        android:id="@+id/iv_loginBg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_no_account"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="@dimen/login_marginMedium"
+        android:layout_marginLeft="@dimen/login_marginLarge"
+        android:layout_marginRight="@dimen/login_marginLarge"
+        android:src="@drawable/login_bg" />
+    
+    <ImageView
+        android:id="@+id/iv_beseyeLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/login_logo_marginTop"
+        android:src="@drawable/login_logo" />
+
+    <EditText
+        android:id="@+id/editText_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/iv_beseyeLogo"
+        android:layout_alignRight="@+id/iv_beseyeLogo"
+        android:layout_below="@+id/iv_beseyeLogo"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/login_marginXLarge"
+        android:background="@drawable/sl_account_input_bg"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="@dimen/login_marginMedium"
+        android:paddingRight="@dimen/login_marginMedium"
+        android:textSize="@dimen/login_fontNormal" />
+    
+    <EditText
+        android:id="@+id/editText_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText_username"
+        android:layout_alignRight="@+id/editText_username"
+        android:layout_below="@+id/editText_username"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/login_marginMedium"
+        android:background="@drawable/sl_account_input_bg"
+        android:ems="10"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:paddingLeft="@dimen/login_marginMedium"
+        android:paddingRight="@dimen/login_marginMedium"
+        android:textSize="@dimen/login_fontNormal" />
+
+    <TextView
+        android:id="@+id/tv_forgetpw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText_username"
+        android:layout_alignRight="@+id/editText_username"
+        android:layout_below="@+id/editText_password"
+        android:layout_marginTop="@dimen/login_marginSmall"
+        android:text="@string/forget_password"
+        android:textColor="@color/beseye_color"
+        android:textSize="@dimen/wifi_list_item_sub_font_size" />
+    
+    <TextView
+        android:id="@+id/tv_no_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText_username"
+        android:layout_above="@+id/button_login"
+        android:layout_marginLeft="@dimen/login_marginMedium"
+        android:layout_marginBottom="@dimen/login_marginMedium"
+        android:text="@string/account_new"
+        android:textColor="@color/word_gray"
+        android:textSize="@dimen/login_fontSmall" />
+    
+    <TextView
+        android:id="@+id/tv_create_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_login"
+        android:layout_marginLeft="@dimen/wifi_list_item_padding_top"
+        android:layout_marginBottom="@dimen/login_marginMedium"
+        android:layout_toRightOf="@+id/tv_no_account"
+        android:text="@string/account_create"
+        android:textColor="@color/beseye_color"
+        android:textSize="@dimen/login_fontSmall" />
+
+    <Button
+        android:id="@+id/button_login"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/sl_account_bottom_btn"
+        android:paddingBottom="@dimen/login_marginMedium"
+        android:paddingTop="@dimen/login_marginMedium"
+        android:text="@string/login"
+        android:textColor="@color/word_white"
+        android:textColorLink="@color/word_white"
+        android:textSize="@dimen/login_fontMedium" />
+
+</RelativeLayout>
