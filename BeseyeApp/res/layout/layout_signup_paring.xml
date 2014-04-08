@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.app.beseye"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/signup_bg_color"
@@ -41,14 +42,14 @@
         android:layout_below="@+id/tv_please_hold_on"
         android:src="@drawable/signup_voice_beseyecam" />
 
-    <ImageView
+    <com.app.beseye.widget.GifMovieView
         android:id="@+id/iv_paring_cam_sonar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/signup_paring_margin_small"
         android:layout_below="@+id/iv_paring_cam_icon"
-        android:src="@drawable/signup_voice_sonar_top" />
+        custom:gif="@drawable/signup_voice_sonar_top" />
     
     <ImageView
         android:id="@+id/iv_paring_bg"
@@ -58,14 +59,14 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/signup_voice_twopeople" />
 
-    <ImageView
+    <com.app.beseye.widget.GifMovieView
         android:id="@+id/iv_paring_phone_sonar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/iv_paring_phone_icon"
         android:layout_marginBottom="@dimen/signup_paring_margin_small"
-        android:src="@drawable/signup_voice_sonar_bottom" />
+        custom:gif="@drawable/signup_voice_sonar_bottom" />
     
     <ImageView
         android:id="@+id/iv_paring_phone_icon"

@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
    	xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/wifi_ap_info_dialog_width"
+    android:layout_width="match_parent"
    	android:layout_height="wrap_content"
    	android:orientation="vertical">
    	<RelativeLayout 
@@ -18,7 +18,7 @@
 	   		android:layout_centerVertical="true"/>
    	</RelativeLayout>
    	<ScrollView 
-    	android:layout_width="@dimen/wifi_ap_info_dialog_width"
+    	android:layout_width="match_parent"
     	android:layout_height="0dp"
     	android:layout_weight="1"
     	android:background="@drawable/wifisetup_password_inf_bg_mid"
@@ -59,7 +59,7 @@
 			    </RelativeLayout>
 			    <View 
 			        android:id="@+id/v_divider0"
-			        android:layout_width="@dimen/wifi_ap_info_divider_width"
+			        android:layout_width="match_parent"
 		    		android:layout_height="1px"
 		    		android:background="@color/wifi_info_dialog_line_color"
 		    		android:layout_centerHorizontal="true"
@@ -99,7 +99,7 @@
 		   		android:background="@drawable/wifisetup_password_inf_bg_mid">
 				<View 
 				    android:id="@+id/v_divider"
-			        android:layout_width="@dimen/wifi_ap_info_divider_width"
+			        android:layout_width="match_parent"
 		    		android:layout_height="1px"
 		    		android:background="@color/wifi_info_dialog_line_color"
 		    		android:layout_centerHorizontal="true"/>
@@ -122,7 +122,7 @@
 		   		android:paddingBottom="5dp">
 				<View 
 				    android:id="@+id/v_divider2"
-			       	android:layout_width="@dimen/wifi_ap_info_divider_width"
+			       	android:layout_width="match_parent"
 		    		android:layout_height="1px"
 		    		android:background="@color/wifi_info_dialog_line_color"
 		    		android:layout_centerHorizontal="true"/>
@@ -182,7 +182,7 @@
 		   		android:paddingBottom="5dp">
 				<View 
 				    android:id="@+id/v_divider3"
-			        android:layout_width="@dimen/wifi_ap_info_divider_width"
+			        android:layout_width="match_parent"
 		    		android:layout_height="1px"
 		    		android:background="@color/wifi_info_dialog_line_color"
 		    		android:layout_centerHorizontal="true"/>
@@ -232,7 +232,8 @@
    		android:orientation="horizontal">
         <Button 
 	       	android:id="@+id/btn_cancel"
-	    	android:layout_width="249dp"
+	    	android:layout_width="0dp"
+	    	android:layout_weight="1"
 	   		android:layout_height="wrap_content"
 	   		android:background="@drawable/sl_wifi_ap_dialog_cancel_btn_bg"
 	   		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
@@ -241,7 +242,8 @@
 
         <Button 
 	       	android:id="@+id/btn_connect"
-	    	android:layout_width="251dp"
+	    	android:layout_width="0dp"
+	    	android:layout_weight="1"
 	   		android:layout_height="wrap_content"
 	   		android:background="@drawable/sl_wifi_ap_dialog_connect_btn_bg"
 	   		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"

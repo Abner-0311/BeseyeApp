@@ -22,15 +22,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.R;
 import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.NetworkMgr;
+import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 
 public class SoundPairingActivity extends BeseyeBaseActivity {
 	private static EditText mEtTonePlay;
 	private static Button mBtnPLayTone;
+	
+	static public final String KEY_WIFI_INFO = "KEY_WIFI_INFO";
+	
+	private WifiAPInfo mChosenWifiAPInfo;
 	
 	//For Soundpairing feature
 	private native static boolean nativeClassInit();
@@ -40,7 +47,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private native void swTest();
 	
     static {
-    	System.loadLibrary("websockets");
+    	//System.loadLibrary("websockets");
     	System.loadLibrary("soundpairing");
     	if (!nativeClassInit())
 			throw new RuntimeException("Native Init Failed");
@@ -50,12 +57,21 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		mEtTonePlay = (EditText)findViewById(R.id.et_playtone_value);
-		mEtTonePlay.setText("raylios WiFi"+Character.toString((char) 0x1B)+Character.toString((char) 0x1B)+"whoisyourdaddy"+Character.toString((char) 0x1B)+Character.toString((char) 0x1B)+"3");
-		mBtnPLayTone = (Button)findViewById(R.id.btn_playtone);
-		if(null != mBtnPLayTone){
-			mBtnPLayTone.setOnClickListener(this);
+		getSupportActionBar().hide();
+		
+		mChosenWifiAPInfo = getIntent().getParcelableExtra(KEY_WIFI_INFO);
+		if(null != mChosenWifiAPInfo){
+			Log.w(TAG, "mChosenWifiAPInfo:"+mChosenWifiAPInfo.toString());
+			int iRet = playPairingCode(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,NetworkMgr.translateCipherToType(mChosenWifiAPInfo.cipher),(short) 1);
+			Toast.makeText(this, "ret:"+iRet, Toast.LENGTH_SHORT).show();
 		}
+		
+//		mEtTonePlay = (EditText)findViewById(R.id.et_playtone_value);
+//		mEtTonePlay.setText("raylios WiFi"+Character.toString((char) 0x1B)+Character.toString((char) 0x1B)+"whoisyourdaddy"+Character.toString((char) 0x1B)+Character.toString((char) 0x1B)+"3");
+//		mBtnPLayTone = (Button)findViewById(R.id.btn_playtone);
+//		if(null != mBtnPLayTone){
+//			mBtnPLayTone.setOnClickListener(this);
+//		}
 		
 //		new Thread(new Runnable(){
 //
@@ -90,7 +106,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 
 	@Override
 	protected int getLayoutId() {
-		return R.layout.layout_sound_pairing;
+		return R.layout.layout_signup_paring;//R.layout.layout_sound_pairing;
 	}
 
     // Audio control begin
@@ -120,7 +136,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 			@Override
 			public void run() {
 		    	Log.i(TAG, "onStartGen(), strCode:["+strCode+"]");
-		    	mBtnPLayTone.setEnabled(false);
+		    	//mBtnPLayTone.setEnabled(false);
 			}}, 0);
 	}
 
@@ -129,7 +145,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 			@Override
 			public void run() {
 				Log.i(TAG, "onStopGen(), strCode:["+strCode+"]");
-		    	mBtnPLayTone.setEnabled(true);
+		    	//mBtnPLayTone.setEnabled(true);
 			}}, 0);
 	}
 

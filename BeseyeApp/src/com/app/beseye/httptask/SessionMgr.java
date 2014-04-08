@@ -490,23 +490,7 @@ public class SessionMgr {
 		}
 		
 		private SessionData(Parcel in) {
-			mStrHostUrl = in.readString();
-			mStrStorageHostUrl = in.readString();
-			mStrUploadHostUrl = in.readString();
-			mStrArtistsHostUrl = in.readString();
-			mStrMdid = in.readString();
-			mStrAccount = in.readString();
-			mStrDomain = in.readString();
-			mStrToken = in.readString();
-			mStrOpenIdType = in.readString();
-			mStrOwnerInfo = in.readString();
-
-			mbIsOpenId = in.readInt()>0?true:false;
-			mbIsCertificated = in.readInt()>0?true:false;
-			mbReadAgreement = in.readInt()>0?true:false;
-			mbProductionMode = in.readInt()>0?true:false;
-			
-			mlRegisterDate = in.readLong();
+			readFromParcel(in);
 	    }
 	 
 		/**

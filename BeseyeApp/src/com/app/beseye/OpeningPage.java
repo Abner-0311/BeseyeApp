@@ -44,7 +44,7 @@ public class OpeningPage extends BeseyeBaseActivity {
 	//WebSocketClient client;
 	private void launchNextPage(){
 		Intent intent = new Intent();
-		intent.setClass(OpeningPage.this, SoundPairingActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
+		intent.setClass(OpeningPage.this, WifiListActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
 		startActivity(intent);
 		finish();
 		

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.app.beseye.R;
+import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.receiver.NetworkChangeReceiver;
 import com.app.beseye.receiver.WifiStateChangeReceiver;
 
@@ -27,6 +28,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 public class NetworkMgr {
@@ -610,7 +613,16 @@ public class NetworkMgr {
 		}
 	}
 	
-	static public class WifiAPInfo{
+	static public class WifiAPInfo implements Parcelable{
+		@Override
+		public String toString() {
+			return "WifiAPInfo [SSID=" + SSID + ", BSSID=" + BSSID
+					+ ", cipher=" + cipher + ", password=" + password
+					+ ", wepkeyIdx=" + wepkeyIdx + ", signalLevel="
+					+ signalLevel + ", frequency=" + frequency
+					+ ", bActiveConn=" + bActiveConn + "]";
+		}
+
 		static final public int MAX_SIGNAL_LEVEL = 4;
 		static final public int MAX_FREQUENCY = 3000;
 		static final public String AUTHNICATION_NONE = "ESS";
@@ -626,6 +638,74 @@ public class NetworkMgr {
 		public int signalLevel;
 		public int frequency;
 		public boolean bActiveConn;
+		
+		public WifiAPInfo() {
+		}
+		
+		public WifiAPInfo(Parcel in) {
+			readFromParcel(in);
+		}
+
+		@Override
+		public int describeContents() {
+			return 0;
+		}
+		
+		private void readFromParcel(Parcel in) {
+			SSID = in.readString();
+			BSSID = in.readString();
+			cipher = in.readString();
+			password = in.readString();
+			
+			wepkeyIdx = in.readInt();
+			signalLevel = in.readInt();
+			frequency = in.readInt();
+			bActiveConn = in.readInt()>0?true:false;
+		}
+		
+		@Override
+		public void writeToParcel(Parcel dest, int flags) {
+	 
+			// We just need to write each field into the
+			// parcel. When we read from parcel, they
+			// will come back in the same order
+			dest.writeString(SSID);
+			dest.writeString(BSSID);
+			dest.writeString(cipher);
+			dest.writeString(password);
+			
+			dest.writeInt(wepkeyIdx);
+			dest.writeInt(signalLevel);
+			dest.writeInt(frequency);
+			dest.writeInt(bActiveConn?1:0);
+		}
+		
+		public static final Parcelable.Creator<WifiAPInfo> CREATOR = new Parcelable.Creator<WifiAPInfo>() {
+	        public WifiAPInfo createFromParcel(Parcel in) {
+	            return new WifiAPInfo(in);
+	        }
+
+	        public WifiAPInfo[] newArray(int size) {
+	            return new WifiAPInfo[size];
+	        }
+	    };
+	}
+	
+	public static int translateCipherToType(String cipher){
+		int iRet = -1;
+		if(null != cipher && 0< cipher.length()){
+			if(cipher.contains(WifiAPInfo.AUTHNICATION_NONE)){
+				iRet = 0;
+			}else if(cipher.contains(WifiAPInfo.AUTHNICATION_WEP)){
+				iRet = 1;
+			}else if(cipher.contains(WifiAPInfo.AUTHNICATION_WPA2)){
+				iRet = 3;
+			}else if(cipher.contains(WifiAPInfo.AUTHNICATION_WPA)){
+				iRet = 2;
+			}
+		}
+		
+		return iRet;
 	}
 	
 	public void filterWifiAPInfo(List<WifiAPInfo> dest, List<ScanResult> src){

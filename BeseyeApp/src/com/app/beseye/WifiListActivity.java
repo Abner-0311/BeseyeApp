@@ -11,6 +11,7 @@ import com.app.beseye.delegator.WifiAPSetupDelegator;
 import com.app.beseye.delegator.WifiAPSetupDelegator.OnWifiApSetupCallback;
 import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_ERROR;
 import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_STATE;
+import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
@@ -66,6 +67,7 @@ public class WifiListActivity extends BeseyeBaseActivity
 							  			 OnWifiStatusChangeCallback,
 							  			 OnWifiApSetupCallback,
 							  			 OnSwitchBtnStateChangedListener{
+	
 	private ListView mlvWifiList;
 	private WifiInfoAdapter mWifiInfoAdapter;
 	private List<WifiAPInfo> mlstScanResult;
@@ -74,8 +76,12 @@ public class WifiListActivity extends BeseyeBaseActivity
 	private View mSwWifi;
 	private ActionBar.LayoutParams mSwWifiViewLayoutParams;
 	private BeseyeSwitchBtn mWifiSwitchBtn;
+	private TextView mtxtKeyIndex;
+	private String mWifiApPassword = null;
+	private WifiAPInfo mChosenWifiAPInfo;
 	
 	static public final String KEY_CHANGE_WIFI_ONLY = "KEY_CHANGE_WIFI_ONLY";
+	static private final String KEY_MAYBE_WRONG_PW = "KEY_MAYBE_WRONG_PW";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -240,8 +246,6 @@ public class WifiListActivity extends BeseyeBaseActivity
 		return dialog;
 	}
 	
-	static private final String KEY_MAYBE_WRONG_PW = "KEY_MAYBE_WRONG_PW";
-	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {
 		Dialog dialog;
@@ -295,8 +299,6 @@ public class WifiListActivity extends BeseyeBaseActivity
 		return dialog;
 	}
 
-	private TextView mtxtKeyIndex;
-	private String mWifiApPassword = null;
 	private View createWifiAPInfoView(final boolean bPasswordOnly, int iWrongPWId){
 		View vgApInfo = null;
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -382,12 +384,17 @@ public class WifiListActivity extends BeseyeBaseActivity
 							
 							mChosenWifiAPInfo.password = mWifiApPassword;
 					    	mChosenWifiAPInfo.wepkeyIdx = Integer.parseInt(String.valueOf(mtxtKeyIndex.getText())) -1;
-					    	if(null == mWifiAPSetupDelegator){
-					    		mWifiAPSetupDelegator = new WifiAPSetupDelegator(mChosenWifiAPInfo, WifiListActivity.this);
-					    	}else{
-					    		mWifiAPSetupDelegator.updateTargetAPInfo(mChosenWifiAPInfo);
-					    	}
-					    	setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SETTING);
+					    	
+							Intent intent = new Intent();
+							intent.setClass(WifiListActivity.this, SoundPairingActivity.class);
+							intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
+							startActivity(intent);
+//					    	if(null == mWifiAPSetupDelegator){
+//					    		mWifiAPSetupDelegator = new WifiAPSetupDelegator(mChosenWifiAPInfo, WifiListActivity.this);
+//					    	}else{
+//					    		mWifiAPSetupDelegator.updateTargetAPInfo(mChosenWifiAPInfo);
+//					    	}
+//					    	setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SETTING);
 						}});
 				}
 
@@ -515,7 +522,6 @@ public class WifiListActivity extends BeseyeBaseActivity
 		return R.layout.layout_wifi_list;
 	}
 
-	private WifiAPInfo mChosenWifiAPInfo;
 	@Override
 	public void onClick(View view) {
 		WifoInfoHolder info = (WifoInfoHolder)view.getTag();
