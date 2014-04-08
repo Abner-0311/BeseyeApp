@@ -1,4 +1,5 @@
 #include "FreqGenerator.h"
+#include "soundpairing_error.h"
 #include <sys/time.h>
 #include <zxing/common/Array.h>
 
@@ -54,7 +55,7 @@ void FreqGenerator::setOnPlayToneCallback(IOnPlayToneCallback* cb){
 	mOnPlayToneCallback = cb;
 }
 
-void FreqGenerator::setOnPlayToneCallback(void(* playToneCB)(void*, Play_Tone_Status, const char *, int), void* userData){
+void FreqGenerator::setOnPlayToneCallback(void(* playToneCB)(void*, Play_Tone_Status, const char *, unsigned int), void* userData){
     mPlayToneCB =playToneCB;
     mCbUserData = userData;
 }
@@ -665,6 +666,64 @@ void FreqGenerator::writeTone(double sample[], byte generatedSnd[], int iLen){
 #endif
 		//mToneAudioTrack.write(generatedSnd, 0, iLen*2);
 	//}
+}
+
+unsigned int FreqGenerator::playPairingCode(char* macAddr, char* wifiKey, unsigned int secType, unsigned short tmpUserToken){
+	//LOGE("++\n");
+	unsigned int iRet = R_OK;
+	char codeToPlay[1024]={0};
+	static const char sep = 0x1B;
+
+	if(!macAddr){
+		iRet = E_FE_MOD_SP_INVALID_MACADDR;
+		goto ERR;
+	}else{
+		int iLen = strlen(macAddr);
+		if(iLen != 12){//mac addr contains 12 hex values
+			iRet = E_FE_MOD_SP_INVALID_MACADDR;
+			goto ERR;
+		}else{
+			for(int idx = 0; idx < iLen; idx++){
+				if(!((0x30 <= macAddr[idx] && macAddr[idx] <= 0x39) || (0x61 <= macAddr[idx] && macAddr[idx] <= 0x66))){
+					iRet = E_FE_MOD_SP_INVALID_MACADDR;
+					goto ERR;
+				}
+			}
+		}
+	}
+
+	if(!(0 <= secType && secType <=3)){
+		iRet = E_FE_MOD_SP_INVALID_SEC_TYPE;
+		goto ERR;
+	}
+
+	if(0 < secType){
+		if(!wifiKey){
+			iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
+			goto ERR;
+		}else{
+			int iKeyLen = strlen(wifiKey);
+			if(1 == secType && (5 != iKeyLen || 13 != iKeyLen)){//WEP
+				iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
+				goto ERR;
+			}else if(1 < secType && (8 > iKeyLen)){//WPA/WPA2
+				iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
+				goto ERR;
+			}
+		}
+	}
+
+	//LOGE("macAddr= [%s]\n", macAddr);
+	sprintf(codeToPlay, "%s%c%s%c%u%c%x", macAddr, sep, wifiKey, sep, secType, sep, tmpUserToken);
+
+	//LOGE("codeToPlay= [%s]\n", codeToPlay);
+	if(!FreqGenerator::getInstance()->playCode2(codeToPlay, true)){
+		iRet = E_FE_MOD_SP_PLAY_CODE_ERR;
+		goto ERR;
+	}
+ERR:
+	//LOGE("iRet= [0x%x]\n", iRet);
+	return iRet;
 }
 
 EncodeItm::EncodeItm(string strCodeInputASCII, string strCodeInput, string strECCode, string strEncodeMark, string strEncode) {

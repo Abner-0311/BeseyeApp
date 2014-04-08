@@ -35,6 +35,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	//For Soundpairing feature
 	private native static boolean nativeClassInit();
 	private native boolean playCode(String strCode, boolean bNeedEncode);
+	private native int playPairingCode(String strMac, String strKey, int iSecType, short sUserToken);
 	private native void finishPlayCode();
 	private native void swTest();
 	
@@ -56,12 +57,12 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 			mBtnPLayTone.setOnClickListener(this);
 		}
 		
-		new Thread(new Runnable(){
-
-			@Override
-			public void run() {
-				swTest();
-			}}).start();
+//		new Thread(new Runnable(){
+//
+//			@Override
+//			public void run() {
+//				swTest();
+//			}}).start();
 	
 	}
 	
@@ -76,7 +77,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.btn_playtone:{
-				if(playCode(mEtTonePlay.getText().toString(), true)){
+				//if(playCode(mEtTonePlay.getText().toString(), true)){
+				if(playPairingCode("aabbccddeeff", "BesEye0630",3,(short) 1) == 0){
 					mBtnPLayTone.setEnabled(false);
 				}
 				break;

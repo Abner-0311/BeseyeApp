@@ -180,7 +180,7 @@ void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_C
 
 }
 
-void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const char * code, int iType){
+void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const char * code, unsigned int iType){
     NSLog(@"playToneCB(), Play_Tone_Status:%d, code:%s",status, code);
     UIButton *playToneButton = (UIButton *)userData;
     if(status == FreqGenerator::PLAY_TONE_BEGIN){
@@ -232,7 +232,8 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         SoundPair_Config::init();
         FreqGenerator::getInstance()->setOnPlayToneCallback(playToneCB, playToneButton);
         const char* code = "0123456789abcdef";
-        if(FreqGenerator::getInstance()->playCode2(code, true)){
+        //if(FreqGenerator::getInstance()->playCode2(code, true)){
+        if(0 == FreqGenerator::getInstance()->playPairingCode("ac09ff6317bc", "0630BesEye", 3, 1)){
             //[playToneButton setEnabled:NO];
             
             //important: call functions below to release resources

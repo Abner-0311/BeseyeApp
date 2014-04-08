@@ -71,7 +71,7 @@ private:
 	int getAudioBufSize();
 	bool initAudioDev();
 	bool deinitAudioDev();
-    void(* mPlayToneCB)(void*, Play_Tone_Status, const char *, int) ;
+    void(* mPlayToneCB)(void*, Play_Tone_Status, const char *, unsigned int) ;
     void* mCbUserData;
 public:
 	static Ref<FreqGenerator> getInstance();
@@ -88,21 +88,28 @@ public:
 
 	virtual ~FreqGenerator();
 
-	void setOnPlayToneCallback(IOnPlayToneCallback* cb);
-    void setOnPlayToneCallback(void(* playToneCB)(void*, Play_Tone_Status, const char *, int) , void* userData);
 	//void playCode(const string strCodeInput, const bool bNeedEncode);
+	//void stopPlay();
 	bool playCode2(const string strCodeInput, const bool bNeedEncode);
 	static void* runPlayCode2(void* userdata);
 	void invokePlayCode2();
+	void stopPlay2();
 
+	//For self testing
 	void playCode3(const string strCodeInput, const bool bNeedEncode);
 	static void* runPlayCode3(void* userdata);
 	void invokePlayCode3();
-
-	//void stopPlay();
-	void stopPlay2();
-
 	void notifySelfTestCond();
+	void setOnPlayToneCallback(IOnPlayToneCallback* cb);
+
+	//For client
+	void setOnPlayToneCallback(void(* playToneCB)(void* userdata, Play_Tone_Status status, const char *msg, unsigned int type) , void* userData);
+
+	unsigned int playPairingCode(char* macAddr, char* wifiKey, unsigned int secType, unsigned short tmpUserToken);
+	//macAddr => Hex values w/o ':' in lower case (ex. ef01cd45ab89)
+	//wifiKey => ASCII values
+	//secType => 0:none; 1:WEP; 2:WPA; 3:WPA2
+	//tmpUserToken => temp user token from Account BE
 };
 
 #endif
