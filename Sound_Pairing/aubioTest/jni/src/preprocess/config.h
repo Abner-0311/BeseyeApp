@@ -26,10 +26,10 @@
 /* #undef FIXED_DEBUG */
 
 /* Compile as fixed-point */
-/* #undef FIXED_POINT */
+#define FIXED_POINT
 
 /* Compile as floating-point */
-#define FLOATING_POINT 
+/* #undef FLOATING_POINT */
 
 /* Define to 1 if you have the <alloca.h> header file. */
 #define HAVE_ALLOCA_H 1
@@ -137,10 +137,10 @@
 /* #undef USE_INTEL_MKL */
 
 /* Use KISS Fast Fourier Transform */
-/* #undef USE_KISS_FFT */
+#define USE_KISS_FFT
 
 /* Use FFT from OggVorbis */
-#define USE_SMALLFT 
+/* #undef USE_SMALLFT */
 
 /* Use C99 variable-size arrays */
 #define VAR_ARRAYS 

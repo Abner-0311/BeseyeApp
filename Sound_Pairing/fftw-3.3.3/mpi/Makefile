@@ -51,8 +51,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = x86_64-unknown-linux-gnu
-host_triplet = mips-unknown-linux-gnu
+build_triplet = i386-apple-darwin13.1.0
+host_triplet = arm-unknown-linux-gnu
 #noinst_PROGRAMS = mpi-bench$(EXEEXT)
 subdir = mpi
 DIST_COMMON = $(am__include_HEADERS_DIST) $(srcdir)/Makefile.am \
@@ -105,8 +105,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)" \
 	"$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libfftw3_mpi_la_DEPENDENCIES =  \
-	../libfftw3.la
+libfftw3f_mpi_la_DEPENDENCIES =  \
+	../libfftw3f.la
 am__objects_1 = any-true.lo api.lo block.lo choose-radix.lo conf.lo \
 	dtensor.lo rearrange.lo wisdom-api.lo f03-wrap.lo
 am__objects_2 = transpose-alltoall.lo transpose-pairwise.lo \
@@ -119,23 +119,23 @@ am__objects_4 = rdft-serial.lo rdft-rank-geq2.lo \
 	rdft-problem.lo rdft-solve.lo
 am__objects_5 = rdft2-serial.lo rdft2-rank-geq2.lo \
 	rdft2-rank-geq2-transposed.lo rdft2-problem.lo rdft2-solve.lo
-am_libfftw3_mpi_la_OBJECTS = $(am__objects_1) \
+am_libfftw3f_mpi_la_OBJECTS = $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5)
-libfftw3_mpi_la_OBJECTS =  \
-	$(am_libfftw3_mpi_la_OBJECTS)
-libfftw3_mpi_la_LINK = $(LIBTOOL) --tag=CC \
+libfftw3f_mpi_la_OBJECTS =  \
+	$(am_libfftw3f_mpi_la_OBJECTS)
+libfftw3f_mpi_la_LINK = $(LIBTOOL) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(libfftw3_mpi_la_LDFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS) $(libfftw3f_mpi_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-#am_libfftw3_mpi_la_rpath = -rpath $(libdir)
+#am_libfftw3f_mpi_la_rpath = -rpath $(libdir)
 PROGRAMS = $(noinst_PROGRAMS)
 am_mpi_bench_OBJECTS = mpi_bench-mpi-bench.$(OBJEXT) \
 	mpi_bench-fftw-bench.$(OBJEXT) mpi_bench-hook.$(OBJEXT)
 mpi_bench_OBJECTS = $(am_mpi_bench_OBJECTS)
 am__DEPENDENCIES_1 =
-mpi_bench_DEPENDENCIES = libfftw3_mpi.la \
-	$(LIBFFTWTHREADS) $(top_builddir)/libfftw3.la \
+mpi_bench_DEPENDENCIES = libfftw3f_mpi.la \
+	$(LIBFFTWTHREADS) $(top_builddir)/libfftw3f.la \
 	$(top_builddir)/libbench2/libbench2.a $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 mpi_bench_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -154,8 +154,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libfftw3_mpi_la_SOURCES) $(mpi_bench_SOURCES)
-DIST_SOURCES = $(libfftw3_mpi_la_SOURCES) \
+SOURCES = $(libfftw3f_mpi_la_SOURCES) $(mpi_bench_SOURCES)
+DIST_SOURCES = $(libfftw3f_mpi_la_SOURCES) \
 	$(mpi_bench_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -167,22 +167,22 @@ HEADERS = $(include_HEADERS) $(nodist_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run aclocal-1.11
+ACLOCAL = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run aclocal-1.11
 ALLOCA = 
 ALTIVEC_CFLAGS = 
 AMTAR = $${TAR-tar}
-AR = mipsel-linux-ar
+AR = arm-linux-androideabi-ar
 AS = as
-AUTOCONF = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run automake-1.11
+AUTOCONF = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoconf
+AUTOHEADER = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoheader
+AUTOMAKE = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run automake-1.11
 AVX_CFLAGS = 
-AWK = gawk
+AWK = awk
 CC = 
 CCDEPMODE = depmode=gcc3
 CFLAGS = -O3 -fomit-frame-pointer -fstrict-aliasing -fno-schedule-insns -ffast-math
 CHECK_PL_OPTS = 
-CPP = mipsel-linux-gcc -std=gnu99 -E
+CPP = arm-linux-androideabi-cpp
 CPPFLAGS = 
 CYGPATH_W = echo
 C_FFTW_R2R_KIND = C_INT32_T
@@ -192,22 +192,22 @@ DEPDIR = .deps
 DLLTOOL = dlltool
 DSYMUTIL = 
 DUMPBIN = 
-ECHO_C = 
-ECHO_N = -n
+ECHO_C = \c
+ECHO_N = 
 ECHO_T = 
-EGREP = /bin/grep -E
+EGREP = /usr/bin/grep -E
 EXEEXT = 
-F77 = gfortran
-FFLAGS = -g -O2
-FGREP = /bin/grep -F
-FLIBS =  -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7 -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../.. -lgfortranbegin -lgfortran -lm
-GREP = /bin/grep
+F77 = 
+FFLAGS = 
+FGREP = /usr/bin/grep -F
+FLIBS = 
+GREP = /usr/bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LD = mipsel-linux-ld
+LD = arm-linux-androideabi-ld
 LDFLAGS = 
 LIBOBJS =  ${LIBOBJDIR}strtod$U.o
 LIBQUADMATH = 
@@ -217,14 +217,14 @@ LIPO =
 LN_S = ln -s
 LTLIBOBJS =  ${LIBOBJDIR}strtod$U.lo
 MAINT = #
-MAKEINFO = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run makeinfo
+MAKEINFO = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run makeinfo
 MANIFEST_TOOL = :
-MKDIR_P = /bin/mkdir -p
+MKDIR_P = .././install-sh -c -d
 MPICC = 
 MPILIBS = 
 MPIRUN = 
 NEON_CFLAGS = 
-NM = mipsel-linux-nm
+NM = arm-linux-androideabi-nm
 NMEDIT = 
 OBJDUMP = objdump
 OBJEXT = o
@@ -241,29 +241,29 @@ PACKAGE_URL =
 PACKAGE_VERSION = 3.3.3
 PATH_SEPARATOR = :
 POW_LIB = -lm
-PRECISION = d
-PREC_SUFFIX = 
+PRECISION = s
+PREC_SUFFIX = f
 PTHREAD_CC = 
 PTHREAD_CFLAGS = 
 PTHREAD_LIBS = 
-RANLIB = mipsel-linux-ranlib
-SED = /bin/sed
+RANLIB = arm-linux-androideabi-ranlib
+SED = /usr/bin/sed
 SET_MAKE = 
 SHARED_VERSION_INFO = 6:2:3
 SHELL = /bin/sh
 SSE2_CFLAGS = 
 STACK_ALIGN_CFLAGS = 
-STRIP = mipsel-linux-strip
+STRIP = strip
 THREADLIBS = 
 VERSION = 3.3.3
-abs_builddir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/mpi
-abs_srcdir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/mpi
-abs_top_builddir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
-abs_top_srcdir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
+abs_builddir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/mpi
+abs_srcdir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/mpi
+abs_top_builddir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
+abs_top_srcdir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
 ac_ct_AR = 
 ac_ct_CC = 
 ac_ct_DUMPBIN = 
-ac_ct_F77 = gfortran
+ac_ct_F77 = 
 acx_pthread_config = 
 am__include = include
 am__leading_dot = .
@@ -271,42 +271,42 @@ am__quote =
 am__tar = $${TAR-tar} chof - "$$tardir"
 am__untar = $${TAR-tar} xf -
 bindir = ${exec_prefix}/bin
-build = x86_64-unknown-linux-gnu
+build = i386-apple-darwin13.1.0
 build_alias = 
-build_cpu = x86_64
-build_os = linux-gnu
-build_vendor = unknown
+build_cpu = i386
+build_os = darwin13.1.0
+build_vendor = apple
 builddir = .
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = mips-unknown-linux-gnu
-host_alias = mips-linux
-host_cpu = mips
+host = arm-unknown-linux-gnu
+host_alias = arm-linux
+host_cpu = arm
 host_os = linux-gnu
 host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/install-sh
+install_sh = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
 localstatedir = ${prefix}/var
 mandir = ${datarootdir}/man
-mkdir_p = /bin/mkdir -p
+mkdir_p = $(top_builddir)/./install-sh -c -d
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /opt/tftpboot/fftw3
+prefix = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/build_android
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 srcdir = .
 sysconfdir = ${prefix}/etc
-target_alias = 
+target_alias = arm-linux
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
@@ -314,7 +314,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/kernel -I$(top_srcdir)/dft	\
 -I$(top_srcdir)/rdft -I$(top_srcdir)/api -I$(top_srcdir)/tests	\
 -I$(top_srcdir)/libbench2
 
-#lib_LTLIBRARIES = libfftw3_mpi.la
+#lib_LTLIBRARIES = libfftw3f_mpi.la
 #include_HEADERS = fftw3-mpi.h
 #nodist_include_HEADERS = fftw3-mpi.f03 fftw3l-mpi.f03
 EXTRA_DIST = testsched.c f03api.sh f03-wrap.sh genf03-wrap.pl fftw3-mpi.f03.in fftw3l-mpi.f03.in
@@ -325,15 +325,15 @@ DFT_SRC = dft-serial.c dft-rank-geq2.c dft-rank-geq2-transposed.c dft-rank1.c df
 RDFT_SRC = rdft-serial.c rdft-rank-geq2.c rdft-rank-geq2-transposed.c rdft-rank1-bigvec.c rdft-problem.c rdft-solve.c mpi-rdft.h
 RDFT2_SRC = rdft2-serial.c rdft2-rank-geq2.c rdft2-rank-geq2-transposed.c rdft2-problem.c rdft2-solve.c mpi-rdft2.h
 SRC = any-true.c api.c block.c choose-radix.c conf.c dtensor.c fftw3-mpi.h ifftw-mpi.h rearrange.c wisdom-api.c f03-wrap.c
-libfftw3_mpi_la_SOURCES = $(SRC) $(TRANSPOSE_SRC) $(DFT_SRC) $(RDFT_SRC) $(RDFT2_SRC)
-libfftw3_mpi_la_LDFLAGS = -version-info 6:2:3
-libfftw3_mpi_la_LIBADD = ../libfftw3.la 
+libfftw3f_mpi_la_SOURCES = $(SRC) $(TRANSPOSE_SRC) $(DFT_SRC) $(RDFT_SRC) $(RDFT2_SRC)
+libfftw3f_mpi_la_LDFLAGS = -version-info 6:2:3
+libfftw3f_mpi_la_LIBADD = ../libfftw3f.la 
 #mpi_bench_CFLAGS = $(OPENMP_CFLAGS)
 #mpi_bench_CFLAGS = $(PTHREAD_CFLAGS)
-#LIBFFTWTHREADS = $(top_builddir)/threads/libfftw3_threads.la
-#LIBFFTWTHREADS = $(top_builddir)/threads/libfftw3_omp.la
+#LIBFFTWTHREADS = $(top_builddir)/threads/libfftw3f_threads.la
+#LIBFFTWTHREADS = $(top_builddir)/threads/libfftw3f_omp.la
 mpi_bench_SOURCES = mpi-bench.c $(top_srcdir)/tests/fftw-bench.c $(top_srcdir)/tests/hook.c
-mpi_bench_LDADD = libfftw3_mpi.la $(LIBFFTWTHREADS) $(top_builddir)/libfftw3.la $(top_builddir)/libbench2/libbench2.a $(MPILIBS) $(THREADLIBS)
+mpi_bench_LDADD = libfftw3f_mpi.la $(LIBFFTWTHREADS) $(top_builddir)/libfftw3f.la $(top_builddir)/libbench2/libbench2.a $(MPILIBS) $(THREADLIBS)
 CHECK = $(top_srcdir)/tests/check.pl
 NUMCHECK = 10
 CHECKSIZE = 10000
@@ -405,8 +405,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libfftw3_mpi.la: $(libfftw3_mpi_la_OBJECTS) $(libfftw3_mpi_la_DEPENDENCIES) $(EXTRA_libfftw3_mpi_la_DEPENDENCIES) 
-	$(libfftw3_mpi_la_LINK) $(am_libfftw3_mpi_la_rpath) $(libfftw3_mpi_la_OBJECTS) $(libfftw3_mpi_la_LIBADD) $(LIBS)
+libfftw3f_mpi.la: $(libfftw3f_mpi_la_OBJECTS) $(libfftw3f_mpi_la_DEPENDENCIES) $(EXTRA_libfftw3f_mpi_la_DEPENDENCIES) 
+	$(libfftw3f_mpi_la_LINK) $(am_libfftw3f_mpi_la_rpath) $(libfftw3f_mpi_la_OBJECTS) $(libfftw3f_mpi_la_LIBADD) $(LIBS)
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \

@@ -50,9 +50,9 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = x86_64-unknown-linux-gnu
-host_triplet = mips-unknown-linux-gnu
-bin_PROGRAMS = fftw-wisdom$(EXEEXT)
+build_triplet = i386-apple-darwin13.1.0
+host_triplet = arm-unknown-linux-gnu
+bin_PROGRAMS = fftwf-wisdom$(EXEEXT)
 subdir = tools
 DIST_COMMON = $(dist_man_MANS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/fftw-wisdom-to-conf.in \
@@ -78,19 +78,19 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(man1dir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_fftw_wisdom_OBJECTS =  \
-	fftw_wisdom-fftw-wisdom.$(OBJEXT)
-fftw_wisdom_OBJECTS =  \
-	$(am_fftw_wisdom_OBJECTS)
+am_fftwf_wisdom_OBJECTS =  \
+	fftwf_wisdom-fftw-wisdom.$(OBJEXT)
+fftwf_wisdom_OBJECTS =  \
+	$(am_fftwf_wisdom_OBJECTS)
 am__DEPENDENCIES_1 =
-fftw_wisdom_DEPENDENCIES =  \
+fftwf_wisdom_DEPENDENCIES =  \
 	$(top_builddir)/tests/bench-bench.o \
 	$(top_builddir)/tests/bench-fftw-bench.o $(LIBFFTWTHREADS) \
-	$(top_builddir)/libfftw3.la \
+	$(top_builddir)/libfftw3f.la \
 	$(top_builddir)/libbench2/libbench2.a $(am__DEPENDENCIES_1)
-fftw_wisdom_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+fftwf_wisdom_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(fftw_wisdom_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(fftwf_wisdom_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -133,8 +133,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(fftw_wisdom_SOURCES)
-DIST_SOURCES = $(fftw_wisdom_SOURCES)
+SOURCES = $(fftwf_wisdom_SOURCES)
+DIST_SOURCES = $(fftwf_wisdom_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -146,22 +146,22 @@ MANS = $(dist_man_MANS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run aclocal-1.11
+ACLOCAL = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run aclocal-1.11
 ALLOCA = 
 ALTIVEC_CFLAGS = 
 AMTAR = $${TAR-tar}
-AR = mipsel-linux-ar
+AR = arm-linux-androideabi-ar
 AS = as
-AUTOCONF = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run automake-1.11
+AUTOCONF = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoconf
+AUTOHEADER = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoheader
+AUTOMAKE = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run automake-1.11
 AVX_CFLAGS = 
-AWK = gawk
-CC = mipsel-linux-gcc -std=gnu99
+AWK = awk
+CC = arm-linux-androideabi-gcc -std=gnu99
 CCDEPMODE = depmode=gcc3
 CFLAGS = -O3 -fomit-frame-pointer -fstrict-aliasing -fno-schedule-insns -ffast-math
 CHECK_PL_OPTS = 
-CPP = mipsel-linux-gcc -std=gnu99 -E
+CPP = arm-linux-androideabi-cpp
 CPPFLAGS = 
 CYGPATH_W = echo
 C_FFTW_R2R_KIND = C_INT32_T
@@ -171,22 +171,22 @@ DEPDIR = .deps
 DLLTOOL = dlltool
 DSYMUTIL = 
 DUMPBIN = 
-ECHO_C = 
-ECHO_N = -n
+ECHO_C = \c
+ECHO_N = 
 ECHO_T = 
-EGREP = /bin/grep -E
+EGREP = /usr/bin/grep -E
 EXEEXT = 
-F77 = gfortran
-FFLAGS = -g -O2
-FGREP = /bin/grep -F
-FLIBS =  -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7 -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../.. -lgfortranbegin -lgfortran -lm
-GREP = /bin/grep
+F77 = 
+FFLAGS = 
+FGREP = /usr/bin/grep -F
+FLIBS = 
+GREP = /usr/bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LD = mipsel-linux-ld
+LD = arm-linux-androideabi-ld
 LDFLAGS = 
 LIBOBJS =  ${LIBOBJDIR}strtod$U.o
 LIBQUADMATH = 
@@ -196,14 +196,14 @@ LIPO =
 LN_S = ln -s
 LTLIBOBJS =  ${LIBOBJDIR}strtod$U.lo
 MAINT = #
-MAKEINFO = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run makeinfo
+MAKEINFO = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run makeinfo
 MANIFEST_TOOL = :
-MKDIR_P = /bin/mkdir -p
+MKDIR_P = .././install-sh -c -d
 MPICC = 
 MPILIBS = 
 MPIRUN = 
 NEON_CFLAGS = 
-NM = mipsel-linux-nm
+NM = arm-linux-androideabi-nm
 NMEDIT = 
 OBJDUMP = objdump
 OBJEXT = o
@@ -220,29 +220,29 @@ PACKAGE_URL =
 PACKAGE_VERSION = 3.3.3
 PATH_SEPARATOR = :
 POW_LIB = -lm
-PRECISION = d
-PREC_SUFFIX = 
+PRECISION = s
+PREC_SUFFIX = f
 PTHREAD_CC = 
 PTHREAD_CFLAGS = 
 PTHREAD_LIBS = 
-RANLIB = mipsel-linux-ranlib
-SED = /bin/sed
+RANLIB = arm-linux-androideabi-ranlib
+SED = /usr/bin/sed
 SET_MAKE = 
 SHARED_VERSION_INFO = 6:2:3
 SHELL = /bin/sh
 SSE2_CFLAGS = 
 STACK_ALIGN_CFLAGS = 
-STRIP = mipsel-linux-strip
+STRIP = strip
 THREADLIBS = 
 VERSION = 3.3.3
-abs_builddir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/tools
-abs_srcdir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/tools
-abs_top_builddir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
-abs_top_srcdir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
+abs_builddir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/tools
+abs_srcdir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/tools
+abs_top_builddir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
+abs_top_srcdir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
 ac_ct_AR = 
 ac_ct_CC = 
 ac_ct_DUMPBIN = 
-ac_ct_F77 = gfortran
+ac_ct_F77 = 
 acx_pthread_config = 
 am__include = include
 am__leading_dot = .
@@ -250,59 +250,59 @@ am__quote =
 am__tar = $${TAR-tar} chof - "$$tardir"
 am__untar = $${TAR-tar} xf -
 bindir = ${exec_prefix}/bin
-build = x86_64-unknown-linux-gnu
+build = i386-apple-darwin13.1.0
 build_alias = 
-build_cpu = x86_64
-build_os = linux-gnu
-build_vendor = unknown
+build_cpu = i386
+build_os = darwin13.1.0
+build_vendor = apple
 builddir = .
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = mips-unknown-linux-gnu
-host_alias = mips-linux
-host_cpu = mips
+host = arm-unknown-linux-gnu
+host_alias = arm-linux
+host_cpu = arm
 host_os = linux-gnu
 host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/install-sh
+install_sh = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
 localstatedir = ${prefix}/var
 mandir = ${datarootdir}/man
-mkdir_p = /bin/mkdir -p
+mkdir_p = $(top_builddir)/./install-sh -c -d
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /opt/tftpboot/fftw3
+prefix = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/build_android
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 srcdir = .
 sysconfdir = ${prefix}/etc
-target_alias = 
+target_alias = arm-linux
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
 AM_CPPFLAGS = -I$(top_srcdir)/libbench2 -I$(top_srcdir)/api 
 bin_SCRIPTS = fftw-wisdom-to-conf
-BUILT_SOURCES = fftw-wisdom-to-conf fftw-wisdom.1
+BUILT_SOURCES = fftw-wisdom-to-conf fftwf-wisdom.1
 EXTRA_DIST = fftw-wisdom-to-conf.in
-dist_man_MANS = fftw-wisdom-to-conf.1 fftw-wisdom.1
+dist_man_MANS = fftw-wisdom-to-conf.1 fftwf-wisdom.1
 EXTRA_MANS = fftw_wisdom.1.in
-#fftw_wisdom_CFLAGS = $(OPENMP_CFLAGS)
-#fftw_wisdom_CFLAGS = $(PTHREAD_CFLAGS)
-#LIBFFTWTHREADS = $(top_builddir)/threads/libfftw3_threads.la
-#LIBFFTWTHREADS = $(top_builddir)/threads/libfftw3_omp.la
-fftw_wisdom_SOURCES = fftw-wisdom.c
-fftw_wisdom_LDADD = $(top_builddir)/tests/bench-bench.o	\
+#fftwf_wisdom_CFLAGS = $(OPENMP_CFLAGS)
+#fftwf_wisdom_CFLAGS = $(PTHREAD_CFLAGS)
+#LIBFFTWTHREADS = $(top_builddir)/threads/libfftw3f_threads.la
+#LIBFFTWTHREADS = $(top_builddir)/threads/libfftw3f_omp.la
+fftwf_wisdom_SOURCES = fftw-wisdom.c
+fftwf_wisdom_LDADD = $(top_builddir)/tests/bench-bench.o	\
 $(top_builddir)/tests/bench-fftw-bench.o $(LIBFFTWTHREADS)	\
-$(top_builddir)/libfftw3.la			\
+$(top_builddir)/libfftw3f.la			\
 $(top_builddir)/libbench2/libbench2.a $(THREADLIBS)
 
 all: $(BUILT_SOURCES)
@@ -390,9 +390,9 @@ clean-binPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-fftw-wisdom$(EXEEXT): $(fftw_wisdom_OBJECTS) $(fftw_wisdom_DEPENDENCIES) $(EXTRA_fftw_wisdom_DEPENDENCIES) 
-	@rm -f fftw-wisdom$(EXEEXT)
-	$(fftw_wisdom_LINK) $(fftw_wisdom_OBJECTS) $(fftw_wisdom_LDADD) $(LIBS)
+fftwf-wisdom$(EXEEXT): $(fftwf_wisdom_OBJECTS) $(fftwf_wisdom_DEPENDENCIES) $(EXTRA_fftwf_wisdom_DEPENDENCIES) 
+	@rm -f fftwf-wisdom$(EXEEXT)
+	$(fftwf_wisdom_LINK) $(fftwf_wisdom_OBJECTS) $(fftwf_wisdom_LDADD) $(LIBS)
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_SCRIPTS)'; test -n "$(bindir)" || list=; \
@@ -435,7 +435,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/fftw_wisdom-fftw-wisdom.Po
+include ./$(DEPDIR)/fftwf_wisdom-fftw-wisdom.Po
 
 .c.o:
 	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -458,19 +458,19 @@ include ./$(DEPDIR)/fftw_wisdom-fftw-wisdom.Po
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 #	$(LTCOMPILE) -c -o $@ $<
 
-fftw_wisdom-fftw-wisdom.o: fftw-wisdom.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fftw_wisdom_CFLAGS) $(CFLAGS) -MT fftw_wisdom-fftw-wisdom.o -MD -MP -MF $(DEPDIR)/fftw_wisdom-fftw-wisdom.Tpo -c -o fftw_wisdom-fftw-wisdom.o `test -f 'fftw-wisdom.c' || echo '$(srcdir)/'`fftw-wisdom.c
-	$(am__mv) $(DEPDIR)/fftw_wisdom-fftw-wisdom.Tpo $(DEPDIR)/fftw_wisdom-fftw-wisdom.Po
-#	source='fftw-wisdom.c' object='fftw_wisdom-fftw-wisdom.o' libtool=no \
+fftwf_wisdom-fftw-wisdom.o: fftw-wisdom.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fftwf_wisdom_CFLAGS) $(CFLAGS) -MT fftwf_wisdom-fftw-wisdom.o -MD -MP -MF $(DEPDIR)/fftwf_wisdom-fftw-wisdom.Tpo -c -o fftwf_wisdom-fftw-wisdom.o `test -f 'fftw-wisdom.c' || echo '$(srcdir)/'`fftw-wisdom.c
+	$(am__mv) $(DEPDIR)/fftwf_wisdom-fftw-wisdom.Tpo $(DEPDIR)/fftwf_wisdom-fftw-wisdom.Po
+#	source='fftw-wisdom.c' object='fftwf_wisdom-fftw-wisdom.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fftw_wisdom_CFLAGS) $(CFLAGS) -c -o fftw_wisdom-fftw-wisdom.o `test -f 'fftw-wisdom.c' || echo '$(srcdir)/'`fftw-wisdom.c
+#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fftwf_wisdom_CFLAGS) $(CFLAGS) -c -o fftwf_wisdom-fftw-wisdom.o `test -f 'fftw-wisdom.c' || echo '$(srcdir)/'`fftw-wisdom.c
 
-fftw_wisdom-fftw-wisdom.obj: fftw-wisdom.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fftw_wisdom_CFLAGS) $(CFLAGS) -MT fftw_wisdom-fftw-wisdom.obj -MD -MP -MF $(DEPDIR)/fftw_wisdom-fftw-wisdom.Tpo -c -o fftw_wisdom-fftw-wisdom.obj `if test -f 'fftw-wisdom.c'; then $(CYGPATH_W) 'fftw-wisdom.c'; else $(CYGPATH_W) '$(srcdir)/fftw-wisdom.c'; fi`
-	$(am__mv) $(DEPDIR)/fftw_wisdom-fftw-wisdom.Tpo $(DEPDIR)/fftw_wisdom-fftw-wisdom.Po
-#	source='fftw-wisdom.c' object='fftw_wisdom-fftw-wisdom.obj' libtool=no \
+fftwf_wisdom-fftw-wisdom.obj: fftw-wisdom.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fftwf_wisdom_CFLAGS) $(CFLAGS) -MT fftwf_wisdom-fftw-wisdom.obj -MD -MP -MF $(DEPDIR)/fftwf_wisdom-fftw-wisdom.Tpo -c -o fftwf_wisdom-fftw-wisdom.obj `if test -f 'fftw-wisdom.c'; then $(CYGPATH_W) 'fftw-wisdom.c'; else $(CYGPATH_W) '$(srcdir)/fftw-wisdom.c'; fi`
+	$(am__mv) $(DEPDIR)/fftwf_wisdom-fftw-wisdom.Tpo $(DEPDIR)/fftwf_wisdom-fftw-wisdom.Po
+#	source='fftw-wisdom.c' object='fftwf_wisdom-fftw-wisdom.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
-#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fftw_wisdom_CFLAGS) $(CFLAGS) -c -o fftw_wisdom-fftw-wisdom.obj `if test -f 'fftw-wisdom.c'; then $(CYGPATH_W) 'fftw-wisdom.c'; else $(CYGPATH_W) '$(srcdir)/fftw-wisdom.c'; fi`
+#	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fftwf_wisdom_CFLAGS) $(CFLAGS) -c -o fftwf_wisdom-fftw-wisdom.obj `if test -f 'fftw-wisdom.c'; then $(CYGPATH_W) 'fftw-wisdom.c'; else $(CYGPATH_W) '$(srcdir)/fftw-wisdom.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -745,7 +745,7 @@ uninstall-man: uninstall-man1
 	tags uninstall uninstall-am uninstall-binPROGRAMS \
 	uninstall-binSCRIPTS uninstall-man uninstall-man1
 
-fftw-wisdom.1: fftw_wisdom.1
+fftwf-wisdom.1: fftw_wisdom.1
 	rm -f $@
 	cp fftw_wisdom.1 $@
 

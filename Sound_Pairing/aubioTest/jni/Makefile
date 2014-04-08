@@ -29,15 +29,23 @@ $(SRC_PATH)/main.cpp
 
 CXXOBJECTS=$(CXXSOURCES:.cpp=.o)
 
-SOURCES=$(SRC_PATH)/../http_cgi_lib/src/http_cgi.c
+SOURCES=$(SRC_PATH)/preprocess/kiss_fft.c \
+$(SRC_PATH)/preprocess/kiss_fftr.c \
+$(SRC_PATH)/preprocess/mdf.c \
+$(SRC_PATH)/preprocess/smallft.c \
+$(SRC_PATH)/preprocess/fftwrap.c \
+$(SRC_PATH)/preprocess/filterbank.c \
+$(SRC_PATH)/preprocess/preprocess.c \
+$(SRC_PATH)/../http_cgi_lib/src/http_cgi.c
 
 OBJECTS=$(SOURCES:.c=.o)
 
 EXECUTABLE=soundpairing
 
 CFLAGS=-c -Wall -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -I$(TOOLCHAIN)/include
-LDFLAGS=-L$(TOOLCHAIN)/lib -lcurl -lspeexdsp -ljson-c -lpthread -L$(TOOLCHAIN)/lib/libstdc++.a
-CXXFLAGS= -Wall -ansi -fPIC -ffast-math -O3 -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -I$(TOOLCHAIN)/include
+LDFLAGS=-L$(TOOLCHAIN)/lib -lcurl -ljson-c -lpthread -L$(TOOLCHAIN)/lib/libstdc++.a
+#-lspeexdsp
+CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -I$(TOOLCHAIN)/include
 
 all:$(CXXSOURCES) $(SOURCES) $(EXECUTABLE)
 

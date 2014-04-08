@@ -872,6 +872,7 @@ EXPORT int speex_preprocess_run(SpeexPreprocessState *st, spx_int16_t *x)
    filterbank_compute_psd16(st->bank,st->gain2+N, st->gain2);
    filterbank_compute_psd16(st->bank,st->gain+N, st->gain);
    
+
    /* Use 1 for linear gain resolution (best) or 0 for Bark gain resolution (faster) */
    if (1)
    {

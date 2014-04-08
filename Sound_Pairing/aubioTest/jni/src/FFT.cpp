@@ -233,7 +233,7 @@ void FFT(int NumSamples,
 
    lTotal_4 += (getTickCount() - lTickCount);
    lCount2++;
-   LOGE("FFT(), -------------->[%ld , %ld , %ld , %ld ]\n", (lTotal_1/lCount2), (lTotal_2/lCount2), (lTotal_3/lCount2), (lTotal_4/lCount2));
+   //LOGE("FFT(), -------------->[%ld , %ld , %ld , %ld ]\n", (lTotal_1/lCount2), (lTotal_2/lCount2), (lTotal_3/lCount2), (lTotal_4/lCount2));
    /*
       **   Need to normalize if inverse transform...
     */
@@ -500,7 +500,7 @@ void PowerSpectrum(int NumSamples, float *In, float *Out)
 
    lTotal4 += (getTickCount() - lTickCount);
    lCount++;
-   LOGE("PowerSpectrum(), [%ld , %ld , %ld , %ld ]\n", (lTotal1/lCount), (lTotal2/lCount), (lTotal3/lCount), (lTotal4/lCount));
+   //LOGE("PowerSpectrum(), [%ld , %ld , %ld , %ld ]\n", (lTotal1/lCount), (lTotal2/lCount), (lTotal3/lCount), (lTotal4/lCount));
 
    rt = (h1r = RealOut[0]) + ImagOut[0];
    it = h1r - ImagOut[0];
