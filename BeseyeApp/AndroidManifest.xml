@@ -52,8 +52,8 @@
         -->
         <activity
             android:name=".OpeningPage"
+        	android:screenOrientation="landscape"
             android:configChanges="locale|orientation" 
-            android:screenOrientation="landscape" 
             android:theme="@style/Theme.BesEye">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
