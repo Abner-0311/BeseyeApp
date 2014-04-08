@@ -34,6 +34,7 @@
 #include "sp_config.h"
 #include "beseye_sound_pairing.h"
 #include "FreqGenerator.h"
+#include "soundpairing_error.h"
 
 #import "SDL_config.h"
 /* import the SDL main definition header */
@@ -233,14 +234,29 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         FreqGenerator::getInstance()->setOnPlayToneCallback(playToneCB, playToneButton);
         const char* code = "0123456789abcdef";
         //if(FreqGenerator::getInstance()->playCode2(code, true)){
-        if(0 == FreqGenerator::getInstance()->playPairingCode("ac09ff6317bc", "0630BesEye", 3, 1)){
+        
+        //macAddr => Hex values w/o ':' in lower case (ex. ef01cd45ab89)
+        //wifiKey => ASCII values (for WEP: 5 or 13 digits; WPA/WPA2: more than 8 digits)
+        //secType => 0:none; 1:WEP; 2:WPA; 3:WPA2
+        //tmpUserToken => temp user token from Account BE
+        
+        unsigned int iRet =FreqGenerator::getInstance()->playPairingCode("ac09ff6317bc", "0630BesEye", 3, 1);
+        if(R_OK == iRet){
             //[playToneButton setEnabled:NO];
             
             //important: call functions below to release resources
             //FreqGenerator::getInstance()->stopPlay2();
             //SoundPair_Config::uninit();
+        }else if(E_FE_MOD_SP_INVALID_MACADDR == iRet){
+            NSLog(@"invalid mac addr");
+        }else if(E_FE_MOD_SP_INVALID_WIFI_KEY == iRet){
+            NSLog(@"invalid wifi key");
+        }else if(E_FE_MOD_SP_INVALID_SEC_TYPE == iRet){
+            NSLog(@"invalid sec type");
+        }else if(E_FE_MOD_SP_PLAY_CODE_ERR == iRet){
+            NSLog(@"error to play tone");
         }else{
-            NSLog(@"failed to play code, code:%s", code);
+            NSLog(@"failed to play code, code:%s, iRet:%d", code, iRet);
         }
     }
 
