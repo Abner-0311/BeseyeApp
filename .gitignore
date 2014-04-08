@@ -73,3 +73,15 @@ Sound_Pairing/aubioTest/jni/ws-client/._Makefile
 Sound_Pairing/aubioTest/jni/http_cgi_lib/.DS_Store
 
 Sound_Pairing/aubioTest/jni/http_cgi_lib/.DS_Store
+
+*.Plo
+
+*.Plo
+
+*.Po
+
+*.Plo
+
+*.Plo
+
+Sound_Pairing/fftw-3.3.3/api/.deps/apiplan.Plo

@@ -21,7 +21,14 @@ LOCAL_MODULE           := soundpairing
 
 LOCAL_CPPFLAGS 		   += -fexceptions
 
-LOCAL_SRC_FILES        := http_cgi_lib/src/http_cgi.c \
+LOCAL_SRC_FILES        := src/preprocess/kiss_fft.c \
+						  src/preprocess/kiss_fftr.c \
+						  src/preprocess/mdf.c \
+						  src/preprocess/smallft.c \
+						  src/preprocess/fftwrap.c \
+						  src/preprocess/filterbank.c \
+						  src/preprocess/preprocess.c \
+						  http_cgi_lib/src/http_cgi.c \
 						  cam-handler/src/network/event.c \
 						  cam-handler/src/network/network.c \
 						  common/src/json_utils.c \
@@ -47,6 +54,8 @@ LOCAL_SRC_FILES        := http_cgi_lib/src/http_cgi.c \
 						  src/native.cpp \
 
 LOCAL_C_INCLUDES 	   := $(LOCAL_PATH)\
+						  $(LOCAL_PATH)/src \
+						  $(LOCAL_PATH)/src/preprocess \
 						  $(LOCAL_PATH)/include \
 						  $(LOCAL_PATH)/include/speex \
 						  $(LOCAL_PATH)/include/curl \
@@ -64,12 +73,11 @@ LOCAL_C_INCLUDES 	   := $(LOCAL_PATH)\
 
 LOCAL_LDLIBS           := -L$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/usr/lib \
 						  -L$(LOCAL_PATH) \
-						  -lspeexdsp \
 						  -lm \
 						  -lcurl \
 						  -ljson-c \
 					      -ljson \
-					      -lfftw3 \
+					      -lfftw3f \
 					      -llog \
 					      -lz \
 					      -ldl \

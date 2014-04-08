@@ -189,7 +189,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		monitorAsyncTask(new BeseyeCamBEHttpTask.SetSpeakerVolumeTask(this), true, mStrVCamID,"30");
 		//monitorAsyncTask(new BeseyeCamBEHttpTask.ReconnectMMTask(this), true, mStrVCamID);
 		
-		monitorAsyncTask(new BeseyeCamBEHttpTask.SetImageSettingTask(this), true, mStrVCamID,"0","1","32","32","32","32","32","30");
+		//monitorAsyncTask(new BeseyeCamBEHttpTask.SetImageSettingTask(this), true, mStrVCamID,"0","0","64","32","1","0","32","30");
 	}
 
 	@Override

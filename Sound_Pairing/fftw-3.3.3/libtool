@@ -2,7 +2,7 @@
 
 # libtool - Provide generalized library-building support services.
 # Generated automatically by config.status (fftw) 3.3.3
-# Libtool was configured on host beseye-ls-1:
+# Libtool was configured on host abner-mbp:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
 #   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005,
@@ -40,7 +40,7 @@ available_tags="F77 "
 # ### BEGIN LIBTOOL CONFIG
 
 # Whether or not to build shared libraries.
-build_libtool_libs=yes
+build_libtool_libs=no
 
 # Assembler program.
 AS="as"
@@ -62,7 +62,7 @@ build_old_libs=yes
 pic_mode=default
 
 # Whether or not to optimize for fast installation.
-fast_install=yes
+fast_install=needless
 
 # Shell to use when invoking shell scripts.
 SHELL="/bin/sh"
@@ -74,38 +74,38 @@ ECHO="printf %s\\n"
 PATH_SEPARATOR=":"
 
 # The host system.
-host_alias=mips-linux
-host=mips-unknown-linux-gnu
+host_alias=arm-linux
+host=arm-unknown-linux-gnu
 host_os=linux-gnu
 
 # The build system.
 build_alias=
-build=x86_64-unknown-linux-gnu
-build_os=linux-gnu
+build=i386-apple-darwin13.1.0
+build_os=darwin13.1.0
 
 # A sed program that does not truncate output.
-SED="/bin/sed"
+SED="/usr/bin/sed"
 
 # Sed that helps us avoid accidentally triggering echo(1) options like -n.
 Xsed="$SED -e 1s/^X//"
 
 # A grep program that handles long lines.
-GREP="/bin/grep"
+GREP="/usr/bin/grep"
 
 # An ERE matcher.
-EGREP="/bin/grep -E"
+EGREP="/usr/bin/grep -E"
 
 # A literal string matcher.
-FGREP="/bin/grep -F"
+FGREP="/usr/bin/grep -F"
 
 # A BSD- or MS-compatible name lister.
-NM="mipsel-linux-nm"
+NM="arm-linux-androideabi-nm"
 
 # Whether we need soft or hard links.
 LN_S="ln -s"
 
 # What is the maximum length of a command?
-max_cmd_len=1966080
+max_cmd_len=196608
 
 # Object file suffix (normally "o").
 objext=o
@@ -144,7 +144,7 @@ want_nocaseglob="no"
 sharedlib_from_linklib_cmd="printf %s\\n"
 
 # The archiver.
-AR="mipsel-linux-ar"
+AR="arm-linux-androideabi-ar"
 
 # Flags to create an archive.
 AR_FLAGS="cru"
@@ -153,10 +153,10 @@ AR_FLAGS="cru"
 archiver_list_spec="@"
 
 # A symbol stripping program.
-STRIP="mipsel-linux-strip"
+STRIP="strip"
 
 # Commands used to install an old-style archive.
-RANLIB="mipsel-linux-ranlib"
+RANLIB="arm-linux-androideabi-ranlib"
 old_postinstall_cmds="chmod 644 \$oldlib~\$RANLIB \$tool_oldlib"
 old_postuninstall_cmds=""
 
@@ -164,7 +164,7 @@ old_postuninstall_cmds=""
 lock_old_archive_extraction=no
 
 # A C compiler.
-LTCC="mipsel-linux-gcc -std=gnu99"
+LTCC="arm-linux-androideabi-gcc -std=gnu99"
 
 # LTCC compiler flags.
 LTCFLAGS="-O3 -fomit-frame-pointer -fstrict-aliasing -fno-schedule-insns -ffast-math"
@@ -275,10 +275,10 @@ finish_eval=""
 hardcode_into_libs=yes
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/opt/buildroot-gcc342/lib/gcc/mipsel-linux-uclibc/3.4.2 /opt/buildroot-gcc342/lib/gcc /opt/buildroot-gcc342/mipsel-linux-uclibc/lib "
+sys_lib_search_path_spec="/private/tmp/fftw3/lib/gcc/arm-linux-androideabi/4.6 /private/tmp/fftw3/lib/gcc /private/tmp/fftw3/arm-linux-androideabi/lib /private/tmp/fftw3/sysroot/usr/lib "
 
 # Run-time system search path for libraries.
-sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib64/atlas /usr/lib64/ctapi /usr/local/lib /usr/local/lib /usr/lib64/mysql /usr/lib64/qt-3.3/lib /usr/lib64/xulrunner "
+sys_lib_dlsearch_path_spec="/lib /usr/lib"
 
 # Whether dlopen is supported.
 dlopen_support=unknown
@@ -290,12 +290,12 @@ dlopen_self=unknown
 dlopen_self_static=unknown
 
 # Commands to strip libraries.
-old_striplib="mipsel-linux-strip --strip-debug"
-striplib="mipsel-linux-strip --strip-unneeded"
+old_striplib=""
+striplib=""
 
 
 # The linker used to build libraries.
-LD="mipsel-linux-ld"
+LD="arm-linux-androideabi-ld"
 
 # How to create reloadable object files.
 reload_flag=" -r"
@@ -305,7 +305,7 @@ reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="mipsel-linux-gcc -std=gnu99"
+CC="arm-linux-androideabi-gcc -std=gnu99"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
@@ -326,7 +326,7 @@ link_static_flag="-static"
 compiler_c_o="yes"
 
 # Whether or not to add -lc for building shared libraries.
-build_libtool_need_lc=no
+build_libtool_need_lc=yes
 
 # Whether or not to disallow shared libs when runtime libs are static.
 allow_libtool_libs_with_static_runtimes=no
@@ -1266,7 +1266,7 @@ exec_cmd=
 # Append VALUE to the end of shell variable VAR.
 func_append ()
 {
-    eval "${1}+=\${2}"
+eval "${1}+=\${2}"
 } # Extended-shell func_append implementation
 
 # func_append_quoted var value
@@ -1282,7 +1282,7 @@ func_append_quoted ()
 # func_arith arithmetic-term...
 func_arith ()
 {
-    func_arith_result=$(( $* ))
+func_arith_result=$(( $* ))
 } # Extended-shell func_arith implementation
 
 
@@ -1290,7 +1290,7 @@ func_arith ()
 # STRING may not start with a hyphen.
 func_len ()
 {
-    func_len_result=${#1}
+func_len_result=${#1}
 } # Extended-shell func_len implementation
 
 
@@ -1307,7 +1307,7 @@ func_lo2o ()
 # func_xform libobj-or-source
 func_xform ()
 {
-    func_xform_result=${1%.*}.lo
+func_xform_result=${1%.*}.lo
 } # Extended-shell func_xform implementation
 
 
@@ -10088,7 +10088,7 @@ build_old_libs=`case $build_libtool_libs in yes) echo no;; *) echo yes;; esac`
 # ### BEGIN LIBTOOL TAG CONFIG: F77
 
 # The linker used to build libraries.
-LD="mipsel-linux-ld"
+LD=""
 
 # How to create reloadable object files.
 reload_flag=" -r"
@@ -10098,25 +10098,25 @@ reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="gfortran"
+CC=""
 
 # Is the compiler the GNU compiler?
-with_gcc=yes
+with_gcc=
 
 # Compiler flag to turn off builtin functions.
 no_builtin_flag=""
 
 # Additional compiler flags for building library objects.
-pic_flag=" -fPIC"
+pic_flag=""
 
 # How to pass a linker flag through the compiler.
-wl="-Wl,"
+wl=""
 
 # Compiler flag to prevent dynamic linking.
 link_static_flag=""
 
 # Does compiler simultaneously support -c and -o options?
-compiler_c_o="yes"
+compiler_c_o=""
 
 # Whether or not to add -lc for building shared libraries.
 build_libtool_need_lc=no
@@ -10125,13 +10125,13 @@ build_libtool_need_lc=no
 allow_libtool_libs_with_static_runtimes=no
 
 # Compiler flag to allow reflexive dlopens.
-export_dynamic_flag_spec="\${wl}--export-dynamic"
+export_dynamic_flag_spec=""
 
 # Compiler flag to generate shared objects directly from archives.
-whole_archive_flag_spec="\${wl}--whole-archive\$convenience \${wl}--no-whole-archive"
+whole_archive_flag_spec=""
 
 # Whether the compiler copes with passing no objects directly.
-compiler_needs_object="no"
+compiler_needs_object=""
 
 # Create an old-style archive from a shared archive.
 old_archive_from_new_cmds=""
@@ -10140,11 +10140,8 @@ old_archive_from_new_cmds=""
 old_archive_from_expsyms_cmds=""
 
 # Commands used to build a shared archive.
-archive_cmds="\$CC -shared \$pic_flag \$libobjs \$deplibs \$compiler_flags \${wl}-soname \$wl\$soname -o \$lib"
-archive_expsym_cmds="echo \\\"{ global:\\\" > \$output_objdir/\$libname.ver~
-	    cat \$export_symbols | sed -e \\\"s/\\\\(.*\\\\)/\\\\1;/\\\" >> \$output_objdir/\$libname.ver~
-	    echo \\\"local: *; };\\\" >> \$output_objdir/\$libname.ver~
-	    \$CC -shared \$pic_flag \$libobjs \$deplibs \$compiler_flags \${wl}-soname \$wl\$soname \${wl}-version-script \${wl}\$output_objdir/\$libname.ver -o \$lib"
+archive_cmds=""
+archive_expsym_cmds=""
 
 # Commands used to build a loadable module if different from building
 # a shared archive.
@@ -10152,7 +10149,7 @@ module_cmds=""
 module_expsym_cmds=""
 
 # Whether we are building with GNU ld or not.
-with_gnu_ld="yes"
+with_gnu_ld=""
 
 # Flag that allows shared libraries with undefined symbols to be built.
 allow_undefined_flag=""
@@ -10162,7 +10159,7 @@ no_undefined_flag=""
 
 # Flag to hardcode $libdir into a binary during linking.
 # This must work even if $libdir does not exist
-hardcode_libdir_flag_spec="\${wl}-rpath \${wl}\$libdir"
+hardcode_libdir_flag_spec=""
 
 # Whether we need a single "-rpath" flag with a separated argument.
 hardcode_libdir_separator=""
@@ -10183,7 +10180,7 @@ hardcode_minus_L=no
 
 # Set to "yes" if using SHLIBPATH_VAR=DIR during linking hardcodes DIR
 # into the resulting binary.
-hardcode_shlibpath_var=unsupported
+hardcode_shlibpath_var=
 
 # Set to "yes" if building a shared library automatically hardcodes DIR
 # into the library and all subsequent libraries and executables linked
@@ -10195,16 +10192,16 @@ hardcode_automatic=no
 inherit_rpath=no
 
 # Whether libtool must link a program against all its dependency libraries.
-link_all_deplibs=no
+link_all_deplibs=unknown
 
 # Set to "yes" if exported symbols are required.
 always_export_symbols=no
 
 # The commands to list exported symbols.
-export_symbols_cmds="\$NM \$libobjs \$convenience | \$global_symbol_pipe | \$SED 's/.* //' | sort | uniq > \$export_symbols"
+export_symbols_cmds=""
 
 # Symbols that should not be listed in the preloaded symbols.
-exclude_expsyms="_GLOBAL_OFFSET_TABLE_|_GLOBAL__F[ID]_.*"
+exclude_expsyms=""
 
 # Symbols that must always be exported.
 include_expsyms=""
@@ -10219,6 +10216,6 @@ postlink_cmds=""
 file_list_spec=""
 
 # How to hardcode a shared library path into an executable.
-hardcode_action=immediate
+hardcode_action=
 
 # ### END LIBTOOL TAG CONFIG: F77

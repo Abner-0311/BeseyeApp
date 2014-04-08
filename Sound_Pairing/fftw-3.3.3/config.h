@@ -8,7 +8,7 @@
 /* #undef BENCHFFT_QUAD */
 
 /* Define to compile in single precision. */
-/* #undef BENCHFFT_SINGLE */
+#define BENCHFFT_SINGLE 1
 
 /* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
    systems. This function is required for `alloca.c' support on those systems.
@@ -39,7 +39,7 @@
 /* #undef FC_DUMMY_MAIN_EQ_F77 */
 
 /* C compiler name and flags */
-#define FFTW_CC "mipsel-linux-gcc -std=gnu99 -O3 -fomit-frame-pointer -fstrict-aliasing -fno-schedule-insns -ffast-math"
+#define FFTW_CC "arm-linux-androideabi-gcc -std=gnu99 -O3 -fomit-frame-pointer -fstrict-aliasing -fno-schedule-insns -ffast-math"
 
 /* Define to enable extra FFTW debugging code. */
 /* #undef FFTW_DEBUG */
@@ -63,7 +63,7 @@
 /* #undef FFTW_RANDOM_ESTIMATOR */
 
 /* Define to compile in single precision. */
-/* #undef FFTW_SINGLE */
+#define FFTW_SINGLE 1
 
 /* Define to 1 if you have the `abort' function. */
 #define HAVE_ABORT 1
@@ -110,7 +110,7 @@
 
 /* Define to 1 if you have the declaration of `memalign', and to 0 if you
    don't. */
-#define HAVE_DECL_MEMALIGN 0
+#define HAVE_DECL_MEMALIGN 1
 
 /* Define to 1 if you have the declaration of `posix_memalign', and to 0 if
    you don't. */
@@ -240,13 +240,13 @@
 #define HAVE_STRING_H 1
 
 /* Define to 1 if you have the `sysctl' function. */
-#define HAVE_SYSCTL 1
+/* #undef HAVE_SYSCTL */
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
 
 /* Define to 1 if you have the <sys/sysctl.h> header file. */
-#define HAVE_SYS_SYSCTL_H 1
+/* #undef HAVE_SYS_SYSCTL_H */
 
 /* Define to 1 if you have the <sys/time.h> header file. */
 #define HAVE_SYS_TIME_H 1

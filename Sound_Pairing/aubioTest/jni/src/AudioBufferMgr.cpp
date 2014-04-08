@@ -141,10 +141,15 @@ ArrayRef<short> AudioBufferMgr::getAvailableBuf(){
 	ArrayRef<short> buf = NULL;
 	LOGD("getAvailableBuf()+\n");
 	pthread_mutex_lock(&mSrcBufMux);
-#ifdef ANDROID
+	static bool bShowWarning = false;
+//#ifdef ANDROID
 	if(-1 == miPivotRecording){
-		LOGE("getAvailableBuf(), buffer is out, need to wait for reset\n");
+		if(!bShowWarning)
+			LOGE("getAvailableBuf(), buffer is out, need to wait for reset\n");
+		bShowWarning = true;
 	}else{
+		bShowWarning = false;
+
 		buf = mAvailalbeBufList[miPivotRecording];
 		//Log.i(TAG, "getAvailableBuf(), get buffer at pos "+miPivotRecording);
 		if(miPivotRecording == AudioBufferMgr::MAX_QUEUE_SIZE -1){
@@ -158,10 +163,10 @@ ArrayRef<short> AudioBufferMgr::getAvailableBuf(){
 			miPivotAnalysis = (++miPivotAnalysis)%AudioBufferMgr::MAX_QUEUE_SIZE;
 		}
 	}
-#else
-	buf = mAvailalbeBufList[miPivotRecording];
-	miPivotRecording = (++miPivotRecording)%AudioBufferMgr::MAX_QUEUE_SIZE;
-#endif
+//#else
+//	buf = mAvailalbeBufList[miPivotRecording];
+//	miPivotRecording = (++miPivotRecording)%AudioBufferMgr::MAX_QUEUE_SIZE;
+//#endif
 	pthread_mutex_unlock(&mSrcBufMux);
 	LOGD("getAvailableBuf()-\n");
 	return buf;

@@ -1,23 +1,27 @@
-caset.o caset.o: caset.c bench.h bench-user.h ../config.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/include/stddef.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/stdlib.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/features.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/uClibc_config.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/cdefs.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/types.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/types.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/kernel_types.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/pthreadtypes.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/sched.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/time.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/endian.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/endian.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/select.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/select.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/sigset.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/time.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/sysmacros.h \
-  /opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/alloca.h
+caset.o: caset.c bench.h bench-user.h ../config.h \
+ /private/tmp/fftw3/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stddef.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/stdlib.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/sys/cdefs.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/sys/cdefs_elf.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/android/api-level.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/string.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/malloc.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/alloca.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/strings.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/sys/types.h \
+ /private/tmp/fftw3/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdint.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/stdint.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/sys/_types.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/machine/_types.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/linux/posix_types.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/linux/stddef.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/linux/compiler.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/asm/posix_types.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/asm/types.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/linux/types.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/machine/kernel.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/sys/sysmacros.h \
+ /private/tmp/fftw3/bin/../sysroot/usr/include/memory.h
 
 bench.h:
 
@@ -25,40 +29,48 @@ bench-user.h:
 
 ../config.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/include/stddef.h:
+/private/tmp/fftw3/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stddef.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/stdlib.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/stdlib.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/features.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/sys/cdefs.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/uClibc_config.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/sys/cdefs_elf.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/cdefs.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/android/api-level.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/types.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/string.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/types.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/malloc.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/kernel_types.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/alloca.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/pthreadtypes.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/strings.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/sched.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/sys/types.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/time.h:
+/private/tmp/fftw3/bin/../lib/gcc/arm-linux-androideabi/4.6/include/stdint.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/endian.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/stdint.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/endian.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/sys/_types.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/select.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/machine/_types.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/select.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/linux/posix_types.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/sigset.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/linux/stddef.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/bits/time.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/linux/compiler.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/sys/sysmacros.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/asm/posix_types.h:
 
-/opt/buildroot-gcc342/bin/../lib/gcc/mipsel-linux-uclibc/3.4.2/../../../../mipsel-linux-uclibc/sys-include/alloca.h:
+/private/tmp/fftw3/bin/../sysroot/usr/include/asm/types.h:
+
+/private/tmp/fftw3/bin/../sysroot/usr/include/linux/types.h:
+
+/private/tmp/fftw3/bin/../sysroot/usr/include/machine/kernel.h:
+
+/private/tmp/fftw3/bin/../sysroot/usr/include/sys/sysmacros.h:
+
+/private/tmp/fftw3/bin/../sysroot/usr/include/memory.h:

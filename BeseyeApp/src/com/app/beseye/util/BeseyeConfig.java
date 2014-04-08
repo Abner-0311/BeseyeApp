@@ -17,7 +17,7 @@ public class BeseyeConfig {
 	
 	//relay wifi AP info
 
-	static public final boolean ASSIGN_ST_PATH = true;
+	static public final boolean ASSIGN_ST_PATH = false;
 	
 	static public final boolean REDDOT_DEMO = false;
 	static public final String RELAY_AP_SSID = "raylios WiFi";
@@ -33,7 +33,7 @@ public class BeseyeConfig {
 													 //"rtsp://admin:password@192.168.2.2/h264_2",
 													 //"rtmp://54.238.191.39:1935/live-edge/mystream5_aac"/*,
 													 //"rtmp://54.250.149.50/live-origin/mystream3_aac",
-													 "rtsp://admin:password@192.168.2.145/h264",
+													 "rtsp://admin:password@192.168.2.170/h264",
 													 "rtmp://192.168.2.145/proxypublish/stream1 live=1",
 													 "rtmp://54.250.149.50/livetest/test_crtmpserver",
 													 "rtsp://admin:password@192.168.12.184/h264_2"//00:0C:43:30:50:D0
@@ -53,7 +53,7 @@ public class BeseyeConfig {
 //													 "rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:08
 //													,"rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:B8
 													 //"rtsp://admin:password@192.168.12.184/h264_2"//00:0C:43:30:50:D0
-													"rtsp://admin:password@192.168.2.145/h264"//00:0C:43:30:50:28
+													"rtsp://admin:password@192.168.2.169/h264"//00:0C:43:30:50:28
 													 };
 	static public final List<String> STREAM_PATH_LIST = new ArrayList<String>();
 	static public final Map<String, String> REDDOT_STREAM_PATH_MAP = new HashMap<String, String>();

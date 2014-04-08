@@ -543,8 +543,10 @@ void FreqAnalyzer::appendRet(string strCode){
 				mLastAbandant = "0";
 				msbDecode.str("");
 				msbDecode.clear();
-				mIFreqAnalyzeResultCBListener->onDetectStart();
-				mIFreqAnalyzeResultCBListener->onSetResult("", "", "", !mbNeedToAutoCorrection, mprevMatchRet);
+				if(mIFreqAnalyzeResultCBListener){
+					mIFreqAnalyzeResultCBListener->onDetectStart();
+					mIFreqAnalyzeResultCBListener->onSetResult("", "", "", !mbNeedToAutoCorrection, mprevMatchRet);
+				}
 
 				Ref<CodeRecord> lastTwoRec = mCodeRecordList[mCodeRecordList.size()-2];
 				LOGE("appendRet(), lastTwoRec:%s\n", (lastTwoRec)?lastTwoRec->toString().c_str():"null");
@@ -610,7 +612,8 @@ void FreqAnalyzer::appendRet(string strCode){
 				checkResult(optimizeDecodeString(iIndex));
 				mFreqRecordList.clear();
 			}else{
-				mIFreqAnalyzeResultCBListener->onAppendResult(strCode);
+				if(mIFreqAnalyzeResultCBListener)
+					mIFreqAnalyzeResultCBListener->onAppendResult(strCode);
 				//msbDecode.append(strCode);
 			}
 		}
@@ -618,7 +621,8 @@ void FreqAnalyzer::appendRet(string strCode){
 		if(-1 < msbDecode.str().rfind(SoundPair_Config::PEER_SIGNAL)){
 			msbDecode.str("");
 			msbDecode.clear();
-			mIFreqAnalyzeResultCBListener->onSetResult(SoundPair_Config::PEER_SIGNAL, "", "", !mbNeedToAutoCorrection, mprevMatchRet);
+			if(mIFreqAnalyzeResultCBListener)
+				mIFreqAnalyzeResultCBListener->onSetResult(SoundPair_Config::PEER_SIGNAL, "", "", !mbNeedToAutoCorrection, mprevMatchRet);
 		}
 	}
 }
@@ -805,9 +809,11 @@ int FreqAnalyzer::segmentCheckOnFirst(bool bForcePerform){
 			iRet = idxFirstDetect;
 
 			AudioBufferMgr::getInstance()->getBufByIndex(iBufIdxTOCheck, idxFirstDetect, bufSegment);
-			mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, false, NULL);
-			float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, false, NULL);
-			LOGE("segmentCheckOnFirst(), iBufIdxTOCheck:%d, freq:%f, iRet:%d\n",iBufIdxTOCheck, freq, iRet);
+			if(mIFreqAnalyzeResultCBListener){
+				mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, false, NULL);
+				float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, false, NULL);
+				LOGE("segmentCheckOnFirst(), iBufIdxTOCheck:%d, freq:%f, iRet:%d\n",iBufIdxTOCheck, freq, iRet);
+			}
 		}
 
 		if(bCapture == false){
@@ -1076,7 +1082,8 @@ void FreqAnalyzer::checkResult(string strDecode){
 		LOGI("checkResult(), strRet:"+strRet+\n", mstrCodeTrace:"+mstrCodeTrace);
 		performAutoCorrection();
 	}else*/{
-		mIFreqAnalyzeResultCBListener->onSetResult(strRet, strDecode, strDecodeUnmark, !mbNeedToAutoCorrection, mprevMatchRet);
+		if(mIFreqAnalyzeResultCBListener)
+			mIFreqAnalyzeResultCBListener->onSetResult(strRet, strDecode, strDecodeUnmark, !mbNeedToAutoCorrection, mprevMatchRet);
 		if(false == canPerformAutoCorrection()){
 			//set mIFreqAnalyzeResultCBListener as NULL, if it's one self analyzer
 			mIFreqAnalyzeResultCBListener = NULL;
@@ -1209,12 +1216,15 @@ void FreqAnalyzer::autoCorrection(MatchRetSet* prevMatchRet){
 							AudioBufferMgr::getInstance()->getBufByIndex(fr->miBufIndex, iOffset, bufSegment);
 							if(bFirstTime){
 								//Workaround
-								mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, true, NULL);
+								if(mIFreqAnalyzeResultCBListener)
+									mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, true, NULL);
 								bFirstTime = false;
 							}
 
-							float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, fr->mlTs, false, fr->miFFTValues);
-							selfFreqAnalyzer->analyze(fr->mlTs, freq, fr->miBufIndex, fr->miFFTValues);
+							if(mIFreqAnalyzeResultCBListener){
+								float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, fr->mlTs, false, fr->miFFTValues);
+								selfFreqAnalyzer->analyze(fr->mlTs, freq, fr->miBufIndex, fr->miFFTValues);
+							}
 						}else{
 							selfFreqAnalyzer->analyze(fr->mlTs, 0.0, -1, fr->miFFTValues);
 						}
@@ -1713,16 +1723,17 @@ float *FreqAnalyzer::win = NULL;
 double FreqAnalyzer::wss ;
 int FreqAnalyzer::windowFunc = 3;//hannings
 
-#define FFTW_TRIAL
+//#define FFTW_TRIAL
 
 #ifdef FFTW_TRIAL
-double *inBuffer2 = NULL;
-double *outBuffer2 = NULL;
-static fftw_plan plan_forward;
+float *inBuffer2 = NULL;
+float *outBuffer2 = NULL;
+//fftw_complex *outBuffer2 = NULL;
+static fftwf_plan plan_forward;
 #endif
 
 void FreqAnalyzer::initAudacity(){
-
+	LOGD("initAudacity(), ++\n");
 	if(NULL == inBuffer){
 		inBuffer = (float*)malloc(sFrameSize*sizeof(float));
 	}
@@ -1733,14 +1744,22 @@ void FreqAnalyzer::initAudacity(){
 
 #ifdef FFTW_TRIAL
 	if(NULL == inBuffer2){
-		inBuffer2 = (double*)malloc(sFrameSize*sizeof(double));
+		inBuffer2 = (float*)malloc(sFrameSize*sizeof(float));
 	}
 
 	if(NULL == outBuffer2){
-		outBuffer2 = (double*)malloc(sFrameSize*sizeof(double));
+		//outBuffer2 = fftw_alloc_complex(sFrameSize);//
+		outBuffer2 = (float*)malloc(sFrameSize*sizeof(float));
+		//memset((void *)outBuffer2, 0, sizeof(float) * sFrameSize);
+		//LOGE("initAudacity(), fftw_plan_r2r_1d+\n");
+		plan_forward = fftwf_plan_r2r_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_R2HC, FFTW_ESTIMATE);
+		//LOGE("initAudacity(), fftw_plan_r2r_1d-\n");
+		//plan_forward = fftw_plan_r2r_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_R2HC, FFTW_ESTIMATE );
+		//L
+		//plan_forward = fftw_plan_dft_r2c_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_ESTIMATE );
+		//
 	}
 
-	plan_forward = fftw_plan_r2r_1d ( sFrameSize, inBuffer2, outBuffer2, FFTW_R2HC, FFTW_ESTIMATE );
 #endif
 
 	if(NULL == win){
@@ -1758,6 +1777,8 @@ void FreqAnalyzer::initAudacity(){
 	   wss = 4.0 / (wss*wss);
 	else
 	   wss = 1.0;
+
+	LOGD("initAudacity(), --\n");
 }
 
 void FreqAnalyzer::deinitAudacity(){
@@ -1772,7 +1793,7 @@ void FreqAnalyzer::deinitAudacity(){
 	}
 
 #ifdef FFTW_TRIAL
-	fftw_destroy_plan ( plan_forward );
+	fftwf_destroy_plan ( plan_forward );
 
 	if(NULL != inBuffer2){
 		free(inBuffer2);
@@ -1781,6 +1802,7 @@ void FreqAnalyzer::deinitAudacity(){
 
 	if(NULL != outBuffer2){
 		free(outBuffer2);
+		//fftw_free(outBuffer2);
 		outBuffer2 = NULL;
 	}
 #endif
@@ -1795,7 +1817,6 @@ void FreqAnalyzer::performWindowFunc(float *winBuf){
 		int i=0;
 		for(i=0; i < sFrameSize; i++)
 			winBuf[i] = 1.0;
-
 		WindowFunc(windowFunc, sFrameSize, winBuf);
 	}
 }
@@ -1804,22 +1825,27 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 	//LOGE("performAudacityFFT+\n");
 
 	float fRet = 0.0;
-	if(bReset){
-		deinitAudacity();
-		initAudacity();
-	}
+//	if(bReset){
+//		deinitAudacity();
+//		initAudacity();
+//	}
 
+	//LOGE("performAudacityFFT+1\n");
 	if(NULL == inBuffer){
+		//LOGE("performAudacityFFT+2\n");
 		initAudacity();
 	}
 
+	//LOGE("performAudacityFFT+3\n");
 	static long lTotalTime = 0, lCount = 0;
 
 	long lTickCount = getTickCount();
+	//LOGE("performAudacityFFT+3\n");
 	performSpeexPreprocess(&bytes[0], bReset, speexPrep);
 	long lDelta = (getTickCount() - lTickCount);
 	lTotalTime+=lDelta;
-	LOGD("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(lCount++));
+	LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(++lCount));
+
 
 //	lTickCount = getTickCount();
 //	performWindowFunc(win);
@@ -1837,19 +1863,18 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 #ifdef FFTW_TRIAL
 
 		for (i = 0; i < sFrameSize; i++)
-			inBuffer2[i] =  bytes[i];
+			inBuffer2[i] =  (bytes[i]/32767.9)* win[i];
 
 		lTickCount = getTickCount();
-		//LOGE("performAudacityFFT(), before fftw_execute\n");
-
-		fftw_execute ( plan_forward );
+		memset((void *)outBuffer2, 0, sizeof(float) * sFrameSize);
+		fftwf_execute ( plan_forward );
 		//LOGE("performAudacityFFT(), fftw_execute takes %ld ms\n", (getTickCount() - lTickCount));
 
 		fRet = outBuffer2[0] * outBuffer2[0] + outBuffer2[sHalfFrameSize + 1] * outBuffer2[sHalfFrameSize + 1];//outBuffer[0];//fabs(outBuffer2[0]);
 		for (i = sLowPassIndex; i < sHalfFrameSize && i <= sHighPassIndex; i++){
-			//LOGE("analyzeAudioViaAudacity+, outBuffer[%d] = %f\n", i, outBuffer[i]);
 			float fRetTmp = outBuffer2[i] * outBuffer2[i] + outBuffer2[sHalfFrameSize + 1 - i] * outBuffer2[sHalfFrameSize + 1 - i];
 			if(fRetTmp > fRet){
+				//LOGE("analyzeAudioViaAudacity+, fRetTmp[%d] = %f\n", i, fRetTmp);
 				iDx5 = iDx4;
 				iDx4 = iDx3;
 				iDx3 = iDx2;
@@ -1859,6 +1884,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 			}
 		}
 		sTotalTime1+=(getTickCount() - lTickCount);
+
 #else
 		lTickCount = getTickCount();
 		for (i = 0; i < sFrameSize; i++)

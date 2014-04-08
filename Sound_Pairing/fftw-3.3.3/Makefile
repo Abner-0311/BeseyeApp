@@ -50,8 +50,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = x86_64-unknown-linux-gnu
-host_triplet = mips-unknown-linux-gnu
+build_triplet = i386-apple-darwin13.1.0
+host_triplet = arm-unknown-linux-gnu
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
@@ -107,7 +107,7 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libfftw3_la_DEPENDENCIES = kernel/libkernel.la \
+libfftw3f_la_DEPENDENCIES = kernel/libkernel.la \
 	dft/libdft.la dft/scalar/libdft_scalar.la \
 	dft/scalar/codelets/libdft_scalar_codelets.la rdft/librdft.la \
 	rdft/scalar/librdft_scalar.la \
@@ -116,12 +116,12 @@ libfftw3_la_DEPENDENCIES = kernel/libkernel.la \
 	rdft/scalar/r2r/librdft_scalar_r2r.la reodft/libreodft.la \
 	api/libapi.la $(SIMD_LIBS) $(SSE2_LIBS) $(AVX_LIBS) \
 	$(ALTIVEC_LIBS) $(NEON_LIBS) $(COMBINED_THREADLIBS)
-am_libfftw3_la_OBJECTS =
-libfftw3_la_OBJECTS =  \
-	$(am_libfftw3_la_OBJECTS)
-libfftw3_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+am_libfftw3f_la_OBJECTS =
+libfftw3f_la_OBJECTS =  \
+	$(am_libfftw3f_la_OBJECTS)
+libfftw3f_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(libfftw3_la_LDFLAGS) $(LDFLAGS) -o $@
+	$(libfftw3f_la_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -132,8 +132,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libfftw3_la_SOURCES)
-DIST_SOURCES = $(libfftw3_la_SOURCES)
+SOURCES = $(libfftw3f_la_SOURCES)
+DIST_SOURCES = $(libfftw3f_la_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -196,22 +196,22 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run aclocal-1.11
+ACLOCAL = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run aclocal-1.11
 ALLOCA = 
 ALTIVEC_CFLAGS = 
 AMTAR = $${TAR-tar}
-AR = mipsel-linux-ar
+AR = arm-linux-androideabi-ar
 AS = as
-AUTOCONF = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run automake-1.11
+AUTOCONF = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoconf
+AUTOHEADER = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run autoheader
+AUTOMAKE = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run automake-1.11
 AVX_CFLAGS = 
-AWK = gawk
-CC = mipsel-linux-gcc -std=gnu99
+AWK = awk
+CC = arm-linux-androideabi-gcc -std=gnu99
 CCDEPMODE = depmode=gcc3
 CFLAGS = -O3 -fomit-frame-pointer -fstrict-aliasing -fno-schedule-insns -ffast-math
 CHECK_PL_OPTS = 
-CPP = mipsel-linux-gcc -std=gnu99 -E
+CPP = arm-linux-androideabi-cpp
 CPPFLAGS = 
 CYGPATH_W = echo
 C_FFTW_R2R_KIND = C_INT32_T
@@ -221,22 +221,22 @@ DEPDIR = .deps
 DLLTOOL = dlltool
 DSYMUTIL = 
 DUMPBIN = 
-ECHO_C = 
-ECHO_N = -n
+ECHO_C = \c
+ECHO_N = 
 ECHO_T = 
-EGREP = /bin/grep -E
+EGREP = /usr/bin/grep -E
 EXEEXT = 
-F77 = gfortran
-FFLAGS = -g -O2
-FGREP = /bin/grep -F
-FLIBS =  -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7 -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../.. -lgfortranbegin -lgfortran -lm
-GREP = /bin/grep
+F77 = 
+FFLAGS = 
+FGREP = /usr/bin/grep -F
+FLIBS = 
+GREP = /usr/bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LD = mipsel-linux-ld
+LD = arm-linux-androideabi-ld
 LDFLAGS = 
 LIBOBJS =  ${LIBOBJDIR}strtod$U.o
 LIBQUADMATH = 
@@ -246,14 +246,14 @@ LIPO =
 LN_S = ln -s
 LTLIBOBJS =  ${LIBOBJDIR}strtod$U.lo
 MAINT = #
-MAKEINFO = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run makeinfo
+MAKEINFO = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/missing --run makeinfo
 MANIFEST_TOOL = :
-MKDIR_P = /bin/mkdir -p
+MKDIR_P = ./install-sh -c -d
 MPICC = 
 MPILIBS = 
 MPIRUN = 
 NEON_CFLAGS = 
-NM = mipsel-linux-nm
+NM = arm-linux-androideabi-nm
 NMEDIT = 
 OBJDUMP = objdump
 OBJEXT = o
@@ -270,29 +270,29 @@ PACKAGE_URL =
 PACKAGE_VERSION = 3.3.3
 PATH_SEPARATOR = :
 POW_LIB = -lm
-PRECISION = d
-PREC_SUFFIX = 
+PRECISION = s
+PREC_SUFFIX = f
 PTHREAD_CC = 
 PTHREAD_CFLAGS = 
 PTHREAD_LIBS = 
-RANLIB = mipsel-linux-ranlib
-SED = /bin/sed
+RANLIB = arm-linux-androideabi-ranlib
+SED = /usr/bin/sed
 SET_MAKE = 
 SHARED_VERSION_INFO = 6:2:3
 SHELL = /bin/sh
 SSE2_CFLAGS = 
 STACK_ALIGN_CFLAGS = 
-STRIP = mipsel-linux-strip
+STRIP = strip
 THREADLIBS = 
 VERSION = 3.3.3
-abs_builddir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
-abs_srcdir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
-abs_top_builddir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
-abs_top_srcdir = /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
+abs_builddir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
+abs_srcdir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
+abs_top_builddir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
+abs_top_srcdir = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3
 ac_ct_AR = 
 ac_ct_CC = 
 ac_ct_DUMPBIN = 
-ac_ct_F77 = gfortran
+ac_ct_F77 = 
 acx_pthread_config = 
 am__include = include
 am__leading_dot = .
@@ -300,50 +300,50 @@ am__quote =
 am__tar = $${TAR-tar} chof - "$$tardir"
 am__untar = $${TAR-tar} xf -
 bindir = ${exec_prefix}/bin
-build = x86_64-unknown-linux-gnu
+build = i386-apple-darwin13.1.0
 build_alias = 
-build_cpu = x86_64
-build_os = linux-gnu
-build_vendor = unknown
+build_cpu = i386
+build_os = darwin13.1.0
+build_vendor = apple
 builddir = .
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = mips-unknown-linux-gnu
-host_alias = mips-linux
-host_cpu = mips
+host = arm-unknown-linux-gnu
+host_alias = arm-linux
+host_cpu = arm
 host_os = linux-gnu
 host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/abner.huang/Abner-mbp/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/install-sh
+install_sh = ${SHELL} /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
 localstatedir = ${prefix}/var
 mandir = ${datarootdir}/man
-mkdir_p = /bin/mkdir -p
+mkdir_p = $(top_builddir)/./install-sh -c -d
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /opt/tftpboot/fftw3
+prefix = /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/build_android
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 srcdir = .
 sysconfdir = ${prefix}/etc
-target_alias = 
+target_alias = arm-linux
 top_build_prefix = 
 top_builddir = .
 top_srcdir = .
 OPTIONS_AUTOMAKE = gnu
-lib_LTLIBRARIES = libfftw3.la
+lib_LTLIBRARIES = libfftw3f.la
 GENFFT = 
 
-# pkgincludedir = $(includedir)/fftw3
+# pkgincludedir = $(includedir)/fftw3f
 # nodist_pkginclude_HEADERS = config.h
 
 # recompile genfft if maintainer mode is true
@@ -383,9 +383,9 @@ SIMD_LIBS = \
 #NEON_LIBS = dft/simd/neon/libdft_neon_codelets.la	\
 #rdft/simd/neon/librdft_neon_codelets.la
 
-##COMBINED_THREADLIBS = threads/libfftw3_threads.la
-libfftw3_la_SOURCES = 
-libfftw3_la_LIBADD = \
+##COMBINED_THREADLIBS = threads/libfftw3f_threads.la
+libfftw3f_la_SOURCES = 
+libfftw3f_la_LIBADD = \
 	kernel/libkernel.la				\
 	dft/libdft.la					\
 	dft/scalar/libdft_scalar.la			\
@@ -400,16 +400,16 @@ libfftw3_la_LIBADD = \
         $(SIMD_LIBS) $(SSE2_LIBS) $(AVX_LIBS) $(ALTIVEC_LIBS) $(NEON_LIBS)    	\
 	$(COMBINED_THREADLIBS)
 
-libfftw3_la_LDFLAGS = -no-undefined -version-info	\
+libfftw3f_la_LDFLAGS = -no-undefined -version-info	\
 6:2:3
 
 
 # cannot use -no-undefined since dependent on libquadmath
-#libfftw3_la_LDFLAGS = -version-info 6:2:3
+#libfftw3f_la_LDFLAGS = -version-info 6:2:3
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = fftw3.pc
+pkgconfig_DATA = fftw3f.pc
 WISDOM_DIR = /etc/fftw
-WISDOM = wisdom
+WISDOM = wisdomf
 WISDOM_TIME = 12 # default to 12-hour limit, i.e. overnight
 WISDOM_FLAGS = --verbose --canonical --time-limit=$(WISDOM_TIME)
 all: config.h
@@ -499,8 +499,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libfftw3.la: $(libfftw3_la_OBJECTS) $(libfftw3_la_DEPENDENCIES) $(EXTRA_libfftw3_la_DEPENDENCIES) 
-	$(libfftw3_la_LINK) -rpath $(libdir) $(libfftw3_la_OBJECTS) $(libfftw3_la_LIBADD) $(LIBS)
+libfftw3f.la: $(libfftw3f_la_OBJECTS) $(libfftw3f_la_DEPENDENCIES) $(EXTRA_libfftw3f_la_DEPENDENCIES) 
+	$(libfftw3f_la_LINK) -rpath $(libdir) $(libfftw3f_la_OBJECTS) $(libfftw3f_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -993,11 +993,11 @@ uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgconfigDATA
 	uninstall-libLTLIBRARIES uninstall-pkgconfigDATA
 
 
-fftw3.pc: fftw.pc
-	cp -f fftw.pc fftw3.pc
+fftw3f.pc: fftw.pc
+	cp -f fftw.pc fftw3f.pc
 
 wisdom:
-	tools/fftw-wisdom -o $@ $(WISDOM_FLAGS)
+	tools/fftwf-wisdom -o $@ $(WISDOM_FLAGS)
 
 install-wisdom: wisdom
 	$(mkinstalldirs) $(WISDOM_DIR)
