@@ -85,3 +85,5 @@ Sound_Pairing/aubioTest/jni/http_cgi_lib/.DS_Store
 *.Plo
 
 Sound_Pairing/fftw-3.3.3/api/.deps/apiplan.Plo
+
+BeseyeApp/libs/armeabi/libsoundpairing.so
