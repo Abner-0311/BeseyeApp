@@ -24,6 +24,7 @@ LOCAL_CPPFLAGS 		   += -fexceptions
 LOCAL_SRC_FILES        := http_cgi_lib/src/http_cgi.c \
 						  cam-handler/src/network/event.c \
 						  cam-handler/src/network/network.c \
+						  common/src/json_utils.c \
 						  cam-handler/src/main.c \
 						  cam-handler/src/delegate/cam_controller.cpp \
 						  cam-handler/src/event_queue/event_queue_handler.cpp \
@@ -53,6 +54,7 @@ LOCAL_C_INCLUDES 	   := $(LOCAL_PATH)\
 						  $(LOCAL_PATH)/zxing \
 						  $(LOCAL_PATH)/zxing/common \
 						  $(LOCAL_PATH)/zxing/common/reedsolomon \
+						  $(LOCAL_PATH)/common/inc \
 						  $(LOCAL_PATH)/http_cgi_lib/inc \
 						  $(LOCAL_PATH)/cam-handler/inc \
 						  $(LOCAL_PATH)/ws-client/inc \

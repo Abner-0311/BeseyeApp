@@ -30,5 +30,7 @@
 	    <item name="android:textSize">100sp</item>
 	    <item name="android:textColor">#18b4ab</item>
 	</style>
+	
+	<style name="Widget.GifMoviewView" parent="@android:style/Widget"></style>
 
 </resources>

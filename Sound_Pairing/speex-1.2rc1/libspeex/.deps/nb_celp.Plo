@@ -31,6 +31,16 @@ nb_celp.lo: nb_celp.c ../config.h \
  arch.h ../include/speex/speex_callbacks.h ../include/speex/speex.h vbr.h \
  filters.h lpc.h lsp.h ltp.h quant_lsp.h cb_search.h stack_alloc.h vq.h \
  math_approx.h os_support.h \
+<<<<<<< HEAD
+ /tmp/speex/bin/../sysroot/usr/include/string.h \
+ /tmp/speex/bin/../sysroot/usr/include/malloc.h \
+ /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h \
+ /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h \
+ /tmp/speex/bin/../sysroot/usr/include/stdlib.h \
+ /tmp/speex/bin/../sysroot/usr/include/alloca.h \
+ /tmp/speex/bin/../sysroot/usr/include/strings.h \
+ /tmp/speex/bin/../sysroot/usr/include/memory.h
+=======
  /private/tmp/speex/bin/../sysroot/usr/include/string.h \
  /private/tmp/speex/bin/../sysroot/usr/include/malloc.h \
  /private/tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.6/include-fixed/stdio.h \
@@ -39,6 +49,7 @@ nb_celp.lo: nb_celp.c ../config.h \
  /private/tmp/speex/bin/../sysroot/usr/include/alloca.h \
  /private/tmp/speex/bin/../sysroot/usr/include/strings.h \
  /private/tmp/speex/bin/../sysroot/usr/include/memory.h
+>>>>>>> remotes/origin/develop
 
 ../config.h:
 

@@ -39,23 +39,14 @@
 		        android:layout_width="1dp"
 		    	android:layout_height="@dimen/wifi_list_item_height"/>
 
-		    <ImageView
-		        android:id="@+id/iv_camerapower_on"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentRight="true"
-		        android:layout_centerVertical="true"
-		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
-		        android:src="@drawable/wifisetup_wifi_btn_bg_bluegreen" />
-		    
-		    <ImageView
-		        android:id="@+id/iv_camerapow_control"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentRight="true"
-		        android:layout_centerVertical="true"
-		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
-		        android:src="@drawable/wifisetup_wifi_btn" />
+		    <com.app.beseye.widget.BeseyeSwitchBtn 
+			    android:id="@+id/sb_camera_switch"
+			    android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:layout_alignParentRight="true"
+		    	android:layout_centerVertical="true"
+		    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding">
+			</com.app.beseye.widget.BeseyeSwitchBtn>
 		    
 		    <RelativeLayout 
 		        android:layout_width="wrap_content"
@@ -64,7 +55,7 @@
 		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
 		   		android:layout_centerVertical="true">
 		        <TextView 
-			       	android:id="@+id/txt_ssid"
+			       	android:id="@+id/txt_power_title"
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
@@ -73,7 +64,8 @@
 		    </RelativeLayout>   
 		</RelativeLayout>
 		
-		<RelativeLayout 
+		<RelativeLayout
+		    android:id="@+id/vg_power_schedule" 
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
 		    android:background="@drawable/setting_inf_bg_white"
@@ -90,7 +82,8 @@
 		        android:layout_alignParentRight="true"
 		        android:layout_centerVertical="true"
 		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
-		        android:src="@drawable/setting_inside_icon" />
+		        android:src="@drawable/sl_setting_inside_icon"
+		        android:duplicateParentState="true"/>
 
 		    <RelativeLayout 
 		        android:layout_width="wrap_content"

@@ -106,7 +106,11 @@ BUILD_KISS_FFT_FALSE =
 BUILD_KISS_FFT_TRUE = #
 BUILD_SMALLFT_FALSE = #
 BUILD_SMALLFT_TRUE = 
+<<<<<<< HEAD
+CC = ccache arm-linux-androideabi-gcc
+=======
 CC = arm-linux-androideabi-gcc
+>>>>>>> remotes/origin/develop
 CCDEPMODE = depmode=gcc3
 CFLAGS = -I/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/libogg-1.3.0/build_android/include -fvisibility=hidden
 CPP = arm-linux-androideabi-cpp
@@ -128,8 +132,8 @@ EGREP = /usr/bin/grep -E
 EXEEXT = 
 F77 = 
 FFLAGS = 
-FFT_CFLAGS = 
-FFT_LIBS = 
+FFT_CFLAGS = -I/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/include
+FFT_LIBS = -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 FFT_PKGCONFIG = 
 GREP = /usr/bin/grep
 INSTALL_DATA = ${INSTALL} -m 644
@@ -224,11 +228,11 @@ include_HEADERS =
 noinst_HEADERS = wav_io.h
 speexenc_SOURCES = speexenc.c wav_io.c skeleton.c
 speexenc_LDADD = $(top_builddir)/libspeex/libspeex.la $(top_builddir)/libspeex/libspeexdsp.la \
-	$(OGG_LIBS)  	
+	$(OGG_LIBS)  -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3	
 
 speexdec_SOURCES = speexdec.c wav_io.c
 speexdec_LDADD = $(top_builddir)/libspeex/libspeex.la \
-	$(OGG_LIBS)  
+	$(OGG_LIBS)  -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 
 all: all-am
 

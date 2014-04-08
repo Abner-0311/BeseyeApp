@@ -104,7 +104,7 @@
 			android:layout_alignBaseline="@+id/btn_test"
 	        android:layout_toRightOf="@+id/btn_test" 
 	        android:inputType="number"
-	        android:text="24"
+	        android:text="12"
 	        android:visibility="gone"/>
 	    
 	    <Button

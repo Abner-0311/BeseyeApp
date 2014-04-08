@@ -1,6 +1,31 @@
 jitter.lo: jitter.c ../config.h arch.h ../include/speex/speex_types.h \
  ../include/speex/speex_config_types.h ../include/speex/speex.h \
  ../include/speex/speex_bits.h ../include/speex/speex_jitter.h \
+<<<<<<< HEAD
+ os_support.h /tmp/speex/bin/../sysroot/usr/include/string.h \
+ /tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
+ /tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
+ /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stddef.h \
+ /tmp/speex/bin/../sysroot/usr/include/malloc.h \
+ /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/stdio.h \
+ /tmp/speex/bin/../sysroot/usr/include/sys/_types.h \
+ /tmp/speex/bin/../sysroot/usr/include/machine/_types.h \
+ /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include/stdarg.h \
+ /tmp/speex/bin/../lib/gcc/arm-linux-androideabi/4.4.3/include-fixed/sys/types.h \
+ /tmp/speex/bin/../sysroot/usr/include/stdint.h \
+ /tmp/speex/bin/../sysroot/usr/include/linux/posix_types.h \
+ /tmp/speex/bin/../sysroot/usr/include/linux/stddef.h \
+ /tmp/speex/bin/../sysroot/usr/include/linux/compiler.h \
+ /tmp/speex/bin/../sysroot/usr/include/asm/posix_types.h \
+ /tmp/speex/bin/../sysroot/usr/include/asm/types.h \
+ /tmp/speex/bin/../sysroot/usr/include/linux/types.h \
+ /tmp/speex/bin/../sysroot/usr/include/machine/kernel.h \
+ /tmp/speex/bin/../sysroot/usr/include/sys/sysmacros.h \
+ /tmp/speex/bin/../sysroot/usr/include/stdlib.h \
+ /tmp/speex/bin/../sysroot/usr/include/alloca.h \
+ /tmp/speex/bin/../sysroot/usr/include/strings.h \
+ /tmp/speex/bin/../sysroot/usr/include/memory.h
+=======
  os_support.h /private/tmp/speex/bin/../sysroot/usr/include/string.h \
  /private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs.h \
  /private/tmp/speex/bin/../sysroot/usr/include/sys/cdefs_elf.h \
@@ -26,6 +51,7 @@ jitter.lo: jitter.c ../config.h arch.h ../include/speex/speex_types.h \
  /private/tmp/speex/bin/../sysroot/usr/include/alloca.h \
  /private/tmp/speex/bin/../sysroot/usr/include/strings.h \
  /private/tmp/speex/bin/../sysroot/usr/include/memory.h
+>>>>>>> remotes/origin/develop
 
 ../config.h:
 

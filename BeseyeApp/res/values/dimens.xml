@@ -64,7 +64,7 @@
     <dimen name="login_marginXLarge">32dp</dimen>
     <dimen name="login_fontMedium">19sp</dimen>
     <dimen name="login_fontNormal">15sp</dimen>
-    <dimen name="login_fontSmall">13sp</dimen>   
+    <dimen name="login_fontSmall">13sp</dimen>
     
     <dimen name="signup_paring_margin_small">8dp</dimen>
     <dimen name="signup_paring_margin_medium">16dp</dimen>

@@ -165,7 +165,11 @@ BUILD_KISS_FFT_FALSE =
 BUILD_KISS_FFT_TRUE = #
 BUILD_SMALLFT_FALSE = #
 BUILD_SMALLFT_TRUE = 
+<<<<<<< HEAD
+CC = ccache arm-linux-androideabi-gcc
+=======
 CC = arm-linux-androideabi-gcc
+>>>>>>> remotes/origin/develop
 CCDEPMODE = depmode=gcc3
 CFLAGS = -I/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/libogg-1.3.0/build_android/include -fvisibility=hidden
 CPP = arm-linux-androideabi-cpp
@@ -187,8 +191,8 @@ EGREP = /usr/bin/grep -E
 EXEEXT = 
 F77 = 
 FFLAGS = 
-FFT_CFLAGS = 
-FFT_LIBS = 
+FFT_CFLAGS = -I/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/include
+FFT_LIBS = -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 FFT_PKGCONFIG = 
 GREP = /usr/bin/grep
 INSTALL_DATA = ${INSTALL} -m 644
@@ -277,7 +281,11 @@ src = src
 sysconfdir = ${prefix}/etc
 target_alias = arm-linux
 EXTRA_DIST = echo_diagnostic.m
+<<<<<<< HEAD
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I$(top_builddir) -I/usr/include -I/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/include
+=======
 INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I$(top_builddir) -I/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/Sound_Pairing/speex-1.2rc1/build_android/include 
+>>>>>>> remotes/origin/develop
 lib_LTLIBRARIES = libspeex.la libspeexdsp.la
 
 # Sources for compilation in the library
@@ -309,11 +317,11 @@ testenc_wb_LDADD = libspeex.la
 testenc_uwb_SOURCES = testenc_uwb.c
 testenc_uwb_LDADD = libspeex.la
 testdenoise_SOURCES = testdenoise.c
-testdenoise_LDADD = libspeexdsp.la 
+testdenoise_LDADD = libspeexdsp.la -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 testecho_SOURCES = testecho.c
-testecho_LDADD = libspeexdsp.la 
+testecho_LDADD = libspeexdsp.la -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 testjitter_SOURCES = testjitter.c
-testjitter_LDADD = libspeexdsp.la 
+testjitter_LDADD = libspeexdsp.la -L/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Sound_Pairing/fftw-3.3.3/lib -lfftw3
 all: all-am
 
 .SUFFIXES:
