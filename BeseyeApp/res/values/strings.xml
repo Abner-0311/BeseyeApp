@@ -99,4 +99,14 @@
 	<string name="signup_paring_title_2">Please hold on</string>
 	<string name="signup_paring_percentage">100%</string>
 	
+	<string name="msg_login_error">Login failed. Please try again later.</string>
+	<string name="msg_invalid_account_format">Invalid email format.</string>
+	<string name="msg_pw_length_error">Password length should be between 6 and 20.</string>
+	<string name="msg_pw_too_short">Your password is too short.</string>
+	
+	<string name="dialog_msg_login">Login&#8230;</string>
+	<string name="dialog_msg_logiout">Logout&#8230;</string>
+	
+	
+	
 </resources>

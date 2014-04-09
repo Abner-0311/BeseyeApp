@@ -436,7 +436,15 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		    Log.i(TAG, "Parse JSONObj Time:"+(System.currentTimeMillis()-startTime)+"ms");
 		        
 	    if(null != jsonRet){
-			miRetCode = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.RET_CODE, Integer.MIN_VALUE);
+	    	String strRetCode = BeseyeJSONUtil.getJSONString(jsonRet, BeseyeJSONUtil.RET_CODE, null);
+	    	if(null != strRetCode){
+	    		if(strRetCode.startsWith("0x")){
+	    			strRetCode = strRetCode.substring(2);
+	    		}
+	    		miRetCode = Integer.valueOf(strRetCode, 16).intValue();
+	    	}
+			//miRetCode = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.RET_CODE, Integer.MIN_VALUE);
+			
 		}else
 			miErrType = ERR_TYPE_INVALID_DATA;
 	    
@@ -491,7 +499,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	       	if(null != mOnHttpTaskCallback.get()){
 	       		
 	       		StringBuilder sb = new StringBuilder ();
-	       		sb.append("miRetCode = "+miRetCode+", ");
+	       		sb.append("miRetCode = "+String.format("%x", miRetCode)+", ");
 	       	    for (int i = 0; i < strParams.length; i++){
 	       	    	if(i == 0){
 	       	    		sb.append ("[ ");

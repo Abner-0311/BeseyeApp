@@ -21,19 +21,19 @@ import static com.app.beseye.util.BeseyeSharedPreferenceUtil.*;
 
 //SessionMgr is responsible for storing back-end URL, token, user mdid in storage/memory
 public class SessionMgr {
-	static private final String SESSION_PREF 				= "ikala_ses";
-	static private final String SESSION_TOKEN 				= "ikala_token";
-	static private final String SESSION_DOMAIN 				= "ikala_domain";
-	static private final String SESSION_MDID				= "ikala_mdid";
-	static private final String SESSION_ACCOUNT				= "ikala_account";
-	static private final String SESSION_READ_AGREEMENT		= "ikala_read_agreement";
-	static private final String SESSION_OPEN_ID				= "ikala_open_id";
-	static private final String SESSION_OPEN_ID_TYPE		= "ikala_open_id_type";
-	static private final String SESSION_ACC_CERTIFICATED	= "ikala_certificated";
-	static private final String SESSION_OWNER_INFO			= "ikala_owner_data";
-	static private final String SESSION_ACCOUNT_CREATE_DATE	= "ikala_account_register";
+	static private final String SESSION_PREF 				= "beseye_ses";
+	static private final String SESSION_TOKEN 				= "beseye_token";
+	static private final String SESSION_DOMAIN 				= "beseye_domain";
+	static private final String SESSION_MDID				= "beseye_mdid";
+	static private final String SESSION_ACCOUNT				= "beseye_account";
+	static private final String SESSION_READ_AGREEMENT		= "beseye_read_agreement";
+	static private final String SESSION_OPEN_ID				= "beseye_open_id";
+	static private final String SESSION_OPEN_ID_TYPE		= "beseye_open_id_type";
+	static private final String SESSION_ACC_CERTIFICATED	= "beseye_certificated";
+	static private final String SESSION_OWNER_INFO			= "beseye_owner_data";
+	static private final String SESSION_ACCOUNT_CREATE_DATE	= "beseye_account_register";
 	
-	static private final String SESSION_PRODUCTION_MODE	    = "ikala_server_mode";
+	static private final String SESSION_PRODUCTION_MODE	    = "beseye_server_mode";
 	
 	static private SessionMgr sSessionMgr;
 	
@@ -76,6 +76,7 @@ public class SessionMgr {
 		Thread.dumpStack();
 		//clearSharedPreferences(mPref);
 		//clearSharedPreferences(mSecuredPref);
+		setAuthToken("");
 		setMdid("");
 		setAccount("");
 		setIsOpenId(false);

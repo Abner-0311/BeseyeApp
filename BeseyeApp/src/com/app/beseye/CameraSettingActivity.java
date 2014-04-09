@@ -312,8 +312,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
 			String strMsg) {
-		// TODO Auto-generated method stub
-		
+		super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
 
 	@Override

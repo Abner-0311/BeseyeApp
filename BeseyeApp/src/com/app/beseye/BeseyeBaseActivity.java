@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 
 import net.hockeyapp.android.CrashManager;
@@ -97,6 +98,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			UpdateManager.register(this, HOCKEY_APP_ID);
 	}
 	
+	static public final String KEY_WARNING_TITLE = "KEY_WARNING_TITLE";
 	static public final String KEY_WARNING_TEXT = "KEY_WARNING_TEXT";
 	
 	static public final int DIALOG_ID_LOADING = 1; 
@@ -119,7 +121,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		switch(id){
 			case DIALOG_ID_WARNING:{
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            	builder.setTitle(R.string.dialog_title_warning);
+            	builder.setTitle(bundle.getString(KEY_WARNING_TEXT, getString(R.string.dialog_title_warning)));
             	builder.setMessage(bundle.getString(KEY_WARNING_TEXT));
 				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				    public void onClick(DialogInterface dialog, int item) {
@@ -180,14 +182,22 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
-		// TODO Auto-generated method stub
-		super.onPrepareDialog(id, dialog, args);
-	}
-
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		// TODO Auto-generated method stub
-		super.onPrepareDialog(id, dialog);
+		switch (id) {
+	        case DIALOG_ID_WARNING:{
+				String strTitleRes = "", strMsgRes = "";
+				if(null != args){
+					strTitleRes = args.getString(KEY_WARNING_TITLE);
+					strMsgRes = args.getString(KEY_WARNING_TEXT);
+				}
+				((AlertDialog) dialog).setIcon(android.R.drawable.ic_dialog_alert);
+				((AlertDialog) dialog).setTitle(0 == strTitleRes.length()?" ":strTitleRes);
+				if(0 < strMsgRes.length())
+					((AlertDialog) dialog).setMessage(strMsgRes);
+				break;
+			}
+	        default:
+	        	super.onPrepareDialog(id, dialog, args);
+	    }
 	}
 	
 	public boolean showMyDialog(int iDialogId){
@@ -345,8 +355,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			public void run() {
 				Bundle b = null;
 				b = new Bundle();
-				b.putString("strTitleRes", strTitleRes);
-				b.putString("strMsgRes", strMsgRes);	
+				b.putString(KEY_WARNING_TITLE, strTitleRes);
+				b.putString(KEY_WARNING_TEXT, strMsgRes);	
 				showMyDialog(iDialogId, b);
 			}});
 	}
@@ -361,14 +371,22 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
-			String strMsg) {
-		// TODO Auto-generated method stub
-		
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+		if(DEBUG){
+			onToastShow(task, strMsg);
+			Log.e(TAG, "onErrorReport(), task:["+task.getClass().getSimpleName()+"], iErrType:"+iErrType+", strTitle:"+strTitle+", strMsg:"+strMsg);
+		}
 	}
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeAccountTask.CheckAccountTask){
+				if(0 == iRetCode){
+				}
+			}
+		}
+		
 		if(null != mMapCurAsyncTasks){
 			mMapCurAsyncTasks.remove(task);
 		}

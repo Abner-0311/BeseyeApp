@@ -1,12 +1,10 @@
 package com.app.beseye;
 
-import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.util.BeseyeUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 public class OpeningPage extends BeseyeBaseActivity {
 	private static boolean sbFirstLaunch = true;
@@ -44,7 +42,7 @@ public class OpeningPage extends BeseyeBaseActivity {
 	//WebSocketClient client;
 	private void launchNextPage(){
 		Intent intent = new Intent();
-		intent.setClass(OpeningPage.this, WifiListActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
+		intent.setClass(OpeningPage.this, LoginActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
 		startActivity(intent);
 		finish();
 		

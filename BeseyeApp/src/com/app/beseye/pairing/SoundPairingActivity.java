@@ -17,6 +17,7 @@ import org.java_websocket.framing.FrameBuilder;
 import org.java_websocket.framing.Framedata;
 import org.java_websocket.handshake.ServerHandshake;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,8 +25,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.app.beseye.BeseyeApplication;
 import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.CameraViewActivity;
+import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
+import com.app.beseye.WifiListActivity;
 import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
@@ -63,7 +68,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		if(null != mChosenWifiAPInfo){
 			Log.w(TAG, "mChosenWifiAPInfo:"+mChosenWifiAPInfo.toString());
 			int iRet = playPairingCode(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,NetworkMgr.translateCipherToType(mChosenWifiAPInfo.cipher),(short) 1);
-			Toast.makeText(this, "ret:"+iRet, Toast.LENGTH_SHORT).show();
+			if(iRet != 0)
+				Toast.makeText(this, "ret:"+iRet, Toast.LENGTH_SHORT).show();
 		}
 		
 //		mEtTonePlay = (EditText)findViewById(R.id.et_playtone_value);
@@ -147,6 +153,15 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				Log.i(TAG, "onStopGen(), strCode:["+strCode+"]");
 		    	//mBtnPLayTone.setEnabled(true);
 			}}, 0);
+    	
+    	BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				Intent intent = new Intent();
+				intent.setClass(BeseyeApplication.getApplication(), CameraViewActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				BeseyeApplication.getApplication().startActivity(intent);
+			}}, 2000);
 	}
 
     public static void onCurFreqChanged(final double dFreq){
