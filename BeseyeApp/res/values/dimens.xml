@@ -62,7 +62,9 @@
     <dimen name="login_marginMedium">16dp</dimen>
     <dimen name="login_marginLarge">24dp</dimen>
     <dimen name="login_marginXLarge">32dp</dimen>
+    
     <dimen name="login_fontMedium">19sp</dimen>
+    <dimen name="login_fontRegular">17sp</dimen>
     <dimen name="login_fontNormal">15sp</dimen>
     <dimen name="login_fontSmall">13sp</dimen>
     
@@ -83,5 +85,8 @@
     <dimen name="signup_createAccount_description_margin">16dp</dimen>
     <dimen name="signup_choose_network_btn">200dp</dimen>
     <dimen name="signup_try_again_marginTop">56dp</dimen>
+    <dimen name="signup_name_camera_marginBottom">24dp</dimen>
+    <dimen name="signup_paring_done_marginTop">96dp</dimen>
+    <dimen name="signup_paring_done_marginSide">32dp</dimen>
     
 </resources>

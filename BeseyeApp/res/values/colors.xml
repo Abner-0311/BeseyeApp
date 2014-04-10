@@ -45,4 +45,7 @@
     
     <color name="signup_bg_color">#eeeeee</color>
     <color name="signup_font_description_color">#717171</color>
+    
+    <color name="signup_black_mask_color">#88000000</color>
+
 </resources>

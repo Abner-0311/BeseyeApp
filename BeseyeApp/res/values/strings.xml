@@ -116,5 +116,8 @@
 	<string name="signup_try_again_description_2">Still have problems? Refer to our</string>
 	<string name="signup_try_again_description_3">Setup Guidelines</string>
 	<string name="signup_try_again_btn">Ok, let\'s go</string>
+	<string name="signup_name_camera">Camera is almost ready, \nplease name your camera</string>
+	<string name="signup_paring_done">Congratulations! \nYour camera is ready! \nUnplug your camera and set it anywhere to see your place on the go, all settings can be recovered when power on.</string>
+	
 	
 </resources>
