@@ -2,30 +2,32 @@ package com.app.beseye;
 
 import com.app.beseye.util.BeseyeUtils;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-public class OpeningPage extends BeseyeBaseActivity {
+public class OpeningPage extends Activity {
 	private static boolean sbFirstLaunch = true;
 	private static final long TIME_TO_CLOSE_OPENING_PAGE = 3000L;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.layout_opening);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
-		getSupportActionBar().hide();
+		//getSupportActionBar().hide();
 		if(!sbFirstLaunch){
 			launchNextPage();
 		}
 	}
 	
-	@Override
-	protected int getLayoutId() {
-		return R.layout.layout_opening;
-	}
+//	@Override
+//	protected int getLayoutId() {
+//		return R.layout.layout_opening;
+//	}
 
 	@Override
 	protected void onResume() {
@@ -42,7 +44,7 @@ public class OpeningPage extends BeseyeBaseActivity {
 	//WebSocketClient client;
 	private void launchNextPage(){
 		Intent intent = new Intent();
-		intent.setClass(OpeningPage.this, LoginActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
+		intent.setClass(OpeningPage.this, WifiListActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
 		startActivity(intent);
 		finish();
 		
