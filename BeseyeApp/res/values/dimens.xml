@@ -70,4 +70,18 @@
     <dimen name="signup_paring_margin_medium">16dp</dimen>
     <dimen name="signup_paring_margin_label_bottom">32dp</dimen>
     <dimen name="signup_paring_container">456dp</dimen>
+    
+    <dimen name="signup_learnMore_margin">4dp</dimen>
+    <dimen name="signup_firstPage_bottom_btn_marginBottom">16dp</dimen>
+    <dimen name="signup_firstPage_bottom_btn_marginSide">24dp</dimen>
+    <dimen name="signup_firstPage_marginTop">64dp</dimen>
+    <dimen name="signup_firstPage_marginBottom">32dp</dimen>
+    <dimen name="signup_beforeSetup_img_marginTop">56dp</dimen>
+    <dimen name="signup_beforeSetup_img_marginBottom">16dp</dimen>
+    <dimen name="signup_createAccount_username_marginTop">56dp</dimen>
+    <dimen name="signup_createAccount_username_marginBottom">16dp</dimen>
+    <dimen name="signup_createAccount_description_margin">16dp</dimen>
+    <dimen name="signup_choose_network_btn">200dp</dimen>
+    <dimen name="signup_try_again_marginTop">56dp</dimen>
+    
 </resources>

@@ -99,4 +99,22 @@
 	<string name="signup_paring_title_2">Please hold on</string>
 	<string name="signup_paring_percentage">100%</string>
 	
+	<string name="signup_learn_more">Learn more about</string>
+	<string name="signup_beseye">Beseye</string>
+	<string name="signup_bottom_login">Login</string>
+	<string name="signup_bottom_signup">Setup camera and Sign up</string>
+	<string name="signup_before_setup_start">Start</string>
+	<string name="signup_before_setup_description">Please plug in your camera and place it to within 3 meters distance of you</string>
+	<string name="signup_createAccount_description_title">By continuing, I agree to Beseye\'s</string>
+	<string name="signup_createAccount_description_terms">Terms of service</string>
+	<string name="signup_createAccount_description_and">and</string>
+	<string name="signup_createAccount_description_policy">Privacy Policy</string>
+	<string name="signup_wifi_setting">During setup a WiFi connection is needed. Would you like to use your current WiFi connection?</string>
+	<string name="signup_choose_network">Choose a network</string>
+	<string name="signup_wifi_yes">Yes</string>
+	<string name="signup_try_again_description_1">Please plug in your camera and place it to within  3 meters of you.  Also make sure your WiFi password is correct.</string>
+	<string name="signup_try_again_description_2">Still have problems? Refer to our</string>
+	<string name="signup_try_again_description_3">Setup Guidelines</string>
+	<string name="signup_try_again_btn">Ok, let\'s go</string>
+	
 </resources>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color" >
+
+	<TextView
+	    android:id="@+id/tv_wifi_setting"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginTop="@dimen/signup_beforeSetup_img_marginTop"
+	    android:gravity="center_horizontal"
+	    android:text="@string/signup_wifi_setting"
+	    android:textColor="@color/signup_font_description_color"
+	    android:textSize="@dimen/login_fontNormal" />
+	
+	<ImageView
+	    android:id="@+id/iv_wifi_setting_img"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/tv_wifi_setting"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="@dimen/signup_beforeSetup_img_marginBottom"
+	    android:src="@drawable/signup_cam_wifiset_ill" />
+
+	
+	<RelativeLayout
+        android:id="@+id/rl_bottom_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <Button
+            android:id="@+id/button_choose_network"
+            android:layout_width="@dimen/signup_choose_network_btn"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/sl_account_bottom_btn"
+            android:text="@string/signup_choose_network"
+            android:textColor="@color/word_white"
+            android:textColorLink="@color/word_white"
+            android:textSize="@dimen/login_fontMedium" />
+        
+        <ImageView
+        android:id="@+id/iv_time_divider"
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/button_choose_network"
+        android:src="@color/background_white" />
+        
+        <Button
+	    android:id="@+id/button_wifi_yes"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_toRightOf="@+id/iv_time_divider"
+	    android:background="@drawable/sl_account_bottom_btn"
+	    android:text="@string/signup_wifi_yes"
+	    android:textColor="@color/word_white"
+	    android:textColorLink="@color/word_white"
+	    android:textSize="@dimen/login_fontMedium" />
+
+        
+        
+    </RelativeLayout>
+	
+</RelativeLayout>

@@ -7,6 +7,6 @@
     <item android:state_selected="true"
           android:drawable="@color/beseye_color_normal" /> <!-- selected -->
     <item android:state_enabled="false"
-          android:drawable="@color/beseye_color_normal" /> <!-- disabled -->
+          android:drawable="@color/word_gray_disabled" /> <!-- disabled -->
     <item android:drawable="@color/beseye_color_normal" /> <!-- default -->
 </selector>
