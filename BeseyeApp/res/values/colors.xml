@@ -46,4 +46,6 @@
     
     <color name="signup_bg_color">#eeeeee</color>
     <color name="signup_font_description_color">#717171</color>
+    
+    <color name="signup_nav_bg_color">#00bbb3</color>
 </resources>

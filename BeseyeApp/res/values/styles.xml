@@ -19,7 +19,6 @@
 	
     <style name="ActionBarTheme" parent="android:Widget.ActionBar">
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:background">@color/beseye_color</item>
         <item name="android:height">50dp</item>
     </style>
     

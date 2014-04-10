@@ -29,6 +29,8 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, OnHttpTaskCallback{
+	static public final String KEY_FROM_ACTIVITY					= "KEY_FROM_ACTIVITY";
+	
 	protected boolean mbFirstResume = true;
 	protected boolean mActivityDestroy = false;
 	protected boolean mActivityResume = false;
@@ -189,10 +191,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					strTitleRes = args.getString(KEY_WARNING_TITLE);
 					strMsgRes = args.getString(KEY_WARNING_TEXT);
 				}
-				((AlertDialog) dialog).setIcon(android.R.drawable.ic_dialog_alert);
-				((AlertDialog) dialog).setTitle(0 == strTitleRes.length()?" ":strTitleRes);
-				if(0 < strMsgRes.length())
-					((AlertDialog) dialog).setMessage(strMsgRes);
+				if(dialog instanceof AlertDialog){
+					((AlertDialog) dialog).setIcon(android.R.drawable.ic_dialog_alert);
+					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_warning):strTitleRes);
+					if(0 < strMsgRes.length())
+						((AlertDialog) dialog).setMessage(strMsgRes);
+				}
+				
 				break;
 			}
 	        default:
@@ -405,6 +410,33 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void launchActivityByIntent(Intent intent){
+		intent.putExtra(KEY_FROM_ACTIVITY, getClass().getSimpleName());
+		startActivity(intent);
+	}
+    
+    protected void launchActivityByClassName(String strClass){
+    	launchActivityByClassName(strClass, new Bundle());
+	}
+    
+    public void launchActivityByClassName(String strClass, Bundle bundle){
+		Intent intent = new Intent();
+		intent.setClassName(this, strClass);
+		if(null != bundle)
+			intent.putExtras(bundle);
+		
+		launchActivityByIntent(intent);
+	}
+    
+    public void launchActivityForResultByClassName(String strClass, Bundle bundle, int iRequestCode){
+		Intent intent = new Intent();
+		intent.setClassName(this, strClass);
+		intent.putExtra(KEY_FROM_ACTIVITY, getClass().getSimpleName());
+		if(null != bundle)
+			intent.putExtras(bundle);
+		startActivityForResult(intent, iRequestCode);
 	}
 
 	protected abstract int getLayoutId();

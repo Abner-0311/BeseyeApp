@@ -31,7 +31,8 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/tv_Let_it_bee"
         android:text="@string/signup_paring_title_2"
-        android:textColor="@color/word_gray" />
+        android:textColor="@color/word_gray" 
+        android:textSize="@dimen/login_fontNormal"/>
     
     <ImageView
         android:id="@+id/iv_paring_cam_icon"
@@ -86,7 +87,8 @@
         android:layout_centerHorizontal="true"
         android:text="@string/signup_paring_percentage"
         android:layout_marginBottom="@dimen/signup_paring_margin_label_bottom"
-        android:textColor="@color/word_gray" />
+        android:textColor="@color/word_gray"
+        android:textSize="@dimen/login_fontNormal" />
     
     </RelativeLayout>
     

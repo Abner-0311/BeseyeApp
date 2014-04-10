@@ -108,6 +108,7 @@ public class BeseyeAccountTask {
 	static public class RegisterTask extends BeseyeHttpTask {	 	
 		public RegisterTask(OnHttpTaskCallback cb) {
 			super(cb);
+			setDialogResId(0, R.string.dialog_msg_signup);
 			setHttpMethod(HttpPost.METHOD_NAME);
 			//enableHttps();
 		}

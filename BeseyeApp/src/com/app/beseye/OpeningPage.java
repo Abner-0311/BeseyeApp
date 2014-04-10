@@ -44,7 +44,7 @@ public class OpeningPage extends Activity {
 	//WebSocketClient client;
 	private void launchNextPage(){
 		Intent intent = new Intent();
-		intent.setClass(OpeningPage.this, WifiListActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
+		intent.setClass(OpeningPage.this, BeseyeEntryActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
 		startActivity(intent);
 		finish();
 		
