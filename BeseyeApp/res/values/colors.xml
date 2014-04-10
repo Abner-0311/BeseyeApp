@@ -8,7 +8,7 @@
     <color name="beseye_color">#00c6c4</color>
     <color name="beseye_color_gray">#595757</color>
     <color name="beseye_color_normal">#00bbb3</color>
-    <color name="beseye_color_highlight">#1bcfc9</color>
+    <color name="beseye_color_highlight">#00948f</color>
     <color name="beseye_opening_color">@color/beseye_color</color>
     <color name="background_white">#ffffff</color>
     
@@ -45,4 +45,5 @@
     <color name="cam_info_dialog_sub_attr_font_color">#1b1b1b</color>
     
     <color name="signup_bg_color">#eeeeee</color>
+    <color name="signup_font_description_color">#717171</color>
 </resources>
