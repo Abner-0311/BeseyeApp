@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <ImageView
+        android:id="@+id/iv_lightbox_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:src="@color/signup_black_mask_color" />
+    
+    <TextView
+	    android:id="@+id/tv_name_camera"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginTop="@dimen/signup_beforeSetup_img_marginTop"
+	    android:gravity="center_horizontal"
+	    android:text="@string/signup_name_camera"
+	    android:textColor="@color/word_white"
+	    android:textSize="@dimen/login_fontMedium" />
+
+    <EditText
+        android:id="@+id/editText_name_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name_camera"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+        android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+        android:layout_marginTop="@dimen/signup_name_camera_marginBottom"
+        android:background="@drawable/sl_signup_create_account_input"
+        android:ems="10"
+        android:inputType="text"
+        android:paddingLeft="@dimen/login_marginMedium"
+        android:paddingRight="@dimen/login_marginMedium"
+        android:textSize="@dimen/login_fontRegular" >
+
+        <requestFocus />
+    </EditText>
+	
+</RelativeLayout>

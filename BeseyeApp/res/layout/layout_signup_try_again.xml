@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color" >
+
+	<TextView
+	    android:id="@+id/tv_try_again_description_1"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginTop="@dimen/signup_try_again_marginTop"
+	    android:text="@string/signup_try_again_description_1"
+	    android:textColor="@color/signup_font_description_color"
+	    android:textSize="@dimen/login_fontNormal" />
+	
+	<RelativeLayout
+        android:id="@+id/rl_try_again_description_2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_try_again_description_1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/signup_createAccount_description_margin"
+        android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide" >
+
+        <TextView
+            android:id="@+id/tv_try_again_description_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/signup_try_again_description_2"
+            android:textColor="@color/signup_font_description_color"
+            android:textSize="@dimen/login_fontNormal" />
+        
+        <TextView
+            android:id="@+id/tv_try_again_description_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/signup_learnMore_margin"
+            android:layout_below="@id/tv_try_again_description_2"
+            android:text="@string/signup_try_again_description_3"
+            android:textColor="@color/signup_font_description_color"
+            android:textSize="@dimen/login_fontNormal" />
+        
+    </RelativeLayout>
+	
+	<ImageView
+	    android:id="@+id/iv_try_again_img"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/rl_try_again_description_2"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="@dimen/signup_createAccount_description_margin"
+	    android:src="@drawable/signup_tryagain_ill" />
+
+	
+	<Button
+        android:id="@+id/button_continue"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/sl_account_bottom_btn"
+        android:text="@string/signup_try_again_btn"
+        android:textColor="@color/word_white"
+        android:textColorLink="@color/word_white"
+        android:textSize="@dimen/login_fontMedium" />
+	
+</RelativeLayout>

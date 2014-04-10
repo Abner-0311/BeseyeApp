@@ -1,0 +1,8 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+    <dimen name="signup_paring_done_marginTop">56dp</dimen>
+    <dimen name="signup_paring_done_marginSide">72dp</dimen>
+    
+</resources>
