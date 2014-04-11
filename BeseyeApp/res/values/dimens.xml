@@ -91,4 +91,8 @@
     <dimen name="signup_paring_done_marginTop">96dp</dimen>
     <dimen name="signup_paring_done_marginSide">32dp</dimen>
     
+    <dimen name="datetime_picker_horiz_margin">32dp</dimen>
+    <dimen name="datetime_picker_desc_marginTop">32dp</dimen>
+    <dimen name="datetime_picker_desc_marginBottom">32dp</dimen>
+    
 </resources>

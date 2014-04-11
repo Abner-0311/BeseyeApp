@@ -134,5 +134,8 @@
 	<string name="signup_name_camera">Camera is almost ready, \nplease name your camera</string>
 	<string name="signup_paring_done">Congratulations! \nYour camera is ready! \nUnplug your camera and set it anywhere to see your place on the go, all settings can be recovered when power on.</string>
 	
+	<string name="datetime_month">Month</string>
+	<string name="datetime_day">Day</string>
+	<string name="datetime_hour">Hour</string>
 	
 </resources>

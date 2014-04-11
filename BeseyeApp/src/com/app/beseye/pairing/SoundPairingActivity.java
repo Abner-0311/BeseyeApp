@@ -73,6 +73,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		mTxtProgress = (TextView)findViewById(R.id.tv_percentage_label);
 		
 		mChosenWifiAPInfo = getIntent().getParcelableExtra(KEY_WIFI_INFO);
+		if(null == mChosenWifiAPInfo){
+			Log.e(TAG, "onCreate(), mChosenWifiAPInfo is nul");
+		}
 		
 		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, SessionMgr.getInstance().getAuthToken());
 		
@@ -194,8 +197,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	};
 	
 	private void beginToPlayPairingTone(int sUserTmpId){
+		Log.i(TAG, "beginToPlayPairingTone(), sUserTmpId is "+sUserTmpId);
 		if(null != mChosenWifiAPInfo){
-			Log.w(TAG, "mChosenWifiAPInfo:"+mChosenWifiAPInfo.toString());
+			Log.w(TAG, "beginToPlayPairingTone(), mChosenWifiAPInfo:"+mChosenWifiAPInfo.toString());
 			int iRet = playPairingCode(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,NetworkMgr.translateCipherToType(mChosenWifiAPInfo.cipher),(short) sUserTmpId);
 			
 			if(iRet != 0)
@@ -212,6 +216,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 						BeseyeUtils.showSoftKeyboard(SoundPairingActivity.this, mEtCamName);
 					}}, 2000);
 			}
+		}else{
+			Log.e(TAG, "beginToPlayPairingTone(), mChosenWifiAPInfo is null");
 		}			
 	}
 		
@@ -296,6 +302,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
+		Log.e(TAG, "onErrorReport(), "+task.getClass().getSimpleName()+", iErrType="+iErrType);	
 		if(task instanceof BeseyeAccountTask.StartCamPairingTask){
 			beginToPlayPairingTone(Integer.parseInt(SessionMgr.getInstance().getMdid()));
 			//onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_signup_error));

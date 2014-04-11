@@ -1,5 +1,7 @@
 package com.app.beseye;
 
+import com.app.beseye.widget.BeseyeDatetimePickerDialog;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -27,6 +29,8 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 		if(null != mTvLogin){
 			mTvLogin.setOnClickListener(this);
 		}
+		
+		new BeseyeDatetimePickerDialog(this).show(); 
 	}
 	
 	@Override
