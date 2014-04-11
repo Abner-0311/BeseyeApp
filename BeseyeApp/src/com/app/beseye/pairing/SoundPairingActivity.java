@@ -2,47 +2,44 @@ package com.app.beseye.pairing;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.nio.ByteBuffer;
+import java.lang.ref.WeakReference;
+import java.util.List;
 
-import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketImpl;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft;
-import org.java_websocket.drafts.Draft_17;
-import org.java_websocket.framing.FrameBuilder;
-import org.java_websocket.framing.Framedata;
-import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONObject;
 
-import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.app.beseye.BeseyeApplication;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraViewActivity;
-import com.app.beseye.OpeningPage;
+import com.app.beseye.PairingFailActivity;
 import com.app.beseye.R;
-import com.app.beseye.WifiListActivity;
 import com.app.beseye.audio.AudioChannelMgr;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 
-public class SoundPairingActivity extends BeseyeBaseActivity {
-	private static EditText mEtTonePlay;
-	private static Button mBtnPLayTone;
-	
+public class SoundPairingActivity extends BeseyeBaseActivity {	
 	static public final String KEY_WIFI_INFO = "KEY_WIFI_INFO";
 	
 	private WifiAPInfo mChosenWifiAPInfo;
+	private ViewGroup mVgCamNameHolder;
+	private EditText mEtCamName;
+	private TextView mTxtProgress;
+	private String mStrCamName;
+	private PairingCounter mPairingCounter;
+	private static boolean sbFinishToPlay = false;
 	
 	//For Soundpairing feature
 	private native static boolean nativeClassInit();
@@ -64,20 +61,20 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		
 		getSupportActionBar().hide();
 		
-		mChosenWifiAPInfo = getIntent().getParcelableExtra(KEY_WIFI_INFO);
-		if(null != mChosenWifiAPInfo){
-			Log.w(TAG, "mChosenWifiAPInfo:"+mChosenWifiAPInfo.toString());
-			int iRet = playPairingCode(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,NetworkMgr.translateCipherToType(mChosenWifiAPInfo.cipher),(short) 1);
-			if(iRet != 0)
-				Toast.makeText(this, "ret:"+iRet, Toast.LENGTH_SHORT).show();
+		mVgCamNameHolder = (ViewGroup)findViewById(R.id.vg_name_cam);
+		if(null != mVgCamNameHolder){
+			mEtCamName = (EditText)mVgCamNameHolder.findViewById(R.id.editText_name_camera);
+			if(null != mEtCamName){
+				updateProgress(0);
+				mEtCamName.setOnEditorActionListener(mOnEditorActionListener);
+			}
 		}
 		
-//		mEtTonePlay = (EditText)findViewById(R.id.et_playtone_value);
-//		mEtTonePlay.setText("raylios WiFi"+Character.toString((char) 0x1B)+Character.toString((char) 0x1B)+"whoisyourdaddy"+Character.toString((char) 0x1B)+Character.toString((char) 0x1B)+"3");
-//		mBtnPLayTone = (Button)findViewById(R.id.btn_playtone);
-//		if(null != mBtnPLayTone){
-//			mBtnPLayTone.setOnClickListener(this);
-//		}
+		mTxtProgress = (TextView)findViewById(R.id.tv_percentage_label);
+		
+		mChosenWifiAPInfo = getIntent().getParcelableExtra(KEY_WIFI_INFO);
+		
+		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, SessionMgr.getInstance().getAuthToken());
 		
 //		new Thread(new Runnable(){
 //
@@ -98,13 +95,13 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()){
-			case R.id.btn_playtone:{
-				//if(playCode(mEtTonePlay.getText().toString(), true)){
-				if(playPairingCode("aabbccddeeff", "BesEye0630",3,(short) 1) == 0){
-					mBtnPLayTone.setEnabled(false);
-				}
-				break;
-			}
+//			case R.id.btn_playtone:{
+//				//if(playCode(mEtTonePlay.getText().toString(), true)){
+//				if(playPairingCode("aabbccddeeff", "BesEye0630",3,(short) 1) == 0){
+//					mBtnPLayTone.setEnabled(false);
+//				}
+//				break;
+//			}
 			default:
 				Log.w(TAG, "onClick(), not handle view id:"+view.getId());
 		}
@@ -150,18 +147,19 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
     	BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
+				sbFinishToPlay = true;
 				Log.i(TAG, "onStopGen(), strCode:["+strCode+"]");
 		    	//mBtnPLayTone.setEnabled(true);
 			}}, 0);
     	
-    	BeseyeUtils.postRunnable(new Runnable(){
-			@Override
-			public void run() {
-				Intent intent = new Intent();
-				intent.setClass(BeseyeApplication.getApplication(), CameraViewActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				BeseyeApplication.getApplication().startActivity(intent);
-			}}, 2000);
+//    	BeseyeUtils.postRunnable(new Runnable(){
+//			@Override
+//			public void run() {
+//				Intent intent = new Intent();
+//				intent.setClass(BeseyeApplication.getApplication(), CameraViewActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
+//				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//				BeseyeApplication.getApplication().startActivity(intent);
+//			}}, 2000);
 	}
 
     public static void onCurFreqChanged(final double dFreq){
@@ -175,6 +173,150 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 
     public static void onErrCorrectionCode(String strCode, String strEC, String strEncodeMark){
     	Log.i(TAG, "onErrCorrectionCode(), strCode:["+strCode+"]\n, strEC:["+strEC+"]\n, strEncodeMark:["+strEncodeMark+"]\n");
+	}
+    
+    TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener(){
+		@Override
+		public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+			Log.i(TAG, "onEditorAction(), actionId:["+actionId+"]");
+			if (actionId == EditorInfo.IME_ACTION_DONE) { 
+				if(view.equals(mEtCamName) && 0 < mEtCamName.getText().length()){
+					mStrCamName = mEtCamName.getText().toString();
+					Log.i(TAG, "onEditorAction(), mStrCamName:["+mStrCamName+"]");
+					BeseyeUtils.hideSoftKeyboard(SoundPairingActivity.this, mEtCamName);
+					BeseyeUtils.setVisibility(mVgCamNameHolder, View.GONE);
+					checkPairingStatus();
+					return true;
+				}
+			}			
+			return false;
+		}
+	};
+	
+	private void beginToPlayPairingTone(int sUserTmpId){
+		if(null != mChosenWifiAPInfo){
+			Log.w(TAG, "mChosenWifiAPInfo:"+mChosenWifiAPInfo.toString());
+			int iRet = playPairingCode(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,NetworkMgr.translateCipherToType(mChosenWifiAPInfo.cipher),(short) sUserTmpId);
+			
+			if(iRet != 0)
+				Toast.makeText(SoundPairingActivity.this, "ret:"+iRet, Toast.LENGTH_SHORT).show();
+			else{
+				sbFinishToPlay = false;
+				estimatePairingTime();
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						mStrCamName = null;
+						BeseyeUtils.setVisibility(mVgCamNameHolder, View.VISIBLE);	
+						mEtCamName.requestFocus();
+						BeseyeUtils.showSoftKeyboard(SoundPairingActivity.this, mEtCamName);
+					}}, 2000);
+			}
+		}			
+	}
+		
+	private void estimatePairingTime(){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				int iNumWords = mChosenWifiAPInfo.BSSID.replace(":", "").length()+
+						mChosenWifiAPInfo.password.length()+
+						1+//cipher
+						2+//user temp id
+						4;//prefix+postfix+divider
+		
+				mPairingCounter = new PairingCounter(iNumWords*2*100 + 15*1000, SoundPairingActivity.this);
+				if(null != mPairingCounter){
+					mPairingCounter.start();
+				}				
+			}}, 0);		
+		
+	}
+		
+	private void updateProgress(long lPercent){
+		if(null != mTxtProgress){
+			mTxtProgress.setText(lPercent+"%");
+		}
+	}
+	
+	private void onPairingTimeout(){
+		checkPairingStatus();
+	}
+	
+	private void checkPairingStatus(){
+		//Check pairing result
+		
+		if(null != mStrCamName){
+			if(null != mPairingCounter && mPairingCounter.isFinished() && sbFinishToPlay){
+				Bundle bundle = new Bundle();
+				bundle.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
+				launchActivityByClassName(CameraViewActivity.class.getName(), bundle);
+				// if pairing failed
+				//launchActivityByClassName(PairingFailActivity.class.getName());
+			}
+		}
+	}
+		
+	static private class PairingCounter extends CountDownTimer {
+       private boolean mbFinished = false;
+       private long mlTotolTime = 0;
+       private WeakReference<SoundPairingActivity> mAct;
+       
+	   public PairingCounter(long millisInFuture, SoundPairingActivity act) {
+		   super(millisInFuture, 1000);
+		   mlTotolTime = millisInFuture;
+		   mAct = new WeakReference<SoundPairingActivity>(act);
+		   mbFinished = false;
+	   }
+	   
+	   public boolean isFinished(){
+		   return mbFinished;
+	   }
+	   
+	   @Override
+	    public void onFinish() {
+		   Log.i(TAG, "onFinish()");
+		   mbFinished = true;
+		   SoundPairingActivity act = mAct.get();
+		   if(null != act){
+			   act.updateProgress(100);
+			   act.onPairingTimeout();
+		   }
+	   }
+	   
+	   @Override
+	   public void onTick(long millisUntilFinished) {
+		   long lUsedTime =  mlTotolTime - millisUntilFinished;
+		   SoundPairingActivity act = mAct.get();
+		   if(null != act){
+			   act.updateProgress(lUsedTime*100/mlTotolTime);
+		   }		   
+	   } 
+	}
+	
+	@Override
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
+		if(task instanceof BeseyeAccountTask.StartCamPairingTask){
+			beginToPlayPairingTone(Integer.parseInt(SessionMgr.getInstance().getMdid()));
+			//onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_signup_error));
+		}else
+			super.onErrorReport(task, iErrType, strTitle, strMsg);
+	}
+
+	@Override
+	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeAccountTask.StartCamPairingTask){
+				if(0 == iRetCode){
+					beginToPlayPairingTone(Integer.parseInt(SessionMgr.getInstance().getMdid()));
+					//Log.i(TAG, "onPostExecute(), "+result.toString());
+					//monitorAsyncTask(new BeseyeAccountTask.CamAttchTask(this), true, SessionMgr.getInstance().getMdid());
+				}
+			}else{
+				super.onPostExecute(task, result, iRetCode);
+			}
+		}
 	}
 }
 

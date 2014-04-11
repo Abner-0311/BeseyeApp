@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -47,6 +48,7 @@ import android.os.PowerManager;
 
 public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSurfaceCallback,
 																	  OnNetworkChangeCallback{
+	static public final String KEY_PAIRING_DONE = "KEY_PAIRING_DONE";
 	private TouchSurfaceView mStreamingView;
 	private TextView mTxtDate, mTxtCamName, mTxtTime, mTxtEvent, mTxtGoLive, mTxtPowerState;
 	
@@ -56,7 +58,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private RelativeLayout mVgHeader, mVgToolbar;
 	private CameraViewControlAnimator mCameraViewControlAnimator;
 	private ProgressBar mPbLoadingCursor;
-	private ViewGroup mVgPowerState, mVgCamInvalidState;
+	private ViewGroup mVgPowerState, mVgCamInvalidState, mVgPairingDone;
+	private Button mBtnPairingDoneOK; 
 	private ImageButton mIbOpenCam;
 	
 	private boolean mbIsLiveMode = true;//false means VOD
@@ -207,6 +210,17 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(null != mIbOpenCam){
 				mIbOpenCam.setOnClickListener(this);
 			}
+		}
+		
+		if(getIntent().getBooleanExtra(KEY_PAIRING_DONE, false)){
+			mVgPairingDone = (ViewGroup)findViewById(R.id.vg_pairing_done);
+			if(null != mVgPairingDone){
+				BeseyeUtils.setVisibility(mVgPairingDone, View.VISIBLE);
+				mBtnPairingDoneOK = (Button)mVgPairingDone.findViewById(R.id.button_start);
+				if(null != mBtnPairingDoneOK){
+					mBtnPairingDoneOK.setOnClickListener(this);
+				}
+			}	
 		}
 		
 		mVgCamInvalidState = (ViewGroup)findViewById(R.id.vg_cam_invald_statement);
@@ -575,6 +589,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				break;
 			}
 			case R.id.ib_rewind:{
+				break;
+			}
+			case R.id.button_start:{
+				BeseyeUtils.setVisibility(mVgPairingDone, View.GONE);
 				break;
 			}
 			case R.id.ib_play_pause:{

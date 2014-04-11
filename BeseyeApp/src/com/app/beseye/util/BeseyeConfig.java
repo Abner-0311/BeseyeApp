@@ -24,7 +24,8 @@ public class BeseyeConfig {
 	static public final String RELAY_AP_PW = "whoisyourdaddy";
 	
 	static public final String TMP_CAM_ID = "BeseyeCam001";
-	static public final String TMP_CAM_NAME = "rtsp://admin:password@192.168.2.145/h264";
+	static public final String TMP_CAM_NAME = "BesEye Cam";
+	static public final String TMP_CAM_NAME_S = "rtsp://admin:password@192.168.2.4/h264";
 	static public final String TMP_CAM_SN = "BE00000001PN";
 	static public final String TMP_CAM_MAC = "93:be:22:fa:10:88";
 	
@@ -33,7 +34,7 @@ public class BeseyeConfig {
 													 //"rtsp://admin:password@192.168.2.2/h264_2",
 													 //"rtmp://54.238.191.39:1935/live-edge/mystream5_aac"/*,
 													 //"rtmp://54.250.149.50/live-origin/mystream3_aac",
-													 "rtsp://admin:password@192.168.2.214/h264",
+													 "rtsp://admin:password@192.168.2.4/h264",
 													 "rtmp://192.168.2.145/proxypublish/stream1 live=1",
 													 "rtmp://54.250.149.50/livetest/test_crtmpserver",
 													 "rtsp://admin:password@192.168.12.184/h264_2"//00:0C:43:30:50:D0
@@ -65,7 +66,8 @@ public class BeseyeConfig {
 			}
 		}else{
 			if(ASSIGN_ST_PATH)
-				STREAM_PATH_LIST.add(CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
+				STREAM_PATH_LIST.add(CamSettingMgr.getInstance().getCamName(TMP_CAM_NAME_S));
+			
 			for(int i = 0; i< DEMO_STREAM_PATH.length;i++){
 				STREAM_PATH_LIST.add(DEMO_STREAM_PATH[i]);
 			}

@@ -1,9 +1,6 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeConfig.TMP_CAM_ID;
-import static com.app.beseye.util.BeseyeJSONUtil.LED_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.getJSONInt;
+import static com.app.beseye.util.BeseyeConfig.*;
 
 import java.util.List;
 
@@ -15,7 +12,6 @@ import com.app.beseye.util.BeseyeAccountFilter;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -28,7 +24,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 public class SignupActivity extends PairingBaseActivity {
 	private EditText mEtUserName, mEtPassword;
@@ -46,12 +41,16 @@ public class SignupActivity extends PairingBaseActivity {
 		mEtUserName = (EditText)findViewById(R.id.editText_username);
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
+			if(DEBUG)
+				mEtUserName.setText("abner.huang@beseye.com");
 		}
 		
 		mEtPassword = (EditText)findViewById(R.id.editText_password);
 		if(null != mEtPassword){
 			mEtPassword.addTextChangedListener(mTextWatcher);
 			mEtPassword.setOnEditorActionListener(mOnEditorActionListener);
+			if(DEBUG)
+				mEtPassword.setText("123456");
 		}
 		
 		mTvTermOfService = (TextView)findViewById(R.id.tv_bottom_description_terms);

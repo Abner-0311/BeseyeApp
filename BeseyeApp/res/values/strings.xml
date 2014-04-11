@@ -113,6 +113,7 @@
 	<string name="signup_title_before_setup">Before Setup</string>
 	<string name="signup_title_create_account">Create Account</string>
 	<string name="signup_title_cam_wifi_settings">Camera WiFi Settings</string>
+	<string name="signup_title_cam_pair_fail">Please try again</string>
 	<string name="signup_learn_more">Learn more about</string>
 	<string name="signup_beseye">Beseye</string>
 	<string name="signup_bottom_login">Login</string>

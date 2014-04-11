@@ -40,7 +40,7 @@
         android:inputType="textEmailAddress"
         android:paddingLeft="@dimen/login_marginMedium"
         android:paddingRight="@dimen/login_marginMedium"
-        android:textSize="@dimen/login_fontNormal" />
+        android:textSize="@dimen/login_fontRegular" />
     
     <EditText
         android:id="@+id/editText_password"
@@ -57,7 +57,7 @@
         android:inputType="textPassword"
         android:paddingLeft="@dimen/login_marginMedium"
         android:paddingRight="@dimen/login_marginMedium"
-        android:textSize="@dimen/login_fontNormal"/>
+        android:textSize="@dimen/login_fontRegular"/>
 
     <TextView
         android:id="@+id/tv_forgetpw"

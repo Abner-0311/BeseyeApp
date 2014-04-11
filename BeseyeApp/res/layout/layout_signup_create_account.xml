@@ -29,7 +29,7 @@
         android:inputType="textEmailAddress"
         android:paddingLeft="@dimen/login_marginMedium"
         android:paddingRight="@dimen/login_marginMedium"
-        android:textSize="@dimen/login_fontNormal" />
+        android:textSize="@dimen/login_fontRegular" />
 
     <EditText
         android:id="@+id/editText_password"
@@ -45,7 +45,7 @@
         android:inputType="textPassword"
         android:paddingLeft="@dimen/login_marginMedium"
         android:paddingRight="@dimen/login_marginMedium"
-        android:textSize="@dimen/login_fontNormal" />
+        android:textSize="@dimen/login_fontRegular" />
 
     <RelativeLayout
         android:id="@+id/rl_bottom_description"
@@ -71,7 +71,7 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@id/tv_bottom_description_title"
             android:text="@string/signup_createAccount_description_terms"
-            android:textColor="@color/beseye_color_normal"
+            android:textColor="@color/cl_link_font_color"
             android:textSize="@dimen/login_fontSmall" />
         
         <TextView
@@ -93,7 +93,7 @@
             android:layout_below="@id/tv_bottom_description_title"
             android:layout_toRightOf="@id/tv_bottom_description_and"
             android:text="@string/signup_createAccount_description_policy"
-            android:textColor="@color/beseye_color_normal"
+            android:textColor="@color/cl_link_font_color"
             android:textSize="@dimen/login_fontSmall" />
         
     </RelativeLayout>

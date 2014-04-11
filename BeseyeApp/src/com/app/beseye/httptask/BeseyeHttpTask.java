@@ -124,9 +124,9 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	private int miSocketTimeout = SOCKET_TIMEOUT;
 	
 	// the timeout until a connection is established
-	private static final int CONNECTION_TIMEOUT = 60000; /* 10 seconds */
+	private static final int CONNECTION_TIMEOUT = 10000; /* 10 seconds */
 	// the timeout for waiting for data
-	private static final int SOCKET_TIMEOUT = 60000; /* 10 seconds */
+	private static final int SOCKET_TIMEOUT = 10000; /* 10 seconds */
 	
 	protected static void setTimeouts(HttpParams params, int iConTimeout, int iSocketTimeout) {
 	    params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
