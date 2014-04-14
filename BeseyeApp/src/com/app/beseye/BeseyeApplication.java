@@ -39,7 +39,7 @@ public class BeseyeApplication extends Application {
 		
 		SessionMgr.createInstance(getApplicationContext());
 		SessionMgr.getInstance().setHostUrl("http://192.168.2.68:3100/be_acc/");
-		SessionMgr.getInstance().setMdid("1");
+		//SessionMgr.getInstance().setMdid("1");
 		
 		DeviceUuidFactory.getInstance(getApplicationContext());
 		//startService(new Intent(this,BeseyeNotificationService.class));

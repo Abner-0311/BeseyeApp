@@ -13,6 +13,7 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mbIgnoreSessionCheck = true;
 		getSupportActionBar().hide();
 		
 		mTvSetupAndSignup = (TextView)findViewById(R.id.button_signup);
@@ -30,7 +31,7 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 			mTvLogin.setOnClickListener(this);
 		}
 		
-		new BeseyeDatetimePickerDialog(this).show(); 
+		//new BeseyeDatetimePickerDialog(this).show(); 
 	}
 	
 	@Override

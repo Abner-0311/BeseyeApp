@@ -19,6 +19,7 @@ public abstract class PairingBaseActivity extends BeseyeBaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "PairingRemindActivity::onCreate()");
 		super.onCreate(savedInstanceState);
+		mbIgnoreSessionCheck = true;
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
 		

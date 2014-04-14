@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeAccountFilter;
@@ -33,6 +34,7 @@ public class SignupActivity extends PairingBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mbIgnoreSessionCheck = true;
 		
 		if(null != mTxtNavTitle){
 			mTxtNavTitle.setText(R.string.signup_title_create_account);
@@ -42,7 +44,7 @@ public class SignupActivity extends PairingBaseActivity {
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
 			if(DEBUG)
-				mEtUserName.setText("abner.huang@beseye.com");
+				mEtUserName.setText("abner.huang2@beseye.com");
 		}
 		
 		mEtPassword = (EditText)findViewById(R.id.editText_password);
@@ -145,9 +147,13 @@ public class SignupActivity extends PairingBaseActivity {
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
 		if(task instanceof BeseyeAccountTask.RegisterTask){
-			launchActivityByClassName(WifiSetupGuideActivity.class.getName());
-			finish();
-			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_signup_error));
+			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
+			//finish();
+			int iErrMsgId = R.string.msg_signup_error;
+			if(BeseyeError.E_BE_ACC_USER_ALREADY_EXIST == iErrType){
+				iErrMsgId = R.string.msg_signup_err_email_used;
+			}
+			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(iErrMsgId));
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -176,26 +182,10 @@ public class SignupActivity extends PairingBaseActivity {
 					launchActivityByClassName(WifiSetupGuideActivity.class.getName());
 					finish();
 				}
-			}else if(task instanceof BeseyeAccountTask.CheckAccountTask){
-				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-					//monitorAsyncTask(new BeseyeAccountTask.LogoutHttpTask(this), true, SessionMgr.getInstance().getAuthToken());
-					monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, SessionMgr.getInstance().getAuthToken());
-				}
-			}else if(task instanceof BeseyeAccountTask.StartCamPairingTask){
-				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-					monitorAsyncTask(new BeseyeAccountTask.CamAttchTask(this), true, SessionMgr.getInstance().getMdid());
-				}
 			}else if(task instanceof BeseyeAccountTask.CamAttchTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					//monitorAsyncTask(new BeseyeAccountTask.CamAttchTask(this), true, SessionMgr.getInstance().getMdid());
-				}
-			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
-				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-					SessionMgr.getInstance().cleanSession();
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);

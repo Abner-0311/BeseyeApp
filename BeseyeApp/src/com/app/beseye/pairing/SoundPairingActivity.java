@@ -77,8 +77,6 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 			Log.e(TAG, "onCreate(), mChosenWifiAPInfo is nul");
 		}
 		
-		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, SessionMgr.getInstance().getAuthToken());
-		
 //		new Thread(new Runnable(){
 //
 //			@Override
@@ -88,6 +86,11 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	
 	}
 	
+	@Override
+	protected void onSessionComplete() {
+		super.onSessionComplete();
+		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, SessionMgr.getInstance().getAuthToken());
+	}
 	@Override
 	protected void onPause() {
 		finishPlayCode();
@@ -254,9 +257,10 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		
 		if(null != mStrCamName){
 			if(null != mPairingCounter && mPairingCounter.isFinished() && sbFinishToPlay){
+				Log.i(TAG, "checkPairingStatus(), launch first page");
 				Bundle bundle = new Bundle();
 				bundle.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
-				launchActivityByClassName(CameraViewActivity.class.getName(), bundle);
+				launchDelegateActivity(CameraViewActivity.class.getName(), bundle);
 				// if pairing failed
 				//launchActivityByClassName(PairingFailActivity.class.getName());
 			}
@@ -304,8 +308,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
 		Log.e(TAG, "onErrorReport(), "+task.getClass().getSimpleName()+", iErrType="+iErrType);	
 		if(task instanceof BeseyeAccountTask.StartCamPairingTask){
-			beginToPlayPairingTone(Integer.parseInt(SessionMgr.getInstance().getMdid()));
-			//onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_signup_error));
+			//beginToPlayPairingTone(Integer.parseInt(SessionMgr.getInstance().getMdid()));
+			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_pairing_error));
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}

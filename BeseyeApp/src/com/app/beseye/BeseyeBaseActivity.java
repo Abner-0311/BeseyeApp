@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
+import com.app.beseye.httptask.SessionMgr;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -34,6 +35,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected boolean mbFirstResume = true;
 	protected boolean mActivityDestroy = false;
 	protected boolean mActivityResume = false;
+	protected boolean mbIgnoreSessionCheck = false;
 	
 	private Handler mHandler = new Handler();
 	
@@ -51,9 +53,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mActivityResume = true;
 		checkForCrashes();
 	    checkForUpdates();
+	    
+		//if(! mbIgnoreSessionCheck && checkSession())
+	    if( mbIgnoreSessionCheck || checkSession())
+			invokeSessionComplete();
+		mActivityResume = true;
 	}
 	
 	@Override
@@ -72,6 +78,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		clearLastAsyncTask();
 		cancelRunningTasks();
 		super.onDestroy();
+		
 		mActivityDestroy = true;
 	}
 
@@ -88,6 +95,30 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
+	}
+	
+	private boolean checkSession(){
+		if(SessionMgr.getInstance().isTokenValid()){
+			monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this), true, SessionMgr.getInstance().getAuthToken());
+			//invokeSessionComplete();
+			return false;
+		}	
+		else{
+			Log.e(TAG, "checkSession(), need to get new session");
+			onSessionInvalid();
+			//monitorAsyncTask(new iKalaAddrTask.GetSessionTask(this), true);
+		}
+		return false;
+	}
+	
+	private void invokeSessionComplete(){
+		if(mbFirstResume)
+			onSessionComplete();
+		mbFirstResume = false;
+	}
+	
+	protected void onSessionComplete(){
+		 
 	}
 	
 	private void checkForCrashes() {
@@ -185,6 +216,16 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
 		switch (id) {
+			case DIALOG_ID_LOADING:{
+				String strMsgRes = "";
+				if(null != args){
+					strMsgRes = args.getString(KEY_WARNING_TEXT);
+				}
+				if(dialog instanceof AlertDialog){
+					if(0 < strMsgRes.length())
+						((AlertDialog) dialog).setMessage(strMsgRes);
+				}
+			}
 	        case DIALOG_ID_WARNING:{
 				String strTitleRes = "", strMsgRes = "";
 				if(null != args){
@@ -192,7 +233,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					strMsgRes = args.getString(KEY_WARNING_TEXT);
 				}
 				if(dialog instanceof AlertDialog){
-					((AlertDialog) dialog).setIcon(android.R.drawable.ic_dialog_alert);
+					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon_shadow);
 					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_warning):strTitleRes);
 					if(0 < strMsgRes.length())
 						((AlertDialog) dialog).setMessage(strMsgRes);
@@ -347,8 +388,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				Bundle b = null;
 				if(0 < iTitleRes || 0 < iMsgRes){
 					b = new Bundle();
-					b.putInt("iTitleRes", iTitleRes);
-					b.putInt("iMsgRes", iMsgRes);	
+					if(iTitleRes > 0)
+						b.putString(KEY_WARNING_TITLE, getString(iTitleRes));
+					if(iMsgRes > 0)
+						b.putString(KEY_WARNING_TEXT, getString(iMsgRes));		
 				}
 				showMyDialog(iDialogId, b);
 			}});
@@ -377,6 +420,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+		if(task instanceof BeseyeAccountTask.CheckAccountTask){
+			onSessionInvalid();
+		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
+			SessionMgr.getInstance().cleanSession();
+			onSessionInvalid();
+		}
 		if(DEBUG){
 			onToastShow(task, strMsg);
 			Log.e(TAG, "onErrorReport(), task:["+task.getClass().getSimpleName()+"], iErrType:"+iErrType+", strTitle:"+strTitle+", strMsg:"+strMsg);
@@ -385,9 +434,16 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+		Log.e(TAG, "BeseyeBaseActivity::onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.CheckAccountTask){
 				if(0 == iRetCode){
+					invokeSessionComplete();
+				}
+			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
+				if(0 == iRetCode){
+					//Log.i(TAG, "onPostExecute(), "+result.toString());
+					onSessionInvalid();
 				}
 			}
 		}
@@ -405,11 +461,19 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					Toast.makeText(BeseyeBaseActivity.this, strMsg, Toast.LENGTH_LONG).show();
 			}});
 	}
+	
+	protected void invokeLogout(){
+		monitorAsyncTask(new BeseyeAccountTask.LogoutHttpTask(this), true, SessionMgr.getInstance().getAuthToken());
+	}
 
 	@Override
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
-		// TODO Auto-generated method stub
-		
+		onSessionInvalid();
+	}
+	
+	protected void onSessionInvalid(){
+		SessionMgr.getInstance().cleanSession();
+		launchDelegateActivity(BeseyeEntryActivity.class.getName());
 	}
 	
 	public void launchActivityByIntent(Intent intent){
@@ -438,6 +502,20 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			intent.putExtras(bundle);
 		startActivityForResult(intent, iRequestCode);
 	}
+    
+    protected void launchDelegateActivity(String strCls){
+		launchDelegateActivity(strCls, null);
+    }
+	
+	protected void launchDelegateActivity(String strCls, Bundle bundle){
+    	Intent intent = new Intent();
+		intent.putExtra("ClassName", strCls);
+		intent.setClass(this, OpeningPage.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		if(null != bundle)
+			intent.putExtras(bundle);
+		startActivity(intent);
+    }
 
 	protected abstract int getLayoutId();
 }

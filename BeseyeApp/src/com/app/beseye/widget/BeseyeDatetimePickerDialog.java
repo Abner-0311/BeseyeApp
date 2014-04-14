@@ -46,11 +46,14 @@ public class BeseyeDatetimePickerDialog extends Dialog {
 					mNpMonth.setOnValueChangedListener(mOnValueChangedListener);
 					mNpMonth.setMinValue(1);
 					mNpMonth.setMaxValue(12);
+					mNpMonth.setFocusable(false);
+					mNpMonth.setFocusableInTouchMode(false);
+					
 				}
 				mNpDay = (NumberPicker)m_vgPickerHolder.findViewById(R.id.numberPickerDay);
 				if(null != mNpDay){
 					mNpDay.setOnValueChangedListener(mOnValueChangedListener);
-					mNpDay.setMinValue(1);
+					mNpDay.setMinValue(30);
 					mNpDay.setMaxValue(31);
 				}
 				mNpHour = (NumberPicker)m_vgPickerHolder.findViewById(R.id.numberPickerHour);

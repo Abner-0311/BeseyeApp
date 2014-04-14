@@ -1,5 +1,6 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeConfig.TMP_CAM_ID;
 import static com.app.beseye.util.BeseyeJSONUtil.LED_STATUS;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeAccountFilter;
@@ -37,16 +39,21 @@ public class LoginActivity extends BeseyeBaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getSupportActionBar().hide();
+		mbIgnoreSessionCheck = true;
 		
 		mEtUserName = (EditText)findViewById(R.id.editText_username);
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
+			if(DEBUG)
+				mEtUserName.setText("abner.huang2@beseye.com");
 		}
 		
 		mEtPassword = (EditText)findViewById(R.id.editText_password);
 		if(null != mEtPassword){
 			mEtPassword.addTextChangedListener(mTextWatcher);
 			mEtPassword.setOnEditorActionListener(mOnEditorActionListener);
+			if(DEBUG)
+				mEtPassword.setText("123456");
 		}
 		
 		mTvForgetPassword = (TextView)findViewById(R.id.tv_forgetpw);
@@ -143,7 +150,13 @@ public class LoginActivity extends BeseyeBaseActivity {
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
 		if(task instanceof BeseyeAccountTask.LoginHttpTask){
-			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_login_error));
+			int iErrMsg = R.string.msg_login_error;
+			if(BeseyeError.E_BE_ACC_USER_EMAIL_FORMAT_INVALID == iErrType){
+				iErrMsg = R.string.msg_invalid_account_format;
+			}else if(BeseyeError.E_BE_ACC_USER_PASSWORD_INCORRET == iErrType){
+				iErrMsg = R.string.msg_login_wrong_password;
+			}
+			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(iErrMsg));
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -168,21 +181,10 @@ public class LoginActivity extends BeseyeBaseActivity {
 							SessionMgr.getInstance().setAccount(BeseyeJSONUtil.getJSONString(objSes, BeseyeJSONUtil.ACC_EMAIL));
 						}
 						
-						launchActivityByClassName(CameraViewActivity.class.getName());
-						finish();
+						launchDelegateActivity(CameraViewActivity.class.getName());
+						//finish();
 					}
 					//monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this), true, SessionMgr.getInstance().getAuthToken());
-				}
-			}else if(task instanceof BeseyeAccountTask.CheckAccountTask){
-				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-					//monitorAsyncTask(new BeseyeAccountTask.LogoutHttpTask(this), true, SessionMgr.getInstance().getAuthToken());
-					monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, SessionMgr.getInstance().getAuthToken());
-				}
-			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
-				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-					SessionMgr.getInstance().cleanSession();
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);

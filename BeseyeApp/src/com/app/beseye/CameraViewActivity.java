@@ -11,6 +11,7 @@ import java.util.Date;
 import com.app.beseye.R;
 import com.app.beseye.TouchSurfaceView.OnTouchSurfaceCallback;
 import com.app.beseye.audio.AudioChannelMgr;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
@@ -305,11 +306,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 		checkAndExtendHideHeader();
 	}
-		
-	@Override
-	protected void onPostResume() {
+	
+	protected void onSessionComplete(){
 		Log.d(TAG, "CameraViewActivity::onPostResume(), mbIsFirstLaunch:"+mbIsFirstLaunch+", mbIsPauseWhenPlaying:"+mbIsPauseWhenPlaying+", mbIsCamSettingChanged:"+mbIsCamSettingChanged+", mbIsWifiSettingChanged:"+mbIsWifiSettingChanged);
-		super.onPostResume();
 		if(false == handleReddotNetwork(false)){
 			if(null != mTxtCamName){
 				mTxtCamName.setText(CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
@@ -331,6 +330,33 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkPlayState();
 		initDateTime();
+	}
+		
+	@Override
+	protected void onPostResume() {
+		//Log.d(TAG, "CameraViewActivity::onPostResume(), mbIsFirstLaunch:"+mbIsFirstLaunch+", mbIsPauseWhenPlaying:"+mbIsPauseWhenPlaying+", mbIsCamSettingChanged:"+mbIsCamSettingChanged+", mbIsWifiSettingChanged:"+mbIsWifiSettingChanged);
+		super.onPostResume();
+//		if(false == handleReddotNetwork(false)){
+//			if(null != mTxtCamName){
+//				mTxtCamName.setText(CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
+//			}
+//			
+//			if(null != mStreamingView)
+//				mStreamingView.setUpsideDown(CamSettingMgr.getInstance().getVideoUpsideDown(TMP_CAM_ID) == 1);
+//		}
+//		
+//		if(null != mVgCamInvalidState){
+//			mVgCamInvalidState.setVisibility(View.GONE);
+//			if(CAM_CONN_STATUS.CAM_DISCONNECTED == CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID)){
+//				CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.CAM_ON);
+//				mbIsCamSettingChanged = true;
+//				Log.d(TAG, "CameraViewActivity::onPostResume(), make mbIsCamSettingChanged: true.............");
+//
+//			}
+//		}
+//		
+//		checkPlayState();
+//		initDateTime();
 	}
 	
 	private boolean handleReddotNetwork(boolean bForceShow){
@@ -573,9 +599,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.txt_cam_name:{
-				Intent intent = new Intent();
-				intent.setClass(CameraViewActivity.this, SoundPairingActivity.class);
-				startActivity(intent);
+//				Intent intent = new Intent();
+//				intent.setClass(CameraViewActivity.this, SoundPairingActivity.class);
+//				startActivity(intent);
+				invokeLogout();
 				break;
 			}
 			case R.id.txt_events:{
