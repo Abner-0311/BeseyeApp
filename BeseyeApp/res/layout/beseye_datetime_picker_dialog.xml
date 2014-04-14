@@ -2,14 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:paddingLeft="@dimen/dt_picker_dialog_padding_horiz"
+    android:paddingRight="@dimen/dt_picker_dialog_padding_horiz">
 
    	<RelativeLayout 
    	    android:layout_width="fill_parent"
    		android:layout_height="@dimen/wifi_ap_info_dialog_title_height" 
    	    android:background="@drawable/wifisetup_password_inf_bg_up">
    	    <TextView 
-	   	    android:id="@+id/txt_cam_info_title"
+	   	    android:id="@+id/txt_picker_title"
 	   	    android:layout_width="match_parent"
 	   		android:layout_height="wrap_content" 
 	   		android:paddingLeft="@dimen/wifi_list_item_horizontal_padding" 

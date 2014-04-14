@@ -1,10 +1,14 @@
 package com.app.beseye;
 
+import java.util.Calendar;
+
 import com.app.beseye.widget.BeseyeDatetimePickerDialog;
+import com.app.beseye.widget.BeseyeDatetimePickerDialog.OnDatetimePickerClickListener;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class BeseyeEntryActivity extends BeseyeBaseActivity {
 
@@ -31,7 +35,19 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 			mTvLogin.setOnClickListener(this);
 		}
 		
-		//new BeseyeDatetimePickerDialog(this).show(); 
+		BeseyeDatetimePickerDialog d = new BeseyeDatetimePickerDialog(this); 
+		d.setOnDatetimePickerClickListener(new OnDatetimePickerClickListener(){
+			@Override
+			public void onBtnOKClick(Calendar pickDate) {
+				Toast.makeText(BeseyeEntryActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
+			}
+
+			@Override
+			public void onBtnCancelClick() {
+				Toast.makeText(BeseyeEntryActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
+			}});
+		
+		d.show();
 	}
 	
 	@Override

@@ -48,6 +48,8 @@
     
     <dimen name="wifi_ap_keyindex_dialog_attr_font_size">20sp</dimen>
     
+    <dimen name="dt_picker_dialog_padding_horiz">30dp</dimen>
+    
     <dimen name="cam_setting_item_padding_right">34dp</dimen>
     
     <dimen name="caminfo_dialog_attr_main_font_size">15sp</dimen>

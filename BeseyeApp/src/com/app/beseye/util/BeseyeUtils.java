@@ -1,5 +1,6 @@
 package com.app.beseye.util;
 
+import java.util.Calendar;
 import java.util.regex.Pattern;
 
 import android.app.Activity;
@@ -115,5 +116,15 @@ public class BeseyeUtils {
 		  InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		  imm.showSoftInput(view, 0);
 		}
+	}
+	
+	static public boolean isSameDay(Calendar date1, Calendar date2){
+		boolean bRet = false;
+		if(null != date1 && null != date2){
+			if(date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) && date1.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)){
+				bRet = true;
+			}
+		}
+		return bRet;
 	}
 }
