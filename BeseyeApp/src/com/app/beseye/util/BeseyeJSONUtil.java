@@ -19,6 +19,7 @@ public class BeseyeJSONUtil {
 	
 	//Generic
 	public static final String RET_CODE 				= "ReturnCode"; 
+	public static final String RET_CODE_CAMBE 			= "Code"; 
 	public static final String OBJ_CNT 					= "ObjCount";
 	public static final String OBJ_LST 					= "Objs";
 	public static final String OBJ_LK_KEY 				= "LinkKey";

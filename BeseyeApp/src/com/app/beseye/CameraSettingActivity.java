@@ -133,6 +133,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	protected void onSessionComplete(){
 		monitorAsyncTask(new BeseyeCamBEHttpTask.GetLEDStatusTask(this), true, mStrVCamID);
+//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetWiFiConfigTask(this), true, mStrVCamID);
+//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetWiFiSSIDListTask(this), true, mStrVCamID);
+//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetDateTimeTask(this), true, mStrVCamID);
+//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
 	}
 	
 	private void updateSettingState(){

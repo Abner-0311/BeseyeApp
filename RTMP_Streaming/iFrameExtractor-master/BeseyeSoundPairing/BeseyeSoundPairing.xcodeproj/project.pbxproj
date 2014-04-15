@@ -47,6 +47,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		07776DBC18FD380C00B7033B /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../../Sound_Pairing/aubioTest/jni/include/config.h; sourceTree = "<group>"; };
 		07EC6BE118B4CD4F0018BEA4 /* libBeseyeSoundPairing.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBeseyeSoundPairing.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		07EC6C0C18B4CE3C0018BEA4 /* Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Array.h; sourceTree = "<group>"; };
 		07EC6C0D18B4CE3C0018BEA4 /* Counted.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Counted.h; sourceTree = "<group>"; };
@@ -65,7 +66,7 @@
 		07EC6C1D18B4CE3C0018BEA4 /* IllegalStateException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllegalStateException.h; sourceTree = "<group>"; };
 		07EC6C1E18B4CE3C0018BEA4 /* ReaderException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReaderException.h; sourceTree = "<group>"; };
 		07EC6C1F18B4CE3C0018BEA4 /* ZXing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXing.h; sourceTree = "<group>"; };
-		07EC6C2A18B4CE650018BEA4 /* beseye_sound_pairing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = beseye_sound_pairing.h; sourceTree = "<group>"; };
+		07EC6C2A18B4CE650018BEA4 /* beseye_sound_pairing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = beseye_sound_pairing.h; sourceTree = SOURCE_ROOT; };
 		07EC6C3718B4CE650018BEA4 /* FreqGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreqGenerator.h; sourceTree = "<group>"; };
 		07EC6C4918B4CE650018BEA4 /* sp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sp_config.h; sourceTree = "<group>"; };
 		07EC6C5718B4CE650018BEA4 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
@@ -164,6 +165,7 @@
 		07EC6BD818B4CD4F0018BEA4 = {
 			isa = PBXGroup;
 			children = (
+				07776DBC18FD380C00B7033B /* config.h */,
 				07EC6D2718B59C720018BEA4 /* libSDL2.a */,
 				07EC6D2518B59C620018BEA4 /* libBeseyeStreamer.a */,
 				07EC6CDB18B59BF60018BEA4 /* Public Header */,

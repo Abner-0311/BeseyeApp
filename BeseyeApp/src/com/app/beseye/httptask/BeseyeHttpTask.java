@@ -74,7 +74,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	
 	public static final String FAKE_HOST_ADDR  = "http://swf01.nh.ikala.tv/";
 	public static final String HINET_HOST_ADDR = "http://ap.hinet.sbf.ikala.tv/";
-	public static String HOST_ADDR = "http://54.199.158.71:3000/"; //= /*"http://210.64.138.164:5080/";*/"http://song81.corp.ikala.tv:5080/"; /*"http://192.168.0.61:3000/";//*///Internal;
+	public static String HOST_ADDR = "http://54.199.158.71:80/"; //= /*"http://210.64.138.164:5080/";*/"http://song81.corp.ikala.tv:5080/"; /*"http://192.168.0.61:3000/";//*///Internal;
 	
 	static{
 		checkHostAddr();
@@ -436,15 +436,20 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		    Log.i(TAG, "Parse JSONObj Time:"+(System.currentTimeMillis()-startTime)+"ms");
 		        
 	    if(null != jsonRet){
-	    	String strRetCode = BeseyeJSONUtil.getJSONString(jsonRet, BeseyeJSONUtil.RET_CODE, null);
-	    	if(null != strRetCode){
-	    		if(strRetCode.startsWith("0x")){
-	    			strRetCode = strRetCode.substring(2);
-	    		}
-	    		miRetCode = Integer.valueOf(strRetCode, 16).intValue();
+	    	if(jsonRet.has(BeseyeJSONUtil.RET_CODE_CAMBE)){
+	    		miRetCode = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.RET_CODE_CAMBE);
+	    	}else{
+	    		String strRetCode = BeseyeJSONUtil.getJSONString(jsonRet, BeseyeJSONUtil.RET_CODE, null);
+		    	if(null != strRetCode){
+		    		if(strRetCode.startsWith("0x")){
+		    			strRetCode = strRetCode.substring(2);
+		    		}
+		    		miRetCode = Integer.valueOf(strRetCode, 16).intValue();
+		    	}
 	    	}
+	    	
 			//miRetCode = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.RET_CODE, Integer.MIN_VALUE);
-			
+	    	
 		}else
 			miErrType = ERR_TYPE_INVALID_DATA;
 	    
