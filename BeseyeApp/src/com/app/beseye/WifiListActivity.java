@@ -56,6 +56,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "WifiListActivity::onCreate()");
 		super.onCreate(savedInstanceState);
+		mbIgnoreSessionCheck = true;
 		
 		//getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.wifisetup_wifi_title_bg));
 		getSupportActionBar().setDisplayOptions(0);

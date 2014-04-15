@@ -462,8 +462,129 @@ void AudioTest::onAppendResult(string strCode){
 	tmpRet<<strCode;
 }
 
+std::vector<std::string> &split(const std::string &str, char delim, std::vector<std::string> &elems) {
+	LOGI("delim:[0x%x]\n",delim);
+	std::stringstream ss(str);
+
+    std::stringstream ssDelim;
+    ssDelim<<delim;
+    std::string item;
+    std::string::size_type pos, lastPos = 0;
+
+//    int iLen = str.length();
+//    int i =0;
+//    for(i = 0; i< iLen;i++){
+//    	LOGI("str[%d] = 0x%x\n",i, str.c_str()[i]);
+//    	if(str.c_str()[i] == delim){
+//    		LOGI("find delim:[%d]\n",i);
+//    	}
+//    }
+
+    while(true){
+	  pos = str.find_first_of(ssDelim.str(), lastPos);
+	  if(pos == std::string::npos){
+		 pos = str.length();
+
+		 if(pos != lastPos){
+//			tokens.push_back(ContainerT::value_type(str.data()+lastPos,
+//				  (ContainerT::value_type::size_type)pos-lastPos ));
+			 item = str.substr(lastPos, (pos-lastPos));
+			 elems.push_back(item);
+			 LOGI("item:[%s]\n",item.c_str());
+		 }
+
+		 break;
+	  }else{
+		 if(pos != lastPos){
+//			tokens.push_back(ContainerT::value_type(str.data()+lastPos,
+//				  (ContainerT::value_type::size_type)pos-lastPos ));
+			 item = str.substr(lastPos, (pos-lastPos));
+			 elems.push_back(item);
+			 LOGI("item:[%s]\n",item.c_str());
+		 }
+	  }
+	  lastPos = pos + 1;
+	}
+
+//    char* str = strdup(s.c_str());
+//    const char* strDelim = ssDelim.str().c_str();
+//    LOGI("str:[%s], strDelim:[%s]\n",str, strDelim);
+//
+//    char* item = NULL;
+//    item = strtok (str,strDelim);
+//
+//    LOGI("item:[%s]\n",item);
+//	while (item != NULL){
+//		item = strtok (NULL, strDelim);
+//		if(item){
+//			elems.push_back(item);
+//			LOGI("item:[%s]\n",item);
+//		}
+//	}
+//
+//	if(str){
+//		free(str);
+//	}
+//    while (std::getline(ss, item, delim)) {
+//        elems.push_back(item);
+//        LOGI("item:[%s]\n",item.c_str());
+//    }
+    return elems;
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
+
+#include "delegate/account_mgr.h"
+
+void checkPairingResult(string strCode){
+	LOGE("++, strCode:[%s]\n", strCode.c_str());
+	if(0 == strCode.find_first_of("error")){
+		LOGE("Error\n");
+	}else{
+		int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
+		int iPower = SoundPair_Config::getPowerByFFTYPE();
+
+		int toDecodeSize = strCode.length()/iMultiply;
+		LOGE("toDecodeSize:%d\n", toDecodeSize);
+		stringstream retS;
+		for(int i =0;i < toDecodeSize;i++){
+			char c = 0;
+			for(int j = 0;j < iMultiply;j++){
+				string strTmp = strCode.substr(i*iMultiply+j, 1);
+
+				c <<= iPower;
+				c += SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+			}
+			retS << c;
+		}
+
+		LOGI("retS:[%s]\n",retS.str().c_str());
+
+		std::vector<std::string> ret = split(retS.str(), 0x1B);
+
+		LOGI("ret.size():[%d]\n",ret.size());
+		if(ret.size() == 4){
+			//LOGE("[%s, %s, %s, %s]\n", ret[0], ret[1], ret[2], ret[3]);
+			int iUserId = atoi( ret[3].c_str() );
+			LOGI("iUserId:[%d]\n",iUserId);
+			char testData[BUF_SIZE]={0};
+			if(RET_CODE_OK == bindUserAccount(testData, iUserId)){
+				LOGE("bindUserAccount OK:[%s]\n", testData);
+			}else{
+				LOGE("bindUserAccount Failed:[%s]\n", testData);
+			}
+		}
+	}
+}
+
 void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDecodeUnmark, bool bFromAutoCorrection, MatchRetSet* prevMatchRet){
-	LOGI("onSetResult(), strCode:%s, strDecodeMark = %s", strCode.c_str(), strDecodeMark.c_str());
+	LOGI("onSetResult(), strCode:%s, strDecodeMark = %s\n", strCode.c_str(), strDecodeMark.c_str());
+	checkPairingResult(strCode);
 	stringstream strLog;
 	if(strCode.length() > 0 || strDecodeMark.length() >0){
 		/*if(false == isSenderMode)*/{
