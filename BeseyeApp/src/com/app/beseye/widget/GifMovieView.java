@@ -221,7 +221,7 @@ public class GifMovieView extends View {
 		}
 
 		int dur = mMovie.duration();
-		Log.e("BesEye", "dur:"+dur);
+		//Log.e("BesEye", "dur:"+dur);
 		if (dur == 0) {
 			dur = DEFAULT_MOVIEW_DURATION;
 		}

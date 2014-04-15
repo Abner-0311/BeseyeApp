@@ -40,6 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:background="@drawable/sl_account_bottom_btn"
+            android:paddingBottom="@dimen/login_marginMedium"
+        	android:paddingTop="@dimen/login_marginMedium"
             android:text="@string/signup_choose_network"
             android:textColor="@color/word_white"
             android:textColorLink="@color/word_white"
@@ -53,19 +55,17 @@
         android:src="@color/background_white" />
         
         <Button
-	    android:id="@+id/button_wifi_yes"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentRight="true"
-	    android:layout_toRightOf="@+id/iv_time_divider"
-	    android:background="@drawable/sl_account_bottom_btn"
-	    android:text="@string/signup_wifi_yes"
-	    android:textColor="@color/word_white"
-	    android:textColorLink="@color/word_white"
-	    android:textSize="@dimen/login_fontMedium" />
-
-        
-        
+		    android:id="@+id/button_wifi_yes"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_toRightOf="@+id/iv_time_divider"
+		    android:background="@drawable/sl_account_bottom_btn"
+		    android:paddingBottom="@dimen/login_marginMedium"
+        	android:paddingTop="@dimen/login_marginMedium"
+		    android:text="@string/signup_wifi_yes"
+		    android:textColor="@color/word_white"
+		    android:textColorLink="@color/word_white"
+		    android:textSize="@dimen/login_fontMedium" />
     </RelativeLayout>
-	
 </RelativeLayout>

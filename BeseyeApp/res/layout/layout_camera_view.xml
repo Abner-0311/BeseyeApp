@@ -210,6 +210,10 @@
 	    		android:src="@drawable/sl_liveview_fast_forward_btn"
 	    		android:background="@android:color/transparent"/> 
 	    </LinearLayout>
-	    
 	</RelativeLayout>
+	<include 
+    	layout="@layout/layout_signup_paring_done"
+    	android:id="@+id/vg_pairing_done"
+    	android:visibility="gone">
+	</include>
 </RelativeLayout>

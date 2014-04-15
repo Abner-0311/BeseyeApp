@@ -1,10 +1,6 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.DEBUG;
-import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeConfig.TMP_CAM_ID;
-import static com.app.beseye.util.BeseyeJSONUtil.LED_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.getJSONInt;
+import static com.app.beseye.util.BeseyeConfig.*;
 
 import java.util.List;
 
@@ -17,7 +13,6 @@ import com.app.beseye.util.BeseyeAccountFilter;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,26 +21,30 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-public class LoginActivity extends BeseyeBaseActivity {
+public class SignupActivity extends PairingBaseActivity {
 	private EditText mEtUserName, mEtPassword;
-	private TextView mTvForgetPassword, mTvCreateAcc, mTvLogin;
+	private TextView mTvTermOfService, mTvPrivacyPolicy;
+	private Button mBtnSignUp;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getSupportActionBar().hide();
 		mbIgnoreSessionCheck = true;
+		
+		if(null != mTxtNavTitle){
+			mTxtNavTitle.setText(R.string.signup_title_create_account);
+		}
 		
 		mEtUserName = (EditText)findViewById(R.id.editText_username);
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
 			if(DEBUG)
-				mEtUserName.setText("abner.huang2@beseye.com");
+				mEtUserName.setText("abner.huang4@beseye.com");
 		}
 		
 		mEtPassword = (EditText)findViewById(R.id.editText_password);
@@ -56,19 +55,19 @@ public class LoginActivity extends BeseyeBaseActivity {
 				mEtPassword.setText("123456");
 		}
 		
-		mTvForgetPassword = (TextView)findViewById(R.id.tv_forgetpw);
-		if(null != mTvForgetPassword){
-			mTvForgetPassword.setOnClickListener(this);
+		mTvTermOfService = (TextView)findViewById(R.id.tv_bottom_description_terms);
+		if(null != mTvTermOfService){
+			mTvTermOfService.setOnClickListener(this);
 		}
 		
-		mTvCreateAcc = (TextView)findViewById(R.id.tv_create_account);
-		if(null != mTvCreateAcc){
-			mTvCreateAcc.setOnClickListener(this);
+		mTvPrivacyPolicy = (TextView)findViewById(R.id.tv_bottom_description_policy);
+		if(null != mTvPrivacyPolicy){
+			mTvPrivacyPolicy.setOnClickListener(this);
 		}
 		
-		mTvLogin = (TextView)findViewById(R.id.button_login);
-		if(null != mTvLogin){
-			mTvLogin.setOnClickListener(this);
+		mBtnSignUp = (Button)findViewById(R.id.button_continue);
+		if(null != mBtnSignUp){
+			mBtnSignUp.setOnClickListener(this);
 		}
 	}
 	
@@ -80,22 +79,21 @@ public class LoginActivity extends BeseyeBaseActivity {
 
 	@Override
 	protected int getLayoutId() {
-		return R.layout.layout_login;
+		return R.layout.layout_signup_create_account;
 	}
 
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()){
-			case R.id.tv_forgetpw:{
-				Toast.makeText(this, "Forget PW click", Toast.LENGTH_SHORT).show();
+			case R.id.tv_bottom_description_terms:{
+				Toast.makeText(this, "TOS click", Toast.LENGTH_SHORT).show();
 				break;
 			}
-			case R.id.tv_create_account:{
-				//Toast.makeText(this, "Create Account click", Toast.LENGTH_SHORT).show();
-				launchActivityByClassName(SignupActivity.class.getName());
+			case R.id.tv_bottom_description_policy:{
+				Toast.makeText(this, "Privacy Policy click", Toast.LENGTH_SHORT).show();
 				break;
 			}
-			case R.id.button_login:{
+			case R.id.button_continue:{
 				//Toast.makeText(this, "Login click", Toast.LENGTH_SHORT).show();
 				checkLoginInfo();
 				break;
@@ -121,8 +119,8 @@ public class LoginActivity extends BeseyeBaseActivity {
 	
 	
 	private void checkEditTextStates(){
-		if(null != mTvLogin){
-			mTvLogin.setEnabled(BeseyeUtils.haveText(mEtUserName) && BeseyeUtils.haveText(mEtPassword));
+		if(null != mBtnSignUp){
+			mBtnSignUp.setEnabled(BeseyeUtils.haveText(mEtUserName) && BeseyeUtils.haveText(mEtPassword));
 		}
 	}
 	
@@ -142,21 +140,20 @@ public class LoginActivity extends BeseyeBaseActivity {
 				return;
 			}
 			
-			//monitorAsyncTask(new BeseyeAccountTask.RegisterTask(this), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
-			monitorAsyncTask(new BeseyeAccountTask.LoginHttpTask(this), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
+			monitorAsyncTask(new BeseyeAccountTask.RegisterTask(this), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
 		}
 	}
 	
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
-		if(task instanceof BeseyeAccountTask.LoginHttpTask){
-			int iErrMsg = R.string.msg_login_error;
-			if(BeseyeError.E_BE_ACC_USER_EMAIL_FORMAT_INVALID == iErrType){
-				iErrMsg = R.string.msg_invalid_account_format;
-			}else if(BeseyeError.E_BE_ACC_USER_PASSWORD_INCORRET == iErrType){
-				iErrMsg = R.string.msg_login_wrong_password;
+		if(task instanceof BeseyeAccountTask.RegisterTask){
+			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
+			//finish();
+			int iErrMsgId = R.string.msg_signup_error;
+			if(BeseyeError.E_BE_ACC_USER_ALREADY_EXIST == iErrType){
+				iErrMsgId = R.string.msg_signup_err_email_used;
 			}
-			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(iErrMsg));
+			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(iErrMsgId));
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -165,7 +162,7 @@ public class LoginActivity extends BeseyeBaseActivity {
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
 		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){
-			if(task instanceof BeseyeAccountTask.LoginHttpTask){
+			if(task instanceof BeseyeAccountTask.RegisterTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					JSONObject obj = result.get(0);
@@ -178,13 +175,17 @@ public class LoginActivity extends BeseyeBaseActivity {
 						JSONObject objUser = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_USER);
 						if(null != objUser){
 							SessionMgr.getInstance().setMdid(""+BeseyeJSONUtil.getJSONInt(objUser, BeseyeJSONUtil.ACC_ID));
-							SessionMgr.getInstance().setAccount(BeseyeJSONUtil.getJSONString(objSes, BeseyeJSONUtil.ACC_EMAIL));
+							SessionMgr.getInstance().setAccount(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_EMAIL));
 						}
-						
-						launchDelegateActivity(CameraViewActivity.class.getName());
-						//finish();
 					}
-					//monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this), true, SessionMgr.getInstance().getAuthToken());
+					
+					launchActivityByClassName(WifiSetupGuideActivity.class.getName());
+					finish();
+				}
+			}else if(task instanceof BeseyeAccountTask.CamAttchTask){
+				if(0 == iRetCode){
+					Log.i(TAG, "onPostExecute(), "+result.toString());
+					//monitorAsyncTask(new BeseyeAccountTask.CamAttchTask(this), true, SessionMgr.getInstance().getMdid());
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);
@@ -199,7 +200,7 @@ public class LoginActivity extends BeseyeBaseActivity {
 			if (actionId == EditorInfo.IME_ACTION_DONE) { 
 				if(view.equals(mEtPassword)){
 					checkLoginInfo();
-					BeseyeUtils.hideSoftKeyboard(LoginActivity.this, mEtPassword);
+					BeseyeUtils.hideSoftKeyboard(SignupActivity.this, mEtPassword);
 					
 					return true;
 				}

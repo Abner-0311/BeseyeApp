@@ -43,7 +43,7 @@
             android:layout_marginTop="@dimen/signup_learnMore_margin"
             android:layout_below="@id/tv_try_again_description_2"
             android:text="@string/signup_try_again_description_3"
-            android:textColor="@color/signup_font_description_color"
+            android:textColor="@color/cl_link_font_color"
             android:textSize="@dimen/login_fontNormal" />
         
     </RelativeLayout>
@@ -65,6 +65,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/sl_account_bottom_btn"
+        android:paddingBottom="@dimen/login_marginMedium"
+        android:paddingTop="@dimen/login_marginMedium"
         android:text="@string/signup_try_again_btn"
         android:textColor="@color/word_white"
         android:textColorLink="@color/word_white"

@@ -25,7 +25,8 @@ $(SRC_PATH)/sp_config.cpp \
 $(SRC_PATH)/AudioBufferMgr.cpp \
 $(SRC_PATH)/FreqAnalyzer.cpp \
 $(SRC_PATH)/AudioTest.cpp \
-$(SRC_PATH)/main.cpp
+$(SRC_PATH)/main.cpp \
+$(SRC_PATH)/../cam-handler/src/delegate/account_mgr.cpp
 
 CXXOBJECTS=$(CXXSOURCES:.cpp=.o)
 
@@ -36,16 +37,17 @@ $(SRC_PATH)/preprocess/smallft.c \
 $(SRC_PATH)/preprocess/fftwrap.c \
 $(SRC_PATH)/preprocess/filterbank.c \
 $(SRC_PATH)/preprocess/preprocess.c \
+$(SRC_PATH)/../Common/src/json_utils.c \
 $(SRC_PATH)/../http_cgi_lib/src/http_cgi.c
 
 OBJECTS=$(SOURCES:.c=.o)
 
 EXECUTABLE=soundpairing
 
-CFLAGS=-c -Wall -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -I$(TOOLCHAIN)/include
+CFLAGS=-c -Wall -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -I$(TOOLCHAIN)/include
 LDFLAGS=-L$(TOOLCHAIN)/lib -lcurl -ljson-c -lpthread -L$(TOOLCHAIN)/lib/libstdc++.a
 #-lspeexdsp
-CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -I$(TOOLCHAIN)/include
+CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -I$(TOOLCHAIN)/include
 
 all:$(CXXSOURCES) $(SOURCES) $(EXECUTABLE)
 

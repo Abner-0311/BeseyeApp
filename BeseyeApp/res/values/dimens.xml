@@ -48,6 +48,8 @@
     
     <dimen name="wifi_ap_keyindex_dialog_attr_font_size">20sp</dimen>
     
+    <dimen name="dt_picker_dialog_padding_horiz">30dp</dimen>
+    
     <dimen name="cam_setting_item_padding_right">34dp</dimen>
     
     <dimen name="caminfo_dialog_attr_main_font_size">15sp</dimen>
@@ -67,6 +69,8 @@
     <dimen name="login_fontRegular">17sp</dimen>
     <dimen name="login_fontNormal">15sp</dimen>
     <dimen name="login_fontSmall">13sp</dimen>
+    
+    <dimen name="signup_paring_nav_margin">10dp</dimen>
     
     <dimen name="signup_paring_margin_small">8dp</dimen>
     <dimen name="signup_paring_margin_medium">16dp</dimen>
@@ -88,5 +92,9 @@
     <dimen name="signup_name_camera_marginBottom">24dp</dimen>
     <dimen name="signup_paring_done_marginTop">96dp</dimen>
     <dimen name="signup_paring_done_marginSide">32dp</dimen>
+    
+    <dimen name="datetime_picker_horiz_margin">32dp</dimen>
+    <dimen name="datetime_picker_desc_marginTop">32dp</dimen>
+    <dimen name="datetime_picker_desc_marginBottom">32dp</dimen>
     
 </resources>

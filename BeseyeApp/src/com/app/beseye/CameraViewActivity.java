@@ -11,6 +11,7 @@ import java.util.Date;
 import com.app.beseye.R;
 import com.app.beseye.TouchSurfaceView.OnTouchSurfaceCallback;
 import com.app.beseye.audio.AudioChannelMgr;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -47,6 +49,7 @@ import android.os.PowerManager;
 
 public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSurfaceCallback,
 																	  OnNetworkChangeCallback{
+	static public final String KEY_PAIRING_DONE = "KEY_PAIRING_DONE";
 	private TouchSurfaceView mStreamingView;
 	private TextView mTxtDate, mTxtCamName, mTxtTime, mTxtEvent, mTxtGoLive, mTxtPowerState;
 	
@@ -56,7 +59,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private RelativeLayout mVgHeader, mVgToolbar;
 	private CameraViewControlAnimator mCameraViewControlAnimator;
 	private ProgressBar mPbLoadingCursor;
-	private ViewGroup mVgPowerState, mVgCamInvalidState;
+	private ViewGroup mVgPowerState, mVgCamInvalidState, mVgPairingDone;
+	private Button mBtnPairingDoneOK; 
 	private ImageButton mIbOpenCam;
 	
 	private boolean mbIsLiveMode = true;//false means VOD
@@ -209,6 +213,17 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
 		}
 		
+		if(getIntent().getBooleanExtra(KEY_PAIRING_DONE, false)){
+			mVgPairingDone = (ViewGroup)findViewById(R.id.vg_pairing_done);
+			if(null != mVgPairingDone){
+				BeseyeUtils.setVisibility(mVgPairingDone, View.VISIBLE);
+				mBtnPairingDoneOK = (Button)mVgPairingDone.findViewById(R.id.button_start);
+				if(null != mBtnPairingDoneOK){
+					mBtnPairingDoneOK.setOnClickListener(this);
+				}
+			}	
+		}
+		
 		mVgCamInvalidState = (ViewGroup)findViewById(R.id.vg_cam_invald_statement);
 		
 		mUpdateDateTimeRunnable = new UpdateDateTimeRunnable(mTxtDate, mTxtTime);
@@ -291,11 +306,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 		checkAndExtendHideHeader();
 	}
-		
-	@Override
-	protected void onPostResume() {
+	
+	protected void onSessionComplete(){
 		Log.d(TAG, "CameraViewActivity::onPostResume(), mbIsFirstLaunch:"+mbIsFirstLaunch+", mbIsPauseWhenPlaying:"+mbIsPauseWhenPlaying+", mbIsCamSettingChanged:"+mbIsCamSettingChanged+", mbIsWifiSettingChanged:"+mbIsWifiSettingChanged);
-		super.onPostResume();
 		if(false == handleReddotNetwork(false)){
 			if(null != mTxtCamName){
 				mTxtCamName.setText(CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
@@ -317,6 +330,33 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkPlayState();
 		initDateTime();
+	}
+		
+	@Override
+	protected void onPostResume() {
+		//Log.d(TAG, "CameraViewActivity::onPostResume(), mbIsFirstLaunch:"+mbIsFirstLaunch+", mbIsPauseWhenPlaying:"+mbIsPauseWhenPlaying+", mbIsCamSettingChanged:"+mbIsCamSettingChanged+", mbIsWifiSettingChanged:"+mbIsWifiSettingChanged);
+		super.onPostResume();
+//		if(false == handleReddotNetwork(false)){
+//			if(null != mTxtCamName){
+//				mTxtCamName.setText(CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
+//			}
+//			
+//			if(null != mStreamingView)
+//				mStreamingView.setUpsideDown(CamSettingMgr.getInstance().getVideoUpsideDown(TMP_CAM_ID) == 1);
+//		}
+//		
+//		if(null != mVgCamInvalidState){
+//			mVgCamInvalidState.setVisibility(View.GONE);
+//			if(CAM_CONN_STATUS.CAM_DISCONNECTED == CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID)){
+//				CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.CAM_ON);
+//				mbIsCamSettingChanged = true;
+//				Log.d(TAG, "CameraViewActivity::onPostResume(), make mbIsCamSettingChanged: true.............");
+//
+//			}
+//		}
+//		
+//		checkPlayState();
+//		initDateTime();
 	}
 	
 	private boolean handleReddotNetwork(boolean bForceShow){
@@ -559,9 +599,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.txt_cam_name:{
-				Intent intent = new Intent();
-				intent.setClass(CameraViewActivity.this, SoundPairingActivity.class);
-				startActivity(intent);
+//				Intent intent = new Intent();
+//				intent.setClass(CameraViewActivity.this, SoundPairingActivity.class);
+//				startActivity(intent);
+				invokeLogout();
 				break;
 			}
 			case R.id.txt_events:{
@@ -575,6 +616,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				break;
 			}
 			case R.id.ib_rewind:{
+				break;
+			}
+			case R.id.button_start:{
+				BeseyeUtils.setVisibility(mVgPairingDone, View.GONE);
 				break;
 			}
 			case R.id.ib_play_pause:{

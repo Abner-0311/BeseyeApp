@@ -7,7 +7,9 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
+import com.app.beseye.httptask.SessionMgr;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -28,9 +30,12 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, OnHttpTaskCallback{
+	static public final String KEY_FROM_ACTIVITY					= "KEY_FROM_ACTIVITY";
+	
 	protected boolean mbFirstResume = true;
 	protected boolean mActivityDestroy = false;
 	protected boolean mActivityResume = false;
+	protected boolean mbIgnoreSessionCheck = false;
 	
 	private Handler mHandler = new Handler();
 	
@@ -48,9 +53,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	@Override
 	protected void onResume() {
 		super.onResume();
-		mActivityResume = true;
 		checkForCrashes();
 	    checkForUpdates();
+	    
+		//if(! mbIgnoreSessionCheck && checkSession())
+	    if( mbIgnoreSessionCheck || checkSession())
+			invokeSessionComplete();
+		mActivityResume = true;
 	}
 	
 	@Override
@@ -69,6 +78,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		clearLastAsyncTask();
 		cancelRunningTasks();
 		super.onDestroy();
+		
 		mActivityDestroy = true;
 	}
 
@@ -87,6 +97,30 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		super.onBackPressed();
 	}
 	
+	private boolean checkSession(){
+		if(SessionMgr.getInstance().isTokenValid()){
+			monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this), true, SessionMgr.getInstance().getAuthToken());
+			//invokeSessionComplete();
+			return false;
+		}	
+		else{
+			Log.e(TAG, "checkSession(), need to get new session");
+			onSessionInvalid();
+			//monitorAsyncTask(new iKalaAddrTask.GetSessionTask(this), true);
+		}
+		return false;
+	}
+	
+	private void invokeSessionComplete(){
+		if(mbFirstResume)
+			onSessionComplete();
+		mbFirstResume = false;
+	}
+	
+	protected void onSessionComplete(){
+		 
+	}
+	
 	private void checkForCrashes() {
 	    CrashManager.register(this, HOCKEY_APP_ID);
 	}
@@ -97,6 +131,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			UpdateManager.register(this, HOCKEY_APP_ID);
 	}
 	
+	static public final String KEY_WARNING_TITLE = "KEY_WARNING_TITLE";
 	static public final String KEY_WARNING_TEXT = "KEY_WARNING_TEXT";
 	
 	static public final int DIALOG_ID_LOADING = 1; 
@@ -119,7 +154,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		switch(id){
 			case DIALOG_ID_WARNING:{
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            	builder.setTitle(R.string.dialog_title_warning);
+            	builder.setTitle(bundle.getString(KEY_WARNING_TEXT, getString(R.string.dialog_title_warning)));
             	builder.setMessage(bundle.getString(KEY_WARNING_TEXT));
 				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				    public void onClick(DialogInterface dialog, int item) {
@@ -180,14 +215,35 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 
 	@Override
 	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
-		// TODO Auto-generated method stub
-		super.onPrepareDialog(id, dialog, args);
-	}
-
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		// TODO Auto-generated method stub
-		super.onPrepareDialog(id, dialog);
+		switch (id) {
+			case DIALOG_ID_LOADING:{
+				String strMsgRes = "";
+				if(null != args){
+					strMsgRes = args.getString(KEY_WARNING_TEXT);
+				}
+				if(dialog instanceof AlertDialog){
+					if(0 < strMsgRes.length())
+						((AlertDialog) dialog).setMessage(strMsgRes);
+				}
+			}
+	        case DIALOG_ID_WARNING:{
+				String strTitleRes = "", strMsgRes = "";
+				if(null != args){
+					strTitleRes = args.getString(KEY_WARNING_TITLE);
+					strMsgRes = args.getString(KEY_WARNING_TEXT);
+				}
+				if(dialog instanceof AlertDialog){
+					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon_shadow);
+					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_warning):strTitleRes);
+					if(0 < strMsgRes.length())
+						((AlertDialog) dialog).setMessage(strMsgRes);
+				}
+				
+				break;
+			}
+	        default:
+	        	super.onPrepareDialog(id, dialog, args);
+	    }
 	}
 	
 	public boolean showMyDialog(int iDialogId){
@@ -332,8 +388,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				Bundle b = null;
 				if(0 < iTitleRes || 0 < iMsgRes){
 					b = new Bundle();
-					b.putInt("iTitleRes", iTitleRes);
-					b.putInt("iMsgRes", iMsgRes);	
+					if(iTitleRes > 0)
+						b.putString(KEY_WARNING_TITLE, getString(iTitleRes));
+					if(iMsgRes > 0)
+						b.putString(KEY_WARNING_TEXT, getString(iMsgRes));		
 				}
 				showMyDialog(iDialogId, b);
 			}});
@@ -345,8 +403,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			public void run() {
 				Bundle b = null;
 				b = new Bundle();
-				b.putString("strTitleRes", strTitleRes);
-				b.putString("strMsgRes", strMsgRes);	
+				b.putString(KEY_WARNING_TITLE, strTitleRes);
+				b.putString(KEY_WARNING_TEXT, strMsgRes);	
 				showMyDialog(iDialogId, b);
 			}});
 	}
@@ -361,14 +419,35 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
-			String strMsg) {
-		// TODO Auto-generated method stub
-		
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+		if(task instanceof BeseyeAccountTask.CheckAccountTask){
+			onSessionInvalid();
+		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
+			SessionMgr.getInstance().cleanSession();
+			onSessionInvalid();
+		}
+		if(DEBUG){
+			onToastShow(task, strMsg);
+			Log.e(TAG, "onErrorReport(), task:["+task.getClass().getSimpleName()+"], iErrType:"+iErrType+", strTitle:"+strTitle+", strMsg:"+strMsg);
+		}
 	}
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+		Log.e(TAG, "BeseyeBaseActivity::onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeAccountTask.CheckAccountTask){
+				if(0 == iRetCode){
+					invokeSessionComplete();
+				}
+			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
+				if(0 == iRetCode){
+					//Log.i(TAG, "onPostExecute(), "+result.toString());
+					onSessionInvalid();
+				}
+			}
+		}
+		
 		if(null != mMapCurAsyncTasks){
 			mMapCurAsyncTasks.remove(task);
 		}
@@ -382,12 +461,61 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					Toast.makeText(BeseyeBaseActivity.this, strMsg, Toast.LENGTH_LONG).show();
 			}});
 	}
+	
+	protected void invokeLogout(){
+		monitorAsyncTask(new BeseyeAccountTask.LogoutHttpTask(this), true, SessionMgr.getInstance().getAuthToken());
+	}
 
 	@Override
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
-		// TODO Auto-generated method stub
-		
+		onSessionInvalid();
 	}
+	
+	protected void onSessionInvalid(){
+		SessionMgr.getInstance().cleanSession();
+		launchDelegateActivity(BeseyeEntryActivity.class.getName());
+	}
+	
+	public void launchActivityByIntent(Intent intent){
+		intent.putExtra(KEY_FROM_ACTIVITY, getClass().getSimpleName());
+		startActivity(intent);
+	}
+    
+    protected void launchActivityByClassName(String strClass){
+    	launchActivityByClassName(strClass, new Bundle());
+	}
+    
+    public void launchActivityByClassName(String strClass, Bundle bundle){
+		Intent intent = new Intent();
+		intent.setClassName(this, strClass);
+		if(null != bundle)
+			intent.putExtras(bundle);
+		
+		launchActivityByIntent(intent);
+	}
+    
+    public void launchActivityForResultByClassName(String strClass, Bundle bundle, int iRequestCode){
+		Intent intent = new Intent();
+		intent.setClassName(this, strClass);
+		intent.putExtra(KEY_FROM_ACTIVITY, getClass().getSimpleName());
+		if(null != bundle)
+			intent.putExtras(bundle);
+		startActivityForResult(intent, iRequestCode);
+	}
+    
+    protected void launchDelegateActivity(String strCls){
+		launchDelegateActivity(strCls, null);
+    }
+	
+	protected void launchDelegateActivity(String strCls, Bundle bundle){
+    	Intent intent = new Intent();
+		intent.putExtra("ClassName", strCls);
+		intent.setClass(this, OpeningPage.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		if(null != bundle)
+			intent.putExtras(bundle);
+		startActivity(intent);
+    }
 
 	protected abstract int getLayoutId();
 }

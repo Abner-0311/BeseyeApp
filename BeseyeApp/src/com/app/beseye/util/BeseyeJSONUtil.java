@@ -18,7 +18,7 @@ public class BeseyeJSONUtil {
 	public static final String SESSION_MDID 			= "Mdid"; 
 	
 	//Generic
-	public static final String RET_CODE 				= "Code"; 
+	public static final String RET_CODE 				= "ReturnCode"; 
 	public static final String OBJ_CNT 					= "ObjCount";
 	public static final String OBJ_LST 					= "Objs";
 	public static final String OBJ_LK_KEY 				= "LinkKey";
@@ -79,6 +79,31 @@ public class BeseyeJSONUtil {
 	public static final String WIFI_SSIDLST_SGL 		= "signal";
 	public static final String WIFI_SSIDLST_SEC 		= "sec";
 	public static final String WIFI_SSIDLST_USED 		= "CurrentUsed";
+	
+	//Account BE service
+	public static final String ACC_EMAIL 				= "email";
+	public static final String ACC_PASSWORD 			= "password";
+	public static final String ACC_CLIENT 				= "client";
+	public static final String ACC_CLIENT_UDID 			= "client_dev_udid";
+	public static final String ACC_CLIENT_UA 			= "client_user_agent";
+	public static final String ACC_CLIENT_LOC 			= "client_location";
+	public static final String ACC_CLIENT_IP 			= "client_ip";
+	
+	public static final String ACC_USER 				= "user";
+	public static final String ACC_ID 					= "id";
+	public static final String ACC_NAME 				= "name";
+	public static final String ACC_LOC 					= "location";
+	
+	public static final String ACC_SES 					= "session";
+	public static final String ACC_SES_TOKEN 			= "session_token";
+	public static final String ACC_DATA 				= "data";
+	public static final String ACC_CREATE 				= "created_at";
+	public static final String ACC_EXPIRE 				= "expired_at";
+
+	public static final String ACC_REMEM_ME 			= "remember_me";
+	
+	public static final String ACC_USER_ID 				= "user_id";
+	public static final String ACC_VCAM_ID 				= "vcam_id";
 	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "GCMProjectID";

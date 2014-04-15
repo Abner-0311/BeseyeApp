@@ -1,8 +1,15 @@
 package com.app.beseye.util;
 
+import java.util.Calendar;
+import java.util.regex.Pattern;
+
 import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
+import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 public class BeseyeUtils {
@@ -43,6 +50,10 @@ public class BeseyeUtils {
 		}
 	}
 	
+	static public boolean haveText(EditText et){
+		return null != et && (0 < et.length() || View.GONE==et.getVisibility());
+	}
+	
 	static public void setImageRes(final ImageView view, final int iResId){
 		if(null != view){
 			view.post(new Runnable(){
@@ -75,5 +86,45 @@ public class BeseyeUtils {
 			strRet = input.substring(1, input.length()-1);
 		}
 		return strRet;
+	}
+	
+	//Format validation
+	static public boolean validEmail(String email) {
+		if(null == email || 0 == email.length())
+			return true;
+	    Pattern pattern = Patterns.EMAIL_ADDRESS;
+	    return pattern.matcher(email).matches();
+	}
+	
+	static public boolean validPhone(String phone) {
+		if(null == phone || 0 == phone.length())
+			return true;
+	    Pattern pattern = Patterns.PHONE;
+	    return pattern.matcher(phone).matches() && 10 <= phone.length() && phone.startsWith("09");
+	}
+	
+	//IME related 
+	static public void hideSoftKeyboard (Context context, View view) {
+		if(null != context && null != view){
+			InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+			  imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+		}
+	}
+	
+	static public void showSoftKeyboard (Context context, View view) {
+		if(null != context && null != view){
+		  InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		  imm.showSoftInput(view, 0);
+		}
+	}
+	
+	static public boolean isSameDay(Calendar date1, Calendar date2){
+		boolean bRet = false;
+		if(null != date1 && null != date2){
+			if(date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) && date1.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)){
+				bRet = true;
+			}
+		}
+		return bRet;
 	}
 }
