@@ -1,0 +1,11 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="numberPickerStyle">@style/NPWidget.Holo.Light.NumberPicker</item>
+        <item name="android:actionBarStyle">@style/ActionBarTheme</item>
+    </style>
+	
+        <style name="AppTheme.WifiList">
+        <item name="android:actionBarStyle">@style/ActionBarThemeWiFiList</item>
+	</style>
+</resources>

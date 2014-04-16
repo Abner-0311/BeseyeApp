@@ -115,12 +115,12 @@
                   symbolName = "-[iFrameExtractorAppDelegate video]"
                   moduleName = "iFrameExtractor"
                   urlString = "file:///Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/Classes/iFrameExtractorAppDelegate.h"
-                  timestampString = "418641917.564755"
+                  timestampString = "419244909.444992"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "59"
                   endingLineNumber = "59"
-                  offsetFromSymbolStart = "12">
+                  offsetFromSymbolStart = "24">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -129,12 +129,12 @@
                   symbolName = "-[iFrameExtractorAppDelegate setVideo:]"
                   moduleName = "iFrameExtractor"
                   urlString = "file:///Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/Classes/iFrameExtractorAppDelegate.h"
-                  timestampString = "418641917.565119"
+                  timestampString = "419244909.445383"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "59"
                   endingLineNumber = "59"
-                  offsetFromSymbolStart = "25">
+                  offsetFromSymbolStart = "37">
                </Location>
             </Locations>
          </BreakpointContent>

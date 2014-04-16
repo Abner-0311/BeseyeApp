@@ -1,50 +1,127 @@
 package com.app.beseye;
 
-import com.app.beseye.pairing.SoundPairingActivity;
+import static com.app.beseye.util.BeseyeConfig.*;
+
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeUtils;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
-public class OpeningPage extends BeseyeBaseActivity {
+public class OpeningPage extends Activity {
+	public static final String ACTION_BRING_FRONT 		= "BringFront";
+	public static final String KEY_DELEGATE_INTENT 		= "KEY_DELEGATE_INTENT";
+	public static final String FIRST_PAGE 				= CameraViewActivity.class.getName();
+	
 	private static boolean sbFirstLaunch = true;
 	private static final long TIME_TO_CLOSE_OPENING_PAGE = 3000L;
+	
+	private boolean m_bLaunchForDelegate = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		//if(sbFirstLaunch)
+		setContentView(R.layout.layout_opening);
+		
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
-		getSupportActionBar().hide();
-		if(!sbFirstLaunch){
-			launchNextPage();
+		if(getIntent().getBooleanExtra(ACTION_BRING_FRONT, false)){
+			finish();
+			return;
 		}
+		
+		launchActivityByIntent(getIntent());
 	}
 	
 	@Override
-	protected int getLayoutId() {
-		return R.layout.layout_opening;
+	protected void onNewIntent(Intent intent) {
+		if(DEBUG)
+			Log.i(TAG, "OpeningPage::onNewIntent(), intent "+intent.getDataString()+", this = "+this);
+		super.onNewIntent(intent);
+		if(null != intent && null == intent.getParcelableExtra(KEY_DELEGATE_INTENT)){
+			String strCls = intent.getStringExtra("ClassName");
+			if(null == strCls){
+				if(DEBUG)
+					Log.i(TAG, "OpeningPage::onNewIntent(), null == strCls ");
+				finish();
+				return;
+			}
+
+			if(intent.getBooleanExtra(ACTION_BRING_FRONT, false)){
+				if(DEBUG)
+					Log.i(TAG, "OpeningPage::onNewIntent(), ACTION_BRING_FRONT ");
+				finish();
+				return;
+			}
+		}
+		
+		launchActivityByIntent(intent);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		BeseyeUtils.postRunnable(new Runnable(){
-			@Override
-			public void run() {
-				launchNextPage();
-			}
-		}, TIME_TO_CLOSE_OPENING_PAGE);
+		if(false == m_bLaunchForDelegate)
+			finish();
+		m_bLaunchForDelegate = false;
+		
 		sbFirstLaunch = false;
+	}
+	
+	private void launchActivityByIntent(Intent intent){
+		Intent intentLanuch = null;
+		if(null == (intentLanuch = intent.getParcelableExtra(KEY_DELEGATE_INTENT))){
+			intentLanuch = new Intent();
+			String strCls = null;
+			if(null != intent){
+				strCls = intent.getStringExtra("ClassName");
+			}
+			
+			if(null == strCls){
+				strCls = FIRST_PAGE;
+			}
+			
+			if(!SessionMgr.getInstance().isTokenValid()){
+				strCls = BeseyeEntryActivity.class.getName();
+			}
+			
+			if(null != intent.getExtras())
+				intentLanuch.putExtras(intent.getExtras());
+			
+			intentLanuch.setClassName(this, strCls);
+		}else{
+			//Try to close push dialog when launch from status bar
+			Intent intentBroadcast = new Intent(GCMIntentService.FORWARD_GCM_MSG_ACTION);
+			intentBroadcast.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, GCMIntentService.FORWARD_ACTION_TYPE_CHECK_DIALOG);
+	        sendBroadcast(intentBroadcast);
+		}
+		
+		//intentLanuch.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		if(sbFirstLaunch){
+			final Intent intentLanuchRunnable =intentLanuch;
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					startActivity(intentLanuchRunnable);
+				}
+			}, TIME_TO_CLOSE_OPENING_PAGE);
+		}else{
+			startActivity(intentLanuch);
+		}
+
+		m_bLaunchForDelegate = true;
 	}
 
 	//WebSocketClient client;
 	private void launchNextPage(){
 		Intent intent = new Intent();
-		intent.setClass(OpeningPage.this, SoundPairingActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
+		intent.setClass(OpeningPage.this, BeseyeEntryActivity.class);//WifiListActivity.class);, CameraSettingActivity.class
 		startActivity(intent);
 		finish();
 		

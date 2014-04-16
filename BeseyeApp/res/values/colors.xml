@@ -25,6 +25,7 @@
     <color name="listview_item_backgroundcolor">#e5e5e4</color>
     <color name="listview_item_backgroundcolor_selected">#44e5e5e4</color>
     
+    <color name="wifi_list_title_color">#18b4ab</color>
     <color name="wifi_list_item_bg_color">#F0EFEF</color>
     <color name="wifi_list_item_bg_color_selected">@color/beseye_color</color>
     <color name="wifi_list_item_divider_color">#d5d5d5</color>
@@ -46,6 +47,8 @@
     <color name="signup_bg_color">#eeeeee</color>
     <color name="signup_font_description_color">#717171</color>
     
+    <color name="signup_nav_bg_color">#00bbb3</color>
     <color name="signup_black_mask_color">#88000000</color>
-
+    
+    <color name="picker_font_color">#a0a0a0</color>
 </resources>

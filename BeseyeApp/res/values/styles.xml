@@ -13,9 +13,26 @@
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="numberPickerStyle">@style/NPWidget.Holo.Light.NumberPicker</item>
+        <item name="actionBarStyle">@style/ActionBarTheme</item>
+	</style>
+	
+    <style name="ActionBarTheme" parent="android:Widget.ActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:height">50dp</item>
     </style>
+    
+    <style name="AppTheme.WifiList">
+        <item name="actionBarStyle">@style/ActionBarThemeWiFiList</item>
+	</style>
+	
+    <style name="ActionBarThemeWiFiList" parent="android:Widget.ActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:background">@drawable/wifisetup_wifi_title_bg</item>
+        <item name="android:height">50dp</item>
+    </style>
+	
     <style name="style1"></style>
     
     <style name="Theme.BesEye" parent="@style/Theme.AppCompat.Light">

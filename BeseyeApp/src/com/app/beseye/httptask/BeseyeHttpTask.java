@@ -74,7 +74,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	
 	public static final String FAKE_HOST_ADDR  = "http://swf01.nh.ikala.tv/";
 	public static final String HINET_HOST_ADDR = "http://ap.hinet.sbf.ikala.tv/";
-	public static String HOST_ADDR = "http://54.199.158.71:3000/"; //= /*"http://210.64.138.164:5080/";*/"http://song81.corp.ikala.tv:5080/"; /*"http://192.168.0.61:3000/";//*///Internal;
+	public static String HOST_ADDR = "http://54.199.158.71:80/"; //= /*"http://210.64.138.164:5080/";*/"http://song81.corp.ikala.tv:5080/"; /*"http://192.168.0.61:3000/";//*///Internal;
 	
 	static{
 		checkHostAddr();
@@ -124,9 +124,9 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	private int miSocketTimeout = SOCKET_TIMEOUT;
 	
 	// the timeout until a connection is established
-	private static final int CONNECTION_TIMEOUT = 60000; /* 10 seconds */
+	private static final int CONNECTION_TIMEOUT = 10000; /* 10 seconds */
 	// the timeout for waiting for data
-	private static final int SOCKET_TIMEOUT = 60000; /* 10 seconds */
+	private static final int SOCKET_TIMEOUT = 10000; /* 10 seconds */
 	
 	protected static void setTimeouts(HttpParams params, int iConTimeout, int iSocketTimeout) {
 	    params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
@@ -436,7 +436,20 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		    Log.i(TAG, "Parse JSONObj Time:"+(System.currentTimeMillis()-startTime)+"ms");
 		        
 	    if(null != jsonRet){
-			miRetCode = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.RET_CODE, Integer.MIN_VALUE);
+	    	if(jsonRet.has(BeseyeJSONUtil.RET_CODE_CAMBE)){
+	    		miRetCode = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.RET_CODE_CAMBE);
+	    	}else{
+	    		String strRetCode = BeseyeJSONUtil.getJSONString(jsonRet, BeseyeJSONUtil.RET_CODE, null);
+		    	if(null != strRetCode){
+		    		if(strRetCode.startsWith("0x")){
+		    			strRetCode = strRetCode.substring(2);
+		    		}
+		    		miRetCode = Integer.valueOf(strRetCode, 16).intValue();
+		    	}
+	    	}
+	    	
+			//miRetCode = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.RET_CODE, Integer.MIN_VALUE);
+	    	
 		}else
 			miErrType = ERR_TYPE_INVALID_DATA;
 	    
@@ -470,8 +483,8 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 			int iSessionMdid = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.SESSION_MDID, -1);
 			if(0 == iSessionMdid /*|| this instanceof iKalaChannelTask.LoadAboutMeInfoTask*/){//invalid session from social BE
 				Log.e(TAG, "getJSONfromURL(), invalid seesion from social BE");
-				miErrType = ERR_TYPE_SESSION_INVALID;
-				miRetCode = -1;
+				miRetCode = ERR_TYPE_SESSION_INVALID;
+				//miRetCode = -1;
 			}
 		}
 		
@@ -482,7 +495,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	       			//if(this instanceof iKalaAccountTask.LogoutHttpTask){
 	       			//	miRetCode = 0;//Let it pass
 	       			//}else
-	       				miErrType = ERR_TYPE_SESSION_INVALID;
+	       			miErrType = ERR_TYPE_SESSION_INVALID;
 	       		}else{
 	       			miErrType = ERR_TYPE_REQUEST_RET_ERR;
 	       		}
@@ -491,7 +504,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	       	if(null != mOnHttpTaskCallback.get()){
 	       		
 	       		StringBuilder sb = new StringBuilder ();
-	       		sb.append("miRetCode = "+miRetCode+", ");
+	       		sb.append("miRetCode = "+String.format("%x", miRetCode)+", ");
 	       	    for (int i = 0; i < strParams.length; i++){
 	       	    	if(i == 0){
 	       	    		sb.append ("[ ");
@@ -511,7 +524,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	       	    if(ERR_TYPE_SESSION_INVALID == miErrType){
 	       			mOnHttpTaskCallback.get().onSessionInvalid(this, 0);
 	       		}else{
-	       			mOnHttpTaskCallback.get().onErrorReport(this, miErrType, "", sb.toString());
+	       			mOnHttpTaskCallback.get().onErrorReport(this, miRetCode, "", sb.toString());
 	       		}
 	   			
 	   			if(BeseyeConfig.DEBUG)

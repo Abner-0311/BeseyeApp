@@ -34,6 +34,8 @@
 	    android:layout_centerHorizontal="true"
 	    android:layout_alignParentBottom="true"
 	    android:background="@drawable/sl_account_bottom_btn"
+	    android:paddingBottom="@dimen/login_marginMedium"
+        android:paddingTop="@dimen/login_marginMedium"
 	    android:text="@string/signup_before_setup_start"
 	    android:textColor="@color/word_white"
 	    android:textColorLink="@color/word_white"

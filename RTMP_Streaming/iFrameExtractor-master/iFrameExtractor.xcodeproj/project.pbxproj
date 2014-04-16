@@ -112,7 +112,7 @@
 		07E19FB61850377D00E0CA98 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		07E19FB71850377D00E0CA98 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		07E19FDE18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iFrameExtractorAppDelegate.mm; sourceTree = "<group>"; };
-		07EC6C7F18B4D6920018BEA4 /* libBeseyeSoundPairing.a */ = {isa = PBXFileReference; lastKnownFileType = file; name = libBeseyeSoundPairing.a; path = "BeseyeSoundPairing/build/Debug-iphoneos/libBeseyeSoundPairing.a"; sourceTree = "<group>"; };
+		07EC6C7F18B4D6920018BEA4 /* libBeseyeSoundPairing.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBeseyeSoundPairing.a; path = "BeseyeSoundPairing/build/Debug-iphoneos/libBeseyeSoundPairing.a"; sourceTree = "<group>"; };
 		07EC6C8718B4D8F80018BEA4 /* beseye_sound_pairing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = beseye_sound_pairing.h; sourceTree = "<group>"; };
 		07EC6C9418B4D8F80018BEA4 /* FreqGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreqGenerator.h; sourceTree = "<group>"; };
 		07EC6CA618B4D8F80018BEA4 /* sp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sp_config.h; sourceTree = "<group>"; };
@@ -128,19 +128,19 @@
 		07EC6CC818B4D9010018BEA4 /* IllegalStateException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllegalStateException.h; sourceTree = "<group>"; };
 		07EC6CC918B4D9010018BEA4 /* ReaderException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReaderException.h; sourceTree = "<group>"; };
 		07EC6CCA18B4D9010018BEA4 /* ZXing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXing.h; sourceTree = "<group>"; };
-		07EC6D2B18B5BCCF0018BEA4 /* beseye_audio_streamer.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = beseye_audio_streamer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseye_audio_streamer.h; sourceTree = "<group>"; };
-		07EC6D2C18B5BCCF0018BEA4 /* beseye_rtmp_observer.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = beseye_rtmp_observer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseye_rtmp_observer.h; sourceTree = "<group>"; };
-		07EC6D2D18B5BCCF0018BEA4 /* beseyeplayer.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = beseyeplayer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseyeplayer.h; sourceTree = "<group>"; };
-		07EC6D2E18B5BCCF0018BEA4 /* cmdutils.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = cmdutils.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/cmdutils.h; sourceTree = "<group>"; };
-		07EC6D2F18B5BCCF0018BEA4 /* cmdutils_common_opts.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = cmdutils_common_opts.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/cmdutils_common_opts.h; sourceTree = "<group>"; };
-		07EC6D3018B5BCCF0018BEA4 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = config.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/config.h; sourceTree = "<group>"; };
-		07EC6D3118B5BCCF0018BEA4 /* ffmpeg.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = ffmpeg.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/ffmpeg.h; sourceTree = "<group>"; };
-		07EC6D3218B5BCCF0018BEA4 /* ffmpeg_ext.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = ffmpeg_ext.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/ffmpeg_ext.h; sourceTree = "<group>"; };
-		07EC6D3318B5BCCF0018BEA4 /* librtmp_ext.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = librtmp_ext.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/librtmp_ext.h; sourceTree = "<group>"; };
-		07EC6D3418B5BCCF0018BEA4 /* pkt_queue.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = pkt_queue.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/pkt_queue.h; sourceTree = "<group>"; };
-		07EC6D3518B5BCCF0018BEA4 /* player.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = player.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/player.h; sourceTree = "<group>"; };
-		07EC6D3618B5BCCF0018BEA4 /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = utils.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/utils.h; sourceTree = "<group>"; };
-		07EC6D3718B5BCCF0018BEA4 /* version.h */ = {isa = PBXFileReference; lastKnownFileType = file; name = version.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/version.h; sourceTree = "<group>"; };
+		07EC6D2B18B5BCCF0018BEA4 /* beseye_audio_streamer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_audio_streamer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseye_audio_streamer.h; sourceTree = "<group>"; };
+		07EC6D2C18B5BCCF0018BEA4 /* beseye_rtmp_observer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_rtmp_observer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseye_rtmp_observer.h; sourceTree = "<group>"; };
+		07EC6D2D18B5BCCF0018BEA4 /* beseyeplayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseyeplayer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseyeplayer.h; sourceTree = "<group>"; };
+		07EC6D2E18B5BCCF0018BEA4 /* cmdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cmdutils.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/cmdutils.h; sourceTree = "<group>"; };
+		07EC6D2F18B5BCCF0018BEA4 /* cmdutils_common_opts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cmdutils_common_opts.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/cmdutils_common_opts.h; sourceTree = "<group>"; };
+		07EC6D3018B5BCCF0018BEA4 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/config.h; sourceTree = "<group>"; };
+		07EC6D3118B5BCCF0018BEA4 /* ffmpeg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ffmpeg.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/ffmpeg.h; sourceTree = "<group>"; };
+		07EC6D3218B5BCCF0018BEA4 /* ffmpeg_ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ffmpeg_ext.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/ffmpeg_ext.h; sourceTree = "<group>"; };
+		07EC6D3318B5BCCF0018BEA4 /* librtmp_ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = librtmp_ext.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/librtmp_ext.h; sourceTree = "<group>"; };
+		07EC6D3418B5BCCF0018BEA4 /* pkt_queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pkt_queue.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/pkt_queue.h; sourceTree = "<group>"; };
+		07EC6D3518B5BCCF0018BEA4 /* player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = player.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/player.h; sourceTree = "<group>"; };
+		07EC6D3618B5BCCF0018BEA4 /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utils.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/utils.h; sourceTree = "<group>"; };
+		07EC6D3718B5BCCF0018BEA4 /* version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = version.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/version.h; sourceTree = "<group>"; };
 		07F3AACD1754B0D50046934B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0918E6D010F839FC00300130 /* sophie.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = sophie.mov; sourceTree = "<group>"; };
 		0921E13F10FADAFB004EAA40 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
@@ -545,10 +545,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/rtmpdump-2.3_2/lib",
-					"/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
-					"/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/openssl-1.0.1e/build_ios/lib",
-					/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/ffmpeg_android/fat/lib,
+					"$(SRCROOT)/../../RTMP_Streaming/rtmpdump-2.3_2/lib",
+					"$(SRCROOT)/../../RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
+					"$(SRCROOT)/../../RTMP_Streaming/openssl-1.0.1e/build_ios/lib",
+					"$(SRCROOT)/../../ffmpeg_android/fat/lib",
 				);
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";
@@ -577,10 +577,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/rtmpdump-2.3_2/lib",
-					"/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
-					"/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/openssl-1.0.1e/build_ios/lib",
-					/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/ffmpeg_android/fat/lib,
+					"$(SRCROOT)/../../RTMP_Streaming/rtmpdump-2.3_2/lib",
+					"$(SRCROOT)/../../RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
+					"$(SRCROOT)/../../RTMP_Streaming/openssl-1.0.1e/build_ios/lib",
+					"$(SRCROOT)/../../ffmpeg_android/fat/lib",
 				);
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";

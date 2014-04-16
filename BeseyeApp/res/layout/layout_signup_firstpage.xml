@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/tv_bottom_learn_more"
             android:text="@string/signup_beseye"
-            android:textColor="@color/signup_font_description_color"
+            android:textColor="@color/cl_link_font_color"
             android:textSize="@dimen/login_fontSmall" />
         
     </RelativeLayout>
