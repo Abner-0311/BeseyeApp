@@ -217,9 +217,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mVgPairingDone = (ViewGroup)findViewById(R.id.vg_pairing_done);
 			if(null != mVgPairingDone){
 				BeseyeUtils.setVisibility(mVgPairingDone, View.VISIBLE);
-				mBtnPairingDoneOK = (Button)mVgPairingDone.findViewById(R.id.button_start);
-				if(null != mBtnPairingDoneOK){
-					mBtnPairingDoneOK.setOnClickListener(this);
+				if(null != mVgPairingDone){
+					mVgPairingDone.setOnClickListener(this);
+					mBtnPairingDoneOK = (Button)mVgPairingDone.findViewById(R.id.button_start);
+					if(null != mBtnPairingDoneOK){
+						mBtnPairingDoneOK.setOnClickListener(this);
+					}
 				}
 			}	
 		}
@@ -616,6 +619,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				break;
 			}
 			case R.id.ib_rewind:{
+				break;
+			}
+			case R.id.vg_pairing_done:{
 				break;
 			}
 			case R.id.button_start:{

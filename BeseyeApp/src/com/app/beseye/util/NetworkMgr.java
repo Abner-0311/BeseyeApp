@@ -712,6 +712,7 @@ public class NetworkMgr {
 		if(null != dest){
 			dest.clear();
 			String strAciveBSSID = NetworkMgr.getInstance().getActiveWifiBSSID();
+			Log.i(TAG, "filterWifiAPInfo(), strAciveBSSID = "+strAciveBSSID);
 			if(null != src){
 				for(ScanResult ret : src){
 					if(null != ret){

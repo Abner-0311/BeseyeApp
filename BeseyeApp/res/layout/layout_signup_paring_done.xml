@@ -27,7 +27,6 @@
 	    android:id="@+id/tv_paring_done"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:layout_alignParentTop="true"
 	    android:layout_centerHorizontal="true"
 	    android:layout_marginLeft="@dimen/signup_paring_done_marginSide"
 	    android:layout_marginRight="@dimen/signup_paring_done_marginSide"

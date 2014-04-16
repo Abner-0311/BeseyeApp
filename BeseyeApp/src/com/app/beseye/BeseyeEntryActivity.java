@@ -35,19 +35,19 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 			mTvLogin.setOnClickListener(this);
 		}
 		
-		BeseyeDatetimePickerDialog d = new BeseyeDatetimePickerDialog(this); 
-		d.setOnDatetimePickerClickListener(new OnDatetimePickerClickListener(){
-			@Override
-			public void onBtnOKClick(Calendar pickDate) {
-				Toast.makeText(BeseyeEntryActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
-			}
-
-			@Override
-			public void onBtnCancelClick() {
-				Toast.makeText(BeseyeEntryActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
-			}});
-		
-		d.show();
+//		BeseyeDatetimePickerDialog d = new BeseyeDatetimePickerDialog(this); 
+//		d.setOnDatetimePickerClickListener(new OnDatetimePickerClickListener(){
+//			@Override
+//			public void onBtnOKClick(Calendar pickDate) {
+//				Toast.makeText(BeseyeEntryActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
+//			}
+//
+//			@Override
+//			public void onBtnCancelClick() {
+//				Toast.makeText(BeseyeEntryActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
+//			}});
+//		
+//		d.show();
 	}
 	
 	@Override
