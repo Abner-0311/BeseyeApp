@@ -542,6 +542,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 #include "delegate/account_mgr.h"
 
 void checkPairingResult(string strCode){
+#ifdef CAM_ENV
 	LOGE("++, strCode:[%s]\n", strCode.c_str());
 	if(0 == strCode.find_first_of("error")){
 		LOGE("Error\n");
@@ -568,9 +569,9 @@ void checkPairingResult(string strCode){
 		std::vector<std::string> ret = split(retS.str(), 0x1B);
 
 		LOGI("ret.size():[%d]\n",ret.size());
-		if(ret.size() == 4){
+		if(ret.size() == 3){
 			//LOGE("[%s, %s, %s, %s]\n", ret[0], ret[1], ret[2], ret[3]);
-			int iUserId = atoi( ret[3].c_str() );
+			int iUserId = atoi( ret[2].c_str() );
 			LOGI("iUserId:[%d]\n",iUserId);
 			char testData[BUF_SIZE]={0};
 			if(RET_CODE_OK == bindUserAccount(testData, iUserId)){
@@ -580,6 +581,7 @@ void checkPairingResult(string strCode){
 			}
 		}
 	}
+#endif
 }
 
 void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDecodeUnmark, bool bFromAutoCorrection, MatchRetSet* prevMatchRet){

@@ -7,7 +7,7 @@ std::vector<Ref<FreqRange> > SoundPair_Config::sFreqRangeTable;
 std::vector<string> SoundPair_Config::sCodeTable;
 Ref<GenericGF> SoundPair_Config::gf = GenericGF::QR_CODE_FIELD_256;
 
-float SoundPair_Config::AMP_BASE_RATIO[] = {1.00f, 1.00f, 1.15f, 1.10f, // 1093.75, 1187.50, 1781.25, 1968.75,
+float SoundPair_Config::AMP_BASE_RATIO[] = {1.00f, 1.00f, 1.10f, 1.10f, // 1093.75, 1187.50, 1781.25, 1968.75,
 											1.04f, 1.00f, 1.00f, 1.05f, // 1281.25, 1468.75, 1593.75, 1687.5,
 											0.60f, 0.98f, 1.02f, 1.00f, // 2843.75, 2093.75, 2187.50, 2375.0,
 											1.00f, 0.90f, 0.80f, 0.68f, // 2468.75, 2562.50, 2656.25, 2750.0,
@@ -166,7 +166,7 @@ void SoundPair_Config::init(){
 	}
 
 	//A~I
-	for(char i = 0x41; i<= 0x49 ; i++, dValue+=dDelta, iDx++){
+	for(char i = 0x61; i<= 0x69 ; i++, dValue+=dDelta, iDx++){
 		string strCode;
 		strCode.push_back(i);
 		sCodeTable.push_back(strCode);
