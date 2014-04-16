@@ -570,8 +570,17 @@ void checkPairingResult(string strCode){
 
 		LOGI("ret.size():[%d]\n",ret.size());
 		if(ret.size() == 3){
+			string strUserNum = ret[2];
 			//LOGE("[%s, %s, %s, %s]\n", ret[0], ret[1], ret[2], ret[3]);
-			int iUserId = atoi( ret[2].c_str() );
+			//int iUserId = atoi( ret[2].c_str() );
+			int iUserId = 0;
+			int iLenUserNum = strUserNum.length();
+			int idx = 0;
+			for(int idx = 0; idx < iLenUserNum;idx++){
+				iUserId <<= iPower*2;
+				char cNum = strUserNum.at(idx);
+				iUserId += cNum;//SoundPair_Config::findIdxFromCodeTable();
+			}
 			LOGI("iUserId:[%d]\n",iUserId);
 			char testData[BUF_SIZE]={0};
 			if(RET_CODE_OK == bindUserAccount(testData, iUserId)){
