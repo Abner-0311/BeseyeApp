@@ -1830,21 +1830,20 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 //		initAudacity();
 //	}
 
-	//LOGE("performAudacityFFT+1\n");
 	if(NULL == inBuffer){
-		//LOGE("performAudacityFFT+2\n");
 		initAudacity();
 	}
 
-	//LOGE("performAudacityFFT+3\n");
+
 	static long lTotalTime = 0, lCount = 0;
 
 	long lTickCount = getTickCount();
-	//LOGE("performAudacityFFT+3\n");
+
 	performSpeexPreprocess(&bytes[0], bReset, speexPrep);
+
 	long lDelta = (getTickCount() - lTickCount);
 	lTotalTime+=lDelta;
-	LOGD("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(++lCount));
+	LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(++lCount));
 
 
 //	lTickCount = getTickCount();
@@ -1912,7 +1911,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 		sTotalTime2 += (getTickCount() - lTickCount);
 #endif
-		LOGD("performAudacityFFT(), Spectrum takes [%ld, %ld] ms\n", sTotalTime1, sTotalTime2);
+		LOGE("performAudacityFFT(), Spectrum takes [%ld, %ld] ms\n", sTotalTime1, sTotalTime2);
 		if(NULL != iDxValues){
 			iDxValues[0] = iDx;
 			iDxValues[1] = iDx2;
