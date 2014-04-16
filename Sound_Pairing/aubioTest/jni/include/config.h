@@ -31,7 +31,9 @@
 
 #endif
 
+#ifndef CAM_ENV
 #define GEN_TONE_ONLY //for client side
+#endif
 
 #define CAM_URL "127.0.0.1"
 #endif

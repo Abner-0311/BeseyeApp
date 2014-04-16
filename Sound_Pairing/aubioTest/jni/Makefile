@@ -44,10 +44,10 @@ OBJECTS=$(SOURCES:.c=.o)
 
 EXECUTABLE=soundpairing
 
-CFLAGS=-c -Wall -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -I$(TOOLCHAIN)/include
+CFLAGS=-c -Wall -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -I$(TOOLCHAIN)/include -DCAM_ENV
 LDFLAGS=-L$(TOOLCHAIN)/lib -lcurl -ljson-c -lpthread -L$(TOOLCHAIN)/lib/libstdc++.a
 #-lspeexdsp
-CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -I$(TOOLCHAIN)/include
+CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -I$(TOOLCHAIN)/include -DCAM_ENV
 
 all:$(CXXSOURCES) $(SOURCES) $(EXECUTABLE)
 
