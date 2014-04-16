@@ -351,7 +351,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    		
 	    		request.addHeader("Content-Type", "application/json");
 	    		request.addHeader("Accept", "application/json");
-	    		request.addHeader("User-Agent", "iKala App ver("+Build.VERSION.RELEASE+") in Android "+Build.VERSION.SDK_INT);
+	    		request.addHeader("User-Agent", "Beseye App ver("+Build.VERSION.RELEASE+") in Android "+Build.VERSION.SDK_INT);
 	    		request.setEntity(new StringEntity(strParams[1], HTTP.UTF_8));
 	    	}
 	    	Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl));
