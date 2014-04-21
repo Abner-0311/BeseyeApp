@@ -1,7 +1,5 @@
 package com.app.beseye.util;
 
-import static com.app.beseye.util.BeseyeConfig.TMP_CAM_ID;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

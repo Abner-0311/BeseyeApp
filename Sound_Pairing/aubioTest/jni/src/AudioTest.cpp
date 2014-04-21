@@ -289,6 +289,7 @@ static int iCurIdx = 0;
 static timespec sleepValue = {0};
 static msec_t lTsRec = 0;
 static int iAudioFrameSize = 4;
+static const int MAX_TRIAL = 10;
 
 void writeBuf(unsigned char* charBuf, int iLen){
 	//LOGW("writeBuf:%d, iCurIdx:%d", iLen, iCurIdx);
@@ -299,22 +300,32 @@ void writeBuf(unsigned char* charBuf, int iLen){
 	for(int i = 0 ; i < iCountFrame; i++){
 		if(NULL == shortsRecBuf || 0 == shortsRecBuf->size()){
 			lTs1 = (lTsRec+=SoundPair_Config::FRAME_TS);//System.currentTimeMillis();
+			int iCurTrial = 0;
 			while(NULL == (shortsRecBuf = AudioBufferMgr::getInstance()->getAvailableBuf())){
 				nanosleep(&sleepValue, NULL);
+				iCurTrial++;
+				if(iCurTrial > MAX_TRIAL){
+					LOGW("Can not get available buf\n");
+					break;
+				}
 			}
 			iIdxOffset = i;
 			iCurIdx = 0;
 			//LOGE("writeBuf(), get rec buf at %lld, iIdxOffset:%d, iCurIdx:%d, shortsRecBuf->size():%d\n", lTs1, iIdxOffset, iCurIdx, shortsRecBuf->size() );
 		}
 
-		iCurIdx = i - iIdxOffset;
-		//shortsRecBuf[iCurIdx] = ulaw2linear(charBuf[i]);
-		shortsRecBuf[iCurIdx] = (((short)charBuf[iAudioFrameSize*i+3])<<8 | (charBuf[iAudioFrameSize*i+2]));
+		if(NULL != shortsRecBuf){
+			iCurIdx = i - iIdxOffset;
+			//shortsRecBuf[iCurIdx] = ulaw2linear(charBuf[i]);
+			shortsRecBuf[iCurIdx] = (((short)charBuf[iAudioFrameSize*i+3])<<8 | (charBuf[iAudioFrameSize*i+2]));
 
-		if(iCurIdx == shortsRecBuf->size()-1){
-			//LOGE("writeBuf(), add rec buf at %lld, iIdxOffset:%d, iCurIdx:%d, shortsRecBuf->size():%d\n", lTs1, iIdxOffset, iCurIdx, shortsRecBuf->size() );
-			AudioBufferMgr::getInstance()->addToDataBuf(lTs1, shortsRecBuf, shortsRecBuf->size());
-			shortsRecBuf = NULL;
+			if(iCurIdx == shortsRecBuf->size()-1){
+				//LOGE("writeBuf(), add rec buf at %lld, iIdxOffset:%d, iCurIdx:%d, shortsRecBuf->size():%d\n", lTs1, iIdxOffset, iCurIdx, shortsRecBuf->size() );
+				AudioBufferMgr::getInstance()->addToDataBuf(lTs1, shortsRecBuf, shortsRecBuf->size());
+				shortsRecBuf = NULL;
+			}
+		}else{
+			LOGW("shortsRecBuf is NULL");
 		}
 	}
 	iCurIdx++;
@@ -337,7 +348,7 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 
 	while(!tester->mbStopBufRecordFlag){
 		msec_t lTs1 = (lTsRec+=SoundPair_Config::FRAME_TS);//System.currentTimeMillis();
-		while(NULL == (shortsRec = AudioBufferMgr::getInstance()->getAvailableBuf())){
+		while(NULL == (shortsRec = AudioBufferMgr::getInstance()->getAvailableBuf()) && !tester->mbStopBufRecordFlag){
 			nanosleep(&sleepValue, NULL);
 		}
 		int samplesRead=0;
@@ -348,7 +359,7 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 		}
 
 		msec_t lTs2 = (lTsRec+=SoundPair_Config::FRAME_TS);
-		while(NULL == (shortsRec = AudioBufferMgr::getInstance()->getAvailableBuf())){
+		while(NULL == (shortsRec = AudioBufferMgr::getInstance()->getAvailableBuf())&& !tester->mbStopBufRecordFlag){
 			nanosleep(&sleepValue, NULL);
 		}
 
@@ -554,13 +565,15 @@ void checkPairingResult(string strCode){
 		LOGE("toDecodeSize:%d\n", toDecodeSize);
 		stringstream retS;
 		for(int i =0;i < toDecodeSize;i++){
-			char c = 0;
+			unsigned char c = 0;
 			for(int j = 0;j < iMultiply;j++){
-				string strTmp = strCode.substr(i*iMultiply+j, 1);
-
 				c <<= iPower;
-				c += SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+				string strTmp = strCode.substr(i*iMultiply+j, 1);
+				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+				c += (unsigned char) iVal;
+				//LOGI("iVal:[%d]\n",iVal);
 			}
+			//LOGI("c:[%u]\n",c);
 			retS << c;
 		}
 
@@ -568,17 +581,28 @@ void checkPairingResult(string strCode){
 
 		std::vector<std::string> ret = split(retS.str(), 0x1B);
 
-		LOGI("ret.size():[%d]\n",ret.size());
 		if(ret.size() == 3){
+			string strUserNum = ret[2];
 			//LOGE("[%s, %s, %s, %s]\n", ret[0], ret[1], ret[2], ret[3]);
-			int iUserId = atoi( ret[2].c_str() );
-			LOGI("iUserId:[%d]\n",iUserId);
-			char testData[BUF_SIZE]={0};
-			if(RET_CODE_OK == bindUserAccount(testData, iUserId)){
-				LOGE("bindUserAccount OK:[%s]\n", testData);
-			}else{
-				LOGE("bindUserAccount Failed:[%s]\n", testData);
+			//int iUserId = atoi( ret[2].c_str() );
+			unsigned short sUserId = 0;
+			int iLenUserNum = strUserNum.length();
+			int idx = 0;
+			for(int idx = 0; idx < iLenUserNum;idx++){
+				sUserId <<= iPower*2;
+				unsigned char cNum = strUserNum.at(idx);
+				//LOGI("cNum:[%u]\n",cNum);
+				sUserId += cNum;//SoundPair_Config::findIdxFromCodeTable();
 			}
+			LOGI("sUserId:[%u]\n",sUserId);
+//			char testData[BUF_SIZE]={0};
+//			if(RET_CODE_OK == bindUserAccount(testData, iUserId)){
+//				LOGE("bindUserAccount OK:[%s]\n", testData);
+//			}else{
+//				LOGE("bindUserAccount Failed:[%s]\n", testData);
+//			}
+		}else{
+			LOGI("failed to arse result, ret.size():[%d]\n",ret.size());
 		}
 	}
 #endif

@@ -15,7 +15,7 @@
 //#define GEN_TONE_ONLY //for client side
 
 //#define CAM_AUDIO
-#define CAM_URL "192.168.2.170"
+#define CAM_URL "192.168.2.4"
 #else
 #include <stdint.h>
 #define CAM_AUDIO

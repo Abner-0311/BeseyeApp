@@ -673,6 +673,7 @@ void FreqGenerator::writeTone(double sample[], byte generatedSnd[], int iLen){
 unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken){
 	unsigned int iRet = R_OK;
 	char codeToPlay[1024]={0};
+	codeToPlay[1023] = '/0';
 	static const char sep = 0x1B;
 
 	if(!macAddr){
@@ -745,8 +746,14 @@ unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wif
 			//LOGD("encode(), toEncode[%d]= %d\n",i,toEncode[i] );
 		}
 
+		//tmpUserToken = 0xff;
+
 		//LOGE("macAddrZip= [%s]\n", macAddrZip);
-		sprintf(codeToPlay, "%s%c%s%c%x", macAddrZip, sep, wifiKey?wifiKey:"", sep, tmpUserToken);
+		if(tmpUserToken > 0xff){
+			sprintf(codeToPlay, "%s%c%s%c%c%c", macAddrZip, sep, wifiKey?wifiKey:"", sep, (tmpUserToken&0xff00)>>8, (tmpUserToken&0xff));
+		}else{
+			sprintf(codeToPlay, "%s%c%s%c%c", macAddrZip, sep, wifiKey?wifiKey:"", sep, (tmpUserToken&0xff));
+		}
 
 		if(macAddrZip){
 			free(macAddrZip);

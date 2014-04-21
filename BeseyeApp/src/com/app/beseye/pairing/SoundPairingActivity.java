@@ -29,6 +29,7 @@ import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
+import com.app.beseye.widget.GifMovieView;
 
 public class SoundPairingActivity extends BeseyeBaseActivity {	
 	static public final String KEY_WIFI_INFO = "KEY_WIFI_INFO";
@@ -69,6 +70,17 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				mEtCamName.setOnEditorActionListener(mOnEditorActionListener);
 			}
 		}
+		
+		GifMovieView gifTop = (GifMovieView)findViewById(R.id.iv_paring_cam_sonar);
+		if(null != gifTop){
+			gifTop.setMovieResource(R.drawable.signup_voice_sonar_top);
+		}
+		
+		GifMovieView gifBottom = (GifMovieView)findViewById(R.id.iv_paring_phone_sonar);
+		if(null != gifBottom){
+			gifBottom.setMovieResource(R.drawable.signup_voice_sonar_bottom);
+		}
+		
 		
 		mTxtProgress = (TextView)findViewById(R.id.tv_percentage_label);
 		
@@ -144,6 +156,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
     	BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
+				sbFinishToPlay = false;
 		    	Log.i(TAG, "onStartGen(), strCode:["+strCode+"]");
 		    	//mBtnPLayTone.setEnabled(false);
 			}}, 0);
@@ -184,16 +197,17 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
     TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener(){
 		@Override
 		public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-			Log.i(TAG, "onEditorAction(), actionId:["+actionId+"]");
-			if (actionId == EditorInfo.IME_ACTION_DONE) { 
-				if(view.equals(mEtCamName) && 0 < mEtCamName.getText().length()){
+			//Log.i(TAG, "onEditorAction(), actionId:["+actionId+"]");
+			if (view.equals(mEtCamName) && actionId == EditorInfo.IME_ACTION_DONE) { 
+				if(0 < mEtCamName.getText().length()){
 					mStrCamName = mEtCamName.getText().toString();
 					Log.i(TAG, "onEditorAction(), mStrCamName:["+mStrCamName+"]");
 					BeseyeUtils.hideSoftKeyboard(SoundPairingActivity.this, mEtCamName);
 					BeseyeUtils.setVisibility(mVgCamNameHolder, View.GONE);
 					checkPairingStatus();
-					return true;
-				}
+				}else 
+					Toast.makeText(SoundPairingActivity.this, R.string.toast_pairing_enter_cam_name, Toast.LENGTH_SHORT).show();
+				return true;
 			}			
 			return false;
 		}
@@ -308,7 +322,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
 		Log.e(TAG, "onErrorReport(), "+task.getClass().getSimpleName()+", iErrType="+iErrType);	
 		if(task instanceof BeseyeAccountTask.StartCamPairingTask){
-			//beginToPlayPairingTone(Integer.parseInt(SessionMgr.getInstance().getMdid()));
+			//beginToPlayPairingTone(65432);
 			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_pairing_error));
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
@@ -328,6 +342,20 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				super.onPostExecute(task, result, iRetCode);
 			}
 		}
+	}
+	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			if(null != mVgCamNameHolder && View.VISIBLE == mVgCamNameHolder.getVisibility()){
+				Toast.makeText(this, R.string.toast_pairing_enter_cam_name, Toast.LENGTH_SHORT).show();
+				BeseyeUtils.showSoftKeyboard(SoundPairingActivity.this, mEtCamName);
+			}else{
+				Toast.makeText(this, R.string.toast_pairing_wait, Toast.LENGTH_SHORT).show();
+			} 
+			return true;
+		}else
+			return super.onKeyUp(keyCode, event);
 	}
 }
 
