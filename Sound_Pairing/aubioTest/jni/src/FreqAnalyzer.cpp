@@ -557,6 +557,7 @@ void FreqAnalyzer::appendRet(string strCode){
 				mCodeRecordList.push_back(lastRec);
 				LOGE("appendRet(), lastRec:%s\n", (lastRec)?lastRec->toString().c_str():"null");
 
+				beginToTrace("");
 				mSessionOffset = segmentCheck(false);
 
 				if(SoundPair_Config::PRE_EMPTY){
@@ -1835,7 +1836,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 	}
 
 
-	static long lTotalTime = 0, lCount = 0;
+	static long lTotalTime = 0, lCount = 1;
 
 	long lTickCount = getTickCount();
 
@@ -1843,7 +1844,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 	long lDelta = (getTickCount() - lTickCount);
 	lTotalTime+=lDelta;
-	LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(++lCount));
+	//LOGE("performAudacityFFT(), performSpeexPreprocess takes %ld ms, average: %ld ms\n", lDelta, lTotalTime/(++lCount));
 
 
 //	lTickCount = getTickCount();
@@ -1911,7 +1912,9 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 		sTotalTime2 += (getTickCount() - lTickCount);
 #endif
-		LOGE("performAudacityFFT(), Spectrum takes [%ld, %ld] ms\n", sTotalTime1, sTotalTime2);
+		LOGE("performAudacityFFT(), Spectrum and Preprocess takes [%ld, %ld, %ld] ms average\n", sTotalTime1/lCount, sTotalTime2/lCount, lTotalTime/(lCount));
+
+		lCount++;
 		if(NULL != iDxValues){
 			iDxValues[0] = iDx;
 			iDxValues[1] = iDx2;

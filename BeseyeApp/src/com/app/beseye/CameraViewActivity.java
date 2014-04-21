@@ -22,6 +22,7 @@ import com.app.beseye.widget.CameraViewControlAnimator;
 
 import android.util.Log;
 import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -707,6 +708,17 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	public void onTouch() {
 		checkAndExtendHideHeader();
+	}
+	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			if(null != mVgPairingDone && View.VISIBLE == mVgPairingDone.getVisibility()){
+				BeseyeUtils.setVisibility(mVgPairingDone, View.GONE);
+				return true;
+			}
+		}
+		return super.onKeyUp(keyCode, event);
 	}
 	
 	boolean mIsPause = true;
