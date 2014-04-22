@@ -18,6 +18,8 @@ import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
+import com.app.beseye.websockets.AudioWebSocketsMgr;
+import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.app.beseye.widget.CameraViewControlAnimator;
 
 import android.util.Log;
@@ -49,7 +51,8 @@ import android.os.Handler;
 import android.os.PowerManager;
 
 public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSurfaceCallback,
-																	  OnNetworkChangeCallback{
+																	  OnNetworkChangeCallback,
+																	  OnWSChannelStateChangeListener{
 	static public final String KEY_PAIRING_DONE = "KEY_PAIRING_DONE";
 	private TouchSurfaceView mStreamingView;
 	private TextView mTxtDate, mTxtCamName, mTxtTime, mTxtEvent, mTxtGoLive, mTxtPowerState;
@@ -293,6 +296,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mSingleton = this;
 		
 		setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
+		
+		AudioWebSocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
 	}
 
 	@Override
@@ -334,6 +339,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkPlayState();
 		initDateTime();
+		
+		AudioWebSocketsMgr.getInstance().constructNotifyWSChannel();
 	}
 		
 	@Override
@@ -1136,4 +1143,29 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
         return Arrays.copyOf(filtered, used);
     }
 	//for SDL end
+
+	@Override
+	public void onChannelConnecting() {
+		Log.i(TAG, "onChannelConnecting()---");
+	}
+
+	@Override
+	public void onAuthfailed() {
+		Log.i(TAG, "onAuthfailed()---");
+	}
+
+	@Override
+	public void onChannelConnected() {
+		Log.i(TAG, "onChannelConnected()---");
+	}
+
+	@Override
+	public void onMessageReceived(String msg) {
+		Log.i(TAG, "onMessageReceived()---");
+	}
+
+	@Override
+	public void onChannelClosed() {
+		Log.i(TAG, "onChannelCloased()---");
+	}
 }

@@ -438,7 +438,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isNotifyWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
     	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && false == WebsocketsMgr.getInstance().isNotifyWSChannelAlive()){
     		if(NetworkMgr.getInstance().isNetworkConnected())
-    			WebsocketsMgr.getInstance().constructNotifyWSChannel();
+    			;//WebsocketsMgr.getInstance().constructNotifyWSChannel();
     	}else{
     		WebsocketsMgr.getInstance().destroyNotifyWSChannel();
     	}
@@ -981,6 +981,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	public void onChannelConnecting() {
 		Log.i(TAG, "onChannelConnecting()---");
 	}
+	
+	@Override
+	public void onAuthfailed(){
+		Log.w(TAG, "onAuthfailed()---");
+	}
 
 	@Override
 	public void onChannelConnected() {
@@ -995,9 +1000,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 
 	@Override
-	public void onChannelCloased() {
+	public void onChannelClosed() {
 		Log.i(TAG, "onChannelCloased()---");
 		if(miWSDisconnectRetry < MAX_WS_RETRY_TIME && false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && NetworkMgr.getInstance().isNetworkConnected()){
+			Log.i(TAG, "onChannelCloased(), abnormal close, retry-----");
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
