@@ -2,14 +2,19 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
 
+import com.app.beseye.BeseyeApplication.BeseyeAppStateChangeListener;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
+import com.app.beseye.httptask.SessionMgr.SessionData;
+import com.app.beseye.service.BeseyeNotificationService;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -17,19 +22,29 @@ import net.hockeyapp.android.UpdateManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.ServiceConnection;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, OnHttpTaskCallback{
+public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, 
+																			  OnHttpTaskCallback, 
+																			  ISessionUpdateCallback,
+																			  BeseyeAppStateChangeListener{
 	static public final String KEY_FROM_ACTIVITY					= "KEY_FROM_ACTIVITY";
 	
 	protected boolean mbFirstResume = true;
@@ -43,6 +58,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(getLayoutId());
+		BeseyeApplication.registerAppStateChangeListener(this);
+		doBindService();
 	}
 	
 	@Override
@@ -55,6 +72,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		super.onResume();
 		checkForCrashes();
 	    checkForUpdates();
+	    SessionMgr.getInstance().registerSessionUpdateCallback(this);
+	    BeseyeApplication.increVisibleCount(this);
 	    
 		//if(! mbIgnoreSessionCheck && checkSession())
 	    if( mbIgnoreSessionCheck || checkSession())
@@ -64,6 +83,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	@Override
 	protected void onPause() {
+		BeseyeApplication.decreVisibleCount(this);
 		mActivityResume = false;
 		super.onPause();
 	}
@@ -77,6 +97,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected void onDestroy() {
 		clearLastAsyncTask();
 		cancelRunningTasks();
+		doUnbindService();
+		BeseyeApplication.unregisterAppStateChangeListener(this);
 		super.onDestroy();
 		
 		mActivityDestroy = true;
@@ -515,6 +537,194 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		if(null != bundle)
 			intent.putExtras(bundle);
 		startActivity(intent);
+    }
+	
+	public void onAppEnterForeground(){}
+	public void onAppEnterBackground(){}
+	
+	private boolean mbNeedToNotifyWhenServiceConnected = false;
+	final public void notifyServiceAppForeground(){
+		if(null != mNotifyService){
+			try {
+				mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_APP_TO_FOREGROUND));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}else{
+			mbNeedToNotifyWhenServiceConnected = true;
+		}
+	}
+	
+	final public void notifyServiceAppBackground(){
+		if(null != mNotifyService){
+			try {
+				mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_APP_TO_BACKGROUND));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	//TO notify the latest session data to service
+	public void onSessionUpdate(SessionData data){
+		if(null != mNotifyService){
+			try {
+				Message msg = Message.obtain(null, BeseyeNotificationService.MSG_UPDATE_SESSION_DATA);
+				if(null != msg){
+					msg.getData().putParcelable("SessionData", data);
+					mNotifyService.send(msg);
+				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private Messenger mMessenger = new Messenger(new NotificationHandler(this));
+	protected Messenger mNotifyService = null;
+	protected Messenger mUploadWorksService = null;
+	 /** Flag indicating whether we have called bind on the service. */
+	protected  boolean mIsBound;
+	
+	/**
+     * Handler of incoming messages from service.
+     */
+    static class NotificationHandler extends Handler {
+    	private final WeakReference<BeseyeBaseActivity> mActivity; 
+    	
+    	NotificationHandler(BeseyeBaseActivity act){
+    		mActivity = new WeakReference<BeseyeBaseActivity>(act);
+    	}
+    	
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+//                case BeseyeNotificationService.MSG_SET_NOTIFY_NUM:{
+//                	BeseyeBaseActivity act = mActivity.get();
+//                	if(null != act)
+//                		act.onUnReadNotificationCallback(msg.arg1);
+//                    break;
+//                }
+//                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{
+//                	BeseyeBaseActivity act = mActivity.get();
+//                	if(null != act)
+//                		act.onUnReadMsgCallback(msg.arg1);
+//                    break;
+//                }
+                default:
+                    super.handleMessage(msg);
+            }
+        }
+    }
+	
+	/**
+     * Class for interacting with the main interface of the service.
+     */
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // This is called when the connection with the service has been
+            // established, giving us the service object we can use to
+            // interact with the service.  We are communicating with our
+            // service through an IDL interface, so get a client-side
+            // representation of that from the raw service object.
+        	mNotifyService = new Messenger(service);
+          
+
+            // We want to monitor the service for as long as we are
+            // connected to it.
+            try {
+                Message msg = Message.obtain(null,
+                		BeseyeNotificationService.MSG_REGISTER_CLIENT);
+                msg.replyTo = mMessenger;
+                mNotifyService.send(msg);
+//                mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_QUERY_NOTIFY_NUM));
+//                if(mbNeedToNotifyWhenServiceConnected){
+//                	mbNeedToNotifyWhenServiceConnected = false;
+//                	mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_APP_TO_FOREGROUND));
+//                }
+//                //To stop the pulling in case of app crash
+//                mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_STOP_TO_PULL_MSG));
+            } catch (RemoteException e) {
+                // In this case the service has crashed before we could even
+                // do anything with it; we can count on soon being
+                // disconnected (and then reconnected if it can be restarted)
+                // so there is no need to do anything here.
+            }
+            
+            // As part of the sample, tell the user what happened.
+//            Toast.makeText(BeseyeBaseActivity.this, "onServiceConnected",
+//                    Toast.LENGTH_SHORT).show();
+            notifyServiceConnected();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+        	mNotifyService = null;
+
+            // As part of the sample, tell the user what happened.
+//            Toast.makeText(BeseyeBaseActivity.this, "onServiceDisconnected",
+//                    Toast.LENGTH_SHORT).show();
+        	notifyServiceDisconnected();
+        }
+    };
+    
+//    private ServiceConnection mUploadConnection = new ServiceConnection() {
+//        public void onServiceConnected(ComponentName className,
+//                IBinder service) {
+//            // This is called when the connection with the service has been
+//            // established, giving us the service object we can use to
+//            // interact with the service.  We are communicating with our
+//            // service through an IDL interface, so get a client-side
+//            // representation of that from the raw service object.
+//        	mUploadWorksService = new Messenger(service);
+//          
+//        }
+//
+//        public void onServiceDisconnected(ComponentName className) {
+//            // This is called when the connection with the service has been
+//            // unexpectedly disconnected -- that is, its process crashed.
+//        	mUploadWorksService = null;
+//            // As part of the sample, tell the user what happened.
+//        }
+//    };
+    
+    protected void notifyServiceConnected(){}
+    protected void notifyServiceDisconnected(){}
+    
+    void doBindService() {
+        // Establish a connection with the service.  We use an explicit
+        // class name because there is no reason to be able to let other
+        // applications replace our component.
+        bindService(new Intent(BeseyeBaseActivity.this, 
+        		BeseyeNotificationService.class), mConnection, Context.BIND_AUTO_CREATE);
+//        bindService(new Intent(BeseyeBaseActivity.this, 
+//        		iKalaUploadWorksService.class), mUploadConnection, Context.BIND_AUTO_CREATE);
+        mIsBound = true;
+    }
+    
+    void doUnbindService() {
+        if (mIsBound) {
+            // If we have received the service, and hence registered with
+            // it, then now is the time to unregister.
+            if (mNotifyService != null) {
+                try {
+                    Message msg = Message.obtain(null,
+                    		BeseyeNotificationService.MSG_UNREGISTER_CLIENT);
+                    msg.replyTo = mMessenger;
+                    mNotifyService.send(msg);
+                } catch (RemoteException e) {
+                    // There is nothing special we need to do if the service
+                    // has crashed.
+                }
+            }
+            
+            // Detach our existing connection.
+            unbindService(mConnection);
+            //unbindService(mUploadConnection);
+            mIsBound = false;
+        }
     }
 
 	protected abstract int getLayoutId();

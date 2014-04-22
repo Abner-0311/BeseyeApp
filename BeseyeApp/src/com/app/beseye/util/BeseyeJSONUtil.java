@@ -128,6 +128,17 @@ public class BeseyeJSONUtil {
 		return objRet;
 	}
 	
+	static public JSONArray newgetJSONArray(String json){
+		JSONArray objRet;
+		try{
+			objRet = new JSONArray(json);
+		} catch (JSONException e) {
+			Log.w(TAG, "newgetJSONArray(), can't new JSONArray by "+json);
+			objRet = null;
+		}
+		return objRet;
+	}
+	
 	static public JSONObject getJSONObject(JSONObject obj, String strKey){
 		JSONObject objRet = null;
 		if(null != obj){

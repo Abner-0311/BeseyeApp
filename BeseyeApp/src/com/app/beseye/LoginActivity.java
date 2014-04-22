@@ -178,7 +178,7 @@ public class LoginActivity extends BeseyeBaseActivity {
 						JSONObject objUser = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_USER);
 						if(null != objUser){
 							SessionMgr.getInstance().setMdid(""+BeseyeJSONUtil.getJSONInt(objUser, BeseyeJSONUtil.ACC_ID));
-							SessionMgr.getInstance().setAccount(BeseyeJSONUtil.getJSONString(objSes, BeseyeJSONUtil.ACC_EMAIL));
+							SessionMgr.getInstance().setAccount(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_EMAIL));
 						}
 						
 						launchDelegateActivity(CameraViewActivity.class.getName());

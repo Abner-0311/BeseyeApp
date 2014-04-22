@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.app.beseye.R;
+import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.DeviceUuidFactory;
 
 public class BeseyeAccountTask {
@@ -41,7 +42,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_PASSWORD, strParams[1]);
 				obj.put(ACC_REMEM_ME, true);
 				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, "Android_"+DeviceUuidFactory.getDeviceUuid());
+				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
 				objClient.put(ACC_CLIENT_UA, "Android");
 				objClient.put(ACC_CLIENT_LOC, "Taiwan");
 				obj.put(ACC_CLIENT, objClient);
@@ -91,7 +92,7 @@ public class BeseyeAccountTask {
 			try {
 				obj.put(ACC_SES_TOKEN, strParams[0]);
 				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, "Android_"+DeviceUuidFactory.getDeviceUuid());
+				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
 				objClient.put(ACC_CLIENT_UA, "Android");
 				objClient.put(ACC_CLIENT_LOC, "Taiwan");
 				obj.put(ACC_CLIENT, objClient);

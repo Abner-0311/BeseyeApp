@@ -152,6 +152,14 @@
         </service>
         
 		<receiver 
+           android:name=".receiver.UBTEventBroadcastReciever"
+           android:exported="false">  
+		   <intent-filter>  
+		    	<action android:name="com.app.beseye.ubt.EVENT_BROADCAST" />  
+		   </intent-filter>  
+		</receiver>
+        
+		<receiver 
             android:name="com.google.android.gcm.GCMBroadcastReceiver" 
             android:permission="com.google.android.c2dm.permission.SEND" >
 			  <intent-filter>
