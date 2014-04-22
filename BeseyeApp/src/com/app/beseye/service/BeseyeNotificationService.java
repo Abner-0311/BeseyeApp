@@ -115,8 +115,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-        	if(BeseyeConfig.DEBUG)
-        		Log.i(TAG, "BG service detects "+msg.toString());
+//        	if(BeseyeConfig.DEBUG)
+//        		Log.i(TAG, "BG service detects "+msg.toString());
         	
             switch (msg.what) {
                 case MSG_REGISTER_CLIENT:
@@ -435,6 +435,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
     
     private void checkUserLoginState(){
+    	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isNotifyWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
     	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && false == WebsocketsMgr.getInstance().isNotifyWSChannelAlive()){
     		if(NetworkMgr.getInstance().isNetworkConnected())
     			WebsocketsMgr.getInstance().constructNotifyWSChannel();

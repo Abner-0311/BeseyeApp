@@ -59,6 +59,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		super.onCreate(savedInstanceState);
 		setContentView(getLayoutId());
 		BeseyeApplication.registerAppStateChangeListener(this);
+		SessionMgr.getInstance().registerSessionUpdateCallback(this);
 		doBindService();
 	}
 	
@@ -72,7 +73,6 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		super.onResume();
 		checkForCrashes();
 	    checkForUpdates();
-	    SessionMgr.getInstance().registerSessionUpdateCallback(this);
 	    BeseyeApplication.increVisibleCount(this);
 	    
 		//if(! mbIgnoreSessionCheck && checkSession())
@@ -639,10 +639,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
                 msg.replyTo = mMessenger;
                 mNotifyService.send(msg);
 //                mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_QUERY_NOTIFY_NUM));
-//                if(mbNeedToNotifyWhenServiceConnected){
-//                	mbNeedToNotifyWhenServiceConnected = false;
-//                	mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_APP_TO_FOREGROUND));
-//                }
+                if(mbNeedToNotifyWhenServiceConnected){
+                	mbNeedToNotifyWhenServiceConnected = false;
+                	mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_APP_TO_FOREGROUND));
+                }
 //                //To stop the pulling in case of app crash
 //                mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_STOP_TO_PULL_MSG));
             } catch (RemoteException e) {
