@@ -136,7 +136,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			break;
 			    		}
 			    		case CV_STREAM_PLAYING:{
-			    			//setEnabled(mIbTalk, mbIsLiveMode);
+			    			setEnabled(mIbTalk, mbIsLiveMode);
 			    			//setEnabled(mIbRewind, true);
 			    			cancelCheckVideoConn();
 			    			setEnabled(mIbPlayPause, true);
@@ -255,7 +255,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mIbTalk = (ImageButton)findViewById(R.id.ib_talk);
 		if(null != mIbTalk){
 			mIbTalk.setOnClickListener(this);
-			mIbTalk.setEnabled(false);//not implement
+			//mIbTalk.setEnabled(false);//not implement
 		}
 		
 		mIbRewind = (ImageButton)findViewById(R.id.ib_rewind);
@@ -337,10 +337,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
 		}
 		
-		//checkPlayState();
+		checkPlayState();
 		initDateTime();
-		
-		AudioWebSocketsMgr.getInstance().constructNotifyWSChannel();
 	}
 		
 	@Override
@@ -625,6 +623,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				break;
 			}
 			case R.id.ib_talk:{
+				if(AudioWebSocketsMgr.getInstance().isNotifyWSChannelAlive()){
+					AudioWebSocketsMgr.getInstance().destroyNotifyWSChannel();
+				}else{
+					AudioWebSocketsMgr.getInstance().constructNotifyWSChannel();
+				}
 				break;
 			}
 			case R.id.ib_rewind:{
