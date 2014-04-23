@@ -1,14 +1,26 @@
 package com.app.beseye.websockets;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT_LOC;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT_UA;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT_UDID;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_EMAIL;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_PASSWORD;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_REMEM_ME;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.List;
 
+import org.apache.http.client.methods.HttpPost;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,9 +28,15 @@ import org.json.JSONObject;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.util.Log;
 
+import com.app.beseye.R;
+import com.app.beseye.httptask.BeseyeHttpTask;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 import com.koushikdutta.async.AsyncServer;
 import com.koushikdutta.async.ByteBufferList;
 import com.koushikdutta.async.DataEmitter;
@@ -32,7 +50,7 @@ import com.koushikdutta.async.http.libcore.RequestHeaders;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServer.WebSocketRequestCallback;
 
-public class AudioWebSocketsMgr extends WebsocketsMgr {
+public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallback {
 	static private final String AUDIO_WS_ADDR = "http://localhost:5566/audiowebsocket";
 	static private AudioWebSocketsMgr sWebsocketsMgr = null;
 	
@@ -100,7 +118,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr {
 				listener.onChannelConnected();
 			}
 			
-			transferAudioBuf();
+			new GetSessionTask(AudioWebSocketsMgr.this).execute();
 
 			//webSocket.send("Test".getBytes());
             webSocket.setStringCallback(new StringCallback() {
@@ -166,7 +184,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr {
 
 				@Override
 				public void onCompleted(Exception ex) {
-					Log.i(TAG, "onCompleted(), from close cb, ex="+ex.toString());	
+					Log.i(TAG, "onCompleted(), from close cb, ex="+((null != ex)?ex.toString():""));	
 					synchronized(AudioWebSocketsMgr.this){
 						mFNotifyWSChannel = null;
 					}
@@ -180,7 +198,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr {
 
 				@Override
 				public void onCompleted(Exception ex) {
-					Log.i(TAG, "onCompleted(), from End cb, ex="+ex.toString());		
+					Log.i(TAG, "onCompleted(), from End cb, ex="+((null != ex)?ex.toString():""));			
 					synchronized(AudioWebSocketsMgr.this){
 						mFNotifyWSChannel = null;
 					}
@@ -199,8 +217,30 @@ public class AudioWebSocketsMgr extends WebsocketsMgr {
         }
     };
     
+    static public class GetSessionTask extends BeseyeHttpTask {	 
+		public GetSessionTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put("username", "admin");
+				obj.put("password", "password");
+				return super.doInBackground("http://192.168.2.4/sray/login.cgi", obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+    
     private int audioSource = MediaRecorder.AudioSource.MIC;
-    private static int sampleRateInHz = 16000;
+    private static int sampleRateInHz = 8000;
     private static int channelConfig = AudioFormat.CHANNEL_CONFIGURATION_MONO;
     private static int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
     private int bufferSizeInBytes = 0;
@@ -219,6 +259,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr {
 		audioSendThread.start();
     }
     
+    static final boolean AUDIO_REC_FILE = false;
+    
     class AudioSendThread extends Thread {
     	@Override
     	public void run(){
@@ -227,27 +269,41 @@ public class AudioWebSocketsMgr extends WebsocketsMgr {
 		    try{
 			    socket = new Socket("192.168.2.4", 80);
 			    os = socket.getOutputStream();
-			    String header = "POST /cgi/audio/transmit.cgi HTTP/1.1\r\n"
+			    //String header = "POST /cgi/audio/transmit.cgi?session="+session+"&httptype=singlepart HTTP/1.1\r\nHost:192.168.2.4\r\n\r\n";
+			    
+			    String header = "POST /cgi/audio/transmit.cgi?session="+session+"&httptype=singlepart HTTP/1.0\r\nHost:192.168.2.4\r\n"
 			    + "Content-Type: audio/basic\r\n"
 			    + "Cache-Control: no-cache\r\n"
 			    + "User-Agent: Mozilla/4.0 (compatible; )\r\n"
-			    + "Content-Length:30000000\r\n"
+			    + "Content-Length:9999999\r\n"
 			    + "Connection: Keep-Alive\r\n"
-			    + "Cookie: NetworkCamera_Volume=100\r\n"
-			    + "Authorization: Basic YWRtaW46YWRtaW4=\r\n" + "\r\n\r\n";
+			    //+ "Cookie: NetworkCamera_Volume=100\r\n"
+			    + "Authorization: Basic YWRtaW46cGFzc3dvcmQ=\r\n" + "\r\n\r\n";
 			    os.write(header.getBytes());
 			    os.flush();
 			}catch (Exception e1) {
 			    e1.printStackTrace();
 			    return;
 			}
+		    
+		    FileOutputStream fos = null;
+		    if(AUDIO_REC_FILE){
+			    File file = new File("/data/data/com.app.beseye/sample_8k.ulaw");
+			    try{
+			    	fos = new FileOutputStream(file);
+			    }catch (FileNotFoundException e) {
+			    	Log.i(TAG, "run(), FileNotFoundException");	
+			    }
+		    }
 
-
+		    Log.i(TAG, "run(), socket connected");	
+		    bufferSizeInBytes = 320;
 		    byte[] audiodata = new byte[bufferSizeInBytes];
 		    int readsize = 0;
 
 		    while (AudioWebSocketsMgr.getInstance().isNotifyWSChannelAlive() == true){
 		    	readsize = audioRecord.read(audiodata, 0, bufferSizeInBytes);
+		    	//Log.i(TAG, "run(), readsize="+readsize);
 		    	if (AudioRecord.ERROR_INVALID_OPERATION != readsize) {
 		    		InputStream is = new ByteArrayInputStream(audiodata);
 		    		UlawEncoderInputStream uis=null;
@@ -256,8 +312,14 @@ public class AudioWebSocketsMgr extends WebsocketsMgr {
 					    byte buff[] = new byte[1024];
 					    int len = uis.read(buff);
 					    while (len > 0) {
-						    os.write(buff, 0, len);
-						    os.flush();
+					    	Log.i(TAG, "run(), len="+len);
+					    	if(AUDIO_REC_FILE){
+					    		fos.write(buff, 0, len);
+					    		fos.flush();
+					    	}else{
+					    		os.write(buff, 0, len);
+							    os.flush();
+					    	}
 						    len = uis.read(buff);
 					    }
 		    		} catch (Exception e) {
@@ -270,6 +332,11 @@ public class AudioWebSocketsMgr extends WebsocketsMgr {
 		    try {
 		    	os.close();
 		    	socket.close();
+		    	if(null != fos){
+		    		fos.close();
+		    	}
+		    	audioRecord.stop();
+		    	audioRecord = null;
 		    } catch (IOException e) {
 		    }
 		}
@@ -431,4 +498,50 @@ public class AudioWebSocketsMgr extends WebsocketsMgr {
             return (mIn.available() + mBufCount) / 2;
         }
     }
+
+	@Override
+	public void onShowDialog(AsyncTask task, int iDialogId, int iTitleRes,
+			int iMsgRes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDismissDialog(AsyncTask task, int iDialogId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
+			String strMsg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private String session;
+	@Override
+	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+		if(task instanceof GetSessionTask){
+			//Log.i(TAG, "onPostExecute(), result = "+result.toString());
+			//if(0 == iRetCode){
+				JSONObject obj = result.get(0);
+				Log.i(TAG, "onPostExecute(), obj = "+obj.toString());
+				session = BeseyeJSONUtil.getJSONString(obj, "session");
+				transferAudioBuf();
+			//}
+		}
+	}
+
+	@Override
+	public void onToastShow(AsyncTask task, String strMsg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
+		// TODO Auto-generated method stub
+		
+	}
 }

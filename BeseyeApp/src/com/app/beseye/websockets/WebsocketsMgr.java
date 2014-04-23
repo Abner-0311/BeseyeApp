@@ -110,9 +110,9 @@ public class WebsocketsMgr {
 	}
 	
 	public boolean isNotifyWSChannelAlive(){
-		Log.i(TAG, "isNotifyWSChannelAlive(), ++");
+		//Log.i(TAG, "isNotifyWSChannelAlive(), ++");
 		boolean bRet = false;
-		printNotifyWSChannelState();
+		//printNotifyWSChannelState();
 		synchronized(this){
 			if(mBConstructingNotifyWSChannel){
 				bRet = true;
@@ -121,7 +121,7 @@ public class WebsocketsMgr {
 			}
 		}
 	
-		Log.i(TAG, "isNotifyWSChannelAlive()--, bRet="+bRet);
+		Log.d(TAG, "isNotifyWSChannelAlive()--, bRet="+bRet);
 		return bRet;
 	}
 	

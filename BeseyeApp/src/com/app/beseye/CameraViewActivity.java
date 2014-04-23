@@ -337,7 +337,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
 		}
 		
-		checkPlayState();
+		//checkPlayState();
 		initDateTime();
 		
 		AudioWebSocketsMgr.getInstance().constructNotifyWSChannel();
@@ -430,6 +430,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(null == mPauseCameraViewRunnable){
 			mPauseCameraViewRunnable = new PauseCameraViewRunnable(this);
 		}
+		AudioWebSocketsMgr.getInstance().destroyNotifyWSChannel();
 		BeseyeUtils.removeRunnable(mPauseCameraViewRunnable);
 		BeseyeUtils.postRunnable(mPauseCameraViewRunnable, TIME_TO_CONFIRM_PAUSE);
 		
