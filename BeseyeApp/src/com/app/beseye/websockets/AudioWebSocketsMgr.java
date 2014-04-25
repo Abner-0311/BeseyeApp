@@ -51,7 +51,11 @@ import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServer.WebSocketRequestCallback;
 
 public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallback {
-	static private final String AUDIO_WS_ADDR = "http://localhost:5566/audiowebsocket";
+	static final boolean ENABLE_INTERNAL_SERVER = false;
+	static final boolean AUDIO_REC_FILE = false;
+	
+	static private final String AUDIO_WS_ADDR = "ws://192.168.2.4:1314";
+	static private final String AUDIO_WS_ADDR_INTERNAL = "http://localhost:5566/audiowebsocket";//
 	static private AudioWebSocketsMgr sWebsocketsMgr = null;
 	
 	AsyncHttpServer httpServer = null;
@@ -106,7 +110,11 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	}
 	
 	protected String getWSPath(){
-		return AUDIO_WS_ADDR;
+		return ENABLE_INTERNAL_SERVER?AUDIO_WS_ADDR_INTERNAL:AUDIO_WS_ADDR;
+	}
+	
+	protected String getWSProtocol(){
+		return ENABLE_INTERNAL_SERVER?null:"beseye-audio-protocol";
 	}
 	
 	private WebSocketConnectCallback mWebSocketConnectCallback = new WebSocketConnectCallback() {
@@ -251,6 +259,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     private void transferAudioBuf(){
     	bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz,
 		channelConfig, audioFormat);
+    	bufferSizeInBytes = 6400;
 		audioRecord = new AudioRecord(audioSource, sampleRateInHz,
 		channelConfig, audioFormat, bufferSizeInBytes);
 		audioRecord.startRecording();
@@ -259,34 +268,37 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		audioSendThread.start();
     }
     
-    static final boolean AUDIO_REC_FILE = false;
-    
     class AudioSendThread extends Thread {
     	@Override
     	public void run(){
 		    OutputStream os = null;
 		    Socket socket = null;
-		    try{
-			    socket = new Socket("192.168.2.4", 80);
-			    os = socket.getOutputStream();
-			    //String header = "POST /cgi/audio/transmit.cgi?session="+session+"&httptype=singlepart HTTP/1.1\r\nHost:192.168.2.4\r\n\r\n";
-			    
-			    String header = "POST /cgi/audio/transmit.cgi?session="+session+"&httptype=singlepart HTTP/1.0\r\nHost:192.168.2.4\r\n"
-			    + "Content-Type: audio/basic\r\n"
-			    + "Cache-Control: no-cache\r\n"
-			    + "User-Agent: Mozilla/4.0 (compatible; )\r\n"
-			    + "Content-Length:9999999\r\n"
-			    + "Connection: Keep-Alive\r\n"
-			    //+ "Cookie: NetworkCamera_Volume=100\r\n"
-			    + "Authorization: Basic YWRtaW46cGFzc3dvcmQ=\r\n" + "\r\n\r\n";
-			    os.write(header.getBytes());
-			    os.flush();
-			}catch (Exception e1) {
-			    e1.printStackTrace();
-			    return;
-			}
-		    
 		    FileOutputStream fos = null;
+		    
+		    if(ENABLE_INTERNAL_SERVER){
+		    	try{
+				    socket = new Socket("192.168.2.4", 80);
+				    os = socket.getOutputStream();
+				    //String header = "POST /cgi/audio/transmit.cgi?session="+session+"&httptype=singlepart HTTP/1.1\r\nHost:192.168.2.4\r\n\r\n";
+				    
+				    String header = "POST /cgi/audio/transmit.cgi?session="+session+"&httptype=singlepart HTTP/1.0\r\n" 
+				    + "Host:192.168.2.4\r\n"
+				    + "Content-Type: audio/basic\r\n"
+				    + "Cache-Control: no-cache\r\n"
+				    //+ "User-Agent: Mozilla/4.0 (compatible; )\r\n"
+				    + "Content-Length:9999999\r\n"
+				    + "Connection: Keep-Alive\r\n"
+				    //+ "Cookie: NetworkCamera_Volume=100\r\n"
+				    //+ "Authorization: Basic YWRtaW46cGFzc3dvcmQ=\r\n" 
+				    + "\r\n\r\n";
+				    os.write(header.getBytes());
+				    os.flush();
+				}catch (Exception e1) {
+				    e1.printStackTrace();
+				    return;
+				}
+		    }
+		    
 		    if(AUDIO_REC_FILE){
 			    File file = new File("/data/data/com.app.beseye/sample_8k.ulaw");
 			    try{
@@ -297,7 +309,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    }
 
 		    Log.i(TAG, "run(), socket connected");	
-		    bufferSizeInBytes = 320;
+		    bufferSizeInBytes = 6400;
 		    byte[] audiodata = new byte[bufferSizeInBytes];
 		    int readsize = 0;
 
@@ -309,16 +321,20 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    		UlawEncoderInputStream uis=null;
 		    		try {
 					    uis = new UlawEncoderInputStream(is,0);
-					    byte buff[] = new byte[1024];
+					    byte buff[] = new byte[3200];
 					    int len = uis.read(buff);
 					    while (len > 0) {
-					    	Log.i(TAG, "run(), len="+len);
+					    	Log.i(TAG, "run(), len="+len+", buff[319]="+buff[319]);
 					    	if(AUDIO_REC_FILE){
 					    		fos.write(buff, 0, len);
 					    		fos.flush();
 					    	}else{
-					    		os.write(buff, 0, len);
-							    os.flush();
+					    		if(ENABLE_INTERNAL_SERVER){
+						    		os.write(buff, 0, len);
+								    os.flush();
+					    		}else{
+					    			mFNotifyWSChannel.get().send(buff);
+					    		}
 					    	}
 						    len = uis.read(buff);
 					    }
@@ -328,15 +344,21 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 				    }
 		    	}
 		    }
+		    
+		    Log.i(TAG, "run(), socket disconnected");	
 		
 		    try {
-		    	os.close();
-		    	socket.close();
+		    	if(null != os)
+		    		os.close();
+		    	if(null != socket)
+		    		socket.close();
 		    	if(null != fos){
 		    		fos.close();
 		    	}
-		    	audioRecord.stop();
-		    	audioRecord = null;
+		    	if(null != audioRecord){
+		    		audioRecord.stop();
+			    	audioRecord = null;
+		    	}
 		    } catch (IOException e) {
 		    }
 		}

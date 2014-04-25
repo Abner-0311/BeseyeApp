@@ -25,7 +25,7 @@ import com.koushikdutta.async.http.AsyncHttpClient.WebSocketConnectCallback;
 import com.koushikdutta.async.http.WebSocket.StringCallback;
 
 public class WebsocketsMgr {
-	static private final String NOTIFY_WS_ADDR = "http://54.238.255.56:80/websocket";
+	static private final String NOTIFY_WS_ADDR = /*"ws://192.168.2.4:1314";*/"http://54.238.255.56:80/websocket";
 	static private WebsocketsMgr sWebsocketsMgr = null;
 	
 	static public WebsocketsMgr getInstance(){
@@ -87,7 +87,8 @@ public class WebsocketsMgr {
 					listener.onChannelConnecting();
 				}
 				
-				mFNotifyWSChannel = AsyncHttpClient.getDefaultInstance().websocket(getWSPath(), null, getWebSocketConnectCallback());
+				//Log.i(TAG, "constructNotifyWSChannel()");
+				mFNotifyWSChannel = AsyncHttpClient.getDefaultInstance().websocket(getWSPath(), getWSProtocol(), getWebSocketConnectCallback());
 				
 				WebSocket ws = mFNotifyWSChannel.get();
 				Log.i(TAG, "constructNotifyWSChannel(), ws is null =>"+(null == ws));
@@ -163,10 +164,16 @@ public class WebsocketsMgr {
 		return NOTIFY_WS_ADDR;
 	}
 	
+	protected String getWSProtocol(){
+		return null;
+	}
+	
 	private WebSocketConnectCallback mWebSocketConnectCallback = new WebSocketConnectCallback() {
         @Override
         public void onCompleted(Exception ex, final WebSocket webSocket) {
         	Log.i(TAG, "onCompleted()...");
+//        	webSocket.send("Welcone");
+//        	webSocket.send("Welcone".getBytes());
         	OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 			if(null != listener){
 				listener.onChannelConnected();

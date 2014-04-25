@@ -21,6 +21,7 @@ import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.websockets.AudioWebSocketsMgr;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.app.beseye.widget.CameraViewControlAnimator;
+import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
 import android.util.Log;
 import android.view.InputDevice;
@@ -339,6 +340,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkPlayState();
 		initDateTime();
+		
+		//monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true,"Bes0001", "1");
 	}
 		
 	@Override
