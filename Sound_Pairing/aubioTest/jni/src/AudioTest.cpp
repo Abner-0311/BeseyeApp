@@ -1,10 +1,189 @@
 #include "AudioTest.h"
+#include "simple_websocket_mgr.h"
 
-#ifdef CAM_AUDIO
+#ifdef CAM_ENV
 #include "http_cgi.h"
 #endif
 
 AudioTest* AudioTest::sAudioTest=NULL;
+
+std::vector<std::string> &split(const std::string &str, const std::string &strdelim, std::vector<std::string> &elems) {
+	LOGI("strdelim:[%s]\n",(strdelim.c_str())?strdelim.c_str():"");
+	std::stringstream ss(str);
+
+    std::string item;
+    std::string::size_type pos, lastPos = 0;
+
+//    int iLen = str.length();
+//    int i =0;
+//    for(i = 0; i< iLen;i++){
+//    	LOGI("str[%d] = 0x%x\n",i, str.c_str()[i]);
+//    	if(str.c_str()[i] == delim){
+//    		LOGI("find delim:[%d]\n",i);
+//    	}
+//    }
+    int iLenDelim = strdelim.length();
+    while(true){
+	  pos = str.find_first_of(strdelim, lastPos);
+	  if(pos == std::string::npos){
+		 pos = str.length();
+
+		 if(pos != lastPos){
+//			tokens.push_back(ContainerT::value_type(str.data()+lastPos,
+//				  (ContainerT::value_type::size_type)pos-lastPos ));
+			 item = str.substr(lastPos, (pos-lastPos));
+			 elems.push_back(item);
+			 LOGI("item:[%s]\n",item.c_str());
+		 }
+
+		 break;
+	  }else{
+		 if(pos != lastPos){
+//			tokens.push_back(ContainerT::value_type(str.data()+lastPos,
+//				  (ContainerT::value_type::size_type)pos-lastPos ));
+			 item = str.substr(lastPos, (pos-lastPos));
+			 elems.push_back(item);
+			 LOGI("item:[%s]\n",item.c_str());
+		 }
+	  }
+	  lastPos = pos + iLenDelim;
+	}
+    return elems;
+}
+
+std::vector<std::string> split(const std::string &s, const std::string &strdelim) {
+    std::vector<std::string> elems;
+    split(s, strdelim, elems);
+    return elems;
+}
+
+std::vector<std::string> split(const std::string &s, char delim) {
+	LOGI("delim:[0x%x]\n",delim);
+    std::vector<std::string> elems;
+    std::stringstream ssDelim;
+    ssDelim<<delim;
+    split(s, ssDelim.str(), elems);
+    return elems;
+}
+#ifdef ANDROID
+void soundpairSenderCb(const char* cb_type, void* data){
+	AudioTest::getInstance()->soundpairSenderCallback(cb_type, data);
+}
+
+void AudioTest::soundpairSenderCallback(const char* cb_type, void* data){
+	LOGE( "cb_type:[%s]\n", (cb_type)?cb_type:"");
+	if(NULL != cb_type){
+		string strMsg(cb_type);
+		int iVolStartIdx = strMsg.find(SoundPair_Config::BT_MSG_SET_VOLUME);
+		if(0 == iVolStartIdx){
+			int iEndIdx = strMsg.find(SoundPair_Config::BT_MSG_SET_VOLUME_END);
+			if(0 < iEndIdx && iEndIdx > iVolStartIdx){
+				string strVol = strMsg.substr(iVolStartIdx, (iEndIdx - iVolStartIdx));
+				//parse it
+				LOGI( "soundpairSenderCallback(), strVol:[%s]\n", (strVol.c_str())?strVol.c_str():"");
+			}
+		}
+
+		std::vector<std::string> msg = split(strMsg, SoundPair_Config::BT_MSG_DIVIDER);
+		if(msg.size() == 2){
+			LOGI( "soundpairSenderCallback(), bIsSenderMode, msg[0] = [%s], msg[1] = [%s]",msg[0].c_str(), msg[1].c_str());
+			if(0 == msg[0].compare(SoundPair_Config::BT_MSG_ACK) && 0 == mstrCurTransferTs.compare(msg[1])){
+
+				if(0 == mstrCurTransferCode.find(SoundPair_Config::BT_MSG_PURE)){
+					//FreqGenerator.getInstance().playCode2(mstrCurTransferCode.substring(BT_MSG_PURE.length()), false);
+					//playCode(mstrCurTransferCode.substring(SoundPair_Config::BT_MSG_PURE.length()), false);
+
+				}else{
+					//FreqGenerator.getInstance().playCode2(mstrCurTransferCode, true);
+					//playCode(mstrCurTransferCode, true);
+					FreqGenerator::getInstance()->playCode2(mstrCurTransferCode, true);
+				}
+				mstrCurTransferCode = "";
+				mstrCurTransferTs = "";
+				mbSenderAcked = false;
+				//resetBTParams();
+			}else{
+				mstrCurTransferTs = msg[0];
+				mstrCurTransferCode = msg[1];
+				char msgSent[1024]={0};
+				sprintf(msgSent, SoundPair_Config::BT_MSG_FORMAT.c_str(), SoundPair_Config::BT_MSG_ACK.c_str(), mstrCurTransferTs.c_str());
+				send_msg_to_server(msgSent);
+				//sendBTMsg(String.format(BT_MSG_FORMAT, BT_MSG_ACK, mstrCurTransferTs));
+			}
+		}
+	}
+}
+#endif
+
+void soundpairReceiverCb(const char* cb_type, void* data){
+	AudioTest::getInstance()->soundpairReceiverCallback(cb_type, data);
+}
+
+void AudioTest::soundpairReceiverCallback(const char* cb_type, void* data){//cam ws server side
+	LOGE( "cb_type:[%s]\n", (cb_type)?cb_type:"");
+	if(NULL != cb_type){
+		string strMsg(cb_type);
+		std::vector<std::string> msg = split(strMsg, SoundPair_Config::BT_MSG_DIVIDER);
+		if(msg.size() == 2){
+			LOGI( "soundpairReceiverCallback(), bIsSenderMode, msg[0] = [%s], msg[1] = [%s]",msg[0].c_str(), msg[1].c_str());
+			if(0 == msg[0].compare(SoundPair_Config::BT_MSG_ACK) && 0 == mstrCurTransferTs.compare(msg[1])){
+				char msgSent[1024]={0};
+				sprintf(msgSent, SoundPair_Config::BT_MSG_FORMAT.c_str(), SoundPair_Config::BT_MSG_ACK.c_str(), mstrCurTransferTs.c_str());
+				send_msg_to_client(msgSent);
+
+				pthread_mutex_lock(&mSendPairingCodeObj);
+				LOGD("soundpairReceiverCallback(), begin wait, mstrCurTransferCode=[%s]", mstrCurTransferCode.c_str());
+				mbSenderAcked = true;
+				pthread_cond_broadcast(&mSendPairingCodeObjCond);
+				pthread_mutex_unlock(&mSendPairingCodeObj);
+			}
+		}
+	}
+}
+
+void AudioTest::sendPlayPairingCode(string strCode){
+	struct timespec outtime;
+	getTimeSpecByDelay(outtime, 5000);
+
+	if(0 == mstrCurTransferCode.length()){
+		mbSenderAcked = false;
+		do{
+			mstrCurTransferCode = strCode;
+			char tsSent[128]={0};
+			sprintf(tsSent, "%u",time_ms());
+			mstrCurTransferTs = tsSent;
+
+			char msgSent[1024]={0};
+			sprintf(msgSent, SoundPair_Config::BT_MSG_FORMAT.c_str(), mstrCurTransferTs.c_str(), mstrCurTransferCode.c_str());
+			send_msg_to_client(msgSent);
+
+			pthread_mutex_lock(&mSendPairingCodeObj);
+
+			LOGD("sendPlayPairingCode(), begin wait, mstrCurTransferCode=[%s]", mstrCurTransferCode.c_str());
+			pthread_cond_timedwait(&mSendPairingCodeObjCond, &mSendPairingCodeObj, &outtime);
+			LOGD("runAutoTestControl(), exit wait, mbSenderAcked=%d", mbSenderAcked);
+			if(!mbSenderAcked){
+				AudioBufferMgr::getInstance()->recycleAllBuffer();
+			}
+			pthread_mutex_unlock(&mSendPairingCodeObj);
+
+//			synchronized(mBTReceiverLock){
+//				try {
+//					Log.i(TAG, "sendBTMsg(), begin wait sender signal, mstrCurTransferCode = ["+mstrCurTransferCode+"]");
+//					mBTReceiverLock.wait(5000L);
+//					Log.i(TAG, "sendBTMsg(), exit wait sender signal, mbSenderAcked = "+mbSenderAcked);
+//
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+		}while(!mbSenderAcked && is_websocket_server_inited());
+
+		mstrCurTransferCode = "";
+		mstrCurTransferTs = "";
+		mbSenderAcked = false;
+	}
+}
 
 AudioTest::AudioTest():
 mIsSenderMode(false),
@@ -13,12 +192,17 @@ mbStopControlThreadFlag(false),
 mbStopBufRecordFlag(false),
 mbStopAnalysisThreadFlag(false),
 mbNeedToResetFFT(false),
+mbSenderAcked(false),
 miDigitalToTest(0),
 mControlThread(0),
 mBufRecordThread(0),
 mAnalysisThread(0){
 	pthread_mutex_init(&mSyncObj, NULL);
 	pthread_cond_init(&mSyncObjCond, NULL);
+
+	pthread_mutex_init(&mSendPairingCodeObj, NULL);
+	pthread_cond_init(&mSendPairingCodeObjCond, NULL);
+
 	FreqAnalyzer::initAnalysisParams(SoundPair_Config::SAMPLE_RATE_REC,
 									SoundPair_Config::FRAME_SIZE_REC,
 									SoundPair_Config::NOISE_SUPPRESS_INDEX,
@@ -34,8 +218,14 @@ AudioTest::~AudioTest(){
 //		delete[] bufSegment;
 //		bufSegment = NULL;
 //	}
+
+	pthread_cond_destroy(&mSendPairingCodeObjCond);
+	pthread_mutex_destroy(&mSendPairingCodeObj);
+
 	pthread_cond_destroy(&mSyncObjCond);
 	pthread_mutex_destroy(&mSyncObj);
+
+	deinit_websocket_server();
 }
 
 AudioTest* AudioTest::getInstance(){
@@ -54,6 +244,9 @@ bool AudioTest::destroyInstance(){
 
 bool AudioTest::setSenderMode(){
 	LOGI("setSenderMode()+\n");
+#ifdef ANDROID
+	init_websocket_client("192.168.2.4", 5432, soundpairSenderCb);
+#endif
 	stopAutoTest();
 	mIsSenderMode = true;
 	mIsReceiverMode = false;
@@ -62,6 +255,9 @@ bool AudioTest::setSenderMode(){
 
 bool AudioTest::setReceiverMode(){
 	LOGI("setReceiverMode()+\n");
+
+	init_websocket_server(soundpairReceiverCb);
+
 	stopAutoTest();
 	mIsSenderMode = false;
 	mIsReceiverMode = true;
@@ -108,11 +304,11 @@ bool AudioTest::startAutoTest(string strInitCode, int iDigitalToTest){
 		bRet = true;
 	}
 
-#ifdef ANDROID
+//#ifdef ANDROID
 	LOGI("startAutoTest()+, bRet:%d, isReceiverMode():%d, isAutoTestMode():%d\n",bRet, isReceiverMode(), isAutoTestMode());
 	if(bRet && (isReceiverMode() || isAutoTestMode()))
 		bRet = startGenerateTone(strInitCode, iDigitalToTest);
-#endif
+//#endif
 EXIT:
 	//LOGE("startAutoTest()--\n");
 	return bRet;
@@ -127,7 +323,7 @@ bool AudioTest::stopAutoTest(){
 }
 
 bool AudioTest::playTone(string strCode, bool bNeedEncode){
-#ifndef CAM_AUDIO
+#ifndef CAM_ENV
 	FreqGenerator::getInstance()->setOnPlayToneCallback(this);
 	FreqGenerator::getInstance()->playCode2(strCode, bNeedEncode);
 #endif
@@ -191,14 +387,40 @@ bool AudioTest::stopAnalyzeTone(){
 	LOGD("stopAnalyzeTone()+\n");
 	mbStopBufRecordFlag = true;
 	mbStopAnalysisThreadFlag = true;
-#ifdef CAM_AUDIO
+#ifdef CAM_ENV
 	stopReceiveAudioBuf();
 #endif
 	return true;
 }
 
+#ifdef CAM_ENV
+int getRandomNumDigit(int iMin, int iMax){
+	return iMin + rand() % (iMax - iMin);
+}
+string genNextRandomData(int iMinDigit){
+	//LOGI("genNextRandomData(), iMinDigi=%d", iMinDigit);
+	stringstream strRet;
+	int iDivision = SoundPair_Config::getDivisionByFFTYPE();
+
+	int iMaxDigit = min(SoundPair_Config::MAX_ENCODE_DATA_LEN*SoundPair_Config::getMultiplyByFFTYPE(), (int) ((pow(2.0, (double)(SoundPair_Config::getPowerByFFTYPE()*SoundPair_Config::getMultiplyByFFTYPE()) -1 ))* 0.6666666666666f));
+
+	//LOGI("genNextRandomData(), iDivision:%d, iMaxDigit=%d", iDivision, iMaxDigit);
+
+	int iLen = getRandomNumDigit(iMinDigit, iMaxDigit)*SoundPair_Config::getMultiplyByFFTYPE();
+
+	//LOGI("genNextRandomData(), iLen:%d, iMaxDigit=%d", iLen, iMaxDigit);
+	//Log.e(TAG, "genNextRandomData(), iMaxDigit= "+iMaxDigit+", iLen="+iLen );
+
+	for(int i =0;i<iLen;i++){
+		strRet<<(SoundPair_Config::sCodeTable.at(rand() % (iDivision)));
+	}
+
+	return strRet.str();
+}
+#endif
+
 void* AudioTest::runAutoTestControl(void* userdata){
-#ifndef CAM_AUDIO
+//#ifndef CAM_ENV
 	LOGE("runAutoTestControl()+\n");
 	AudioTest* tester = (AudioTest*)userdata;
 	const bool bIsSenderMode = tester->isSenderMode();
@@ -209,21 +431,26 @@ void* AudioTest::runAutoTestControl(void* userdata){
 
 	FreqAnalyzer::getInstance()->setSenderMode(/*isSenderMode*/false);
 	FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(tester);
-
+#ifndef CAM_ENV
 	if(!bIsReceiverMode)
 		FreqGenerator::getInstance()->setOnPlayToneCallback(tester);
-
+#endif
 	//char *nativeString = (char *)jni_env->GetStringUTFChars( strCurCode, 0);
 	tester->curCode = tester->strInitCode;
 	LOGE("runAutoTestControl()+, strCurCode:%s\n", tester->curCode.c_str());
 	//jni_env->ReleaseStringUTFChars( strCurCode, nativeString);
 
-
+#ifdef CAM_ENV
+	while(0 < (tester->curCode = genNextRandomData(tester->miDigitalToTest)).length()){
+#else
 	while(0 < (tester->curCode = FreqGenerator::genNextRandomData(tester->miDigitalToTest)).length()){
+#endif
 		LOGE("runAutoTestControl+, tester->mbStopControlThreadFlag:%d", tester->mbStopControlThreadFlag);
 		if(tester->mbStopControlThreadFlag){
 			LOGE("runAutoTestControl(), break loop");
+#ifndef CAM_ENV
 			FreqGenerator::getInstance()->stopPlay2();
+#endif
 			break;
 		}
 
@@ -233,11 +460,21 @@ void* AudioTest::runAutoTestControl(void* userdata){
 	//		if(SELF_TEST)
 	//			FreqGenerator.getInstance().playCode3(/*lstTestData.get(i)*/curCode, true);
 	//		else
+#ifndef CAM_ENV
 				FreqGenerator::getInstance()->playCode2(tester->curCode, true);
+#endif
 		}else{
+#ifndef CAM_ENV
 			tester->curECCode = FreqGenerator::getECCode(tester->curCode);
 			tester->curEncodeMark = /*SoundPair_Config::encodeConsecutiveDigits*/(tester->curCode+tester->curECCode);
+#endif
+
+#ifdef CAM_ENV
+			tester->sendPlayPairingCode(tester->curCode);
+#else
 			Delegate_SendMsgByBT(tester->curCode); // 990 digits max
+#endif
+
 		}
 
 		LOGI("runAutoTestControl(), enter lock");
@@ -254,7 +491,7 @@ void* AudioTest::runAutoTestControl(void* userdata){
 	LOGE("runAutoTestControl()---\n");
 	tester->mControlThread = 0;
 	Delegate_detachCurrentThread();
-#endif
+//#endif
 }
 
 const int TABLE_SIZE = 8;
@@ -339,7 +576,8 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 
 	lTsRec = 0;
 	sleepValue.tv_nsec = 100000;//0.1 ms
-#ifndef CAM_AUDIO
+
+#ifndef CAM_ENV
 	ArrayRef<short> shortsRec=NULL;
 
 	//timespec sleepValue = {0};
@@ -372,6 +610,7 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 	}
 	Delegate_CloseAudioRecordDevice();
 #else
+
 	//char* session = "0e4bba41bef24f009337727ce44008cd";//[SESSION_SIZE];
 	char session[SESSION_SIZE];
 	memset(session, 0, sizeof(session));
@@ -383,6 +622,8 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 		LOGE("GetAudioBufCGI:res(%d)\n%s",res);
 		//Delegate_CloseAudioDevice2();
 	}
+
+
 #endif
 	LOGE("runAudioBufRecord()-\n");
 	tester->mBufRecordThread = 0;
@@ -471,83 +712,6 @@ void AudioTest::onDetectStart(){
 
 void AudioTest::onAppendResult(string strCode){
 	tmpRet<<strCode;
-}
-
-std::vector<std::string> &split(const std::string &str, char delim, std::vector<std::string> &elems) {
-	LOGI("delim:[0x%x]\n",delim);
-	std::stringstream ss(str);
-
-    std::stringstream ssDelim;
-    ssDelim<<delim;
-    std::string item;
-    std::string::size_type pos, lastPos = 0;
-
-//    int iLen = str.length();
-//    int i =0;
-//    for(i = 0; i< iLen;i++){
-//    	LOGI("str[%d] = 0x%x\n",i, str.c_str()[i]);
-//    	if(str.c_str()[i] == delim){
-//    		LOGI("find delim:[%d]\n",i);
-//    	}
-//    }
-
-    while(true){
-	  pos = str.find_first_of(ssDelim.str(), lastPos);
-	  if(pos == std::string::npos){
-		 pos = str.length();
-
-		 if(pos != lastPos){
-//			tokens.push_back(ContainerT::value_type(str.data()+lastPos,
-//				  (ContainerT::value_type::size_type)pos-lastPos ));
-			 item = str.substr(lastPos, (pos-lastPos));
-			 elems.push_back(item);
-			 LOGI("item:[%s]\n",item.c_str());
-		 }
-
-		 break;
-	  }else{
-		 if(pos != lastPos){
-//			tokens.push_back(ContainerT::value_type(str.data()+lastPos,
-//				  (ContainerT::value_type::size_type)pos-lastPos ));
-			 item = str.substr(lastPos, (pos-lastPos));
-			 elems.push_back(item);
-			 LOGI("item:[%s]\n",item.c_str());
-		 }
-	  }
-	  lastPos = pos + 1;
-	}
-
-//    char* str = strdup(s.c_str());
-//    const char* strDelim = ssDelim.str().c_str();
-//    LOGI("str:[%s], strDelim:[%s]\n",str, strDelim);
-//
-//    char* item = NULL;
-//    item = strtok (str,strDelim);
-//
-//    LOGI("item:[%s]\n",item);
-//	while (item != NULL){
-//		item = strtok (NULL, strDelim);
-//		if(item){
-//			elems.push_back(item);
-//			LOGI("item:[%s]\n",item);
-//		}
-//	}
-//
-//	if(str){
-//		free(str);
-//	}
-//    while (std::getline(ss, item, delim)) {
-//        elems.push_back(item);
-//        LOGI("item:[%s]\n",item.c_str());
-//    }
-    return elems;
-}
-
-
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
 }
 
 #include "delegate/account_mgr.h"

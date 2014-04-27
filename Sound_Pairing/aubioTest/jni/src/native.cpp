@@ -99,6 +99,8 @@ JNIEXPORT jboolean JNICALL Java_com_example_aubiotest_AubioTestActivity_nativeCl
 		return 0;
 	}
 
+	AudioTest::getInstance();
+
 	mActivityClass = (jclass)(env->NewGlobalRef(jcls));
 
 	midAudioInit = env->GetStaticMethodID(mActivityClass,

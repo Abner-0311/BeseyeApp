@@ -22,6 +22,9 @@ import com.app.beseye.websockets.AudioWebSocketsMgr;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.app.beseye.widget.CameraViewControlAnimator;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
+import com.koushikdutta.async.http.AsyncHttpClient;
+import com.koushikdutta.async.http.WebSocket;
+import com.koushikdutta.async.http.AsyncHttpClient.WebSocketConnectCallback;
 
 import android.util.Log;
 import android.view.InputDevice;
@@ -315,6 +318,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mCameraViewControlAnimator.showControl();
 		}
 		checkAndExtendHideHeader();
+		
+		AsyncHttpClient.getDefaultInstance().websocket("ws://192.168.2.151:5432","beseye-soundpair-protocol", new WebSocketConnectCallback(){
+
+			@Override
+			public void onCompleted(Exception ex, WebSocket webSocket) {
+				Log.i(TAG, "onCompleted()..., ex="+((null == ex)?"":ex.toString()));
+				if(null == ex)
+					webSocket.send("Welcome");
+			}});
 	}
 	
 	protected void onSessionComplete(){
@@ -539,7 +551,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		boolean bNetworkConnected = NetworkMgr.getInstance().isNetworkConnected();
 		
 		if(bNetworkConnected && bPowerOn && (mbIsFirstLaunch || mbIsPauseWhenPlaying || mbIsCamSettingChanged || mbIsWifiSettingChanged)){
-			beginLiveView();
+			//beginLiveView();
 		}/*else{
 			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		}*/

@@ -1,4 +1,4 @@
-LOCAL_PATH := $(call my-dir)
+TOP_LOCAL_PATH := $(call my-dir)
 
 #include $(CLEAR_VARS)
 # 
@@ -12,6 +12,9 @@ LOCAL_PATH := $(call my-dir)
 #LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 
 #include $(PREBUILT_SHARED_LIBRARY)
+
+#Build Sound Pairing module  
+LOCAL_PATH := ./
   
 include $(CLEAR_VARS)
 
@@ -20,63 +23,88 @@ AUBIO_SRC_ROOT 		   := src
 LOCAL_MODULE           := soundpairing
 
 LOCAL_CPPFLAGS 		   += -fexceptions
+LOCAL_CFLAGS    := -DLWS_BUILTIN_GETIFADDRS -DCMAKE_BUILD
+LWS_LIB_PATH	:= $(TOP_LOCAL_PATH)/libwebsockets/lib
 
-LOCAL_SRC_FILES        := src/preprocess/kiss_fft.c \
-						  src/preprocess/kiss_fftr.c \
-						  src/preprocess/mdf.c \
-						  src/preprocess/smallft.c \
-						  src/preprocess/fftwrap.c \
-						  src/preprocess/filterbank.c \
-						  src/preprocess/preprocess.c \
-						  http_cgi_lib/src/http_cgi.c \
-						  cam-handler/src/network/event.c \
-						  cam-handler/src/network/network.c \
-						  common/src/json_utils.c \
-						  cam-handler/src/main.c \
-						  cam-handler/src/delegate/cam_controller.cpp \
-						  cam-handler/src/event_queue/event_queue_handler.cpp \
-						  cam-handler/src/event_queue/event_queue.cpp \
-						  cam-handler/src/cam_event_mgr.c \
-						  src/FFT.cpp \
-						  zxing/Exception.cpp \
-						  zxing/common/IllegalArgumentException.cpp \
-						  zxing/common/reedsolomon/GenericGF.cpp \
-						  zxing/common/reedsolomon/GenericGFPoly.cpp \
-						  zxing/common/reedsolomon/ReedSolomonEncoder.cpp \
-						  zxing/common/reedsolomon/ReedSolomonDecoder.cpp \
-						  zxing/common/reedsolomon/ReedSolomonException.cpp \
-						  src/utils.cpp \
-						  src/sp_config.cpp \
-						  src/AudioBufferMgr.cpp \
-						  src/FreqAnalyzer.cpp \
-						  src/FreqGenerator.cpp \
-						  src/AudioTest.cpp \
-						  src/native.cpp \
+LOCAL_SRC_FILES        := $(TOP_LOCAL_PATH)/src/preprocess/kiss_fft.c \
+						  $(TOP_LOCAL_PATH)/src/preprocess/kiss_fftr.c \
+						  $(TOP_LOCAL_PATH)/src/preprocess/mdf.c \
+						  $(TOP_LOCAL_PATH)/src/preprocess/smallft.c \
+						  $(TOP_LOCAL_PATH)/src/preprocess/fftwrap.c \
+						  $(TOP_LOCAL_PATH)/src/preprocess/filterbank.c \
+						  $(TOP_LOCAL_PATH)/src/preprocess/preprocess.c \
+						  $(TOP_LOCAL_PATH)/http_cgi_lib/src/http_cgi.c \
+						  $(TOP_LOCAL_PATH)/cam-handler/src/network/event.c \
+						  $(TOP_LOCAL_PATH)/cam-handler/src/network/network.c \
+						  $(TOP_LOCAL_PATH)/common/src/utils.cpp \
+						  $(TOP_LOCAL_PATH)/common/src/json_utils.c \
+						  $(TOP_LOCAL_PATH)/cam-handler/src/main.c \
+						  $(TOP_LOCAL_PATH)/cam-handler/src/delegate/cam_controller.cpp \
+						  $(TOP_LOCAL_PATH)/cam-handler/src/event_queue/event_queue_handler.cpp \
+						  $(TOP_LOCAL_PATH)/cam-handler/src/event_queue/event_queue.cpp \
+						  $(TOP_LOCAL_PATH)/cam-handler/src/cam_event_mgr.c \
+						  $(TOP_LOCAL_PATH)/src/FFT.cpp \
+						  $(TOP_LOCAL_PATH)/zxing/Exception.cpp \
+						  $(TOP_LOCAL_PATH)/zxing/common/IllegalArgumentException.cpp \
+						  $(TOP_LOCAL_PATH)/zxing/common/reedsolomon/GenericGF.cpp \
+						  $(TOP_LOCAL_PATH)/zxing/common/reedsolomon/GenericGFPoly.cpp \
+						  $(TOP_LOCAL_PATH)/zxing/common/reedsolomon/ReedSolomonEncoder.cpp \
+						  $(TOP_LOCAL_PATH)/zxing/common/reedsolomon/ReedSolomonDecoder.cpp \
+						  $(TOP_LOCAL_PATH)/zxing/common/reedsolomon/ReedSolomonException.cpp \
+						  $(TOP_LOCAL_PATH)/src/sp_config.cpp \
+						  $(TOP_LOCAL_PATH)/src/AudioBufferMgr.cpp \
+						  $(TOP_LOCAL_PATH)/src/FreqAnalyzer.cpp \
+						  $(TOP_LOCAL_PATH)/src/FreqGenerator.cpp \
+						  $(TOP_LOCAL_PATH)/src/AudioTest.cpp \
+						  $(TOP_LOCAL_PATH)/src/native.cpp \
+						  $(LWS_LIB_PATH)/base64-decode.c \
+							$(LWS_LIB_PATH)/client.c \
+							$(LWS_LIB_PATH)/client-handshake.c \
+							$(LWS_LIB_PATH)/client-parser.c \
+							$(LWS_LIB_PATH)/daemonize.c \
+							$(LWS_LIB_PATH)/extension.c \
+							$(LWS_LIB_PATH)/extension-deflate-frame.c \
+							$(LWS_LIB_PATH)/extension-deflate-stream.c \
+							$(LWS_LIB_PATH)/getifaddrs.c \
+							$(LWS_LIB_PATH)/handshake.c \
+							$(LWS_LIB_PATH)/server.c \
+							$(LWS_LIB_PATH)/server-handshake.c \
+							$(LWS_LIB_PATH)/libwebsockets.c \
+							$(LWS_LIB_PATH)/output.c \
+							$(LWS_LIB_PATH)/parsers.c \
+							$(LWS_LIB_PATH)/sha-1.c \
+							$(TOP_LOCAL_PATH)/libwebsockets/src/simple_websocket_mgr.c \
+							$(TOP_LOCAL_PATH)/ws-client/src/websocket_mgr.c \
+							$(TOP_LOCAL_PATH)/ws-client/src/websocket_utils.c
 
-LOCAL_C_INCLUDES 	   := $(LOCAL_PATH)\
-						  $(LOCAL_PATH)/src \
-						  $(LOCAL_PATH)/src/preprocess \
-						  $(LOCAL_PATH)/include \
-						  $(LOCAL_PATH)/include/speex \
-						  $(LOCAL_PATH)/include/curl \
-						  $(LOCAL_PATH)/include/json-c \
-						  $(LOCAL_PATH)/zxing \
-						  $(LOCAL_PATH)/zxing/common \
-						  $(LOCAL_PATH)/zxing/common/reedsolomon \
-						  $(LOCAL_PATH)/common/inc \
-						  $(LOCAL_PATH)/http_cgi_lib/inc \
-						  $(LOCAL_PATH)/cam-handler/inc \
-						  $(LOCAL_PATH)/ws-client/inc \
-						  $(LOCAL_PATH)/cam-handler/inc/network \
+LOCAL_C_INCLUDES 	   := $(TOP_LOCAL_PATH)\
+						  $(TOP_LOCAL_PATH)/src \
+						  $(TOP_LOCAL_PATH)/src/preprocess \
+						  $(TOP_LOCAL_PATH)/include \
+						  $(TOP_LOCAL_PATH)/include/speex \
+						  $(TOP_LOCAL_PATH)/include/curl \
+						  $(TOP_LOCAL_PATH)/include/json-c \
+						  $(TOP_LOCAL_PATH)/zxing \
+						  $(TOP_LOCAL_PATH)/zxing/common \
+						  $(TOP_LOCAL_PATH)/zxing/common/reedsolomon \
+						  $(TOP_LOCAL_PATH)/common/inc \
+						  $(TOP_LOCAL_PATH)/http_cgi_lib/inc \
+						  $(TOP_LOCAL_PATH)/cam-handler/inc \
+						  $(TOP_LOCAL_PATH)/ws-client/inc \
+						  $(TOP_LOCAL_PATH)/cam-handler/inc/network \
+						  $(TOP_LOCAL_PATH)/libwebsockets/inc \
+						  $(LWS_LIB_PATH)/
 						  
 #LOCAL_STATIC_LIBRARIES := audacityFFT
 
 LOCAL_LDLIBS           := -L$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/usr/lib \
-						  -L$(LOCAL_PATH) \
+						  -L$(TOP_LOCAL_PATH) \
 						  -lm \
 						  -lcurl \
 						  -ljson-c \
 					      -ljson \
+					      -lssl \
+						  -lcrypto \
 					      -lfftw3f \
 					      -llog \
 					      -lz \
@@ -85,4 +113,3 @@ LOCAL_LDLIBS           := -L$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/us
 #LOCAL_SHARED_LIBRARIES := aubio
  
 include $(BUILD_SHARED_LIBRARY) 
-  

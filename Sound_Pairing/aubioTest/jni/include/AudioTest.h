@@ -50,6 +50,10 @@ public :
 	virtual void onTimeout(void* freqAnalyzer, bool bFromAutoCorrection, MatchRetSet* prevMatchRet);
 	virtual float onBufCheck(ArrayRef<short> buf, msec_t lBufTs, bool bResetFFT, int* iFFTValues);
 	virtual void decodeRSCode(int* data, int iCount, int iNumErr);
+#ifdef ANDROID
+	virtual void soundpairSenderCallback(const char* cb_type, void* data);
+#endif
+	virtual void soundpairReceiverCallback(const char* cb_type, void* data);
 
 private:
 	static AudioTest* sAudioTest;
@@ -64,6 +68,15 @@ private:
 
 	pthread_mutex_t mSyncObj;
 	pthread_cond_t mSyncObjCond;
+
+	string mstrCurTransferCode;
+	string mstrCurTransferTs;
+	bool mbSenderAcked;
+
+	pthread_mutex_t mSendPairingCodeObj;
+	pthread_cond_t mSendPairingCodeObjCond;
+
+	void sendPlayPairingCode(string strCode);
 
 	ArrayRef<short> bufSegment;
 
