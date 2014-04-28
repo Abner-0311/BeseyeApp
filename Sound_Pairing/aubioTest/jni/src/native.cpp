@@ -89,6 +89,13 @@ static jmethodID midResetData= NULL;
 static jmethodID midFeedbackMatchRet= NULL;
 
 static jmethodID midsendBTMsg= NULL;
+
+static jmethodID midTestRoundBegin = NULL;
+static jmethodID midTestRoundEnd = NULL;
+
+static jmethodID midWSClientConnecting= NULL;
+static jmethodID midWSClientConnected= NULL;
+static jmethodID midWSClientClosed= NULL;
 #endif
 
 JNIEXPORT jboolean JNICALL Java_com_example_aubiotest_AubioTestActivity_nativeClassInit(JNIEnv *env, jclass jcls)
@@ -166,6 +173,17 @@ JNIEXPORT jboolean JNICALL Java_com_example_aubiotest_AubioTestActivity_nativeCl
 		return 0;
 	}
 
+	midTestRoundBegin = env->GetMethodID(mActivityClass, "onTestRoundBegin", "()V");
+	if(NULL == midTestRoundBegin){
+		LOGE("midTestRoundBegin is empty");
+		return 0;
+	}
+
+	midTestRoundEnd = env->GetMethodID(mActivityClass, "onTestRoundEnd", "(Ljava/lang/String;Ljava/lang/String;)V");
+	if(NULL == midTestRoundEnd){
+		LOGE("midTestRoundEnd is empty");
+		return 0;
+	}
 
 	midFeedbackMatchRet = env->GetMethodID(mActivityClass, "feedbackMatchRet", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IZ)V");
 	if(NULL == midFeedbackMatchRet){
@@ -176,6 +194,24 @@ JNIEXPORT jboolean JNICALL Java_com_example_aubiotest_AubioTestActivity_nativeCl
 	midsendBTMsg = env->GetMethodID(mActivityClass, "sendBTMsg", "(Ljava/lang/String;)V");
 	if(NULL == midsendBTMsg){
 		LOGE("midsendBTMsg is empty");
+		return 0;
+	}
+
+	midWSClientConnecting = env->GetMethodID(mActivityClass, "onWSClientConnecting", "(Ljava/lang/String;)V");
+	if(NULL == midWSClientConnecting){
+		LOGE("midWSClientConnecting is empty");
+		return 0;
+	}
+
+	midWSClientConnected = env->GetMethodID(mActivityClass, "onWSClientConnected", "(Ljava/lang/String;)V");
+	if(NULL == midWSClientConnected){
+		LOGE("midWSClientConnected is empty");
+		return 0;
+	}
+
+	midWSClientClosed = env->GetMethodID(mActivityClass, "onWSClientClosed", "(Ljava/lang/String;)V");
+	if(NULL == midWSClientClosed){
+		LOGE("midWSClientClosed is empty");
 		return 0;
 	}
 #endif
@@ -450,10 +486,37 @@ void Delegate_FeedbackMatchResult(string strCode, string strECCode, string strEn
 
 }
 
+//For ws client callback
+void Delegate_WSConnecting(string strHost){
+	DECLARE_JNIENV_WITHOUT_RETURN()
+	if(midWSClientConnecting)
+	jni_env->CallVoidMethod(mThisObj, midWSClientConnecting, str2jstring(strHost));
+}
+
+void Delegate_WSConnected(string strHost){
+	DECLARE_JNIENV_WITHOUT_RETURN()
+	jni_env->CallVoidMethod(mThisObj, midWSClientConnected, str2jstring(strHost));
+}
+
+void Delegate_WSClosed(string strHost){
+	DECLARE_JNIENV_WITHOUT_RETURN()
+	jni_env->CallVoidMethod(mThisObj, midWSClientClosed, str2jstring(strHost));
+}
+
 void Delegate_SendMsgByBT(string strCode){
 	LOGE("Delegate_SendMsgByBT(), ------------------------------->strCode:%s\n", strCode.c_str());
 	DECLARE_JNIENV_WITHOUT_RETURN()
 	jni_env->CallVoidMethod(mThisObj, midsendBTMsg, str2jstring(strCode));
+}
+
+void Delegate_TestRoundBegin(){
+	DECLARE_JNIENV_WITHOUT_RETURN()
+	jni_env->CallVoidMethod(mThisObj, midTestRoundBegin);
+}
+
+void Delegate_TestRoundEnd(string strMatchRet, string strStatistics){
+	DECLARE_JNIENV_WITHOUT_RETURN()
+	jni_env->CallVoidMethod(mThisObj, midTestRoundEnd, str2jstring(strMatchRet), str2jstring(strStatistics));
 }
 
 //
@@ -571,6 +634,8 @@ JNIEXPORT jint JNICALL Java_com_example_aubiotest_AubioTestActivity_stopAutoTest
 }
 
 JNIEXPORT void JNICALL Java_com_example_aubiotest_AubioTestActivity_setTestMode(JNIEnv * env, jobject thisObj, jboolean senderMode, jboolean receiverMode){
+	LOGE("setTestMode(), %d, %d\n", senderMode, receiverMode);
+	mThisObj = (jobject)(env->NewGlobalRef(thisObj));
 	if(senderMode){
 		AudioTest::getInstance()->setSenderMode();
 	}else if(receiverMode){
@@ -578,6 +643,32 @@ JNIEXPORT void JNICALL Java_com_example_aubiotest_AubioTestActivity_setTestMode(
 	}else{
 		AudioTest::getInstance()->setAutoTestMode();
 	}
+}
+
+JNIEXPORT void JNICALL Java_com_example_aubiotest_AubioTestActivity_setCamWSServerInfo(JNIEnv * env, jobject thisObj, jstring strHost, int iPort){
+	DECLARE_JNIENV_WITHOUT_RETURN()
+	mThisObj = (jobject)(env->NewGlobalRef(thisObj));
+	char *host = (char *)jni_env->GetStringUTFChars( strHost, 0);
+	string hostIp(host?host:"");
+	AudioTest::getInstance()->setCamCamWSServerInfo(hostIp, iPort);
+}
+
+JNIEXPORT int JNICALL Java_com_example_aubiotest_AubioTestActivity_connectCamWSServer(JNIEnv * env, jobject thisObj, jstring strHost, int iPort){
+	DECLARE_JNIENV_WITH_RETURN()
+	mThisObj = (jobject)(env->NewGlobalRef(thisObj));
+	char *host = (char *)jni_env->GetStringUTFChars( strHost, 0);
+	string hostIp(host?host:"");
+	AudioTest::getInstance()->setCamCamWSServerInfo(hostIp, iPort);
+
+	return AudioTest::getInstance()->connectCamCamWSServer();
+}
+
+JNIEXPORT int JNICALL Java_com_example_aubiotest_AubioTestActivity_disconnectCamWSServer(JNIEnv * env, jobject thisObj){
+	return AudioTest::getInstance()->disconnectCamCamWSServer();
+}
+
+JNIEXPORT jboolean JNICALL Java_com_example_aubiotest_AubioTestActivity_isCamWSServerConnected(JNIEnv * env, jobject thisObj){
+	return AudioTest::getInstance()->isCamCamWSServerConnected();
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

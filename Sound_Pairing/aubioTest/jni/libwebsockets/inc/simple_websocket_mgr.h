@@ -18,6 +18,10 @@ extern "C" {
 #include <libwebsockets.h>
 #include <websocket_cmd.h>
 
+static const char* MSG_WS_CONNECTING = "MSG_WS_CONNECTING";
+static const char* MSG_WS_CONNECTED  = "MSG_WS_CONNECTED";
+static const char* MSG_WS_CLOSED     = "MSG_WS_CLOSED";
+
 int init_websocket_server(void (*wsCb)(const char* cb_msg, void* data));
 BOOL is_websocket_server_inited();
 int send_msg_to_client(const char* msg);

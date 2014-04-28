@@ -124,12 +124,26 @@ callback_soundpair_server(struct libwebsocket_context *this,
 		wsi_server = wsi;
 		break;
 
-	case LWS_CALLBACK_CLOSED:
+	case LWS_CALLBACK_CLOSED:{
 		LOGE( "LWS_CALLBACK_CLOSED\n");
 		ws_server_was_closed = 1;
+		if(serverWSCb && !ws_server_was_closed){
+			serverWSCb(MSG_WS_CLOSED, wsi);
+			//serverWSCb = NULL;
+		}
 		break;
-
+	}
+	case LWS_CALLBACK_WSI_DESTROY:{
+		LOGE( "LWS_CALLBACK_WSI_DESTROY\n");
+		ws_server_was_closed = 1;
+		if(serverWSCb && !ws_server_was_closed){
+			serverWSCb(MSG_WS_CLOSED, wsi);
+			//serverWSCb = NULL;
+		}
+		break;
+	}
 	case LWS_CALLBACK_RECEIVE:{
+		wsi_server = wsi;
 		int isBainry = lws_frame_is_binary(wsi);
 		//LOGE( "isBainry: %d, len:%d \n", isBainry, len);
 		if(!isBainry){
@@ -221,6 +235,8 @@ void constructWebSocketsServer(void* userData){
 			LOGE( "restart server \n");
 		}
 	}while(!force_exit);
+
+	Delegate_detachCurrentThread();
 }
 
 int init_websocket_server(void (*wsCb)(const char* cb_msg, void* data)){
@@ -293,7 +309,9 @@ int send_msg_to_client(const char* msg){
 	pthread_mutex_lock(&sWSServerSyncObj);
 	if(bIsMgrInited && wsi_server){
 		iRet = writeToWebSocket(wsi_server, msg);
-		LOGI( "send_msg_to_client(), iRet:%i\n", iRet);
+		LOGI( "send_msg_to_client(), iRet:%d\n", iRet);
+	}else{
+		LOGI( "send_msg_to_client(), bIsMgrInited:%d, wsi_server is %d\n", bIsMgrInited, wsi_server);
 	}
 	pthread_mutex_unlock(&sWSServerSyncObj);
 	return iRet;
@@ -312,29 +330,33 @@ callback_soundpair_client(struct libwebsocket_context *this,
 
 	case LWS_CALLBACK_CLIENT_ESTABLISHED:
 		LOGE( "LWS_CALLBACK_CLIENT_ESTABLISHED\n");
+		if(clientWSCb){
+			clientWSCb(MSG_WS_CONNECTED, wsi);
+		}
 		break;
 	case LWS_CALLBACK_CLOSED:
 		LOGE( "LWS_CALLBACK_CLOSED\n");
 		ws_client_was_closed = 1;
+		if(clientWSCb){
+			clientWSCb(MSG_WS_CLOSED, wsi);
+			clientWSCb = NULL;
+		}
 		break;
-
-//	case LWS_CALLBACK_RECEIVE:{
-//		int isBainry = lws_frame_is_binary(wsi);
-//		//LOGE( "isBainry: %d, len:%d \n", isBainry, len);
-//		if(isBainry){
-//			((char *)in)[len] = '\0';
-//			LOGE( "rx %d '%s'\n", (int)len, (char *)in);
-//		}
-//
-//		break;
-//	}
+	case LWS_CALLBACK_WSI_DESTROY:{
+		LOGE( "LWS_CALLBACK_WSI_DESTROY\n");
+		if(clientWSCb){
+			clientWSCb(MSG_WS_CLOSED, wsi);
+			clientWSCb = NULL;
+		}
+		break;
+	}
 	case LWS_CALLBACK_CLIENT_RECEIVE:{
 		int isBainry = lws_frame_is_binary(wsi);
 		//LOGE( "isBainry: %d \n", isBainry);
 		((char *)in)[len] = '\0';
-		if(isBainry){
+		if(!isBainry){
 			((char *)in)[len] = '\0';
-			LOGE( "rx %d '%s'\n", (int)len, (char *)in);
+			LOGD( "rx %d '%s'\n", (int)len, (char *)in);
 			if(clientWSCb){
 				clientWSCb(in, wsi);
 			}
@@ -351,7 +373,7 @@ callback_soundpair_client(struct libwebsocket_context *this,
 }
 
 void constructWebSocketsClient(void* userData){
-	LOGE( "++\n");
+	LOGE( "constructWebSocketsClient()++\n");
 	int n = 0;
 	int ret = 0;
 	int use_ssl = 0;
@@ -390,9 +412,14 @@ void constructWebSocketsClient(void* userData){
 	pthread_mutex_lock(&sWSServerSyncObj);
 	LOGE( "libwebsocket connect to %s:%d\n", server_host_name, server_host_port);
 
+	if(clientWSCb){
+		clientWSCb(MSG_WS_CONNECTING, NULL);
+	}
+
 	ws_client = libwebsocket_client_connect(context, server_host_name, server_host_port, use_ssl,
 			server_ws_path, server_host_name, server_host_name,
 			client_protocols[PROTOCOL_BESEYE_SOUNDPAIR_CLIENT].name, ietf_version);
+
 	pthread_mutex_unlock(&sWSServerSyncObj);
 	if (ws_client == NULL) {
 		LOGE( "libwebsocket dumb connect failed\n");
@@ -416,13 +443,16 @@ fail:
 
 sWsClientThread = NULL;
 clientWSCb = NULL;
+ws_client = NULL;
+bIsWSClientInited = false;
 //deinit_websocket_mgr();
 
-LOGE( "-- \n");
+LOGE( "constructWebSocketsClient()-- \n");
+Delegate_detachCurrentThread();
 }
 
 int init_websocket_client(const char* server_ip, int server_port, void (*wsCb)(const char* cb_msg, void* data)){
-	LOGE( "++\n");
+	LOGE( "init_websocket_client++\n");
 	int iRet = -1;
 	server_host_name = strdup(server_ip);
 	server_host_port = server_port;
@@ -431,6 +461,7 @@ int init_websocket_client(const char* server_ip, int server_port, void (*wsCb)(c
 	if(false == bIsWSClientInited){
 		if(sWsClientThread == NULL){
 			int errno = 0;
+			clientWSCb = wsCb;
 			if (0 != (errno = pthread_create(&sWsClientThread, NULL, constructWebSocketsClient, NULL))) {
 				LOGE(", error when create sWsClientThread,%d\n", errno);
 				iRet = -1;
@@ -447,12 +478,11 @@ int init_websocket_client(const char* server_ip, int server_port, void (*wsCb)(c
 				bIsWSClientInited = false;
 			}else{
 				bIsWSClientInited = true;
-				clientWSCb = wsCb;
 			}
 		}
 	}
 	pthread_mutex_unlock(&sWSClientSyncObj);
-	LOGE( "--\n");
+	LOGE( "init_websocket_client--\n");
 }
 
 int deinit_websocket_client(){
@@ -478,7 +508,7 @@ int deinit_websocket_client(){
 
 BOOL is_websocket_client_inited(){
 	pthread_mutex_lock(&sWSClientSyncObj);
-	BOOL bRet = (NULL != ws_client);
+	BOOL bRet = (NULL != ws_client) && bIsWSClientInited;
 	pthread_mutex_unlock(&sWSClientSyncObj);
 	return bRet;
 }

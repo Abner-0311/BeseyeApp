@@ -55,6 +55,13 @@ public :
 #endif
 	virtual void soundpairReceiverCallback(const char* cb_type, void* data);
 
+	bool isAutoTestBeginAnalyzeOnReceiver(){return mbAutoTestBeginAnalyzeOnReceiver;}
+#ifdef ANDROID
+	virtual void setCamCamWSServerInfo(string strHost, int iPort);
+	virtual int connectCamCamWSServer();
+	virtual int disconnectCamCamWSServer();
+	virtual bool isCamCamWSServerConnected();
+#endif
 private:
 	static AudioTest* sAudioTest;
 	AudioTest();
@@ -73,10 +80,21 @@ private:
 	string mstrCurTransferTs;
 	bool mbSenderAcked;
 
+	//Control pairing code transfer
 	pthread_mutex_t mSendPairingCodeObj;
 	pthread_cond_t mSendPairingCodeObjCond;
 
+	//Control auto test round
+	pthread_mutex_t mAutoTestCtrlObj;
+	pthread_cond_t mAutoTestCtrlObjCond;
+	bool mbAutoTestBeginOnReceiver;
+	bool mbAutoTestBeginAnalyzeOnReceiver;
+
 	void sendPlayPairingCode(string strCode);
+
+	//ws client info
+	string mstrCamWSServerIP;
+	int miCamWSServerPort;
 
 	ArrayRef<short> bufSegment;
 

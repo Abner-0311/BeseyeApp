@@ -165,6 +165,23 @@ public class AutoTestResultSaver {
 		addCountByType(Desc, bFromAutoCorrection);
 	}
 	
+	public void addRecord(String strMatchRet){
+		try {
+			if(null == writer){
+				writer = new BufferedWriter(new FileWriter(outputFile, true));
+			}
+			
+			writer.write(strMatchRet);
+			writer.flush();
+			if(10 <=  ++miTimer){
+				miTimer = 0;
+				closeFile();
+			}
+		} catch (IOException e) {
+			Log.e(TAG, "addRecord(), e:"+e.toString());
+		}
+	}
+	
 	static private String findDifference(String strSrc, String strDecode){
 		StringBuilder strRet = new StringBuilder(strDecode);
 		int iLenSrc = (null != strSrc)?strSrc.length():0;
