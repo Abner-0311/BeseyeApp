@@ -339,6 +339,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					//monitorAsyncTask(new BeseyeAccountTask.CamAttchTask(this), true, SessionMgr.getInstance().getMdid());
 				}
 			}else{
+				Log.i(TAG, "onPostExecute(), "+result.toString());
 				super.onPostExecute(task, result, iRetCode);
 			}
 		}

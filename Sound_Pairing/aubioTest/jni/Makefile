@@ -20,13 +20,14 @@ $(ZXING_PATH)/common/IllegalArgumentException.cpp \
 $(ZXING_PATH)/common/reedsolomon/GenericGF.cpp \
 $(ZXING_PATH)/common/reedsolomon/GenericGFPoly.cpp \
 $(ZXING_PATH)/common/reedsolomon/ReedSolomonDecoder.cpp \
-$(SRC_PATH)/utils.cpp \
+$(SRC_PATH)/../common/src/utils.cpp \
 $(SRC_PATH)/sp_config.cpp \
 $(SRC_PATH)/AudioBufferMgr.cpp \
 $(SRC_PATH)/FreqAnalyzer.cpp \
 $(SRC_PATH)/AudioTest.cpp \
 $(SRC_PATH)/main.cpp \
 $(SRC_PATH)/../cam-handler/src/delegate/account_mgr.cpp
+
 
 CXXOBJECTS=$(CXXSOURCES:.cpp=.o)
 
@@ -37,17 +38,19 @@ $(SRC_PATH)/preprocess/smallft.c \
 $(SRC_PATH)/preprocess/fftwrap.c \
 $(SRC_PATH)/preprocess/filterbank.c \
 $(SRC_PATH)/preprocess/preprocess.c \
-$(SRC_PATH)/../Common/src/json_utils.c \
-$(SRC_PATH)/../http_cgi_lib/src/http_cgi.c
+$(SRC_PATH)/../common/src/json_utils.c \
+$(SRC_PATH)/../http_cgi_lib/src/http_cgi.c \
+$(SRC_PATH)/../libwebsockets/src/simple_websocket_mgr.c \
+$(SRC_PATH)/../ws-client/src/websocket_utils.c
 
 OBJECTS=$(SOURCES:.c=.o)
 
 EXECUTABLE=soundpairing
 
-CFLAGS=-c -Wall -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -I$(TOOLCHAIN)/include -DCAM_ENV
-LDFLAGS=-L$(TOOLCHAIN)/lib -lcurl -ljson-c -lpthread -L$(TOOLCHAIN)/lib/libstdc++.a
+CFLAGS=-c -Wall -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -Iws-client/inc -Ilibwebsockets/inc -I$(TOOLCHAIN)/include -DCAM_ENV
+LDFLAGS=-L$(TOOLCHAIN)/lib -lcurl -ljson-c -lwebsockets -lpthread -L$(TOOLCHAIN)/lib/libstdc++.a
 #-lspeexdsp
-CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -I$(TOOLCHAIN)/include -DCAM_ENV
+CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -Iws-client/inc -Ilibwebsockets/inc -I$(TOOLCHAIN)/include -DCAM_ENV
 
 all:$(CXXSOURCES) $(SOURCES) $(EXECUTABLE)
 

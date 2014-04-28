@@ -1,10 +1,245 @@
 #include "AudioTest.h"
+#include "simple_websocket_mgr.h"
 
-#ifdef CAM_AUDIO
+#ifdef CAM_ENV
 #include "http_cgi.h"
 #endif
 
 AudioTest* AudioTest::sAudioTest=NULL;
+
+std::vector<std::string> &split(const std::string &str, const std::string &strdelim, std::vector<std::string> &elems) {
+	LOGI("strdelim:[%s]\n",(strdelim.c_str())?strdelim.c_str():"");
+	std::stringstream ss(str);
+
+    std::string item;
+    std::string::size_type pos, lastPos = 0;
+
+//    int iLen = str.length();
+//    int i =0;
+//    for(i = 0; i< iLen;i++){
+//    	LOGI("str[%d] = 0x%x\n",i, str.c_str()[i]);
+//    	if(str.c_str()[i] == delim){
+//    		LOGI("find delim:[%d]\n",i);
+//    	}
+//    }
+    int iLenDelim = strdelim.length();
+    while(true){
+	  pos = str.find(strdelim, lastPos);
+	  if(pos == std::string::npos){
+		 pos = str.length();
+
+		 if(pos != lastPos){
+//			tokens.push_back(ContainerT::value_type(str.data()+lastPos,
+//				  (ContainerT::value_type::size_type)pos-lastPos ));
+			 item = str.substr(lastPos, (pos-lastPos));
+			 elems.push_back(item);
+			 LOGI("item:[%s]\n",item.c_str());
+		 }
+
+		 break;
+	  }else{
+		 if(pos != lastPos){
+//			tokens.push_back(ContainerT::value_type(str.data()+lastPos,
+//				  (ContainerT::value_type::size_type)pos-lastPos ));
+			 item = str.substr(lastPos, (pos-lastPos));
+			 elems.push_back(item);
+			 LOGI("item:[%s]\n",item.c_str());
+		 }
+	  }
+	  lastPos = pos + iLenDelim;
+	}
+    return elems;
+}
+
+std::vector<std::string> split(const std::string &s, const std::string &strdelim) {
+    std::vector<std::string> elems;
+    split(s, strdelim, elems);
+    return elems;
+}
+
+std::vector<std::string> split(const std::string &s, char delim) {
+	LOGI("delim:[0x%x]\n",delim);
+    std::vector<std::string> elems;
+    std::stringstream ssDelim;
+    ssDelim<<delim;
+    split(s, ssDelim.str(), elems);
+    return elems;
+}
+#ifdef ANDROID
+void soundpairSenderCb(const char* cb_type, void* data){
+	AudioTest::getInstance()->soundpairSenderCallback(cb_type, data);
+}
+
+void AudioTest::soundpairSenderCallback(const char* cb_type, void* data){
+	LOGE( "cb_type:[%s]\n", (cb_type)?cb_type:"");
+	if(NULL != cb_type){
+		string strMsg(cb_type);
+		int iVolStartIdx = strMsg.find(SoundPair_Config::BT_MSG_SET_VOLUME);
+		if(0 == iVolStartIdx){
+			int iEndIdx = strMsg.find(SoundPair_Config::BT_MSG_SET_VOLUME_END);
+			if(0 < iEndIdx && iEndIdx > iVolStartIdx){
+				string strVol = strMsg.substr(iVolStartIdx, (iEndIdx - iVolStartIdx));
+				//parse it
+				LOGI( "soundpairSenderCallback(), strVol:[%s]\n", (strVol.c_str())?strVol.c_str():"");
+			}
+		}
+
+		if(0 == strMsg.compare(MSG_WS_CONNECTING)){
+			Delegate_WSConnecting(mstrCamWSServerIP);
+		}else if(0 == strMsg.compare(MSG_WS_CONNECTED)){
+			Delegate_WSConnected(mstrCamWSServerIP);
+		}else if(0 == strMsg.compare(MSG_WS_CLOSED)){
+			Delegate_WSClosed(mstrCamWSServerIP);
+		}else{
+			std::vector<std::string> msg = split(strMsg, SoundPair_Config::BT_MSG_DIVIDER);
+			if(msg.size() == 2){
+				LOGI( "soundpairSenderCallback(), bIsSenderMode, msg[0] = [%s], msg[1] = [%s]",msg[0].c_str(), msg[1].c_str());
+				if(0 == msg[0].compare(SoundPair_Config::BT_MSG_ACK) && 0 == mstrCurTransferTs.compare(msg[1])){
+
+					if(0 == mstrCurTransferCode.find(SoundPair_Config::BT_MSG_PURE)){
+						//FreqGenerator.getInstance().playCode2(mstrCurTransferCode.substring(BT_MSG_PURE.length()), false);
+						//playCode(mstrCurTransferCode.substring(SoundPair_Config::BT_MSG_PURE.length()), false);
+
+					}else{
+						//FreqGenerator.getInstance().playCode2(mstrCurTransferCode, true);
+						//playCode(mstrCurTransferCode, true);
+						FreqGenerator::getInstance()->playCode2(mstrCurTransferCode, true);
+					}
+					mstrCurTransferCode = "";
+					mstrCurTransferTs = "";
+					mbSenderAcked = false;
+					//resetBTParams();
+				}else{
+					Delegate_TestRoundBegin();
+					mstrCurTransferTs = msg[0];
+					mstrCurTransferCode = msg[1];
+					char msgSent[1024]={0};
+					sprintf(msgSent,
+							SoundPair_Config::BT_MSG_FORMAT_SENDER.c_str(),
+							SoundPair_Config::BT_MSG_ACK.c_str(),
+							mstrCurTransferTs.c_str(),
+							FreqGenerator::getECCode(mstrCurTransferCode).c_str());
+
+					int iRet = send_msg_to_server(msgSent);
+					LOGE("soundpairSenderCallback(), send_msg_to_server, iRet:[%d]\n", iRet);
+					//sendBTMsg(String.format(BT_MSG_FORMAT, BT_MSG_ACK, mstrCurTransferTs));
+				}
+			}else if(msg.size() == 3){
+				//LOGI( "soundpairSenderCallback(), msg[0] = [%s], msg[1] = [%s], msg[2] = [%s]",msg[0].c_str(), msg[1].c_str(), msg[2].c_str());
+				if(0 == SoundPair_Config::MSG_TEST_ROUND_RESULT.compare(msg[0])){
+					Delegate_TestRoundEnd(msg[1],msg[2]);
+				}
+			}
+		}
+	}
+}
+#endif
+
+void soundpairReceiverCb(const char* cb_type, void* data){
+	AudioTest::getInstance()->soundpairReceiverCallback(cb_type, data);
+}
+
+void AudioTest::soundpairReceiverCallback(const char* cb_type, void* data){//cam ws server side
+	LOGE( "cb_type:[%s]\n", (cb_type)?cb_type:"");
+	if(NULL != cb_type){
+		string strMsg(cb_type);
+		if(0 == strMsg.compare(SoundPair_Config::MSG_AUTO_TEST_BEGIN)){
+			tmpRet.str("");
+			tmpRet.clear();
+			FreqAnalyzer::getInstance()->endToTrace();
+			FreqAnalyzer::getInstance()->reset();
+			resetBuffer();
+			pthread_mutex_lock(&mAutoTestCtrlObj);
+			LOGI("soundpairReceiverCallback(), broadcast, mbAutoTestBeginOnReceiver=[true]\n");
+
+			mbAutoTestBeginOnReceiver = true;
+#ifdef CAM_ENV
+			Delegate_BeginToSaveResult();
+#endif
+			pthread_cond_broadcast(&mAutoTestCtrlObjCond);
+			pthread_mutex_unlock(&mAutoTestCtrlObj);
+		}else if((0 == strMsg.compare(SoundPair_Config::MSG_AUTO_TEST_END) || 0 == strMsg.compare(MSG_WS_CLOSED)) && mbAutoTestBeginOnReceiver){
+
+			pthread_mutex_lock(&mAutoTestCtrlObj);
+			LOGI("soundpairReceiverCallback(),  mbAutoTestBeginAnalyzeOnReceiver=[false]\n");
+#ifdef CAM_ENV
+			Delegate_EndToSaveResult();
+#endif
+			mbAutoTestBeginAnalyzeOnReceiver = false;
+			mbAutoTestBeginOnReceiver = false;
+			mbSenderAcked = true;
+			pthread_mutex_unlock(&mAutoTestCtrlObj);
+
+			pthread_mutex_lock(&mSyncObj);
+			pthread_cond_broadcast(&mSyncObjCond);
+			pthread_mutex_unlock(&mSyncObj);
+		}else{
+			if(mbAutoTestBeginOnReceiver){
+				std::vector<std::string> msg = split(strMsg, SoundPair_Config::BT_MSG_DIVIDER);
+				if(msg.size() == 3){
+					LOGI( "soundpairReceiverCallback(), bIsSenderMode, msg[0] = [%s], msg[1] = [%s], msg[2] = [%s]\n",msg[0].c_str(), msg[1].c_str(), msg[2].c_str());
+					if(0 == msg[0].compare(SoundPair_Config::BT_MSG_ACK) && 0 == mstrCurTransferTs.compare(msg[1])){
+						curECCode = msg[2];
+						curEncodeMark = curCode+curECCode;
+
+						pthread_mutex_lock(&mAutoTestCtrlObj);
+						LOGI("soundpairReceiverCallback(), broadcast, mbAutoTestBeginAnalyzeOnReceiver=[true]\n");
+						mbAutoTestBeginAnalyzeOnReceiver = true;
+						pthread_cond_broadcast(&mAutoTestCtrlObjCond);
+						pthread_mutex_unlock(&mAutoTestCtrlObj);
+
+						char msgSent[1024]={0};
+						sprintf(msgSent, SoundPair_Config::BT_MSG_FORMAT.c_str(), SoundPair_Config::BT_MSG_ACK.c_str(), mstrCurTransferTs.c_str());
+						int iRet = send_msg_to_client(msgSent);
+						LOGI("soundpairReceiverCallback(), send_msg_to_client, iRet=[%d]\n", iRet);
+
+						pthread_mutex_lock(&mSendPairingCodeObj);
+						LOGI("soundpairReceiverCallback(), broadcast, mstrCurTransferCode=[%s]\n", mstrCurTransferCode.c_str());
+						mbSenderAcked = true;
+						pthread_cond_broadcast(&mSendPairingCodeObjCond);
+						pthread_mutex_unlock(&mSendPairingCodeObj);
+					}
+				}
+			}else{
+				LOGI("soundpairReceiverCallback(), broadcast, mbAutoTestBeginOnReceiver=[false]\n");
+			}
+		}
+	}
+}
+
+void AudioTest::sendPlayPairingCode(string strCode){
+	struct timespec outtime;
+
+	LOGI("sendPlayPairingCode(), strCode=%s\n", strCode.c_str());
+	if(0 == mstrCurTransferCode.length()){
+		mbSenderAcked = false;
+		do{
+			mstrCurTransferCode = strCode;
+			char tsSent[128]={0};
+			sprintf(tsSent, "%u",time_ms());
+			mstrCurTransferTs = tsSent;
+
+			char msgSent[1024]={0};
+			sprintf(msgSent, SoundPair_Config::BT_MSG_FORMAT.c_str(), mstrCurTransferTs.c_str(), mstrCurTransferCode.c_str());
+			int iRet = send_msg_to_client(msgSent);
+			LOGI("sendPlayPairingCode(), send_msg_to_client, iRet=[%d]\n", iRet);
+
+			pthread_mutex_lock(&mSendPairingCodeObj);
+			getTimeSpecByDelay(outtime, 5000);
+			LOGI("sendPlayPairingCode(), begin wait, mstrCurTransferCode=[%s]\n", mstrCurTransferCode.c_str());
+			pthread_cond_timedwait(&mSendPairingCodeObjCond, &mSendPairingCodeObj, &outtime);
+			LOGI("sendPlayPairingCode(), exit wait, mbSenderAcked=%d\n", mbSenderAcked);
+			if(mbSenderAcked){
+				AudioBufferMgr::getInstance()->recycleAllBuffer();
+			}
+			pthread_mutex_unlock(&mSendPairingCodeObj);
+		}while(!mbSenderAcked && is_websocket_server_inited() && !mbStopControlThreadFlag);
+
+		mstrCurTransferCode = "";
+		mstrCurTransferTs = "";
+		mbSenderAcked = false;
+	}
+}
 
 AudioTest::AudioTest():
 mIsSenderMode(false),
@@ -13,12 +248,24 @@ mbStopControlThreadFlag(false),
 mbStopBufRecordFlag(false),
 mbStopAnalysisThreadFlag(false),
 mbNeedToResetFFT(false),
+mbSenderAcked(false),
+mbAutoTestBeginOnReceiver(false),
+mbAutoTestBeginAnalyzeOnReceiver(false),
 miDigitalToTest(0),
 mControlThread(0),
 mBufRecordThread(0),
-mAnalysisThread(0){
+mAnalysisThread(0),
+mstrCamWSServerIP("192.168.2.4"),
+miCamWSServerPort(5432){
 	pthread_mutex_init(&mSyncObj, NULL);
 	pthread_cond_init(&mSyncObjCond, NULL);
+
+	pthread_mutex_init(&mSendPairingCodeObj, NULL);
+	pthread_cond_init(&mSendPairingCodeObjCond, NULL);
+
+	pthread_mutex_init(&mAutoTestCtrlObj, NULL);
+	pthread_cond_init(&mAutoTestCtrlObjCond, NULL);
+
 	FreqAnalyzer::initAnalysisParams(SoundPair_Config::SAMPLE_RATE_REC,
 									SoundPair_Config::FRAME_SIZE_REC,
 									SoundPair_Config::NOISE_SUPPRESS_INDEX,
@@ -34,8 +281,14 @@ AudioTest::~AudioTest(){
 //		delete[] bufSegment;
 //		bufSegment = NULL;
 //	}
+
+	pthread_cond_destroy(&mSendPairingCodeObjCond);
+	pthread_mutex_destroy(&mSendPairingCodeObj);
+
 	pthread_cond_destroy(&mSyncObjCond);
 	pthread_mutex_destroy(&mSyncObj);
+
+	deinit_websocket_server();
 }
 
 AudioTest* AudioTest::getInstance(){
@@ -54,6 +307,9 @@ bool AudioTest::destroyInstance(){
 
 bool AudioTest::setSenderMode(){
 	LOGI("setSenderMode()+\n");
+#ifdef ANDROID
+	connectCamCamWSServer();
+#endif
 	stopAutoTest();
 	mIsSenderMode = true;
 	mIsReceiverMode = false;
@@ -62,6 +318,9 @@ bool AudioTest::setSenderMode(){
 
 bool AudioTest::setReceiverMode(){
 	LOGI("setReceiverMode()+\n");
+
+	init_websocket_server(soundpairReceiverCb);
+
 	stopAutoTest();
 	mIsSenderMode = false;
 	mIsReceiverMode = true;
@@ -97,14 +356,23 @@ bool AudioTest::startAutoTest(string strInitCode, int iDigitalToTest){
 		bRet = startAnalyzeTone();
 #ifndef ANDROID
 	if(bRet){
-		LOGI("startAutoTest(), begin join\n");
+
 		FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(this);
+
+		LOGI("startAutoTest()+, bRet:%d, isReceiverMode():%d, isAutoTestMode():%d\n",bRet, isReceiverMode(), isAutoTestMode());
+		if(bRet && (isReceiverMode() || isAutoTestMode()))
+				bRet = startGenerateTone(strInitCode, iDigitalToTest);
+		//sleep(1);
+		LOGI("startAutoTest(), begin join mBufRecordThread\n");
 		pthread_join(mBufRecordThread, NULL);
+		LOGI("startAutoTest(), begin join mAnalysisThread\n");
 		pthread_join(mAnalysisThread, NULL);
 		LOGE("startAutoTest(), end join\n");
 	}
 #endif
 	}else{
+		int iRet = send_msg_to_server(SoundPair_Config::MSG_AUTO_TEST_BEGIN.c_str());
+		LOGE("startAutoTest(), send_msg_to_server, iRet:[%d]\n", iRet);
 		bRet = true;
 	}
 
@@ -114,12 +382,16 @@ bool AudioTest::startAutoTest(string strInitCode, int iDigitalToTest){
 		bRet = startGenerateTone(strInitCode, iDigitalToTest);
 #endif
 EXIT:
-	//LOGE("startAutoTest()--\n");
+	LOGE("startAutoTest()--\n");
 	return bRet;
 }
 
 bool AudioTest::stopAutoTest(){
 	bool bRet = false;
+	if(isSenderMode()){
+		int iRet = send_msg_to_server(SoundPair_Config::MSG_AUTO_TEST_END.c_str());
+		LOGE("stopAutoTest(), send_msg_to_server, iRet:[%d]\n", iRet);
+	}
 	stopGenerateTone();
 	stopAnalyzeTone();
 	deinitTestRound();
@@ -127,7 +399,7 @@ bool AudioTest::stopAutoTest(){
 }
 
 bool AudioTest::playTone(string strCode, bool bNeedEncode){
-#ifndef CAM_AUDIO
+#ifndef CAM_ENV
 	FreqGenerator::getInstance()->setOnPlayToneCallback(this);
 	FreqGenerator::getInstance()->playCode2(strCode, bNeedEncode);
 #endif
@@ -143,6 +415,7 @@ bool AudioTest::startGenerateTone(string strInitCode, int iDigitalToTest){
 		if (0 != (errno = pthread_create(&mControlThread, NULL, AudioTest::runAutoTestControl, this))) {
 			LOGE("AudioTest::startAutoTet(), error when create mControlThread,%d\n", errno);
 		}else{
+			LOGE("AudioTest::startAutoTet(), create mControlThread,%d\n", errno);
 			bRet = true;
 #ifdef ANDROID
 			pthread_setname_np(mControlThread, "ControlThread");
@@ -191,70 +464,162 @@ bool AudioTest::stopAnalyzeTone(){
 	LOGD("stopAnalyzeTone()+\n");
 	mbStopBufRecordFlag = true;
 	mbStopAnalysisThreadFlag = true;
-#ifdef CAM_AUDIO
+#ifdef CAM_ENV
 	stopReceiveAudioBuf();
 #endif
 	return true;
 }
 
+#ifdef CAM_ENV
+int getRandomNumDigit(int iMin, int iMax){
+	return iMin + rand() % (iMax - iMin);
+}
+string genNextRandomData(int iMinDigit){
+	//LOGI("genNextRandomData(), iMinDigi=%d", iMinDigit);
+	stringstream strRet;
+	int iDivision = SoundPair_Config::getDivisionByFFTYPE();
+//
+//	int iMaxDigit = min(SoundPair_Config::MAX_ENCODE_DATA_LEN*SoundPair_Config::getMultiplyByFFTYPE(), (int) ((pow(2.0, (double)(SoundPair_Config::getPowerByFFTYPE()*SoundPair_Config::getMultiplyByFFTYPE()) -1 ))* 0.6666666666666f));
+//
+//	//LOGI("genNextRandomData(), iDivision:%d, iMaxDigit=%d", iDivision, iMaxDigit);
+//
+//	int iLen = getRandomNumDigit(iMinDigit, iMaxDigit)*SoundPair_Config::getMultiplyByFFTYPE();
+//
+//	//LOGI("genNextRandomData(), iLen:%d, iMaxDigit=%d", iLen, iMaxDigit);
+//	//Log.e(TAG, "genNextRandomData(), iMaxDigit= "+iMaxDigit+", iLen="+iLen );
+//
+//	for(int i =0;i<iLen;i++){
+//		strRet<<(SoundPair_Config::sCodeTable.at(rand() % (iDivision)));
+//	}
+
+	static const int MAC_ADDR_LEN = 12;
+	for(int i =0;i<MAC_ADDR_LEN;i++){
+		strRet<<(SoundPair_Config::sCodeTable.at(rand() % (iDivision)));
+	}
+	//strRet<<SoundPair_Config::PAIRING_DIVIDER;
+	strRet<<"1b";
+
+	LOGE("genNextRandomData()1, strRet:[%s]\n", strRet.str().c_str());
+
+	//int iLenPW = getRandomNumDigit(8, 64)*iDivision;
+	int iLenPW = getRandomNumDigit(8, 16)*SoundPair_Config::getMultiplyByFFTYPE();
+
+	for(int i =0;i<iLenPW;i++){
+		strRet<<(SoundPair_Config::sCodeTable.at(rand() % (iDivision)));
+	}
+	strRet<<"1b";
+
+	LOGE("genNextRandomData()2, strRet:[%s]\n", strRet.str().c_str());
+
+	static const int TOKEN_LEN = 4;
+	for(int i =0;i<TOKEN_LEN;i++){
+		strRet<<(SoundPair_Config::sCodeTable.at(rand() % (iDivision)));
+	}
+	LOGE("genNextRandomData()3, strRet:[%s]\n", strRet.str().c_str());
+	LOGE("genNextRandomData(), iLenPW:[%d], length:%d\n", iLenPW, strRet.str().length());
+	return strRet.str();
+}
+#endif
+
 void* AudioTest::runAutoTestControl(void* userdata){
-#ifndef CAM_AUDIO
+//#ifndef CAM_ENV
 	LOGE("runAutoTestControl()+\n");
 	AudioTest* tester = (AudioTest*)userdata;
-	const bool bIsSenderMode = tester->isSenderMode();
-	const bool bIsReceiverMode = tester->isReceiverMode();
-	const bool bIsAutoTestMode = !bIsSenderMode && !bIsReceiverMode;
+	if(tester){
+		const bool bIsSenderMode = tester->isSenderMode();
+		const bool bIsReceiverMode = tester->isReceiverMode();
+		const bool bIsAutoTestMode = !bIsSenderMode && !bIsReceiverMode;
 
-	tester->mbStopControlThreadFlag = false;
+		tester->mbStopControlThreadFlag = false;
 
-	FreqAnalyzer::getInstance()->setSenderMode(/*isSenderMode*/false);
-	FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(tester);
+		FreqAnalyzer::getInstance()->setSenderMode(/*isSenderMode*/false);
+		FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(tester);
+	#ifndef CAM_ENV
+		if(!bIsReceiverMode)
+			FreqGenerator::getInstance()->setOnPlayToneCallback(tester);
+	#endif
+		//char *nativeString = (char *)jni_env->GetStringUTFChars( strCurCode, 0);
+		tester->curCode = tester->strInitCode;
+		LOGE("runAutoTestControl()+, strCurCode:%s\n", (tester->curCode.c_str())?tester->curCode.c_str():"null");
+		//jni_env->ReleaseStringUTFChars( strCurCode, nativeString);
 
-	if(!bIsReceiverMode)
-		FreqGenerator::getInstance()->setOnPlayToneCallback(tester);
+	#ifdef CAM_ENV
+		while(0 < (tester->curCode = genNextRandomData(tester->miDigitalToTest)).length()){
+	#else
+		while(0 < (tester->curCode = FreqGenerator::genNextRandomData(tester->miDigitalToTest)).length()){
+	#endif
+			LOGE("runAutoTestControl+, tester->mbStopControlThreadFlag:%d\n", tester->mbStopControlThreadFlag);
+			if(tester->mbStopControlThreadFlag){
+				LOGE("runAutoTestControl(), break loop\n");
+	#ifndef CAM_ENV
+				FreqGenerator::getInstance()->stopPlay2();
+	#endif
+				break;
+			}
 
-	//char *nativeString = (char *)jni_env->GetStringUTFChars( strCurCode, 0);
-	tester->curCode = tester->strInitCode;
-	LOGE("runAutoTestControl()+, strCurCode:%s\n", tester->curCode.c_str());
-	//jni_env->ReleaseStringUTFChars( strCurCode, nativeString);
+			if(bIsAutoTestMode){
+				//LOGE("runAutoTestControl+, FreqGenerator::getInstance() is %d\n", FreqGenerator::getInstance());
+
+		//		if(SELF_TEST)
+		//			FreqGenerator.getInstance().playCode3(/*lstTestData.get(i)*/curCode, true);
+		//		else
+	#ifndef CAM_ENV
+					FreqGenerator::getInstance()->playCode2(tester->curCode, true);
+	#endif
+			}else{
+	#ifndef CAM_ENV
+				tester->curECCode = FreqGenerator::getECCode(tester->curCode);
+				tester->curEncodeMark = /*SoundPair_Config::encodeConsecutiveDigits*/(tester->curCode+tester->curECCode);
+	#endif
+
+	#ifdef CAM_ENV
+				while(bIsReceiverMode && !tester->mbAutoTestBeginOnReceiver && !tester->mbStopControlThreadFlag){
+					LOGI("runAutoTestControl(), begin wait auto test\n");
+					pthread_mutex_lock(&tester->mAutoTestCtrlObj);
+					pthread_cond_wait(&tester->mAutoTestCtrlObjCond, &tester->mAutoTestCtrlObj);
+					pthread_mutex_unlock(&tester->mAutoTestCtrlObj);
+					LOGD("runAutoTestControl(), exit wait auto test\n");
+				}
 
 
-	while(0 < (tester->curCode = FreqGenerator::genNextRandomData(tester->miDigitalToTest)).length()){
-		LOGE("runAutoTestControl+, tester->mbStopControlThreadFlag:%d", tester->mbStopControlThreadFlag);
-		if(tester->mbStopControlThreadFlag){
-			LOGE("runAutoTestControl(), break loop");
-			FreqGenerator::getInstance()->stopPlay2();
-			break;
+				tester->sendPlayPairingCode(tester->curCode);
+
+	#else
+				Delegate_SendMsgByBT(tester->curCode); // 990 digits max
+	#endif
+			}
+
+			if(tester->mbStopControlThreadFlag){
+				LOGE("runAutoTestControl(), break loop2\n");
+	#ifndef CAM_ENV
+				FreqGenerator::getInstance()->stopPlay2();
+	#endif
+				break;
+			}else if(!tester->mbAutoTestBeginOnReceiver){
+				LOGE("runAutoTestControl(), continue to rewait---\n");
+				continue;
+			}
+
+			LOGI("runAutoTestControl(), enter lock\n");
+			pthread_mutex_lock(&tester->mSyncObj);
+			tester->tmpRet.str("");
+			tester->tmpRet.clear();
+			//LOGI("runAutoTestControl(), beginToTrace\n");
+			FreqAnalyzer::getInstance()->beginToTrace(tester->curCode);
+			LOGI("runAutoTestControl(), ----------------------------begin wait\n");
+			pthread_cond_wait(&tester->mSyncObjCond, &tester->mSyncObj);
+			LOGI("runAutoTestControl(), ----------------------------exit wait\n");
+			pthread_mutex_unlock(&tester->mSyncObj);
 		}
 
-		if(bIsAutoTestMode){
-			//LOGE("runAutoTestControl+, FreqGenerator::getInstance() is %d\n", FreqGenerator::getInstance());
-
-	//		if(SELF_TEST)
-	//			FreqGenerator.getInstance().playCode3(/*lstTestData.get(i)*/curCode, true);
-	//		else
-				FreqGenerator::getInstance()->playCode2(tester->curCode, true);
-		}else{
-			tester->curECCode = FreqGenerator::getECCode(tester->curCode);
-			tester->curEncodeMark = /*SoundPair_Config::encodeConsecutiveDigits*/(tester->curCode+tester->curECCode);
-			Delegate_SendMsgByBT(tester->curCode); // 990 digits max
-		}
-
-		LOGI("runAutoTestControl(), enter lock");
-		pthread_mutex_lock(&tester->mSyncObj);
-		tester->tmpRet.str("");
-		tester->tmpRet.clear();
-		LOGI("runAutoTestControl(), beginToTrace");
-		FreqAnalyzer::getInstance()->beginToTrace(tester->curCode);
-		LOGD("runAutoTestControl(), begin wait");
-		pthread_cond_wait(&tester->mSyncObjCond, &tester->mSyncObj);
-		LOGD("runAutoTestControl(), exit wait");
-		pthread_mutex_unlock(&tester->mSyncObj);
+		tester->mControlThread = 0;
+	}else{
+		LOGE("runAutoTestControl(), tester is null\n");
 	}
-	LOGE("runAutoTestControl()---\n");
-	tester->mControlThread = 0;
+
 	Delegate_detachCurrentThread();
-#endif
+	LOGE("runAutoTestControl()---\n");
+//#endif
 }
 
 const int TABLE_SIZE = 8;
@@ -292,6 +657,9 @@ static int iAudioFrameSize = 4;
 static const int MAX_TRIAL = 10;
 
 void writeBuf(unsigned char* charBuf, int iLen){
+	if(!AudioTest::getInstance()->isAutoTestBeginAnalyzeOnReceiver()){
+		return;
+	}
 	//LOGW("writeBuf:%d, iCurIdx:%d", iLen, iCurIdx);
 	//short* shortBuf = (short*)audioBufferPinned;
 	int iIdxOffset = -iCurIdx;
@@ -339,7 +707,8 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 
 	lTsRec = 0;
 	sleepValue.tv_nsec = 100000;//0.1 ms
-#ifndef CAM_AUDIO
+
+#ifndef CAM_ENV
 	ArrayRef<short> shortsRec=NULL;
 
 	//timespec sleepValue = {0};
@@ -372,6 +741,7 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 	}
 	Delegate_CloseAudioRecordDevice();
 #else
+
 	//char* session = "0e4bba41bef24f009337727ce44008cd";//[SESSION_SIZE];
 	char session[SESSION_SIZE];
 	memset(session, 0, sizeof(session));
@@ -379,10 +749,14 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 	if(GetSession(HOST_NAME, session) != 0) {
 		LOGE("Get session failed.");
 	}else{
+		LOGE("runAudioBufRecord(), begin to GetAudioBufCGI\n");
+
 		int res = GetAudioBufCGI(HOST_NAME_AUDIO, "receiveRaw", session, writeBuf);
 		LOGE("GetAudioBufCGI:res(%d)\n%s",res);
 		//Delegate_CloseAudioDevice2();
 	}
+
+
 #endif
 	LOGE("runAudioBufRecord()-\n");
 	tester->mBufRecordThread = 0;
@@ -396,6 +770,19 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 	Ref<BufRecord> buf;
 
 	while(!tester->mbStopAnalysisThreadFlag){
+		while(tester->isReceiverMode() && !tester->mbAutoTestBeginAnalyzeOnReceiver && !tester->mbStopAnalysisThreadFlag){
+			LOGI("runAudioBufAnalysis(), begin wait auto test\n");
+			pthread_mutex_lock(&tester->mAutoTestCtrlObj);
+			pthread_cond_wait(&tester->mAutoTestCtrlObjCond, &tester->mAutoTestCtrlObj);
+			pthread_mutex_unlock(&tester->mAutoTestCtrlObj);
+			LOGI("runAudioBufAnalysis(), exit wait auto test\n");
+		}
+
+		if(tester->mbStopAnalysisThreadFlag){
+			LOGI("runAudioBufAnalysis(), break loop\n");
+			break;
+		}
+
 		//LOGE("runAudioBufAnalysis()+1\n");
 		int iSessionOffset = FreqAnalyzer::getInstance()->getSessionOffset();
 		LOGD("runAudioBufAnalysis(), iSessionOffset:%d\n", iSessionOffset);
@@ -473,83 +860,6 @@ void AudioTest::onAppendResult(string strCode){
 	tmpRet<<strCode;
 }
 
-std::vector<std::string> &split(const std::string &str, char delim, std::vector<std::string> &elems) {
-	LOGI("delim:[0x%x]\n",delim);
-	std::stringstream ss(str);
-
-    std::stringstream ssDelim;
-    ssDelim<<delim;
-    std::string item;
-    std::string::size_type pos, lastPos = 0;
-
-//    int iLen = str.length();
-//    int i =0;
-//    for(i = 0; i< iLen;i++){
-//    	LOGI("str[%d] = 0x%x\n",i, str.c_str()[i]);
-//    	if(str.c_str()[i] == delim){
-//    		LOGI("find delim:[%d]\n",i);
-//    	}
-//    }
-
-    while(true){
-	  pos = str.find_first_of(ssDelim.str(), lastPos);
-	  if(pos == std::string::npos){
-		 pos = str.length();
-
-		 if(pos != lastPos){
-//			tokens.push_back(ContainerT::value_type(str.data()+lastPos,
-//				  (ContainerT::value_type::size_type)pos-lastPos ));
-			 item = str.substr(lastPos, (pos-lastPos));
-			 elems.push_back(item);
-			 LOGI("item:[%s]\n",item.c_str());
-		 }
-
-		 break;
-	  }else{
-		 if(pos != lastPos){
-//			tokens.push_back(ContainerT::value_type(str.data()+lastPos,
-//				  (ContainerT::value_type::size_type)pos-lastPos ));
-			 item = str.substr(lastPos, (pos-lastPos));
-			 elems.push_back(item);
-			 LOGI("item:[%s]\n",item.c_str());
-		 }
-	  }
-	  lastPos = pos + 1;
-	}
-
-//    char* str = strdup(s.c_str());
-//    const char* strDelim = ssDelim.str().c_str();
-//    LOGI("str:[%s], strDelim:[%s]\n",str, strDelim);
-//
-//    char* item = NULL;
-//    item = strtok (str,strDelim);
-//
-//    LOGI("item:[%s]\n",item);
-//	while (item != NULL){
-//		item = strtok (NULL, strDelim);
-//		if(item){
-//			elems.push_back(item);
-//			LOGI("item:[%s]\n",item);
-//		}
-//	}
-//
-//	if(str){
-//		free(str);
-//	}
-//    while (std::getline(ss, item, delim)) {
-//        elems.push_back(item);
-//        LOGI("item:[%s]\n",item.c_str());
-//    }
-    return elems;
-}
-
-
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
-}
-
 #include "delegate/account_mgr.h"
 
 void checkPairingResult(string strCode){
@@ -579,7 +889,7 @@ void checkPairingResult(string strCode){
 
 		LOGI("retS:[%s]\n",retS.str().c_str());
 
-		std::vector<std::string> ret = split(retS.str(), 0x1B);
+		std::vector<std::string> ret = split(retS.str(), SoundPair_Config::PAIRING_DIVIDER);
 
 		if(ret.size() == 3){
 			string strUserNum = ret[2];
@@ -602,7 +912,7 @@ void checkPairingResult(string strCode){
 //				LOGE("bindUserAccount Failed:[%s]\n", testData);
 //			}
 		}else{
-			LOGI("failed to arse result, ret.size():[%d]\n",ret.size());
+			LOGI("failed to parse result, ret.size():[%d]\n",ret.size());
 		}
 	}
 #endif
@@ -623,7 +933,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"strDecodeMark    = ["<<strDecodeMark<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					LOGE("%s", strLog.str().c_str());
+					LOGE("%s\n", strLog.str().c_str());
 
 					Delegate_FeedbackMatchResult(curCode, curECCode, curEncodeMark, strCode, strDecodeUnmark, strDecodeMark, DESC_MATCH, bFromAutoCorrection);
 				}else{
@@ -636,7 +946,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"Difference       = ["<<findDifference(curEncodeMark, strDecodeMark)<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					LOGE("%s", strLog.str().c_str());
+					LOGE("%s\n", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_EC){
 							adaptPrevMatchRet(prevMatchRet);
@@ -661,7 +971,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"Difference       = ["<<findDifference(curEncodeMark, strDecodeMark)<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					LOGE("%s", strLog.str().c_str());
+					LOGE("%s\n", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_EC){
 							adaptPrevMatchRet(prevMatchRet);
@@ -684,7 +994,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"Difference       = ["<<findDifference(curEncodeMark, strDecodeMark)<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					LOGE("%s", strLog.str().c_str());
+					LOGE("%s\n", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
 							adaptPrevMatchRet(prevMatchRet);
@@ -720,7 +1030,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 							"curEncodeMark    = ["<<curEncodeMark<<"], \n" <<
 							"tmpRet           = ["<<tmpRet<<"]\n" <<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"]";
-					LOGE("%s", strLog.str().c_str());
+					LOGE("%s\n", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
 							adaptPrevMatchRet(prevMatchRet);
@@ -741,7 +1051,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 							"curEncodeMark    = ["<<curEncodeMark<<"], \n" <<
 							"tmpRet           = ["<<tmpRet<<"]\n" <<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"]";
-					LOGE("%s", strLog.str().c_str());
+					LOGE("%s\n", strLog.str().c_str());
 
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
@@ -764,7 +1074,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 						"curEncodeMark    = ["<<curEncodeMark<<"], \n" <<
 						"tmpRet           = ["<<tmpRet<<"]\n" <<
 						"strDecodeUnmark  = ["<<strDecodeUnmark<<"]";
-				LOGE("%s", strLog.str().c_str());
+				LOGE("%s\n", strLog.str().c_str());
 
 				if(bFromAutoCorrection){
 					if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
@@ -817,6 +1127,11 @@ void AudioTest::deinitTestRound(){
 	FreqAnalyzer::getInstance()->endToTrace();
 	FreqAnalyzer::getInstance()->reset();
 	resetBuffer();
+
+	pthread_mutex_lock(&mAutoTestCtrlObj);
+	pthread_cond_broadcast(&mAutoTestCtrlObjCond);
+	pthread_mutex_unlock(&mAutoTestCtrlObj);
+
 	pthread_mutex_lock(&mSyncObj);
 	pthread_cond_broadcast(&mSyncObjCond);
 	pthread_mutex_unlock(&mSyncObj);
@@ -835,3 +1150,22 @@ string AudioTest::findDifference(string strSrc, string strDecode){
 	}
 	return strRet.str();
 }
+
+#ifdef ANDROID
+void AudioTest::setCamCamWSServerInfo(string strHost, int iPort){
+	mstrCamWSServerIP = strHost;
+	miCamWSServerPort = iPort;
+}
+
+int AudioTest::connectCamCamWSServer(){
+	return init_websocket_client(mstrCamWSServerIP.c_str(), miCamWSServerPort, soundpairSenderCb);
+}
+
+int AudioTest::disconnectCamCamWSServer(){
+	return deinit_websocket_client();
+}
+
+bool AudioTest::isCamCamWSServerConnected(){
+	return is_websocket_client_inited();
+}
+#endif

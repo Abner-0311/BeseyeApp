@@ -63,15 +63,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
-	public final static String TAG = "AubioTest";
+	public final static String TAG = "SoundPairing";
 	
 	int bufferRecSize, bufferShortSize;
 	short[] shortsRec;
 	private Button btnAnalyzeAubio, btnAnalyzeDywa, btnAnalyzeBoth, btnStop, btnSave, mBtnAutoTest, mBtnDelRec, mBtnShoot;
 	private EditText etFile, etDecode, etDigital, etSenderOffset, etDistance, etShootDigit, etMsgLen, etTimer;
-	private CheckBox ckbGenCode, ckbSender, ckbReceiver, ckbRandom, ckbMaxVolume;
+	private CheckBox ckbGenCode, mckbSender, ckbReceiver, ckbRandom, ckbMaxVolume;
 	private TextView mTxtFreq, mTxtFreq2, mTxtFreqSend, mTxtTimeElapse;
 	private Spinner mSpTestType, mSpVolumes;
+	//private CheckBox mckbSender;
 	
     private ListView mFreqListView;
     
@@ -124,6 +125,12 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 	private native boolean receiveAudioBufFromCam(String strHost);
 	private native boolean receiveAudioBufThreadRunning();
 	private native boolean stopReceiveAudioBufThread();
+	
+	//ws test client
+	private native void setCamWSServerInfo(String strHost, int iPort);
+	private native int connectCamWSServer(String strHost, int iPort);
+	private native int disconnectCamWSServer();
+	private native boolean isCamWSServerConnected();
 	
 	// Audio
     protected static AudioTrack mAudioTrack;
@@ -333,6 +340,72 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 				}
             }
         });
+    }
+    
+    public void onTestRoundBegin(){
+    	if(mckbSender.isChecked()){
+    		if(false == checkTimer()){
+				enterStopMode();
+			}
+    	}
+    }
+    
+    public void onTestRoundEnd(final String strMatchRet, final String strStatistics){
+    	Log.i(TAG, "onTestRoundEnd(), strMatchRet = "+strMatchRet+", strStatistics="+strStatistics);
+    	handler.post(new Runnable(){
+			@Override
+			public void run() {
+				if(null != saver){
+					saver.addRecord(strMatchRet);
+				}
+				etDecode.setText(strMatchRet);
+            	etShootDigit.setText(strStatistics);
+			}});
+    }
+    
+    public void onWSClientConnecting(final String strHost){
+    	Log.i(TAG, "onWSClientConnecting(), strHost = "+strHost);
+    	handler.post(new Runnable(){
+			@Override
+			public void run() {
+				setTitle("Connecting to "+strHost);
+			}});
+    	
+    }
+    
+    public void onWSClientConnected(final String strHost){
+    	Log.i(TAG, "onWSClientConnected(), strHost = "+strHost);
+    	handler.post(new Runnable(){
+
+			@Override
+			public void run() {
+				setTitle("Connected to "+strHost);
+			}});
+    }
+
+    public void onWSClientClosed(final String strHost){
+    	Log.i(TAG, "onWSClientClosed(), strHost = "+strHost);
+    	if(mckbSender.isChecked()){
+    		handler.postDelayed(new Runnable(){
+				@Override
+				public void run() {
+					setTitle("Connection closed to "+strHost);
+					connectToCamViaWS();
+				}}, 2000);
+    	}
+    }
+    
+    private int miRetryWSServer = 0;
+    private void connectToCamViaWS(){
+    	if(!isCamWSServerConnected()){
+    		if(miRetryWSServer++ < 5){
+    			connectCamWSServer("192.168.2.4", 5432);
+    		}else{
+    			enterStopMode();
+    		}
+		}else{
+			Log.w(TAG, "connectToCamViaWS(), isCamWSServerConnected = true");
+		}
     }
  // Audio End
     
@@ -631,22 +704,24 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 		mTxtTimeElapse = (TextView)findViewById(R.id.txt_timer_elapse);
 		
 		ckbGenCode = (CheckBox)findViewById(R.id.ckb_gen);
-		ckbSender = (CheckBox)findViewById(R.id.ckb_at_sender);
-		if(null != ckbSender){
-			ckbSender.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		mckbSender = (CheckBox)findViewById(R.id.ckb_at_sender);
+		if(null != mckbSender){
+			mckbSender.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 
 				@Override
 				public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 					if(arg1){
 						ckbReceiver.setChecked(false);
 						
-						// Check that we're actually connected before trying anything
-				        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
-				        	BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(BT_BINDING_MAC);
-				            // Attempt to connect to the device
-				            mChatService.connect(device, true);
-				        }
-				        setTestMode(true, false);
+//						// Check that we're actually connected before trying anything
+//				        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+//				        	BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(BT_BINDING_MAC);
+//				            // Attempt to connect to the device
+//				            mChatService.connect(device, true);
+//				        }
+						setTestMode(true, false);
+						connectToCamViaWS();
+						miRetryWSServer=0;
 					}
 				}});
 		}
@@ -658,7 +733,7 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 				@Override
 				public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 					if(arg1){
-						ckbSender.setChecked(false);
+						mckbSender.setChecked(false);
 //						// Check that we're actually connected before trying anything
 //				        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
 //				        	BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(BT_BINDING_MAC_SENDER);
@@ -706,7 +781,7 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
 			dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			mSpVolumes.setAdapter(dataAdapter);
-			mSpVolumes.setSelection(3);//60%
+			mSpVolumes.setSelection(5);//60%
 			
 			mSpVolumes.setOnItemSelectedListener(new OnItemSelectedListener(){
 				@Override
@@ -823,11 +898,11 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
     private boolean mbStop = true;
     
     private boolean isSenderMode(){
-    	return (null != ckbSender && ckbSender.isChecked()) && (null != ckbReceiver && false == ckbReceiver.isChecked());
+    	return (null != mckbSender && mckbSender.isChecked()) && (null != ckbReceiver && false == ckbReceiver.isChecked());
     }
     
     private boolean isReceiverMode(){
-    	return (null != ckbReceiver && ckbReceiver.isChecked()) && (null != ckbSender && false == ckbSender.isChecked());
+    	return (null != ckbReceiver && ckbReceiver.isChecked()) && (null != mckbSender && false == mckbSender.isChecked());
     }
     
     public static class MatchRetSet{
@@ -1357,9 +1432,11 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
     	
     	triggerTimer();
     	
-    	saver = (bIsReceiverMode || bIsAutoTestMode)?
-    			new AutoTestResultSaver(iDigitalToTest, bIsAutoTestMode?0:iDistance, /*(ckbMaxVolume.isChecked()?100:(iOriginalVolume*100/iMaxVolume))*/iVolumeChoosen, ckbRandom.isChecked(), !bIsAutoTestMode):
-    			null;
+//    	saver = (bIsReceiverMode || bIsAutoTestMode)?
+//    			new AutoTestResultSaver(iDigitalToTest, bIsAutoTestMode?0:iDistance, /*(ckbMaxVolume.isChecked()?100:(iOriginalVolume*100/iMaxVolume))*/iVolumeChoosen, ckbRandom.isChecked(), !bIsAutoTestMode):
+//    			null;
+    			
+		saver = new AutoTestResultSaver(iDigitalToTest, bIsAutoTestMode?0:iDistance, /*(ckbMaxVolume.isChecked()?100:(iOriginalVolume*100/iMaxVolume))*/iVolumeChoosen, ckbRandom.isChecked(), !bIsAutoTestMode);
     	
     	Log.e(TAG, "runAutoTest(), config:"+AubioTestConfig.configuration());
     	
@@ -1371,9 +1448,9 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 			public void run(){	
 				setTestMode(bIsSenderMode, bIsReceiverMode);
 				startAutoTest(curCode, iDigitalToTest);
-				if(!bIsAutoTestMode){
-					sendPureBTMsg(BT_MSG_SET_VOLUME+iVolumeChoosen+BT_MSG_SET_VOLUME_END);
-				}
+//				if(!bIsAutoTestMode){
+//					sendPureBTMsg(BT_MSG_SET_VOLUME+iVolumeChoosen+BT_MSG_SET_VOLUME_END);
+//				}
 			}
     	}.start();
     	

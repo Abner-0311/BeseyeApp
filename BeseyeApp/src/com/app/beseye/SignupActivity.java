@@ -44,7 +44,7 @@ public class SignupActivity extends PairingBaseActivity {
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
 			if(DEBUG)
-				mEtUserName.setText("abner.huang10@beseye.com");
+				mEtUserName.setText("beseye@beseye.com");
 		}
 		
 		mEtPassword = (EditText)findViewById(R.id.editText_password);

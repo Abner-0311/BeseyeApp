@@ -31,6 +31,8 @@
 
 #endif
 
+#define CAM_AUDIO_PERFORMANCE
+
 #ifndef CAM_ENV
 #define GEN_TONE_ONLY //for client side
 #endif

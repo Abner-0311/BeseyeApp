@@ -18,7 +18,13 @@ import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
+import com.app.beseye.websockets.AudioWebSocketsMgr;
+import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.app.beseye.widget.CameraViewControlAnimator;
+import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
+import com.koushikdutta.async.http.AsyncHttpClient;
+import com.koushikdutta.async.http.WebSocket;
+import com.koushikdutta.async.http.AsyncHttpClient.WebSocketConnectCallback;
 
 import android.util.Log;
 import android.view.InputDevice;
@@ -49,7 +55,8 @@ import android.os.Handler;
 import android.os.PowerManager;
 
 public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSurfaceCallback,
-																	  OnNetworkChangeCallback{
+																	  OnNetworkChangeCallback,
+																	  OnWSChannelStateChangeListener{
 	static public final String KEY_PAIRING_DONE = "KEY_PAIRING_DONE";
 	private TouchSurfaceView mStreamingView;
 	private TextView mTxtDate, mTxtCamName, mTxtTime, mTxtEvent, mTxtGoLive, mTxtPowerState;
@@ -133,7 +140,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			break;
 			    		}
 			    		case CV_STREAM_PLAYING:{
-			    			//setEnabled(mIbTalk, mbIsLiveMode);
+			    			setEnabled(mIbTalk, mbIsLiveMode);
 			    			//setEnabled(mIbRewind, true);
 			    			cancelCheckVideoConn();
 			    			setEnabled(mIbPlayPause, true);
@@ -252,7 +259,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mIbTalk = (ImageButton)findViewById(R.id.ib_talk);
 		if(null != mIbTalk){
 			mIbTalk.setOnClickListener(this);
-			mIbTalk.setEnabled(false);//not implement
+			//mIbTalk.setEnabled(false);//not implement
 		}
 		
 		mIbRewind = (ImageButton)findViewById(R.id.ib_rewind);
@@ -293,6 +300,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mSingleton = this;
 		
 		setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
+		
+		AudioWebSocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
 	}
 
 	@Override
@@ -309,6 +318,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mCameraViewControlAnimator.showControl();
 		}
 		checkAndExtendHideHeader();
+		
+		AsyncHttpClient.getDefaultInstance().websocket("ws://192.168.2.151:5432","beseye-soundpair-protocol", new WebSocketConnectCallback(){
+
+			@Override
+			public void onCompleted(Exception ex, WebSocket webSocket) {
+				Log.i(TAG, "onCompleted()..., ex="+((null == ex)?"":ex.toString()));
+				if(null == ex)
+					webSocket.send("Welcome");
+			}});
 	}
 	
 	protected void onSessionComplete(){
@@ -334,6 +352,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkPlayState();
 		initDateTime();
+		
+		//monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true,"Bes0001", "1");
 	}
 		
 	@Override
@@ -423,6 +443,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(null == mPauseCameraViewRunnable){
 			mPauseCameraViewRunnable = new PauseCameraViewRunnable(this);
 		}
+		AudioWebSocketsMgr.getInstance().destroyNotifyWSChannel();
 		BeseyeUtils.removeRunnable(mPauseCameraViewRunnable);
 		BeseyeUtils.postRunnable(mPauseCameraViewRunnable, TIME_TO_CONFIRM_PAUSE);
 		
@@ -530,7 +551,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		boolean bNetworkConnected = NetworkMgr.getInstance().isNetworkConnected();
 		
 		if(bNetworkConnected && bPowerOn && (mbIsFirstLaunch || mbIsPauseWhenPlaying || mbIsCamSettingChanged || mbIsWifiSettingChanged)){
-			beginLiveView();
+			//beginLiveView();
 		}/*else{
 			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		}*/
@@ -617,6 +638,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				break;
 			}
 			case R.id.ib_talk:{
+				if(AudioWebSocketsMgr.getInstance().isNotifyWSChannelAlive()){
+					AudioWebSocketsMgr.getInstance().destroyNotifyWSChannel();
+				}else{
+					AudioWebSocketsMgr.getInstance().constructNotifyWSChannel();
+				}
 				break;
 			}
 			case R.id.ib_rewind:{
@@ -1136,4 +1162,29 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
         return Arrays.copyOf(filtered, used);
     }
 	//for SDL end
+
+	@Override
+	public void onChannelConnecting() {
+		Log.i(TAG, "onChannelConnecting()---");
+	}
+
+	@Override
+	public void onAuthfailed() {
+		Log.i(TAG, "onAuthfailed()---");
+	}
+
+	@Override
+	public void onChannelConnected() {
+		Log.i(TAG, "onChannelConnected()---");
+	}
+
+	@Override
+	public void onMessageReceived(String msg) {
+		Log.i(TAG, "onMessageReceived()---");
+	}
+
+	@Override
+	public void onChannelClosed() {
+		Log.i(TAG, "onChannelCloased()---");
+	}
 }

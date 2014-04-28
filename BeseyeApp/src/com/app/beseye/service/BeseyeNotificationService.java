@@ -15,8 +15,15 @@ import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyePushServiceTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SessionData;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeSharedPreferenceUtil;
+import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.NetworkMgr;
+import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
+import com.app.beseye.websockets.WebsocketsMgr;
+import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.google.android.gcm.GCMRegistrar;
 
 import android.app.Dialog;
@@ -51,7 +58,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class BeseyeNotificationService extends Service implements com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback{
+public class BeseyeNotificationService extends Service implements com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback,
+																  OnWSChannelStateChangeListener,
+																  OnNetworkChangeCallback{
 	
 	/** For showing and hiding our notification. */
 	private NotificationManager mNotificationManager;
@@ -106,8 +115,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-//        	if(Configuration.DEBUG)
+//        	if(BeseyeConfig.DEBUG)
 //        		Log.i(TAG, "BG service detects "+msg.toString());
+        	
             switch (msg.what) {
                 case MSG_REGISTER_CLIENT:
                     mClients.add(msg.replyTo);
@@ -201,23 +211,26 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //                }
                 case MSG_APP_TO_FOREGROUND:{
                 	if(mbAppInBackground){
-                		//Log.i(TAG, "BG service detects MSG_APP_TO_FOREGROUND()");
+                		Log.i(TAG, "BG service detects MSG_APP_TO_FOREGROUND()");
                 		mbAppInBackground = false;
                 	}
                 	
 //                	if(shouldPullMsg())
 //            			sendMessageDelayed(Message.obtain(null,MSG_CHECK_UNREAD_MSG_NUM,0,0), 1*1000L);
                 	mbAppInBackground = false;
+                	
+                	checkUserLoginState();
                 	break;
                 }
                 case MSG_APP_TO_BACKGROUND:{
                 	if(!mbAppInBackground){
-                		//Log.i(TAG, "BG service detects MSG_APP_TO_BACKGROUND()");
+                		Log.i(TAG, "BG service detects MSG_APP_TO_BACKGROUND()");
 //                		if(null != mMsgInfoTask){
 //                			mMsgInfoTask.cancel(true);
 //                		}
                 	}
                 	mbAppInBackground = true;
+                	checkUserLoginState();
                 	break;
                 }
                 case MSG_POST_CHECK_NOTIFY_NUM:{
@@ -253,31 +266,32 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_UPDATE_SESSION_DATA:{
                 	final Bundle bundle = msg.getData();
                 	bundle.setClassLoader(getClassLoader());
-//                	boolean bLoginBefore = SessionMgr.getInstance().isMdidValid();
-//                	
-//                	SessionData sessionData = (SessionData) bundle.getParcelable("SessionData");
-//                	if(null != sessionData){
-//                		SessionMgr.getInstance().setSessionData(sessionData);
-//                		//If logout
-//                		if(bLoginBefore && (!SessionMgr.getInstance().isMdidValid() || null == SessionMgr.getInstance().getAccount() || SessionMgr.getInstance().getAccount().length() == 0)){
-//                			Log.i(TAG, "BG service detects MSG_UPDATE_SESSION_DATA() and reset");
-//                			mNotifyInfo = null;
-//                			mMsgInfo = null;
-//                			sendMessage(Message.obtain(null,MSG_SET_NOTIFY_NUM,0,0));
-//                			sendMessage(Message.obtain(null,MSG_SET_UNREAD_MSG_NUM,0,0));
-//                			if(!SessionMgr.getInstance().isMdidValid())
-//                				unregisterGCMServer();
-//                			cancelNotification();
-//                		}//If Login
-//                		else if(!bLoginBefore && SessionMgr.getInstance().isMdidValid()){
-//                			registerGCMServer();
+                	boolean bLoginBefore = SessionMgr.getInstance().isMdidValid();
+                	
+                	SessionData sessionData = (SessionData) bundle.getParcelable("SessionData");
+                	if(null != sessionData){
+                		SessionMgr.getInstance().setSessionData(sessionData);
+                		//If logout
+                		if(bLoginBefore && (!SessionMgr.getInstance().isMdidValid() || null == SessionMgr.getInstance().getAccount() || SessionMgr.getInstance().getAccount().length() == 0)){
+                			Log.i(TAG, "BG service detects MSG_UPDATE_SESSION_DATA() and reset");
+                			mNotifyInfo = null;
+                			mMsgInfo = null;
+                			sendMessage(Message.obtain(null,MSG_SET_NOTIFY_NUM,0,0));
+                			sendMessage(Message.obtain(null,MSG_SET_UNREAD_MSG_NUM,0,0));
+                			if(!SessionMgr.getInstance().isMdidValid())
+                				unregisterGCMServer();
+                			cancelNotification();
+                		}//If Login
+                		else if(!bLoginBefore && SessionMgr.getInstance().isMdidValid()){
+                			registerGCMServer();
 //                			try {
 //            		        	mMessenger.send(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0));
 //            				} catch (RemoteException e) {
 //            					e.printStackTrace();
 //            				}
-//                		}
-//                	}
+                		}
+                		checkUserLoginState();
+                	}
                 	break;
                 }
                 case MSG_UPDATE_PREF_DATA:{
@@ -395,11 +409,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //    	
 //    	//mSettingData = iKalaSettingsMgr.getInstance().getSettingData();
 //    	
-//    	if(null == SessionMgr.getInstance()){
-//    		SessionMgr.createInstance(getApplicationContext());
-//    	}
+    	if(null == SessionMgr.getInstance()){
+    		SessionMgr.createInstance(getApplicationContext());
+    	}
     	
-    	//mSessionData = SessionMgr.getInstance().getSessionData();
+//    	mSessionData = SessionMgr.getInstance().getSessionData();
     		
     	mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         
@@ -416,6 +430,18 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         mLastNotifyUpdateTime = BeseyeSharedPreferenceUtil.getPrefLongValue(mPref, PUSH_SERVICE_LAST_NOTIFY_TIME, -1L);
         
         registerGCMServer();
+        WebsocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
+        checkUserLoginState();
+    }
+    
+    private void checkUserLoginState(){
+    	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isNotifyWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
+    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && false == WebsocketsMgr.getInstance().isNotifyWSChannelAlive()){
+    		if(NetworkMgr.getInstance().isNetworkConnected())
+    			;//WebsocketsMgr.getInstance().constructNotifyWSChannel();
+    	}else{
+    		WebsocketsMgr.getInstance().destroyNotifyWSChannel();
+    	}
     }
     
     @Override
@@ -470,6 +496,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		if (mRegisterPushServerTask != null) {
 			mRegisterPushServerTask.cancel(true);
         }
+		
+		WebsocketsMgr.getInstance().unregisterOnWSChannelStateChangeListener();
 		unregisterGCMServer();
         GCMRegistrar.onDestroy(getApplicationContext());
 		super.onDestroy();
@@ -944,5 +972,49 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	public void onToastShow(AsyncTask task, String strMsg) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	static final int MAX_WS_RETRY_TIME = 20;
+	private int miWSDisconnectRetry = 0;
+	
+	@Override
+	public void onChannelConnecting() {
+		Log.i(TAG, "onChannelConnecting()---");
+	}
+	
+	@Override
+	public void onAuthfailed(){
+		Log.w(TAG, "onAuthfailed()---");
+	}
+
+	@Override
+	public void onChannelConnected() {
+		Log.i(TAG, "onChannelConnected()---");
+		miWSDisconnectRetry = 0;
+	}
+
+	@Override
+	public void onMessageReceived(String msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onChannelClosed() {
+		Log.i(TAG, "onChannelCloased()---");
+		if(miWSDisconnectRetry < MAX_WS_RETRY_TIME && false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && NetworkMgr.getInstance().isNetworkConnected()){
+			Log.i(TAG, "onChannelCloased(), abnormal close, retry-----");
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					WebsocketsMgr.getInstance().constructNotifyWSChannel();
+				}}, (miWSDisconnectRetry++)*1000);
+    		
+    	}
+	}
+
+	@Override
+	public void onConnectivityChanged(boolean bNetworkConnected) {
+		checkUserLoginState();
 	}
 }

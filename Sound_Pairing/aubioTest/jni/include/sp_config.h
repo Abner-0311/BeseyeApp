@@ -124,9 +124,14 @@ public:
 	static string DIVIDER;
 	static string BT_MSG_DIVIDER;
 	static string BT_MSG_FORMAT;
+	static string BT_MSG_FORMAT_SENDER;
 	static string BT_MSG_SET_VOLUME;
 	static string BT_MSG_SET_VOLUME_END;
+	static string MSG_AUTO_TEST_BEGIN;
+	static string MSG_AUTO_TEST_END;
+	static string MSG_TEST_ROUND_RESULT;
 	static string MISSING_CHAR;
+	static char PAIRING_DIVIDER;
 
 	//For recording buffer
 	static const long MAX_RECORDING_TIME = 60L; //60 seconds

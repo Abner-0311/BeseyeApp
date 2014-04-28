@@ -115,6 +115,16 @@ public class NetworkMgr {
 			}
 		}
 	}
+		
+	public String getMacAddress(){
+		if(null != mWifiManager){
+			WifiInfo info = mWifiManager.getConnectionInfo();
+			if(null != info){
+				return info.getMacAddress();
+			}
+		}
+		return null;
+	}
 	
 	//Only check Mobile/Wifi/Wimax
 	public boolean isNetworkConnected(){

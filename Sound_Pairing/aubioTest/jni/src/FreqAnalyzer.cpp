@@ -1912,8 +1912,9 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 		sTotalTime2 += (getTickCount() - lTickCount);
 #endif
+#ifdef CAM_AUDIO_PERFORMANCE
 		LOGE("performAudacityFFT(), Spectrum and Preprocess takes [%ld, %ld, %ld] ms average\n", sTotalTime1/lCount, sTotalTime2/lCount, lTotalTime/(lCount));
-
+#endif
 		lCount++;
 		if(NULL != iDxValues){
 			iDxValues[0] = iDx;

@@ -28,9 +28,16 @@ string SoundPair_Config::CONSECUTIVE_MARK = "";
 string SoundPair_Config::DIVIDER = "";
 string SoundPair_Config::BT_MSG_DIVIDER;
 string SoundPair_Config::BT_MSG_FORMAT;
+string SoundPair_Config::BT_MSG_FORMAT_SENDER;
 string SoundPair_Config::BT_MSG_SET_VOLUME = "BTVOL_";
 string SoundPair_Config::BT_MSG_SET_VOLUME_END = "_VOLBT";
 string SoundPair_Config::MISSING_CHAR = "%";
+string SoundPair_Config::MSG_TEST_ROUND_RESULT ="MSG_TEST_ROUND_RESULT";
+
+char SoundPair_Config::PAIRING_DIVIDER = 0x1b;
+
+string SoundPair_Config::MSG_AUTO_TEST_BEGIN = "BES_AUTO_TEST_BEGIN";
+string SoundPair_Config::MSG_AUTO_TEST_END   = "BES_AUTO_TEST_END";
 
 void SoundPair_Config::normalizeRatio(){
 	int iLen = TONE_TYPE;//sizeof(AMP_BASE_RATIO)/sizeof(AMP_BASE_RATIO[0]);
@@ -189,6 +196,7 @@ void SoundPair_Config::init(){
 
 	BT_MSG_DIVIDER = sCodeTable[iCodeTblSIze-2]+sCodeTable[iCodeTblSIze-1];
 	BT_MSG_FORMAT = "%s"+BT_MSG_DIVIDER+"%s";
+	BT_MSG_FORMAT_SENDER = "%s"+BT_MSG_DIVIDER+"%s"+BT_MSG_DIVIDER+"%s";
 
 	resolveFreqRangeConflict();
 	normalizeRatio();
