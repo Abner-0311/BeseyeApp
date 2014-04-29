@@ -580,6 +580,9 @@ int CBeseyePlayer::addStreamingPath(char *path){
 				URLContext* urlCtx = (URLContext*)ioCtx->opaque;
 				if(NULL != urlCtx){
 					iRet = gen_play_wrapper(urlCtx, path);
+					if(0 > iRet){
+						av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), failed to add path =>[%s]\n", (path)?path:"");
+					}
 				}else{
 					av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), urlCtx is null\n");
 				}
@@ -1783,14 +1786,22 @@ int read_thread(void *arg)
 
     /* if seeking requested, we execute it */
     if (player->get_start_time()!= AV_NOPTS_VALUE) {
-        int64_t timestamp;
+        int64_t timestamp = 0;
 
         timestamp = player->get_start_time();
+        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld, AV_NOPTS_VALUE:%lld", timestamp, ic->start_time, AV_NOPTS_VALUE);
+
         /* add the stream start time */
-        if (ic->start_time != AV_NOPTS_VALUE)
+        if (ic->start_time != AV_NOPTS_VALUE){
             timestamp += ic->start_time;
-        ret = avformat_seek_file(ic, -1, INT64_MIN, timestamp, INT64_MAX, 0);
+            av_log(NULL, AV_LOG_INFO, "read_thread(), add timestamp:%lld, ic->start_time:%lld", timestamp, ic->start_time);
+        }
+        ret = avformat_seek_file(ic, 0, INT64_MIN, timestamp, INT64_MAX, 0);
+        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld", timestamp, ic->start_time);
+
         if (ret < 0) {
+        	av_log(NULL, AV_LOG_ERROR, "%s: could not seek to position %0.3f\n",
+                    is->filename, (double)timestamp / AV_TIME_BASE);
             fprintf(stderr, "%s: could not seek to position %0.3f\n",
                     is->filename, (double)timestamp / AV_TIME_BASE);
         }
@@ -1974,6 +1985,11 @@ int read_thread(void *arg)
             SDL_Delay(100); /* wait for user event */
             continue;
         }
+//        static int iTest = 0;
+//        if(0 == iTest){
+//        	player->stream_seek(is, 100000, 0, 0);
+//        	iTest =1;
+//        }
         /* check if packet is in play range specified by user, then queue, otherwise discard */
         pkt_in_play_range = player->get_duration()== AV_NOPTS_VALUE ||
                 (pkt->pts - ic->streams[pkt->stream_index]->start_time) *
@@ -2265,6 +2281,14 @@ extern void  main13(int argc, char **argv);
 #ifdef __cplusplus
  }
 #endif
+int CBeseyePlayer::createStreaming(const char* path, int iSeekTimeInMs){
+	if(iSeekTimeInMs > 0){
+		start_time = iSeekTimeInMs;
+	}
+
+	return createStreaming(path);
+}
+
 int CBeseyePlayer::createStreaming(const char* path){
 	av_log(NULL, AV_LOG_INFO, "createStreaming()++: %s", path);
     int flags;
@@ -2456,6 +2480,12 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 			}
 		}else{
 			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), non-handled content:[%s]", (NULL != content)?content->av_val:"");
+			AMFObject* obj = (AMFObject*)extra;
+			AVal desc;
+			if(obj){
+				AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s", desc.av_val);
+			}
 		}
 	}
 }

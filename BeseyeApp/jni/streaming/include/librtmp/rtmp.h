@@ -347,7 +347,7 @@ extern "C"
   //Abner Add Begin
 
   typedef struct beseyeCBFuncHolder{
-	//char* value;
+	const char* value;
 	void (*rtmpCallback)(void* , const AVal*, const AVal*, void*);
 	void (*rtmpStatusCallback)(void* , int , void*);
 	void (*rtmpErrorCallback)(void* , int , void*);
