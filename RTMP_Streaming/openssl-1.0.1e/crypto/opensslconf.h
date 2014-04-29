@@ -86,8 +86,8 @@
 
 #if !(defined(VMS) || defined(__VMS)) /* VMS uses logical names instead */
 #if defined(HEADER_CRYPTLIB_H) && !defined(OPENSSLDIR)
-#define ENGINESDIR "/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/openssl-1.0.1e/build_android/lib/engines"
-#define OPENSSLDIR "/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/openssl-1.0.1e/build_android/ssl"
+#define ENGINESDIR "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/openssl-1.0.1e/build_android/lib/engines"
+#define OPENSSLDIR "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/openssl-1.0.1e/build_android/ssl"
 #endif
 #endif
 

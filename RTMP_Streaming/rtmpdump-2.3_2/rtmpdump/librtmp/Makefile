@@ -4,9 +4,9 @@ prefix=/usr/local
 
 CC=$(CROSS_COMPILE)gcc
 LD=$(CROSS_COMPILE)ld
-#AR=$(CROSS_COMPILE)ar
+AR=$(CROSS_COMPILE)ar
 #iOS
-AR=xcrun ar
+#AR=xcrun ar
 
 SYS=posix
 CRYPTO=OPENSSL

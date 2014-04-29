@@ -826,9 +826,11 @@ int64_t avio_seek_time(AVIOContext *s, int stream_index,
 {
     URLContext *h = s->opaque;
     int64_t ret;
+    av_log(s, AV_LOG_ERROR, "[%d, %lld, %d]\n", stream_index, timestamp, flags);
     if (!s->read_seek)
         return AVERROR(ENOSYS);
     ret = s->read_seek(h, stream_index, timestamp, flags);
+    av_log(s, AV_LOG_ERROR, "[%d, %lld, %d], ret:%d\n", stream_index, timestamp, flags, ret);
     if(ret >= 0) {
         int64_t pos;
         s->buf_ptr = s->buf_end; // Flush buffer

@@ -412,7 +412,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 			player[iStreamIdx]->registerCallback(rtmpStreamStatusCb);
 
 			nativeString = (char *)jni_env->GetStringUTFChars(path, 0);
-			player[iStreamIdx]->createStreaming(nativeString);
+			player[iStreamIdx]->createStreaming(nativeString, 20000);
 			jni_env->ReleaseStringUTFChars( path, nativeString);
 
 			player[iStreamIdx]->unregisterVideoCallback();

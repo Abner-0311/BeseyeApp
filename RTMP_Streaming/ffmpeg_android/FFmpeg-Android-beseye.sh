@@ -3,7 +3,7 @@
 #DEST=`pwd`/build/ffmpeg && rm -rf $DEST
 DIR_OPENSSL=`cd ../openssl-1.0.1e/build_android;pwd`
 DIR_LIBRTMP=`cd ../rtmpdump-2.3_2/rtmpdump/librtmp/build_android;pwd`
-DIR_APP=`cd ../BeseyeApp/jni/main;pwd`
+DIR_APP=`cd ../../BeseyeApp/jni/streaming;pwd`
 
 DEST=`pwd`/build/ffmpeg
 

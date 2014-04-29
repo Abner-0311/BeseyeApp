@@ -13,8 +13,8 @@ SHLIB_MAJOR=1
 SHLIB_MINOR=0.0
 SHLIB_EXT=.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
 PLATFORM=android-armv7
-OPTIONS=--prefix=/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/openssl-1.0.1e/build_android no-asm no-ec_nistp_64_gcc_128 no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-sctp no-shared no-store no-zlib no-zlib-dynamic static-engine
-CONFIGURE_ARGS=android-armv7 no-asm --prefix=/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/openssl-1.0.1e/build_android
+OPTIONS=--prefix=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/openssl-1.0.1e/build_android no-asm no-ec_nistp_64_gcc_128 no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-sctp no-shared no-store no-zlib no-zlib-dynamic static-engine
+CONFIGURE_ARGS=android-armv7 no-asm --prefix=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/openssl-1.0.1e/build_android
 SHLIB_TARGET=linux-shared
 
 # HERE indicates where this Makefile lives.  This can be used to indicate
@@ -26,10 +26,10 @@ HERE=.
 # for, say, /usr/ and yet have everything installed to /tmp/somedir/usr/.
 # Normally it is left empty.
 INSTALL_PREFIX=
-INSTALLTOP=/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/openssl-1.0.1e/build_android
+INSTALLTOP=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/openssl-1.0.1e/build_android
 
 # Do not edit this manually. Use Configure --openssldir=DIR do change this!
-OPENSSLDIR=/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/openssl-1.0.1e/build_android/ssl
+OPENSSLDIR=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/openssl-1.0.1e/build_android/ssl
 
 # NO_IDEA - Define to build without the IDEA algorithm
 # NO_RC4  - Define to build without the RC4 algorithm
@@ -69,7 +69,7 @@ ARFLAGS=
 AR= arm-linux-androideabi-ar $(ARFLAGS) r
 RANLIB= arm-linux-androideabi-ranlib
 NM= nm
-PERL= /opt/local/bin/perl5
+PERL= /usr/bin/perl
 TAR= tar
 TARFLAGS= --no-recursion --record-size=10240
 MAKEDEPPROG=makedepend

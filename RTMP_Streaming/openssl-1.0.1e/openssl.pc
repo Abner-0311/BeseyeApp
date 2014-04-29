@@ -1,4 +1,4 @@
-prefix=/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/openssl-1.0.1e/build_android
+prefix=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/openssl-1.0.1e/build_android
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
