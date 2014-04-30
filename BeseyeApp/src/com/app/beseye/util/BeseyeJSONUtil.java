@@ -24,6 +24,8 @@ public class BeseyeJSONUtil {
 	public static final String OBJ_LST 					= "Objs";
 	public static final String OBJ_LK_KEY 				= "LinkKey";
 	public static final String OBJ_NXT_PAGE 			= "NextPage";
+	
+	public static final String OBJ_DATA 				= "Data";
 	public static final String OBJ_UNREAD 				= "UnreadObjCount";
 	public static final String OBJ_UNREAD_SOCIAL 		= "UnreadObjCountSocial";
 	public static final String OBJ_UNREAD_CHORUS 		= "UnreadObjCountChorus";
@@ -80,6 +82,11 @@ public class BeseyeJSONUtil {
 	public static final String WIFI_SSIDLST_SGL 		= "signal";
 	public static final String WIFI_SSIDLST_SEC 		= "sec";
 	public static final String WIFI_SSIDLST_USED 		= "CurrentUsed";
+	
+	//WS BE service
+	public static final String CAM_UUID 				= "camUuid";
+	public static final String DEV_ID 					= "deviceId";
+	public static final String SES_TOKEN 				= "SessionToken";
 	
 	//Account BE service
 	public static final String ACC_EMAIL 				= "email";

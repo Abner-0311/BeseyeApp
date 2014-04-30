@@ -37,6 +37,7 @@ public class WebsocketsMgr {
 	
 	protected Future<WebSocket> mFNotifyWSChannel = null;
 	protected String mStrAuthJobId = null;
+	protected String mStrAudioConnJobId = null;
 	protected boolean mBAuth = false;
 	protected boolean mBConstructingNotifyWSChannel = false;
 	protected WeakReference<OnWSChannelStateChangeListener> mOnWSChannelStateChangeListener = null;

@@ -33,6 +33,7 @@ import android.util.Log;
 
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeHttpTask;
+import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -54,7 +55,10 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	static final boolean ENABLE_INTERNAL_SERVER = false;
 	static final boolean AUDIO_REC_FILE = false;
 	
-	static private final String AUDIO_WS_ADDR = "ws://192.168.2.4:1314";
+	static final boolean FAKE_RECEIVER = true;
+	String mSWID = "3eb1ef7b06673a2562aa";
+	
+	static private String AUDIO_WS_ADDR = "ws://192.168.2.4:1314";
 	static private final String AUDIO_WS_ADDR_INTERNAL = "http://localhost:5566/audiowebsocket";//
 	static private AudioWebSocketsMgr sWebsocketsMgr = null;
 	
@@ -62,7 +66,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	byte[] b =  new byte[1024];
 	
 	private AudioWebSocketsMgr(){
-		if(null == httpServer){
+		if(null == httpServer && ENABLE_INTERNAL_SERVER){
 			Log.i(TAG, "Launch httpServer...");
 			httpServer = new AsyncHttpServer();
 	        httpServer.setErrorCallback(new CompletedCallback() {
@@ -105,6 +109,10 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		return sWebsocketsMgr;
 	}
 	
+	public void setAudioWSServerIP(String ip){
+		AUDIO_WS_ADDR = String.format("http://%s:80/websocket", ip);//"54.238.255.56");
+	}
+	
 	protected WebSocketConnectCallback getWebSocketConnectCallback(){
 		return mWebSocketConnectCallback;
 	}
@@ -114,20 +122,25 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	}
 	
 	protected String getWSProtocol(){
-		return ENABLE_INTERNAL_SERVER?null:"beseye-audio-protocol";
+		return null;//ENABLE_INTERNAL_SERVER?null:"beseye-audio-protocol";
 	}
 	
 	private WebSocketConnectCallback mWebSocketConnectCallback = new WebSocketConnectCallback() {
         @Override
         public void onCompleted(Exception ex, final WebSocket webSocket) {
-        	Log.i(TAG, "AudioWebSocketsMgr::onCompleted()...");
+        	Log.i(TAG, "AudioWebSocketsMgr::onCompleted()...AUDIO_WS_ADDR:"+AUDIO_WS_ADDR);
+        	if(null == webSocket){
+        		Log.i(TAG, "AudioWebSocketsMgr::onCompleted(), connect to "+AUDIO_WS_ADDR+"failed, ex:"+ex.toString());
+        		return;
+        	}
+        	
         	OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 			if(null != listener){
 				listener.onChannelConnected();
 			}
+			if(ENABLE_INTERNAL_SERVER)
+				new GetSessionTask(AudioWebSocketsMgr.this).execute();
 			
-			new GetSessionTask(AudioWebSocketsMgr.this).execute();
-
 			//webSocket.send("Test".getBytes());
             webSocket.setStringCallback(new StringCallback() {
                 @Override
@@ -161,8 +174,41 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 										Log.i(TAG, "onStringAvailable(), Auth OK -----------------------");
 										mStrAuthJobId = null;
 										mBAuth = true;
+										//
+										if(FAKE_RECEIVER){
+											String strWsId = mSWID;//BeseyeJSONUtil.getJSONString(dataObj, WSA_WS_ID);
+											//Log.i(TAG, "onStringAvailable(), binConnObj="+dataObj.toString()+", strWsId:"+strWsId);
+											JSONObject binConnObj = BeseyeWebsocketsUtil.genBinaryConnMsg(strWsId);
+											if(null != binConnObj){
+												webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_BIN_CONN, binConnObj.toString()));
+												Log.i(TAG, "onStringAvailable(), binConnObj="+binConnObj.toString());
+												mStrAudioConnJobId = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(binConnObj, WS_ATTR_DATA),WS_ATTR_JOB_ID); 
+												Log.i(TAG, "onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
+											}
+										}else{
+											new BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask(AudioWebSocketsMgr.this).execute("Bes0001");
+										}
+										
+									}else if(null != mStrAudioConnJobId && mStrAudioConnJobId.equals(strJobID) && 0 == iRetCode){
+										Log.i(TAG, "onStringAvailable(), Audio Conn OK -----------------------");
+										transferAudioBuf();
 									}
 								}
+							}else if(WS_CB_REMOTE_BIN_CONN.equals(strCmd)){
+								JSONObject dataObj = BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.newJSONObject(strBody),WS_ATTR_DATA);
+								if(null != dataObj){
+									String strWsId = BeseyeJSONUtil.getJSONString(dataObj, WSA_WS_ID);
+									//Log.i(TAG, "onStringAvailable(), binConnObj="+dataObj.toString()+", strWsId:"+strWsId);
+									JSONObject binConnObj = BeseyeWebsocketsUtil.genBinaryConnMsg(strWsId);
+									if(null != binConnObj){
+										webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_BIN_CONN, binConnObj.toString()));
+										Log.i(TAG, "onStringAvailable(), binConnObj="+binConnObj.toString());
+										mStrAudioConnJobId = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(binConnObj, WS_ATTR_DATA),WS_ATTR_JOB_ID); 
+										Log.i(TAG, "onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
+									}
+								}
+							}else if("wss_binary_transfer".equals(strCmd)){
+								Log.w(TAG, "onStringAvailable(), wss_binary_transfer at="+System.currentTimeMillis());
 							}else{
 								Log.w(TAG, "onStringAvailable(), not handle cmd="+strCmd);
 								OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
@@ -237,7 +283,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			try {
 				obj.put("username", "admin");
 				obj.put("password", "password");
-				return super.doInBackground("http://192.168.2.4/sray/login.cgi", obj.toString());
+				return super.doInBackground("http://192.168.2.85/sray/login.cgi", obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -254,19 +300,23 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     private int bufferSizeInBytes = 0;
 
     private AudioRecord audioRecord;
-    private AudioSendThread audioSendThread;
+    private AudioSendThread audioSendThread = null;
     
     private void transferAudioBuf(){
     	bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz,
 		channelConfig, audioFormat);
     	bufferSizeInBytes = 6400;
-		audioRecord = new AudioRecord(audioSource, sampleRateInHz,
-		channelConfig, audioFormat, bufferSizeInBytes);
-		audioRecord.startRecording();
-		
-		audioSendThread = new AudioSendThread();
-		audioSendThread.start();
+    	if(null == audioRecord){
+			audioRecord = new AudioRecord(audioSource, sampleRateInHz,
+			channelConfig, audioFormat, bufferSizeInBytes);
+			audioRecord.startRecording();
+			
+			audioSendThread = new AudioSendThread();
+			audioSendThread.start();
+    	}
     }
+    
+    static public final String WS_CMD_FORMAT_AUDIO 			= "[\"%s\", \"data\":%s]";
     
     class AudioSendThread extends Thread {
     	@Override
@@ -277,7 +327,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    
 		    if(ENABLE_INTERNAL_SERVER){
 		    	try{
-				    socket = new Socket("192.168.2.4", 80);
+				    socket = new Socket("192.168.2.85", 80);
 				    os = socket.getOutputStream();
 				    //String header = "POST /cgi/audio/transmit.cgi?session="+session+"&httptype=singlepart HTTP/1.1\r\nHost:192.168.2.4\r\n\r\n";
 				    
@@ -309,7 +359,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    }
 
 		    Log.i(TAG, "run(), socket connected");	
-		    bufferSizeInBytes = 6400;
+		    bufferSizeInBytes = 640;
 		    byte[] audiodata = new byte[bufferSizeInBytes];
 		    int readsize = 0;
 
@@ -321,10 +371,10 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    		UlawEncoderInputStream uis=null;
 		    		try {
 					    uis = new UlawEncoderInputStream(is,0);
-					    byte buff[] = new byte[3200];
+					    byte buff[] = new byte[320];
 					    int len = uis.read(buff);
 					    while (len > 0) {
-					    	Log.i(TAG, "run(), len="+len+", buff[319]="+buff[319]);
+					    	
 					    	if(AUDIO_REC_FILE){
 					    		fos.write(buff, 0, len);
 					    		fos.flush();
@@ -333,12 +383,24 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						    		os.write(buff, 0, len);
 								    os.flush();
 					    		}else{
-					    			mFNotifyWSChannel.get().send(buff);
+					    			//mFNotifyWSChannel.get().send(buff);
+					    			JSONObject data_obj = new JSONObject();
+					    			JSONArray arr = new JSONArray();
+					    			if(null != arr){
+					    				for(int i = 0;i< len;i++)
+					    					arr.put(buff[i]+128);
+					    			}
+					    			//String data = arr.toString().substring(1, arr.toString().length()-2);
+				    				data_obj.put(WS_ATTR_DATA, arr);//new String(buff,0, len, "UTF-8"));
+				    				String strSent = String.format(WS_CMD_FORMAT, WS_FUNC_BIN_TRANSFER, data_obj.toString());
+					    			mFNotifyWSChannel.get().send(strSent);	
+					    			Log.i(TAG, "run(), len="+len+", strSent=\n"+strSent);
 					    		}
 					    	}
 						    len = uis.read(buff);
 					    }
 		    		} catch (Exception e) {
+		    			Log.i(TAG, "run(), Exception:"+e.toString());	
 		    		} finally{
 		    			try {uis.close();} catch (Exception e) {}
 				    }
@@ -552,6 +614,12 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 				session = BeseyeJSONUtil.getJSONString(obj, "session");
 				transferAudioBuf();
 			//}
+		}else if(task instanceof BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask){
+			if(0 == iRetCode){
+				JSONObject obj = result.get(0);
+				Log.i(TAG, "onPostExecute(), obj = "+obj.toString());
+				
+			}
 		}
 	}
 

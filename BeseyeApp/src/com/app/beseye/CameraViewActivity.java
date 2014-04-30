@@ -7,14 +7,23 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.app.beseye.R;
 import com.app.beseye.TouchSurfaceView.OnTouchSurfaceCallback;
 import com.app.beseye.audio.AudioChannelMgr;
+import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
+import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
@@ -50,6 +59,7 @@ import android.graphics.Bitmap;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -429,6 +439,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				act.releaseWakelock();
 				NetworkMgr.getInstance().unregisterNetworkChangeCallback(act);
 				act.mCameraViewControlAnimator.cancelHideControl();
+				
+				if(AudioWebSocketsMgr.getInstance().isNotifyWSChannelAlive()){
+					AudioWebSocketsMgr.getInstance().destroyNotifyWSChannel();
+				}
 			}
 		}
 		
@@ -616,6 +630,29 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 	}
 
+	@Override
+	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeNotificationBEHttpTask.GetAudioWSServerTask){
+				if(0 == iRetCode){
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
+					JSONArray arr = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.OBJ_DATA);
+					try {
+						AudioWebSocketsMgr.getInstance().setAudioWSServerIP(arr.getString(0));
+						AudioWebSocketsMgr.getInstance().constructNotifyWSChannel();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}else 
+			super.onPostExecute(task, result, iRetCode);
+		
+	}
+
+
 	protected int getLayoutId(){
 		return R.layout.layout_camera_view;
 	}
@@ -641,7 +678,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(AudioWebSocketsMgr.getInstance().isNotifyWSChannelAlive()){
 					AudioWebSocketsMgr.getInstance().destroyNotifyWSChannel();
 				}else{
-					AudioWebSocketsMgr.getInstance().constructNotifyWSChannel();
+					monitorAsyncTask(new BeseyeNotificationBEHttpTask.GetAudioWSServerTask(this), true);
 				}
 				break;
 			}

@@ -34,14 +34,19 @@ public class BeseyeWebsocketsUtil {
     static public final String WS_CB_KEEP_ALIVE  		= "wss_keep_alive";
     static public final String WS_CB_ACK  				= "wss_ack";
     static public final String WS_CB_EVT  				= "wss_evt";
+    static public final String WS_CB_REMOTE_BIN_CONN  	= "wss_remote_binary_connected";
     
     
     static public final String WS_FUNC_CONNECTED 		= "wsc_connected";
     static public final String WS_FUNC_AUTH 			= "wsc_auth";
     static public final String WS_FUNC_KEEP_ALIVE 		= "wsc_keep_alive";
     static public final String WS_FUNC_LOOPBACK 		= "wsc_loopback";
+    static public final String WS_FUNC_BIN_CONN 		= "wsc_binary_connect";
+    static public final String WS_FUNC_BIN_TRANSFER 	= "wsc_binary_transfer";
+    
     static public final String WS_FUNC_RAILS_PING 		= "websocket_rails.ping";
 
+    static public final String WSA_WS_ID 				= "ws_id";
     static public final String WS_ATTR_DATA 			= "data";
 
     static public final String WS_ATTR_TYPE 			= "Type";
@@ -100,6 +105,7 @@ public class BeseyeWebsocketsUtil {
     	}
     	return ret_obj;
     }
+    static final boolean FAKE_RECEIVER = true;
     
     static public JSONObject genAuthMsg(){
     	JSONObject ret_obj = new JSONObject();
@@ -109,9 +115,9 @@ public class BeseyeWebsocketsUtil {
     			try {
     				JSONObject data_obj = new JSONObject();
     				data_obj.put(WS_ATTR_USER_ID, SessionMgr.getInstance().getMdid()+"");
-    				data_obj.put(WS_ATTR_DEV_TYPE, 1);//1 means Mobile
+    				data_obj.put(WS_ATTR_DEV_TYPE, FAKE_RECEIVER?0:1);//1 means Mobile
     				data_obj.put(WS_ATTR_DEV_NAME, Build.MODEL);
-    				data_obj.put(WS_ATTR_DEV_ID, BeseyeUtils.getAndroidUUid());
+    				data_obj.put(WS_ATTR_DEV_ID, FAKE_RECEIVER?"Bes0001":BeseyeUtils.getAndroidUUid());
     				data_obj.put(WS_ATTR_DEV_MAC, NetworkMgr.getInstance().getMacAddress());
     				data_obj.put(WS_ATTR_SES_TOKEN, SessionMgr.getInstance().getAuthToken());
     				
@@ -119,6 +125,30 @@ public class BeseyeWebsocketsUtil {
     				job_obj.put(WS_ATTR_COMM, WS_ATTR_COMM_AUTH);
     				job_obj.put(WS_ATTR_INTERNAL_DATA, data_obj);
     				
+    				ret_obj.put(WS_ATTR_DATA, job_obj);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}else{
+    			Log.e(TAG,  "job_obj is null\n");
+    		}
+    	}
+    	else{
+    		Log.e( TAG,"ret_obj is null\n");
+    	}
+    	return ret_obj;
+    }
+    
+    static public JSONObject genBinaryConnMsg(String strWsId){
+    	JSONObject ret_obj = new JSONObject();
+    	if(null != ret_obj){
+    		JSONObject job_obj = getJsonObjWithJobID();
+    		if(null != job_obj){
+    			try {
+    				JSONObject data_obj = new JSONObject();
+    				data_obj.put(WSA_WS_ID, strWsId);
+    				job_obj.put(WS_ATTR_INTERNAL_DATA, data_obj);
     				ret_obj.put(WS_ATTR_DATA, job_obj);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
