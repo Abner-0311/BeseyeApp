@@ -51,4 +51,7 @@
     <color name="signup_black_mask_color">#88000000</color>
     
     <color name="picker_font_color">#a0a0a0</color>
+    
+    <color name="camera_list_video_bg">#f5f5f5</color>
+    <color name="camera_list_video_mask">#88ffffff</color>
 </resources>

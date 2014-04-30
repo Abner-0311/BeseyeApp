@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.app.beseye"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color">
+
+    
+    <ImageView
+        android:id="@+id/iv_failed_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/cameralist_failedCenter_top"
+        android:src="@drawable/cameralist_failed_cloud_center" />
+    
+    <ImageView
+        android:id="@+id/iv_failed_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/cameralist_failedTop_top"
+        android:layout_marginRight="@dimen/cameralist_failedTop_right"
+        android:src="@drawable/cameralist_failed_cloud_top" />
+    
+    <ImageView
+        android:id="@+id/iv_failed_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tv_cameralist_failed_content"
+        android:layout_marginTop="@dimen/cameralist_failedBottom_top"
+        android:src="@drawable/cameralist_failed_cloud_bottom" />
+    
+    <TextView
+            android:id="@+id/tv_cameralist_failed_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_failed_center"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/cameralist_videoblock_marginTop"
+            android:layout_marginRight="@dimen/cameralist_failed_text_margin"
+            android:layout_marginLeft="@dimen/cameralist_failed_text_margin"
+            android:gravity="center"
+            android:text="@string/camera_list_failed_title"
+            android:textColor="@color/beseye_color_gray"
+            android:textSize="@dimen/login_fontNormal" />
+    <TextView
+            android:id="@+id/tv_cameralist_failed_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_cameralist_failed_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="@dimen/cameralist_failed_text_margin"
+            android:layout_marginLeft="@dimen/cameralist_failed_text_margin"
+            android:gravity="center"
+            android:text="@string/camera_list_failed_content"
+            android:textColor="@color/beseye_color_gray"
+            android:textSize="@dimen/login_fontSmall" />
+
+</RelativeLayout>
+
+
+
+   
+		
+	
+ 
+
+
