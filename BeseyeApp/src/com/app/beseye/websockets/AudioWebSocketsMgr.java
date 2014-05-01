@@ -1,13 +1,6 @@
 package com.app.beseye.websockets;
 
-import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT_LOC;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT_UA;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT_UDID;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_EMAIL;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_PASSWORD;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_REMEM_ME;
+import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.*;
 
 import java.io.ByteArrayInputStream;
@@ -55,7 +48,6 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	static final boolean ENABLE_INTERNAL_SERVER = false;
 	static final boolean AUDIO_REC_FILE = false;
 	
-	static final boolean FAKE_RECEIVER = true;
 	String mSWID = "3eb1ef7b06673a2562aa";
 	
 	static private String AUDIO_WS_ADDR = "ws://192.168.2.4:1314";
@@ -175,7 +167,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 										mStrAuthJobId = null;
 										mBAuth = true;
 										//
-										if(FAKE_RECEIVER){
+										if(FAKE_AUDIO_RECEIVER){
 											String strWsId = mSWID;//BeseyeJSONUtil.getJSONString(dataObj, WSA_WS_ID);
 											//Log.i(TAG, "onStringAvailable(), binConnObj="+dataObj.toString()+", strWsId:"+strWsId);
 											JSONObject binConnObj = BeseyeWebsocketsUtil.genBinaryConnMsg(strWsId);

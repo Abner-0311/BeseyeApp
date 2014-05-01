@@ -22,10 +22,11 @@ public:
 	virtual ~CBeseyePlayer();
 
 	//for streaming client use
-	virtual int createStreaming(const char* path);
-	virtual int createStreaming(const char* path, int iSeekTimeInMs);
-	virtual int addStreamingPath(char *path);
-	virtual int addStreamingPathList(char** pathList, int iCount);
+	virtual int createStreaming(const char* fullPath);
+	virtual int createStreaming(const char* fullPath, int iSeekTimeInMs);
+	virtual int createStreaming(const char* streamHost, const char** streamPathList, int iStreamCount, int iSeekTimeInMs);
+	virtual int addStreamingPath(char *streamPath);
+	virtual int addStreamingPathList(char** streamPathList, int iCount);
 
 	virtual int isStreamPlaying();
 	virtual int isStreamPaused();
@@ -36,10 +37,13 @@ public:
 	virtual int closeStreaming();
 
 	virtual int updateWindow(void* window, int iFrameFormat, int screen_width, int screen_height);
+
+	//For update video stream on device
 	virtual void registerVideoCallback(void(* videoCallback)(void* window, uint8_t* srcbuf, uint32_t iFormat, uint32_t linesize, uint32_t iWidth, uint32_t iHeight),
 									   void(* mVideoDeinitCallback)(void* window));
 	virtual void unregisterVideoCallback();
 
+	//For update window info when creating stream
 	virtual void setWindowHolder(void* window_holder,
 								 void*(* getWindowFunc)(void* window_holder, uint32_t iWidth, uint32_t iHeight));
 
@@ -80,6 +84,8 @@ public:
 
 	virtual int get_wanted_stream(int idx);
 	virtual VideoState::ShowMode get_show_mode();
+
+	virtual void addPendingStreamPaths();
 
 private:
 	inline void fill_rectangle(SDL_Surface *screen, int x, int y, int w, int h, int color){
@@ -155,6 +161,10 @@ private:
 	int64_t start_time;
 	int64_t duration;
 	int64_t audio_callback_time;
+
+	char** mVecPendingStreamPaths;
+	int iNumOfPendingStreamPaths;
+	void freePendingStreamPaths();
 
 	int rdftspeed;
 	int genpts;

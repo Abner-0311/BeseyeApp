@@ -1,6 +1,6 @@
 package com.app.beseye.websockets;
 
-import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeConfig.*;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
@@ -105,7 +105,7 @@ public class BeseyeWebsocketsUtil {
     	}
     	return ret_obj;
     }
-    static final boolean FAKE_RECEIVER = true;
+    
     
     static public JSONObject genAuthMsg(){
     	JSONObject ret_obj = new JSONObject();
@@ -115,9 +115,9 @@ public class BeseyeWebsocketsUtil {
     			try {
     				JSONObject data_obj = new JSONObject();
     				data_obj.put(WS_ATTR_USER_ID, SessionMgr.getInstance().getMdid()+"");
-    				data_obj.put(WS_ATTR_DEV_TYPE, FAKE_RECEIVER?0:1);//1 means Mobile
+    				data_obj.put(WS_ATTR_DEV_TYPE, FAKE_AUDIO_RECEIVER?0:1);//1 means Mobile
     				data_obj.put(WS_ATTR_DEV_NAME, Build.MODEL);
-    				data_obj.put(WS_ATTR_DEV_ID, FAKE_RECEIVER?"Bes0001":BeseyeUtils.getAndroidUUid());
+    				data_obj.put(WS_ATTR_DEV_ID, FAKE_AUDIO_RECEIVER?"Bes0001":BeseyeUtils.getAndroidUUid());
     				data_obj.put(WS_ATTR_DEV_MAC, NetworkMgr.getInstance().getMacAddress());
     				data_obj.put(WS_ATTR_SES_TOKEN, SessionMgr.getInstance().getAuthToken());
     				

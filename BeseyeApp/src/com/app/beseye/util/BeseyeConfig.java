@@ -16,6 +16,7 @@ public class BeseyeConfig {
 	//relay wifi AP info
 
 	static public final boolean ASSIGN_ST_PATH = false;
+	static public final boolean FAKE_AUDIO_RECEIVER = false;
 	
 	static public final boolean REDDOT_DEMO = false;
 	static public final String RELAY_AP_SSID = "raylios WiFi";

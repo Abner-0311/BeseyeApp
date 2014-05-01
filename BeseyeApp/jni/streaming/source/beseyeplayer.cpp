@@ -63,7 +63,9 @@ miFrameFormat(iFrameFormat),
 mVideoCallback(NULL),
 mVideoDeinitCallback(NULL),
 window_holder(NULL),
-getWindowByHolderFunc(NULL){
+getWindowByHolderFunc(NULL),
+mVecPendingStreamPaths(NULL),
+iNumOfPendingStreamPaths(0){
 	wanted_stream[AVMEDIA_TYPE_AUDIO] = -1;
 	wanted_stream[AVMEDIA_TYPE_VIDEO] = -1;
 	wanted_stream[AVMEDIA_TYPE_SUBTITLE] = -1;
@@ -76,7 +78,32 @@ CBeseyePlayer::~CBeseyePlayer(){
 		mVideoDeinitCallback(window);
 		window = NULL;
 	}
+
+	freePendingStreamPaths();
+
 	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::~CBeseyePlayer()--");
+}
+
+void CBeseyePlayer::addPendingStreamPaths(){
+	if(mVecPendingStreamPaths){
+		if(0 <= addStreamingPathList(mVecPendingStreamPaths, iNumOfPendingStreamPaths))
+			freePendingStreamPaths();
+	}
+}
+
+void CBeseyePlayer::freePendingStreamPaths(){
+	if(mVecPendingStreamPaths){
+		for(int i =0;i < iNumOfPendingStreamPaths;i++){
+			if(mVecPendingStreamPaths[i]){
+				free(mVecPendingStreamPaths[i]);
+				mVecPendingStreamPaths[i]=NULL;
+			}
+		}
+		free(mVecPendingStreamPaths);
+		mVecPendingStreamPaths = NULL;
+		iNumOfPendingStreamPaths = 0;
+		av_log(NULL, AV_LOG_ERROR, "freePendingStreamPaths(), free done");
+	}
 }
 
 int64_t CBeseyePlayer::get_start_time(){
@@ -198,6 +225,8 @@ void CBeseyePlayer::do_exit(VideoState *is)
 //        printf("\n");
 
     //SDL_Quit();
+
+    freePendingStreamPaths();
     av_log(NULL, AV_LOG_QUIET, "%s", "");
     //exit(0);
 }
@@ -603,7 +632,7 @@ int CBeseyePlayer::addStreamingPathList(char** pathList, int iCount){
 	int iRet = -1;
 	if(pathList){
 		for(int i = 0; i < iCount; i++){
-			if(!(iRet = addStreamingPath(*(pathList++)))){
+			if(0 > (iRet = addStreamingPath(*(pathList++)))){
 				break;
 			}
 		}
@@ -1760,8 +1789,8 @@ int read_thread(void *arg)
     orig_nb_streams = ic->nb_streams;
 
     //for video stream only
-    //err = avformat_find_stream_info_ext(ic, opts);
-    err = avformat_find_stream_info(ic, opts);
+    err = avformat_find_stream_info_ext(ic, opts);
+    //err = avformat_find_stream_info(ic, opts);
     if (err < 0) {
     	av_log(NULL, AV_LOG_ERROR, "avformat_find_stream_info() err:%d--", err);
         fprintf(stderr, "%s: could not find codec parameters\n", is->filename);
@@ -1773,6 +1802,8 @@ int read_thread(void *arg)
 
     player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTED, 0);
     player->registerRtmpCallback(ic);
+
+    player->addPendingStreamPaths();
 
     for (i = 0; i < orig_nb_streams; i++)
         av_dict_free(&opts[i]);
@@ -2281,16 +2312,38 @@ extern void  main13(int argc, char **argv);
 #ifdef __cplusplus
  }
 #endif
-int CBeseyePlayer::createStreaming(const char* path, int iSeekTimeInMs){
+
+int CBeseyePlayer::createStreaming(const char* streamHost, const char** streamPathList, int iStreamCount, int iSeekTimeInMs){
+	if(0 < iStreamCount){
+		int idx = 1;
+		iNumOfPendingStreamPaths = iStreamCount -1;
+		for(; idx < iStreamCount;idx++){
+			if(NULL == mVecPendingStreamPaths){
+				mVecPendingStreamPaths = (char**)malloc((iNumOfPendingStreamPaths)*sizeof(char*));
+			}
+			if(streamPathList[idx])
+				mVecPendingStreamPaths[idx - 1] = strdup(streamPathList[idx]);
+			else
+				av_log(NULL, AV_LOG_ERROR, "createStreaming(), streamPathList[%d] is null", idx);
+		}
+		av_log(NULL, AV_LOG_INFO, "createStreaming(), iNumOfPendingStreamPaths is [%d] ", iNumOfPendingStreamPaths);
+		string host(streamHost);
+		string path(streamPathList[0]);
+		string strPath = host + path;
+		return createStreaming(strPath.c_str(), iSeekTimeInMs);
+	}
+	return -1;
+}
+
+int CBeseyePlayer::createStreaming(const char* fullPath, int iSeekTimeInMs){
 	if(iSeekTimeInMs > 0){
 		start_time = iSeekTimeInMs;
 	}
-
-	return createStreaming(path);
+	return createStreaming(fullPath);
 }
 
-int CBeseyePlayer::createStreaming(const char* path){
-	av_log(NULL, AV_LOG_INFO, "createStreaming()++: %s", path);
+int CBeseyePlayer::createStreaming(const char* fullPath){
+	av_log(NULL, AV_LOG_INFO, "createStreaming()++: %s", fullPath);
     int flags;
     //VideoState *is;
 
@@ -2306,7 +2359,7 @@ int CBeseyePlayer::createStreaming(const char* path){
     avformat_network_init();
 
     char* path2 = NULL;
-	string strPath(path);
+	string strPath(fullPath);
 	int iPos = strPath.find("rtsp");
 	av_log(NULL, AV_LOG_INFO, "createStreaming(), iPos:%d", iPos);
 	if(0 <= iPos){
@@ -2320,7 +2373,7 @@ int CBeseyePlayer::createStreaming(const char* path){
 						  "tcp",
 						  //"-max_delay",
 						  //"500000",
-						  (char*)path,
+						  (char*)fullPath,
 						  (char*)0x0 };
 		path2 = main12(sizeof(argg1)/sizeof(argg1[0])-1,argg1);
 	}else{
@@ -2333,7 +2386,7 @@ int CBeseyePlayer::createStreaming(const char* path){
 						  //"tcp",
 						  //"-max_delay",
 						  //"500000",
-						  (char*)path,
+						  (char*)fullPath,
 						  (char*)0x0 };
 		path2 = main12(sizeof(argg1)/sizeof(argg1[0])-1,argg1);
 	}
@@ -2401,7 +2454,7 @@ int CBeseyePlayer::pauseStreaming(){
 	av_log(NULL, AV_LOG_INFO, "pauseStreaming()++, mStream_Status:%d", mStream_Status);
 	if(NULL != is && !isStreamPaused() && mStream_Status >= STREAM_CONNECTED && mStream_Status < STREAM_CLOSE){
 		toggle_pause(is);
-		triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSED, 0);
+		triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSING, 0);
 		iRet = 1;
 	}
 	return iRet;
@@ -2467,10 +2520,11 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 			if(obj){
 				AMFProp_GetString(AMF_GetProp(obj, &av_description, -1), &desc);
 				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Play, desc:%s", desc.av_val);
+				triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, desc.av_val, STREAM_PLAYING, 0);
 			}
-			triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, STREAM_PLAYING, 0);
 		}else if(AVMATCH(content, &av_NetStream_Pause_Notify)){
 			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Pause_Notify");
+			triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSED, 0);
 		}else if(AVMATCH(content, &av_NetStream_Play_StreamNotFound)){
 			AMFObject* obj = (AMFObject*)extra;
 			AVal desc;

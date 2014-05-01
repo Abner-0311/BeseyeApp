@@ -412,7 +412,15 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 			player[iStreamIdx]->registerCallback(rtmpStreamStatusCb);
 
 			nativeString = (char *)jni_env->GetStringUTFChars(path, 0);
-			player[iStreamIdx]->createStreaming(nativeString, 20000);
+//			const char* streamList[] = {"mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_0.mp4",
+//								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_1.mp4",
+//								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_2.mp4",
+//								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_3.mp4",
+//								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_4.mp4",
+//								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_5.mp4"};
+//
+//			player[iStreamIdx]->createStreaming("rtmp://54.250.149.50/vods3/_definst_/", streamList, 6, 0);
+			player[iStreamIdx]->createStreaming(nativeString, 0);
 			jni_env->ReleaseStringUTFChars( path, nativeString);
 
 			player[iStreamIdx]->unregisterVideoCallback();
