@@ -255,8 +255,8 @@ miDigitalToTest(0),
 mControlThread(0),
 mBufRecordThread(0),
 mAnalysisThread(0),
-mstrCamWSServerIP("192.168.2.4"),
-miCamWSServerPort(5432){
+mstrCamWSServerIP(CAM_URL),
+miCamWSServerPort(CAM_WS_PORT){
 	pthread_mutex_init(&mSyncObj, NULL);
 	pthread_cond_init(&mSyncObjCond, NULL);
 

@@ -1724,7 +1724,8 @@ float *FreqAnalyzer::win = NULL;
 double FreqAnalyzer::wss ;
 int FreqAnalyzer::windowFunc = 3;//hannings
 
-//#define FFTW_TRIAL
+#define FFTW_TRIAL
+
 
 #ifdef FFTW_TRIAL
 float *inBuffer2 = NULL;

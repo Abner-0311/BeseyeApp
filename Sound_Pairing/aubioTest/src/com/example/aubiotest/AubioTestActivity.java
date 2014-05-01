@@ -399,7 +399,7 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
     private void connectToCamViaWS(){
     	if(!isCamWSServerConnected()){
     		if(miRetryWSServer++ < 5){
-    			connectCamWSServer("192.168.2.4", 5432);
+    			connectCamWSServer("192.168.2.85", 5432);
     		}else{
     			enterStopMode();
     		}
@@ -719,8 +719,9 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 //				            // Attempt to connect to the device
 //				            mChatService.connect(device, true);
 //				        }
-						setTestMode(true, false);
+						
 						connectToCamViaWS();
+						setTestMode(true, false);
 						miRetryWSServer=0;
 					}
 				}});
