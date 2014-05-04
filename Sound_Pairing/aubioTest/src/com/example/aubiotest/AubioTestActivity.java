@@ -402,6 +402,7 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
     			connectCamWSServer("192.168.2.85", 5432);
     		}else{
     			enterStopMode();
+    			System.exit(0);
     		}
 		}else{
 			Log.w(TAG, "connectToCamViaWS(), isCamWSServerConnected = true");

@@ -159,7 +159,7 @@ void AudioTest::soundpairReceiverCallback(const char* cb_type, void* data){//cam
 			pthread_cond_broadcast(&mAutoTestCtrlObjCond);
 			pthread_mutex_unlock(&mAutoTestCtrlObj);
 		}else if((0 == strMsg.compare(SoundPair_Config::MSG_AUTO_TEST_END) || 0 == strMsg.compare(MSG_WS_CLOSED)) && mbAutoTestBeginOnReceiver){
-
+			FreqAnalyzer::getInstance()->endToTrace();
 			pthread_mutex_lock(&mAutoTestCtrlObj);
 			LOGI("soundpairReceiverCallback(),  mbAutoTestBeginAnalyzeOnReceiver=[false]\n");
 #ifdef CAM_ENV

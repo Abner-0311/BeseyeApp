@@ -634,8 +634,26 @@ string FreqAnalyzer::optimizeDecodeString(int iIndex){
 	int iLen = strDecode.length();
 	if(SoundPair_Config::getMultiplyByFFTYPE() > 1 && 0 != iLen%SoundPair_Config::getMultiplyByFFTYPE()){
 		if(0 < getMsgLength(iLen+1)){
-			strDecode = SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecode;
-			LOGE("optimizeDecodeString(), add dummy char at head because index is %d\n", iIndex);
+			//try to find correct missing char
+			string strDecodeUnmark = replaceInvalidChar(strDecode);
+			string strCheck;
+			for(int i = 0; i < iLen; i++){
+				if(i == 0){
+					strCheck = SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecodeUnmark;
+				}else if(i == (iLen-1)){
+					strCheck = strDecodeUnmark+SoundPair_Config::SoundPair_Config::sCodeTable.front();
+				}else{
+					strCheck = strDecodeUnmark.substr(0, i)+SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecodeUnmark.substr(i, strDecodeUnmark.length()-i);
+				}
+				string strRet = decodeRSEC(strCheck);
+				if(0 > strRet.find("error")){
+					strDecode = strCheck;
+					LOGE("optimizeDecodeString(), add dummy char at %d because index is %d\n",i, iIndex);
+					break;
+				}
+			}
+//			strDecode = SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecode;
+//			LOGE("optimizeDecodeString(), add dummy char at head because index is %d\n", iIndex);
 		}else if(0 < getMsgLength(iLen-1)){
 			strDecode = strDecode.substr(0, iLen -1);
 			LOGE("optimizeDecodeString(), remove dummy char at tail because index is %d\n", iIndex);
@@ -1234,6 +1252,11 @@ void FreqAnalyzer::autoCorrection(MatchRetSet* prevMatchRet){
 					LOGE("autoCorrection(), frRecLst is NULL for %s, at %lld\n",rec->strCdoe.c_str(), rec->lStartTs);
 				}
 			}
+
+			if(0 == mlTraceTs){
+				LOGE("autoCorrection(), break due to trace end\n");
+				break;
+			}
 		}
 
 		//to simulate timeout case
@@ -1455,7 +1478,7 @@ int FreqAnalyzer::exceedToneCheckPeriod(){
 		if(firstRec->mlTs > lastRec->mlTs){
 			LOGE("exceedToneCheckPeriod(), abnormal sequence, firstRec:[%s], lastRec:[%s]\n", firstRec->toString().c_str(), lastRec->toString().c_str());
 			mFreqRecordList.erase(mFreqRecordList.begin());
-		}else if((SoundPair_Config::SEGMENT_FEATURE && -1 < mSessionBeginTs && 2*SoundPair_Config::FRAME_TS <= (lastRec->mlTs - firstRec->mlTs)) ||
+		}else if((SoundPair_Config::SEGMENT_FEATURE && -1 < mSessionBeginTs && (SoundPair_Config::TONE_FRAME_COUNT-1)*SoundPair_Config::FRAME_TS <= (lastRec->mlTs - firstRec->mlTs)) ||
 		         (SoundPair_Config::TONE_PERIOD <= (lastRec->mlTs - firstRec->mlTs))){
 			iRet = mFreqRecordList.size()-1;
 		}
@@ -1724,8 +1747,7 @@ float *FreqAnalyzer::win = NULL;
 double FreqAnalyzer::wss ;
 int FreqAnalyzer::windowFunc = 3;//hannings
 
-#define FFTW_TRIAL
-
+//#define FFTW_TRIAL
 
 #ifdef FFTW_TRIAL
 float *inBuffer2 = NULL;
@@ -1836,7 +1858,6 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 		initAudacity();
 	}
 
-
 	static long lTotalTime = 0, lCount = 1;
 
 	long lTickCount = getTickCount();
@@ -1860,7 +1881,7 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 	if(0 < bytes->size()){
 		int i=0;
-		static long sTotalTime1=0, sTotalTime2=0;
+		static long sTotalTime1=0, sTotalTime2=0, sTotalTime2_1=0, sTotalTime2_2=0;
 #ifdef FFTW_TRIAL
 
 		for (i = 0; i < sFrameSize; i++)
@@ -1891,11 +1912,16 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 		for (i = 0; i < sFrameSize; i++)
 			inBuffer[i] = win[i] * bytes[i];
 
+		sTotalTime2_1 += (getTickCount() - lTickCount);
+		lTickCount = getTickCount();
+
 		//LOGE("performAudacityFFT(), inBuffer takes %ld ms\n", (getTickCount() - lTickCount));
 
 
 		PowerSpectrum(sFrameSize, inBuffer, outBuffer);
 		//LOGE("performAudacityFFT(), PowerSpectrum takes %ld ms\n", (getTickCount() - lTickCount));
+		sTotalTime2 += (getTickCount() - lTickCount);
+		lTickCount = getTickCount();
 
 		fRet = outBuffer[0];
 
@@ -1911,11 +1937,11 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 			}
 		}
 
-		sTotalTime2 += (getTickCount() - lTickCount);
+		sTotalTime2_2 += (getTickCount() - lTickCount);
 #endif
-#ifdef CAM_AUDIO_PERFORMANCE
-		LOGE("performAudacityFFT(), Spectrum and Preprocess takes [%ld, %ld, %ld] ms average\n", sTotalTime1/lCount, sTotalTime2/lCount, lTotalTime/(lCount));
-#endif
+//#ifdef CAM_AUDIO_PERFORMANCE
+		LOGE("performAudacityFFT(), Spectrum and Preprocess takes [%ld, %ld, %ld, %ld, %ld] ms average\n", sTotalTime1/lCount, sTotalTime2_1/lCount, sTotalTime2/lCount, sTotalTime2_2/lCount, lTotalTime/(lCount));
+//#endif
 		lCount++;
 		if(NULL != iDxValues){
 			iDxValues[0] = iDx;

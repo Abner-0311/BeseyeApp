@@ -435,7 +435,7 @@ void constructWebSocketsClient(void* userData){
 
 		if (n < 0)
 			continue;
-		sleep(1);
+		//sleep(1);
 	}
 
 fail:
