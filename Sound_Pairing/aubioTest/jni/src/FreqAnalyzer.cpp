@@ -646,7 +646,11 @@ string FreqAnalyzer::optimizeDecodeString(int iIndex){
 					strCheck = strDecodeUnmark.substr(0, i)+SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecodeUnmark.substr(i, strDecodeUnmark.length()-i);
 				}
 				string strRet = decodeRSEC(strCheck);
-				if(0 > strRet.find("error")){
+
+				int iFound = strRet.find("error");
+
+				//LOGE("optimizeDecodeString(), strRet %s, iFound:%d\n",strRet.c_str(), iFound);
+				if(0 > iFound){
 					strDecode = strCheck;
 					LOGE("optimizeDecodeString(), add dummy char at %d because index is %d\n",i, iIndex);
 					break;
@@ -1063,7 +1067,6 @@ void FreqAnalyzer::checkResult(string strDecode){
 //		string strDecodeUnmark = removeDividerAndUnmark(strDecode);
 
 	//sIFreqAnalyzeResultCBListener.onSetResult();
-
 
 	string strDecodeUnmark = replaceInvalidChar(strDecode);
 	msbDecode.str("");

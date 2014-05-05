@@ -420,6 +420,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 //								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_5.mp4"};
 //
 //			player[iStreamIdx]->createStreaming("rtmp://54.250.149.50/vods3/_definst_/", streamList, 6, 0);
+			LOGE("openStreaming(), nativeString:[%s]", nativeString);
 			player[iStreamIdx]->createStreaming(nativeString, 0);
 			jni_env->ReleaseStringUTFChars( path, nativeString);
 
