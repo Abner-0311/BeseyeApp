@@ -19,19 +19,15 @@ import android.util.Log;
 
 import static com.app.beseye.util.BeseyeSharedPreferenceUtil.*;
 
-//SessionMgr is responsible for storing back-end URL, token, user mdid in storage/memory
+//SessionMgr is responsible for storing back-end URL, token, user Userid in storage/memory
 public class SessionMgr {
 	static private final String SESSION_PREF 				= "beseye_ses";
 	static private final String SESSION_TOKEN 				= "beseye_token";
 	static private final String SESSION_DOMAIN 				= "beseye_domain";
-	static private final String SESSION_MDID				= "beseye_mdid";
+	static private final String SESSION_USERID				= "beseye_userid";
 	static private final String SESSION_ACCOUNT				= "beseye_account";
-	static private final String SESSION_READ_AGREEMENT		= "beseye_read_agreement";
-	static private final String SESSION_OPEN_ID				= "beseye_open_id";
-	static private final String SESSION_OPEN_ID_TYPE		= "beseye_open_id_type";
 	static private final String SESSION_ACC_CERTIFICATED	= "beseye_certificated";
 	static private final String SESSION_OWNER_INFO			= "beseye_owner_data";
-	static private final String SESSION_ACCOUNT_CREATE_DATE	= "beseye_account_register";
 	
 	static private final String SESSION_PRODUCTION_MODE	    = "beseye_server_mode";
 	
@@ -57,16 +53,13 @@ public class SessionMgr {
 			mSecuredPref = getSecuredSharedPreferences(context, SESSION_PREF);
 			mSessionData = new SessionData();
 			if(null != mSessionData){
-				mSessionData.setMdid(getPrefStringValue(mPref, SESSION_MDID));
+				mSessionData.setUserid(getPrefStringValue(mPref, SESSION_USERID));
 				mSessionData.setAccount(getPrefStringValue(mPref, SESSION_ACCOUNT));
 				mSessionData.setDomain(getPrefStringValue(mPref, SESSION_DOMAIN));
 				mSessionData.setAuthToken(getPrefStringValue(mPref, SESSION_TOKEN));
-				mSessionData.setIsOpenId(0 <getPrefIntValue(mPref, SESSION_OPEN_ID));
-				mSessionData.setOpenIdType(getPrefStringValue(mPref, SESSION_OPEN_ID_TYPE));
 				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
 				mSessionData.setIsProductionMode(0 <getPrefIntValue(mPref, SESSION_PRODUCTION_MODE, 1));
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
-				mSessionData.setRegisterDate(getPrefLongValue(mPref, SESSION_ACCOUNT_CREATE_DATE));
 			}
 		}
 	}
@@ -77,14 +70,10 @@ public class SessionMgr {
 		//clearSharedPreferences(mPref);
 		//clearSharedPreferences(mSecuredPref);
 		setAuthToken("");
-		setMdid("");
+		setUserid("");
 		setAccount("");
-		setIsOpenId(false);
-		setOpenIdType("");
 		setOwnerInfo("");
 		setIsCertificated(false);
-		setIsReadAgreement(false);
-		setRegisterDate(0);
 		//setOwnerChannelInfo(null);
 		notifySessionUpdate();
 	}
@@ -132,13 +121,13 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
-	public String getMdid(){
-		return mSessionData.getMdid();
+	public String getUserid(){
+		return mSessionData.getUserid();
 	}
 	
-	synchronized public void setMdid(String strId){
-		setPrefStringValue(mPref, SESSION_MDID, strId);
-		mSessionData.setMdid(strId);
+	synchronized public void setUserid(String strId){
+		setPrefStringValue(mPref, SESSION_USERID, strId);
+		mSessionData.setUserid(strId);
 		notifySessionUpdate();
 	}
 	
@@ -152,8 +141,8 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
-	public boolean isMdidValid(){
-		String id = getMdid();
+	public boolean isUseridValid(){
+		String id = getUserid();
 		return (null != id) && (0 < id.length());
 	}
 	
@@ -185,34 +174,6 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
-//	public ChannelInfo getOwnerChannelInfo(){
-//		return mOwnerChannelInfo;
-//	}
-//	
-//	public void setOwnerChannelInfo(ChannelInfo info){
-//		mOwnerChannelInfo = info;
-//	}
-	
-	public String getOpenIdType(){
-		return mSessionData.getOpenIdType();
-	}
-	
-	synchronized public void setOpenIdType(String strOpenIdType){
-		setPrefStringValue(mPref, SESSION_OPEN_ID_TYPE, strOpenIdType);
-		mSessionData.setOpenIdType(strOpenIdType);
-		notifySessionUpdate();
-	}
-	
-	public boolean getIsOpenId(){
-		return mSessionData.getIsOpenId();
-	}
-	
-	public void setIsOpenId(boolean bIsOpenId){
-		setPrefIntValue(mPref, SESSION_OPEN_ID, bIsOpenId?1:0);
-		mSessionData.setIsOpenId(bIsOpenId);
-		notifySessionUpdate();
-	}
-	
 	public boolean getIsCertificated(){
 		return mSessionData.getIsCertificated();
 	}
@@ -220,16 +181,6 @@ public class SessionMgr {
 	public void setIsCertificated(boolean bIsCertificated){
 		setPrefIntValue(mPref, SESSION_ACC_CERTIFICATED, bIsCertificated?1:0);
 		mSessionData.setIsCertificated(bIsCertificated);
-		notifySessionUpdate();
-	}
-	
-	public boolean getIsReadAgreement(){
-		return mSessionData.getIsReadAgreement();
-	}
-	
-	public void setIsReadAgreement(boolean bIsReadAgreement){
-		setPrefIntValue(mPref, SESSION_READ_AGREEMENT, bIsReadAgreement?1:0);
-		mSessionData.setIsReadAgreement(bIsReadAgreement);
 		notifySessionUpdate();
 	}
 	
@@ -254,16 +205,6 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
-	public long getRegisterDate(){
-		return mSessionData.getRegisterDate();
-	}
-	
-	synchronized public void setRegisterDate(long lRegisterDate){
-		setPrefLongValue(mPref, SESSION_ACCOUNT_CREATE_DATE, lRegisterDate);
-		mSessionData.setRegisterDate(lRegisterDate);
-		notifySessionUpdate();
-	}
-	
 	public SessionData getSessionData(){
 		return mSessionData;
 	}
@@ -271,24 +212,6 @@ public class SessionMgr {
 	public void setSessionData(SessionData data){
 		mSessionData = data;
 	}
-	
-//	static public boolean isVip(){
-//		if(sSessionMgr!=null){
-//			try {
-//				JSONObject obj = new JSONObject(sSessionMgr.getOwnerInfo());
-//				String isVipString = BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.USER_IS_VIP);
-//				if(isVipString.compareTo("1")==0)
-//					return true;
-////					return false;
-//				else
-//					return false;
-//			} catch (JSONException e1) {
-//				e1.printStackTrace();
-//				return false;
-//			}
-//		}
-//		return false;
-//	}
 	
 	private WeakReference<ISessionUpdateCallback> mSessionUpdateCallback;
 	public void registerSessionUpdateCallback(ISessionUpdateCallback cb){
@@ -308,25 +231,20 @@ public class SessionMgr {
 	}
 	
 	public static class SessionData implements Parcelable{
-		private String mStrHostUrl, mStrStorageHostUrl, mStrUploadHostUrl, mStrArtistsHostUrl, mStrMdid, mStrAccount, mStrDomain, mStrToken, mStrOpenIdType, mStrOwnerInfo;
-		private boolean mbIsOpenId, mbIsCertificated, mbReadAgreement, mbProductionMode;
-		private long mlRegisterDate;
+		private String mStrHostUrl, mStrStorageHostUrl, mStrUploadHostUrl, mStrArtistsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo;
+		private boolean mbIsCertificated, mbProductionMode;
 		
 		public SessionData() {
 			mStrHostUrl = "";
 			mStrStorageHostUrl = "";
 			mStrUploadHostUrl = "";
 			mStrArtistsHostUrl = "";
-			mStrMdid = "";
+			mStrUserid = "";
 			mStrAccount = "";
 			mStrDomain = "";
 			mStrToken = "";
-			mStrOpenIdType = "";
 			mStrOwnerInfo = "";
-			mbIsOpenId = false;
 			mbIsCertificated = false;
-			mbReadAgreement = false;
-			mlRegisterDate= 0;
 			mbProductionMode = true;
 		}
 		
@@ -362,12 +280,12 @@ public class SessionMgr {
 			mStrArtistsHostUrl = strURL;
 		}
 
-		public String getMdid(){
-			return mStrMdid;
+		public String getUserid(){
+			return mStrUserid;
 		}
 		
-		synchronized public void setMdid(String strId){
-			mStrMdid = strId;
+		synchronized public void setUserid(String strId){
+			mStrUserid = strId;
 		}
 		
 		public String getAccount(){
@@ -378,8 +296,8 @@ public class SessionMgr {
 			mStrAccount = strAccount;
 		}
 		
-		public boolean isMdidValid(){
-			String id = getMdid();
+		public boolean isUseridValid(){
+			String id = getUserid();
 			return (null != id) && (0 < id.length());
 		}
 		
@@ -404,36 +322,12 @@ public class SessionMgr {
 			mStrToken = strToken;
 		}
 		
-		public String getOpenIdType(){
-			return mStrOpenIdType;
-		}
-		
-		synchronized public void setOpenIdType(String strOpenIdType){
-			mStrOpenIdType = strOpenIdType;
-		}
-		
-		public boolean getIsOpenId(){
-			return mbIsOpenId;
-		}
-		
-		public void setIsOpenId(boolean bIsOpenId){
-			mbIsOpenId = bIsOpenId;
-		}
-		
 		public boolean getIsCertificated(){
 			return mbIsCertificated;
 		}
 		
 		public void setIsCertificated(boolean bIsCertificated){
 			mbIsCertificated = bIsCertificated;
-		}
-		
-		public boolean getIsReadAgreement(){
-			return mbReadAgreement;
-		}
-		
-		public void setIsReadAgreement(boolean bIsReadAgreement){
-			mbReadAgreement = bIsReadAgreement;
 		}
 		
 		public boolean getIsProductionMode(){
@@ -456,15 +350,7 @@ public class SessionMgr {
 		synchronized public void setOwnerInfo(String strOwnerInfo){
 			mStrOwnerInfo = strOwnerInfo;
 		}
-		
-		public long getRegisterDate(){
-			return mlRegisterDate;
-		}
-		
-		synchronized public void setRegisterDate(long lRegisterDate){
-			mlRegisterDate = lRegisterDate;
-		}
-
+	
 		@Override
 		public void writeToParcel(Parcel dest, int flags) {
 	 
@@ -475,19 +361,14 @@ public class SessionMgr {
 			dest.writeString(mStrStorageHostUrl);
 			dest.writeString(mStrUploadHostUrl);
 			dest.writeString(mStrArtistsHostUrl);
-			dest.writeString(mStrMdid);
+			dest.writeString(mStrUserid);
 			dest.writeString(mStrAccount);
 			dest.writeString(mStrDomain);
 			dest.writeString(mStrToken);
-			dest.writeString(mStrOpenIdType);
 			dest.writeString(mStrOwnerInfo);
 			
-			dest.writeInt(mbIsOpenId?1:0);
 			dest.writeInt(mbIsCertificated?1:0);
-			dest.writeInt(mbReadAgreement?1:0);
 			dest.writeInt(mbProductionMode?1:0);
-		
-			dest.writeLong(mlRegisterDate);
 		}
 		
 		private SessionData(Parcel in) {
@@ -510,19 +391,14 @@ public class SessionMgr {
 			mStrStorageHostUrl = in.readString();
 			mStrUploadHostUrl = in.readString();
 			mStrArtistsHostUrl = in.readString();
-			mStrMdid = in.readString();
+			mStrUserid = in.readString();
 			mStrAccount = in.readString();
 			mStrDomain = in.readString();
 			mStrToken = in.readString();
-			mStrOpenIdType = in.readString();
 			mStrOwnerInfo = in.readString();
 			
-			mbIsOpenId = in.readInt()>0?true:false;
 			mbIsCertificated = in.readInt()>0?true:false;
-			mbReadAgreement = in.readInt()>0?true:false;
 			mbProductionMode = in.readInt()>0?true:false;
-			
-			mlRegisterDate = in.readLong();
 		}
 		
 		public static final Parcelable.Creator<SessionData> CREATOR = new Parcelable.Creator<SessionData>() {

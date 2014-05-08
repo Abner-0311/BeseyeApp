@@ -50,11 +50,13 @@ public:
 
 	vector<Ref<FreqRangeData> > getLstFreqRangeData();
 
+	string getCode(){return mstrCode;}
 private:
 	vector<Ref<FreqRangeData> > mlstFreqRangeData;
 	string mstrCode;
 	friend string findToneCodeByFreq(double dFreq);
 	friend class FreqAnalyzer;
+	friend class AudioTest;
 
 	void init(double dFreq, double dDelta, string strCode);
 };

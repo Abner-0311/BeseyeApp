@@ -386,7 +386,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 				    				data_obj.put(WS_ATTR_DATA, arr);//new String(buff,0, len, "UTF-8"));
 				    				String strSent = String.format(WS_CMD_FORMAT, WS_FUNC_BIN_TRANSFER, data_obj.toString());
 					    			mFNotifyWSChannel.get().send(strSent);	
-					    			Log.i(TAG, "run(), len="+len+", strSent=\n"+strSent);
+					    			//Log.i(TAG, "run(), len="+len+", strSent=\n"+strSent);
 					    		}
 					    	}
 						    len = uis.read(buff);

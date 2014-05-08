@@ -25,8 +25,7 @@ $(SRC_PATH)/sp_config.cpp \
 $(SRC_PATH)/AudioBufferMgr.cpp \
 $(SRC_PATH)/FreqAnalyzer.cpp \
 $(SRC_PATH)/AudioTest.cpp \
-$(SRC_PATH)/main.cpp \
-$(SRC_PATH)/../cam-handler/src/delegate/account_mgr.cpp
+$(SRC_PATH)/main.cpp
 
 
 CXXOBJECTS=$(CXXSOURCES:.cpp=.o)
@@ -47,10 +46,10 @@ OBJECTS=$(SOURCES:.c=.o)
 
 EXECUTABLE=soundpairing
 
-CFLAGS=-c -Wall -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -Iws-client/inc -Ilibwebsockets/inc -I$(TOOLCHAIN)/include -DCAM_ENV
+CFLAGS=-c -Wall -O3 -ffast-math -fforce-addr -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -Iws-client/inc -Ilibwebsockets/inc -I$(TOOLCHAIN)/include -DCAM_ENV
 LDFLAGS=-L$(TOOLCHAIN)/lib -lcurl -ljson-c -lwebsockets -lpthread -L$(TOOLCHAIN)/lib/libstdc++.a
 #-lspeexdsp
-CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -Iws-client/inc -Ilibwebsockets/inc -I$(TOOLCHAIN)/include -DCAM_ENV
+CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -fforce-addr -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -Iws-client/inc -Ilibwebsockets/inc -I$(TOOLCHAIN)/include -DCAM_ENV
 
 all:$(CXXSOURCES) $(SOURCES) $(EXECUTABLE)
 

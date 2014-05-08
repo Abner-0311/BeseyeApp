@@ -1789,8 +1789,8 @@ int read_thread(void *arg)
     orig_nb_streams = ic->nb_streams;
 
     //for video stream only
-    err = avformat_find_stream_info_ext(ic, opts);
-    //err = avformat_find_stream_info(ic, opts);
+    //err = avformat_find_stream_info_ext(ic, opts);
+    err = avformat_find_stream_info(ic, opts);
     if (err < 0) {
     	av_log(NULL, AV_LOG_ERROR, "avformat_find_stream_info() err:%d--", err);
         fprintf(stderr, "%s: could not find codec parameters\n", is->filename);
@@ -2344,6 +2344,9 @@ int CBeseyePlayer::createStreaming(const char* fullPath, int iSeekTimeInMs){
 
 int CBeseyePlayer::createStreaming(const char* fullPath){
 	av_log(NULL, AV_LOG_INFO, "createStreaming()++: %s", fullPath);
+	if(NULL == fullPath){
+		return -1;
+	}
     int flags;
     //VideoState *is;
 

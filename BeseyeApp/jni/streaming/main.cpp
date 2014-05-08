@@ -383,7 +383,7 @@ void* getWindowByHolder(void* holder, uint32_t iWidth, uint32_t iHeight){
 	return g_bitmap;
 }
 
-JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEnv * env, jobject obj, int iStreamIdx, jobject surface, jstring path)
+JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEnv * env, jobject obj, int iStreamIdx, jobject surface, jstring path, int iSeekOffset)
 {
 	DECLARE_JNIENV_WITH_RETURN()
 
@@ -420,8 +420,75 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 //								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_5.mp4"};
 //
 //			player[iStreamIdx]->createStreaming("rtmp://54.250.149.50/vods3/_definst_/", streamList, 6, 0);
-			player[iStreamIdx]->createStreaming(nativeString, 0);
+			LOGE("openStreaming(), nativeString:[%s]", nativeString);
+			player[iStreamIdx]->createStreaming(nativeString, iSeekOffset);
 			jni_env->ReleaseStringUTFChars( path, nativeString);
+
+			player[iStreamIdx]->unregisterVideoCallback();
+			player[iStreamIdx]->unregisterCallback();
+
+//			if(g_bitmap)
+//				jni_env->DeleteGlobalRef(g_bitmap);
+//			g_bitmap = NULL;
+
+			delete player[iStreamIdx];
+			player[iStreamIdx] = NULL;
+			jni_env->DeleteGlobalRef(jni_host);
+		}else{
+			LOGE("openStreaming(), stream[%d] is playing", iStreamIdx);
+		}
+	}
+	LOGE("openStreaming(), end");
+$ERR:
+	return iRet;
+}
+
+JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreamingList(JNIEnv * env, jobject obj, int iStreamIdx, jobject surface, jstring host, jobjectArray streamLst, int iSeekOffset)
+{
+	DECLARE_JNIENV_WITH_RETURN()
+
+	//jni_host = obj;
+	int iRet = -1;
+
+	if(0 <= iStreamIdx && iStreamIdx < MAX_STREAM_COUNT){
+		if(NULL == player[iStreamIdx]){
+			jni_host = jni_env->NewGlobalRef(obj);
+
+			int surface_width = 1280;//NULL != anw ?ANativeWindow_getWidth(anw):0;
+			int surface_height = 720;//NULL != anw ?ANativeWindow_getHeight(anw):0;
+
+			//LOGI("anw is [%d]", anw);
+
+			iRet = iStreamIdx;
+			LOGE("openStreaming(), iIdx:[%d]", iStreamIdx);
+			player[iStreamIdx] = new CBeseyePlayer(NULL, PIX_FMT_RGB565LE, 0, 0);
+			player[iStreamIdx]->setWindowHolder(jni_host, getWindowByHolder);
+			player[iStreamIdx]->registerVideoCallback(videoCallback, videoDeinitCallback);
+			player[iStreamIdx]->registerCallback(rtmpStreamStatusCb);
+			const char * streamHost = (const char *)jni_env->GetStringUTFChars(host, 0);
+
+			int streamCount = jni_env->GetArrayLength(streamLst);
+			char** streamList = (char**)malloc(sizeof(char*)*streamCount);
+
+			for (int i=0; i<streamCount; i++) {
+				jstring string = (jstring) jni_env->GetObjectArrayElement(streamLst, i);
+				streamList[i] = (char *)jni_env->GetStringUTFChars(string, 0);//GetStringUTFChars(env, string, 0);
+				//const char *rawString = GetStringUTFChars(env, string, 0);
+				// Don't forget to call `ReleaseStringUTFChars` when you're done.
+			}
+
+//			const char* streamList[] = {"mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_0.mp4",
+//								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_1.mp4",
+//								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_2.mp4",
+//								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_3.mp4",
+//								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_4.mp4",
+//								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_5.mp4"};
+//
+//
+			LOGE("openStreaming(), streamHost:[%s]", streamHost);
+			player[iStreamIdx]->createStreaming(streamHost, (const char **)streamList, streamCount, iSeekOffset);
+			//player[iStreamIdx]->createStreaming(nativeString, 0);
+			jni_env->ReleaseStringUTFChars( host, streamHost);
 
 			player[iStreamIdx]->unregisterVideoCallback();
 			player[iStreamIdx]->unregisterCallback();

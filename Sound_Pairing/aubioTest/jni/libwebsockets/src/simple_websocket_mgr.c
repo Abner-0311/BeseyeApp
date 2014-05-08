@@ -227,14 +227,14 @@ void constructWebSocketsServer(void* userData){
 		fail:
 			libwebsocket_context_destroy(context);
 
-		sWsServerThread = NULL;
-
 		LOGE( "-- \n");
 		if(!force_exit){
 			ws_server_was_closed = 0;
 			LOGE( "restart server \n");
 		}
 	}while(!force_exit);
+
+	sWsServerThread = NULL;
 
 	Delegate_detachCurrentThread();
 }
@@ -435,7 +435,7 @@ void constructWebSocketsClient(void* userData){
 
 		if (n < 0)
 			continue;
-		sleep(1);
+		//sleep(1);
 	}
 
 fail:

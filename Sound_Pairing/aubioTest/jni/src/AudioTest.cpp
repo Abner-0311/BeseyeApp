@@ -159,7 +159,7 @@ void AudioTest::soundpairReceiverCallback(const char* cb_type, void* data){//cam
 			pthread_cond_broadcast(&mAutoTestCtrlObjCond);
 			pthread_mutex_unlock(&mAutoTestCtrlObj);
 		}else if((0 == strMsg.compare(SoundPair_Config::MSG_AUTO_TEST_END) || 0 == strMsg.compare(MSG_WS_CLOSED)) && mbAutoTestBeginOnReceiver){
-
+			FreqAnalyzer::getInstance()->endToTrace();
 			pthread_mutex_lock(&mAutoTestCtrlObj);
 			LOGI("soundpairReceiverCallback(),  mbAutoTestBeginAnalyzeOnReceiver=[false]\n");
 #ifdef CAM_ENV
@@ -255,8 +255,10 @@ miDigitalToTest(0),
 mControlThread(0),
 mBufRecordThread(0),
 mAnalysisThread(0),
-mstrCamWSServerIP("192.168.2.4"),
-miCamWSServerPort(5432){
+mstrCamWSServerIP(CAM_URL),
+miCamWSServerPort(CAM_WS_PORT),
+miPairingReturnCode(-1),
+mbPairingAnalysisMode(false){
 	pthread_mutex_init(&mSyncObj, NULL);
 	pthread_cond_init(&mSyncObjCond, NULL);
 
@@ -316,10 +318,10 @@ bool AudioTest::setSenderMode(){
 	return true;
 }
 
-bool AudioTest::setReceiverMode(){
+bool AudioTest::setReceiverMode(bool bAutoTest){
 	LOGI("setReceiverMode()+\n");
-
-	init_websocket_server(soundpairReceiverCb);
+	if(bAutoTest)
+		init_websocket_server(soundpairReceiverCb);
 
 	stopAutoTest();
 	mIsSenderMode = false;
@@ -383,6 +385,28 @@ bool AudioTest::startAutoTest(string strInitCode, int iDigitalToTest){
 #endif
 EXIT:
 	LOGE("startAutoTest()--\n");
+	return bRet;
+}
+
+bool AudioTest::startPairingAnalysis(){
+	deinitTestRound();
+	mbPairingAnalysisMode = true;
+	bool bRet = false;
+	if(false == isSenderMode()){
+		bRet = startAnalyzeTone();
+#ifndef ANDROID
+		if(bRet){
+			FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(this);
+			LOGI("startAutoTest(), begin join mBufRecordThread\n");
+			pthread_join(mBufRecordThread, NULL);
+			LOGI("startAutoTest(), begin join mAnalysisThread\n");
+			pthread_join(mAnalysisThread, NULL);
+			LOGE("startAutoTest(), end join\n");
+		}
+#endif
+	}
+
+	LOGE("startPairingAnalysis()--\n");
 	return bRet;
 }
 
@@ -657,7 +681,7 @@ static int iAudioFrameSize = 4;
 static const int MAX_TRIAL = 10;
 
 void writeBuf(unsigned char* charBuf, int iLen){
-	if(!AudioTest::getInstance()->isAutoTestBeginAnalyzeOnReceiver()){
+	if(!AudioTest::getInstance()->isPairingAnalysisMode() && !AudioTest::getInstance()->isAutoTestBeginAnalyzeOnReceiver()){
 		return;
 	}
 	//LOGW("writeBuf:%d, iCurIdx:%d", iLen, iCurIdx);
@@ -770,7 +794,7 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 	Ref<BufRecord> buf;
 
 	while(!tester->mbStopAnalysisThreadFlag){
-		while(tester->isReceiverMode() && !tester->mbAutoTestBeginAnalyzeOnReceiver && !tester->mbStopAnalysisThreadFlag){
+		while(!tester->mbPairingAnalysisMode && tester->isReceiverMode() && !tester->mbAutoTestBeginAnalyzeOnReceiver && !tester->mbStopAnalysisThreadFlag){
 			LOGI("runAudioBufAnalysis(), begin wait auto test\n");
 			pthread_mutex_lock(&tester->mAutoTestCtrlObj);
 			pthread_cond_wait(&tester->mAutoTestCtrlObjCond, &tester->mAutoTestCtrlObj);
@@ -860,16 +884,17 @@ void AudioTest::onAppendResult(string strCode){
 	tmpRet<<strCode;
 }
 
-#include "delegate/account_mgr.h"
-
+//#include "delegate/account_mgr.h"
 void checkPairingResult(string strCode){
 #ifdef CAM_ENV
 	LOGE("++, strCode:[%s]\n", strCode.c_str());
+
+	int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
+	int iPower = SoundPair_Config::getPowerByFFTYPE();
+
 	if(0 == strCode.find_first_of("error")){
 		LOGE("Error\n");
 	}else{
-		int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
-		int iPower = SoundPair_Config::getPowerByFFTYPE();
 
 		int toDecodeSize = strCode.length()/iMultiply;
 		LOGE("toDecodeSize:%d\n", toDecodeSize);
@@ -892,21 +917,94 @@ void checkPairingResult(string strCode){
 		std::vector<std::string> ret = split(retS.str(), SoundPair_Config::PAIRING_DIVIDER);
 
 		if(ret.size() == 3){
-			string strUserNum = ret[2];
-			//LOGE("[%s, %s, %s, %s]\n", ret[0], ret[1], ret[2], ret[3]);
-			//int iUserId = atoi( ret[2].c_str() );
-			unsigned short sUserId = 0;
-			int iLenUserNum = strUserNum.length();
-			int idx = 0;
-			for(int idx = 0; idx < iLenUserNum;idx++){
-				sUserId <<= iPower*2;
-				unsigned char cNum = strUserNum.at(idx);
-				//LOGI("cNum:[%u]\n",cNum);
-				sUserId += cNum;//SoundPair_Config::findIdxFromCodeTable();
+			string mac = ret[0];
+			stringstream retMacAddr;
+			int iLenMacAddr = mac.length();
+
+			for(int idx = 0;idx < iLenMacAddr;idx++){
+				string tmp("");
+				char cDecode = mac.at(idx);
+				for(int j = 0;j < iMultiply;j++){
+					tmp = SoundPair_Config::sFreqRangeTable.at(cDecode & ((0x1<<iPower) -1))->getCode() + tmp;
+					cDecode >>= iPower;
+				}
+				retMacAddr << tmp;
 			}
-			LOGI("sUserId:[%u]\n",sUserId);
+
+			string strUserNum = ret[2];
+			stringstream retUserToken;
+			int iLenUserNum = strUserNum.length();
+			for(int idx = 0; idx < iLenUserNum;idx++){
+				string tmp("");
+				char cDecode = strUserNum.at(idx);
+				for(int j = 0;j < iMultiply;j++){
+					tmp = SoundPair_Config::sFreqRangeTable.at(cDecode & ((0x1<<iPower) -1))->getCode() + tmp;
+					cDecode >>= iPower;
+				}
+				retUserToken << tmp;
+			}
+
+			char cmd[BUF_SIZE]={0};
+			sprintf(cmd, "./cam-handler -setwifi %s %s", retMacAddr.str().c_str(), ret[1].c_str());
+			LOGI("wifi set cmd:[%s]\n", cmd);
+			int iRet = system(cmd) >> 8;
+			if(0 == iRet){
+				LOGI("wifi set OK\n");
+				long lCheckTime = time_ms();
+				long lDelta;
+				int iNetworkRet = 0;
+				do{
+					sleep(1);
+					iNetworkRet = system("./beseye_network_check") >> 8;
+					lDelta = (time_ms() - lCheckTime);
+					LOGI("wifi check ret :%d, ts:%u, ccc:%d\n", iNetworkRet, lDelta, ((iNetworkRet != 0) && (15000 > lDelta)));
+				}while((iNetworkRet != 0) && (15000 > lDelta));
+
+				LOGI("network checking complete, iNetworkRet:%d, ts:%u\n", iNetworkRet, lDelta);
+
+				if(0 == iNetworkRet){
+					LOGI("network connected\n");
+					iRet = system("./beseye_token_check") >> 8;
+					if(0 == iRet){
+						LOGI("Token is already existed, check tmp token\n");
+						sprintf(cmd, "./cam-handler -verToken %s %s", retMacAddr.str().c_str(), retUserToken.str().c_str());
+						LOGI("verToken cmd:[%s]\n", cmd);
+						iRet = system(cmd) >> 8;
+						if(0 == iRet){
+							LOGI("Tmp User Token verification OK\n");
+							AudioTest::getInstance()->setPairingReturnCode(0);
+						}else{
+							LOGI("Tmp User Token verification failed\n");
+							//roll back wifi settings
+							iRet = system("./cam-handler -restoreWifi") >> 8;
+						}
+					}else{
+						LOGI("Token is invalid, try to attach\n");
+						sprintf(cmd, "./cam-handler -attach %s %s", retMacAddr.str().c_str(), retUserToken.str().c_str());
+						LOGI("attach cmd:[%s]\n", cmd);
+						iRet = system(cmd) >> 8;
+						if(0 == iRet){
+							LOGI("Cam attach OK\n");
+							iRet = system("./beseye_token_check") >> 8;
+							if(0 == iRet){
+								LOGI("Token verification OK\n");
+								AudioTest::getInstance()->setPairingReturnCode(0);
+							}else{
+								LOGI("Token verification failed\n");
+							}
+						}else{
+							LOGI("Cam attach failed\n");
+						}
+					}
+				}else{
+					LOGI("network disconnected\n");
+				}
+			}else{
+				LOGE("wifi set failed\n");
+			}
+//			LOGI("sUserId:[%u]\n",sUserId);
 //			char testData[BUF_SIZE]={0};
-//			if(RET_CODE_OK == bindUserAccount(testData, iUserId)){
+//			if(RET_CODE_OK == bindUserAccount(testData, sUserId)){
 //				LOGE("bindUserAccount OK:[%s]\n", testData);
 //			}else{
 //				LOGE("bindUserAccount Failed:[%s]\n", testData);
@@ -921,6 +1019,10 @@ void checkPairingResult(string strCode){
 void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDecodeUnmark, bool bFromAutoCorrection, MatchRetSet* prevMatchRet){
 	LOGI("onSetResult(), strCode:%s, strDecodeMark = %s\n", strCode.c_str(), strDecodeMark.c_str());
 	checkPairingResult(strCode);
+	if(0 <= miPairingReturnCode){
+		stopAutoTest();
+	}
+
 	stringstream strLog;
 	if(strCode.length() > 0 || strDecodeMark.length() >0){
 		/*if(false == isSenderMode)*/{
@@ -1100,7 +1202,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 }
 
 float AudioTest::onBufCheck(ArrayRef<short> buf, msec_t lBufTs, bool bResetFFT, int* iFFTValues){
-	FreqAnalyzer::getInstance()->analyzeAudioViaAudacityAC(buf, SoundPair_Config::FRAME_SIZE_REC, bResetFFT, 0, NULL);
+	//FreqAnalyzer::getInstance()->analyzeAudioViaAudacityAC(buf, SoundPair_Config::FRAME_SIZE_REC, bResetFFT, 0, NULL);
 	return FreqAnalyzer::getInstance()->analyzeAudioViaAudacityAC(buf, SoundPair_Config::FRAME_SIZE_REC, bResetFFT, FreqAnalyzer::getInstance()->getLastDetectedToneIdx(lBufTs), iFFTValues);
 }
 
@@ -1122,6 +1224,7 @@ void AudioTest::resetBuffer(){
 }
 
 void AudioTest::deinitTestRound(){
+
 	tmpRet.str("");
 	tmpRet.clear();
 	FreqAnalyzer::getInstance()->endToTrace();

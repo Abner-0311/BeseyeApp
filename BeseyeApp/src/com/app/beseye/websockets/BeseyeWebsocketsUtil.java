@@ -114,7 +114,7 @@ public class BeseyeWebsocketsUtil {
     		if(null != job_obj){
     			try {
     				JSONObject data_obj = new JSONObject();
-    				data_obj.put(WS_ATTR_USER_ID, SessionMgr.getInstance().getMdid()+"");
+    				data_obj.put(WS_ATTR_USER_ID, SessionMgr.getInstance().getUserid());
     				data_obj.put(WS_ATTR_DEV_TYPE, FAKE_AUDIO_RECEIVER?0:1);//1 means Mobile
     				data_obj.put(WS_ATTR_DEV_NAME, Build.MODEL);
     				data_obj.put(WS_ATTR_DEV_ID, FAKE_AUDIO_RECEIVER?"Bes0001":BeseyeUtils.getAndroidUUid());

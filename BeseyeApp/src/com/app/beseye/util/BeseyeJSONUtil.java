@@ -19,6 +19,9 @@ public class BeseyeJSONUtil {
 	
 	//Generic
 	public static final String RET_CODE 				= "ReturnCode"; 
+	public static final String RET_CODE_HEX 			= "HexReturnCode"; 
+	public static final String RET_CODE_FIN_TS 			= "FinTimestamp"; 
+	
 	public static final String RET_CODE_CAMBE 			= "Code"; 
 	public static final String OBJ_CNT 					= "ObjCount";
 	public static final String OBJ_LST 					= "Objs";
@@ -89,29 +92,52 @@ public class BeseyeJSONUtil {
 	public static final String SES_TOKEN 				= "SessionToken";
 	
 	//Account BE service
-	public static final String ACC_EMAIL 				= "email";
-	public static final String ACC_PASSWORD 			= "password";
-	public static final String ACC_CLIENT 				= "client";
-	public static final String ACC_CLIENT_UDID 			= "client_dev_udid";
-	public static final String ACC_CLIENT_UA 			= "client_user_agent";
-	public static final String ACC_CLIENT_LOC 			= "client_location";
-	public static final String ACC_CLIENT_IP 			= "client_ip";
+	public static final String ACC_EMAIL 				= "Email";
+	public static final String ACC_PASSWORD 			= "Password";
+	public static final String ACC_CLIENT 				= "UserClient";
+	public static final String ACC_CLIENT_UDID 			= "ClientDevUdid";
+	public static final String ACC_CLIENT_UA 			= "ClientUserAgent";
+	public static final String ACC_CLIENT_LOC 			= "ClientLocation";
+	public static final String ACC_CLIENT_IP 			= "ClientIp";
 	
-	public static final String ACC_USER 				= "user";
-	public static final String ACC_ID 					= "id";
-	public static final String ACC_NAME 				= "name";
-	public static final String ACC_LOC 					= "location";
+	public static final String ACC_USER 				= "User";
+	public static final String ACC_ID 					= "Uid";
+	public static final String ACC_NAME 				= "Name";
+	public static final String ACC_LOC 					= "Location";
+	public static final String ACC_ACTIVATED 			= "IsActivated";
 	
-	public static final String ACC_SES 					= "session";
-	public static final String ACC_SES_TOKEN 			= "session_token";
-	public static final String ACC_DATA 				= "data";
-	public static final String ACC_CREATE 				= "created_at";
-	public static final String ACC_EXPIRE 				= "expired_at";
+	public static final String ACC_SES 					= "UserSession";
+	public static final String ACC_SES_TOKEN 			= "SessionToken";
+	public static final String ACC_DATA 				= "Data";
+	public static final String ACC_CREATE 				= "ExpiredAt";
+	public static final String ACC_EXPIRE 				= "CreatedAt";
 
-	public static final String ACC_REMEM_ME 			= "remember_me";
+	public static final String ACC_REMEM_ME 			= "RememberMe";
 	
+	public static final String ACC_PAIRING_TYPE 		= "PairingType";
+	public static final int ACC_PAIRING_TYPE_ATTACH 	= 0;
+	public static final int ACC_PAIRING_TYPE_VALIDATE 	= 1;
+	
+	public static final String ACC_PAIRING_COUNT 		= "PairingCnt";
+	public static final String ACC_PAIRING_AP_MAC 		= "PairingWifiRouterMac";
+	public static final String ACC_PAIRING_TOKEN 		= "PairingToken";
+	
+	
+	public static final String ACC_SES_DEV 				= "DevSession";
+	public static final String ACC_VCAM_CLIENT 			= "VcamClient";
 	public static final String ACC_USER_ID 				= "user_id";
-	public static final String ACC_VCAM_ID 				= "vcam_id";
+	public static final String ACC_VCAM_ID 				= "VcamUid";
+	public static final String ACC_VCAM_ATTR 			= "VcamAttr";
+	
+	
+	//MM BE service
+	public static final String MM_SERVER 				= "server";
+	public static final String MM_STREAM 				= "stream";
+	public static final String MM_START_TIME 			= "startTime";
+	public static final String MM_DURATION 				= "duration";
+	public static final String MM_PLAYLIST 				= "playList";
+	
+	
 	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "GCMProjectID";

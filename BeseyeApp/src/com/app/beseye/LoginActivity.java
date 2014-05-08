@@ -1,10 +1,6 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.DEBUG;
-import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeConfig.TMP_CAM_ID;
-import static com.app.beseye.util.BeseyeJSONUtil.LED_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.getJSONInt;
+import static com.app.beseye.util.BeseyeConfig.*;
 
 import java.util.List;
 
@@ -17,7 +13,6 @@ import com.app.beseye.util.BeseyeAccountFilter;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -45,7 +40,7 @@ public class LoginActivity extends BeseyeBaseActivity {
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
 			if(DEBUG)
-				mEtUserName.setText("abner.huang2@beseye.com");
+				mEtUserName.setText(TEST_ACC);
 		}
 		
 		mEtPassword = (EditText)findViewById(R.id.editText_password);
@@ -177,12 +172,20 @@ public class LoginActivity extends BeseyeBaseActivity {
 						
 						JSONObject objUser = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_USER);
 						if(null != objUser){
-							SessionMgr.getInstance().setMdid(""+BeseyeJSONUtil.getJSONInt(objUser, BeseyeJSONUtil.ACC_ID));
+							SessionMgr.getInstance().setUserid(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_ID));
 							SessionMgr.getInstance().setAccount(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_EMAIL));
+							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
 						}
 						
-						launchDelegateActivity(CameraViewActivity.class.getName());
-						//finish();
+						if(false == SessionMgr.getInstance().getIsCertificated()){
+							Bundle b = new Bundle();
+							b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
+							launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+						}else{
+							launchDelegateActivity(CameraViewActivity.class.getName());
+						}
+						setResult(RESULT_OK);
+						finish();
 					}
 					//monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this), true, SessionMgr.getInstance().getAuthToken());
 				}

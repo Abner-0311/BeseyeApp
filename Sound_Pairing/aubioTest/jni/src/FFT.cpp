@@ -139,6 +139,9 @@ inline int FastReverseBits(int i, int NumBits)
  * Complex Fast Fourier Transform
  */
 
+static float preCalcu[8][6];//reduce 7~8 ms
+static float ax0[8][128][2];//reduce 4 ms
+
 void FFT(int NumSamples,
          bool InverseTransform,
          float *RealIn, float *ImagIn, float *RealOut, float *ImagOut)
@@ -146,21 +149,24 @@ void FFT(int NumSamples,
    int NumBits;                 /* Number of bits needed to store indices */
    int i, j, k, n;
    int BlockSize, BlockEnd;
-
-   double angle_numerator = 2.0 * M_PI;
-   double tr, ti;                /* temp real, temp imaginary */
+   static const float TWO_PI = 2.0 * M_PI;
+   float angle_numerator = TWO_PI;
+   float tr, ti;                /* temp real, temp imaginary */
 
    static long lTotal_1 = 0, lTotal_2 = 0, lTotal_3 = 0, lTotal_4 = 0;
    static long lCount2 = 0;
+//#ifdef CAM_TIME_TRACE
    long lTickCount = getTickCount();
+//#endif
 
    if (!IsPowerOfTwo(NumSamples)) {
       fprintf(stderr, "%d is not a power of two\n", NumSamples);
       exit(1);
    }
-
-   lTotal_1 += (getTickCount() - lTickCount);
-   lTickCount = getTickCount();
+   if(CAM_TIME_TRACE){
+	   lTotal_1 += (getTickCount() - lTickCount);
+   	   lTickCount = getTickCount();
+	}
 
    if (!gFFTBitTable)
       InitFFT();
@@ -170,8 +176,10 @@ void FFT(int NumSamples,
 
    NumBits = NumberOfBitsNeeded(NumSamples);
 
-   lTotal_2 += (getTickCount() - lTickCount);
-   lTickCount = getTickCount();
+   if(CAM_TIME_TRACE){
+	   lTotal_2 += (getTickCount() - lTickCount);
+	   lTickCount = getTickCount();
+   }
    /*
     **   Do simultaneous data copy and bit-reversal ordering into outputs...
     */
@@ -182,24 +190,84 @@ void FFT(int NumSamples,
       ImagOut[j] = (ImagIn == NULL) ? 0.0 : ImagIn[i];
    }
 
-   lTotal_3 += (getTickCount() - lTickCount);
-   lTickCount = getTickCount();
+   if(CAM_TIME_TRACE){
+	   lTotal_3 += (getTickCount() - lTickCount);
+	   lTickCount = getTickCount();
+   }
    /*
     **   Do the FFT itself...
     */
 
    BlockEnd = 1;
-   for (BlockSize = 2; BlockSize <= NumSamples; BlockSize <<= 1) {
 
-      double delta_angle = angle_numerator / (double) BlockSize;
+   static int iPreCalcu = 0;
+   if(!iPreCalcu){
+	   int BlockSizeTmp;
+	   int BlockEndTmp = 1;
+	   int i_, j_, n_;
+	   int iDx_ = 0;
+	   for (BlockSizeTmp = 2; BlockSizeTmp <= NumSamples; BlockSizeTmp <<= 1, iDx_++) {
+		   float delta_angle_tmp = preCalcu[iDx_][0] = angle_numerator / (float) BlockSizeTmp;
+		   float sm2_ = preCalcu[iDx_][1] = sin(-2 * delta_angle_tmp);
+		   float sm1_ = preCalcu[iDx_][2] = sin(-delta_angle_tmp);
+		   float cm2_ = preCalcu[iDx_][3] = cos(-2 * delta_angle_tmp);
+		   float cm1_ = preCalcu[iDx_][4] = cos(-delta_angle_tmp);
+		   float w_   = preCalcu[iDx_][5] = 2 * preCalcu[iDx_][4];
 
-      double sm2 = sin(-2 * delta_angle);
-      double sm1 = sin(-delta_angle);
-      double cm2 = cos(-2 * delta_angle);
-      double cm1 = cos(-delta_angle);
-      double w = 2 * cm1;
-      double ar0, ar1, ar2, ai0, ai1, ai2;
+		   //LOGE("FFT()****************, iPreCalcu  [%d] ===> {%f, %f, %f, %f, %f, %f}\n", iDx_, delta_angle_tmp, (sm2_), (sm1_), cm2_, cm1_, w_);
 
+		   float ar0_, ar1_, ar2_, ai0_, ai1_, ai2_;
+		   int iDx2_ = 0;
+
+		   for (i_ = 0; i_ < NumSamples; i_ += BlockSizeTmp) {
+			   ar2_ = cm2_;//preCalcu[iDx][3];
+			   ar1_ = cm1_;//preCalcu[iDx][4];
+
+			   ai2_ = sm2_;//preCalcu[iDx][1];
+			   ai1_ = sm1_;//preCalcu[iDx][2];
+
+			   for (j_ = i_, n_ = 0; n_ < BlockEndTmp; j_++, n_++, iDx2_++) {
+				   ax0[iDx_][iDx2_][0] = ar0_ = /*preCalcu[iDx][5]*/w_ * ar1_ - ar2_;
+				   ar2_ = ar1_;
+				   ar1_ = ar0_;
+
+				   ax0[iDx_][iDx2_][1] = ai0_ = /*preCalcu[iDx][5]*/w_ * ai1_ - ai2_;
+				   ai2_ = ai1_;
+				   ai1_ = ai0_;
+
+				   //LOGE("FFT()****************, iPreCalcu  [%d, %d, %d, %d, %d] ===> {%f, %f}\n", i_, j_, n_, iDx_, iDx2_, (ar0_), (ai0_));
+			   }
+		   }
+		   BlockEndTmp = BlockSizeTmp;
+	   }
+	   iPreCalcu=1;
+   }
+
+   int iDx = 0;
+   for (BlockSize = 2; BlockSize <= NumSamples; BlockSize <<= 1, iDx++) {
+	  //int iLoopCount = 0;
+	  //long lTotal_7 = getTickCount();
+      //float delta_angle = preCalcu[iDx][0];//angle_numerator / (float) BlockSize;
+
+      float sm2 = preCalcu[iDx][1];//sin(-2 * delta_angle);
+      float sm1 = preCalcu[iDx][2];//sin(-delta_angle);
+      float cm2 = preCalcu[iDx][3];//cos(-2 * delta_angle);
+      float cm1 = preCalcu[iDx][4];//cos(-delta_angle);
+//      float w = preCalcu[iDx][5];//2 * cm1;
+
+      //LOGE("FFT()****************, [%d] ===> {%f, %f, %f, %f, %f, %f}\n", iDx, delta_angle, (sm2), (sm1), cm2, cm1, w);
+
+//      LOGE("FFT(), -------------->iDx = %d, [%d , %d , %d , %d ,%d, %d]\n", iDx, ((angle_numerator / (float) BlockSize) == delta_angle),
+//    		  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	 (sin(-2 * delta_angle) == sm2),
+//    		  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	 (sin(-delta_angle) == sm1),
+//    		  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	 (cos(-2 * delta_angle) == cm2),
+//    		  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	 (cos(-delta_angle) == cm1),
+//    		  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	 ((2 * cm1) == w));
+      float ar0, ar1, ar2, ai0, ai1, ai2;
+
+      //long lTotal_8 = getTickCount();
+      //lTotal_7 = lTotal_8 - lTotal_7;
+      int iDx2 = 0;
       for (i = 0; i < NumSamples; i += BlockSize) {
          ar2 = cm2;
          ar1 = cm1;
@@ -207,12 +275,17 @@ void FFT(int NumSamples,
          ai2 = sm2;
          ai1 = sm1;
 
-         for (j = i, n = 0; n < BlockEnd; j++, n++) {
-            ar0 = w * ar1 - ar2;
+         for (j = i, n = 0; n < BlockEnd; j++, n++, iDx2++) {
+            ar0 = ax0[iDx][iDx2][0];//w * ar1 - ar2;
+//            ar2 = ar1;
+//            ar1 = ar0;
+
+            ai0 = ax0[iDx][iDx2][1];// w * ai1 - ai2;
+            //LOGE("FFT()****************, [%d, %d, %d, %d, %d] ===> {%f, %f, %f, %f}\n", i, j, n, iDx, iDx2, (ar0),  (w * ar1 - ar2), (ai0),  (w * ai1 - ai2));
+            //LOGE("FFT()****************, [%d, %d, %d, %d] ===> {%d, %d}\n", i, j, n, iDx2, (ar0) == (w * ar1 - ar2), (ai0) == (w * ai1 - ai2));
             ar2 = ar1;
             ar1 = ar0;
 
-            ai0 = w * ai1 - ai2;
             ai2 = ai1;
             ai1 = ai0;
 
@@ -225,15 +298,19 @@ void FFT(int NumSamples,
 
             RealOut[j] += tr;
             ImagOut[j] += ti;
+            //iLoopCount++;
          }
+         //LOGE("FFT()****************, -------------->[%ld, %ld, %ld, %d]\n", BlockSize, BlockEnd, NumSamples, iDx2);
       }
-
+      //LOGE("FFT()****************, -------------->[%ld, %ld, %ld, %ld, %d]\n", BlockSize, BlockEnd, NumSamples, (getTickCount() - lTotal_8), iLoopCount);
       BlockEnd = BlockSize;
    }
 
-   lTotal_4 += (getTickCount() - lTickCount);
-   lCount2++;
-   //LOGE("FFT(), -------------->[%ld , %ld , %ld , %ld ]\n", (lTotal_1/lCount2), (lTotal_2/lCount2), (lTotal_3/lCount2), (lTotal_4/lCount2));
+	if(CAM_TIME_TRACE){
+	   lTotal_4 += (getTickCount() - lTickCount);
+	   lCount2++;
+	   LOGE("FFT(), -------------->[%ld , %ld , %ld , %ld ]\n", (lTotal_1/lCount2), (lTotal_2/lCount2), (lTotal_3/lCount2), (lTotal_4/lCount2));
+	}
    /*
       **   Need to normalize if inverse transform...
     */
@@ -401,6 +478,7 @@ void InverseRealFFT(int NumSamples, float *RealIn, float *ImagIn, float *RealOut
  */
 
 #include "fftw3.h"
+static float wPreCalcu[128][2];//reduce 1~2 ms
 
 void PowerSpectrum(int NumSamples, float *In, float *Out)
 {
@@ -431,88 +509,126 @@ void PowerSpectrum(int NumSamples, float *In, float *Out)
 
    long lTickCount = getTickCount();
 
-   int Half = NumSamples / 2;
+   static int Half = NumSamples / 2;
+   static int Quarter = Half / 2;
    int i;
 
-   float theta = M_PI / Half;
+   static float theta = M_PI / Half;
 
    static float *tmpReal = new float[Half];
    static float *tmpImag = new float[Half];
    static float *RealOut = new float[Half];
    static float *ImagOut = new float[Half];
-   static long lTotal1 = 0, lTotal2 = 0, lTotal3 = 0, lTotal4 = 0;
+
+   static long lTotal1 = 0, lTotal2 = 0, lTotal3 = 0, lTotal4 = 0, lTotal5 = 0;
    static long lCount = 0;
 
-   lTotal1 += (getTickCount() - lTickCount);
-   //LOGE("PowerSpectrum(), 1 takes %ld ms\n", (getTickCount() - lTickCount));
-   lTickCount = getTickCount();
+   if(CAM_TIME_TRACE){
+	   lTotal1 += (getTickCount() - lTickCount);
+	   //LOGE("PowerSpectrum(), 1 takes %ld ms\n", (getTickCount() - lTickCount));
+	   lTickCount = getTickCount();
+   }
 
    for (i = 0; i < Half; i++) {
       tmpReal[i] = In[2 * i];
       tmpImag[i] = In[2 * i + 1];
    }
 
-   lTotal2 += (getTickCount() - lTickCount);
-   //LOGE("PowerSpectrum(), 2 takes %ld ms\n", (getTickCount() - lTickCount));
-   lTickCount = getTickCount();
+   if(CAM_TIME_TRACE){
+	   lTotal2 += (getTickCount() - lTickCount);
+	   //LOGE("PowerSpectrum(), 2 takes %ld ms\n", (getTickCount() - lTickCount));
+	   lTickCount = getTickCount();
+   }
 
    FFT(Half, 0, tmpReal, tmpImag, RealOut, ImagOut);
 
-   lTotal3 += (getTickCount() - lTickCount);
-   //LOGE("PowerSpectrum(), 3 takes %ld ms\n", (getTickCount() - lTickCount));
-   lTickCount = getTickCount();
+   if(CAM_TIME_TRACE){
+		lTotal3 += (getTickCount() - lTickCount);
+		//LOGE("PowerSpectrum(), 3 takes %ld ms\n", (getTickCount() - lTickCount));
+		lTickCount = getTickCount();
+   }
 
-   float wtemp = float (sin(0.5 * theta));
+    static int iPreCalcu = 0;
+   	if(!iPreCalcu){
+   		float wtemp_ = float (sin(0.5 * theta));
+   		float wpr_ = -2.0 * wtemp_ * wtemp_;
+   		float wpi_ = -1.0 * float (sin(theta));
+   		float wr_ = 1.0 + wpr_;
+   		float wi_ = wpi_;
 
-   float wpr = -2.0 * wtemp * wtemp;
-   float wpi = -1.0 * float (sin(theta));
+   		for (i = 1; i < Quarter; i++) {
+   			wPreCalcu[i][0] = (wtemp_ = wr_) * wpr_ - wi_ * wpi_ + wr_;
+   			wPreCalcu[i][1] = wi_ * wpr_ + wtemp_ * wpi_ + wi_;
+   		}
+   		iPreCalcu = 1;
+   	}
+
+   static float wtemp = float (sin(0.5 * theta));
+   static float wpr = -2.0 * wtemp * wtemp;
+   static float wpi = -1.0 * float (sin(theta));
    float wr = 1.0 + wpr;
    float wi = wpi;
 
    int i3;
 
    float h1r, h1i, h2r, h2i, rt, it;
+   float wrh2r, wih2i, wrh2i, wih2r;
 
-   lTickCount = getTickCount();
-
-   for (i = 1; i < Half / 2; i++) {
+   for (i = 1; i < Quarter; i++) {
 
       i3 = Half - i;
 
-      h1r = 0.5 * (RealOut[i] + RealOut[i3]);
-      h1i = 0.5 * (ImagOut[i] - ImagOut[i3]);
-      h2r = 0.5 * (ImagOut[i] + ImagOut[i3]);
-      h2i = -0.5 * (RealOut[i] - RealOut[i3]);
+//      h1r = 0.5 * (RealOut[i] + RealOut[i3]);
+//      h1i = 0.5 * (ImagOut[i] - ImagOut[i3]);
+//      h2r = 0.5 * (ImagOut[i] + ImagOut[i3]);
+//      h2i = -0.5 * (RealOut[i] - RealOut[i3]);
 
-      rt = h1r + wr * h2r - wi * h2i;
-      it = h1i + wr * h2i + wi * h2r;
+      h1r = (RealOut[i] + RealOut[i3]);
+      h1i = (ImagOut[i] - ImagOut[i3]);
+      h2r = (ImagOut[i] + ImagOut[i3]);
+      h2i = -(RealOut[i] - RealOut[i3]);
 
-      Out[i] = rt * rt + it * it;
+      wrh2r = wr * h2r;
+      wih2i = wi * h2i;
+      wrh2i = wr * h2i;
+      wih2r = wi * h2r;
 
-      rt = h1r - wr * h2r + wi * h2i;
-      it = -h1i + wr * h2i + wi * h2r;
+      rt = ( h1r + wrh2r - wih2i);
+      it = ( h1i + wrh2i + wih2r);
 
-      Out[i3] = rt * rt + it * it;
+      Out[i] = 0.25 * (rt * rt + it * it);
 
-      wr = (wtemp = wr) * wpr - wi * wpi + wr;
-      wi = wi * wpr + wtemp * wpi + wi;
+      rt = ( h1r - wrh2r + wih2i);
+      it = (-h1i + wrh2i + wih2r);
+
+      Out[i3] = 0.25 * (rt * rt + it * it);
+
+      wr = wPreCalcu[i][0];//(wtemp = wr) * wpr - wi * wpi + wr;
+      wi = wPreCalcu[i][1];//wi * wpr + wtemp * wpi + wi;
    }
 
-   lTotal4 += (getTickCount() - lTickCount);
-   lCount++;
-   LOGE("PowerSpectrum(), [%ld , %ld , %ld , %ld ]\n", (lTotal1/lCount), (lTotal2/lCount), (lTotal3/lCount), (lTotal4/lCount));
+   if(CAM_TIME_TRACE){
+	   lTotal4 += (getTickCount() - lTickCount);
+	   lTickCount = getTickCount();
+   }
 
-   rt = (h1r = RealOut[0]) + ImagOut[0];
-   it = h1r - ImagOut[0];
-   Out[0] = rt * rt + it * it;
+   //rt = (h1r = RealOut[0]) + ImagOut[0];
+   //it = h1r - ImagOut[0];
+   Out[0] = 2.0 * (pow(RealOut[0], 2)+pow(ImagOut[0], 2)); //rt * rt + it * it;
 
-   lTickCount = getTickCount();
+   //rt = RealOut[Quarter];
+   //it = ImagOut[Quarter];
+   Out[Quarter] = pow(RealOut[Quarter], 2)+pow(ImagOut[Quarter], 2);//rt * rt + it * it;
 
-   rt = RealOut[Half / 2];
-   it = ImagOut[Half / 2];
-   Out[Half / 2] = rt * rt + it * it;
+   if(CAM_TIME_TRACE){
+		lTotal5 += (getTickCount() - lTickCount);
+		lTickCount = getTickCount();
 
-   lTickCount = getTickCount();
+		lCount++;
+		LOGE("PowerSpectrum(), [%ld , %ld , %ld , %ld , %ld]\n", (lTotal1/lCount), (lTotal2/lCount), (lTotal3/lCount), (lTotal4/lCount),  (lTotal5/lCount));
+   }
+
+   //lTickCount = getTickCount();
 
 //   delete[]tmpReal;
 //   delete[]tmpImag;
