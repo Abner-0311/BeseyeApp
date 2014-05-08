@@ -91,6 +91,7 @@
 	<string name="cam_info_sn">Serial number</string>
 	<string name="cam_info_mac">MAC address</string>
 	
+	<string name="streaming_invalid_dvr">Invalid DVR streaming path. Please try again later.</string>
 	<string name="streaming_playing_error">Invalid streaming path or server error. Please try again later.</string>
 	<string name="streaming_error_no_network">Please check out your network connection.</string>
 	<string name="streaming_error_unknown">Unknown error. Please try again later.</string>

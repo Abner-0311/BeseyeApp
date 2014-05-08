@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Patterns;
 import android.view.View;
@@ -133,7 +134,11 @@ public class BeseyeUtils {
 	}
 	
 	static public String getAndroidUUid(){
-		return "<Android>_<"+DeviceUuidFactory.getDeviceUuid()+">";
+		return "{Android}_{"+DeviceUuidFactory.getDeviceUuid()+"}";
+	}
+	
+	static public String getUserAgent(){
+		return "{"+Build.MANUFACTURER+"}_{"+Build.MODEL+"}";
 	}
 	
 	static public String getProcessName(Context context, int pID){

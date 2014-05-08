@@ -2522,8 +2522,18 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 			AVal desc;
 			if(obj){
 				AMFProp_GetString(AMF_GetProp(obj, &av_description, -1), &desc);
-				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Play, desc:%s", desc.av_val);
-				triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, desc.av_val, STREAM_PLAYING, 0);
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Play, desc:%s", desc.av_val?desc.av_val:"");
+				string strPath(desc.av_val?desc.av_val:"");
+				int iFoundLastSpace = strPath.find_last_of(" ");
+				if(0 <=  iFoundLastSpace){
+					strPath = strPath.substr(iFoundLastSpace+1);
+				}
+
+				if((strPath.length()-1) == strPath.find_last_of(".")){
+					strPath = strPath.substr(0, strPath.length()-1);
+				}
+
+				triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, strPath.c_str(), STREAM_PLAYING, 0);
 			}
 		}else if(AVMATCH(content, &av_NetStream_Pause_Notify)){
 			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Pause_Notify");

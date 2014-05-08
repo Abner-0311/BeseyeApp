@@ -28,11 +28,25 @@ public class BeseyeAccountTask {
 	public static final String URL_GET_VCAM_LST		="user/vcam/query";
 	public static final String URL_GET_INFO			="user/info";
 	
-	
 	public static final String URL_CAM_ATTACH		="vcam/attach";
 	public static final String URL_CAM_DEATTACH		="user/vcam/detach";
 	public static final String URL_CAM_VALIDATE		="vcam/validate";
 	public static final String URL_CAM_VALIDATE_BEE	="vcam/bee_validate";
+	
+	static private void appendDevInfo(JSONObject obj){
+		if(null != obj){
+			JSONObject objClient = new JSONObject();
+			try{
+				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
+				objClient.put(ACC_CLIENT_UA, BeseyeUtils.getUserAgent());
+				obj.put(ACC_CLIENT, objClient);
+			}catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	static public class LoginHttpTask extends BeseyeHttpTask {	 
 		public LoginHttpTask(OnHttpTaskCallback cb) {
@@ -49,11 +63,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_EMAIL, strParams[0]);
 				obj.put(ACC_PASSWORD, strParams[1]);
 				obj.put(ACC_REMEM_ME, true);
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
-				//objClient.put(ACC_CLIENT_UA, "Android");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_CLIENT, objClient);
+				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_LOGIN, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -76,17 +86,11 @@ public class BeseyeAccountTask {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
-				//objClient.put(ACC_CLIENT_UA, "Android");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_CLIENT, objClient);
+				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_LOGOUT, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			} 
 			return null;
 		}
 	}
@@ -102,16 +106,9 @@ public class BeseyeAccountTask {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {
-				//obj.put(ACC_SES_TOKEN, strParams[0]);
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
-				//objClient.put(ACC_CLIENT_UA, "Android");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_CLIENT, objClient);
+				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_ACCOUNT_CHECK, obj.toString());
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			return null;	
@@ -132,11 +129,7 @@ public class BeseyeAccountTask {
 			try {
 				obj.put(ACC_EMAIL, strParams[0]);
 				obj.put(ACC_PASSWORD, strParams[1]);
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
-				//objClient.put(ACC_CLIENT_UA, "Android");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_CLIENT, objClient);
+				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_REGISTER, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -161,11 +154,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_PAIRING_TYPE, Integer.parseInt(strParams[0]));
 				obj.put(ACC_PAIRING_COUNT, 1);
 				obj.put(ACC_PAIRING_AP_MAC, strParams[1].replaceAll(":", ""));
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
-				//objClient.put(ACC_CLIENT_UA, "Android");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_CLIENT, objClient);
+				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_PAIRING, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -192,11 +181,7 @@ public class BeseyeAccountTask {
 				attrObj.put(ACC_NAME, strParams[1]);
 				obj.put(ACC_VCAM_ATTR, attrObj);
 				
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
-				//objClient.put(ACC_CLIENT_UA, "Android");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_CLIENT, objClient);
+				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_SET_ATTR, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -218,15 +203,9 @@ public class BeseyeAccountTask {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {				
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
-				//objClient.put(ACC_CLIENT_UA, "Android");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_CLIENT, objClient);
+				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_GET_INFO, obj.toString());
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			return null;	
@@ -244,23 +223,17 @@ public class BeseyeAccountTask {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {				
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
-				//objClient.put(ACC_CLIENT_UA, "Android");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_CLIENT, objClient);
+				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_GET_VCAM_LST, obj.toString());
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			return null;	
 		}
 	}
 	
-	static public class CamDeattchTask extends BeseyeHttpTask {	 	
-		public CamDeattchTask(OnHttpTaskCallback cb) {
+	static public class CamDettachTask extends BeseyeHttpTask {	 	
+		public CamDettachTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
 		}
@@ -270,9 +243,7 @@ public class BeseyeAccountTask {
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(ACC_VCAM_ID, "9b2eb34759be4320a0c70c1fc483f888");
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, BeseyeUtils.getAndroidUUid());
-				obj.put(ACC_CLIENT, objClient);
+				appendDevInfo(obj);
 				Log.e(TAG, "obj:"+obj.toString());
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_CAM_ATTACH, obj.toString());
 			} catch (NumberFormatException e) {
@@ -285,7 +256,6 @@ public class BeseyeAccountTask {
 	}
 	
 	//Test cam behaviors
-	
 	static public class CamAttchTask extends BeseyeHttpTask {	 	
 		public CamAttchTask(OnHttpTaskCallback cb) {
 			super(cb);

@@ -1018,9 +1018,11 @@ void checkPairingResult(string strCode){
 
 void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDecodeUnmark, bool bFromAutoCorrection, MatchRetSet* prevMatchRet){
 	LOGI("onSetResult(), strCode:%s, strDecodeMark = %s\n", strCode.c_str(), strDecodeMark.c_str());
-	checkPairingResult(strCode);
-	if(0 <= miPairingReturnCode){
-		stopAutoTest();
+	if(mbPairingAnalysisMode){
+		checkPairingResult(strCode);
+		if(0 <= miPairingReturnCode){
+			stopAutoTest();
+		}
 	}
 
 	stringstream strLog;
