@@ -18,7 +18,7 @@ export STRIP=mipsel-linux-strip
 PREFIX="$DEST" 
 #&& mkdir -p $PREFIX
 
-./configure --enable-float --prefix=$PREFIX --host=mips-linux --target=mips-linux
+./configure --enable-single --prefix=$PREFIX --host=mips-linux --target=mips-linux
 
 make clean
 make -j4 || exit 1

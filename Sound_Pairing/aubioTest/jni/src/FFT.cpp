@@ -155,18 +155,18 @@ void FFT(int NumSamples,
 
    static long lTotal_1 = 0, lTotal_2 = 0, lTotal_3 = 0, lTotal_4 = 0;
    static long lCount2 = 0;
-#ifdef CAM_TIME_TRACE
+//#ifdef CAM_TIME_TRACE
    long lTickCount = getTickCount();
-#endif
+//#endif
 
    if (!IsPowerOfTwo(NumSamples)) {
       fprintf(stderr, "%d is not a power of two\n", NumSamples);
       exit(1);
    }
-#ifdef CAM_TIME_TRACE
-   lTotal_1 += (getTickCount() - lTickCount);
-   lTickCount = getTickCount();
-#endif
+   if(CAM_TIME_TRACE){
+	   lTotal_1 += (getTickCount() - lTickCount);
+   	   lTickCount = getTickCount();
+	}
 
    if (!gFFTBitTable)
       InitFFT();
@@ -176,10 +176,10 @@ void FFT(int NumSamples,
 
    NumBits = NumberOfBitsNeeded(NumSamples);
 
-#ifdef CAM_TIME_TRACE
-   lTotal_2 += (getTickCount() - lTickCount);
-   lTickCount = getTickCount();
-#endif
+   if(CAM_TIME_TRACE){
+	   lTotal_2 += (getTickCount() - lTickCount);
+	   lTickCount = getTickCount();
+   }
    /*
     **   Do simultaneous data copy and bit-reversal ordering into outputs...
     */
@@ -190,10 +190,10 @@ void FFT(int NumSamples,
       ImagOut[j] = (ImagIn == NULL) ? 0.0 : ImagIn[i];
    }
 
-#ifdef CAM_TIME_TRACE
-   lTotal_3 += (getTickCount() - lTickCount);
-   lTickCount = getTickCount();
-#endif
+   if(CAM_TIME_TRACE){
+	   lTotal_3 += (getTickCount() - lTickCount);
+	   lTickCount = getTickCount();
+   }
    /*
     **   Do the FFT itself...
     */
@@ -305,11 +305,12 @@ void FFT(int NumSamples,
       //LOGE("FFT()****************, -------------->[%ld, %ld, %ld, %ld, %d]\n", BlockSize, BlockEnd, NumSamples, (getTickCount() - lTotal_8), iLoopCount);
       BlockEnd = BlockSize;
    }
-#ifdef CAM_TIME_TRACE
-   lTotal_4 += (getTickCount() - lTickCount);
-   lCount2++;
-   LOGE("FFT(), -------------->[%ld , %ld , %ld , %ld ]\n", (lTotal_1/lCount2), (lTotal_2/lCount2), (lTotal_3/lCount2), (lTotal_4/lCount2));
-#endif
+
+	if(CAM_TIME_TRACE){
+	   lTotal_4 += (getTickCount() - lTickCount);
+	   lCount2++;
+	   LOGE("FFT(), -------------->[%ld , %ld , %ld , %ld ]\n", (lTotal_1/lCount2), (lTotal_2/lCount2), (lTotal_3/lCount2), (lTotal_4/lCount2));
+	}
    /*
       **   Need to normalize if inverse transform...
     */
@@ -522,24 +523,30 @@ void PowerSpectrum(int NumSamples, float *In, float *Out)
    static long lTotal1 = 0, lTotal2 = 0, lTotal3 = 0, lTotal4 = 0, lTotal5 = 0;
    static long lCount = 0;
 
-   lTotal1 += (getTickCount() - lTickCount);
-   //LOGE("PowerSpectrum(), 1 takes %ld ms\n", (getTickCount() - lTickCount));
-   lTickCount = getTickCount();
+   if(CAM_TIME_TRACE){
+	   lTotal1 += (getTickCount() - lTickCount);
+	   //LOGE("PowerSpectrum(), 1 takes %ld ms\n", (getTickCount() - lTickCount));
+	   lTickCount = getTickCount();
+   }
 
    for (i = 0; i < Half; i++) {
       tmpReal[i] = In[2 * i];
       tmpImag[i] = In[2 * i + 1];
    }
 
-   lTotal2 += (getTickCount() - lTickCount);
-   //LOGE("PowerSpectrum(), 2 takes %ld ms\n", (getTickCount() - lTickCount));
-   lTickCount = getTickCount();
+   if(CAM_TIME_TRACE){
+	   lTotal2 += (getTickCount() - lTickCount);
+	   //LOGE("PowerSpectrum(), 2 takes %ld ms\n", (getTickCount() - lTickCount));
+	   lTickCount = getTickCount();
+   }
 
    FFT(Half, 0, tmpReal, tmpImag, RealOut, ImagOut);
 
-   lTotal3 += (getTickCount() - lTickCount);
-   //LOGE("PowerSpectrum(), 3 takes %ld ms\n", (getTickCount() - lTickCount));
-   lTickCount = getTickCount();
+   if(CAM_TIME_TRACE){
+		lTotal3 += (getTickCount() - lTickCount);
+		//LOGE("PowerSpectrum(), 3 takes %ld ms\n", (getTickCount() - lTickCount));
+		lTickCount = getTickCount();
+   }
 
     static int iPreCalcu = 0;
    	if(!iPreCalcu){
@@ -600,8 +607,10 @@ void PowerSpectrum(int NumSamples, float *In, float *Out)
       wi = wPreCalcu[i][1];//wi * wpr + wtemp * wpi + wi;
    }
 
-   lTotal4 += (getTickCount() - lTickCount);
-   lTickCount = getTickCount();
+   if(CAM_TIME_TRACE){
+	   lTotal4 += (getTickCount() - lTickCount);
+	   lTickCount = getTickCount();
+   }
 
    //rt = (h1r = RealOut[0]) + ImagOut[0];
    //it = h1r - ImagOut[0];
@@ -611,12 +620,13 @@ void PowerSpectrum(int NumSamples, float *In, float *Out)
    //it = ImagOut[Quarter];
    Out[Quarter] = pow(RealOut[Quarter], 2)+pow(ImagOut[Quarter], 2);//rt * rt + it * it;
 
+   if(CAM_TIME_TRACE){
+		lTotal5 += (getTickCount() - lTickCount);
+		lTickCount = getTickCount();
 
-   lTotal5 += (getTickCount() - lTickCount);
-   lTickCount = getTickCount();
-
-   lCount++;
-   LOGE("PowerSpectrum(), [%ld , %ld , %ld , %ld , %ld]\n", (lTotal1/lCount), (lTotal2/lCount), (lTotal3/lCount), (lTotal4/lCount),  (lTotal5/lCount));
+		lCount++;
+		LOGE("PowerSpectrum(), [%ld , %ld , %ld , %ld , %ld]\n", (lTotal1/lCount), (lTotal2/lCount), (lTotal3/lCount), (lTotal4/lCount),  (lTotal5/lCount));
+   }
 
    //lTickCount = getTickCount();
 

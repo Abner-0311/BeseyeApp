@@ -25,8 +25,7 @@ $(SRC_PATH)/sp_config.cpp \
 $(SRC_PATH)/AudioBufferMgr.cpp \
 $(SRC_PATH)/FreqAnalyzer.cpp \
 $(SRC_PATH)/AudioTest.cpp \
-$(SRC_PATH)/main.cpp \
-$(SRC_PATH)/../cam-handler/src/delegate/account_mgr.cpp
+$(SRC_PATH)/main.cpp
 
 
 CXXOBJECTS=$(CXXSOURCES:.cpp=.o)

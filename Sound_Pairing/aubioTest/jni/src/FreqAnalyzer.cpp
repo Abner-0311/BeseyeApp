@@ -292,7 +292,10 @@ void FreqAnalyzer::pickWithSeesion(){
 	msec_t lSesBeginTs = mSessionBeginTs+SoundPair_Config::TONE_PERIOD*lSesIdx;
 	msec_t lSesEndTs = mSessionBeginTs+SoundPair_Config::TONE_PERIOD*(lSesIdx+1);
 
-	LOGI("pickWithSeesion()**, ====>>>> (lSesBeginTs, lSesEndTs): (%lld, %lld)\n", lSesBeginTs, lSesEndTs);
+	if(CAM_CORRECTION_TRACE){
+		LOGI("pickWithSeesion()**, ====>>>> (lSesBeginTs, lSesEndTs): (%lld, %lld)\n", lSesBeginTs, lSesEndTs);
+
+	}
 	fillEmptyCodeRecord(lSesBeginTs);
 
 	//Find out all session items
@@ -308,8 +311,10 @@ void FreqAnalyzer::pickWithSeesion(){
 	}
 	//LOGI("analyze(), ====>>>> sesFreqList:"+sesFreqList.toString());
 
-	for(int i = 0;i<sesFreqList.size();i++){
-		LOGI("pickWithSeesion()**, sesFreqList[%d]:%s\n", i, sesFreqList[i]->toString().c_str());
+	if(CAM_CORRECTION_TRACE){
+		for(int i = 0;i<sesFreqList.size();i++){
+			LOGI("pickWithSeesion()**, sesFreqList[%d]:%s\n", i, sesFreqList[i]->toString().c_str());
+		}
 	}
 
 	//Fill the missing items
@@ -1071,7 +1076,7 @@ void FreqAnalyzer::checkResult(string strDecode){
 	string strDecodeUnmark = replaceInvalidChar(strDecode);
 	msbDecode.str("");
 	msbDecode.clear();
-	if(mCodeRecordList.size() > 0){
+	if(CAM_TIME_TRACE && mCodeRecordList.size() > 0){
 		//sCodeRecordList.remove(sCodeRecordList.size()-1);
 //			if(-1 < ssbDecode.rfind(POSTFIX_DECODE)){
 //				sCodeRecordList.remove(sCodeRecordList.size()-1);
@@ -1942,9 +1947,10 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 		sTotalTime2_2 += (getTickCount() - lTickCount);
 #endif
-//#ifdef CAM_AUDIO_PERFORMANCE
-		LOGE("performAudacityFFT(), Spectrum and Preprocess takes [%ld, %ld, %ld, %ld, %ld] ms average\n", sTotalTime1/lCount, sTotalTime2_1/lCount, sTotalTime2/lCount, sTotalTime2_2/lCount, lTotalTime/(lCount));
-//#endif
+		if(CAM_TIME_TRACE){
+			LOGE("performAudacityFFT(), Spectrum and Preprocess takes [%ld, %ld, %ld, %ld, %ld] ms average\n", sTotalTime1/lCount, sTotalTime2_1/lCount, sTotalTime2/lCount, sTotalTime2_2/lCount, lTotalTime/(lCount));
+		}
+
 		lCount++;
 		if(NULL != iDxValues){
 			iDxValues[0] = iDx;

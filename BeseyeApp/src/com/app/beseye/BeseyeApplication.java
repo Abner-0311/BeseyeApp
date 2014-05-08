@@ -50,7 +50,7 @@ public class BeseyeApplication extends Application {
 		
 		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
 		if(BeseyeConfig.DEBUG)
-			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\"");
+			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" "+System.currentTimeMillis());
 		
 		ACRA.init(this);
 		ACRA.getErrorReporter().setReportSender(new HockeySender());
@@ -60,7 +60,7 @@ public class BeseyeApplication extends Application {
 		CamSettingMgr.getInstance().addCamID(getApplicationContext(), TMP_CAM_ID);
 		
 		SessionMgr.createInstance(getApplicationContext());
-		SessionMgr.getInstance().setHostUrl("http://192.168.2.68:3100/be_acc/");
+		SessionMgr.getInstance().setHostUrl("http://54.178.199.114/be_acc/v1/");
 		//SessionMgr.getInstance().setMdid("1");
 		//SessionMgr.getInstance().setAuthToken("1");
 		

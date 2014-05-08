@@ -133,7 +133,7 @@ public class BeseyeUtils {
 	}
 	
 	static public String getAndroidUUid(){
-		return "Android_"+DeviceUuidFactory.getDeviceUuid();
+		return "<Android>_<"+DeviceUuidFactory.getDeviceUuid()+">";
 	}
 	
 	static public String getProcessName(Context context, int pID){

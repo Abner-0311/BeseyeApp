@@ -26,10 +26,11 @@ public :
 	static bool destroyInstance();
 
 	virtual bool setSenderMode();
-	virtual bool setReceiverMode();
+	virtual bool setReceiverMode(bool bAutoTest = false);
 	virtual bool setAutoTestMode();
 
 	virtual bool startAutoTest(string strInitCode, int iDigitalToTest);
+	virtual bool startPairingAnalysis();
 	virtual bool stopAutoTest();
 
 	virtual bool playTone(string strCode, bool bNeedEncode);
@@ -56,6 +57,10 @@ public :
 	virtual void soundpairReceiverCallback(const char* cb_type, void* data);
 
 	bool isAutoTestBeginAnalyzeOnReceiver(){return mbAutoTestBeginAnalyzeOnReceiver;}
+	bool isPairingAnalysisMode(){return mbPairingAnalysisMode;}
+	void setPairingReturnCode(int code){miPairingReturnCode = code;}
+	virtual int getPairingReturnCode(){return miPairingReturnCode;}
+
 #ifdef ANDROID
 	virtual void setCamCamWSServerInfo(string strHost, int iPort);
 	virtual int connectCamCamWSServer();
@@ -112,6 +117,9 @@ private:
 	string curECCode;
 	string curEncodeMark;
 	int miDigitalToTest;
+
+	bool mbPairingAnalysisMode;
+	int miPairingReturnCode;
 
 	static string findDifference(string strSrc, string strDecode);
 	void adaptPrevMatchRet(MatchRetSet* prevMatchRet);

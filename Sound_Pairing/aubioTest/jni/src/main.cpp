@@ -18,13 +18,19 @@ void sighandler(int sig){
 
 int main(int argc, char** argv) {
 	LOGE("+++++\n");
-	int iDigitalToTest = 24;
 	signal(SIGINT, sighandler);
 	SoundPair_Config::init();
-	AudioTest::getInstance()->setReceiverMode();
-	AudioTest::getInstance()->startAutoTest("", iDigitalToTest);
+	if(1 < argc && 0 == strcmp(argv[1], "-test")){
+		int iDigitalToTest = 24;
+		AudioTest::getInstance()->setReceiverMode(true);
+		AudioTest::getInstance()->startAutoTest("", iDigitalToTest);
+	}else{
+		AudioTest::getInstance()->setReceiverMode();
+		AudioTest::getInstance()->startPairingAnalysis();
+	}
+
 	LOGE("-----\n");
-    return 0;
+    return AudioTest::getInstance()->getPairingReturnCode();
 }
 
 int Delegate_OpenAudioDevice(int sampleRate, int is16Bit, int channelCount, int desiredBufferFrames){

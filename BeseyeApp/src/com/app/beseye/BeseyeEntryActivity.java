@@ -5,6 +5,7 @@ import java.util.Calendar;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog.OnDatetimePickerClickListener;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -59,11 +60,13 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_signup:{
-				launchActivityByClassName(PairingRemindActivity.class.getName());
+				launchActivityForResultByClassName(PairingRemindActivity.class.getName(), null, REQUEST_SIGNUP);
+				//launchActivityByClassName(PairingRemindActivity.class.getName());
 				break;
 			}
 			case R.id.button_signin:{
-				launchActivityByClassName(LoginActivity.class.getName());
+				launchActivityForResultByClassName(LoginActivity.class.getName(), null, REQUEST_SIGNUP);
+				//launchActivityByClassName(LoginActivity.class.getName());
 				break;
 			}
 			case R.id.tv_bottom_beseye:{
@@ -72,5 +75,18 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 			default:
 				super.onClick(view);
 		}		
+	}
+	
+	static public final int REQUEST_SIGNUP = 1;
+	static public final int REQUEST_SIGNIN = 2;
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		if(REQUEST_SIGNUP == requestCode || REQUEST_SIGNIN == requestCode){
+			if(resultCode == RESULT_OK){
+				finish();
+			}
+		}else
+			super.onActivityResult(requestCode, resultCode, intent);
 	}
 }

@@ -126,7 +126,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                     mClients.remove(msg.replyTo);
                     break;
 //                case MSG_CHECK_NOTIFY_NUM:{
-//                	if(!SessionMgr.getInstance().isMdidValid() || !SessionMgr.getInstance().getIsCertificated()){
+//                	if(!SessionMgr.getInstance().isUseridValid() || !SessionMgr.getInstance().getIsCertificated()){
 //                		//sendMessageDelayed(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0), 30*1000L);
 //                		return;
 //                	}
@@ -141,7 +141,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //                    break;
 //                }
 //                case MSG_CHECK_UNREAD_MSG_NUM:{
-//                	if(!SessionMgr.getInstance().isMdidValid() || !SessionMgr.getInstance().getIsCertificated()){
+//                	if(!SessionMgr.getInstance().isUseridValid() || !SessionMgr.getInstance().getIsCertificated()){
 //                		//sendMessageDelayed(Message.obtain(null,MSG_CHECK_UNREAD_MSG_NUM,0,0), 30*1000L);
 //                		return;
 //                	}
@@ -266,23 +266,23 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_UPDATE_SESSION_DATA:{
                 	final Bundle bundle = msg.getData();
                 	bundle.setClassLoader(getClassLoader());
-                	boolean bLoginBefore = SessionMgr.getInstance().isMdidValid();
+                	boolean bLoginBefore = SessionMgr.getInstance().isUseridValid();
                 	
                 	SessionData sessionData = (SessionData) bundle.getParcelable("SessionData");
                 	if(null != sessionData){
                 		SessionMgr.getInstance().setSessionData(sessionData);
                 		//If logout
-                		if(bLoginBefore && (!SessionMgr.getInstance().isMdidValid() || null == SessionMgr.getInstance().getAccount() || SessionMgr.getInstance().getAccount().length() == 0)){
+                		if(bLoginBefore && (!SessionMgr.getInstance().isUseridValid() || null == SessionMgr.getInstance().getAccount() || SessionMgr.getInstance().getAccount().length() == 0)){
                 			Log.i(TAG, "BG service detects MSG_UPDATE_SESSION_DATA() and reset");
                 			mNotifyInfo = null;
                 			mMsgInfo = null;
                 			sendMessage(Message.obtain(null,MSG_SET_NOTIFY_NUM,0,0));
                 			sendMessage(Message.obtain(null,MSG_SET_UNREAD_MSG_NUM,0,0));
-                			if(!SessionMgr.getInstance().isMdidValid())
+                			if(!SessionMgr.getInstance().isUseridValid())
                 				unregisterGCMServer();
                 			cancelNotification();
                 		}//If Login
-                		else if(!bLoginBefore && SessionMgr.getInstance().isMdidValid()){
+                		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid()){
                 			registerGCMServer();
 //                			try {
 //            		        	mMessenger.send(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0));
@@ -454,7 +454,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 
 	private void registerGCMServer(){
-    	if(/*null != SessionMgr.getInstance() && SessionMgr.getInstance().isMdidValid() &&*/ false == mbRegisterGCM){
+    	if(/*null != SessionMgr.getInstance() && SessionMgr.getInstance().isUseridValid() &&*/ false == mbRegisterGCM){
     		registerReceiver(mHandleMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
     		mbRegisterReceiver = true;
             // Make sure the device has the proper dependencies.
@@ -526,7 +526,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     
     private void registerPushServer(){
     	final String regId = GCMRegistrar.getRegistrationId(getApplicationContext());
-    	if(null != regId && 0 < regId.length() /*&& SessionMgr.getInstance().isMdidValid()*/){
+    	if(null != regId && 0 < regId.length() /*&& SessionMgr.getInstance().isUseridValid()*/){
     		//final String userId = SessionMgr.getInstance().getMdid();
     		//BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, USER_ID, userId);
     		// Device is already registered on GCM, check server.
@@ -548,7 +548,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
             	mbRegisterGCM = true;
             }
     	}else{
-    		Log.e(TAG, "registerPushServer(), invalid regId or mdid "+SessionMgr.getInstance().getMdid());
+    		Log.e(TAG, "registerPushServer(), invalid regId or mdid "+SessionMgr.getInstance().getUserid());
     	}
     }
     

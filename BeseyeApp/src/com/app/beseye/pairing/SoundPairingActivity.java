@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -26,6 +28,7 @@ import com.app.beseye.R;
 import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
@@ -33,6 +36,9 @@ import com.app.beseye.widget.GifMovieView;
 
 public class SoundPairingActivity extends BeseyeBaseActivity {	
 	static public final String KEY_WIFI_INFO = "KEY_WIFI_INFO";
+	
+	static private AudioManager sAudioManager;
+	static private int siOriginalVolume;
 	
 	private WifiAPInfo mChosenWifiAPInfo;
 	private ViewGroup mVgCamNameHolder;
@@ -59,6 +65,11 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		if(null == sAudioManager){
+			sAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+			setVolumeControlStream(AudioManager.STREAM_MUSIC);  
+		}
 		
 		getSupportActionBar().hide();
 		
@@ -101,11 +112,16 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	@Override
 	protected void onSessionComplete() {
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, SessionMgr.getInstance().getAuthToken());
+		
+		//monitorAsyncTask(new BeseyeAccountTask.CamDeattchTask(this), true);
+		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", mChosenWifiAPInfo.BSSID);
 	}
 	@Override
 	protected void onPause() {
 		finishPlayCode();
+		if(null != sAudioManager){
+			sAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, siOriginalVolume, AudioManager.FLAG_PLAY_SOUND); 
+		}
 		super.onPause();
 		Log.w(TAG, "onPause()-");
 	}
@@ -217,6 +233,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		Log.i(TAG, "beginToPlayPairingTone(), sUserTmpId is "+sUserTmpId);
 		if(null != mChosenWifiAPInfo){
 			Log.w(TAG, "beginToPlayPairingTone(), mChosenWifiAPInfo:"+mChosenWifiAPInfo.toString());
+			siOriginalVolume = sAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+			sAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (sAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)/2)+1, AudioManager.FLAG_PLAY_SOUND); 
+			
 			int iRet = playPairingCode(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,NetworkMgr.translateCipherToType(mChosenWifiAPInfo.cipher),(short) sUserTmpId);
 			
 			if(iRet != 0)
@@ -268,6 +287,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	
 	private void checkPairingStatus(){
 		//Check pairing result
+		if(null != sAudioManager){
+			sAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, siOriginalVolume, AudioManager.FLAG_PLAY_SOUND); 
+		}
 		
 		if(null != mStrCamName){
 			if(null != mPairingCounter && mPairingCounter.isFinished() && sbFinishToPlay){
@@ -327,16 +349,39 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
-
+	
+	String vcam_id;
+	String dev_token;
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
 		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.StartCamPairingTask){
 				if(0 == iRetCode){
-					beginToPlayPairingTone(Integer.parseInt(SessionMgr.getInstance().getMdid()));
+					Log.i(TAG, "onPostExecute(), "+result.toString());
+					beginToPlayPairingTone(Integer.parseInt(BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.ACC_PAIRING_TOKEN), 16));
+					//monitorAsyncTask(new BeseyeAccountTask.CamBeeValidateTask(this), true, BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.ACC_PAIRING_TOKEN), mChosenWifiAPInfo.BSSID, "1a1b1005c6574d0aa406da3c981bef5f", "82e13cea4c75f7dd7556a99d96f533a09418feaec6bfeb6be02bc22c14b3207469c3104ca51aa261479a60bacfe2b084b94190f2a19c55bf01709a0257826926");
 					//Log.i(TAG, "onPostExecute(), "+result.toString());
-					//monitorAsyncTask(new BeseyeAccountTask.CamAttchTask(this), true, SessionMgr.getInstance().getMdid());
+					//monitorAsyncTask(new BeseyeAccountTask.CamAttchTask(this), true, BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.ACC_PAIRING_TOKEN), mChosenWifiAPInfo.BSSID);
+				}
+			}else if(task instanceof BeseyeAccountTask.CamAttchTask){
+				if(0 == iRetCode){
+					Log.i(TAG, "onPostExecute(), "+result.toString());
+					vcam_id = BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.ACC_VCAM_ID);
+					dev_token = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(result.get(0),BeseyeJSONUtil.ACC_SES_DEV), BeseyeJSONUtil.ACC_SES_TOKEN);
+					monitorAsyncTask(new BeseyeAccountTask.CamValidateTask(this), true, vcam_id, dev_token);
+					monitorAsyncTask(new BeseyeAccountTask.GetUserInfoTask(this), true);
+					monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
+				}
+			}else if(task instanceof BeseyeAccountTask.CamValidateTask){
+				if(0 == iRetCode){
+					Log.i(TAG, "onPostExecute(), "+result.toString());
+					monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(this), true, vcam_id, "My Test Cam");
+				}
+			}else if(task instanceof BeseyeAccountTask.SetCamAttrTask){
+				if(0 == iRetCode){
+					Log.i(TAG, "onPostExecute(), "+result.toString());
+					//monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(this), true, vcam_id, "My Test Cam");
 				}
 			}else{
 				Log.i(TAG, "onPostExecute(), "+result.toString());

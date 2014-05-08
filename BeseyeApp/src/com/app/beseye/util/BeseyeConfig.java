@@ -22,6 +22,10 @@ public class BeseyeConfig {
 	static public final String RELAY_AP_SSID = "raylios WiFi";
 	static public final String RELAY_AP_PW = "whoisyourdaddy";
 	
+	static public final String TMP_MM_VCAM_ID = "1001";
+	static public final String TEST_ACC 	= "beseye_tester4@beseye.com";
+	
+	static public final String TMP_VCAM_ID = "SN0000011";
 	static public final String TMP_CAM_ID = "BeseyeCam001";
 	static public final String TMP_CAM_NAME = "BesEye Cam";
 	static public final String TMP_CAM_NAME_S = "rtmp://54.238.191.39:1935/live-edge-transc/_definst_/{o}54.250.149.50/live-origin-record/_definst_/1001_aac";

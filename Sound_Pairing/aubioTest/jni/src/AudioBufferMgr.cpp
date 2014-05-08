@@ -152,14 +152,14 @@ ArrayRef<short> AudioBufferMgr::getAvailableBuf(){
 
 		buf = mAvailalbeBufList[miPivotRecording];
 		//Log.i(TAG, "getAvailableBuf(), get buffer at pos "+miPivotRecording);
-		if(miPivotRecording == AudioBufferMgr::MAX_QUEUE_SIZE -1){
-			LOGE("getAvailableBuf(), buffer is out\n");
-			miPivotRecording = -1;
-		}else
+//		if(miPivotRecording == AudioBufferMgr::MAX_QUEUE_SIZE -1){
+//			LOGE("getAvailableBuf(), buffer is out\n");
+//			miPivotRecording = -1;
+//		}else
 			miPivotRecording = (++miPivotRecording)%AudioBufferMgr::MAX_QUEUE_SIZE;
 
 		if(miPivotRecording == miPivotAnalysis){
-			//Log.w(TAG, "getAvailableBuf(), meet non-analyzed buf, push it\n");
+			LOGE("getAvailableBuf(), meet non-analyzed buf, push it\n");
 			miPivotAnalysis = (++miPivotAnalysis)%AudioBufferMgr::MAX_QUEUE_SIZE;
 		}
 	}
