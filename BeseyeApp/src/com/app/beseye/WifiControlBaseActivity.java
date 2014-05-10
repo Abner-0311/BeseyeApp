@@ -53,6 +53,9 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	protected String mWifiApPassword = null;
 	protected WifiAPInfo mChosenWifiAPInfo;
 	
+	//workaround
+	protected int miOriginalVcamCnt = -1;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "WifiControlBaseActivity::onCreate()");
@@ -448,6 +451,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 							Intent intent = new Intent();
 							intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
 							intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
+							intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
 							startActivity(intent);
 							setResult(RESULT_OK);
 //					    	if(null == mWifiAPSetupDelegator){

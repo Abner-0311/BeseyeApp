@@ -30,6 +30,7 @@
 		</RelativeLayout>
 		
 		<RelativeLayout 
+		    android:id="@+id/vg_hw_settings"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
 		    android:background="@drawable/setting_inf_bg_white"

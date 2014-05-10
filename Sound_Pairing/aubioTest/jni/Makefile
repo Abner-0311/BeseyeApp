@@ -27,7 +27,6 @@ $(SRC_PATH)/FreqAnalyzer.cpp \
 $(SRC_PATH)/AudioTest.cpp \
 $(SRC_PATH)/main.cpp
 
-
 CXXOBJECTS=$(CXXSOURCES:.cpp=.o)
 
 SOURCES=$(SRC_PATH)/preprocess/kiss_fft.c \
@@ -39,8 +38,7 @@ $(SRC_PATH)/preprocess/filterbank.c \
 $(SRC_PATH)/preprocess/preprocess.c \
 $(SRC_PATH)/../common/src/json_utils.c \
 $(SRC_PATH)/../http_cgi_lib/src/http_cgi.c \
-$(SRC_PATH)/../libwebsockets/src/simple_websocket_mgr.c \
-$(SRC_PATH)/../ws-client/src/websocket_utils.c
+$(SRC_PATH)/../libwebsockets/src/simple_websocket_mgr.c
 
 OBJECTS=$(SOURCES:.c=.o)
 

@@ -202,9 +202,13 @@ void FreqAnalyzer::checkTimeout(msec_t lTs){
 	}
 }
 
+
 void FreqAnalyzer::triggerTimeout(){
 	if(NULL != mIFreqAnalyzeResultCBListener){
-		mIFreqAnalyzeResultCBListener->onTimeout(this, !mbNeedToAutoCorrection, mprevMatchRet);
+		if(0 <= checkPostfix()){
+			LOGW("detect postfix, ignore triggerTimeout \n");
+		}else
+			mIFreqAnalyzeResultCBListener->onTimeout(this, !mbNeedToAutoCorrection, mprevMatchRet);
 	}
 }
 
@@ -689,6 +693,9 @@ int FreqAnalyzer::checkPostfix(){
 //			}
 	}else{
 		LOGE("checkPostfix(), detect SoundPair_Config::POSTFIX_DECODE +++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+		if(mIFreqAnalyzeResultCBListener){
+			mIFreqAnalyzeResultCBListener->onDetectPostFix();
+		}
 	}
 	return iRet;
 }

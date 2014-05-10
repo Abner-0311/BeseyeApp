@@ -46,6 +46,7 @@ public :
 	virtual void onErrCorrectionCode(string strCode, string strEC, string strEncodeMark);
 
 	virtual void onDetectStart();
+	virtual void onDetectPostFix();
 	virtual void onAppendResult(string strCode);
 	virtual void onSetResult(string strCode, string strDecodeMark, string strDecodeUnmark, bool bFromAutoCorrection, MatchRetSet* prevMatchRet);
 	virtual void onTimeout(void* freqAnalyzer, bool bFromAutoCorrection, MatchRetSet* prevMatchRet);
@@ -61,6 +62,9 @@ public :
 	void setPairingReturnCode(int code){miPairingReturnCode = code;}
 	virtual int getPairingReturnCode(){return miPairingReturnCode;}
 
+	void setAboveThresholdFlag(bool flag);
+	bool getAboveThresholdFlag();
+	void resetBuffer();
 #ifdef ANDROID
 	virtual void setCamCamWSServerInfo(string strHost, int iPort);
 	virtual int connectCamCamWSServer();
@@ -95,6 +99,11 @@ private:
 	bool mbAutoTestBeginOnReceiver;
 	bool mbAutoTestBeginAnalyzeOnReceiver;
 
+	//Pairing analysis threshold control
+	pthread_mutex_t mThresholdCtrlObj;
+	pthread_cond_t mThresholdCtrlObjCond;
+	bool mbAboveThreshold;
+
 	void sendPlayPairingCode(string strCode);
 
 	//ws client info
@@ -123,7 +132,6 @@ private:
 
 	static string findDifference(string strSrc, string strDecode);
 	void adaptPrevMatchRet(MatchRetSet* prevMatchRet);
-	void resetBuffer();
 	void deinitTestRound();
 
 	bool mIsSenderMode;

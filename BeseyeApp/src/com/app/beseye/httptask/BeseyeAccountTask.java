@@ -242,10 +242,10 @@ public class BeseyeAccountTask {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {
-				obj.put(ACC_VCAM_ID, "9b2eb34759be4320a0c70c1fc483f888");
+				obj.put(ACC_VCAM_ID, strParams[0]);
 				appendDevInfo(obj);
 				Log.e(TAG, "obj:"+obj.toString());
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_CAM_ATTACH, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_CAM_DEATTACH, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {

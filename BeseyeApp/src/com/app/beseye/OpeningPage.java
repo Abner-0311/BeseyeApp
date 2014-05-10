@@ -4,9 +4,12 @@ import static com.app.beseye.util.BeseyeConfig.*;
 
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -84,7 +87,22 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		sbFirstLaunch = false;
 	}
 	
+	
+	
+	@Override
+	protected void onPause() {
+		if(null != mGetUserInfoTask){
+			mGetUserInfoTask.cancel(true);
+		}
+		
+		if(null != mGetVCamListTask){
+			mGetVCamListTask.cancel(true);
+		}
+		super.onPause();
+	}
+
 	private BeseyeAccountTask.GetUserInfoTask mGetUserInfoTask;
+	private BeseyeHttpTask mGetVCamListTask;
 	
 	private void launchActivityByIntent(Intent intent){
 		Intent intentLanuch = null;
@@ -163,10 +181,31 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 						JSONObject objUser = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_USER);
 						if(null != objUser){
 							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
+							//Computex workaround
+							if(SessionMgr.getInstance().getIsCertificated()){
+								mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(this);
+								if(mGetVCamListTask != null){
+									mGetVCamListTask.execute();
+								}
+							}
 						}
 					}
 				}
+			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
+				if(0 == iRetCode){
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
+					if(0 == iVcamCnt){
+						SessionMgr.getInstance().setIsCertificated(false);
+					}
+				}
 			}
+		}
+		
+		if(task == mGetUserInfoTask){
+			mGetUserInfoTask = null;
+		}else if(task == mGetVCamListTask){
+			mGetVCamListTask = null; 
 		}
 	}
 

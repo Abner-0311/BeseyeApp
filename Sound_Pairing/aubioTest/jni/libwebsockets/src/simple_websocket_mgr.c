@@ -37,6 +37,27 @@ void stop_websocket_server(){
 	force_exit = 1;
 }
 
+int writeToWebSocket(struct libwebsocket *wsi, const char* content){
+	int iRet = -1;
+	if(wsi){
+		if(content){
+			const int iLen = strlen(content);
+
+			unsigned char buf[LWS_SEND_BUFFER_PRE_PADDING + (iLen+1) +LWS_SEND_BUFFER_POST_PADDING];
+			unsigned char *data = &buf[LWS_SEND_BUFFER_PRE_PADDING];
+
+			strcpy(data, content);
+			iRet = libwebsocket_write(wsi, data, iLen, LWS_WRITE_TEXT);
+		}else{
+			LOGE( "content is null\n");
+		}
+	}else{
+		LOGE( "wsi is null\n");
+	}
+
+	return iRet;
+}
+
 static struct libwebsocket *wsi_server = NULL;
 static void (*serverWSCb)(const char* cb_msg, void* data);
 static pthread_t sWsServerThread;
@@ -242,7 +263,7 @@ void constructWebSocketsServer(void* userData){
 int init_websocket_server(void (*wsCb)(const char* cb_msg, void* data)){
 	int iRet = -1;
 	if(!bIsMgrInited){
-		init_websocket_utils();
+		//init_websocket_utils();
 
 		pthread_mutex_init(&sWSServerSyncObj, NULL);
 		pthread_cond_init(&sWSServerSyncObjCond, NULL);
@@ -294,7 +315,7 @@ int deinit_websocket_server(){
 		pthread_cond_destroy(&sWSServerSyncObjCond);
 		pthread_mutex_destroy(&sWSServerSyncObj);
 
-		deinit_websocket_utils();
+		//deinit_websocket_utils();
 		bIsMgrInited = false;
 		iRet = 0;
 	}else{

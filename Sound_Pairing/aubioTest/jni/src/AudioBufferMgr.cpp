@@ -137,6 +137,11 @@ ArrayRef<short> AudioBufferMgr::getBufByIndex(int iBufIndexInput, int iOffset, A
 	return bufReturn;
 }
 
+void AudioBufferMgr::setRecordMode(bool isRecordMode){
+	mbRecordMode = isRecordMode;
+	LOGD("setRecordMode(), mbRecordMode:%d\n", mbRecordMode);
+}
+
 ArrayRef<short> AudioBufferMgr::getAvailableBuf(){
 	ArrayRef<short> buf = NULL;
 	LOGD("getAvailableBuf()+\n");
@@ -158,9 +163,10 @@ ArrayRef<short> AudioBufferMgr::getAvailableBuf(){
 //		}else
 			miPivotRecording = (++miPivotRecording)%AudioBufferMgr::MAX_QUEUE_SIZE;
 
-		if(miPivotRecording == miPivotAnalysis){
-			LOGE("getAvailableBuf(), meet non-analyzed buf, push it\n");
-			miPivotAnalysis = (++miPivotAnalysis)%AudioBufferMgr::MAX_QUEUE_SIZE;
+		if(!mbRecordMode && miPivotRecording == miPivotAnalysis){
+			LOGE("getAvailableBuf(), meet non-analyzed buf, push it, [%d, %d]\n", miPivotRecording, miPivotAnalysis);
+			//miPivotAnalysis = (++miPivotAnalysis)%AudioBufferMgr::MAX_QUEUE_SIZE;
+			miPivotRecording = -1;
 		}
 	}
 //#else
@@ -216,12 +222,31 @@ void AudioBufferMgr::addToDataBuf(msec_t lTs, ArrayRef<short> buf, int iSampleRe
 	pthread_mutex_lock(&mDataBufMux);
 	//LOGD("addToDataBuf(), push_back\n");
 	mDataBufList.push_back(Ref<BufRecord>(new BufRecord(lTs, buf,iSampleRead)));
-
+	if(mDataBufList.size() > AudioBufferMgr::MAX_QUEUE_SIZE){
+		mDataBufList.erase(mDataBufList.begin());
+	}
 	//LOGD("addToDataBuf(), signal\n");
 	pthread_cond_signal(&mSyncObjCond);
 	pthread_mutex_unlock(&mDataBufMux);
 
 	LOGD("addToDataBuf()-\n");
+}
+
+void AudioBufferMgr::trimAvailableBuf(int iRestCount){
+	//LOGI("trimAvailableBuf(), iRestCount:%d\n", iRestCount);
+
+	pthread_mutex_lock(&mDataBufMux);
+	LOGI("trimAvailableBuf(), iRestCount:%d, mDataBufList.size() :%d\n", iRestCount, mDataBufList.size());
+	int iCountToErase = (mDataBufList.size() >= iRestCount)?(mDataBufList.size() - iRestCount):0;
+	while(0 < iCountToErase--){
+		mDataBufList.erase(mDataBufList.begin());
+	}
+	if(0 < mDataBufList.size()){
+		miPivotAnalysis = mDataBufList[0]->miIndex;
+		LOGI("trimAvailableBuf(), miPivotAnalysis:%d, miPivotRecording :%d\n", miPivotAnalysis, miPivotRecording);
+	}
+	pthread_mutex_unlock(&mDataBufMux);
+
 }
 
 void AudioBufferMgr::waitForDataBuf(long lWaitTime){

@@ -129,6 +129,19 @@ public class BeseyeJSONUtil {
 	public static final String ACC_VCAM_ID 				= "VcamUid";
 	public static final String ACC_VCAM_ATTR 			= "VcamAttr";
 	
+	public static final String ACC_VCAM_CNT 			= "VcamsCnt";
+	public static final String ACC_VCAM_LST 			= "Vcams";
+	public static final String ACC_VCAM_PLAN 			= "Plan";
+	public static final String ACC_VCAM_HW_ID 			= "PhyCamHwSn";
+	
+	public static final String ACC_SUBSC_CNT 			= "SubscribersCnt";
+	public static final String ACC_SUBSC_LST 			= "Subscribers";
+	
+	public static final String ACC_SUBSC_ID 			= "Id";
+	public static final String ACC_SUBSC_TYPE 			= "Type";
+	public static final String ACC_SUBSC_NAME 			= "UserName";
+	public static final String ACC_SUBSC_EMAIL 			= "UserEmail";
+	public static final String ACC_SUBSC_ADMIN 			= "IsAdmin";
 	
 	//MM BE service
 	public static final String MM_SERVER 				= "server";
@@ -136,8 +149,6 @@ public class BeseyeJSONUtil {
 	public static final String MM_START_TIME 			= "startTime";
 	public static final String MM_DURATION 				= "duration";
 	public static final String MM_PLAYLIST 				= "playList";
-	
-	
 	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "GCMProjectID";
