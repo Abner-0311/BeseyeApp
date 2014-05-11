@@ -694,6 +694,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}else if(ASSIGN_ST_PATH){
 					//Workaround
 					beginLiveView();
+				}else{
+					//Workaround
+					mstrLiveStreamServer = "rtmp://54.238.191.39:1935/live-edge/_definst_";
+					mstrLiveStreamPath = "{o}54.250.149.50/live-origin-record/_definst_/1001_aac";
+//					mstrLiveStreamServer = "rtmp://54.250.149.50/vods3/_definst_";//rtmp://54.238.191.39:1935/live-edge/_definst_";
+//					mstrLiveStreamPath = "mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4";//{o}54.250.149.50/live-origin-record/_definst_/1001_aac";
+					beginLiveView();
 				}
 			}else if(task instanceof BeseyeMMBEHttpTask.GetDVRStreamTask){
 				if(0 == iRetCode){
