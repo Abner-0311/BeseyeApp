@@ -145,4 +145,10 @@
 	<string name="datetime_day">Day</string>
 	<string name="datetime_hour">Hour</string>
 	
+	<string name="camera_list_disconected">This camera is disconect</string>
+	<string name="camera_list_more">Click for more</string>
+	<string name="camera_list_add">You can add a new camera here.\nor you can check out our featured cameras.</string>
+	<string name="camera_list_failed_title">Failed to connect with your camera.</string>
+	<string name="camera_list_failed_content">Please check network on mobile device and camera,then try again.</string>
+	
 </resources>
