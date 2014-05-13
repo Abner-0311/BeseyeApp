@@ -1898,6 +1898,8 @@ SAVC(seek);
 int
 RTMP_SendSeek(RTMP *r, int iTime)
 {
+  RTMP_Log(RTMP_LOGINFO, "%s++, iTime:%d", __FUNCTION__, iTime);
+
   RTMPPacket packet;
   char pbuf[256], *pend = pbuf + sizeof(pbuf);
   char *enc;

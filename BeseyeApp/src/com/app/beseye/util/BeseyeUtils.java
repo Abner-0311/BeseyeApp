@@ -1,10 +1,15 @@
 package com.app.beseye.util;
 
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Patterns;
 import android.view.View;
@@ -126,5 +131,36 @@ public class BeseyeUtils {
 			}
 		}
 		return bRet;
+	}
+	
+	static public String getAndroidUUid(){
+		return "{Android}_{"+DeviceUuidFactory.getDeviceUuid()+"}";
+	}
+	
+	static public String getUserAgent(){
+		return "{"+Build.MANUFACTURER+"}_{"+Build.MODEL+"}";
+	}
+	
+	static public String getProcessName(Context context, int pID){
+	    String processName = "";
+	    ActivityManager am = (ActivityManager)context.getSystemService(Activity.ACTIVITY_SERVICE);
+	    List l = am.getRunningAppProcesses();
+	    Iterator i = l.iterator();
+	    PackageManager pm = context.getPackageManager();
+	    while(i.hasNext()) {
+	          ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo)(i.next());
+	          try { 
+	              if(info.pid == pID){
+	                  CharSequence c = pm.getApplicationLabel(pm.getApplicationInfo(info.processName, PackageManager.GET_META_DATA));
+	                  //Log.d("Process", "Id: "+ info.pid +" ProcessName: "+ info.processName +"  Label: "+c.toString());
+	                  //processName = c.toString();
+	                  processName = info.processName;
+	              }
+	          }
+	          catch(Exception e){
+	                //Log.d("Process", "Error>> :"+ e.toString());
+	          }
+	   }
+	   return processName;
 	}
 }

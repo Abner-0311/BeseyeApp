@@ -31,6 +31,8 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_DATETIME_CONFIG = "cam/%s/datetime/config";
 	static private final String URL_CAM_DATETIME_NTP_CONFIG = "cam/%s/datetime/ntpconfig";
 	
+	static private final String URL_CAM_SW_UPDATE 		= "cam/%s/software/update";
+	
 	public static class GetCamSetupTask extends BeseyeHttpTask{
 		public GetCamSetupTask(OnHttpTaskCallback cb) {
 			super(cb);
@@ -393,6 +395,17 @@ public class BeseyeCamBEHttpTask  {
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_SYS_INFO, strParams[0]));
+		}
+	}
+	
+	public static class UpdateCamSWTask extends BeseyeHttpTask{
+		public UpdateCamSWTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_SW_UPDATE, strParams[0]));
 		}
 	}
 }

@@ -668,10 +668,12 @@ void FreqGenerator::writeTone(double sample[], byte generatedSnd[], int iLen){
 	//}
 }
 
-unsigned int FreqGenerator::playPairingCode(char* macAddr, char* wifiKey, unsigned int secType, unsigned short tmpUserToken){
-	//LOGE("++\n");
+#define LEN_OF_MAC_ADDR 12
+
+unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken){
 	unsigned int iRet = R_OK;
 	char codeToPlay[1024]={0};
+	codeToPlay[1023] = '/0';
 	static const char sep = 0x1B;
 
 	if(!macAddr){
@@ -679,12 +681,13 @@ unsigned int FreqGenerator::playPairingCode(char* macAddr, char* wifiKey, unsign
 		goto ERR;
 	}else{
 		int iLen = strlen(macAddr);
-		if(iLen != 12){//mac addr contains 12 hex values
+		if(iLen != LEN_OF_MAC_ADDR){//mac addr contains 12 hex values
 			iRet = E_FE_MOD_SP_INVALID_MACADDR;
 			goto ERR;
 		}else{
 			for(int idx = 0; idx < iLen; idx++){
-				if(!((0x30 <= macAddr[idx] && macAddr[idx] <= 0x39) || (0x61 <= macAddr[idx] && macAddr[idx] <= 0x66))){
+				if(!((0x30 <= macAddr[idx] && macAddr[idx] <= 0x39) //0~9
+					 || (0x61 <= macAddr[idx] && macAddr[idx] <= 0x66))){ //a~f
 					iRet = E_FE_MOD_SP_INVALID_MACADDR;
 					goto ERR;
 				}
@@ -692,30 +695,70 @@ unsigned int FreqGenerator::playPairingCode(char* macAddr, char* wifiKey, unsign
 		}
 	}
 
-	if(!(0 <= secType && secType <=3)){
-		iRet = E_FE_MOD_SP_INVALID_SEC_TYPE;
-		goto ERR;
-	}
+//	if(!(0 <= secType && secType <=3)){
+//		iRet = E_FE_MOD_SP_INVALID_SEC_TYPE;
+//		goto ERR;
+//	}
+//
+//	if(0 < secType){
+//		if(!wifiKey){
+//			iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
+//			goto ERR;
+//		}else{
+//			int iKeyLen = strlen(wifiKey);
+//			if(1 == secType && (5 != iKeyLen || 13 != iKeyLen || 29 != iKeyLen)){//WEP http://compnetworking.about.com/od/wirelessfaqs/f/wep_keys.htm
+//				iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
+//				goto ERR;
+//			}else if(2 <= secType && secType <=3 && (8 > iKeyLen || iKeyLen > 64)){//WPA/WPA2
+//				iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
+//				goto ERR;
+//			}
+//		}
+//	}
 
-	if(0 < secType){
-		if(!wifiKey){
-			iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
-			goto ERR;
-		}else{
-			int iKeyLen = strlen(wifiKey);
-			if(1 == secType && (5 != iKeyLen || 13 != iKeyLen)){//WEP
-				iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
-				goto ERR;
-			}else if(1 < secType && (8 > iKeyLen)){//WPA/WPA2
-				iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
-				goto ERR;
+//	if(!wifiKey){
+//		iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
+//		goto ERR;
+//	}else{
+//		int iKeyLen = strlen(wifiKey);
+//		if(5 > iKeyLen){
+//			iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
+//			goto ERR;
+//		}
+//	}
+
+	{
+		int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
+		int iPower = SoundPair_Config::getPowerByFFTYPE();
+
+		const int iLen = LEN_OF_MAC_ADDR/iMultiply;
+		char* macAddrZip = (char*)malloc((iLen+1)*sizeof(char));
+		macAddrZip[iLen] = '\0';
+		for(int i =0;i < iLen;i++){
+			macAddrZip[i] = 0;
+			for(int j = 0;j < iMultiply;j++){
+				macAddrZip[i] <<= iPower;
+				string code(1, macAddr[i*iMultiply+j]);
+				int idx = SoundPair_Config::findIdxFromCodeTable(code);
+				//LOGE("code= [%s],idx:%d\n", code.c_str(), idx);
+				macAddrZip[i] += idx;
 			}
+			//LOGD("encode(), toEncode[%d]= %d\n",i,toEncode[i] );
+		}
+
+		//tmpUserToken = 0xff;
+
+		//LOGE("macAddrZip= [%s]\n", macAddrZip);
+		if(tmpUserToken > 0xff){
+			sprintf(codeToPlay, "%s%c%s%c%c%c", macAddrZip, sep, wifiKey?wifiKey:"", sep, (tmpUserToken&0xff00)>>8, (tmpUserToken&0xff));
+		}else{
+			sprintf(codeToPlay, "%s%c%s%c%c", macAddrZip, sep, wifiKey?wifiKey:"", sep, (tmpUserToken&0xff));
+		}
+
+		if(macAddrZip){
+			free(macAddrZip);
 		}
 	}
-
-	//LOGE("macAddr= [%s]\n", macAddr);
-	sprintf(codeToPlay, "%s%c%s%c%u%c%x", macAddr, sep, wifiKey, sep, secType, sep, tmpUserToken);
-
 	//LOGE("codeToPlay= [%s]\n", codeToPlay);
 	if(!FreqGenerator::getInstance()->playCode2(codeToPlay, true)){
 		iRet = E_FE_MOD_SP_PLAY_CODE_ERR;
@@ -724,6 +767,10 @@ unsigned int FreqGenerator::playPairingCode(char* macAddr, char* wifiKey, unsign
 ERR:
 	//LOGE("iRet= [0x%x]\n", iRet);
 	return iRet;
+}
+
+unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken){
+	return playPairingCode(macAddr, wifiKey, tmpUserToken);
 }
 
 EncodeItm::EncodeItm(string strCodeInputASCII, string strCodeInput, string strECCode, string strEncodeMark, string strEncode) {

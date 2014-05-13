@@ -43,6 +43,7 @@ public:
 class IFreqAnalyzeResultCB{
 public:
 	virtual void onDetectStart() = 0;
+	virtual void onDetectPostFix() = 0;
 	virtual void onAppendResult(string strCode)= 0;
 	virtual void onSetResult(string strCode, string strDecodeMark, string strDecodeUnmark, bool bFromAutoCorrection, MatchRetSet* prevMatchRet)= 0;
 	virtual void onTimeout(void* freqAnalyzer, bool bFromAutoCorrection, MatchRetSet* prevMatchRet)= 0;
@@ -90,7 +91,7 @@ private:
 	static string findToneCodeByFreq(double dFreq);
 
 	void checkTimeout(msec_t lTs);
-	void triggerTimeout();
+
 	int getInvalidFreqCount();
 	void fillEmptyCodeRecord(msec_t lCurSesBeginTs);
 	void pickWithSeesion();
@@ -179,6 +180,8 @@ public:
     void setSessionOffset(int iOffset);
     int getSessionOffset();
     bool checkEndPoint();
+
+    void triggerTimeout();
 
     bool canPerformAutoCorrection();
     bool performAutoCorrection(MatchRetSet* prevMatchRet);

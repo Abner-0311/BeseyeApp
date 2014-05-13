@@ -346,12 +346,20 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    		return null;
 	    	}
 	
+	    	if(this instanceof BeseyeAccountTask.CamAttchTask || this instanceof BeseyeAccountTask.CamValidateTask || this instanceof BeseyeAccountTask.CamBeeValidateTask){
+	    		if(this instanceof BeseyeAccountTask.CamValidateTask || this instanceof BeseyeAccountTask.CamBeeValidateTask){
+	    			httpRequest.setHeader("Bes-Dev-Session", strParams[2]);
+	    		}
+	    	}else
+	    		httpRequest.setHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+	    	
 	    	if(httpRequest instanceof HttpEntityEnclosingRequestBase && 1 < strParams.length){
 	    		HttpEntityEnclosingRequestBase request = (HttpEntityEnclosingRequestBase)httpRequest;
 	    		
 	    		request.addHeader("Content-Type", "application/json");
 	    		request.addHeader("Accept", "application/json");
-	    		request.addHeader("User-Agent", "iKala App ver("+Build.VERSION.RELEASE+") in Android "+Build.VERSION.SDK_INT);
+	    		
+	    		//request.addHeader("User-Agent", "Beseye App ver("+Build.VERSION.RELEASE+") in Android "+Build.VERSION.SDK_INT);
 	    		request.setEntity(new StringEntity(strParams[1], HTTP.UTF_8));
 	    	}
 	    	Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl));

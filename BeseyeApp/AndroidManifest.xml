@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
-    android:versionCode="1"
-    android:versionName="0.1.1" 
+    android:versionCode="2"
+    android:versionName="0.1.2" 
     android:installLocation="auto">
 
     <!-- Android 2.3.3 -->
@@ -150,6 +150,14 @@
             android:name=".service.BeseyeNotificationService" 
             android:process=":remote">
         </service>
+        
+		<receiver 
+           android:name=".receiver.UBTEventBroadcastReciever"
+           android:exported="false">  
+		   <intent-filter>  
+		    	<action android:name="com.app.beseye.ubt.EVENT_BROADCAST" />  
+		   </intent-filter>  
+		</receiver>
         
 		<receiver 
             android:name="com.google.android.gcm.GCMBroadcastReceiver" 

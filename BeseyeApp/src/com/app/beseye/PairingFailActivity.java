@@ -60,6 +60,7 @@ public class PairingFailActivity extends PairingBaseActivity {
 		Intent intent = new Intent();
 		intent.setClassName(this, WifiSetupGuideActivity.class.getName());
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		intent.putExtra(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
 		launchActivityByIntent(intent);
 		finish();
 	}

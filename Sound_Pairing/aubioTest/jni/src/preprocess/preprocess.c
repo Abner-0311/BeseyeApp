@@ -68,6 +68,22 @@
 #include "math_approx.h"
 #include "os_support.h"
 
+#ifdef ANDROID
+#include <jni.h>
+#include <android/log.h>
+#define  LOG_TAG    "SoundPairing"
+
+#ifndef LOGD
+#define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGW(...)  __android_log_print(ANDROID_LOG_WARN,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#endif
+#else
+#define  LOGE(fmt, args...)  fprintf(stderr, "[%s][%d][%s()], " fmt, __FILE__, \
+							 __LINE__, __FUNCTION__, ##args);
+#endif
+
 #ifndef M_PI
 #define M_PI 3.14159263
 #endif
@@ -747,6 +763,7 @@ EXPORT int speex_preprocess_run(SpeexPreprocessState *st, spx_int16_t *x)
    /* Deal with residual echo if provided */
    if (st->echo_state)
    {
+	   LOGE("run echo_state-------");
       speex_echo_get_residual(st->echo_state, st->residual_echo, N);
 #ifndef FIXED_POINT
       /* If there are NaNs or ridiculous values, it'll show up in the DC and we just reset everything to zero */

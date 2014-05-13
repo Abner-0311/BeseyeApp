@@ -2,13 +2,18 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
-import com.app.beseye.WifiControlBaseActivity.WIFI_SETTING_STATE;
+import java.util.List;
+
+import org.json.JSONObject;
+
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 
 import android.content.Intent;
-import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -64,6 +69,14 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 	protected void onResume() {
 		super.onResume();
 		updateBtnByScanResult();
+	}
+	
+	
+
+	@Override
+	protected void onSessionComplete() {
+		super.onSessionComplete();
+		monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 	}
 
 	@Override
@@ -132,6 +145,20 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 				}
 			}
 			BeseyeUtils.setEnabled(mBtnUseConnected, null != mChosenWifiAPInfo);
+		}
+	}
+	
+	@Override
+	public void onPostExecute(AsyncTask task, List<JSONObject> result,
+			int iRetCode) {
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeAccountTask.GetVCamListTask){
+				if(0 == iRetCode){
+					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					miOriginalVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
+				}
+			}else 
+				super.onPostExecute(task, result, iRetCode);
 		}
 	}
 }

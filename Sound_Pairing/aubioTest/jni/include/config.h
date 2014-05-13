@@ -1,6 +1,8 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+
+
 #ifdef ANDROID
 #include <jni.h>
 #include <android/log.h>
@@ -15,7 +17,7 @@
 //#define GEN_TONE_ONLY //for client side
 
 //#define CAM_AUDIO
-#define CAM_URL "192.168.2.170"
+#define CAM_URL "192.168.2.85"
 #else
 #include <stdint.h>
 #define CAM_AUDIO
@@ -30,6 +32,8 @@
 							 __LINE__, __FUNCTION__, ##args);
 
 #endif
+
+#define CAM_AUDIO_PERFORMANCE
 
 #ifndef CAM_ENV
 #define GEN_TONE_ONLY //for client side
