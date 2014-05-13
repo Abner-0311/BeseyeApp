@@ -1,56 +1,5 @@
 TOP_LOCAL_PATH := $(call my-dir)
 
-#Build web-socket client module  
-LOCAL_PATH := ./
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE    := libwebsockets
-
-LOCAL_CFLAGS    := -DLWS_BUILTIN_GETIFADDRS -DCMAKE_BUILD
-LWS_LIB_PATH	:= $(TOP_LOCAL_PATH)/libwebsockets/lib
-LOCAL_C_INCLUDES:= $(TOP_LOCAL_PATH)/libwebsockets/inc \
-				   $(TOP_LOCAL_PATH)/streaming/include \
-				   $(TOP_LOCAL_PATH)/streaming/header \
-				   $(LWS_LIB_PATH)/
-
-LOCAL_SRC_FILES := \
-				$(LWS_LIB_PATH)/base64-decode.c \
-				$(LWS_LIB_PATH)/client.c \
-				$(LWS_LIB_PATH)/client-handshake.c \
-				$(LWS_LIB_PATH)/client-parser.c \
-				$(LWS_LIB_PATH)/daemonize.c \
-				$(LWS_LIB_PATH)/extension.c \
-				$(LWS_LIB_PATH)/extension-deflate-frame.c \
-				$(LWS_LIB_PATH)/extension-deflate-stream.c \
-				$(LWS_LIB_PATH)/getifaddrs.c \
-				$(LWS_LIB_PATH)/handshake.c \
-				$(LWS_LIB_PATH)/server.c \
-				$(LWS_LIB_PATH)/server-handshake.c \
-				$(LWS_LIB_PATH)/libwebsockets.c \
-				$(LWS_LIB_PATH)/output.c \
-				$(LWS_LIB_PATH)/parsers.c \
-				$(LWS_LIB_PATH)/sha-1.c \
-				$(TOP_LOCAL_PATH)/libwebsockets/src/websocket_mgr.c \
-				$(TOP_LOCAL_PATH)/libwebsockets/src/main.cpp
-	
-LOCAL_LDLIBS := -L$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/usr/lib \
-				-L$(LWS_LIB_PATH) \
-				-L$(LWS_LIB_PATH)/../../obj/local/armeabi \
-				-L$(TOP_LOCAL_PATH)/streaming \
-				-lssl \
-				-lcrypto \
-				-lcurl \
-				-ljson-c \
-				-ljson \
-				-llog \
-				-lz \
-				-ldl \
-				-landroid \
-				-lgcc
-
-include $(BUILD_SHARED_LIBRARY)
-
 #Build Sound Pairing module  
 LOCAL_PATH := $(call my-dir)
   

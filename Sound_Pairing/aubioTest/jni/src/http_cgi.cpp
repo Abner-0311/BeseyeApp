@@ -346,11 +346,13 @@ int getdataExt(char* url, const char* session, void(* writeBufCB)(unsigned char*
     }
     LOGE("Reading response.");
 
-//    FILE *fp = NULL;
-//    fp=fopen("/data/data/com.example.aubiotest/beseye.pcm", "wb");
-//    if(!fp){
-//    	 LOGE("failed to open /data/data/com.example.aubiotest/beseye.pcm");
-//    }
+    FILE *fp = NULL;
+    fp=fopen("/data/data/com.example.aubiotest/beseye.pcm", "wb");
+    if(!fp){
+    	 LOGE("failed to open /data/data/com.example.aubiotest/beseye.pcm");
+    }else{
+    	LOGE("Succeed to open /data/data/com.example.aubiotest/beseye.pcm");
+    }
 
     /* read the response */
     bStopReceiveFlag = FALSE;
@@ -368,8 +370,8 @@ int getdataExt(char* url, const char* session, void(* writeBufCB)(unsigned char*
       if(!bFirst){
     	  writeBufCB(buf, iolen);
 
-//    	  if(fp)
-//    	    fwrite(buf, sizeof(buf[0]), iolen, fp);
+    	  if(fp)
+    	    fwrite(buf, sizeof(buf[0]), iolen, fp);
 
     	  //LOGE("Received %" CURL_FORMAT_CURL_OFF_T " bytes.\n", nread);
       }

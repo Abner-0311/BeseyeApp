@@ -34,12 +34,6 @@
 		07E19FBB1850377D00E0CA98 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E19FB71850377D00E0CA98 /* QuartzCore.framework */; };
 		07E19FDF18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 07E19FDE18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm */; };
 		07EC6C8018B4D6920018BEA4 /* libBeseyeSoundPairing.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07EC6C7F18B4D6920018BEA4 /* libBeseyeSoundPairing.a */; };
-		07EC6CD218B4D9F50018BEA4 /* GenericGF.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6CBD18B4D9010018BEA4 /* GenericGF.h */; };
-		07EC6CD318B4D9F50018BEA4 /* ReedSolomonEncoder.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6CC318B4D9010018BEA4 /* ReedSolomonEncoder.h */; };
-		07EC6CD418B4D9F50018BEA4 /* beseye_sound_pairing.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C8718B4D8F80018BEA4 /* beseye_sound_pairing.h */; };
-		07EC6CD518B4D9F50018BEA4 /* FreqGenerator.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C9418B4D8F80018BEA4 /* FreqGenerator.h */; };
-		07EC6CD618B4D9F50018BEA4 /* sp_config.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6CA618B4D8F80018BEA4 /* sp_config.h */; };
-		07EC6CD718B4D9F50018BEA4 /* utils.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6CB418B4D8F80018BEA4 /* utils.h */; };
 		07EC6D3818B5BCCF0018BEA4 /* beseye_audio_streamer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D2B18B5BCCF0018BEA4 /* beseye_audio_streamer.h */; };
 		07EC6D3918B5BCCF0018BEA4 /* beseye_rtmp_observer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D2C18B5BCCF0018BEA4 /* beseye_rtmp_observer.h */; };
 		07EC6D3A18B5BCCF0018BEA4 /* beseyeplayer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D2D18B5BCCF0018BEA4 /* beseyeplayer.h */; };
@@ -113,21 +107,6 @@
 		07E19FB71850377D00E0CA98 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		07E19FDE18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iFrameExtractorAppDelegate.mm; sourceTree = "<group>"; };
 		07EC6C7F18B4D6920018BEA4 /* libBeseyeSoundPairing.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBeseyeSoundPairing.a; path = "BeseyeSoundPairing/build/Debug-iphoneos/libBeseyeSoundPairing.a"; sourceTree = "<group>"; };
-		07EC6C8718B4D8F80018BEA4 /* beseye_sound_pairing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = beseye_sound_pairing.h; sourceTree = "<group>"; };
-		07EC6C9418B4D8F80018BEA4 /* FreqGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreqGenerator.h; sourceTree = "<group>"; };
-		07EC6CA618B4D8F80018BEA4 /* sp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sp_config.h; sourceTree = "<group>"; };
-		07EC6CB418B4D8F80018BEA4 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
-		07EC6CB718B4D9010018BEA4 /* Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Array.h; sourceTree = "<group>"; };
-		07EC6CB818B4D9010018BEA4 /* Counted.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Counted.h; sourceTree = "<group>"; };
-		07EC6CBA18B4D9010018BEA4 /* IllegalArgumentException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllegalArgumentException.h; sourceTree = "<group>"; };
-		07EC6CBD18B4D9010018BEA4 /* GenericGF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericGF.h; sourceTree = "<group>"; };
-		07EC6CBF18B4D9010018BEA4 /* GenericGFPoly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericGFPoly.h; sourceTree = "<group>"; };
-		07EC6CC318B4D9010018BEA4 /* ReedSolomonEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReedSolomonEncoder.h; sourceTree = "<group>"; };
-		07EC6CC518B4D9010018BEA4 /* ReedSolomonException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReedSolomonException.h; sourceTree = "<group>"; };
-		07EC6CC718B4D9010018BEA4 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = "<group>"; };
-		07EC6CC818B4D9010018BEA4 /* IllegalStateException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllegalStateException.h; sourceTree = "<group>"; };
-		07EC6CC918B4D9010018BEA4 /* ReaderException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReaderException.h; sourceTree = "<group>"; };
-		07EC6CCA18B4D9010018BEA4 /* ZXing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXing.h; sourceTree = "<group>"; };
 		07EC6D2B18B5BCCF0018BEA4 /* beseye_audio_streamer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_audio_streamer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseye_audio_streamer.h; sourceTree = "<group>"; };
 		07EC6D2C18B5BCCF0018BEA4 /* beseye_rtmp_observer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_rtmp_observer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseye_rtmp_observer.h; sourceTree = "<group>"; };
 		07EC6D2D18B5BCCF0018BEA4 /* beseyeplayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseyeplayer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseyeplayer.h; sourceTree = "<group>"; };
@@ -255,62 +234,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		07EC6C8318B4D8BE0018BEA4 /* BeseyeSoundPairingHeader */ = {
-			isa = PBXGroup;
-			children = (
-				07EC6CB518B4D9010018BEA4 /* zxing */,
-				07EC6C8418B4D8F80018BEA4 /* include */,
-			);
-			name = BeseyeSoundPairingHeader;
-			sourceTree = "<group>";
-		};
-		07EC6C8418B4D8F80018BEA4 /* include */ = {
-			isa = PBXGroup;
-			children = (
-				07EC6C8718B4D8F80018BEA4 /* beseye_sound_pairing.h */,
-				07EC6C9418B4D8F80018BEA4 /* FreqGenerator.h */,
-				07EC6CA618B4D8F80018BEA4 /* sp_config.h */,
-				07EC6CB418B4D8F80018BEA4 /* utils.h */,
-			);
-			name = include;
-			path = ../../Sound_Pairing/aubioTest/jni/include;
-			sourceTree = "<group>";
-		};
-		07EC6CB518B4D9010018BEA4 /* zxing */ = {
-			isa = PBXGroup;
-			children = (
-				07EC6CB618B4D9010018BEA4 /* common */,
-				07EC6CC718B4D9010018BEA4 /* Exception.h */,
-				07EC6CC818B4D9010018BEA4 /* IllegalStateException.h */,
-				07EC6CC918B4D9010018BEA4 /* ReaderException.h */,
-				07EC6CCA18B4D9010018BEA4 /* ZXing.h */,
-			);
-			name = zxing;
-			path = ../../Sound_Pairing/aubioTest/jni/zxing;
-			sourceTree = "<group>";
-		};
-		07EC6CB618B4D9010018BEA4 /* common */ = {
-			isa = PBXGroup;
-			children = (
-				07EC6CB718B4D9010018BEA4 /* Array.h */,
-				07EC6CB818B4D9010018BEA4 /* Counted.h */,
-				07EC6CBA18B4D9010018BEA4 /* IllegalArgumentException.h */,
-				07EC6CBB18B4D9010018BEA4 /* reedsolomon */,
-			);
-			path = common;
-			sourceTree = "<group>";
-		};
-		07EC6CBB18B4D9010018BEA4 /* reedsolomon */ = {
-			isa = PBXGroup;
-			children = (
-				07EC6CBD18B4D9010018BEA4 /* GenericGF.h */,
-				07EC6CBF18B4D9010018BEA4 /* GenericGFPoly.h */,
-				07EC6CC318B4D9010018BEA4 /* ReedSolomonEncoder.h */,
-				07EC6CC518B4D9010018BEA4 /* ReedSolomonException.h */,
-			);
-			path = reedsolomon;
-			sourceTree = "<group>";
-		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -335,7 +258,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				07EC6C8318B4D8BE0018BEA4 /* BeseyeSoundPairingHeader */,
 				07E19779185029D000E0CA98 /* SDL.xcodeproj */,
 				076160F118569D3800CFBC99 /* BeseyeStreamer.xcodeproj */,
 				073AFAF5185AE39C008CBD7E /* BeseyeStreamerHeader */,
@@ -507,12 +429,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07EC6CD218B4D9F50018BEA4 /* GenericGF.h in Sources */,
-				07EC6CD318B4D9F50018BEA4 /* ReedSolomonEncoder.h in Sources */,
-				07EC6CD418B4D9F50018BEA4 /* beseye_sound_pairing.h in Sources */,
-				07EC6CD518B4D9F50018BEA4 /* FreqGenerator.h in Sources */,
-				07EC6CD618B4D9F50018BEA4 /* sp_config.h in Sources */,
-				07EC6CD718B4D9F50018BEA4 /* utils.h in Sources */,
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				0921E14110FADAFB004EAA40 /* Utilities.m in Sources */,
 				07E19FDF18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm in Sources */,

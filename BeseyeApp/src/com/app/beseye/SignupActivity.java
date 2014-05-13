@@ -44,7 +44,7 @@ public class SignupActivity extends PairingBaseActivity {
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
 			if(DEBUG)
-				mEtUserName.setText("abner.huang4@beseye.com");
+				mEtUserName.setText(TEST_ACC);
 		}
 		
 		mEtPassword = (EditText)findViewById(R.id.editText_password);
@@ -174,12 +174,15 @@ public class SignupActivity extends PairingBaseActivity {
 						
 						JSONObject objUser = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_USER);
 						if(null != objUser){
-							SessionMgr.getInstance().setMdid(""+BeseyeJSONUtil.getJSONInt(objUser, BeseyeJSONUtil.ACC_ID));
+							SessionMgr.getInstance().setUserid(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_ID));
 							SessionMgr.getInstance().setAccount(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_EMAIL));
+							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
 						}
 					}
-					
-					launchActivityByClassName(WifiSetupGuideActivity.class.getName());
+					Bundle b = new Bundle();
+					b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
+					launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+					setResult(RESULT_OK);
 					finish();
 				}
 			}else if(task instanceof BeseyeAccountTask.CamAttchTask){

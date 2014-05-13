@@ -63,7 +63,9 @@ miFrameFormat(iFrameFormat),
 mVideoCallback(NULL),
 mVideoDeinitCallback(NULL),
 window_holder(NULL),
-getWindowByHolderFunc(NULL){
+getWindowByHolderFunc(NULL),
+mVecPendingStreamPaths(NULL),
+iNumOfPendingStreamPaths(0){
 	wanted_stream[AVMEDIA_TYPE_AUDIO] = -1;
 	wanted_stream[AVMEDIA_TYPE_VIDEO] = -1;
 	wanted_stream[AVMEDIA_TYPE_SUBTITLE] = -1;
@@ -76,7 +78,32 @@ CBeseyePlayer::~CBeseyePlayer(){
 		mVideoDeinitCallback(window);
 		window = NULL;
 	}
+
+	freePendingStreamPaths();
+
 	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::~CBeseyePlayer()--");
+}
+
+void CBeseyePlayer::addPendingStreamPaths(){
+	if(mVecPendingStreamPaths){
+		if(0 <= addStreamingPathList(mVecPendingStreamPaths, iNumOfPendingStreamPaths))
+			freePendingStreamPaths();
+	}
+}
+
+void CBeseyePlayer::freePendingStreamPaths(){
+	if(mVecPendingStreamPaths){
+		for(int i =0;i < iNumOfPendingStreamPaths;i++){
+			if(mVecPendingStreamPaths[i]){
+				free(mVecPendingStreamPaths[i]);
+				mVecPendingStreamPaths[i]=NULL;
+			}
+		}
+		free(mVecPendingStreamPaths);
+		mVecPendingStreamPaths = NULL;
+		iNumOfPendingStreamPaths = 0;
+		av_log(NULL, AV_LOG_ERROR, "freePendingStreamPaths(), free done");
+	}
 }
 
 int64_t CBeseyePlayer::get_start_time(){
@@ -198,6 +225,8 @@ void CBeseyePlayer::do_exit(VideoState *is)
 //        printf("\n");
 
     //SDL_Quit();
+
+    freePendingStreamPaths();
     av_log(NULL, AV_LOG_QUIET, "%s", "");
     //exit(0);
 }
@@ -580,6 +609,9 @@ int CBeseyePlayer::addStreamingPath(char *path){
 				URLContext* urlCtx = (URLContext*)ioCtx->opaque;
 				if(NULL != urlCtx){
 					iRet = gen_play_wrapper(urlCtx, path);
+					if(0 > iRet){
+						av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), failed to add path =>[%s]\n", (path)?path:"");
+					}
 				}else{
 					av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), urlCtx is null\n");
 				}
@@ -600,7 +632,7 @@ int CBeseyePlayer::addStreamingPathList(char** pathList, int iCount){
 	int iRet = -1;
 	if(pathList){
 		for(int i = 0; i < iCount; i++){
-			if(!(iRet = addStreamingPath(*(pathList++)))){
+			if(0 > (iRet = addStreamingPath(*(pathList++)))){
 				break;
 			}
 		}
@@ -1771,6 +1803,8 @@ int read_thread(void *arg)
     player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTED, 0);
     player->registerRtmpCallback(ic);
 
+    player->addPendingStreamPaths();
+
     for (i = 0; i < orig_nb_streams; i++)
         av_dict_free(&opts[i]);
     av_freep(&opts);
@@ -1783,14 +1817,22 @@ int read_thread(void *arg)
 
     /* if seeking requested, we execute it */
     if (player->get_start_time()!= AV_NOPTS_VALUE) {
-        int64_t timestamp;
+        int64_t timestamp = 0;
 
         timestamp = player->get_start_time();
+        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld, AV_NOPTS_VALUE:%lld", timestamp, ic->start_time, AV_NOPTS_VALUE);
+
         /* add the stream start time */
-        if (ic->start_time != AV_NOPTS_VALUE)
+        if (ic->start_time != AV_NOPTS_VALUE){
             timestamp += ic->start_time;
-        ret = avformat_seek_file(ic, -1, INT64_MIN, timestamp, INT64_MAX, 0);
+            av_log(NULL, AV_LOG_INFO, "read_thread(), add timestamp:%lld, ic->start_time:%lld", timestamp, ic->start_time);
+        }
+        ret = avformat_seek_file(ic, 0, INT64_MIN, timestamp, INT64_MAX, 0);
+        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld", timestamp, ic->start_time);
+
         if (ret < 0) {
+        	av_log(NULL, AV_LOG_ERROR, "%s: could not seek to position %0.3f\n",
+                    is->filename, (double)timestamp / AV_TIME_BASE);
             fprintf(stderr, "%s: could not seek to position %0.3f\n",
                     is->filename, (double)timestamp / AV_TIME_BASE);
         }
@@ -1974,6 +2016,11 @@ int read_thread(void *arg)
             SDL_Delay(100); /* wait for user event */
             continue;
         }
+//        static int iTest = 0;
+//        if(0 == iTest){
+//        	player->stream_seek(is, 100000, 0, 0);
+//        	iTest =1;
+//        }
         /* check if packet is in play range specified by user, then queue, otherwise discard */
         pkt_in_play_range = player->get_duration()== AV_NOPTS_VALUE ||
                 (pkt->pts - ic->streams[pkt->stream_index]->start_time) *
@@ -2265,8 +2312,41 @@ extern void  main13(int argc, char **argv);
 #ifdef __cplusplus
  }
 #endif
-int CBeseyePlayer::createStreaming(const char* path){
-	av_log(NULL, AV_LOG_INFO, "createStreaming()++: %s", path);
+
+int CBeseyePlayer::createStreaming(const char* streamHost, const char** streamPathList, int iStreamCount, int iSeekTimeInMs){
+	if(0 < iStreamCount){
+		int idx = 1;
+		iNumOfPendingStreamPaths = iStreamCount -1;
+		for(; idx < iStreamCount;idx++){
+			if(NULL == mVecPendingStreamPaths){
+				mVecPendingStreamPaths = (char**)malloc((iNumOfPendingStreamPaths)*sizeof(char*));
+			}
+			if(streamPathList[idx])
+				mVecPendingStreamPaths[idx - 1] = strdup(streamPathList[idx]);
+			else
+				av_log(NULL, AV_LOG_ERROR, "createStreaming(), streamPathList[%d] is null", idx);
+		}
+		av_log(NULL, AV_LOG_INFO, "createStreaming(), iNumOfPendingStreamPaths is [%d] ", iNumOfPendingStreamPaths);
+		string host(streamHost);
+		string path(streamPathList[0]);
+		string strPath = host + path;
+		return createStreaming(strPath.c_str(), iSeekTimeInMs);
+	}
+	return -1;
+}
+
+int CBeseyePlayer::createStreaming(const char* fullPath, int iSeekTimeInMs){
+	if(iSeekTimeInMs > 0){
+		start_time = iSeekTimeInMs;
+	}
+	return createStreaming(fullPath);
+}
+
+int CBeseyePlayer::createStreaming(const char* fullPath){
+	av_log(NULL, AV_LOG_INFO, "createStreaming()++: %s", fullPath);
+	if(NULL == fullPath){
+		return -1;
+	}
     int flags;
     //VideoState *is;
 
@@ -2282,7 +2362,7 @@ int CBeseyePlayer::createStreaming(const char* path){
     avformat_network_init();
 
     char* path2 = NULL;
-	string strPath(path);
+	string strPath(fullPath);
 	int iPos = strPath.find("rtsp");
 	av_log(NULL, AV_LOG_INFO, "createStreaming(), iPos:%d", iPos);
 	if(0 <= iPos){
@@ -2296,7 +2376,7 @@ int CBeseyePlayer::createStreaming(const char* path){
 						  "tcp",
 						  //"-max_delay",
 						  //"500000",
-						  (char*)path,
+						  (char*)fullPath,
 						  (char*)0x0 };
 		path2 = main12(sizeof(argg1)/sizeof(argg1[0])-1,argg1);
 	}else{
@@ -2309,7 +2389,7 @@ int CBeseyePlayer::createStreaming(const char* path){
 						  //"tcp",
 						  //"-max_delay",
 						  //"500000",
-						  (char*)path,
+						  (char*)fullPath,
 						  (char*)0x0 };
 		path2 = main12(sizeof(argg1)/sizeof(argg1[0])-1,argg1);
 	}
@@ -2377,7 +2457,7 @@ int CBeseyePlayer::pauseStreaming(){
 	av_log(NULL, AV_LOG_INFO, "pauseStreaming()++, mStream_Status:%d", mStream_Status);
 	if(NULL != is && !isStreamPaused() && mStream_Status >= STREAM_CONNECTED && mStream_Status < STREAM_CLOSE){
 		toggle_pause(is);
-		triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSED, 0);
+		triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSING, 0);
 		iRet = 1;
 	}
 	return iRet;
@@ -2442,11 +2522,22 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 			AVal desc;
 			if(obj){
 				AMFProp_GetString(AMF_GetProp(obj, &av_description, -1), &desc);
-				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Play, desc:%s", desc.av_val);
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Play, desc:%s", desc.av_val?desc.av_val:"");
+				string strPath(desc.av_val?desc.av_val:"");
+				int iFoundLastSpace = strPath.find_last_of(" ");
+				if(0 <=  iFoundLastSpace){
+					strPath = strPath.substr(iFoundLastSpace+1);
+				}
+
+				if((strPath.length()-1) == strPath.find_last_of(".")){
+					strPath = strPath.substr(0, strPath.length()-1);
+				}
+
+				triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, strPath.c_str(), STREAM_PLAYING, 0);
 			}
-			triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, STREAM_PLAYING, 0);
 		}else if(AVMATCH(content, &av_NetStream_Pause_Notify)){
 			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Pause_Notify");
+			triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSED, 0);
 		}else if(AVMATCH(content, &av_NetStream_Play_StreamNotFound)){
 			AMFObject* obj = (AMFObject*)extra;
 			AVal desc;
@@ -2456,6 +2547,12 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 			}
 		}else{
 			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), non-handled content:[%s]", (NULL != content)?content->av_val:"");
+			AMFObject* obj = (AMFObject*)extra;
+			AVal desc;
+			if(obj){
+				AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s", desc.av_val);
+			}
 		}
 	}
 }

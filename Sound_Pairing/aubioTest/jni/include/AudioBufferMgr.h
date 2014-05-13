@@ -46,8 +46,12 @@ public:
 	Ref<BufRecord> getDataBuf();
 	Ref<BufRecord> getDataBuf(int iNumToRest);
 	void addToAvailableBuf(Ref<BufRecord> buf);
+	void trimAvailableBuf(int iRestCount);
+
 	void recycleAllBuffer();
 	void waitForDataBuf(long lWaitTime);
+
+	void setRecordMode(bool isRecordMode);
 private:
 	static AudioBufferMgr* sAudioBufferMgr;
 	AudioBufferMgr();
@@ -62,6 +66,8 @@ private:
 	pthread_cond_t mSyncObjCond;
 	int miPivotRecording;
 	int miPivotAnalysis;
+
+	bool mbRecordMode;
 };
 
 #endif

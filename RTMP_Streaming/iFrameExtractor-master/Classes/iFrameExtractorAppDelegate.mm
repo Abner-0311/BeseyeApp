@@ -240,7 +240,7 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         //secType => 0:none; 1:WEP; 2:WPA; 3:WPA2
         //tmpUserToken => temp user token from Account BE
         
-        unsigned int iRet =FreqGenerator::getInstance()->playPairingCode("ac09ff6317bc", "0630BesEye", 3, 1);
+        unsigned int iRet =FreqGenerator::getInstance()->playPairingCode("313233343536", "0630BesEye", 12345);
         if(R_OK == iRet){
             //[playToneButton setEnabled:NO];
             

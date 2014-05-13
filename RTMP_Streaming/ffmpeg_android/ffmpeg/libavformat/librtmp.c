@@ -56,6 +56,7 @@ static void rtmp_log(int level, const char *fmt, va_list args)
 
     av_vlog(NULL, level, fmt, args);
     av_log(NULL, level, "\n");
+
 }
 
 static int rtmp_close(URLContext *s)
@@ -191,6 +192,7 @@ static int rtmp_read_pause(URLContext *s, int pause)
 static int64_t rtmp_read_seek(URLContext *s, int stream_index,
                               int64_t timestamp, int flags)
 {
+	av_log(NULL, AV_LOG_ERROR, "rtmp_read_seek(), stream_index:%d, timestamp:%lld, flags:%d\n", stream_index, timestamp, flags);
     LibRTMPContext *ctx = s->priv_data;
     RTMP *r = &ctx->rtmp;
 
@@ -198,9 +200,11 @@ static int64_t rtmp_read_seek(URLContext *s, int stream_index,
         return AVERROR(ENOSYS);
 
     /* seeks are in milliseconds */
-    if (stream_index < 0)
+    if (stream_index < 0){
         timestamp = av_rescale_rnd(timestamp, 1000, AV_TIME_BASE,
             flags & AVSEEK_FLAG_BACKWARD ? AV_ROUND_DOWN : AV_ROUND_UP);
+        av_log(NULL, AV_LOG_ERROR, "rtmp_read_seek(),2, stream_index:%d, timestamp:%lld, flags:%d\n", stream_index, timestamp, flags);
+    }
 
     if (!RTMP_SendSeek(r, timestamp))
         return AVERROR_UNKNOWN;

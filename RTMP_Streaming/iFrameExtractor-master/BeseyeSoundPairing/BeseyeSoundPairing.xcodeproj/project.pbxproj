@@ -7,31 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		07EC6C2018B4CE3C0018BEA4 /* IllegalArgumentException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C0E18B4CE3C0018BEA4 /* IllegalArgumentException.cpp */; };
-		07EC6C2118B4CE3C0018BEA4 /* GenericGF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1118B4CE3C0018BEA4 /* GenericGF.cpp */; };
-		07EC6C2218B4CE3C0018BEA4 /* GenericGFPoly.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1318B4CE3C0018BEA4 /* GenericGFPoly.cpp */; };
-		07EC6C2418B4CE3C0018BEA4 /* ReedSolomonEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1718B4CE3C0018BEA4 /* ReedSolomonEncoder.cpp */; };
-		07EC6C2518B4CE3C0018BEA4 /* ReedSolomonException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1918B4CE3C0018BEA4 /* ReedSolomonException.cpp */; };
-		07EC6C2618B4CE3C0018BEA4 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1B18B4CE3C0018BEA4 /* Exception.cpp */; };
-		07EC6C6918B4CE650018BEA4 /* FreqGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C5D18B4CE650018BEA4 /* FreqGenerator.cpp */; };
-		07EC6C6F18B4CE650018BEA4 /* sp_config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C6318B4CE650018BEA4 /* sp_config.cpp */; };
-		07EC6C7018B4CE650018BEA4 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C6418B4CE650018BEA4 /* utils.cpp */; };
-		07EC6C7118B4D6630018BEA4 /* beseye_sound_pairing.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C2A18B4CE650018BEA4 /* beseye_sound_pairing.h */; };
-		07EC6C7218B4D6630018BEA4 /* FreqGenerator.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C3718B4CE650018BEA4 /* FreqGenerator.h */; };
-		07EC6C7318B4D6630018BEA4 /* sp_config.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C4918B4CE650018BEA4 /* sp_config.h */; };
-		07EC6C7418B4D6630018BEA4 /* utils.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C5718B4CE650018BEA4 /* utils.h */; };
-		07EC6C7518B4D6630018BEA4 /* Array.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C0C18B4CE3C0018BEA4 /* Array.h */; };
-		07EC6C7618B4D6630018BEA4 /* Counted.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C0D18B4CE3C0018BEA4 /* Counted.h */; };
-		07EC6C7718B4D6630018BEA4 /* IllegalArgumentException.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C0F18B4CE3C0018BEA4 /* IllegalArgumentException.h */; };
-		07EC6C7818B4D6630018BEA4 /* GenericGFPoly.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1418B4CE3C0018BEA4 /* GenericGFPoly.h */; };
-		07EC6C7918B4D6630018BEA4 /* ReedSolomonEncoder.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1818B4CE3C0018BEA4 /* ReedSolomonEncoder.h */; };
-		07EC6C7A18B4D6630018BEA4 /* ReedSolomonException.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1A18B4CE3C0018BEA4 /* ReedSolomonException.h */; };
-		07EC6C7B18B4D6630018BEA4 /* Exception.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1C18B4CE3C0018BEA4 /* Exception.h */; };
-		07EC6C7C18B4D6630018BEA4 /* IllegalStateException.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1D18B4CE3C0018BEA4 /* IllegalStateException.h */; };
-		07EC6C7D18B4D6630018BEA4 /* ReaderException.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1E18B4CE3C0018BEA4 /* ReaderException.h */; };
-		07EC6C7E18B4D6630018BEA4 /* ZXing.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1F18B4CE3C0018BEA4 /* ZXing.h */; };
-		07EC6D2918B59D8D0018BEA4 /* native_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6CD818B59AED0018BEA4 /* native_ios.cpp */; };
-		07EC6D2A18B59DB90018BEA4 /* GenericGF.h in Sources */ = {isa = PBXBuildFile; fileRef = 07EC6C1218B4CE3C0018BEA4 /* GenericGF.h */; };
+		07BC6F0E191FC4AC009541A3 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6EF1191FC4AC009541A3 /* utils.cpp */; };
+		07BC6F0F191FC4AC009541A3 /* FreqGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6EF7191FC4AC009541A3 /* FreqGenerator.cpp */; };
+		07BC6F10191FC4AC009541A3 /* native_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6EF8191FC4AC009541A3 /* native_ios.cpp */; };
+		07BC6F11191FC4AC009541A3 /* sp_config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6EF9191FC4AC009541A3 /* sp_config.cpp */; };
+		07BC6F12191FC4AC009541A3 /* IllegalArgumentException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6EFE191FC4AC009541A3 /* IllegalArgumentException.cpp */; };
+		07BC6F13191FC4AC009541A3 /* GenericGF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F01191FC4AC009541A3 /* GenericGF.cpp */; };
+		07BC6F14191FC4AC009541A3 /* GenericGFPoly.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F03191FC4AC009541A3 /* GenericGFPoly.cpp */; };
+		07BC6F15191FC4AC009541A3 /* ReedSolomonEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F05191FC4AC009541A3 /* ReedSolomonEncoder.cpp */; };
+		07BC6F16191FC4AC009541A3 /* ReedSolomonException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F07191FC4AC009541A3 /* ReedSolomonException.cpp */; };
+		07BC6F17191FC4AC009541A3 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F09191FC4AC009541A3 /* Exception.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -48,32 +33,34 @@
 
 /* Begin PBXFileReference section */
 		07776DBC18FD380C00B7033B /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../../Sound_Pairing/aubioTest/jni/include/config.h; sourceTree = "<group>"; };
+		07BC6EEF191FC4AC009541A3 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
+		07BC6EF1191FC4AC009541A3 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
+		07BC6EF3191FC4AC009541A3 /* beseye_sound_pairing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = beseye_sound_pairing.h; sourceTree = "<group>"; };
+		07BC6EF4191FC4AC009541A3 /* FreqGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreqGenerator.h; sourceTree = "<group>"; };
+		07BC6EF5191FC4AC009541A3 /* sp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sp_config.h; sourceTree = "<group>"; };
+		07BC6EF7191FC4AC009541A3 /* FreqGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreqGenerator.cpp; sourceTree = "<group>"; };
+		07BC6EF8191FC4AC009541A3 /* native_ios.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = native_ios.cpp; sourceTree = "<group>"; };
+		07BC6EF9191FC4AC009541A3 /* sp_config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sp_config.cpp; sourceTree = "<group>"; };
+		07BC6EFC191FC4AC009541A3 /* Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Array.h; sourceTree = "<group>"; };
+		07BC6EFD191FC4AC009541A3 /* Counted.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Counted.h; sourceTree = "<group>"; };
+		07BC6EFE191FC4AC009541A3 /* IllegalArgumentException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IllegalArgumentException.cpp; sourceTree = "<group>"; };
+		07BC6EFF191FC4AC009541A3 /* IllegalArgumentException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllegalArgumentException.h; sourceTree = "<group>"; };
+		07BC6F01191FC4AC009541A3 /* GenericGF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GenericGF.cpp; sourceTree = "<group>"; };
+		07BC6F02191FC4AC009541A3 /* GenericGF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericGF.h; sourceTree = "<group>"; };
+		07BC6F03191FC4AC009541A3 /* GenericGFPoly.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GenericGFPoly.cpp; sourceTree = "<group>"; };
+		07BC6F04191FC4AC009541A3 /* GenericGFPoly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericGFPoly.h; sourceTree = "<group>"; };
+		07BC6F05191FC4AC009541A3 /* ReedSolomonEncoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReedSolomonEncoder.cpp; sourceTree = "<group>"; };
+		07BC6F06191FC4AC009541A3 /* ReedSolomonEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReedSolomonEncoder.h; sourceTree = "<group>"; };
+		07BC6F07191FC4AC009541A3 /* ReedSolomonException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReedSolomonException.cpp; sourceTree = "<group>"; };
+		07BC6F08191FC4AC009541A3 /* ReedSolomonException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReedSolomonException.h; sourceTree = "<group>"; };
+		07BC6F09191FC4AC009541A3 /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Exception.cpp; sourceTree = "<group>"; };
+		07BC6F0A191FC4AC009541A3 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = "<group>"; };
+		07BC6F0B191FC4AC009541A3 /* IllegalStateException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllegalStateException.h; sourceTree = "<group>"; };
+		07BC6F0C191FC4AC009541A3 /* ReaderException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReaderException.h; sourceTree = "<group>"; };
+		07BC6F0D191FC4AC009541A3 /* ZXing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXing.h; sourceTree = "<group>"; };
+		07BC6F18191FC511009541A3 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
+		07BC6F19191FC53D009541A3 /* error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = error.h; path = Common/inc/error.h; sourceTree = SOURCE_ROOT; };
 		07EC6BE118B4CD4F0018BEA4 /* libBeseyeSoundPairing.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBeseyeSoundPairing.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		07EC6C0C18B4CE3C0018BEA4 /* Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Array.h; sourceTree = "<group>"; };
-		07EC6C0D18B4CE3C0018BEA4 /* Counted.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Counted.h; sourceTree = "<group>"; };
-		07EC6C0E18B4CE3C0018BEA4 /* IllegalArgumentException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IllegalArgumentException.cpp; sourceTree = "<group>"; };
-		07EC6C0F18B4CE3C0018BEA4 /* IllegalArgumentException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllegalArgumentException.h; sourceTree = "<group>"; };
-		07EC6C1118B4CE3C0018BEA4 /* GenericGF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GenericGF.cpp; sourceTree = "<group>"; };
-		07EC6C1218B4CE3C0018BEA4 /* GenericGF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericGF.h; sourceTree = "<group>"; };
-		07EC6C1318B4CE3C0018BEA4 /* GenericGFPoly.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GenericGFPoly.cpp; sourceTree = "<group>"; };
-		07EC6C1418B4CE3C0018BEA4 /* GenericGFPoly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericGFPoly.h; sourceTree = "<group>"; };
-		07EC6C1718B4CE3C0018BEA4 /* ReedSolomonEncoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReedSolomonEncoder.cpp; sourceTree = "<group>"; };
-		07EC6C1818B4CE3C0018BEA4 /* ReedSolomonEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReedSolomonEncoder.h; sourceTree = "<group>"; };
-		07EC6C1918B4CE3C0018BEA4 /* ReedSolomonException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReedSolomonException.cpp; sourceTree = "<group>"; };
-		07EC6C1A18B4CE3C0018BEA4 /* ReedSolomonException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReedSolomonException.h; sourceTree = "<group>"; };
-		07EC6C1B18B4CE3C0018BEA4 /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Exception.cpp; sourceTree = "<group>"; };
-		07EC6C1C18B4CE3C0018BEA4 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = "<group>"; };
-		07EC6C1D18B4CE3C0018BEA4 /* IllegalStateException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IllegalStateException.h; sourceTree = "<group>"; };
-		07EC6C1E18B4CE3C0018BEA4 /* ReaderException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReaderException.h; sourceTree = "<group>"; };
-		07EC6C1F18B4CE3C0018BEA4 /* ZXing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXing.h; sourceTree = "<group>"; };
-		07EC6C2A18B4CE650018BEA4 /* beseye_sound_pairing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = beseye_sound_pairing.h; sourceTree = SOURCE_ROOT; };
-		07EC6C3718B4CE650018BEA4 /* FreqGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreqGenerator.h; sourceTree = "<group>"; };
-		07EC6C4918B4CE650018BEA4 /* sp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sp_config.h; sourceTree = "<group>"; };
-		07EC6C5718B4CE650018BEA4 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
-		07EC6C5D18B4CE650018BEA4 /* FreqGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FreqGenerator.cpp; sourceTree = "<group>"; };
-		07EC6C6318B4CE650018BEA4 /* sp_config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sp_config.cpp; sourceTree = "<group>"; };
-		07EC6C6418B4CE650018BEA4 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
-		07EC6CD818B59AED0018BEA4 /* native_ios.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = native_ios.cpp; sourceTree = "<group>"; };
 		07EC6CDC18B59C420018BEA4 /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = begin_code.h; path = "../../SDL2-2.0.1/include/begin_code.h"; sourceTree = SOURCE_ROOT; };
 		07EC6CDD18B59C420018BEA4 /* close_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = close_code.h; path = "../../SDL2-2.0.1/include/close_code.h"; sourceTree = SOURCE_ROOT; };
 		07EC6CDE18B59C420018BEA4 /* SDL_assert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_assert.h; path = "../../SDL2-2.0.1/include/SDL_assert.h"; sourceTree = SOURCE_ROOT; };
@@ -162,6 +149,93 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07BC6EED191FC4AC009541A3 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				07BC6EEE191FC4AC009541A3 /* inc */,
+				07BC6EF0191FC4AC009541A3 /* src */,
+			);
+			path = Common;
+			sourceTree = SOURCE_ROOT;
+		};
+		07BC6EEE191FC4AC009541A3 /* inc */ = {
+			isa = PBXGroup;
+			children = (
+				07BC6F19191FC53D009541A3 /* error.h */,
+				07BC6F18191FC511009541A3 /* Common.h */,
+				07BC6EEF191FC4AC009541A3 /* utils.h */,
+			);
+			path = inc;
+			sourceTree = "<group>";
+		};
+		07BC6EF0191FC4AC009541A3 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				07BC6EF1191FC4AC009541A3 /* utils.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		07BC6EF2191FC4AC009541A3 /* inc */ = {
+			isa = PBXGroup;
+			children = (
+				07BC6EF3191FC4AC009541A3 /* beseye_sound_pairing.h */,
+				07BC6EF4191FC4AC009541A3 /* FreqGenerator.h */,
+				07BC6EF5191FC4AC009541A3 /* sp_config.h */,
+			);
+			path = inc;
+			sourceTree = SOURCE_ROOT;
+		};
+		07BC6EF6191FC4AC009541A3 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				07BC6EF7191FC4AC009541A3 /* FreqGenerator.cpp */,
+				07BC6EF8191FC4AC009541A3 /* native_ios.cpp */,
+				07BC6EF9191FC4AC009541A3 /* sp_config.cpp */,
+			);
+			path = src;
+			sourceTree = SOURCE_ROOT;
+		};
+		07BC6EFA191FC4AC009541A3 /* zxing */ = {
+			isa = PBXGroup;
+			children = (
+				07BC6EFB191FC4AC009541A3 /* common */,
+				07BC6F09191FC4AC009541A3 /* Exception.cpp */,
+				07BC6F0A191FC4AC009541A3 /* Exception.h */,
+				07BC6F0B191FC4AC009541A3 /* IllegalStateException.h */,
+				07BC6F0C191FC4AC009541A3 /* ReaderException.h */,
+				07BC6F0D191FC4AC009541A3 /* ZXing.h */,
+			);
+			path = zxing;
+			sourceTree = SOURCE_ROOT;
+		};
+		07BC6EFB191FC4AC009541A3 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				07BC6EFC191FC4AC009541A3 /* Array.h */,
+				07BC6EFD191FC4AC009541A3 /* Counted.h */,
+				07BC6EFE191FC4AC009541A3 /* IllegalArgumentException.cpp */,
+				07BC6EFF191FC4AC009541A3 /* IllegalArgumentException.h */,
+				07BC6F00191FC4AC009541A3 /* reedsolomon */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		07BC6F00191FC4AC009541A3 /* reedsolomon */ = {
+			isa = PBXGroup;
+			children = (
+				07BC6F01191FC4AC009541A3 /* GenericGF.cpp */,
+				07BC6F02191FC4AC009541A3 /* GenericGF.h */,
+				07BC6F03191FC4AC009541A3 /* GenericGFPoly.cpp */,
+				07BC6F04191FC4AC009541A3 /* GenericGFPoly.h */,
+				07BC6F05191FC4AC009541A3 /* ReedSolomonEncoder.cpp */,
+				07BC6F06191FC4AC009541A3 /* ReedSolomonEncoder.h */,
+				07BC6F07191FC4AC009541A3 /* ReedSolomonException.cpp */,
+				07BC6F08191FC4AC009541A3 /* ReedSolomonException.h */,
+			);
+			path = reedsolomon;
+			sourceTree = "<group>";
+		};
 		07EC6BD818B4CD4F0018BEA4 = {
 			isa = PBXGroup;
 			children = (
@@ -185,76 +259,12 @@
 		07EC6BE618B4CD4F0018BEA4 /* BeseyeSoundPairing */ = {
 			isa = PBXGroup;
 			children = (
-				07EC6C2718B4CE650018BEA4 /* include */,
-				07EC6C5818B4CE650018BEA4 /* src */,
-				07EC6C0A18B4CE3C0018BEA4 /* zxing */,
+				07BC6EED191FC4AC009541A3 /* Common */,
+				07BC6EF2191FC4AC009541A3 /* inc */,
+				07BC6EF6191FC4AC009541A3 /* src */,
+				07BC6EFA191FC4AC009541A3 /* zxing */,
 			);
 			path = BeseyeSoundPairing;
-			sourceTree = "<group>";
-		};
-		07EC6C0A18B4CE3C0018BEA4 /* zxing */ = {
-			isa = PBXGroup;
-			children = (
-				07EC6C0B18B4CE3C0018BEA4 /* common */,
-				07EC6C1B18B4CE3C0018BEA4 /* Exception.cpp */,
-				07EC6C1C18B4CE3C0018BEA4 /* Exception.h */,
-				07EC6C1D18B4CE3C0018BEA4 /* IllegalStateException.h */,
-				07EC6C1E18B4CE3C0018BEA4 /* ReaderException.h */,
-				07EC6C1F18B4CE3C0018BEA4 /* ZXing.h */,
-			);
-			name = zxing;
-			path = ../../../../Sound_Pairing/aubioTest/jni/zxing;
-			sourceTree = "<group>";
-		};
-		07EC6C0B18B4CE3C0018BEA4 /* common */ = {
-			isa = PBXGroup;
-			children = (
-				07EC6C0C18B4CE3C0018BEA4 /* Array.h */,
-				07EC6C0D18B4CE3C0018BEA4 /* Counted.h */,
-				07EC6C0E18B4CE3C0018BEA4 /* IllegalArgumentException.cpp */,
-				07EC6C0F18B4CE3C0018BEA4 /* IllegalArgumentException.h */,
-				07EC6C1018B4CE3C0018BEA4 /* reedsolomon */,
-			);
-			path = common;
-			sourceTree = "<group>";
-		};
-		07EC6C1018B4CE3C0018BEA4 /* reedsolomon */ = {
-			isa = PBXGroup;
-			children = (
-				07EC6C1118B4CE3C0018BEA4 /* GenericGF.cpp */,
-				07EC6C1218B4CE3C0018BEA4 /* GenericGF.h */,
-				07EC6C1318B4CE3C0018BEA4 /* GenericGFPoly.cpp */,
-				07EC6C1418B4CE3C0018BEA4 /* GenericGFPoly.h */,
-				07EC6C1718B4CE3C0018BEA4 /* ReedSolomonEncoder.cpp */,
-				07EC6C1818B4CE3C0018BEA4 /* ReedSolomonEncoder.h */,
-				07EC6C1918B4CE3C0018BEA4 /* ReedSolomonException.cpp */,
-				07EC6C1A18B4CE3C0018BEA4 /* ReedSolomonException.h */,
-			);
-			path = reedsolomon;
-			sourceTree = "<group>";
-		};
-		07EC6C2718B4CE650018BEA4 /* include */ = {
-			isa = PBXGroup;
-			children = (
-				07EC6C2A18B4CE650018BEA4 /* beseye_sound_pairing.h */,
-				07EC6C3718B4CE650018BEA4 /* FreqGenerator.h */,
-				07EC6C4918B4CE650018BEA4 /* sp_config.h */,
-				07EC6C5718B4CE650018BEA4 /* utils.h */,
-			);
-			name = include;
-			path = ../../../../Sound_Pairing/aubioTest/jni/include;
-			sourceTree = "<group>";
-		};
-		07EC6C5818B4CE650018BEA4 /* src */ = {
-			isa = PBXGroup;
-			children = (
-				07EC6C5D18B4CE650018BEA4 /* FreqGenerator.cpp */,
-				07EC6C6318B4CE650018BEA4 /* sp_config.cpp */,
-				07EC6C6418B4CE650018BEA4 /* utils.cpp */,
-				07EC6CD818B59AED0018BEA4 /* native_ios.cpp */,
-			);
-			name = src;
-			path = ../../../../Sound_Pairing/aubioTest/jni/src;
 			sourceTree = "<group>";
 		};
 		07EC6CDB18B59BF60018BEA4 /* Public Header */ = {
@@ -388,31 +398,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07EC6D2A18B59DB90018BEA4 /* GenericGF.h in Sources */,
-				07EC6C7118B4D6630018BEA4 /* beseye_sound_pairing.h in Sources */,
-				07EC6C7218B4D6630018BEA4 /* FreqGenerator.h in Sources */,
-				07EC6C7318B4D6630018BEA4 /* sp_config.h in Sources */,
-				07EC6C7418B4D6630018BEA4 /* utils.h in Sources */,
-				07EC6C7518B4D6630018BEA4 /* Array.h in Sources */,
-				07EC6C7618B4D6630018BEA4 /* Counted.h in Sources */,
-				07EC6C7718B4D6630018BEA4 /* IllegalArgumentException.h in Sources */,
-				07EC6C7818B4D6630018BEA4 /* GenericGFPoly.h in Sources */,
-				07EC6C7918B4D6630018BEA4 /* ReedSolomonEncoder.h in Sources */,
-				07EC6C7A18B4D6630018BEA4 /* ReedSolomonException.h in Sources */,
-				07EC6C7B18B4D6630018BEA4 /* Exception.h in Sources */,
-				07EC6C7C18B4D6630018BEA4 /* IllegalStateException.h in Sources */,
-				07EC6C7D18B4D6630018BEA4 /* ReaderException.h in Sources */,
-				07EC6C7E18B4D6630018BEA4 /* ZXing.h in Sources */,
-				07EC6C2618B4CE3C0018BEA4 /* Exception.cpp in Sources */,
-				07EC6C2018B4CE3C0018BEA4 /* IllegalArgumentException.cpp in Sources */,
-				07EC6C2118B4CE3C0018BEA4 /* GenericGF.cpp in Sources */,
-				07EC6C2518B4CE3C0018BEA4 /* ReedSolomonException.cpp in Sources */,
-				07EC6C2218B4CE3C0018BEA4 /* GenericGFPoly.cpp in Sources */,
-				07EC6C2418B4CE3C0018BEA4 /* ReedSolomonEncoder.cpp in Sources */,
-				07EC6C6F18B4CE650018BEA4 /* sp_config.cpp in Sources */,
-				07EC6C7018B4CE650018BEA4 /* utils.cpp in Sources */,
-				07EC6D2918B59D8D0018BEA4 /* native_ios.cpp in Sources */,
-				07EC6C6918B4CE650018BEA4 /* FreqGenerator.cpp in Sources */,
+				07BC6F10191FC4AC009541A3 /* native_ios.cpp in Sources */,
+				07BC6F12191FC4AC009541A3 /* IllegalArgumentException.cpp in Sources */,
+				07BC6F14191FC4AC009541A3 /* GenericGFPoly.cpp in Sources */,
+				07BC6F17191FC4AC009541A3 /* Exception.cpp in Sources */,
+				07BC6F13191FC4AC009541A3 /* GenericGF.cpp in Sources */,
+				07BC6F16191FC4AC009541A3 /* ReedSolomonException.cpp in Sources */,
+				07BC6F0E191FC4AC009541A3 /* utils.cpp in Sources */,
+				07BC6F11191FC4AC009541A3 /* sp_config.cpp in Sources */,
+				07BC6F15191FC4AC009541A3 /* ReedSolomonEncoder.cpp in Sources */,
+				07BC6F0F191FC4AC009541A3 /* FreqGenerator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
