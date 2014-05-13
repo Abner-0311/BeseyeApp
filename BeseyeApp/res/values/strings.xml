@@ -151,4 +151,6 @@
 	<string name="camera_list_failed_title">Failed to connect with your camera.</string>
 	<string name="camera_list_failed_content">Please check network on mobile device and camera,then try again.</string>
 	
+	<string name="loading_latest_update">Latest update&#160;%s</string>
+	<string name="no_camera">No camera attached</string>
 </resources>

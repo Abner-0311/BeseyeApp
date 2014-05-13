@@ -120,4 +120,11 @@
     <dimen name="cameralist_failedBottom_top">24dp</dimen>
     <dimen name="cameralist_failed_text_margin">16dp</dimen>
     
+    
+    <dimen name="beseyeLoadingVertiMargin">10dp</dimen>
+    <dimen name="beseyeLoadingVertiPadding">5dp</dimen>
+    
+    <dimen name="indicator_right_padding">10dp</dimen>
+    <dimen name="indicator_corner_radius">12dp</dimen>
+    <dimen name="indicator_internal_padding">4dp</dimen>
 </resources>

@@ -18,12 +18,9 @@ import com.app.beseye.R;
 import com.app.beseye.TouchSurfaceView.OnTouchSurfaceCallback;
 import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -39,7 +36,6 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -221,6 +217,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		getSupportActionBar().hide();
 		
 		mbIsLiveMode = !getIntent().getBooleanExtra(KEY_DVR_STREAM_MODE, false);
+		mStrVCamID = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_ID);
+		
+		mStrVCamName = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_NAME);
 		
 		mstrDVRStreamPathList = new ArrayList<JSONObject>();
 		mstrPendingStreamPathList = new ArrayList<JSONObject>();
@@ -378,7 +377,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.CAM_ON);
 				mbIsCamSettingChanged = true;
 				Log.d(TAG, "CameraViewActivity::onPostResume(), make mbIsCamSettingChanged: true.............");
-
 			}
 		}
 		
@@ -586,8 +584,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(bNetworkConnected && bPowerOn && (mbIsFirstLaunch || mbIsPauseWhenPlaying || mbIsCamSettingChanged || mbIsWifiSettingChanged)){
 			//beginLiveView();
-			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
-			//getStreamingInfo();
+			//monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
+			getStreamingInfo();
 		}/*else{
 			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		}*/
@@ -806,12 +804,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				break;
 			}
 			case R.id.ib_settings:{
-				Intent intent = new Intent();
-				intent.putExtra(CameraSettingActivity.KEY_VCAM_ID, mStrVCamID);
-				intent.putExtra(CameraSettingActivity.KEY_VCAM_NAME, mStrVCamName);
-				
-				intent.setClass(this, CameraSettingActivity.class);
-				startActivityForResult(intent, REQUEST_CAM_SETTING_CHANGED);
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_ID, mStrVCamID);
+				b.putString(CameraListActivity.KEY_VCAM_NAME, mStrVCamName);
+				launchActivityForResultByClassName(CameraSettingActivity.class.getName(), b, REQUEST_CAM_SETTING_CHANGED);
 //				if(!receiveAudioBufThreadRunning()){
 //					receiveAudioBufFromCam("");
 //				}else{

@@ -41,8 +41,7 @@ import android.widget.Toast;
 public class CameraSettingActivity extends BeseyeBaseActivity 
 								   implements OnSwitchBtnStateChangedListener,
 								   			  OnClickListener{
-	static public final String KEY_VCAM_ID = "KEY_VCAM_ID";
-	static public final String KEY_VCAM_NAME = "KEY_VCAM_NAME";
+	
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerDesc,  mTxtPowerTitle, mTxtViewUpDownTitle;
 	private ImageView mIvViewUpDownCheck, mIvViewUpDownCheckBg;
@@ -63,8 +62,8 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		getSupportActionBar().setTitle(R.string.cam_setting_title);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		mStrVCamID = getIntent().getStringExtra(KEY_VCAM_ID);
-		mStrVCamName = getIntent().getStringExtra(KEY_VCAM_NAME);
+		mStrVCamID = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_ID);
+		mStrVCamName = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_NAME);
 		mCamSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_camera_switch);
 		if(null != mCamSwitchBtn){
 			mCamSwitchBtn.setOnSwitchBtnStateChangedListener(this);
@@ -205,7 +204,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 
 	@Override
-	public void onSwitchBtnStateChanged(SwitchState state) {
+	public void onSwitchBtnStateChanged(SwitchState state, View view) {
 		CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.toCamConnStatus((SwitchState.SWITCH_ON.equals(state))?1:0));
 		setResult(RESULT_OK);
 		updatePowerDesc(state);

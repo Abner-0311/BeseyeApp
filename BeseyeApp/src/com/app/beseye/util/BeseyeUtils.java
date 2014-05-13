@@ -1,6 +1,7 @@
 package com.app.beseye.util;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -162,5 +163,22 @@ public class BeseyeUtils {
 	          }
 	   }
 	   return processName;
+	}
+	
+	private static android.text.format.DateFormat s_datetimeFormat = new android.text.format.DateFormat();
+	public static String getDateString(Date date, String strFormat){
+		if(null != date)
+			return s_datetimeFormat.format(strFormat, date).toString();
+		else
+			return "";
+	}
+	
+	static public String getDateDiffString(Context context, Date updateTime){
+		String strRet = null;
+		if(null != updateTime && null != context){
+			strRet = getDateString(updateTime, "yyyy-MM-dd a hh:mm");
+		}
+		
+		return strRet;
 	}
 }
