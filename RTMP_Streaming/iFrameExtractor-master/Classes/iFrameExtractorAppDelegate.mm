@@ -280,9 +280,10 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         [self performSelectorOnMainThread:@selector(disableButton:) withObject:playButton waitUntilDone:NO];
         [self performSelectorOnMainThread:@selector(enableButton:) withObject:stopButton waitUntilDone:NO];
         
-        player1->createStreaming(//"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
+        player1->createStreaming( "rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/1001_aac"
+                                 //"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
                                  //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4"
-                                 "rtsp://admin:password@192.168.3.100/h264"
+                                 //"rtsp://admin:password@192.168.3.100/h264"
                                  );
         player1->unregisterVideoCallback();
         delete player1;
