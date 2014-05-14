@@ -830,9 +830,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //						beginLiveView();
 //					}
 //				}
-				Bundle b = new Bundle();
-				b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-				launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+//				Bundle b = new Bundle();
+//				b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
+//				launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
 				break;
 			}
 			case R.id.ib_open_cam:{

@@ -7,6 +7,7 @@ import com.app.beseye.R;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
+import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.RemoteImageView;
 
 import android.content.Context;
@@ -61,6 +62,12 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				if(null != holder.mTxtCamName){
 					holder.mTxtCamName.setText(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_NAME));
 				}
+				
+				if(null != holder.mSbCamOnOff){
+					holder.mSbCamOnOff.setTag(holder);
+					holder.mSbCamOnOff.setSwitchState(SwitchState.SWITCH_ON);
+				}
+				
 				holder.mObjCam = obj;
 				convertView.setTag(holder);
 			}

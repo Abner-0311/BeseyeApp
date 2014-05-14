@@ -1,23 +1,23 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.ASSIGN_ST_PATH;
-import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeConfig.*;
 
 import java.util.List;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.beseye.adapter.CameraListAdapter;
 import com.app.beseye.adapter.CameraListAdapter.CameraListItmHolder;
@@ -36,14 +36,34 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	private PullToRefreshListView mMainListView;
 	private CameraListAdapter mCameraListAdapter;
 	private ViewGroup mVgEmptyView;
+	private View mVwNavBar;
+	private ImageView mIvMenu, mIvAddCam;
+	private ActionBar.LayoutParams mNavBarLayoutParams;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.wifisetup_wifi_title_bg));
 		getSupportActionBar().setDisplayOptions(0);
-		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE, ActionBar.DISPLAY_SHOW_TITLE); 
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
+		
+		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_cam_list_nav, null);
+		if(null != mVwNavBar){
+			mIvMenu = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_menu_btn);
+			if(null != mIvMenu){
+				mIvMenu.setOnClickListener(this);
+			}
+			
+			mIvAddCam = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_add_cam_btn);
+			if(null != mIvAddCam){
+				mIvAddCam.setOnClickListener(this);
+			}
+			
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
+	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
+		}
+		
 		
 		mMainListView = (PullToRefreshListView) findViewById(R.id.lv_camera_lst);
 		
@@ -51,6 +71,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			mMainListView.setOnRefreshListener(new OnRefreshListener() {
     			@Override
     			public void onRefresh() {
+    				Log.i(TAG, "onRefresh()");	
     				monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this), true);
     			}
 
@@ -90,6 +111,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	protected void onSessionComplete(){
+		Log.i(TAG, "onSessionComplete()");	
 		monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 	}
 	
@@ -146,8 +168,12 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				launchActivityByClassName(CameraViewActivity.class.getName(), b);
 				return;
 			}
-		}
-		super.onClick(view);
+		}else if(R.id.iv_nav_menu_btn == view.getId()){
+			Toast.makeText(this, "show menu", Toast.LENGTH_SHORT).show();
+		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
+			launchActivityByClassName(WifiSetupGuideActivity.class.getName());
+		}else
+			super.onClick(view);
 	}
 
 	@Override
@@ -157,6 +183,15 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 
 	@Override
 	public void onSwitchBtnStateChanged(SwitchState state, View view) {
-		
+		if(view.getTag() instanceof CameraListItmHolder){
+			JSONObject cam_obj = ((CameraListItmHolder)view.getTag()).mObjCam;
+			if(null != cam_obj){
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_ID, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
+				b.putString(CameraListActivity.KEY_VCAM_NAME, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME));
+				//launchActivityByClassName(CameraViewActivity.class.getName(), b);
+				return;
+			}
+		}
 	}
 }

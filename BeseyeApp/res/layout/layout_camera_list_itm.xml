@@ -1,126 +1,126 @@
 <LinearLayout 
-        xmlns:android="http://schemas.android.com/apk/res/android"
-	    xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-    	android:layout_height="match_parent"
-    	android:orientation="vertical"
-    	android:background="@color/signup_bg_color" >
-		
-		<RelativeLayout
-		    android:id="@+id/rl_cameralist_video_block"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_marginTop="@dimen/cameralist_videoblock_margin"
-		    android:layout_marginLeft="@dimen/cameralist_videoblock_margin"
-		    android:layout_marginRight="@dimen/cameralist_videoblock_margin"		    
-		    android:padding="@dimen/cameralist_videoblock_inner"
-		    android:background="@drawable/cameralist_s_cameralist_video_bg" >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+   	android:layout_height="match_parent"
+   	android:orientation="vertical"
+   	android:background="@drawable/cl_cam_list_item_bg" >
+	
+	<RelativeLayout
+	    android:id="@+id/rl_cameralist_video_block"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="@dimen/cameralist_videoblock_margin"
+	    android:layout_marginLeft="@dimen/cameralist_videoblock_margin"
+	    android:layout_marginRight="@dimen/cameralist_videoblock_margin"		    
+	    android:padding="@dimen/cameralist_videoblock_inner"
+	    android:background="@drawable/cameralist_s_cameralist_video_bg" >
 
-		    <RelativeLayout
-		        android:id="@+id/rl_cameralist_title"
-		        android:layout_width="match_parent"
+	    <RelativeLayout
+	        android:id="@+id/rl_cameralist_title"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/cameralist_videoTitle_marginTop"
+	        android:layout_marginLeft="@dimen/cameralist_videoTitle_marginSide"
+	        android:layout_marginRight="@dimen/cameralist_videoTitle_marginSide"
+	        android:layout_marginBottom="@dimen/cameralist_videoTitle_marginBottom" >
+
+		    <TextView
+		        android:id="@+id/tv_camera_name"
+		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="@dimen/cameralist_videoTitle_marginTop"
-		        android:layout_marginLeft="@dimen/cameralist_videoTitle_marginSide"
-		        android:layout_marginRight="@dimen/cameralist_videoTitle_marginSide"
-		        android:layout_marginBottom="@dimen/cameralist_videoTitle_marginBottom" >
-
-			    <TextView
-			        android:id="@+id/tv_camera_name"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:layout_alignParentLeft="true"
-			        android:layout_centerVertical="true"
-			        android:text="TextView" />
-			    
-			    <com.app.beseye.widget.BeseyeSwitchBtn 
-				    android:id="@+id/sb_camera_switch"
-				    android:layout_width="wrap_content"
-			    	android:layout_height="wrap_content"
-			    	android:layout_alignParentRight="true"
-			    	android:layout_centerVertical="true">
-				</com.app.beseye.widget.BeseyeSwitchBtn>
+		        android:layout_alignParentLeft="true"
+		        android:layout_centerVertical="true"
+		        android:text="TextView" />
 		    
+		    <com.app.beseye.widget.BeseyeSwitchBtn 
+			    android:id="@+id/sb_camera_switch"
+			    android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:layout_alignParentRight="true"
+		    	android:layout_centerVertical="true">
+			</com.app.beseye.widget.BeseyeSwitchBtn>
+	    
+		</RelativeLayout>
+		
+	    <RelativeLayout
+	        android:id="@+id/rl_cameralist_video"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/rl_cameralist_title"
+	        android:background="@color/camera_list_video_bg"  >
+
+		    <com.app.beseye.widget.RemoteImageView
+		        android:id="@+id/iv_cameralist_thumbnail"
+		        android:layout_width="336dp"
+		        android:layout_height="189dp"
+		        android:src="@drawable/cameralist_thumbnail" />
+		    
+		    <RelativeLayout
+		        android:id="@+id/rl_camera_disconnected_solid"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:layout_centerVertical="true"
+		        android:visibility="invisible" >
+		
+		        <TextView
+		            android:id="@+id/tv_camera_disconnected"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_centerHorizontal="true"
+		            android:text="@string/camera_list_disconected"
+		            android:textColor="@color/beseye_color_gray"
+           			android:textSize="@dimen/login_fontNormal" />
+		        
+		        <TextView
+		            android:id="@+id/tv_camera_more"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_below="@+id/tv_camera_disconnected"
+		            android:layout_centerHorizontal="true"
+		            android:text="@string/camera_list_more"
+		            android:textColor="@color/cl_link_font_color"
+           			android:textSize="@dimen/login_fontSmall" />
+		        
 			</RelativeLayout>
 			
 		    <RelativeLayout
-		        android:id="@+id/rl_cameralist_video"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/rl_cameralist_title"
-		        android:background="@color/camera_list_video_bg"  >
+		        android:id="@+id/rl_cameralist_no_video"
+		        android:layout_width="336dp"
+		        android:layout_height="189dp"
+		        android:background="@color/camera_list_video_mask"
+		        android:visibility="invisible" >
 
-			    <com.app.beseye.widget.RemoteImageView
-			        android:id="@+id/iv_cameralist_thumbnail"
-			        android:layout_width="336dp"
-			        android:layout_height="189dp"
-			        android:src="@drawable/cameralist_thumbnail" />
-			    
 			    <RelativeLayout
-			        android:id="@+id/rl_camera_disconnected_solid"
+			        android:id="@+id/rl_camera_disconnected_mask"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
 			        android:layout_centerHorizontal="true"
-			        android:layout_centerVertical="true"
-			        android:visibility="invisible" >
+			        android:layout_centerVertical="true" >
 			
 			        <TextView
-			            android:id="@+id/tv_camera_disconnected"
+			            android:id="@+id/tv_camera_disconnected_2"
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
 			            android:layout_centerHorizontal="true"
 			            android:text="@string/camera_list_disconected"
 			            android:textColor="@color/beseye_color_gray"
-            			android:textSize="@dimen/login_fontNormal" />
+           				android:textSize="@dimen/login_fontNormal" />
 			        
 			        <TextView
-			            android:id="@+id/tv_camera_more"
+			            android:id="@+id/tv_camera_more_2"
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:layout_below="@+id/tv_camera_disconnected"
+			            android:layout_below="@+id/tv_camera_disconnected_2"
 			            android:layout_centerHorizontal="true"
 			            android:text="@string/camera_list_more"
 			            android:textColor="@color/cl_link_font_color"
-            			android:textSize="@dimen/login_fontSmall" />
-			        
-				</RelativeLayout>
-				
-			    <RelativeLayout
-			        android:id="@+id/rl_cameralist_no_video"
-			        android:layout_width="336dp"
-			        android:layout_height="189dp"
-			        android:background="@color/camera_list_video_mask"
-			        android:visibility="invisible" >
-
-				    <RelativeLayout
-				        android:id="@+id/rl_camera_disconnected_mask"
-				        android:layout_width="wrap_content"
-				        android:layout_height="wrap_content"
-				        android:layout_centerHorizontal="true"
-				        android:layout_centerVertical="true" >
-				
-				        <TextView
-				            android:id="@+id/tv_camera_disconnected_2"
-				            android:layout_width="wrap_content"
-				            android:layout_height="wrap_content"
-				            android:layout_centerHorizontal="true"
-				            android:text="@string/camera_list_disconected"
-				            android:textColor="@color/beseye_color_gray"
-            				android:textSize="@dimen/login_fontNormal" />
-				        
-				        <TextView
-				            android:id="@+id/tv_camera_more_2"
-				            android:layout_width="wrap_content"
-				            android:layout_height="wrap_content"
-				            android:layout_below="@+id/tv_camera_disconnected_2"
-				            android:layout_centerHorizontal="true"
-				            android:text="@string/camera_list_more"
-				            android:textColor="@color/cl_link_font_color"
-            				android:textSize="@dimen/login_fontSmall" />
-					</RelativeLayout>
+           				android:textSize="@dimen/login_fontSmall" />
 				</RelativeLayout>
 			</RelativeLayout>
 		</RelativeLayout>
+	</RelativeLayout>
 </LinearLayout>
 
 
