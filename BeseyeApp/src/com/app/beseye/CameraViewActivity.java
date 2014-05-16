@@ -78,6 +78,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private ImageButton mIbOpenCam;
 	private String mStrVCamID = "Bes0001";
 	private String mStrVCamName = null;
+	private boolean mbVCamAdmin = true;
 	
 	private boolean mbIsLiveMode = true;//false means VOD
 	private String mstrLiveStreamServer;
@@ -218,8 +219,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		mbIsLiveMode = !getIntent().getBooleanExtra(KEY_DVR_STREAM_MODE, false);
 		mStrVCamID = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_ID);
-		
 		mStrVCamName = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_NAME);
+		mbVCamAdmin = getIntent().getBooleanExtra(CameraListActivity.KEY_VCAM_ADMIN, true);
 		
 		mstrDVRStreamPathList = new ArrayList<JSONObject>();
 		mstrPendingStreamPathList = new ArrayList<JSONObject>();
@@ -311,6 +312,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mIbSetting = (ImageButton)findViewById(R.id.ib_settings);
 		if(null != mIbSetting){
 			mIbSetting.setOnClickListener(this);
+			mIbSetting.setVisibility(mbVCamAdmin?View.VISIBLE:View.INVISIBLE);
 			//mIbSetting.setEnabled(false);//not implement
 		}
 		
@@ -364,7 +366,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		Log.d(TAG, "CameraViewActivity::onSessionComplete(), mbIsFirstLaunch:"+mbIsFirstLaunch+", mbIsPauseWhenPlaying:"+mbIsPauseWhenPlaying+", mbIsCamSettingChanged:"+mbIsCamSettingChanged+", mbIsWifiSettingChanged:"+mbIsWifiSettingChanged);
 		if(false == handleReddotNetwork(false)){
 			if(null != mTxtCamName){
-				mTxtCamName.setText((null == mStrVCamName)?CamSettingMgr.getInstance().getCamName(TMP_CAM_ID):mStrVCamName);
+				mTxtCamName.setText(mStrVCamName);
 			}
 			
 			if(null != mStreamingView)
@@ -583,8 +585,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		Log.i(TAG, "CameraViewActivity::checkPlayState(), bPowerOn:"+bPowerOn+", bNetworkConnected:"+bNetworkConnected);
 		
 		if(bNetworkConnected && bPowerOn && (mbIsFirstLaunch || mbIsPauseWhenPlaying || mbIsCamSettingChanged || mbIsWifiSettingChanged)){
-			//beginLiveView();
-			//monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 			getStreamingInfo();
 		}/*else{
 			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
@@ -601,6 +601,16 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(null != mStreamingView){
 			mStreamingView.drawDefaultBackground();
+		}
+	}
+	
+	private void applyCamAttr(){
+		if(null != mTxtCamName){
+			mTxtCamName.setText(mStrVCamName);
+		}
+		
+		if(null != mIbSetting){
+			mIbSetting.setVisibility(mbVCamAdmin?View.VISIBLE:View.INVISIBLE);
 		}
 	}
 	
@@ -712,31 +722,27 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						}
 					}
 				}
-			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
+			}else if(task instanceof BeseyeAccountTask.QueryVCamListTask){
 				if(0 == iRetCode){
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
 					if(0 < iVcamCnt){
 						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
+
 						if(null != VcamList){
 							try {
 								JSONObject vcam = VcamList.getJSONObject(0);
 								if(null != vcam){
-									mStrVCamID = BeseyeJSONUtil.getJSONString(vcam, BeseyeJSONUtil.ACC_ID);
 									mStrVCamName = BeseyeJSONUtil.getJSONString(vcam, BeseyeJSONUtil.ACC_NAME);
+									mbVCamAdmin  = BeseyeJSONUtil.getJSONBoolean(vcam, BeseyeJSONUtil.ACC_SUBSC_ADMIN);
+									applyCamAttr();
 									Log.e(TAG, "onPostExecute(), mStrVCamID:"+mStrVCamID);
-									getStreamingInfo();
 								}
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 						}
-					}else{
-						onToastShow(task, "no Vcam attached.");
-						Bundle b = new Bundle();
-						b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-						launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
 					}
 				}
 			}else{
@@ -857,6 +863,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if(REQUEST_CAM_SETTING_CHANGED == requestCode){
 			mbIsCamSettingChanged = (resultCode == RESULT_OK);
+			if(resultCode == RESULT_OK){
+				monitorAsyncTask(new BeseyeAccountTask.QueryVCamListTask(this), true, mStrVCamID);
+				setResult(RESULT_OK);
+			}
 		}else if(REQUEST_WIFI_SETTING_CHANGED== requestCode){
 			if(resultCode == RESULT_OK){
 				mbIsWifiSettingChanged = true;

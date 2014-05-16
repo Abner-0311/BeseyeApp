@@ -121,7 +121,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private boolean checkSession(){
 		if(SessionMgr.getInstance().isTokenValid()){
-			monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this), true, SessionMgr.getInstance().getAuthToken());
+			monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this).setDialogId(mbFirstResume?DIALOG_ID_LOADING:-1), true, SessionMgr.getInstance().getAuthToken());
 			//invokeSessionComplete();
 			return false;
 		}	

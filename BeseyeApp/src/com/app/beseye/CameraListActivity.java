@@ -5,8 +5,10 @@ import static com.app.beseye.util.BeseyeConfig.*;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -31,8 +33,9 @@ import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
 
 public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBtnStateChangedListener{
-	static public final String KEY_VCAM_ID = "KEY_VCAM_ID";
-	static public final String KEY_VCAM_NAME = "KEY_VCAM_NAME";
+	static public final String KEY_VCAM_ID 		= "KEY_VCAM_ID";
+	static public final String KEY_VCAM_NAME 	= "KEY_VCAM_NAME";
+	static public final String KEY_VCAM_ADMIN 	= "KEY_VCAM_ADMIN";
 	
 	private PullToRefreshListView mMainListView;
 	private CameraListAdapter mCameraListAdapter;
@@ -132,22 +135,19 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
 					if(0 < iVcamCnt){
 						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
+						int iDemoVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_DEMO_VCAM_CNT);
+						if(0 < iDemoVcamCnt){
+							JSONArray DemoVcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_DEMO_VCAM_LST);
+							for(int i = 0; i < iDemoVcamCnt;i++){
+								try {
+									VcamList.put(DemoVcamList.get(i));
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+							}
+						}
 						mCameraListAdapter.updateResultList(VcamList);
 						refreshList();
-//						if(null != VcamList){
-//							try {
-//								JSONObject vcam = VcamList.getJSONObject(0);
-//								if(null != vcam){
-//									mStrVCamID = BeseyeJSONUtil.getJSONString(vcam, BeseyeJSONUtil.ACC_ID);
-//									mStrVCamName = BeseyeJSONUtil.getJSONString(vcam, BeseyeJSONUtil.ACC_NAME);
-//									Log.e(TAG, "onPostExecute(), mStrVCamID:"+mStrVCamID);
-//									getStreamingInfo();
-//								}
-//							} catch (JSONException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
-//						}
 						postToLvRreshComplete();
 					}else{
 						onToastShow(task, "no Vcam attached.");
@@ -189,7 +189,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_ID, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
 				b.putString(CameraListActivity.KEY_VCAM_NAME, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME));
-				launchActivityByClassName(CameraViewActivity.class.getName(), b);
+				b.putBoolean(CameraListActivity.KEY_VCAM_ADMIN, BeseyeJSONUtil.getJSONBoolean(cam_obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN, true));
+				launchActivityForResultByClassName(CameraViewActivity.class.getName(), b, REQUEST_CAM_VIEW_CHANGE);
+				Log.e(TAG, "onClick(), "+cam_obj.toString());
 				return;
 			}
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
@@ -200,6 +202,18 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			launchActivityByClassName(WifiSetupGuideActivity.class.getName());
 		}else
 			super.onClick(view);
+	}
+	
+	static public final int REQUEST_CAM_VIEW_CHANGE = 1;
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		if(REQUEST_CAM_VIEW_CHANGE == requestCode){
+			if(resultCode == RESULT_OK){
+				monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this), true);
+			}
+		}else
+			super.onActivityResult(requestCode, resultCode, intent);
 	}
 
 	@Override
