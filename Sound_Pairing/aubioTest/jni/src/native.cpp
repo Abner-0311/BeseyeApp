@@ -1148,22 +1148,25 @@ void writeBuf(unsigned char* charBuf, int iLen){
 	Delegate_WriteAudioBuffer(iLen/iPart);
 }
 
+static char* hostPath = NULL;
+
 void* runReceiveBufViaCGI(void* userdata){
 	int res;
 	Delegate_OpenAudioDevice(16000, 1, 1, 1280);
-	//char data[BUF_SIZE];
+	char url[BUF_SIZE];
 	char session[SESSION_SIZE];
 
 	// clear our memory
 	memset(session, 0, sizeof(session));
 	//memset(data, 0, BUF_SIZE*sizeof(char));
-
-	if(GetSession(HOST_NAME, session) != 0) {
+	sprintf(url, "http://%s/sray", hostPath);
+	if(GetSession(url, session) != 0) {
 		LOGE("Get session failed.");
 		//return 0;
 	}else{
+		sprintf(url, "http://%s/cgi/audio", hostPath);
 		//res = GetCGI("getSystemName", data, session);
-		res = GetAudioBufCGI(HOST_NAME_AUDIO, "receive", session, writeBuf);
+		res = GetAudioBufCGI(url, "receive", session, writeBuf);
 		LOGE("GetAudioBufCGI:res(%d)\n%s",res);
 		Delegate_CloseAudioDevice();
 	}
@@ -1187,7 +1190,9 @@ JNIEXPORT jboolean JNICALL Java_com_example_aubiotest_AubioTestActivity_receiveA
 	DECLARE_JNIENV_WITH_RETURN()
 	jboolean iRet = false;
 	if(0 == mReceiveAudioThread){
+		hostPath = (char *)jni_env->GetStringUTFChars( strPath, 0);
 		receiveBufViaCGI();
+		iRet = true;
 	}
 	return iRet;
 }

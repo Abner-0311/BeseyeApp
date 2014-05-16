@@ -728,16 +728,19 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
 					if(0 < iVcamCnt){
 						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
-
 						if(null != VcamList){
 							try {
-								JSONObject vcam = VcamList.getJSONObject(0);
-								if(null != vcam){
-									mStrVCamName = BeseyeJSONUtil.getJSONString(vcam, BeseyeJSONUtil.ACC_NAME);
-									mbVCamAdmin  = BeseyeJSONUtil.getJSONBoolean(vcam, BeseyeJSONUtil.ACC_SUBSC_ADMIN);
-									applyCamAttr();
-									Log.e(TAG, "onPostExecute(), mStrVCamID:"+mStrVCamID);
+								for(int i=0; i< iVcamCnt;i++){
+									JSONObject vcam = VcamList.getJSONObject(i);
+									if(null != vcam && mStrVCamID.equals(BeseyeJSONUtil.getJSONString(vcam, BeseyeJSONUtil.ACC_ID))){
+										mStrVCamName = BeseyeJSONUtil.getJSONString(vcam, BeseyeJSONUtil.ACC_NAME);
+										mbVCamAdmin  = BeseyeJSONUtil.getJSONBoolean(vcam, BeseyeJSONUtil.ACC_SUBSC_ADMIN);
+										applyCamAttr();
+										Log.e(TAG, "onPostExecute(), mStrVCamID:"+mStrVCamID);
+										break;
+									}
 								}
+								
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
