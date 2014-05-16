@@ -65,6 +65,8 @@
     
     <string name="dialog_wifi_ap_key_index">Key index</string>
     
+    <string name="dialog_dettach_cam">Are you sure to dettach this cam [%s]?</string>
+    
     <string name="cam_setting_title">Settings</string>
     <string name="cam_setting_title_power_setting">Power settings</string>
 	<string name="cam_setting_title_power">Camera power</string>

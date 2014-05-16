@@ -23,6 +23,7 @@ import com.app.beseye.adapter.CameraListAdapter;
 import com.app.beseye.adapter.CameraListAdapter.CameraListItmHolder;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
@@ -64,7 +65,6 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
 		
-		
 		mMainListView = (PullToRefreshListView) findViewById(R.id.lv_camera_lst);
 		
 		if(null != mMainListView){
@@ -83,15 +83,15 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			
 			LayoutInflater inflater = getLayoutInflater();
 			if(null != inflater){
-				mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.lv_empty_layout, null);
+				mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_add, null);
 				if(null != mVgEmptyView){
 					mMainListView.setEmptyView(mVgEmptyView);
-					if(null != mVgEmptyView){
-						TextView txt = (TextView)mVgEmptyView.findViewById(R.id.txtNoItmList);
-						if(null != txt){
-							txt.setText(R.string.no_camera);
-						}
-					}
+//					if(null != mVgEmptyView){
+//						TextView txt = (TextView)mVgEmptyView.findViewById(R.id.txtNoItmList);
+//						if(null != txt){
+//							txt.setText(R.string.no_camera);
+//						}
+//					}
 				}
 			}
 			
@@ -101,6 +101,13 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
         	if(null != mCameraListAdapter){
         		mMainListView.getRefreshableView().setAdapter(mCameraListAdapter);
         	}
+		}
+		
+		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false)){
+			Log.i(TAG, "handle pairing done case");	
+			Bundle b = new Bundle(getIntent().getExtras());
+			launchActivityByClassName(CameraViewActivity.class.getName(), b);
+			getIntent().putExtra(CameraViewActivity.KEY_PAIRING_DONE, false);
 		}
 	}
 	
@@ -141,8 +148,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 //								e.printStackTrace();
 //							}
 //						}
-						if(null != mMainListView)
-							mMainListView.onRefreshComplete();
+						postToLvRreshComplete();
 					}else{
 						onToastShow(task, "no Vcam attached.");
 						Bundle b = new Bundle();
@@ -151,10 +157,28 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					}
 				}
 			}else{
-				Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
+				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
 				super.onPostExecute(task, result, iRetCode);
 			}
 		}
+	}
+
+	@Override
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
+			String strMsg) {
+		if(task instanceof BeseyeAccountTask.GetVCamListTask){
+			postToLvRreshComplete();
+		}else
+			super.onErrorReport(task, iErrType, strTitle, strMsg);
+	}
+	
+	private void postToLvRreshComplete(){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(null != mMainListView)
+					mMainListView.onRefreshComplete();
+			}}, 0);
 	}
 
 	@Override
@@ -170,6 +194,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
 			Toast.makeText(this, "show menu", Toast.LENGTH_SHORT).show();
+			invokeLogout();
+			//monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(this), true, "5dc166880720448cafa563be507b9730");
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
 			launchActivityByClassName(WifiSetupGuideActivity.class.getName());
 		}else

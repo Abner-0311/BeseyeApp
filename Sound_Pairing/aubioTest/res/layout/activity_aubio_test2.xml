@@ -1,0 +1,330 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+	android:layout_height="match_parent">
+    <RelativeLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingBottom="@dimen/activity_vertical_margin"
+	    android:paddingLeft="@dimen/activity_horizontal_margin"
+	    android:paddingRight="@dimen/activity_horizontal_margin"
+	    tools:context=".AubioTestActivity" >
+	    
+	    <TextView
+	        android:id="@+id/textView1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/btn_analyze"
+	        android:layout_alignParentTop="true"
+	        android:text="Cam ip:" />
+	
+	    <TextView
+	        android:id="@+id/txtFreq"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@+id/textView1"
+	        android:layout_toRightOf="@+id/textView1"
+	        android:text="" />
+	    
+	    <TextView
+	        android:id="@+id/txtFreqSend"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@+id/txtFreq"
+	        android:layout_toRightOf="@+id/txtFreq"
+	        android:text="" />
+	    
+	    <EditText 
+	        android:id="@+id/et_decode"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+			android:layout_below="@+id/textView1"
+	        android:layout_alignLeft="@+id/textView1"
+	        android:maxLines="16"
+	        android:text="192.168.2.88" />
+	    
+	    <TextView
+	        android:id="@+id/txtFreq2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/textView1"
+	        android:layout_alignLeft="@+id/txtFreq"
+	        android:text="" 
+	        android:visibility="gone"/>
+	
+	    <Button
+	        android:id="@+id/btn_analyze"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_below="@+id/et_decode"
+	        android:text="Aubio" 
+	        android:visibility="gone"/>
+	    <Button
+	        android:id="@+id/btn_analyzeBoth"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@+id/btn_analyze2"
+	        android:layout_alignBaseline="@+id/btn_analyze2"
+	        android:text="Both" 
+	        android:visibility="gone"/>
+	
+	    <Button
+	        android:id="@+id/btn_save"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:layout_alignLeft="@+id/btn_analyze"
+	        android:layout_below="@+id/btn_analyze"
+	        android:text="Save" 
+	        android:enabled="false"
+	        android:visibility="gone"/>
+	    
+	    <EditText 
+	        android:id="@+id/et_file"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:layout_alignBaseline="@+id/btn_save"
+	        android:layout_toRightOf="@+id/btn_save"
+	        android:text=".txt" 
+	        android:visibility="gone"/>
+	    
+	    <Button
+	        android:id="@+id/btn_test"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:layout_alignLeft="@+id/btn_analyze"
+	        android:layout_below="@+id/btn_analyze"
+	        android:text="AutoTest" 
+	        android:enabled="true"
+	        android:visibility="gone"/>
+	    
+	    <EditText 
+	        android:id="@+id/et_digital"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:layout_alignBaseline="@+id/btn_test"
+	        android:layout_toRightOf="@+id/btn_test" 
+	        android:inputType="number"
+	        android:text="12"
+	        android:visibility="gone"/>
+	    
+	    <Button
+	        android:id="@+id/btn_delete_rec"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/btn_analyze"
+			android:layout_alignBaseline="@+id/btn_test"
+	        android:layout_toRightOf="@+id/et_digital" 
+	        android:text="Start Recording" 
+	        android:enabled="true"/>
+	   
+	    <Button
+	        android:id="@+id/btn_stop"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:layout_alignBaseline="@+id/btn_delete_rec"
+	        android:layout_toRightOf="@+id/btn_delete_rec" 
+	        android:text="Stop" 
+	        android:enabled="false"
+	        android:visibility="gone"/>
+	    
+	    <RelativeLayout 
+	        android:id="@+id/autoTest_holder"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/btn_test"
+		    android:layout_below="@+id/btn_test"
+		    android:layout_marginTop="12dp"
+		    android:visibility="gone">
+		    
+	        <Spinner
+		        android:id="@+id/spinner_type"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:visibility="gone"/>
+	        
+	        <CheckBox
+		        android:id="@+id/ckb_at_sender"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/spinner_type"
+		    	android:layout_below="@+id/spinner_type"
+		        android:text="AT_Sender" />
+	        
+	        <EditText 
+		        android:id="@+id/et_sender_offset"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+				android:layout_alignBaseline="@+id/ckb_at_sender"
+		        android:layout_toRightOf="@+id/ckb_at_sender" 
+		        android:text=""
+		        android:visibility="gone"/>
+	        
+	        <CheckBox
+		        android:id="@+id/ckb_at_receiver"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBottom="@+id/ckb_at_sender"
+		        android:layout_toRightOf="@+id/ckb_at_sender"
+		        android:text="AT_Receiver" 
+		        android:checked="false"/>
+	        
+	        <CheckBox
+		        android:id="@+id/ckb_random"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/ckb_at_sender"
+		    	android:layout_below="@+id/ckb_at_sender"
+		        android:text="Random" 
+		        android:checked="false"
+		        android:visibility="gone"/>
+		    
+		    <CheckBox
+		        android:id="@+id/ckb_max_volume"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/ckb_random"
+		        android:layout_toRightOf="@+id/ckb_random" 
+		        android:text="Max Volume" 
+		        android:checked="false"		        
+		        android:visibility="gone"/>
+		    
+		    <TextView 
+		        android:id="@+id/txt_dist"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/ckb_random"
+		    	android:layout_below="@+id/ckb_random"
+		        android:text="Dist (m):  "
+		        android:layout_marginTop="2dp"/>
+		    
+		    <EditText 
+		        android:id="@+id/et_dist"
+		        android:layout_width="40dp"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/txt_dist"
+		        android:layout_toRightOf="@+id/txt_dist" 
+		        android:inputType="number"
+		        android:text="2"/>
+		    
+		    <TextView 
+		        android:id="@+id/txt_msglen"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/et_dist"
+		        android:layout_toRightOf="@+id/et_dist" 
+		        android:text="Msg Len:  "
+		        android:layout_marginTop="2dp"
+		        android:layout_marginLeft="10dp"/>
+		    
+		    <EditText 
+		        android:id="@+id/et_msglen"
+		        android:layout_width="40dp"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/txt_msglen"
+		        android:layout_toRightOf="@+id/txt_msglen" 
+		        android:inputType="number"
+		        android:text="12"/>
+		    
+		    <TextView 
+		        android:id="@+id/txt_volume"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/txt_dist"
+		    	android:layout_below="@+id/txt_dist"
+		        android:text="Vol (%):  "
+		        android:layout_marginTop="25dp"/>
+		    
+		    <Spinner
+		        android:id="@+id/spin_volume"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/txt_volume"
+		        android:layout_marginTop="10dp"/>
+		    
+		    <TextView 
+		        android:id="@+id/txt_timer"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/txt_volume"
+		        android:layout_toRightOf="@+id/txt_volume" 
+		        android:layout_alignLeft="@+id/txt_msglen"
+		        android:text="Timer (hr): "/>
+		    
+		    <EditText 
+		        android:id="@+id/et_timer"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/txt_timer"
+		        android:layout_toRightOf="@+id/txt_timer" 
+		        android:inputType="number"
+		        android:text="1"/>
+		    
+		    <TextView 
+		        android:id="@+id/txt_timer_elapse_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/spin_volume"
+		        android:layout_toRightOf="@+id/spin_volume" 
+		        android:layout_alignLeft="@+id/txt_msglen"
+		        android:text="Time Elapse: "/>
+		    
+		    <TextView 
+		        android:id="@+id/txt_timer_elapse"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/spin_volume"
+		        android:layout_toRightOf="@+id/txt_timer_elapse_title" />
+		    
+		    <Button
+		        android:id="@+id/btn_shoot"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/txt_dist"
+		        android:layout_below="@+id/txt_dist"
+		        android:text="Shoot"
+		        android:visibility="gone"/>
+		    <EditText 
+		        android:id="@+id/et_digit_shoot"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_alignBaseline="@+id/btn_shoot"
+		        android:layout_toRightOf="@+id/btn_shoot" 
+		        android:layout_below="@+id/spin_volume"
+		   		android:text=""
+		   		android:maxLines="4"
+		   		android:layout_marginTop="15dp"
+		   		android:editable="false"/>
+	    </RelativeLayout>
+	    
+	    <ListView 
+	        android:id="@+id/lv_data"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_below="@+id/autoTest_holder"
+	        android:visibility="gone">
+	    </ListView>
+	
+	    <CheckBox
+	        android:id="@+id/ckb_gen"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@+id/btn_analyzeBoth"
+	        android:layout_alignBottom="@+id/btn_analyzeBoth"
+	        android:layout_toRightOf="@+id/btn_analyzeBoth"
+	        android:text="GenCode" 
+	        android:visibility="gone"/>
+	    <Button
+	        android:id="@+id/btn_analyze2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@+id/btn_analyze"
+	        android:layout_alignBaseline="@+id/btn_analyze"
+	        android:layout_below="@+id/et_decode"
+	        android:text="dywa " 
+	        android:visibility="gone"/>
+	    
+	    
+	</RelativeLayout>
+    
+</ScrollView>

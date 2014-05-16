@@ -147,8 +147,15 @@ public class BeseyeJSONUtil {
 	public static final String MM_SERVER 				= "server";
 	public static final String MM_STREAM 				= "stream";
 	public static final String MM_START_TIME 			= "startTime";
+	public static final String MM_END_TIME 				= "endTime";
 	public static final String MM_DURATION 				= "duration";
 	public static final String MM_PLAYLIST 				= "playList";
+	
+	public static final String MM_OBJ_LST 				= "objs";
+	public static final String MM_OBJ_CNT 				= "objCount";
+	
+	public static final String MM_TYPE_IDS				= "typeIds";
+	public static final String MM_FACE_IDS 				= "faceIds";
 	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "GCMProjectID";

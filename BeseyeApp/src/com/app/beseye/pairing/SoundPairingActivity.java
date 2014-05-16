@@ -5,6 +5,8 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -22,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.CameraListActivity;
+import com.app.beseye.CameraSettingActivity;
 import com.app.beseye.CameraViewActivity;
 import com.app.beseye.PairingFailActivity;
 import com.app.beseye.R;
@@ -50,6 +54,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private static boolean sbFinishToPlay = false;
 	
 	private int miOriginalVCamCnt = -1;
+	
+	static private String sStrCamNameCandidate = null;
 	
 	//For Soundpairing feature
 	private native static boolean nativeClassInit();
@@ -222,7 +228,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 			//Log.i(TAG, "onEditorAction(), actionId:["+actionId+"]");
 			if (view.equals(mEtCamName) && actionId == EditorInfo.IME_ACTION_DONE) { 
 				if(0 < mEtCamName.getText().length()){
-					mStrCamName = mEtCamName.getText().toString();
+					sStrCamNameCandidate = mStrCamName = mEtCamName.getText().toString();
 					Log.i(TAG, "onEditorAction(), mStrCamName:["+mStrCamName+"]");
 					BeseyeUtils.hideSoftKeyboard(SoundPairingActivity.this, mEtCamName);
 					BeseyeUtils.setVisibility(mVgCamNameHolder, View.GONE);
@@ -253,6 +259,11 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					@Override
 					public void run() {
 						mStrCamName = null;
+						if(null != sStrCamNameCandidate){
+							mEtCamName.setText(sStrCamNameCandidate);
+							mStrCamName = sStrCamNameCandidate;
+							sStrCamNameCandidate = null;
+						}
 						BeseyeUtils.setVisibility(mVgCamNameHolder, View.VISIBLE);	
 						mEtCamName.requestFocus();
 						BeseyeUtils.showSoftKeyboard(SoundPairingActivity.this, mEtCamName);
@@ -298,6 +309,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		
 		//if(null != mStrCamName){
 			if(null != mPairingCounter && mPairingCounter.isFinished() && sbFinishToPlay){
+				sStrCamNameCandidate = mStrCamName = mEtCamName.getText().toString();
 				monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 			}
 		//}
@@ -388,9 +400,31 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					int iNetVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
 					Log.i(TAG, "miOriginalVCamCnt:"+miOriginalVCamCnt+", iNetVcamCnt = "+iNetVcamCnt);
 					if(miOriginalVCamCnt < iNetVcamCnt){
-						Bundle bundle = new Bundle();
-						bundle.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
-						launchDelegateActivity(CameraViewActivity.class.getName(), bundle);
+						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
+						if(null != VcamList){
+							JSONObject cam_obj;
+							try {
+								cam_obj = VcamList.getJSONObject(iNetVcamCnt-1);
+								if(null != cam_obj){
+									String strVcamId = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID);
+									String strCamName = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME);
+									if(null != mStrCamName){
+										strCamName = mStrCamName;
+										monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(this).setDialogId(-1), false, strVcamId, strCamName);
+									}
+									
+									Bundle b = new Bundle();
+									b.putString(CameraListActivity.KEY_VCAM_ID, strVcamId);
+									b.putString(CameraListActivity.KEY_VCAM_NAME, strCamName);
+									b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
+									launchDelegateActivity(CameraListActivity.class.getName(), b);
+								}
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						sStrCamNameCandidate = null;
 					}else{
 						// if pairing failed
 						launchActivityByClassName(PairingFailActivity.class.getName());

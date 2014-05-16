@@ -271,7 +271,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mTxtEvent = (TextView)findViewById(R.id.txt_events);
 		if(null != mTxtEvent){
 			mTxtEvent.setOnClickListener(this);
-			mTxtEvent.setEnabled(false);//not implement
+			//mTxtEvent.setEnabled(false);//not implement
 		}
 		
 		mTxtGoLive = (TextView)findViewById(R.id.txt_go_live);
@@ -763,10 +763,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //				Intent intent = new Intent();
 //				intent.setClass(CameraViewActivity.this, SoundPairingActivity.class);
 //				startActivity(intent);
-				invokeLogout();
+				//invokeLogout();
 				break;
 			}
 			case R.id.txt_events:{
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_ID, mStrVCamID);
+				b.putString(CameraListActivity.KEY_VCAM_NAME, mStrVCamName);
+				launchActivityByClassName(EventListActivity.class.getName(), b);
 				break;
 			}
 			case R.id.txt_go_live:{
