@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
    	android:layout_height="match_parent"
    	android:orientation="vertical"
-   	android:background="@drawable/cl_cam_list_item_bg" >
+   	android:background="@color/signup_bg_color" >
 	
 	<RelativeLayout
 	    android:id="@+id/rl_cameralist_video_block"
@@ -14,7 +14,7 @@
 	    android:layout_marginLeft="@dimen/cameralist_videoblock_margin"
 	    android:layout_marginRight="@dimen/cameralist_videoblock_margin"		    
 	    android:padding="@dimen/cameralist_videoblock_inner"
-	    android:background="@drawable/cameralist_s_cameralist_video_bg" >
+	    android:background="@drawable/sl_cam_list_itm_bg" >
 
 	    <RelativeLayout
 	        android:id="@+id/rl_cameralist_title"

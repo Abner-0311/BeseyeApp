@@ -28,6 +28,7 @@ public class BeseyeAccountTask {
 	public static final String URL_GET_VCAM_LST		="user/vcam/list";
 	public static final String URL_QUERY_VCAM		="user/vcam/query";
 	public static final String URL_GET_INFO			="user/info";
+	public static final String URL_GET_VCAM_INFO	="user/vcam/info";
 	
 	public static final String URL_CAM_ATTACH		="vcam/attach";
 	public static final String URL_CAM_DEATTACH		="user/vcam/detach";
@@ -254,6 +255,29 @@ public class BeseyeAccountTask {
 				}
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_QUERY_VCAM, obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;	
+		}
+	}
+	
+	static public class GetCamInfoTask extends BeseyeHttpTask {	 	
+		public GetCamInfoTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+			//enableHttps();
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {		
+				obj.put(ACC_VCAM_ID, strParams[0]);
+				appendDevInfo(obj);
+				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_GET_VCAM_INFO, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {

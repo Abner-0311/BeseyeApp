@@ -722,30 +722,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						}
 					}
 				}
-			}else if(task instanceof BeseyeAccountTask.QueryVCamListTask){
+			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
 				if(0 == iRetCode){
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
-					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
-					if(0 < iVcamCnt){
-						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
-						if(null != VcamList){
-							try {
-								for(int i=0; i< iVcamCnt;i++){
-									JSONObject vcam = VcamList.getJSONObject(i);
-									if(null != vcam && mStrVCamID.equals(BeseyeJSONUtil.getJSONString(vcam, BeseyeJSONUtil.ACC_ID))){
-										mStrVCamName = BeseyeJSONUtil.getJSONString(vcam, BeseyeJSONUtil.ACC_NAME);
-										mbVCamAdmin  = BeseyeJSONUtil.getJSONBoolean(vcam, BeseyeJSONUtil.ACC_SUBSC_ADMIN);
-										applyCamAttr();
-										Log.e(TAG, "onPostExecute(), mStrVCamID:"+mStrVCamID);
-										break;
-									}
-								}
-								
-							} catch (JSONException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
+					JSONObject vcamObj = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_VCAM);
+					if(null != vcamObj){
+						mStrVCamName = BeseyeJSONUtil.getJSONString(vcamObj, BeseyeJSONUtil.ACC_NAME);
+						//mbVCamAdmin  = BeseyeJSONUtil.getJSONBoolean(vcamObj, BeseyeJSONUtil.ACC_SUBSC_ADMIN);
+						applyCamAttr();
+						Log.e(TAG, "onPostExecute(), mStrVCamID:"+mStrVCamID);
 					}
 				}
 			}else{
@@ -867,7 +852,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(REQUEST_CAM_SETTING_CHANGED == requestCode){
 			mbIsCamSettingChanged = (resultCode == RESULT_OK);
 			if(resultCode == RESULT_OK){
-				monitorAsyncTask(new BeseyeAccountTask.QueryVCamListTask(this), true, mStrVCamID);
+				monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this), true, mStrVCamID);
 				setResult(RESULT_OK);
 			}
 		}else if(REQUEST_WIFI_SETTING_CHANGED== requestCode){
