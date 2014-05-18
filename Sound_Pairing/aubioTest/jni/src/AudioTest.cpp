@@ -3,7 +3,12 @@
 
 #ifdef CAM_ENV
 #include "http_cgi.h"
+#include "cmd_error.h"
 #endif
+
+//Check Network and token
+static const long TIME_TO_CHECK_TOKEN = 60000;
+static long slLastTimeCheckToken = -1;
 
 AudioTest* AudioTest::sAudioTest=NULL;
 
@@ -408,6 +413,7 @@ bool AudioTest::startPairingAnalysis(){
 #ifndef ANDROID
 		if(bRet){
 			miPairingReturnCode = -1;
+			slLastTimeCheckToken = time_ms();
 			AudioBufferMgr::getInstance()->setRecordMode(true);
 			FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(this);
 			LOGI("startAutoTest(), begin join mBufRecordThread\n");
@@ -693,6 +699,7 @@ static msec_t lTsRec = 0;
 static int iAudioFrameSize = 4;
 static const int MAX_TRIAL = 10;
 
+//Check audio activity
 static const short ANALYSIS_START_THRESHHOLD = 20000;//audio value
 static const short ANALYSIS_END_THRESHHOLD   = 15000;//audio value
 static const int   ANALYSIS_THRESHHOLD_CK_LEN = 1600;//sample size , about 0.1 sec
@@ -752,6 +759,22 @@ void setLedLight(int bRedOn, int bGreenOn, int bBlueOn){
 void writeBuf(unsigned char* charBuf, int iLen){
 	if(!AudioTest::getInstance()->isPairingAnalysisMode() && !AudioTest::getInstance()->isAutoTestBeginAnalyzeOnReceiver()){
 		return;
+	}
+
+	//Check network and token here
+	if(AudioTest::getInstance()->isPairingAnalysisMode()){
+		long lDelta = time_ms() - slLastTimeCheckToken;
+		if(lDelta > TIME_TO_CHECK_TOKEN){
+			LOGW("lDelta:%ld\n", lDelta);
+			if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
+				if(0 == (system("/beseye/cam_main/beseye_token_check") >> 8)){
+					AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
+					setLedLight(0,1,0);
+					AudioTest::getInstance()->stopAutoTest();
+				}
+			}
+			slLastTimeCheckToken = time_ms();
+		}
 	}
 	//LOGW("writeBuf:%d, iCurIdx:%d", iLen, iCurIdx);
 	//short* shortBuf = (short*)audioBufferPinned;
