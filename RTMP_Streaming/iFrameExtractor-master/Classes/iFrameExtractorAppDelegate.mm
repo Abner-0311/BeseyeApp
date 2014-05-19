@@ -168,7 +168,8 @@ void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_C
     if(obj == player1 || obj == player2){
         NSLog(@"rtmpStreamStatusCb(), %s cbType:%d, msg:%s, iMainType:%d, iDetailType:%d",(obj == player1?"player1":"player2"),cbType, (msg?msg:""),iMainType, iDetailType);
         if(cbType == CBeseyeRTMPObserver::STREAM_STATUS_CB){
-            
+            CBeseyePlayer* player = (CBeseyePlayer* )obj;
+            player->getWindow();
         }else if(cbType == CBeseyeRTMPObserver::ERROR_CB){
             
         }

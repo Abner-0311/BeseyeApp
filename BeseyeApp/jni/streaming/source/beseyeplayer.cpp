@@ -84,6 +84,10 @@ CBeseyePlayer::~CBeseyePlayer(){
 	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::~CBeseyePlayer()--");
 }
 
+void* CBeseyePlayer::getWindow(){
+	return window;
+}
+
 void CBeseyePlayer::addPendingStreamPaths(){
 	if(mVecPendingStreamPaths){
 		if(0 <= addStreamingPathList(mVecPendingStreamPaths, iNumOfPendingStreamPaths))

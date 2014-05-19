@@ -37,6 +37,7 @@ public:
 	virtual int closeStreaming();
 
 	virtual int updateWindow(void* window, int iFrameFormat, int screen_width, int screen_height);
+	virtual void* getWindow();
 
 	//For update video stream on device
 	virtual void registerVideoCallback(void(* videoCallback)(void* window, uint8_t* srcbuf, uint32_t iFormat, uint32_t linesize, uint32_t iWidth, uint32_t iHeight),

@@ -84,6 +84,10 @@ CBeseyePlayer::~CBeseyePlayer(){
 	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::~CBeseyePlayer()--");
 }
 
+void* CBeseyePlayer::getWindow(){
+	return window;
+}
+
 void CBeseyePlayer::addPendingStreamPaths(){
 	if(mVecPendingStreamPaths){
 		if(0 <= addStreamingPathList(mVecPendingStreamPaths, iNumOfPendingStreamPaths))
@@ -2553,6 +2557,14 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 				AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
 				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s", desc.av_val);
 			}
+		}
+	}else{
+		av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback()2, non-handled content:[%s]", (NULL != content)?content->av_val:"");
+		AMFObject* obj = (AMFObject*)extra;
+		AVal desc;
+		if(obj){
+			AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s", desc.av_val);
 		}
 	}
 }
