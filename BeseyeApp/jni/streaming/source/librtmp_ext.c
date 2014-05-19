@@ -11,12 +11,25 @@ typedef struct LibRTMPContext {
 #define SAVC(x)	static const AVal av_##x = AVC(#x)
 
 SAVC(play);
+SAVC(createStream);
 
-int gen_play_wrapper(URLContext *urlCtx, char *path){
+int gen_play_wrapper(URLContext *urlCtx, const char *path){
 	av_log(NULL, AV_LOG_INFO,"gen_play_wrapper()+, path: '%s', \n", path);
 	int iRet = 0;
 	LibRTMPContext *ctx = urlCtx->priv_data;
 	RTMP *r = &ctx->rtmp;
+    if(r){
+    	iRet = gen_play_wrapper_rtmp(r, path);
+    }
+EXIT:
+	av_log(NULL, AV_LOG_INFO,"gen_play_wrapper()-, iRet: '%d', \n", iRet);
+    return iRet;
+}
+
+int gen_play_wrapper_rtmp(void *rtmpCtx, const char *path){
+	//av_log(NULL, AV_LOG_INFO,"gen_play_wrapper_rtmp()+, path: '%s', \n", path);
+	int iRet = 0;
+	RTMP *r = (RTMP*)rtmpCtx;
     if(r){
       r->m_numInvokes--;
       //rt->playpath = path;
@@ -91,8 +104,39 @@ int gen_play_wrapper(URLContext *urlCtx, char *path){
 //		  r->m_read.status = RTMP_READ_IGNORE;
     }
 EXIT:
-	av_log(NULL, AV_LOG_INFO,"gen_play_wrapper()-, iRet: '%d', \n", iRet);
+	av_log(NULL, AV_LOG_INFO,"gen_play_wrapper_rtmp()-, iRet: '%d', \n", iRet);
     return iRet;
+}
+
+int cancel_rtmp_blocking_queue(void *rtmpCtx){
+	int iRet = 0;
+	//LibRTMPContext *ctx = urlCtx->priv_data;
+	RTMP *r = (RTMP *)rtmpCtx;
+	if(r){
+		int i = 0;
+//		for (; i < r->m_numCalls; i++){
+//			if (AVMATCH(&r->m_methodCalls[i].name, &av_createStream)){
+//				av_log(NULL, AV_LOG_INFO,"cancel_rtmp_blocking_queue(), find i:%d\n", i);
+//				RTMP_DropRequest(r, i, TRUE);
+//				  //AV_erase(r->m_methodCalls, &r->m_numCalls, i, TRUE);
+//				break;
+//			}
+//		}
+
+		for (i = 0; i < r->m_numCalls; i++){
+			if (AVMATCH(&r->m_methodCalls[i].name, &av_play)){
+				av_log(NULL, AV_LOG_INFO,"cancel_rtmp_blocking_queue(), find i:%d\n", i);
+				r->m_bExitFlag = TRUE;
+				RTMP_DropRequest(r, i, TRUE);
+				  //AV_erase(r->m_methodCalls, &r->m_numCalls, i, TRUE);
+				break;
+			}
+		}
+	}else{
+		av_log(NULL, AV_LOG_INFO,"cancel_rtmp_blocking_queue(), r is null\n");
+	}
+	av_log(NULL, AV_LOG_INFO,"cancel_rtmp_blocking_queue()-, iRet: '%d', \n", iRet);
+	return iRet;
 }
 
 int register_librtmp_CB(URLContext *urlCtx,

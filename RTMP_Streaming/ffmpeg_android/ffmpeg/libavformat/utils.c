@@ -557,7 +557,7 @@ static int init_input(AVFormatContext *s, const char *filename, AVDictionary **o
     if ((ret = avio_open2(&s->pb, filename, AVIO_FLAG_READ | s->avio_flags,
                           &s->interrupt_callback, options)) < 0)
         return ret;
-    av_log(0, AV_LOG_ERROR, "init_input 4\n");
+    av_log(0, AV_LOG_ERROR, "init_input 4, ret:%d\n", ret);
     if (s->iformat)
         return 0;
     av_log(0, AV_LOG_ERROR, "init_input 5\n");

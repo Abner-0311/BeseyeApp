@@ -181,6 +181,9 @@ int ffurl_connect(URLContext* uc, AVDictionary **options)
     int err =
         uc->prot->url_open2 ? uc->prot->url_open2(uc, uc->filename, uc->flags, options) :
         uc->prot->url_open(uc, uc->filename, uc->flags);
+
+    av_log(0, AV_LOG_ERROR, "ffurl_connect(), err:%d\n", err);
+
     if (err)
         return err;
     uc->is_connected = 1;
@@ -241,6 +244,7 @@ int ffurl_open(URLContext **puc, const char *filename, int flags,
         (ret = av_opt_set_dict((*puc)->priv_data, options)) < 0)
         goto fail;
     ret = ffurl_connect(*puc, options);
+    av_log(0, AV_LOG_ERROR, "ffurl_open(), ret:%d\n", ret);
     if (!ret)
         return 0;
 fail:

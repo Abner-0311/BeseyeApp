@@ -42,6 +42,17 @@
 		07B458E01929A02F00BE79BC /* player.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458D21929A02F00BE79BC /* player.h */; };
 		07B458E11929A02F00BE79BC /* utils.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458D31929A02F00BE79BC /* utils.h */; };
 		07B458E21929A02F00BE79BC /* version.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458D41929A02F00BE79BC /* version.h */; };
+		07B458F51929F4C500BE79BC /* FreqGenerator.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458F41929F4C500BE79BC /* FreqGenerator.h */; };
+		07B458F71929F9F800BE79BC /* SDL_main.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458F61929F9F800BE79BC /* SDL_main.h */; };
+		07B459011929FA4100BE79BC /* IllegalArgumentException.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458F81929FA4100BE79BC /* IllegalArgumentException.h */; };
+		07B459021929FA4100BE79BC /* GenericGF.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458F91929FA4100BE79BC /* GenericGF.h */; };
+		07B459031929FA4100BE79BC /* GenericGFPoly.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FA1929FA4100BE79BC /* GenericGFPoly.h */; };
+		07B459041929FA4100BE79BC /* ReedSolomonEncoder.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FB1929FA4100BE79BC /* ReedSolomonEncoder.h */; };
+		07B459051929FA4100BE79BC /* ReedSolomonException.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FC1929FA4100BE79BC /* ReedSolomonException.h */; };
+		07B459061929FA4100BE79BC /* Exception.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FD1929FA4100BE79BC /* Exception.h */; };
+		07B459071929FA4100BE79BC /* IllegalStateException.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FE1929FA4100BE79BC /* IllegalStateException.h */; };
+		07B459081929FA4100BE79BC /* ReaderException.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FF1929FA4100BE79BC /* ReaderException.h */; };
+		07B459091929FA4100BE79BC /* ZXing.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B459001929FA4100BE79BC /* ZXing.h */; };
 		07E19FB81850377D00E0CA98 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E19FB41850377D00E0CA98 /* AudioToolbox.framework */; };
 		07E19FB91850377D00E0CA98 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E19FB51850377D00E0CA98 /* CoreAudio.framework */; };
 		07E19FBA1850377D00E0CA98 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E19FB61850377D00E0CA98 /* OpenGLES.framework */; };
@@ -114,6 +125,17 @@
 		07B458D21929A02F00BE79BC /* player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = player.h; path = BeseyeStreamer/inc/player.h; sourceTree = "<group>"; };
 		07B458D31929A02F00BE79BC /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utils.h; path = BeseyeStreamer/inc/utils.h; sourceTree = "<group>"; };
 		07B458D41929A02F00BE79BC /* version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = version.h; path = BeseyeStreamer/inc/version.h; sourceTree = "<group>"; };
+		07B458F41929F4C500BE79BC /* FreqGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FreqGenerator.h; path = BeseyeSoundPairing/inc/FreqGenerator.h; sourceTree = "<group>"; };
+		07B458F61929F9F800BE79BC /* SDL_main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SDL_main.h; path = ffmpeg/compiled/i386/include/include/SDL_main.h; sourceTree = "<group>"; };
+		07B458F81929FA4100BE79BC /* IllegalArgumentException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IllegalArgumentException.h; path = BeseyeSoundPairing/zxing/common/IllegalArgumentException.h; sourceTree = "<group>"; };
+		07B458F91929FA4100BE79BC /* GenericGF.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericGF.h; path = BeseyeSoundPairing/zxing/common/reedsolomon/GenericGF.h; sourceTree = "<group>"; };
+		07B458FA1929FA4100BE79BC /* GenericGFPoly.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericGFPoly.h; path = BeseyeSoundPairing/zxing/common/reedsolomon/GenericGFPoly.h; sourceTree = "<group>"; };
+		07B458FB1929FA4100BE79BC /* ReedSolomonEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ReedSolomonEncoder.h; path = BeseyeSoundPairing/zxing/common/reedsolomon/ReedSolomonEncoder.h; sourceTree = "<group>"; };
+		07B458FC1929FA4100BE79BC /* ReedSolomonException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ReedSolomonException.h; path = BeseyeSoundPairing/zxing/common/reedsolomon/ReedSolomonException.h; sourceTree = "<group>"; };
+		07B458FD1929FA4100BE79BC /* Exception.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = BeseyeSoundPairing/zxing/Exception.h; sourceTree = "<group>"; };
+		07B458FE1929FA4100BE79BC /* IllegalStateException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IllegalStateException.h; path = BeseyeSoundPairing/zxing/IllegalStateException.h; sourceTree = "<group>"; };
+		07B458FF1929FA4100BE79BC /* ReaderException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ReaderException.h; path = BeseyeSoundPairing/zxing/ReaderException.h; sourceTree = "<group>"; };
+		07B459001929FA4100BE79BC /* ZXing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZXing.h; path = BeseyeSoundPairing/zxing/ZXing.h; sourceTree = "<group>"; };
 		07E196F71850282100E0CA98 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		07E19779185029D000E0CA98 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = SDL/SDL/SDL.xcodeproj; sourceTree = "<group>"; };
 		07E19FB41850377D00E0CA98 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -273,6 +295,17 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				07B458F81929FA4100BE79BC /* IllegalArgumentException.h */,
+				07B458F91929FA4100BE79BC /* GenericGF.h */,
+				07B458FA1929FA4100BE79BC /* GenericGFPoly.h */,
+				07B458FB1929FA4100BE79BC /* ReedSolomonEncoder.h */,
+				07B458FC1929FA4100BE79BC /* ReedSolomonException.h */,
+				07B458FD1929FA4100BE79BC /* Exception.h */,
+				07B458FE1929FA4100BE79BC /* IllegalStateException.h */,
+				07B458FF1929FA4100BE79BC /* ReaderException.h */,
+				07B459001929FA4100BE79BC /* ZXing.h */,
+				07B458F61929F9F800BE79BC /* SDL_main.h */,
+				07B458F41929F4C500BE79BC /* FreqGenerator.h */,
 				07B458C71929A02F00BE79BC /* beseye_audio_streamer.h */,
 				07B458C81929A02F00BE79BC /* beseye_rtmp_observer.h */,
 				07B458C91929A02F00BE79BC /* beseyeplayer.h */,
@@ -430,6 +463,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07B459011929FA4100BE79BC /* IllegalArgumentException.h in Resources */,
+				07B459021929FA4100BE79BC /* GenericGF.h in Resources */,
+				07B459031929FA4100BE79BC /* GenericGFPoly.h in Resources */,
+				07B459041929FA4100BE79BC /* ReedSolomonEncoder.h in Resources */,
+				07B459051929FA4100BE79BC /* ReedSolomonException.h in Resources */,
+				07B459061929FA4100BE79BC /* Exception.h in Resources */,
+				07B459071929FA4100BE79BC /* IllegalStateException.h in Resources */,
+				07B459081929FA4100BE79BC /* ReaderException.h in Resources */,
+				07B459091929FA4100BE79BC /* ZXing.h in Resources */,
+				07B458F71929F9F800BE79BC /* SDL_main.h in Resources */,
+				07B458F51929F4C500BE79BC /* FreqGenerator.h in Resources */,
 				07B458D51929A02F00BE79BC /* beseye_audio_streamer.h in Resources */,
 				07B458D61929A02F00BE79BC /* beseye_rtmp_observer.h in Resources */,
 				07B458D71929A02F00BE79BC /* beseyeplayer.h in Resources */,
@@ -483,9 +527,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iFrameExtractor_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/include\"",
-					"\"$(SRCROOT)/../../Sound_Pairing/aubioTest/jni/include\"",
-					"\"$(SRCROOT)/../../Sound_Pairing/aubioTest/jni\"",
 				);
 				INFOPLIST_FILE = "iFrameExtractor-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -515,9 +559,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iFrameExtractor_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/include\"",
-					"\"$(SRCROOT)/../../Sound_Pairing/aubioTest/jni/include\"",
-					"\"$(SRCROOT)/../../Sound_Pairing/aubioTest/jni\"",
 				);
 				INFOPLIST_FILE = "iFrameExtractor-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -546,12 +590,21 @@
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ./ffmpeg;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					./ffmpeg,
+					./BeseyeSoundPairing/inc,
+					./BeseyeSoundPairing,
+					./ffmpeg/compiled/i386/include/include,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-I",
 					/compiled/i386/include/,
+					"-I",
+					/compiled/i386/include/include/,
 				);
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
@@ -569,11 +622,20 @@
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ./ffmpeg;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					./ffmpeg,
+					./BeseyeSoundPairing/inc,
+					./BeseyeSoundPairing,
+					./ffmpeg/compiled/i386/include/include,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = (
 					"-I",
 					/compiled/i386/include/,
+					"-I",
+					/compiled/i386/include/include/,
 				);
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";

@@ -1,9 +1,9 @@
 #include "AudioTest.h"
 #include "simple_websocket_mgr.h"
+#include "cmd_error.h"
 
 #ifdef CAM_ENV
 #include "http_cgi.h"
-#include "cmd_error.h"
 #endif
 
 //Check Network and token

@@ -10,10 +10,14 @@
 #include <librtmp/rtmp.h>
 #include <librtmp/amf.h>
 
-int gen_play_wrapper(URLContext *urlCtx, char *path);
+
 
 int register_librtmp_CB(URLContext *urlCtx,
 						void (*rtmpCallback)(void* , const AVal*, const AVal*, void*),
 						void (*rtmpStatusCallback)(void* , int , void*),
                         void (*rtmpErrorCallback)(void* , int , void*),
 						void* userData);
+
+int gen_play_wrapper(URLContext *urlCtx, const char *path);
+int gen_play_wrapper_rtmp(void *rtmpCtx, const char *path);
+int cancel_rtmp_blocking_queue(void *rtmpCtx);

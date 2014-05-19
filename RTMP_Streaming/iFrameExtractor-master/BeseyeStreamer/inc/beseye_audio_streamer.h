@@ -15,8 +15,8 @@
 #include "pkt_queue.h"
 #include "beseye_rtmp_observer.h"
 
-#include <SDL.h>
-#include <SDL_thread.h>
+#include "SDL.h"
+#include "SDL_thread.h"
 
 class CBeseyeAudioStreamer: public CBeseyeRTMPObserver{
 public:

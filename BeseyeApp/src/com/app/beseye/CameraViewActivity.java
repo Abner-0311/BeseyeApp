@@ -45,6 +45,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -515,13 +516,21 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	@Override
-	protected Dialog onCreateDialog(int id, Bundle bundle) {
+	protected Dialog onCreateDialog(int id, final Bundle bundle) {
 		Dialog dialog;
 		switch(id){
 			case DIALOG_ID_WARNING:{
 				dialog = super.onCreateDialog(id, bundle);
 				if(null != dialog){
 					Log.w(TAG, "CameraViewActivity::onDismiss()");
+//					if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
+//						((android.app.AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
+//					    public void onClick(DialogInterface dialog, int item) {
+//					    	removeMyDialog(DIALOG_ID_WARNING);
+//					    	finish();
+//					    }
+//					});
+//					}
 					dialog.setOnDismissListener(new OnDismissListener(){
 						@Override
 						public void onDismiss(DialogInterface arg0) {
@@ -534,6 +543,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 								mCameraViewControlAnimator.showControl();
 							}
 							checkAndExtendHideHeader();
+							
+							if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
+								finish();
+							}
 						}});
 				}
 				break;
@@ -702,14 +715,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}else if(ASSIGN_ST_PATH){
 					//Workaround
 					beginLiveView();
-				}else{
+				}/*else{
 					//Workaround
 					mstrLiveStreamServer = "rtmp://54.238.191.39:1935/live-edge/_definst_";
 					mstrLiveStreamPath = "{o}54.250.149.50/live-origin-record/_definst_/1001_aac";
 //					mstrLiveStreamServer = "rtmp://54.250.149.50/vods3/_definst_";//rtmp://54.238.191.39:1935/live-edge/_definst_";
 //					mstrLiveStreamPath = "mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4";//{o}54.250.149.50/live-origin-record/_definst_/1001_aac";
 					beginLiveView();
-				}
+				}*/
 			}else if(task instanceof BeseyeMMBEHttpTask.GetDVRStreamTask){
 				if(0 == iRetCode){
 					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
@@ -744,6 +757,32 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}else if(task == mDVRStreamTask){
 			mDVRStreamTask = null;
 		}
+	}
+	
+
+	@Override
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+		if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_playing_error));
+					b.putBoolean(KEY_WARNING_CLOSE, true);
+					showMyDialog(DIALOG_ID_WARNING, b);
+				}}, 0);
+			
+		}else if(task instanceof BeseyeMMBEHttpTask.GetDVRStreamTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
+					b.putBoolean(KEY_WARNING_CLOSE, true);
+					showMyDialog(DIALOG_ID_WARNING, b);
+				}}, 0);
+		}
+		super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
 
 	protected int getLayoutId(){

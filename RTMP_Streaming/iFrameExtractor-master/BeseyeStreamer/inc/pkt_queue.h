@@ -1,7 +1,7 @@
 #include "libavformat/avformat.h"
 
-#include <SDL.h>
-#include <SDL_thread.h>
+#include "SDL.h"
+#include "SDL_thread.h"
 
 #ifndef DEF_PACKETQUEUE
 

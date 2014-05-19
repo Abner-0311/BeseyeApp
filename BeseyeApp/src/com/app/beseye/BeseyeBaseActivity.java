@@ -155,6 +155,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	static public final String KEY_WARNING_TITLE = "KEY_WARNING_TITLE";
 	static public final String KEY_WARNING_TEXT = "KEY_WARNING_TEXT";
+	static public final String KEY_WARNING_CLOSE = "KEY_WARNING_CLOSE";
 	
 	static public final int DIALOG_ID_LOADING = 1; 
 	static public final int DIALOG_ID_WARNING = 2; 
