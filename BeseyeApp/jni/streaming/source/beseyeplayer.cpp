@@ -2594,6 +2594,8 @@ void CBeseyePlayer::invokeRtmpStatusCallback(int iStatus, void* extra){
 	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpStatusCallback(), iStatus:%d",iStatus);
 	if(iStatus == STREAM_CONNECTING){
 		rtmpRef = extra;
+	}else if(iStatus == STREAM_CLOSE){
+		rtmpRef = NULL;
 	}
 	triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, iStatus, 0);
 }

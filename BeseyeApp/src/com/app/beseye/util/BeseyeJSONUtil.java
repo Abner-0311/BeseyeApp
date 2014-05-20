@@ -129,6 +129,8 @@ public class BeseyeJSONUtil {
 	public static final String ACC_USER_ID 				= "user_id";
 	public static final String ACC_VCAM_ID 				= "VcamUid";
 	public static final String ACC_VCAM_ATTR 			= "VcamAttr";
+	public static final String ACC_VCAM_ATTACHED 		= "IsAttached";
+	public static final String ACC_VCAM_CONN_STATE 		= "VcamConnState";
 	
 	public static final String ACC_VCAM_CNT 			= "VcamsCnt";
 	public static final String ACC_VCAM_LST 			= "Vcams";

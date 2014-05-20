@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.app.beseye.adapter.CameraListAdapter;
 import com.app.beseye.adapter.CameraListAdapter.CameraListItmHolder;
 import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeMMBEHttpTask;
+import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
@@ -132,28 +134,68 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					JSONArray arrCamList = new JSONArray();
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
 					if(0 < iVcamCnt){
 						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
+						for(int i = 0;i< iVcamCnt;i++){
+							try {
+								JSONObject camObj = VcamList.getJSONObject(i);
+								if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+									arrCamList.put(camObj);
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
 						int iDemoVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_DEMO_VCAM_CNT);
 						if(0 < iDemoVcamCnt){
 							JSONArray DemoVcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_DEMO_VCAM_LST);
 							for(int i = 0; i < iDemoVcamCnt;i++){
 								try {
-									VcamList.put(DemoVcamList.get(i));
+									JSONObject camObj = DemoVcamList.getJSONObject(i);
+									if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+										arrCamList.put(camObj);
+									}
+									//VcamList.put(DemoVcamList.get(i));
 								} catch (JSONException e) {
 									e.printStackTrace();
 								}
 							}
 						}
-						mCameraListAdapter.updateResultList(VcamList);
-						refreshList();
+						
+						if(null != mCameraListAdapter){
+							mCameraListAdapter.updateResultList(arrCamList);
+							refreshList();
+						}
+						
 						postToLvRreshComplete();
-					}else{
+						getCamsInfo(arrCamList);
+					}/*else{
 						onToastShow(task, "no Vcam attached.");
 						Bundle b = new Bundle();
 						b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
 						launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+					}*/
+				}
+			}else if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
+				if(0 == iRetCode){
+					String strVcamId = ((BeseyeMMBEHttpTask.GetLiveStreamTask)task).getVcamId();
+					//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> VCAMID = "+strVcamId+", result.get(0)="+result.get(0).toString());
+					JSONArray arrCamList = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
+					int iCount = (null != arrCamList)?arrCamList.length():0;
+					for(int i = 0;i < iCount;i++){
+						try {
+							JSONObject camObj = arrCamList.getJSONObject(i);
+							//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> camObj = "+camObj.toString());
+							if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
+								camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+								refreshList();
+								break;
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}else{
@@ -168,16 +210,32 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			String strMsg) {
 		if(task instanceof BeseyeAccountTask.GetVCamListTask){
 			postToLvRreshComplete();
+		}else if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
+			Log.e(TAG, "onPostExecute(), GetLiveStreamTask failed");
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
+	}
+	
+	private void getCamsInfo(JSONArray arrCamList){
+		int iCount = (null != arrCamList)?arrCamList.length():0;
+		for(int i = 0;i < iCount;i++){
+			try {
+				JSONObject camObj = arrCamList.getJSONObject(i);
+				monitorAsyncTask(new BeseyeMMBEHttpTask.GetLiveStreamTask(this).setDialogId(-1), true, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID), "false");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private void postToLvRreshComplete(){
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
-				if(null != mMainListView)
+				if(null != mMainListView){
 					mMainListView.onRefreshComplete();
+					mMainListView.updateLatestTimestamp();
+				}
 			}}, 0);
 	}
 
@@ -191,7 +249,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				b.putString(CameraListActivity.KEY_VCAM_NAME, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME));
 				b.putBoolean(CameraListActivity.KEY_VCAM_ADMIN, BeseyeJSONUtil.getJSONBoolean(cam_obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN, true));
 				launchActivityForResultByClassName(CameraViewActivity.class.getName(), b, REQUEST_CAM_VIEW_CHANGE);
-				Log.e(TAG, "onClick(), "+cam_obj.toString());
+				//Log.e(TAG, "onClick(), "+cam_obj.toString());
 				return;
 			}
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
@@ -226,10 +284,12 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		if(view.getTag() instanceof CameraListItmHolder){
 			JSONObject cam_obj = ((CameraListItmHolder)view.getTag()).mObjCam;
 			if(null != cam_obj){
-				Bundle b = new Bundle();
-				b.putString(CameraListActivity.KEY_VCAM_ID, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
-				b.putString(CameraListActivity.KEY_VCAM_NAME, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME));
-				//launchActivityByClassName(CameraViewActivity.class.getName(), b);
+				try {
+					cam_obj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, state.equals(SwitchState.SWITCH_ON)?CAM_CONN_STATUS.CAM_ON.getValue():CAM_CONN_STATUS.CAM_OFF.getValue());
+					refreshList();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 				return;
 			}
 		}

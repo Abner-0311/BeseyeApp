@@ -545,7 +545,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							checkAndExtendHideHeader();
 							
 							if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
-								finish();
+								//finish();
 							}
 						}});
 				}

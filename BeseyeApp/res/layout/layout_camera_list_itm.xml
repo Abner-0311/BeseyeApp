@@ -90,7 +90,7 @@
 		        android:layout_width="336dp"
 		        android:layout_height="189dp"
 		        android:background="@color/camera_list_video_mask"
-		        android:visibility="invisible" >
+		        android:visibility="visible" >
 
 			    <RelativeLayout
 			        android:id="@+id/rl_camera_disconnected_mask"
@@ -104,19 +104,10 @@
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
 			            android:layout_centerHorizontal="true"
-			            android:text="@string/camera_list_disconected"
+			            android:text="@string/camera_list_off"
 			            android:textColor="@color/beseye_color_gray"
            				android:textSize="@dimen/login_fontNormal" />
-			        
-			        <TextView
-			            android:id="@+id/tv_camera_more_2"
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:layout_below="@+id/tv_camera_disconnected_2"
-			            android:layout_centerHorizontal="true"
-			            android:text="@string/camera_list_more"
-			            android:textColor="@color/cl_link_font_color"
-           				android:textSize="@dimen/login_fontSmall" />
+			    
 				</RelativeLayout>
 			</RelativeLayout>
 		</RelativeLayout>

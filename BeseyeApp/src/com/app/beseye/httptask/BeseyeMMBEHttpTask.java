@@ -18,12 +18,18 @@ public class BeseyeMMBEHttpTask  {
 	static private final String URL_GET_EVENT_LIST_CNT 	= "events/count/%s?startTime=%s&duration=%s";
 	
 	public static class GetLiveStreamTask extends BeseyeHttpTask{
+		private String strVcamId = null;
 		public GetLiveStreamTask(OnHttpTaskCallback cb) {
 			super(cb);
 		}
 		
+		public String getVcamId(){
+			return strVcamId;
+		}
+		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			strVcamId = strParams[0];
 			return super.doInBackground(MM_HOST+String.format(URL_LIVE_STREAM_INFO, strParams[0], strParams[1]));
 		}
 	}
