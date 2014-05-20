@@ -1,0 +1,95 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+   	android:layout_height="match_parent"
+   	android:orientation="vertical" >
+	
+	<RelativeLayout
+	    android:id="@+id/rl_eventlist_video_block"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@color/eventlist_bg_1" >
+
+	    <ImageView
+        android:id="@+id/iv_timeline_grayline"
+        android:layout_width="@dimen/eventlist_gray_line_width"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="@dimen/eventlist_gray_line_left"
+        android:layout_marginRight="@dimen/eventlist_gray_line_right"
+        android:src="@color/eventlist_gray_line" />
+	    
+	    <ImageView
+	        android:id="@+id/iv_timeline_dot_greenblue"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_marginLeft="@dimen/eventlist_timeline_dot_left"
+	        android:src="@drawable/eventlist_timeline_point_bluegreen" />
+	    
+	    <TextView
+	        android:id="@+id/tv_eventlist_event_name"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/eventlist_content_top"
+	        android:layout_toRightOf="@id/iv_timeline_grayline"
+	        android:text="Event Name"
+	        android:textColor="@color/liveview_font_normal_color"
+	        android:textSize="@dimen/login_fontRegular" />
+	    
+	    <ImageView
+	        android:id="@+id/iv_timeline_video_thumbnail"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/iv_timeline_grayline"
+	        android:layout_below="@+id/tv_eventlist_event_name"
+	        android:layout_marginTop="@dimen/eventlist_thumbnail_top"
+	        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
+	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
+	        android:src="@drawable/eventlist_video_fake" />
+	    
+	    <ImageView
+	        android:id="@+id/iv_timeline_icon_face"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/iv_timeline_video_thumbnail"
+	        android:layout_below="@+id/tv_eventlist_event_name"
+	        android:layout_marginTop="@dimen/eventlist_thumbnail_top"
+	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+	        android:src="@drawable/eventlist_filter_icon_familyface" />
+	    <ImageView
+	        android:id="@+id/iv_timeline_icon_fire"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/iv_timeline_video_thumbnail"
+	        android:layout_below="@+id/iv_timeline_icon_face"
+	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+	        android:src="@drawable/eventlist_filter_icon_fire" />
+	    <ImageView
+	        android:id="@+id/iv_timeline_icon_sound"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/iv_timeline_video_thumbnail"
+	        android:layout_below="@+id/iv_timeline_icon_fire"
+	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+	        android:src="@drawable/eventlist_filter_icon_sound" />
+	    <ImageView
+	        android:id="@+id/iv_timeline_icon_motion"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/iv_timeline_video_thumbnail"
+	        android:layout_below="@+id/iv_timeline_icon_sound"
+	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+	        android:src="@drawable/eventlist_filter_icon_motion" />
+	    
+	</RelativeLayout>
+</LinearLayout>
+
+
+
+   
+		
+	
+ 
+
+
