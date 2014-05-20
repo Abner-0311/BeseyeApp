@@ -141,5 +141,7 @@
     <dimen name="eventlist_thumbnail_bottom">12dp</dimen>
     <dimen name="eventlist_thumbnail_right">14dp</dimen>
     <dimen name="eventlist_icon_bottom">10dp</dimen>
+    <dimen name="eventlist_calendar_bottom">14dp</dimen>
+    <dimen name="eventlist_calendar_left">14dp</dimen>
     
 </resources>

@@ -1,10 +1,9 @@
-<LinearLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.app.beseye"
     android:layout_width="match_parent"
-   	android:layout_height="match_parent"
-   	android:orientation="vertical" >
-	
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color">
+    
 	<RelativeLayout
 	    android:id="@+id/rl_eventlist_video_block"
 	    android:layout_width="match_parent"
@@ -83,7 +82,18 @@
 	        android:src="@drawable/eventlist_filter_icon_motion" />
 	    
 	</RelativeLayout>
-</LinearLayout>
+
+	<ImageView
+	    android:id="@+id/iv_calendar_icon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_alignParentLeft="true"
+	    android:layout_marginBottom="@dimen/eventlist_calendar_bottom"
+	    android:layout_marginLeft="@dimen/eventlist_calendar_left"
+	    android:src="@drawable/sl_eventlist_calendar_btn" />
+	
+</RelativeLayout>
 
 
 
