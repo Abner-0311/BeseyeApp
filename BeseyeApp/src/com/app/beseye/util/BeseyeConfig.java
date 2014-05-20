@@ -53,12 +53,12 @@ public class BeseyeConfig {
 	
 	static public final String[] REDDOT_STREAM_PATH = {
 													 //"rtsp://admin:password@192.168.12.184/h264"
-//													"rtsp://admin:password@192.168.12.180/h264_2"
-//													,"rtsp://admin:password@192.168.12.182/h264_2"
-////													,"rtsp://admin:password@192.168.12.184/h264_2"
-//													,"rtsp://admin:password@192.168.12.186/h264_2"
-//													 "rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:08
-//													,"rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:B8
+//														"rtsp://admin:password@192.168.12.180/h264_2"
+//														,"rtsp://admin:password@192.168.12.182/h264_2"
+////														,"rtsp://admin:password@192.168.12.184/h264_2"
+//														,"rtsp://admin:password@192.168.12.186/h264_2"
+//														 "rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:08
+//														,"rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:B8
 													 //"rtsp://admin:password@192.168.12.184/h264_2"//00:0C:43:30:50:D0
 													"rtsp://admin:password@192.168.2.169/h264"//00:0C:43:30:50:28
 													 };
