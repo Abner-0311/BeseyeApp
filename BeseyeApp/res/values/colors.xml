@@ -56,4 +56,8 @@
     <color name="camera_list_video_mask">#88ffffff</color>
     
     <color name="loading_bg">#f4f4f4</color>
+    
+    <color name="eventlist_bg_1">#f7f7f7</color>
+    <color name="eventlist_bg_2">#ffffff</color>
+    <color name="eventlist_gray_line">#dcdcdd</color>
 </resources>

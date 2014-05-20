@@ -131,4 +131,17 @@
     <dimen name="indicator_internal_padding">4dp</dimen>
     
     <dimen name="eventlist_ind_margin_left">20dp</dimen>
+    
+    <dimen name="eventlist_gray_line_width">3dp</dimen>
+    <dimen name="eventlist_gray_line_left">60dp</dimen>
+    <dimen name="eventlist_gray_line_right">16dp</dimen>
+    <dimen name="eventlist_timeline_dot_left">48dp</dimen>
+    <dimen name="eventlist_content_top">16dp</dimen>
+    <dimen name="eventlist_thumbnail_top">6dp</dimen>
+    <dimen name="eventlist_thumbnail_bottom">12dp</dimen>
+    <dimen name="eventlist_thumbnail_right">14dp</dimen>
+    <dimen name="eventlist_icon_bottom">10dp</dimen>
+    <dimen name="eventlist_calendar_bottom">14dp</dimen>
+    <dimen name="eventlist_calendar_left">14dp</dimen>
+    
 </resources>
