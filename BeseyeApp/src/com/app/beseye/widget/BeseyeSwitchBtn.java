@@ -108,7 +108,7 @@ public class BeseyeSwitchBtn extends LinearLayout implements View.OnClickListene
 			mSwitchState = (SwitchState.SWITCH_OFF.equals(mSwitchState))?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF;
 			applyDrawableByState();
 			if(null != mOnSwitchBtnStateChangedListener)
-				mOnSwitchBtnStateChangedListener.onSwitchBtnStateChanged(mSwitchState);
+				mOnSwitchBtnStateChangedListener.onSwitchBtnStateChanged(mSwitchState, this);
 		}
 	}
 	
@@ -130,7 +130,7 @@ public class BeseyeSwitchBtn extends LinearLayout implements View.OnClickListene
 	
 	private OnSwitchBtnStateChangedListener mOnSwitchBtnStateChangedListener;
 	public static interface OnSwitchBtnStateChangedListener{
-		void onSwitchBtnStateChanged(SwitchState state);
+		void onSwitchBtnStateChanged(SwitchState state, View view);
 	}
 	
 	public void setOnSwitchBtnStateChangedListener(OnSwitchBtnStateChangedListener listener){

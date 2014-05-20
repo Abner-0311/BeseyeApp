@@ -29,16 +29,16 @@
 #import "beseyeplayer.h"
 #import "beseye_audio_streamer.h"
 
-#include <zxing/common/reedsolomon/GenericGF.h>
-#include <zxing/common/reedsolomon/ReedSolomonEncoder.h>
+//#include <zxing/common/reedsolomon/GenericGF.h>
+//#include <zxing/common/reedsolomon/ReedSolomonEncoder.h>
 #include "sp_config.h"
 #include "beseye_sound_pairing.h"
 #include "FreqGenerator.h"
 #include "soundpairing_error.h"
 
-#import "SDL_config.h"
+//#import "SDL_config.h"
 /* import the SDL main definition header */
-#import "SDL_main.h"
+//#import "SDL_main.h"
 
 #import <libavcodec/avcodec.h>
 #import <libavformat/avformat.h>
@@ -168,7 +168,8 @@ void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_C
     if(obj == player1 || obj == player2){
         NSLog(@"rtmpStreamStatusCb(), %s cbType:%d, msg:%s, iMainType:%d, iDetailType:%d",(obj == player1?"player1":"player2"),cbType, (msg?msg:""),iMainType, iDetailType);
         if(cbType == CBeseyeRTMPObserver::STREAM_STATUS_CB){
-            
+            CBeseyePlayer* player = (CBeseyePlayer* )obj;
+            player->getWindow();
         }else if(cbType == CBeseyeRTMPObserver::ERROR_CB){
             
         }
@@ -218,6 +219,7 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         [ticketsThreadtwo start];
     }else if (sender == stopButton) {
         if(player1){
+             NSLog(@"player1->closeStreaming()");
             player1->closeStreaming();
         }
     }else if (sender == stopButton2) {
@@ -280,9 +282,9 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         [self performSelectorOnMainThread:@selector(disableButton:) withObject:playButton waitUntilDone:NO];
         [self performSelectorOnMainThread:@selector(enableButton:) withObject:stopButton waitUntilDone:NO];
         
-        player1->createStreaming( "rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/1001_aac"
+        player1->createStreaming(//"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/1001_aac"
                                  //"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
-                                 //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4"
+                                 "rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4", 20000
                                  //"rtsp://admin:password@192.168.3.100/h264"
                                  );
         player1->unregisterVideoCallback();

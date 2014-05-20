@@ -30,8 +30,8 @@
 //# include "libavfilter/buffersrc.h"
 //#endif
 
-#include <SDL.h>
-#include <SDL_thread.h>
+#include "SDL.h"
+#include "SDL_thread.h"
 
 #include <assert.h>
 

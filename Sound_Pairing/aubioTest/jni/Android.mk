@@ -73,8 +73,7 @@ LOCAL_SRC_FILES        := $(TOP_LOCAL_PATH)/src/preprocess/kiss_fft.c \
 							$(LWS_LIB_PATH)/output.c \
 							$(LWS_LIB_PATH)/parsers.c \
 							$(LWS_LIB_PATH)/sha-1.c \
-							$(TOP_LOCAL_PATH)/libwebsockets/src/simple_websocket_mgr.c \
-							$(TOP_LOCAL_PATH)/ws-client/src/websocket_utils.c
+							$(TOP_LOCAL_PATH)/libwebsockets/src/simple_websocket_mgr.c 
 
 LOCAL_C_INCLUDES 	   := $(TOP_LOCAL_PATH)\
 						  $(TOP_LOCAL_PATH)/src \

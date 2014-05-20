@@ -1,9 +1,14 @@
 #include "AudioTest.h"
 #include "simple_websocket_mgr.h"
+#include "cmd_error.h"
 
 #ifdef CAM_ENV
 #include "http_cgi.h"
 #endif
+
+//Check Network and token
+static const long TIME_TO_CHECK_TOKEN = 60000;
+static long slLastTimeCheckToken = -1;
 
 AudioTest* AudioTest::sAudioTest=NULL;
 
@@ -165,7 +170,7 @@ void AudioTest::soundpairReceiverCallback(const char* cb_type, void* data){//cam
 #ifdef CAM_ENV
 			Delegate_EndToSaveResult();
 #endif
-			mbAutoTestBeginAnalyzeOnReceiver = false;
+			setAutoTestBeginAnalyzeOnReceiver(false);
 			mbAutoTestBeginOnReceiver = false;
 			mbSenderAcked = true;
 			pthread_mutex_unlock(&mAutoTestCtrlObj);
@@ -183,8 +188,8 @@ void AudioTest::soundpairReceiverCallback(const char* cb_type, void* data){//cam
 						curEncodeMark = curCode+curECCode;
 
 						pthread_mutex_lock(&mAutoTestCtrlObj);
+						setAutoTestBeginAnalyzeOnReceiver(true);
 						LOGI("soundpairReceiverCallback(), broadcast, mbAutoTestBeginAnalyzeOnReceiver=[true]\n");
-						mbAutoTestBeginAnalyzeOnReceiver = true;
 						pthread_cond_broadcast(&mAutoTestCtrlObjCond);
 						pthread_mutex_unlock(&mAutoTestCtrlObj);
 
@@ -408,6 +413,7 @@ bool AudioTest::startPairingAnalysis(){
 #ifndef ANDROID
 		if(bRet){
 			miPairingReturnCode = -1;
+			slLastTimeCheckToken = time_ms();
 			AudioBufferMgr::getInstance()->setRecordMode(true);
 			FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(this);
 			LOGI("startAutoTest(), begin join mBufRecordThread\n");
@@ -693,8 +699,9 @@ static msec_t lTsRec = 0;
 static int iAudioFrameSize = 4;
 static const int MAX_TRIAL = 10;
 
-static const short ANALYSIS_START_THRESHHOLD = 15000;//audio value
-static const short ANALYSIS_END_THRESHHOLD   = 10000;//audio value
+//Check audio activity
+static const short ANALYSIS_START_THRESHHOLD = 20000;//audio value
+static const short ANALYSIS_END_THRESHHOLD   = 15000;//audio value
 static const int   ANALYSIS_THRESHHOLD_CK_LEN = 1600;//sample size , about 0.1 sec
 static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT = 10;
 static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT = 100;
@@ -753,6 +760,22 @@ void writeBuf(unsigned char* charBuf, int iLen){
 	if(!AudioTest::getInstance()->isPairingAnalysisMode() && !AudioTest::getInstance()->isAutoTestBeginAnalyzeOnReceiver()){
 		return;
 	}
+
+	//Check network and token here
+	if(AudioTest::getInstance()->isPairingAnalysisMode()){
+		long lDelta = time_ms() - slLastTimeCheckToken;
+		if(lDelta > TIME_TO_CHECK_TOKEN){
+			LOGW("lDelta:%ld\n", lDelta);
+			if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
+				if(0 == (system("/beseye/cam_main/beseye_token_check") >> 8)){
+					AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
+					setLedLight(0,1,0);
+					AudioTest::getInstance()->stopAutoTest();
+				}
+			}
+			slLastTimeCheckToken = time_ms();
+		}
+	}
 	//LOGW("writeBuf:%d, iCurIdx:%d", iLen, iCurIdx);
 	//short* shortBuf = (short*)audioBufferPinned;
 	int iIdxOffset = -iCurIdx;
@@ -784,7 +807,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 			//shortsRecBuf[iCurIdx] = ulaw2linear(charBuf[i]);
 			shortsRecBuf[iCurIdx] = (((short)charBuf[iAudioFrameSize*i+3])<<8 | (charBuf[iAudioFrameSize*i+2]));
 
-			if(AudioTest::getInstance()->isPairingAnalysisMode()){
+			/*if(AudioTest::getInstance()->isPairingAnalysisMode())*/{
 				short val = abs(shortsRecBuf[iCurIdx]);
 				if(val > sMaxValue){
 					sMaxValue = val;
@@ -797,10 +820,12 @@ void writeBuf(unsigned char* charBuf, int iLen){
 						if(false == AudioTest::getInstance()->getAboveThresholdFlag() && iAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
 							LOGW("trigger analysis-----\n");
 							//trigger analysis
-							changePairingMode(PAIRING_ANALYSIS);
+							if(AudioTest::getInstance()->isPairingAnalysisMode()){
+								changePairingMode(PAIRING_ANALYSIS);
 
-							AudioBufferMgr::getInstance()->trimAvailableBuf(((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*3/2);
-							AudioBufferMgr::getInstance()->setRecordMode(false);
+								AudioBufferMgr::getInstance()->trimAvailableBuf(((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*3/2);
+								AudioBufferMgr::getInstance()->setRecordMode(false);
+							}
 							AudioTest::getInstance()->setAboveThresholdFlag(true);
 							iAboveThreshHoldCount = 0;
 						}
@@ -810,7 +835,9 @@ void writeBuf(unsigned char* charBuf, int iLen){
 						if(AudioTest::getInstance()->getAboveThresholdFlag() && iUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
 							LOGW("trigger stop analysis-----\n");
 							//stop analysis
-							AudioBufferMgr::getInstance()->setRecordMode(true);
+							if(AudioTest::getInstance()->isPairingAnalysisMode()){
+								AudioBufferMgr::getInstance()->setRecordMode(true);
+							}
 							AudioTest::getInstance()->setAboveThresholdFlag(false);
 							FreqAnalyzer::getInstance()->triggerTimeout();
 							changePairingMode(PAIRING_WAITING);
@@ -826,7 +853,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 					sMaxValue = 0;
 				}
 
-				if(0 == iRefCount%ANALYSIS_LED_UPDATE_PERIOD){
+				if(AudioTest::getInstance()->isPairingAnalysisMode() && 0 == iRefCount%ANALYSIS_LED_UPDATE_PERIOD){
 					//LOGW("sPairingMode is %d-----\n", sPairingMode);
 
 					if(false == sbLEDOn){
@@ -862,6 +889,11 @@ void writeBuf(unsigned char* charBuf, int iLen){
 	}
 	iCurIdx++;
 	//Delegate_WriteAudioBuffer2();
+}
+
+void AudioTest::setAutoTestBeginAnalyzeOnReceiver(bool flag){
+	LOGI("setAutoTestBeginAnalyzeOnReceiver(), ++, flag:%d\n", flag);
+	mbAutoTestBeginAnalyzeOnReceiver = flag;
 }
 
 void AudioTest::setAboveThresholdFlag(bool flag){
@@ -951,12 +983,12 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 	Ref<BufRecord> buf;
 
 	while(!tester->mbStopAnalysisThreadFlag){
-		while(!tester->isPairingAnalysisMode() && tester->isReceiverMode() && !tester->mbAutoTestBeginAnalyzeOnReceiver && !tester->mbStopAnalysisThreadFlag){
-			LOGI("runAudioBufAnalysis(), begin wait auto test\n");
+		while(!tester->isPairingAnalysisMode() && tester->isReceiverMode() && !tester->isAutoTestBeginAnalyzeOnReceiver() && !tester->mbStopAnalysisThreadFlag){
+			LOGI("runAudioBufAnalysis(), begin wait auto test, [%d, %d, %d, %d]\n", tester->isPairingAnalysisMode(), tester->isReceiverMode(), tester->mbAutoTestBeginAnalyzeOnReceiver, tester->mbStopAnalysisThreadFlag);
 			pthread_mutex_lock(&tester->mAutoTestCtrlObj);
 			pthread_cond_wait(&tester->mAutoTestCtrlObjCond, &tester->mAutoTestCtrlObj);
 			pthread_mutex_unlock(&tester->mAutoTestCtrlObj);
-			LOGI("runAudioBufAnalysis(), exit wait auto test\n");
+			LOGI("runAudioBufAnalysis(), exit wait auto test, [%d, %d, %d, %d]\n", tester->isPairingAnalysisMode(), tester->isReceiverMode(), tester->mbAutoTestBeginAnalyzeOnReceiver, tester->mbStopAnalysisThreadFlag);
 		}
 
 		while(tester->isPairingAnalysisMode() && !tester->getAboveThresholdFlag() && !tester->mbStopAnalysisThreadFlag){
@@ -977,9 +1009,9 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 		LOGD("runAudioBufAnalysis(), iSessionOffset:%d\n", iSessionOffset);
 
 		if(iSessionOffset > 0)
-			buf = getBuf((iSessionOffset/SoundPair_Config::FRAME_SIZE_REC)+1);
+			buf = tester->getBuf((iSessionOffset/SoundPair_Config::FRAME_SIZE_REC)+1);
 		else
-			buf = getBuf();
+			buf = tester->getBuf();
 
 		LOGD("runAudioBufAnalysis(), get buf\n");
 		ArrayRef<short> bufShort = buf->mbBuf;
@@ -1014,7 +1046,7 @@ Ref<BufRecord> AudioTest::getBuf(){
 
 Ref<BufRecord> AudioTest::getBuf(int iNumToRest){
 	Ref<BufRecord> buf;
-	while( NULL == (buf=AudioBufferMgr::getInstance()->getDataBuf(iNumToRest))){
+	while( !mbStopAnalysisThreadFlag && NULL == (buf=AudioBufferMgr::getInstance()->getDataBuf(iNumToRest))){
 		//for self test
 		//FreqGenerator::getInstance()->notifySelfTestCond();deadlock
 
@@ -1046,7 +1078,13 @@ void AudioTest::onDetectStart(){
 }
 
 void AudioTest::onDetectPostFix(){
-	setAboveThresholdFlag(false);
+	LOGI("onDetectPostFix()\n");
+	if(isPairingAnalysisMode())
+		setAboveThresholdFlag(false);
+
+	pthread_mutex_lock(&mAutoTestCtrlObj);
+	setAutoTestBeginAnalyzeOnReceiver(false);
+	pthread_mutex_unlock(&mAutoTestCtrlObj);
 }
 
 void AudioTest::onAppendResult(string strCode){
@@ -1188,6 +1226,7 @@ void checkPairingResult(string strCode){
 
 void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDecodeUnmark, bool bFromAutoCorrection, MatchRetSet* prevMatchRet){
 	LOGI("onSetResult(), strCode:%s, strDecodeMark = %s\n", strCode.c_str(), strDecodeMark.c_str());
+#ifdef CAM_ENV
 	if(mbPairingAnalysisMode){
 		checkPairingResult(strCode);
 		if(0 <= miPairingReturnCode){
@@ -1200,6 +1239,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 			changePairingMode(PAIRING_ANALYSIS);
 		}
 	}
+#endif
 
 	stringstream strLog;
 	if(strCode.length() > 0 || strDecodeMark.length() >0){

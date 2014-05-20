@@ -375,7 +375,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 	}
 
 	@Override
-	public void onSwitchBtnStateChanged(SwitchState state) {
+	public void onSwitchBtnStateChanged(SwitchState state, View view) {
 		if(state.equals(SwitchState.SWITCH_OFF)){
 			NetworkMgr.getInstance().turnOffWifi();
 		}else if(state.equals(SwitchState.SWITCH_ON)){

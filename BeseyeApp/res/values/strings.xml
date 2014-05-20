@@ -65,6 +65,8 @@
     
     <string name="dialog_wifi_ap_key_index">Key index</string>
     
+    <string name="dialog_dettach_cam">Are you sure to dettach this cam [%s]?</string>
+    
     <string name="cam_setting_title">Settings</string>
     <string name="cam_setting_title_power_setting">Power settings</string>
 	<string name="cam_setting_title_power">Camera power</string>
@@ -151,4 +153,7 @@
 	<string name="camera_list_failed_title">Failed to connect with your camera.</string>
 	<string name="camera_list_failed_content">Please check network on mobile device and camera,then try again.</string>
 	
+	<string name="loading_latest_update">Last update&#160;%s</string>
+	<string name="no_camera">No camera attached</string>
+	<string name="cam_list_tilte">My Cameras</string>
 </resources>

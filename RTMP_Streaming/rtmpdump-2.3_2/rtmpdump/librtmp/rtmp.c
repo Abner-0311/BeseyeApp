@@ -285,6 +285,7 @@ RTMP_Init(RTMP *r)
   r->m_fVideoCodecs = 252.0;
   r->Link.timeout = 30;
   r->Link.swfAge = 30;
+  r->m_bExitFlag = FALSE;
 }
 
 void
@@ -944,6 +945,7 @@ RTMP_Connect1(RTMP *r, RTMPPacket *cp)
       RTMP_Close(r);
       return FALSE;
     }
+  RTMP_Log(RTMP_LOGERROR, "%s --- ", __FUNCTION__);
   return TRUE;
 }
 
@@ -974,6 +976,9 @@ RTMP_Connect(RTMP *r, RTMPPacket *cp)
     return FALSE;
 
   r->m_bSendCounter = TRUE;
+
+  if(r->m_rtmpStatusCallback)
+  	  r->m_rtmpStatusCallback(r->mUserCb, STREAM_CONNECTING, r);
 
   return RTMP_Connect1(r, cp);
 }
@@ -1028,8 +1033,9 @@ RTMP_ConnectStream(RTMP *r, int seekTime)
 
   r->m_mediaChannel = 0;
 
-  while (!r->m_bPlaying && RTMP_IsConnected(r) && RTMP_ReadPacket(r, &packet))
+  while (!r->m_bExitFlag && !r->m_bPlaying && RTMP_IsConnected(r) && RTMP_ReadPacket(r, &packet))
     {
+	  RTMP_Log(RTMP_LOGERROR, "%s, %d --- ", __FUNCTION__, r->m_bExitFlag);
       if (RTMPPacket_IsReady(&packet))
 	{
 	  if (!packet.m_nBodySize)
@@ -2287,6 +2293,7 @@ RTMP_SendCtrl(RTMP *r, short nType, unsigned int nObject, unsigned int nTime)
 static void
 AV_erase(RTMP_METHOD *vals, int *num, int i, int freeit)
 {
+  //RTMP_Log(RTMP_LOGERROR, "AV_erase(), vals[%d].name.av_val %s", i, vals[i].name.av_val);
   if (freeit)
     free(vals[i].name.av_val);
   (*num)--;
@@ -2317,6 +2324,8 @@ AV_queue(RTMP_METHOD **vals, int *num, AVal *av, int txn)
   (*vals)[*num].num = txn;
   (*vals)[*num].name.av_len = av->av_len;
   (*vals)[(*num)++].name.av_val = tmp;
+
+  //RTMP_Log(RTMP_LOGERROR, "AV_queue(), Invoking %s, txn:%d", av->av_val, txn);
 }
 
 static void
@@ -2630,6 +2639,7 @@ HandleInvoke(RTMP *r, const char *body, unsigned int nBodySize)
     }
 leave:
   AMF_Reset(&obj);
+  //RTMP_Log(RTMP_LOGERROR, "HandleInvoke(), ret: %d", ret);
   return ret;
 }
 
@@ -3484,7 +3494,7 @@ RTMP_SendPacket(RTMP *r, RTMPPacket *packet, int queue)
       char *ptr;
       ptr = packet->m_body + (packet->m_packetType == 0x11?2:1);
       AMF_DecodeString(ptr, &method);
-      RTMP_Log(RTMP_LOGDEBUG, "Invoking %s", method.av_val);
+      RTMP_Log(RTMP_LOGERROR, "Invoking %s", method.av_val);
       /* keep it in call queue till result arrives */
       if (queue) {
         int txn;

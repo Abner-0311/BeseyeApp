@@ -20,6 +20,7 @@ import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.DeviceUuidFactory;
 import com.app.beseye.util.NetworkMgr;
+import com.app.beseye.widget.BeseyeMemCache;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
@@ -66,6 +67,8 @@ public class BeseyeApplication extends Application {
 		
 		DeviceUuidFactory.getInstance(getApplicationContext());
 		startService(new Intent(this,BeseyeNotificationService.class));
+		BeseyeMemCache.init(this);
+		
 		sApplication = this;
 	}
 	

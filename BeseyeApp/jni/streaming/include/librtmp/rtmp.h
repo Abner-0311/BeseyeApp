@@ -229,6 +229,8 @@ extern "C"
     uint8_t m_bSendEncoding;
     uint8_t m_bSendCounter;
 
+    uint8_t m_bExitFlag;
+
     int m_numInvokes;
     int m_numCalls;
     RTMP_METHOD *m_methodCalls;	/* remote method calls queue */

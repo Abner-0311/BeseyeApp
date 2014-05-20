@@ -25,8 +25,8 @@ public:
 	virtual int createStreaming(const char* fullPath);
 	virtual int createStreaming(const char* fullPath, int iSeekTimeInMs);
 	virtual int createStreaming(const char* streamHost, const char** streamPathList, int iStreamCount, int iSeekTimeInMs);
-	virtual int addStreamingPath(char *streamPath);
-	virtual int addStreamingPathList(char** streamPathList, int iCount);
+	virtual int addStreamingPath(const char *streamPath);
+	virtual int addStreamingPathList(const char** streamPathList, int iCount);
 
 	virtual int isStreamPlaying();
 	virtual int isStreamPaused();
@@ -37,6 +37,7 @@ public:
 	virtual int closeStreaming();
 
 	virtual int updateWindow(void* window, int iFrameFormat, int screen_width, int screen_height);
+	virtual void* getWindow();
 
 	//For update video stream on device
 	virtual void registerVideoCallback(void(* videoCallback)(void* window, uint8_t* srcbuf, uint32_t iFormat, uint32_t linesize, uint32_t iWidth, uint32_t iHeight),
@@ -152,6 +153,7 @@ private:
 	int screen_height;
     int miFrameFormat;
 	AVFrame *pFrameRGB;
+	void* rtmpRef;
 	void* window;
 	void* window_holder;
 	void*(* getWindowByHolderFunc)(void* window_holder, uint32_t iWidth, uint32_t iHeight) ;

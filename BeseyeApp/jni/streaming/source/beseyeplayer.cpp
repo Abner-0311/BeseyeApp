@@ -65,7 +65,8 @@ mVideoDeinitCallback(NULL),
 window_holder(NULL),
 getWindowByHolderFunc(NULL),
 mVecPendingStreamPaths(NULL),
-iNumOfPendingStreamPaths(0){
+iNumOfPendingStreamPaths(0),
+rtmpRef(NULL){
 	wanted_stream[AVMEDIA_TYPE_AUDIO] = -1;
 	wanted_stream[AVMEDIA_TYPE_VIDEO] = -1;
 	wanted_stream[AVMEDIA_TYPE_SUBTITLE] = -1;
@@ -84,9 +85,13 @@ CBeseyePlayer::~CBeseyePlayer(){
 	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::~CBeseyePlayer()--");
 }
 
+void* CBeseyePlayer::getWindow(){
+	return window;
+}
+
 void CBeseyePlayer::addPendingStreamPaths(){
 	if(mVecPendingStreamPaths){
-		if(0 <= addStreamingPathList(mVecPendingStreamPaths, iNumOfPendingStreamPaths))
+		if(0 <= addStreamingPathList((const char**)mVecPendingStreamPaths, iNumOfPendingStreamPaths))
 			freePendingStreamPaths();
 	}
 }
@@ -172,6 +177,17 @@ void CBeseyePlayer::stream_close(VideoState *is)
 {
 	av_log(NULL, AV_LOG_INFO, "stream_close()++, is:%d\n", is);
     VideoPicture *vp;
+
+    int iRet = -1;
+    if(NULL != rtmpRef){
+		iRet = cancel_rtmp_blocking_queue(rtmpRef);
+		if(0 > iRet){
+			av_log(NULL, AV_LOG_ERROR,"stream_close(), failed to cancel_rtmp_blocking_queue\n");
+		}
+	}else{
+		av_log(NULL, AV_LOG_ERROR,"stream_close(), rtmpRef is null\n");
+	}
+	rtmpRef = NULL;
     int i;
     /* XXX: use a special url_shutdown call to abort parse cleanly */
     is->abort_request = 1;
@@ -599,36 +615,45 @@ void CBeseyePlayer::setWindowHolder(void* window_holder, void*(* getWindowFunc)(
 	this->getWindowByHolderFunc = getWindowFunc;
 }
 
-int CBeseyePlayer::addStreamingPath(char *path){
+int CBeseyePlayer::addStreamingPath(const char *path){
 	int iRet = -1;
-	if(NULL != is){
-		AVFormatContext *pFCtx = is->ic;
-		if(NULL != pFCtx){
-			AVIOContext* ioCtx =  pFCtx->pb;
-			if(NULL != ioCtx){
-				URLContext* urlCtx = (URLContext*)ioCtx->opaque;
-				if(NULL != urlCtx){
-					iRet = gen_play_wrapper(urlCtx, path);
-					if(0 > iRet){
-						av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), failed to add path =>[%s]\n", (path)?path:"");
+	void* rtmp = rtmpRef;
+	if(NULL == rtmp){
+		if(NULL != is){
+			AVFormatContext *pFCtx = is->ic;
+			if(NULL != pFCtx){
+				AVIOContext* ioCtx =  pFCtx->pb;
+				if(NULL != ioCtx){
+					URLContext* urlCtx = (URLContext*)ioCtx->opaque;
+					if(NULL != urlCtx){
+						iRet = gen_play_wrapper(urlCtx, path);
+						if(0 > iRet){
+							av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), failed to add path =>[%s]\n", (path)?path:"");
+						}
+					}else{
+						av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), urlCtx is null\n");
 					}
 				}else{
-					av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), urlCtx is null\n");
+					av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), ioCtx is null\n");
 				}
 			}else{
-				av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), ioCtx is null\n");
+				av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), pFCtx is null\n");
 			}
 		}else{
-			av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), pFCtx is null\n");
+			av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), is is null\n");
 		}
 	}else{
-		av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), is is null\n");
+		iRet = gen_play_wrapper_rtmp(rtmp, path);
+		if(0 > iRet){
+			av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), 2 failed to add path =>[%s]\n", (path)?path:"");
+		}
 	}
+
 	//LOGI("addPlaypth(), path:%s , len: %d, iRet:%d", path, strlen(path), iRet);
 	return iRet;
 }
 
-int CBeseyePlayer::addStreamingPathList(char** pathList, int iCount){
+int CBeseyePlayer::addStreamingPathList(const char** pathList, int iCount){
 	int iRet = -1;
 	if(pathList){
 		for(int i = 0; i < iCount; i++){
@@ -1727,7 +1752,7 @@ int read_thread(void *arg)
     is->last_audio_stream = is->audio_stream = -1;
     is->last_subtitle_stream = is->subtitle_stream = -1;
 
-    player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTING, 0);
+    //player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTING, 0);
 
     ic = avformat_alloc_context();
     ic->interrupt_callback.callback = decode_interrupt_cb;
@@ -2554,11 +2579,22 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s", desc.av_val);
 			}
 		}
+	}else{
+		av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback()2, non-handled content:[%s]", (NULL != content)?content->av_val:"");
+		AMFObject* obj = (AMFObject*)extra;
+		AVal desc;
+		if(obj){
+			AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s", desc.av_val);
+		}
 	}
 }
 
 void CBeseyePlayer::invokeRtmpStatusCallback(int iStatus, void* extra){
 	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpStatusCallback(), iStatus:%d",iStatus);
+	if(iStatus == STREAM_CONNECTING){
+		rtmpRef = extra;
+	}
 	triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, iStatus, 0);
 }
 

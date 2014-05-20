@@ -105,6 +105,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_NAME 				= "Name";
 	public static final String ACC_LOC 					= "Location";
 	public static final String ACC_ACTIVATED 			= "IsActivated";
+	public static final String ACC_VCAM 				= "Vcam";
 	
 	public static final String ACC_SES 					= "UserSession";
 	public static final String ACC_SES_TOKEN 			= "SessionToken";
@@ -131,6 +132,8 @@ public class BeseyeJSONUtil {
 	
 	public static final String ACC_VCAM_CNT 			= "VcamsCnt";
 	public static final String ACC_VCAM_LST 			= "Vcams";
+	public static final String ACC_DEMO_VCAM_CNT 		= "DemoVcamsCnt";
+	public static final String ACC_DEMO_VCAM_LST 		= "DemoVcams";
 	public static final String ACC_VCAM_PLAN 			= "Plan";
 	public static final String ACC_VCAM_HW_ID 			= "PhyCamHwSn";
 	
@@ -147,8 +150,15 @@ public class BeseyeJSONUtil {
 	public static final String MM_SERVER 				= "server";
 	public static final String MM_STREAM 				= "stream";
 	public static final String MM_START_TIME 			= "startTime";
+	public static final String MM_END_TIME 				= "endTime";
 	public static final String MM_DURATION 				= "duration";
 	public static final String MM_PLAYLIST 				= "playList";
+	
+	public static final String MM_OBJ_LST 				= "objs";
+	public static final String MM_OBJ_CNT 				= "objCount";
+	
+	public static final String MM_TYPE_IDS				= "typeIds";
+	public static final String MM_FACE_IDS 				= "faceIds";
 	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "GCMProjectID";

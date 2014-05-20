@@ -121,7 +121,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private boolean checkSession(){
 		if(SessionMgr.getInstance().isTokenValid()){
-			monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this), true, SessionMgr.getInstance().getAuthToken());
+			monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this).setDialogId(mbFirstResume?DIALOG_ID_LOADING:-1), true, SessionMgr.getInstance().getAuthToken());
 			//invokeSessionComplete();
 			return false;
 		}	
@@ -155,6 +155,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	static public final String KEY_WARNING_TITLE = "KEY_WARNING_TITLE";
 	static public final String KEY_WARNING_TEXT = "KEY_WARNING_TEXT";
+	static public final String KEY_WARNING_CLOSE = "KEY_WARNING_CLOSE";
 	
 	static public final int DIALOG_ID_LOADING = 1; 
 	static public final int DIALOG_ID_WARNING = 2; 
@@ -169,6 +170,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_WIFI_AP_INCORRECT_PW = DIALOG_ID_WIFI_BASE+7; 
 	static public final int DIALOG_ID_WIFI_AP_KEYINDEX= DIALOG_ID_WIFI_BASE+8; 
 	static public final int DIALOG_ID_CAM_INFO= DIALOG_ID_WIFI_BASE+9; 
+	static public final int DIALOG_ID_CAM_DETTACH_CONFIRM= DIALOG_ID_WIFI_BASE+10; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {

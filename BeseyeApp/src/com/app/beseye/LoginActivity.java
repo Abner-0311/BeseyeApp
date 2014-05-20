@@ -182,7 +182,7 @@ public class LoginActivity extends BeseyeBaseActivity {
 							b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
 							launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
 						}else{
-							launchDelegateActivity(CameraViewActivity.class.getName());
+							launchDelegateActivity(CameraListActivity.class.getName());
 						}
 						setResult(RESULT_OK);
 						finish();

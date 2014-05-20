@@ -14,6 +14,7 @@ import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,8 +42,7 @@ import android.widget.Toast;
 public class CameraSettingActivity extends BeseyeBaseActivity 
 								   implements OnSwitchBtnStateChangedListener,
 								   			  OnClickListener{
-	static public final String KEY_VCAM_ID = "KEY_VCAM_ID";
-	static public final String KEY_VCAM_NAME = "KEY_VCAM_NAME";
+	
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerDesc,  mTxtPowerTitle, mTxtViewUpDownTitle;
 	private ImageView mIvViewUpDownCheck, mIvViewUpDownCheckBg;
@@ -63,8 +63,8 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		getSupportActionBar().setTitle(R.string.cam_setting_title);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		mStrVCamID = getIntent().getStringExtra(KEY_VCAM_ID);
-		mStrVCamName = getIntent().getStringExtra(KEY_VCAM_NAME);
+		mStrVCamID = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_ID);
+		mStrVCamName = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_NAME);
 		mCamSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_camera_switch);
 		if(null != mCamSwitchBtn){
 			mCamSwitchBtn.setOnSwitchBtnStateChangedListener(this);
@@ -205,7 +205,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 
 	@Override
-	public void onSwitchBtnStateChanged(SwitchState state) {
+	public void onSwitchBtnStateChanged(SwitchState state, View view) {
 		CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.toCamConnStatus((SwitchState.SWITCH_ON.equals(state))?1:0));
 		setResult(RESULT_OK);
 		updatePowerDesc(state);
@@ -260,7 +260,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				break;
 			}
 			case R.id.vg_siren:{
-				monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(this), true, mStrVCamID);
+				showMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
 				break;
 			}
 			default:
@@ -295,7 +295,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 								CamSettingMgr.getInstance().setCamName(TMP_CAM_ID, etCamName.getText().toString());
 								if(ASSIGN_ST_PATH){
 									STREAM_PATH_LIST.set(0, CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
-								}else if(!mStrVCamName.equals(etCamName.getText().toString())){
+								}else if(null == mStrVCamName || !mStrVCamName.equals(etCamName.getText().toString())){
 									monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(CameraSettingActivity.this), true, mStrVCamID, etCamName.getText().toString());
 								}
 								setResult(RESULT_OK);
@@ -303,6 +303,28 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 						}});
 				}
             	break;
+			}
+			case DIALOG_ID_CAM_DETTACH_CONFIRM:{
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            	builder.setTitle(getString(R.string.dialog_title_warning));
+            	builder.setMessage(String.format(getString(R.string.dialog_dettach_cam),mStrVCamName));
+				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				    public void onClick(DialogInterface dialog, int item) {
+				    	removeMyDialog(DIALOG_ID_WARNING);
+				    	monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);
+				    }
+				});
+				builder.setOnCancelListener(new OnCancelListener(){
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						removeMyDialog(DIALOG_ID_WARNING);
+					}});
+				
+				dialog = builder.create();
+				if(null != dialog){
+					dialog.setCanceledOnTouchOutside(true);
+				}
+				break;
 			}
 
 			default:

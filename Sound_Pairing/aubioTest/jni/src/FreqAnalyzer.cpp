@@ -127,7 +127,8 @@ void FreqAnalyzer::setSenderMode(bool bIsSenderMode){
 void FreqAnalyzer::beginToTrace(string strCode){
 	mstrCodeTrace = strCode;
 	mlTraceTs = time_ms();
-	mlMaxWaitingTime = strCode.length()*200+4000;
+	mlMaxWaitingTime = (0 == strCode.length())?20000:(strCode.length()*400+4000);
+
 	LOGI("beginToTrace(), mlTraceTs:%lld, mlMaxWaitingTime: %lld\n", mlTraceTs, mlMaxWaitingTime);
 }
 
@@ -195,7 +196,7 @@ void FreqAnalyzer::checkTimeout(msec_t lTs){
 				LOGE("checkTimeout(), lDelta > mlMaxWaitingTime----------\n");
 				triggerTimeout();
 			}
-		}else if((0 < iSize && (lTs - mFreqRecordList[iSize-1]->mlTs) >= 15 * SoundPair_Config::TONE_PERIOD || getInvalidFreqCount() >= 15)){
+		}else if((0 < iSize && (lTs - mFreqRecordList[iSize-1]->mlTs) >= 15 * SoundPair_Config::TONE_PERIOD || getInvalidFreqCount() >= 15 || (lDelta > mlMaxWaitingTime))){
 			LOGE("checkTimeout(), cannot get ending char\n");
 			triggerTimeout();
 		}

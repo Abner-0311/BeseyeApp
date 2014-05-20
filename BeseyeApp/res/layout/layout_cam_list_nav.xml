@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".MainActivity" 
+    android:background="@color/signup_nav_bg_color">
+    <View
+        android:id="@+id/vw_margin_left"
+	    android:layout_width="@dimen/cameralist_nav_margin_hori"
+    	android:layout_height="wrap_content"/>
+    	
+    <ImageView
+        android:id="@+id/iv_nav_menu_btn"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/title_wifi"
+		android:src="@drawable/sl_cam_list_menu"
+    	android:layout_toRightOf="@+id/vw_margin_left"
+    	android:layout_centerVertical="true">
+    </ImageView>
+    	
+  	<TextView 
+  	    android:id="@+id/txt_nav_title"
+  	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_centerInParent="true"
+    	android:textColor="@color/word_white"
+    	android:text="@string/cam_list_tilte"
+    	android:textSize="@dimen/login_fontMedium"/>
+  	
+  	<ImageView
+        android:id="@+id/iv_nav_add_cam_btn"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="@string/title_wifi"
+		android:src="@drawable/sl_cam_list_add"
+    	android:layout_alignParentRight="true"
+    	android:layout_centerVertical="true"
+    	android:layout_marginRight="@dimen/cameralist_nav_margin_hori">
+    </ImageView>
+	
+</RelativeLayout>

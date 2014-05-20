@@ -58,6 +58,8 @@ public :
 	virtual void soundpairReceiverCallback(const char* cb_type, void* data);
 
 	bool isAutoTestBeginAnalyzeOnReceiver(){return mbAutoTestBeginAnalyzeOnReceiver;}
+	void setAutoTestBeginAnalyzeOnReceiver(bool flag);
+
 	bool isPairingAnalysisMode(){return mbPairingAnalysisMode;}
 	void setPairingReturnCode(int code){miPairingReturnCode = code;}
 	virtual int getPairingReturnCode(){return miPairingReturnCode;}
@@ -116,8 +118,8 @@ private:
 	static void* runAudioBufRecord(void* userdata);
 	static void* runAudioBufAnalysis(void* userdata);
 
-	static Ref<BufRecord> getBuf();
-	static Ref<BufRecord> getBuf(int iNumToRest);
+	Ref<BufRecord> getBuf();
+	Ref<BufRecord> getBuf(int iNumToRest);
 
 	bool mbNeedToResetFFT;
 	stringstream tmpRet;
