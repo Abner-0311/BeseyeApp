@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/beseyeFuncSwitchItmLayout"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
+	<ImageView
+        android:id="@+id/imgClockBg"
+        android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/eventlist_timeline_bar_bg"/>
+    <ImageView
+        android:id="@+id/imgClock"
+        android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/eventlist_timeline_bar_clock"
+	    android:layout_centerVertical="true"
+	    android:layout_marginLeft="4dp"
+	    android:layout_marginRight="4dp"/>
+    <ImageView
+        android:id="@+id/imgMinHand"
+        android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/eventlist_timeline_bar_clock_minute"
+	    android:layout_centerVertical="true"
+	    android:layout_alignLeft="@+id/imgClock"/>
+    <ImageView
+        android:id="@+id/imgHand"
+        android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/eventlist_timeline_bar_clock_hour"
+	    android:layout_centerVertical="true"
+	    android:layout_alignLeft="@+id/imgClock"/>
+    
+    <LinearLayout 
+        android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerVertical="true"
+	    android:layout_toRightOf="@+id/imgClock"
+	    android:orientation="vertical">
+        <TextView 
+            android:id="@+id/txtTime"
+            android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:text="10:10"
+	    	android:textColor="@color/word_white"
+	    	android:textSize="@dimen/eventlist_clock_font_size"/>
+        
+        <TextView 
+            android:id="@+id/txtDate"
+            android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:text="12/24"
+	    	android:textColor="@color/word_white"
+	    	android:textSize="@dimen/eventlist_clock_font_size"/>
+    </LinearLayout>
+</RelativeLayout>

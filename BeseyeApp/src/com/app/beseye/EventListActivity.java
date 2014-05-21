@@ -27,6 +27,7 @@ import com.app.beseye.adapter.EventListAdapter.EventListItmHolder;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.widget.BeseyeClockIndicator;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
@@ -37,7 +38,8 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 	
 	private PullToRefreshListView mMainListView;
 	private EventListAdapter mEventListAdapter;
-	private ViewGroup mVgEmptyView, mVgIndicator;
+	private ViewGroup mVgEmptyView;
+	private BeseyeClockIndicator mVgIndicator;
 	private View mVwNavBar;
 	private ImageView mIvMenu, mIvAddCam;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
@@ -72,7 +74,7 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
 		
-		mVgIndicator = (ViewGroup)findViewById(R.id.vg_event_indicator);
+		mVgIndicator = (BeseyeClockIndicator)findViewById(R.id.vg_event_indicator);
 		
 		mMainListView = (PullToRefreshListView) findViewById(R.id.lv_camera_lst);
 		
@@ -96,11 +98,10 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 				@Override
 				public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 					calculateTotalLvHeight();
-					
-					View topChild = mMainListView.getRefreshableView().getChildAt(0);
-//					if(null != topChild)
-//						topChild.setPressed(true);
-					Log.i(TAG, "onScroll(), [ "+firstVisibleItem+", "+visibleItemCount+", "+totalItemCount+", "+mMainListView.getRefreshableView().getFirstVisiblePosition()+", "+((null != topChild)?topChild.getBottom():-9999)+"]");	
+//					View topChild = mMainListView.getRefreshableView().getChildAt(0);
+////					if(null != topChild)
+////						topChild.setPressed(true);
+//					Log.i(TAG, "onScroll(), [ "+firstVisibleItem+", "+visibleItemCount+", "+totalItemCount+", "+mMainListView.getRefreshableView().getFirstVisiblePosition()+", "+((null != topChild)?topChild.getBottom():-9999)+"]");	
 					updateIndicatorPosition(firstVisibleItem);
 					//mMainListView.isHeaderLoadMoreViewAttached();
 //    				int lastVisibleItem = firstVisibleItem + visibleItemCount - 1;
@@ -151,28 +152,15 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 	
 	private boolean mbNeedToCalcu = true;
 	private int miEventCount = 0;
-	private int miItemHeight = 0;
-	private int miLvHeight = 0;
-	private int miTotalHeight = 0;
-	private int miIndHeight = 0;
-	private int miIndRange = 0;
 	
 	private void calculateTotalLvHeight(){
 		if(mbNeedToCalcu){
 			if(0 < miEventCount){
 				ListView list  = mMainListView.getRefreshableView();
 				if(null != list){
-					miLvHeight = list.getHeight();
 					View vFirstChild = list.getChildAt(list.getHeaderViewsCount());
 					if(null != vFirstChild){
-						miItemHeight = vFirstChild.getHeight();
-						miTotalHeight = miEventCount*miItemHeight - miLvHeight;
-						
-						if(null != mVgIndicator){
-							miIndHeight = mVgIndicator.getHeight();
-							miIndRange = miLvHeight - miIndHeight;
-						}
-						Log.i(TAG, "calculateTotalLvHeight(), [ "+miItemHeight+", "+miLvHeight+", "+miTotalHeight+", "+miIndHeight+", "+miIndRange+"]");	
+						mVgIndicator.calculateTotalLvHeight(miEventCount, vFirstChild.getHeight(), list.getHeight());
 						mbNeedToCalcu = false;
 					}
 				}
@@ -183,20 +171,32 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 	private void updateIndicatorPosition(int iFirstIdx){
 		ListView list  = mMainListView.getRefreshableView();
 		if(null != list && !mbNeedToCalcu){
-			int iCurPos = 0, iTop = 0;;
 			if(0 < iFirstIdx){
 				View topChild = list.getChildAt(0);
 				if(null != topChild){
-					iCurPos = iFirstIdx*miItemHeight - topChild.getBottom();
+					mVgIndicator.updateIndicatorPosition(iFirstIdx, topChild.getBottom());
+					//Log.i(TAG, "updateIndicatorPosition(), pos = "+mVgIndicator.getIndicatorPos());	
+					findLvItmByPos(mVgIndicator.getIndicatorPos());
 				}
 			}
-			float fRatio = (float)iCurPos/(float)miTotalHeight;
-			iTop = (int) (miIndRange*fRatio);
-			
-			Log.i(TAG, "updateIndicatorPosition(), [ "+iCurPos+", "+fRatio+", "+iTop+", "+miIndRange+"]");	
-			
-			if(null != mVgIndicator){
-				mVgIndicator.layout(mVgIndicator.getLeft(), iTop, mVgIndicator.getLeft()+mVgIndicator.getWidth(), iTop+miIndHeight);
+		}
+	}
+	
+	private void findLvItmByPos(int iPos){
+		ListView list  = mMainListView.getRefreshableView();
+		if(null != list){
+			int iFirstVisiblePos = list.getFirstVisiblePosition();
+			int iLastVisiblePos = list.getLastVisiblePosition();
+			int iVisibleCount = iLastVisiblePos - iFirstVisiblePos +1;
+			for(int i = 0; i< iVisibleCount;i++){
+				View child = list.getChildAt(i);
+				if(null != child && child.getTag() instanceof EventListItmHolder){
+					if(child.getTop() < iPos && iPos <=child.getBottom()){
+						EventListItmHolder holder = (EventListItmHolder)child.getTag();
+						mVgIndicator.updateDateTime(BeseyeJSONUtil.getJSONLong(holder.mObjCam, BeseyeJSONUtil.MM_START_TIME));
+						Log.i(TAG, "findLvItmByPos(), pos = "+iPos+", ["+iFirstVisiblePos+", "+iLastVisiblePos+"], obj="+holder.mObjCam);	
+					}
+				}
 			}
 		}
 	}

@@ -144,4 +144,5 @@
     <dimen name="eventlist_calendar_bottom">14dp</dimen>
     <dimen name="eventlist_calendar_left">14dp</dimen>
     
+    <dimen name="eventlist_clock_font_size">12sp</dimen>
 </resources>
