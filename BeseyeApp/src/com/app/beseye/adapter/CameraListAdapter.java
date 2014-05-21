@@ -86,7 +86,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					holder.mSbCamOnOff.setEnabled(connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED)?false:true);
 				}
 				
-				convertView.setEnabled(connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED)?false:true);
+				//convertView.setEnabled(connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED)?false:true);
 				
 				holder.mObjCam = obj;
 				convertView.setTag(holder);

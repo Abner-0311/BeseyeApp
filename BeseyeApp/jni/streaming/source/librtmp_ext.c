@@ -14,7 +14,7 @@ SAVC(play);
 SAVC(createStream);
 
 int gen_play_wrapper(URLContext *urlCtx, const char *path){
-	av_log(NULL, AV_LOG_INFO,"gen_play_wrapper()+, path: '%s', \n", path);
+	//av_log(NULL, AV_LOG_INFO,"gen_play_wrapper()+, path: '%s', \n", path);
 	int iRet = 0;
 	LibRTMPContext *ctx = urlCtx->priv_data;
 	RTMP *r = &ctx->rtmp;
@@ -27,7 +27,7 @@ EXIT:
 }
 
 int gen_play_wrapper_rtmp(void *rtmpCtx, const char *path){
-	//av_log(NULL, AV_LOG_INFO,"gen_play_wrapper_rtmp()+, path: '%s', \n", path);
+	av_log(NULL, AV_LOG_INFO,"gen_play_wrapper_rtmp()+, path: '%s', \n", path);
 	int iRet = 0;
 	RTMP *r = (RTMP*)rtmpCtx;
     if(r){

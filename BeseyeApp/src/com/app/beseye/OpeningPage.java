@@ -2,6 +2,13 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -19,6 +26,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -87,8 +95,6 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		sbFirstLaunch = false;
 	}
 	
-	
-	
 	@Override
 	protected void onPause() {
 		if(null != mGetUserInfoTask){
@@ -105,6 +111,36 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	private BeseyeHttpTask mGetVCamListTask;
 	
 	private void launchActivityByIntent(Intent intent){
+		if(SessionMgr.getInstance().isTokenValid()){
+			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
+			String strP2P = null;
+			String strName = null;
+			if(null != p2pFile && p2pFile.exists()){
+				try {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(p2pFile)));
+					try {
+						strP2P = (null != reader)?reader.readLine():null;
+						strName = (null != reader)?reader.readLine():null;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			Log.i(TAG, "OpeningPage::launchActivityByIntent(), strP2P :"+strP2P+", p2pFile:"+p2pFile.getAbsolutePath());
+			
+			if(null != strP2P && 0 < strP2P.length()){
+				Intent intentLanuch = new Intent();
+				intentLanuch.setClassName(this, CameraViewActivity.class.getName());
+				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM, strP2P);
+				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM_NAME, strName);
+				startActivity(intentLanuch);
+				return;
+			}
+		}
+		
 		Intent intentLanuch = null;
 		if(null == (intentLanuch = intent.getParcelableExtra(KEY_DELEGATE_INTENT))){
 			intentLanuch = new Intent();
