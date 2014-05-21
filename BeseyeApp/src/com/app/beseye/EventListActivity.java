@@ -261,7 +261,8 @@ public class EventListActivity extends BeseyeBaseActivity{
 				Intent intent = new Intent();
 				intent.setClassName(this, CameraViewActivity.class.getName());
 				intent.putExtras(b);
-				intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+				//intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+				//intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 				launchActivityByIntent(intent);
 				
 				//launchActivityByClassName(CameraViewActivity.class.getName(), b);

@@ -255,7 +255,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mTxtGoLive = (TextView)findViewById(R.id.txt_go_live);
 		if(null != mTxtGoLive){
 			mTxtGoLive.setOnClickListener(this);
-			mTxtGoLive.setEnabled(false);
+			mTxtGoLive.setEnabled(!mbIsLiveMode);
 		}
 		
 		mIvStreamType = (ImageView)findViewById(R.id.iv_streaming_type);
@@ -360,6 +360,26 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
 		}
 	}
+	
+	private void goToLiveMode(){
+		Intent intent = getIntent();
+		if(null != intent){
+			intent.putExtra(KEY_TIMELINE_INFO, "");
+		}
+		
+		mbIsLiveMode = true;
+		mlDVRStartTs = 0;
+		
+		updateUIByMode();
+		
+		getStreamingInfo();
+	}
+	
+	private void updateUIByMode(){
+		if(null != mTxtGoLive){
+			mTxtGoLive.setEnabled(!mbIsLiveMode);
+		}
+	}
 
 	@Override
 	protected void onResume() {
@@ -410,33 +430,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkPlayState();
 		initDateTime();
-	}
-		
-	@Override
-	protected void onPostResume() {
-		//Log.d(TAG, "CameraViewActivity::onPostResume(), mbIsFirstLaunch:"+mbIsFirstLaunch+", mbIsPauseWhenPlaying:"+mbIsPauseWhenPlaying+", mbIsCamSettingChanged:"+mbIsCamSettingChanged+", mbIsWifiSettingChanged:"+mbIsWifiSettingChanged);
-		super.onPostResume();
-//		if(false == handleReddotNetwork(false)){
-//			if(null != mTxtCamName){
-//				mTxtCamName.setText(CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
-//			}
-//			
-//			if(null != mStreamingView)
-//				mStreamingView.setUpsideDown(CamSettingMgr.getInstance().getVideoUpsideDown(TMP_CAM_ID) == 1);
-//		}
-//		
-//		if(null != mVgCamInvalidState){
-//			mVgCamInvalidState.setVisibility(View.GONE);
-//			if(CAM_CONN_STATUS.CAM_DISCONNECTED == CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID)){
-//				CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.CAM_ON);
-//				mbIsCamSettingChanged = true;
-//				Log.d(TAG, "CameraViewActivity::onPostResume(), make mbIsCamSettingChanged: true.............");
-//
-//			}
-//		}
-//		
-//		checkPlayState();
-//		initDateTime();
 	}
 	
 	private boolean handleReddotNetwork(boolean bForceShow){
@@ -832,7 +825,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				break;
 			}
 			case R.id.txt_go_live:{
+				if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING))
+					closeStreaming();
 				
+				goToLiveMode();
 				break;
 			}
 			case R.id.ib_talk:{
