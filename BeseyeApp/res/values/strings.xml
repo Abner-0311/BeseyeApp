@@ -20,6 +20,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="event_cam_view">Event</string>
     <string name="event_go_live">Go Live</string>
+    <string name="event_itm_live">Live</string>
     <string name="camerview_init_date">---.--.----</string>
     <string name="camerview_init_time">--:--:-- --</string>
     <string name="can_power_state_off">The cam is off</string>

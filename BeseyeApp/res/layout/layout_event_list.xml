@@ -9,7 +9,9 @@
 	    android:id="@+id/lv_camera_lst"
 	    android:layout_width="match_parent"
    		android:layout_height="match_parent"
-   		android:scrollbars="none">
+   		android:scrollbars="none"
+   		android:divider="@null"
+		android:dividerHeight="0dp">
 	</com.app.beseye.widget.PullToRefreshListView>	
 	
 	<ImageView

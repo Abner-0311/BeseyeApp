@@ -12,6 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -90,7 +95,7 @@ public class BeseyeClockIndicator extends LinearLayout {
 		setY(miTop);
 		invalidate();
 		//
-		//Log.i(TAG, "updateIndicatorPosition(), [ "+iCurPos+", "+fRatio+", "+iTop+", "+miIndRange+"]");	
+		//Log.i(TAG, "updateIndicatorPosition(), [ "+iFirstIdx+", "+iPosBottom+", "+iCurPos+", "+fRatio+", "+miTop+", "+miIndRange+"]");	
 	}
 	
 	public int getIndicatorPos(){
@@ -101,14 +106,140 @@ public class BeseyeClockIndicator extends LinearLayout {
 		Date date = new Date(lts);
 		
 		//Log.i(TAG, "updateDateTime(), [ "+date.getMonth()+"/"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+"]");	
+		miNextHour = date.getHours(); 
+		miNextMin = date.getMinutes();
 		
 		if(null != m_txtDate){
 			m_txtDate.setText(String.format("%d/%d", date.getMonth()+1, date.getDate()));
 		}
 		
 		if(null != m_txtTime){
-			m_txtTime.setText(String.format("%d:%d", date.getHours(), date.getMinutes()));
+			m_txtTime.setText(String.format("%d:%d", miNextHour, miNextMin));
 		}
+		
+		if(inAnimation()){
+			miPendingHour = miNextHour;
+			miPeningMin = miNextMin;
+		}else{
+			if(miCurHour != miNextHour || miCurMin != miNextMin){
+				performAnimation(miNextHour,miNextMin);
+			}
+		}
+	}
+	
+	private void checkPendingTime(){
+		if(!inAnimation()){
+			if(-1 < miPendingHour && -1 < miPeningMin){
+				if(miCurHour != miPendingHour || miCurMin != miPeningMin){
+					performAnimation(miPendingHour,miPeningMin);
+					miPendingHour = -1;
+					miPeningMin = -1;
+				}
+			}
+		}
+	}
+	
+	final private Interpolator interpolator = new LinearInterpolator();
+	
+	private void performAnimation(final int iNextHour, final int iNextMin){
+		if(!inAnimation()){
+			//Log.i(TAG, "performAnimation(), [ "+miCurHour+":"+miCurMin+" -> "+iNextHour+":"+iNextMin+"]");	
+			float fCurHourAngle = getHourAngle(miCurHour, miCurMin);
+			float fNextHourAngle = getHourAngle(iNextHour,iNextMin);
+			//float fHourDleta =  Math.abs(fNextHourAngle - fCurHourAngle);
+			mHourRotateAnimation = new RotateAnimation(fCurHourAngle, fNextHourAngle, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,0.5f);
+//			if(fHourDleta <= 180.0f){
+//				
+//				
+//			}else{
+//				
+//			}
+			if(null != mHourRotateAnimation){
+				mHourRotateAnimation.setDuration(500);
+				mHourRotateAnimation.setInterpolator(interpolator);
+				mHourRotateAnimation.setRepeatCount(0);
+				mHourRotateAnimation.setFillAfter(true);
+				mHourRotateAnimation.setAnimationListener(new AnimationListener(){
+					@Override
+					public void onAnimationEnd(Animation arg0) {
+						mbInHourAnimation = false;
+						if(!inAnimation()){
+							miCurHour = iNextHour;
+							miCurMin = iNextMin;
+						}
+						checkPendingTime();
+					}
+
+					@Override
+					public void onAnimationRepeat(Animation arg0) {}
+
+					@Override
+					public void onAnimationStart(Animation arg0) {
+						mbInHourAnimation = true;
+					}});
+			}	
+			
+			float fCurMinAngle = getMinAngle(miCurMin);
+			float fNextMinAngle = getMinAngle(iNextMin);
+			mMinRotateAnimation = new RotateAnimation(fCurMinAngle, fNextMinAngle, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,0.5f);
+			
+			if(null != mMinRotateAnimation){
+				mMinRotateAnimation.setDuration(500);
+				mMinRotateAnimation.setInterpolator(interpolator);
+				mMinRotateAnimation.setRepeatCount(0);
+				mMinRotateAnimation.setFillAfter(true);
+				mMinRotateAnimation.setAnimationListener(new AnimationListener(){
+					@Override
+					public void onAnimationEnd(Animation arg0) {
+						mbInMinAnimation = false;
+						if(!inAnimation()){
+							miCurHour = iNextHour;
+							miCurMin = iNextMin;
+						}
+						checkPendingTime();
+					}
+
+					@Override
+					public void onAnimationRepeat(Animation arg0) {}
+
+					@Override
+					public void onAnimationStart(Animation arg0) {
+						mbInMinAnimation = true;
+					}});
+			}
+			
+			m_imgHand.startAnimation(mHourRotateAnimation);
+			m_imgMinHand.startAnimation(mMinRotateAnimation);
+		}
+	}
+	
+	private float getHourAngle(int iHour, int iMin){
+		return 30 * iHour + 0.5f*iMin;
+	}
+	
+	private float getMinAngle(int iMin){
+		return 6.0f*iMin;
+	}
+	
+	private int miCurHour= 0;
+	private int miCurMin= 0;
+	private int miNextHour= 0;
+	private int miNextMin= 0;
+	private int miPendingHour= -1;
+	private int miPeningMin= -1;
+	
+	RotateAnimation mHourRotateAnimation;
+	RotateAnimation mMinRotateAnimation;
+	
+	private boolean mbInHourAnimation = false;
+	private boolean mbInMinAnimation = false;
+	
+	private boolean inAnimation(){
+		return mbInHourAnimation || mbInMinAnimation;
+	}
+	
+	private void initAnimation(){
+		
 	}
 
 //	@Override

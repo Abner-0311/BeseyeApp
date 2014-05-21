@@ -14,7 +14,7 @@
 	    android:layout_height="wrap_content"
 	    android:src="@drawable/eventlist_timeline_bar_clock"
 	    android:layout_centerVertical="true"
-	    android:layout_marginLeft="4dp"
+	    android:layout_marginLeft="5dp"
 	    android:layout_marginRight="4dp"/>
     <ImageView
         android:id="@+id/imgMinHand"
@@ -41,7 +41,7 @@
             android:id="@+id/txtTime"
             android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
-	    	android:text="10:10"
+	    	android:text="00:00"
 	    	android:textColor="@color/word_white"
 	    	android:textSize="@dimen/eventlist_clock_font_size"/>
         
@@ -49,7 +49,7 @@
             android:id="@+id/txtDate"
             android:layout_width="wrap_content"
 	    	android:layout_height="wrap_content"
-	    	android:text="12/24"
+	    	android:text="01/01"
 	    	android:textColor="@color/word_white"
 	    	android:textSize="@dimen/eventlist_clock_font_size"/>
     </LinearLayout>

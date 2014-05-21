@@ -137,6 +137,7 @@
     <dimen name="eventlist_gray_line_right">16dp</dimen>
     <dimen name="eventlist_timeline_dot_left">48dp</dimen>
     <dimen name="eventlist_content_top">16dp</dimen>
+    <dimen name="eventlist_content_bottom">10dp</dimen>
     <dimen name="eventlist_thumbnail_top">6dp</dimen>
     <dimen name="eventlist_thumbnail_bottom">12dp</dimen>
     <dimen name="eventlist_thumbnail_right">14dp</dimen>

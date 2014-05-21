@@ -2,11 +2,15 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -28,20 +32,21 @@ import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.widget.BeseyeClockIndicator;
+import com.app.beseye.widget.BeseyeDatetimePickerDialog;
+import com.app.beseye.widget.BeseyeDatetimePickerDialog.OnDatetimePickerClickListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
 
-public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtnStateChangedListener{
-	
+public class EventListActivity extends BeseyeBaseActivity{
 	private PullToRefreshListView mMainListView;
 	private EventListAdapter mEventListAdapter;
 	private ViewGroup mVgEmptyView;
 	private BeseyeClockIndicator mVgIndicator;
 	private View mVwNavBar;
-	private ImageView mIvMenu, mIvAddCam;
+	private ImageView mIvCancel, mIvFilter, mIvCalendar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
 	@Override
@@ -54,14 +59,16 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 		
 		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_cam_list_nav, null);
 		if(null != mVwNavBar){
-			mIvMenu = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_menu_btn);
-			if(null != mIvMenu){
-				mIvMenu.setOnClickListener(this);
+			mIvCancel = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_menu_btn);
+			if(null != mIvCancel){
+				mIvCancel.setOnClickListener(this);
+				mIvCancel.setImageResource(R.drawable.sl_event_list_cancel);
 			}
 			
-			mIvAddCam = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_add_cam_btn);
-			if(null != mIvAddCam){
-				mIvAddCam.setOnClickListener(this);
+			mIvFilter = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_add_cam_btn);
+			if(null != mIvFilter){
+				mIvFilter.setOnClickListener(this);
+				mIvFilter.setImageResource(R.drawable.sl_event_list_filter);
 			}
 			
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
@@ -72,6 +79,11 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
+		}
+		
+		mIvCalendar = (ImageView)findViewById(R.id.iv_calendar_icon);
+		if(null != mIvCalendar){
+			mIvCalendar.setOnClickListener(this);
 		}
 		
 		mVgIndicator = (BeseyeClockIndicator)findViewById(R.id.vg_event_indicator);
@@ -98,39 +110,22 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 				@Override
 				public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 					calculateTotalLvHeight();
-//					View topChild = mMainListView.getRefreshableView().getChildAt(0);
-////					if(null != topChild)
-////						topChild.setPressed(true);
-//					Log.i(TAG, "onScroll(), [ "+firstVisibleItem+", "+visibleItemCount+", "+totalItemCount+", "+mMainListView.getRefreshableView().getFirstVisiblePosition()+", "+((null != topChild)?topChild.getBottom():-9999)+"]");	
 					updateIndicatorPosition(firstVisibleItem);
-					//mMainListView.isHeaderLoadMoreViewAttached();
-//    				int lastVisibleItem = firstVisibleItem + visibleItemCount - 1;
-//    				int iActualIndex = mMaskTargetListItemIndex;//+(isFakeViewExist()?1:0);
-//    				
-//    				//Log.i(iKalaUtil.IKALA_APP_TAG, "onScroll(), firstVisibleItem = "+firstVisibleItem+", lastVisibleItem = "+lastVisibleItem+", iActualIndex = "+iActualIndex);
-//    				if((-1 < mMaskTargetListItemIndex) && ((iActualIndex < firstVisibleItem) || (iActualIndex > lastVisibleItem))){
-//    					removeMaskView();
-//    				}
 				}
 
 				@Override
 				public void onScrollStateChanged(AbsListView view,
 						int scrollState) {
-//					mScrollState = scrollState;
-////					if(Configuration.DEBUG)
-////						Log.e(iKalaUtil.IKALA_APP_TAG, "onScrollStateChanged(), mScrollState:"+mScrollState);
-//					
-//					if(mScrollState != OnScrollListener.SCROLL_STATE_IDLE){
-//						cancelRunMaskAnimation();
-//					}else{
-//						prepareRunMaskAnimation();
-//					}
 				}});
 			
 			LayoutInflater inflater = getLayoutInflater();
 			if(null != inflater){
 				mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_add, null);
 				if(null != mVgEmptyView){
+					ViewGroup vgHolder = (ViewGroup)mVgEmptyView.findViewById(R.id.vg_msg_holder);
+					if(null != vgHolder){
+						vgHolder.setVisibility(View.INVISIBLE);
+					}
 					mMainListView.setEmptyView(mVgEmptyView);
 //					if(null != mVgEmptyView){
 //						TextView txt = (TextView)mVgEmptyView.findViewById(R.id.txtNoItmList);
@@ -143,7 +138,7 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 			
         	mMainListView.setMode(LvExtendedMode.PULL_DOWN_TO_REFRESH);
         	
-        	mEventListAdapter = new EventListAdapter(this, null, R.layout.layout_camera_list_itm, this, this);
+        	mEventListAdapter = new EventListAdapter(this, null, R.layout.layout_event_list_itm, this);
         	if(null != mEventListAdapter){
         		mMainListView.getRefreshableView().setAdapter(mEventListAdapter);
         	}
@@ -170,10 +165,14 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 	
 	private void updateIndicatorPosition(int iFirstIdx){
 		ListView list  = mMainListView.getRefreshableView();
-		if(null != list && !mbNeedToCalcu){
-			if(0 < iFirstIdx){
-				View topChild = list.getChildAt(0);
+		if(null != list && !mbNeedToCalcu && 0 < miEventCount){			
+			if(0 <= iFirstIdx){
+				
+				View topChild = list.getChildAt(0 == iFirstIdx?1:0);
 				if(null != topChild){
+					if(0 == iFirstIdx && 0 < list.getHeaderViewsCount()){
+						iFirstIdx = 1;
+					}
 					mVgIndicator.updateIndicatorPosition(iFirstIdx, topChild.getBottom());
 					//Log.i(TAG, "updateIndicatorPosition(), pos = "+mVgIndicator.getIndicatorPos());	
 					findLvItmByPos(mVgIndicator.getIndicatorPos());
@@ -193,8 +192,12 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 				if(null != child && child.getTag() instanceof EventListItmHolder){
 					if(child.getTop() < iPos && iPos <=child.getBottom()){
 						EventListItmHolder holder = (EventListItmHolder)child.getTag();
-						mVgIndicator.updateDateTime(BeseyeJSONUtil.getJSONLong(holder.mObjCam, BeseyeJSONUtil.MM_START_TIME));
-						Log.i(TAG, "findLvItmByPos(), pos = "+iPos+", ["+iFirstVisiblePos+", "+iLastVisiblePos+"], obj="+holder.mObjCam);	
+						mVgIndicator.updateDateTime(BeseyeJSONUtil.getJSONLong(holder.mObjEvent, BeseyeJSONUtil.MM_START_TIME));
+//						if(null != mEventListAdapter && mEventListAdapter.setSelectedItm(iFirstVisiblePos+i - list.getHeaderViewsCount())){
+//							mEventListAdapter.notifyDataSetChanged();
+//							Log.i(TAG, "findLvItmByPos(), pos = "+iPos+", ["+iFirstVisiblePos+", "+iLastVisiblePos+"], obj="+holder.mObjEvent);	
+//						}
+						break;
 					}
 				}
 			}
@@ -222,6 +225,17 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 					miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
 					if(0 < miEventCount){
 						JSONArray EntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);
+						JSONObject liveObj = new JSONObject();
+						try {
+							liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
+							liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
+							
+							BeseyeJSONUtil.appendObjToArrayBegin(EntList, liveObj);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
 						mEventListAdapter.updateResultList(EntList);
 						refreshList();
 						if(null != mMainListView)
@@ -238,18 +252,39 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 	@Override
 	public void onClick(View view) {
 		if(view.getTag() instanceof EventListItmHolder){
-//			JSONObject cam_obj = ((EventListItmHolder)view.getTag()).mObjCam;
-//			if(null != cam_obj){
-//				Bundle b = new Bundle();
-//				b.putString(CameraListActivity.KEY_VCAM_ID, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
-//				b.putString(CameraListActivity.KEY_VCAM_NAME, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME));
-//				launchActivityByClassName(CameraViewActivity.class.getName(), b);
-//				return;
-//			}
+			JSONObject event_obj = ((EventListItmHolder)view.getTag()).mObjEvent;
+			if(null != event_obj){
+				Bundle b = new Bundle();
+				b.putString(CameraViewActivity.KEY_TIMELINE_INFO, event_obj.toString());
+				b.putString(CameraListActivity.KEY_VCAM_ID, getIntent().getStringExtra(CameraListActivity.KEY_VCAM_ID));
+				b.putString(CameraListActivity.KEY_VCAM_NAME, getIntent().getStringExtra(CameraListActivity.KEY_VCAM_NAME));
+				Intent intent = new Intent();
+				intent.setClassName(this, CameraViewActivity.class.getName());
+				intent.putExtras(b);
+				intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+				launchActivityByIntent(intent);
+				
+				//launchActivityByClassName(CameraViewActivity.class.getName(), b);
+				return;
+			}
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
 			finish();
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
-			launchActivityByClassName(WifiSetupGuideActivity.class.getName());
+			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
+		}else if(R.id.iv_calendar_icon == view.getId()){
+			BeseyeDatetimePickerDialog d = new BeseyeDatetimePickerDialog(this); 
+			d.setOnDatetimePickerClickListener(new OnDatetimePickerClickListener(){
+				@Override
+				public void onBtnOKClick(Calendar pickDate) {
+					Toast.makeText(EventListActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
+				}
+	
+				@Override
+				public void onBtnCancelClick() {
+					Toast.makeText(EventListActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
+				}});
+			
+			d.show();
 		}else
 			super.onClick(view);
 	}
@@ -257,19 +292,5 @@ public class EventListActivity extends BeseyeBaseActivity implements OnSwitchBtn
 	@Override
 	protected int getLayoutId() {
 		return R.layout.layout_event_list;
-	}
-
-	@Override
-	public void onSwitchBtnStateChanged(SwitchState state, View view) {
-		if(view.getTag() instanceof EventListItmHolder){
-			JSONObject cam_obj = ((EventListItmHolder)view.getTag()).mObjCam;
-			if(null != cam_obj){
-				Bundle b = new Bundle();
-				b.putString(CameraListActivity.KEY_VCAM_ID, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
-				b.putString(CameraListActivity.KEY_VCAM_NAME, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME));
-				//launchActivityByClassName(CameraViewActivity.class.getName(), b);
-				return;
-			}
-		}
 	}
 }

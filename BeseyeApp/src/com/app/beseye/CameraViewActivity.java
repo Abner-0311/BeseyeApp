@@ -61,6 +61,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 																	  OnNetworkChangeCallback,
 																	  OnWSChannelStateChangeListener{
 	static public final String KEY_PAIRING_DONE 	= "KEY_PAIRING_DONE";
+	static public final String KEY_TIMELINE_INFO    = "KEY_TIMELINE_INFO";
 	static public final String KEY_DVR_STREAM_MODE  = "KEY_DVR_STREAM_MODE";
 	static public final String KEY_DVR_STREAM_TS    = "KEY_DVR_STREAM_TS";
 	static public final String DVR_REQ_TIME         = "60000";
@@ -218,16 +219,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		getSupportActionBar().hide();
 		
-		mbIsLiveMode = !getIntent().getBooleanExtra(KEY_DVR_STREAM_MODE, false);
-		mStrVCamID = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_ID);
-		mStrVCamName = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_NAME);
-		mbVCamAdmin = getIntent().getBooleanExtra(CameraListActivity.KEY_VCAM_ADMIN, true);
-		
-		mstrDVRStreamPathList = new ArrayList<JSONObject>();
-		mstrPendingStreamPathList = new ArrayList<JSONObject>();
-		
-		mlDVRStartTs = System.currentTimeMillis() - 60*60*1000; //getIntent().getLongExtra(KEY_DVR_STREAM_TS, 0);
-		Log.i(TAG, "CameraViewActivity::onCreate(), mlDVRStartTs="+mlDVRStartTs);
+		updateAttrByIntent(getIntent());
 		
 		mStreamingView = (TouchSurfaceView)findViewById(R.id.surface_streaming_view);
 		if(null != mStreamingView){
@@ -248,22 +240,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(null != mIbOpenCam){
 				mIbOpenCam.setOnClickListener(this);
 			}
-		}
-		
-		if(getIntent().getBooleanExtra(KEY_PAIRING_DONE, false)){
-			mVgPairingDone = (ViewGroup)findViewById(R.id.vg_pairing_done);
-			if(null != mVgPairingDone){
-				BeseyeUtils.setVisibility(mVgPairingDone, View.VISIBLE);
-				if(null != mVgPairingDone){
-					mVgPairingDone.setOnClickListener(this);
-					mBtnPairingDoneOK = (Button)mVgPairingDone.findViewById(R.id.button_start);
-					if(null != mBtnPairingDoneOK){
-						mBtnPairingDoneOK.setOnClickListener(this);
-					}
-					//worksround
-					CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.CAM_ON);
-				}
-			}	
 		}
 		
 		mVgCamInvalidState = (ViewGroup)findViewById(R.id.vg_cam_invald_statement);
@@ -334,6 +310,55 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		
 		AudioWebSocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
+	}
+	
+	@Override
+	protected void onNewIntent(Intent intent) {
+		Log.d(TAG, "CameraViewActivity::onNewIntent()");
+		super.onNewIntent(intent);
+		updateAttrByIntent(intent);
+	}
+	
+	private void updateAttrByIntent(Intent intent){
+		if(null != intent){
+			mbIsLiveMode = !intent.getBooleanExtra(KEY_DVR_STREAM_MODE, false);
+			mStrVCamID = intent.getStringExtra(CameraListActivity.KEY_VCAM_ID);
+			mStrVCamName = intent.getStringExtra(CameraListActivity.KEY_VCAM_NAME);
+			mbVCamAdmin = intent.getBooleanExtra(CameraListActivity.KEY_VCAM_ADMIN, true);
+			
+			mstrDVRStreamPathList = new ArrayList<JSONObject>();
+			mstrPendingStreamPathList = new ArrayList<JSONObject>();
+			
+			String strTsInfo = intent.getStringExtra(KEY_TIMELINE_INFO);
+			if(null != strTsInfo && 0 < strTsInfo.length()){
+				try {
+					JSONObject tsInfo = new JSONObject(strTsInfo);
+					if(null != tsInfo && false == BeseyeJSONUtil.getJSONBoolean(tsInfo, BeseyeJSONUtil.MM_IS_LIVE, false)){
+						mbIsLiveMode = false;
+						mlDVRStartTs = BeseyeJSONUtil.getJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME);//System.currentTimeMillis() - 60*60*1000; //intent.getLongExtra(KEY_DVR_STREAM_TS, 0);
+						Log.i(TAG, "CameraViewActivity::onCreate(), mlDVRStartTs="+mlDVRStartTs);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(intent.getBooleanExtra(KEY_PAIRING_DONE, false)){
+				mVgPairingDone = (ViewGroup)findViewById(R.id.vg_pairing_done);
+				if(null != mVgPairingDone){
+					BeseyeUtils.setVisibility(mVgPairingDone, View.VISIBLE);
+					if(null != mVgPairingDone){
+						mVgPairingDone.setOnClickListener(this);
+						mBtnPairingDoneOK = (Button)mVgPairingDone.findViewById(R.id.button_start);
+						if(null != mBtnPairingDoneOK){
+							mBtnPairingDoneOK.setOnClickListener(this);
+						}
+						//worksround
+						CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.CAM_ON);
+					}
+				}	
+			}
+		}
 	}
 
 	@Override
@@ -545,7 +570,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							checkAndExtendHideHeader();
 							
 							if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
-								//finish();
+								finish();
 							}
 						}});
 				}

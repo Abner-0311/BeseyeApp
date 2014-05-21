@@ -161,6 +161,7 @@ public class BeseyeJSONUtil {
 	
 	public static final String MM_TYPE_IDS				= "typeIds";
 	public static final String MM_FACE_IDS 				= "faceIds";
+	public static final String MM_IS_LIVE 				= "isLive";
 	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "GCMProjectID";
@@ -369,20 +370,35 @@ public class BeseyeJSONUtil {
 		if(null != dest && null != obj){
 			JSONArray arr = BeseyeJSONUtil.getJSONArray(dest, OBJ_LST);
 			if(null != arr){
-				try {
-					JSONArray copy = new JSONArray(arr.toString());
-					if(null != copy){
-						arr.put(0, obj);
-						int iCount = copy.length();
-						for(int i = 0 ;i< iCount;i++){
-							arr.put(i+1, copy.getJSONObject(i));
-						}
+				if(appendObjToArrayBegin(arr, obj)){
+					try {
 						dest.put(OBJ_CNT, BeseyeJSONUtil.getJSONInt(dest, OBJ_CNT)+1);
 						bRet = true;
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-				} catch (JSONException e) {
-					e.printStackTrace();
 				}
+			}
+		}
+		return bRet;
+	}
+	
+	static public boolean appendObjToArrayBegin(JSONArray arr, JSONObject obj){
+		boolean bRet = false;
+		if(null != arr){
+			try {
+				JSONArray copy = new JSONArray(arr.toString());
+				if(null != copy){
+					arr.put(0, obj);
+					int iCount = copy.length();
+					for(int i = 0 ;i< iCount;i++){
+						arr.put(i+1, copy.getJSONObject(i));
+					}
+					bRet = true;
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
 		}
 		return bRet;
