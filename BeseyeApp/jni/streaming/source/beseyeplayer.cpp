@@ -790,7 +790,7 @@ int CBeseyePlayer::queue_picture(VideoState *is, AVFrame *src_frame, double pts1
 			vp->sample_aspect_ratio = av_guess_sample_aspect_ratio(is->ic, is->video_st, src_frame);
 
 			//workaround
-			if(get_Stream_Status() == STREAM_CONNECTED || get_Stream_Status() == STREAM_PAUSED || get_Stream_Status() == STREAM_EOF){
+			if(/*get_Stream_Status() == STREAM_CONNECTED || */get_Stream_Status() == STREAM_PAUSED || get_Stream_Status() == STREAM_EOF){
 				triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PLAYING, 0);
 			}
 

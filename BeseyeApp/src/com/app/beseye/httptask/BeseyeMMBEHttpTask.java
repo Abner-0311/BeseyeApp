@@ -17,6 +17,8 @@ public class BeseyeMMBEHttpTask  {
 	static private final String URL_GET_EVENT_LIST 	    = "events/%s?startTime=%s&duration=%s";
 	static private final String URL_GET_EVENT_LIST_CNT 	= "events/count/%s?startTime=%s&duration=%s";
 	
+	static private final String URL_GET_LATEST_THUMB 	= "thumbnail/get_latest?vcamUuid=%s";
+	
 	public static class GetLiveStreamTask extends BeseyeHttpTask{
 		private String strVcamId = null;
 		public GetLiveStreamTask(OnHttpTaskCallback cb) {
@@ -64,6 +66,23 @@ public class BeseyeMMBEHttpTask  {
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			return super.doInBackground(MM_HOST_PRODCTION+String.format(URL_GET_EVENT_LIST_CNT, strParams[0], strParams[1], strParams[2]));
+		}
+	}
+	
+	public static class GetLatestThumbnailTask extends BeseyeHttpTask{
+		private String strVcamId = null;
+		public GetLatestThumbnailTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		public String getVcamId(){
+			return strVcamId;
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			strVcamId = strParams[0];
+			return super.doInBackground(MM_HOST_PRODCTION+String.format(URL_GET_LATEST_THUMB, strParams[0]));
 		}
 	}
 }

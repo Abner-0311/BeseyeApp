@@ -119,6 +119,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
     
     private boolean isCamViewStatus(CameraView_Internal_Status status){
+    	Log.i(TAG, "isCamViewStatus(), status:" + status+", mCamViewStatus:"+mCamViewStatus);
     	return mCamViewStatus == status;
     }
     
@@ -127,7 +128,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		sHandler.post(new Runnable(){
 				@Override
 				public void run() {
-					Log.e(TAG, "setCamViewStatus(), status:" + status);
+					Log.i(TAG, "setCamViewStatus(), status:" + status);
 			    	CameraView_Internal_Status precCamViewStatus = mCamViewStatus;
 			    	
 			    	switch(status){
@@ -157,20 +158,24 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    		}
 			    		case CV_STREAM_CONNECTED:{
 			    			CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.CAM_ON);
-			    			hideInvalidStateMask();
-			    			break;
-			    		}
-			    		case CV_STREAM_PLAYING:{
+			    			setVisibility(mPbLoadingCursor, View.GONE);
+			    			cancelCheckVideoConn();
+			    			
 			    			setEnabled(mIbTalk, mbIsLiveMode && !isInP2PMode());
 			    			//setEnabled(mIbRewind, true);
-			    			cancelCheckVideoConn();
 			    			setEnabled(mIbPlayPause, true);
 			    			//setEnabled(mIbFastForward, !mbIsLiveMode);
-			    			setVisibility(mPbLoadingCursor, View.GONE);
+			    			//setVisibility(mPbLoadingCursor, View.GONE);
 			    			
 			    			startUpdateTime();
 			    			
 			    			setImageRes(mIbPlayPause, R.drawable.sl_liveview_pause_btn);
+			    			
+			    			hideInvalidStateMask();
+			    			break;
+			    		}
+			    		case CV_STREAM_PLAYING:{
+			    			
 			    			break;
 			    		}
 			    		case CV_STREAM_WAITING_PAUSE:{
@@ -199,6 +204,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 			    			releaseWakelock();
 			    			cancelCheckVideoConn();
+			    			if(null != mReStartRunnable){
+								BeseyeUtils.postRunnable(mReStartRunnable, 600L);
+								mReStartRunnable = null;
+							}
 			    			break;
 			    		}
 			    		default:{
@@ -294,7 +303,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mIbSetting = (ImageButton)findViewById(R.id.ib_settings);
 		if(null != mIbSetting){
 			mIbSetting.setOnClickListener(this);
-			mIbSetting.setVisibility(mbVCamAdmin?View.VISIBLE:View.INVISIBLE);
+			mIbSetting.setVisibility((!COMPUTEX_DEMO && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
 			//mIbSetting.setEnabled(false);//not implement
 		}
 		
@@ -406,7 +415,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(null != mIbSetting){
 			//mIbSetting.setEnabled(!isInP2PMode());
-			mIbSetting.setVisibility(isInP2PMode()?View.INVISIBLE:View.VISIBLE);
+			mIbSetting.setVisibility((!COMPUTEX_DEMO && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
+			//mIbSetting.setVisibility(isInP2PMode()?View.INVISIBLE:View.VISIBLE);
 		}
 	}
 
@@ -427,26 +437,25 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkAndExtendHideHeader();
 		
-//		AsyncHttpClient.getDefaultInstance().websocket("ws://192.168.2.151:5432","beseye-soundpair-protocol", new WebSocketConnectCallback(){
-//
-//			@Override
-//			public void onCompleted(Exception ex, WebSocket webSocket) {
-//				Log.i(TAG, "onCompleted()..., ex="+((null == ex)?"":ex.toString()));
-//				if(null == ex)
-//					webSocket.send("Welcome");
-//			}});
+		if(!mbFirstResume){
+			triggerPlay();
+		}
 	}
 	
 	protected void onSessionComplete(){
-		Log.d(TAG, "CameraViewActivity::onSessionComplete(), mbIsFirstLaunch:"+mbIsFirstLaunch+", mbIsPauseWhenPlaying:"+mbIsPauseWhenPlaying+", mbIsCamSettingChanged:"+mbIsCamSettingChanged+", mbIsWifiSettingChanged:"+mbIsWifiSettingChanged);
-		if(false == handleReddotNetwork(false)){
+		triggerPlay();
+	}
+	
+	private void triggerPlay(){
+		Log.i(TAG, "CameraViewActivity::triggerPlay(), mbIsFirstLaunch:"+mbIsFirstLaunch+", mbIsPauseWhenPlaying:"+mbIsPauseWhenPlaying+", mbIsCamSettingChanged:"+mbIsCamSettingChanged+", mbIsWifiSettingChanged:"+mbIsWifiSettingChanged);
+		//if(false == handleReddotNetwork(false)){
 			if(null != mTxtCamName){
 				mTxtCamName.setText(mStrVCamName);
 			}
 			
 			if(null != mStreamingView)
 				mStreamingView.setUpsideDown(CamSettingMgr.getInstance().getVideoUpsideDown(TMP_CAM_ID) == 1);
-		}
+		//}
 		
 		if(null != mVgCamInvalidState){
 			mVgCamInvalidState.setVisibility(View.GONE);
@@ -461,31 +470,31 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		initDateTime();
 	}
 	
-	private boolean handleReddotNetwork(boolean bForceShow){
-		boolean bRet = false;
-		Log.i(TAG, "CameraViewActivity::handleReddotNetwork(), isWifiEnabled:"+NetworkMgr.getInstance().isWifiEnabled()+
-															  ",getActiveWifiSSID:"+NetworkMgr.getInstance().getActiveWifiSSID()+
-															  ",bForceShow:"+bForceShow);
-		if(REDDOT_DEMO && NetworkMgr.getInstance().isWifiEnabled() && RELAY_AP_SSID.equals(NetworkMgr.getInstance().getActiveWifiSSID())){
-			if(bForceShow){
-				Log.i(TAG, "CameraViewActivity::handleReddotNetwork(), cannot contact AP --------------");
-				showInvalidStateMask();
-				BeseyeUtils.postRunnable(new Runnable(){
-					@Override
-					public void run() {
-						beginLiveView();
-					}}, 600L);
-			}
-		}else if(REDDOT_DEMO && (bForceShow ||(!NetworkMgr.getInstance().isWifiEnabled() || !RELAY_AP_SSID.equals(NetworkMgr.getInstance().getActiveWifiSSID())))){
-			Log.i(TAG, "CameraViewActivity::handleReddotNetwork(), launch wifi list --------------");
-			Intent intent = new Intent();
-			intent.setClass(this, WifiListActivity.class);
-			intent.putExtra(WifiListActivity.KEY_CHANGE_WIFI_ONLY, true);
-			startActivityForResult(intent, REQUEST_WIFI_SETTING_CHANGED);
-			bRet = true;
-		}
-		return bRet;
-	}
+//	private boolean handleReddotNetwork(boolean bForceShow){
+//		boolean bRet = false;
+//		Log.i(TAG, "CameraViewActivity::handleReddotNetwork(), isWifiEnabled:"+NetworkMgr.getInstance().isWifiEnabled()+
+//															  ",getActiveWifiSSID:"+NetworkMgr.getInstance().getActiveWifiSSID()+
+//															  ",bForceShow:"+bForceShow);
+//		if(REDDOT_DEMO && NetworkMgr.getInstance().isWifiEnabled() && RELAY_AP_SSID.equals(NetworkMgr.getInstance().getActiveWifiSSID())){
+//			if(bForceShow){
+//				Log.i(TAG, "CameraViewActivity::handleReddotNetwork(), cannot contact AP --------------");
+//				showInvalidStateMask();
+//				BeseyeUtils.postRunnable(new Runnable(){
+//					@Override
+//					public void run() {
+//						beginLiveView();
+//					}}, 600L);
+//			}
+//		}else if(REDDOT_DEMO && (bForceShow ||(!NetworkMgr.getInstance().isWifiEnabled() || !RELAY_AP_SSID.equals(NetworkMgr.getInstance().getActiveWifiSSID())))){
+//			Log.i(TAG, "CameraViewActivity::handleReddotNetwork(), launch wifi list --------------");
+//			Intent intent = new Intent();
+//			intent.setClass(this, WifiListActivity.class);
+//			intent.putExtra(WifiListActivity.KEY_CHANGE_WIFI_ONLY, true);
+//			startActivityForResult(intent, REQUEST_WIFI_SETTING_CHANGED);
+//			bRet = true;
+//		}
+//		return bRet;
+//	}
 	
 	private static class PauseCameraViewRunnable implements Runnable{
 		WeakReference<CameraViewActivity> mCameraViewActivity;
@@ -497,7 +506,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		public void run() {
 			CameraViewActivity act = mCameraViewActivity.get();
 			if(null != act){
-				if(act.isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING)){
+				if(act.isCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTED) || act.isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING)){
 					Log.d(TAG, "CameraViewActivity::onPause()->run(), pause when playing");
 					act.mbIsPauseWhenPlaying = true;
 				}
@@ -582,8 +591,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						@Override
 						public void onDismiss(DialogInterface arg0) {
 							Log.w(TAG, "CameraViewActivity::onDismiss(), mbNeedToCheckReddotNetwork = "+mbNeedToCheckReddotNetwork);
-							if(mbNeedToCheckReddotNetwork)
-								handleReddotNetwork(true);
+//							if(mbNeedToCheckReddotNetwork)
+//								handleReddotNetwork(true);
 							mbNeedToCheckReddotNetwork = false;
 							
 							if(null != mCameraViewControlAnimator){
@@ -670,7 +679,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 		
 		if(null != mIbSetting){
-			mIbSetting.setVisibility((mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
+			mIbSetting.setVisibility((!COMPUTEX_DEMO && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);		
 		}
 	}
 	
@@ -799,7 +808,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					}
 				}
 			}else{
-				Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
+				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
 				super.onPostExecute(task, result, iRetCode);
 			}
 		}
@@ -811,7 +820,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 	}
 	
-
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
@@ -1195,14 +1203,16 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(null != act && !act.isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
 				Log.e(TAG, "CheckVideoBlockRunnable::run(), time to reconnect..............");
 				act.closeStreaming();
-				BeseyeUtils.postRunnable(new Runnable(){
+				act.mReStartRunnable =  new Runnable(){
 					@Override
 					public void run() {
 						act.beginLiveView();
-					}}, 600L);
+					}};
 			}
 		}
 	} 
+    
+    private Runnable mReStartRunnable= null;
     
     final private static int COUNT_TO_START_CHECK_EXPIRE =30; 
     private int mCurCheckCount = 0;
@@ -1304,7 +1314,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		UNKOWN_ERROR
 	};
     
-    public void updateRTMPStatus(int iType, String msg){
+    public void updateRTMPStatus(int iType, final String msg){
     	Log.w(TAG, "updateRTMPStatus(), iType:"+iType);
     	if(iType == Stream_Status.STREAM_INIT.ordinal()){
     		setCamViewStatus(CameraView_Internal_Status.CV_STREAM_INIT);
@@ -1314,7 +1324,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		setCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTED);
     	}else if(iType == Stream_Status.STREAM_PLAYING.ordinal()){
     		setCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING);
-    		updateStreamList(msg);
+    		BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					updateStreamList(msg);
+				}}, 0);
     	}else if(iType == Stream_Status.STREAM_PAUSING.ordinal()){
     		setCamViewStatus(CameraView_Internal_Status.CV_STREAM_PAUSING);
     	}else if(iType == Stream_Status.STREAM_PAUSED.ordinal()){

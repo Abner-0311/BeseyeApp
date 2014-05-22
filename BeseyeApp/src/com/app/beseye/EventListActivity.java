@@ -31,6 +31,7 @@ import com.app.beseye.adapter.EventListAdapter.EventListItmHolder;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeClockIndicator;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog.OnDatetimePickerClickListener;
@@ -69,6 +70,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 			if(null != mIvFilter){
 				mIvFilter.setOnClickListener(this);
 				mIvFilter.setImageResource(R.drawable.sl_event_list_filter);
+				mIvFilter.setVisibility(COMPUTEX_DEMO?View.INVISIBLE:View.VISIBLE);
 			}
 			
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
@@ -97,7 +99,7 @@ public class EventListActivity extends BeseyeBaseActivity{
     			public void onRefresh() {
     				Log.i(TAG, "onRefresh()");	
     				mbNeedToCalcu = false;
-    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, "bes0001", "1389918731000", "6000000");
+    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, "bes0001", "1389918731000", "600000");
     			}
 
 				@Override
@@ -175,13 +177,22 @@ public class EventListActivity extends BeseyeBaseActivity{
 					}
 					mVgIndicator.updateIndicatorPosition(iFirstIdx, topChild.getBottom());
 					//Log.i(TAG, "updateIndicatorPosition(), pos = "+mVgIndicator.getIndicatorPos());	
-					findLvItmByPos(mVgIndicator.getIndicatorPos());
+					View view= findLvItmByPos(mVgIndicator.getIndicatorPos());
+					if(null != view){
+						EventListItmHolder holder = (EventListItmHolder)view.getTag();
+						mVgIndicator.updateDateTime(BeseyeJSONUtil.getJSONLong(holder.mObjEvent, BeseyeJSONUtil.MM_START_TIME));
+//						if(null != mEventListAdapter && mEventListAdapter.setSelectedItm(iFirstVisiblePos+i - list.getHeaderViewsCount())){
+//							mEventListAdapter.notifyDataSetChanged();
+//							Log.i(TAG, "findLvItmByPos(), pos = "+iPos+", ["+iFirstVisiblePos+", "+iLastVisiblePos+"], obj="+holder.mObjEvent);	
+//						}
+					}
 				}
 			}
 		}
 	}
 	
-	private void findLvItmByPos(int iPos){
+	private View findLvItmByPos(int iPos){
+		View view = null;
 		ListView list  = mMainListView.getRefreshableView();
 		if(null != list){
 			int iFirstVisiblePos = list.getFirstVisiblePosition();
@@ -191,17 +202,13 @@ public class EventListActivity extends BeseyeBaseActivity{
 				View child = list.getChildAt(i);
 				if(null != child && child.getTag() instanceof EventListItmHolder){
 					if(child.getTop() < iPos && iPos <=child.getBottom()){
-						EventListItmHolder holder = (EventListItmHolder)child.getTag();
-						mVgIndicator.updateDateTime(BeseyeJSONUtil.getJSONLong(holder.mObjEvent, BeseyeJSONUtil.MM_START_TIME));
-//						if(null != mEventListAdapter && mEventListAdapter.setSelectedItm(iFirstVisiblePos+i - list.getHeaderViewsCount())){
-//							mEventListAdapter.notifyDataSetChanged();
-//							Log.i(TAG, "findLvItmByPos(), pos = "+iPos+", ["+iFirstVisiblePos+", "+iLastVisiblePos+"], obj="+holder.mObjEvent);	
-//						}
+						view = child;
 						break;
 					}
 				}
 			}
 		}
+		return view;
 	}
 	
 	private void refreshList(){
@@ -212,12 +219,12 @@ public class EventListActivity extends BeseyeBaseActivity{
 	
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(this), true, "bes0001", "1389918731000", "6000000");
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(this), true, "bes0001", "1389918731000", "600000");
 	}
 	
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
-		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode+", "+System.currentTimeMillis());	
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeMMBEHttpTask.GetEventListTask){
 				if(0 == iRetCode){
@@ -229,17 +236,18 @@ public class EventListActivity extends BeseyeBaseActivity{
 						try {
 							liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
 							liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
-							
 							BeseyeJSONUtil.appendObjToArrayBegin(EntList, liveObj);
 						} catch (JSONException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						
 						mEventListAdapter.updateResultList(EntList);
 						refreshList();
-						if(null != mMainListView)
+						if(null != mMainListView){
 							mMainListView.onRefreshComplete();
+							mMainListView.updateLatestTimestamp();
+						}
+						checkClockByTime();
 					}
 				}
 			}else{
@@ -247,6 +255,35 @@ public class EventListActivity extends BeseyeBaseActivity{
 				super.onPostExecute(task, result, iRetCode);
 			}
 		}
+	}
+	
+	private void checkClockByTime(){
+		Date now = new Date();
+		long lTimeToCheck = ((60 - now.getSeconds())*1000);
+		//Log.i(TAG, "checkClockByTime(), now : "+now.toLocaleString()+", lTimeToCheck:"+lTimeToCheck);	
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+				if(null != EntList && 0 < EntList.length()){
+					try {
+						JSONObject liveObj = EntList.getJSONObject(0);
+						if(null != liveObj){
+							liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
+							View view= findLvItmByPos(mVgIndicator.getIndicatorPos());
+							if(null != view){
+								EventListItmHolder holder = (EventListItmHolder)view.getTag();
+								if(liveObj.equals(holder.mObjEvent)){
+									mVgIndicator.updateDateTime(BeseyeJSONUtil.getJSONLong(holder.mObjEvent, BeseyeJSONUtil.MM_START_TIME));
+								}
+							}
+							checkClockByTime();
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			}}, lTimeToCheck);
 	}
 
 	@Override
@@ -277,12 +314,14 @@ public class EventListActivity extends BeseyeBaseActivity{
 			d.setOnDatetimePickerClickListener(new OnDatetimePickerClickListener(){
 				@Override
 				public void onBtnOKClick(Calendar pickDate) {
-					Toast.makeText(EventListActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
+					if(!COMPUTEX_DEMO)
+						Toast.makeText(EventListActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
 				}
 	
 				@Override
 				public void onBtnCancelClick() {
-					Toast.makeText(EventListActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
+					if(!COMPUTEX_DEMO)
+						Toast.makeText(EventListActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
 				}});
 			
 			d.show();

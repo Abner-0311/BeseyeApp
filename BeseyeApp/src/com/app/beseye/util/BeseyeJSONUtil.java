@@ -131,6 +131,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_VCAM_ATTR 			= "VcamAttr";
 	public static final String ACC_VCAM_ATTACHED 		= "IsAttached";
 	public static final String ACC_VCAM_CONN_STATE 		= "VcamConnState";
+	public static final String ACC_VCAM_THUMB 			= "VcamThumbnail";
 	
 	public static final String ACC_VCAM_CNT 			= "VcamsCnt";
 	public static final String ACC_VCAM_LST 			= "Vcams";
@@ -162,6 +163,8 @@ public class BeseyeJSONUtil {
 	public static final String MM_TYPE_IDS				= "typeIds";
 	public static final String MM_FACE_IDS 				= "faceIds";
 	public static final String MM_IS_LIVE 				= "isLive";
+	public static final String MM_THUMBNAIL 			= "thumbnail";
+	public static final String MM_THUMBNAIL_PATH 		= "path";
 	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "GCMProjectID";

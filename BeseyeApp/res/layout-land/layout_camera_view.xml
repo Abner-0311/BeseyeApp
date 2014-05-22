@@ -52,7 +52,7 @@
 	    android:layout_height="match_parent"
 		android:gravity="center"
 	    android:visibility="gone" 
-	    android:background="#1ae5e5e5">
+	    android:background="#11ffffff">
 	    <TextView 
 		    android:id="@+id/txt_cam_invalid_state"
 		    android:layout_width="wrap_content"
@@ -142,20 +142,22 @@
     	android:background="@drawable/liveview_h_toolbar_bg">
 	    <LinearLayout 
 	        android:layout_width="match_parent"
-    		android:layout_height="match_parent">
+    		android:layout_height="match_parent"
+    		android:orientation="vertical">
 	       <TextView 
 		       	android:id="@+id/txt_events"
-		    	android:layout_width="wrap_content"
-	    		android:layout_height="wrap_content" 
-	    		android:layout_marginLeft="40dp" 
+		    	android:layout_width="match_parent"
+	    		android:layout_height="match_parent" 
 	    		android:layout_gravity="center"
-	    		android:textSize="@dimen/liveview_navbar_font_size"
-	    		android:textColor="@color/cl_normal_font_color"
+	    		android:gravity="center"
+	    		android:textSize="22sp"
+	    		android:textColor="@color/cl_reverse_font_color"
 	    		android:text="@string/event_cam_view"/>
 	       <View 
 	           	android:layout_width="0dp"
 	    		android:layout_height="1dp" 
-	    		android:layout_weight="1"/>
+	    		android:layout_weight="1"
+	    		android:visibility="gone"/>
 		    <TextView 
 		       	android:id="@+id/txt_go_live"
 		    	android:layout_width="wrap_content"
@@ -163,44 +165,53 @@
 	    		android:text="@string/event_go_live"
 	    		android:layout_gravity="center"
 	    		android:textSize="@dimen/liveview_navbar_font_size"
-	    		android:textColor="@color/cl_normal_font_color"/>
+	    		android:textColor="@color/cl_normal_font_color"
+	    		android:visibility="gone"/>
 		    <View 
 	           	android:layout_width="0dp"
 	    		android:layout_height="1dp" 
-	    		android:layout_weight="1"/>
+	    		android:layout_weight="1"
+	    		android:visibility="gone"/>
 		    <ImageButton 
 		       	android:id="@+id/ib_talk"
 		    	android:layout_width="wrap_content"
 	    		android:layout_height="wrap_content" 
 	    		android:layout_gravity="center"
 	    		android:src="@drawable/sl_liveview_talk_btn"
-	    		android:background="@android:color/transparent"/>
+	    		android:background="@android:color/transparent"
+	    		android:visibility="gone"/>
 		    <View 
 	           	android:layout_width="0dp"
 	    		android:layout_height="1dp" 
-	    		android:layout_weight="1"/>
+	    		android:layout_weight="1"
+	    		android:visibility="gone"/>
 		    <ImageButton 
 		       	android:id="@+id/ib_rewind"
 		    	android:layout_width="wrap_content"
 	    		android:layout_height="wrap_content" 
 	    		android:layout_gravity="center"
 	    		android:src="@drawable/sl_liveview_rewind_btn"
-	    		android:background="@android:color/transparent"/>
+	    		android:background="@android:color/transparent"
+	    		android:visibility="gone"/>
 		    <View 
 	           	android:layout_width="0dp"
 	    		android:layout_height="1dp" 
-	    		android:layout_weight="1"/>
+	    		android:layout_weight="1"
+	    		android:visibility="gone"/>
 		    <ImageButton 
 		       	android:id="@+id/ib_play_pause"
 		    	android:layout_width="wrap_content"
 	    		android:layout_height="wrap_content" 
 	    		android:layout_gravity="center"
 	    		android:src="@drawable/sl_liveview_play_btn"
-	    		android:background="@android:color/transparent"/>
+	    		android:background="@android:color/transparent"
+	    		android:visibility="gone"
+	    		/>
 		    <View 
 	           	android:layout_width="0dp"
 	    		android:layout_height="1dp" 
-	    		android:layout_weight="1"/>
+	    		android:layout_weight="1"
+	    		android:visibility="gone"/>
 		    <ImageButton 
 		       	android:id="@+id/ib_fast_forward"
 		    	android:layout_width="wrap_content"
@@ -208,7 +219,8 @@
 	    		android:layout_marginRight="40dp" 
 	    		android:layout_gravity="center" 
 	    		android:src="@drawable/sl_liveview_fast_forward_btn"
-	    		android:background="@android:color/transparent"/> 
+	    		android:background="@android:color/transparent"
+	    		android:visibility="gone"/> 
 	    </LinearLayout>
 	</RelativeLayout>
 	<include 

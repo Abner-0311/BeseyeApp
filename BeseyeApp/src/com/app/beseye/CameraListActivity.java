@@ -58,11 +58,13 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			mIvMenu = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_menu_btn);
 			if(null != mIvMenu){
 				mIvMenu.setOnClickListener(this);
+				mIvMenu.setVisibility(COMPUTEX_DEMO?View.INVISIBLE:View.VISIBLE);
 			}
 			
 			mIvAddCam = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_add_cam_btn);
 			if(null != mIvAddCam){
 				mIvAddCam.setOnClickListener(this);
+				mIvAddCam.setVisibility(COMPUTEX_DEMO?View.INVISIBLE:View.VISIBLE);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
@@ -190,6 +192,27 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 							//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> camObj = "+camObj.toString());
 							if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
 								camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+								refreshList();
+								monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, strVcamId);
+								break;
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}else if(task instanceof BeseyeMMBEHttpTask.GetLatestThumbnailTask){
+				if(0 == iRetCode){
+					String strVcamId = ((BeseyeMMBEHttpTask.GetLatestThumbnailTask)task).getVcamId();
+					//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> VCAMID = "+strVcamId+", result.get(0)="+result.get(0).toString());
+					JSONArray arrCamList = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
+					int iCount = (null != arrCamList)?arrCamList.length():0;
+					for(int i = 0;i < iCount;i++){
+						try {
+							JSONObject camObj = arrCamList.getJSONObject(i);
+							//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> camObj = "+camObj.toString());
+							if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
+								camObj.put(BeseyeJSONUtil.ACC_VCAM_THUMB, BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.MM_THUMBNAIL), BeseyeJSONUtil.MM_THUMBNAIL_PATH));
 								refreshList();
 								break;
 							}

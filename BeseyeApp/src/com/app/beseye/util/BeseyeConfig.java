@@ -18,7 +18,9 @@ public class BeseyeConfig {
 	static public final boolean ASSIGN_ST_PATH = false;
 	static public final boolean FAKE_AUDIO_RECEIVER = false;
 	
-	static public final boolean REDDOT_DEMO = false;
+	static public final boolean REDDOT_DEMO = false;//deprecated
+	static public final boolean COMPUTEX_DEMO = true;
+	
 	static public final String RELAY_AP_SSID = "raylios WiFi";
 	static public final String RELAY_AP_PW = "whoisyourdaddy";
 	
@@ -65,19 +67,19 @@ public class BeseyeConfig {
 	static public final List<String> STREAM_PATH_LIST = new ArrayList<String>();
 	static public final Map<String, String> REDDOT_STREAM_PATH_MAP = new HashMap<String, String>();
 	static{
-		if(REDDOT_DEMO){
-			for(int i = 1; i<= REDDOT_STREAM_PATH.length;i++){
-				STREAM_PATH_LIST.add(REDDOT_STREAM_PATH[i-1]);
-				REDDOT_STREAM_PATH_MAP.put(REDDOT_STREAM_PATH[i-1], "No. "+i);
-			}
-		}else{
+//		if(REDDOT_DEMO){
+//			for(int i = 1; i<= REDDOT_STREAM_PATH.length;i++){
+//				STREAM_PATH_LIST.add(REDDOT_STREAM_PATH[i-1]);
+//				REDDOT_STREAM_PATH_MAP.put(REDDOT_STREAM_PATH[i-1], "No. "+i);
+//			}
+//		}else{
 			if(ASSIGN_ST_PATH)
 				STREAM_PATH_LIST.add(CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
 			
 			for(int i = 0; i< DEMO_STREAM_PATH.length;i++){
 				STREAM_PATH_LIST.add(DEMO_STREAM_PATH[i]);
 			}
-		}
+//		}
 	}
 	
 	static public int CUR_STREAMING_PATH_IDX = 0;

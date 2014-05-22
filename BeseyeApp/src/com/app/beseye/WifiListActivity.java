@@ -127,10 +127,11 @@ public class WifiListActivity extends WifiControlBaseActivity
 		switch(id){
 			case DIALOG_ID_WIFI_AP_INCORRECT_PW:{
 				dialog = super.onCreateDialog(id, bundle);
-				if(REDDOT_DEMO){
-					mlstScanResult.clear();
-					setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
-				}else if(null != mChosenWifiAPInfo){
+//				if(REDDOT_DEMO){
+//					mlstScanResult.clear();
+//					setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+//				}else 
+				if(null != mChosenWifiAPInfo){
 					boolean bMaybeWrongPW = bundle.getBoolean(KEY_MAYBE_WRONG_PW);	
 					dialog = new Dialog(this);
 					dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
@@ -312,11 +313,12 @@ public class WifiListActivity extends WifiControlBaseActivity
 		
 		if(curState.equals(WIFI_AP_SETUP_STATE.SETUP_DONE)){
 			setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SET_DONE);
-		}else if(REDDOT_DEMO && curState.equals(WIFI_AP_SETUP_STATE.TARGET_AP_CONNECTED)){
-			setResult(RESULT_OK);
-			CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.CAM_ON);
-			finish();
 		}
+//		else if(REDDOT_DEMO && curState.equals(WIFI_AP_SETUP_STATE.TARGET_AP_CONNECTED)){
+//			setResult(RESULT_OK);
+//			CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.CAM_ON);
+//			finish();
+//		}
 	}
 
 	@Override

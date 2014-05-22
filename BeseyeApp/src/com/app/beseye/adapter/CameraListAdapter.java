@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.app.beseye.R;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn;
@@ -74,7 +75,6 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				}
 				
 				CAM_CONN_STATUS connState = CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
-				Log.i(TAG, "setupItem(), connState="+connState+", obj = "+obj.toString());
 				
 				BeseyeUtils.setVisibility(holder.mImgThumbnail, connState.equals(CAM_CONN_STATUS.CAM_ON)?View.VISIBLE:View.INVISIBLE);
 				BeseyeUtils.setVisibility(holder.mVgCamOff, connState.equals(CAM_CONN_STATUS.CAM_OFF)?View.VISIBLE:View.GONE);
@@ -86,7 +86,12 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					holder.mSbCamOnOff.setEnabled(connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED)?false:true);
 				}
 				
-				//convertView.setEnabled(connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED)?false:true);
+				if(null != holder.mImgThumbnail){
+					Log.i(TAG, "setupItem(), path="+BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB));
+					holder.mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB));
+				}
+				
+				convertView.setEnabled((BeseyeConfig.COMPUTEX_DEMO && connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED))?false:true);
 				
 				holder.mObjCam = obj;
 				convertView.setTag(holder);

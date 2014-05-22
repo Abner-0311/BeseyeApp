@@ -54,7 +54,8 @@
 		        android:id="@+id/iv_cameralist_thumbnail"
 		        android:layout_width="336dp"
 		        android:layout_height="189dp"
-		        android:src="@drawable/cameralist_thumbnail" />
+		        android:src="@drawable/cameralist_thumbnail" 
+		        android:visibility="invisible" />
 		    
 		    <RelativeLayout
 		        android:id="@+id/rl_camera_disconnected_solid"

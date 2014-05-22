@@ -110,11 +110,11 @@ public class BeseyeClockIndicator extends LinearLayout {
 		miNextMin = date.getMinutes();
 		
 		if(null != m_txtDate){
-			m_txtDate.setText(String.format("%d/%d", date.getMonth()+1, date.getDate()));
+			m_txtDate.setText(String.format("%02d/%02d", date.getMonth()+1, date.getDate()));
 		}
 		
 		if(null != m_txtTime){
-			m_txtTime.setText(String.format("%d:%d", miNextHour, miNextMin));
+			m_txtTime.setText(String.format("%02d:%02d", miNextHour, miNextMin));
 		}
 		
 		if(inAnimation()){
