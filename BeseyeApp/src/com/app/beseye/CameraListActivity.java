@@ -203,6 +203,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 			}else if(task instanceof BeseyeMMBEHttpTask.GetLatestThumbnailTask){
 				if(0 == iRetCode){
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 					String strVcamId = ((BeseyeMMBEHttpTask.GetLatestThumbnailTask)task).getVcamId();
 					//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> VCAMID = "+strVcamId+", result.get(0)="+result.get(0).toString());
 					JSONArray arrCamList = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;

@@ -3,6 +3,7 @@ package com.app.beseye.widget;
 import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeUtils.*;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -16,6 +17,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.app.beseye.R;
 
 import android.content.Context;
@@ -66,6 +72,11 @@ public class RemoteImageView extends ImageView {
 	private static final float SHADOW_WIDTH = 3.0f;
 	private boolean mbEnableShadow = false;
 	private float mShadowWidth = SHADOW_WIDTH;
+	private static AWSCredentials myCredentials;
+	final private static String S3_FILE_PREFIX = "s3://";
+	static{
+		myCredentials = new BasicAWSCredentials("AKIAIEILGPKIXSE6EDFQ", "TQst9ZqzmzrOq0qZcJJjdbOSnTIfpXIFWvKnWJcK"); 
+	}
 
 	public interface RemoteImageCallback {
 		public void imageLoaded(boolean success);
@@ -459,18 +470,37 @@ public class RemoteImageView extends ImageView {
 		InputStream inputStream = null;
 		Bitmap bitmap = null;
 		try {
-			URL url = new URL(uri);
-			URLConnection conn = url.openConnection();
-			HttpURLConnection httpConn = (HttpURLConnection) conn;
-			httpConn.setRequestMethod("GET");
-			httpConn.connect();
-
-			if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				inputStream = httpConn.getInputStream();
-				if (inputStream != null) {
-					BitmapFactory.Options options = new BitmapFactory.Options();
-					options.inSampleSize = iSample;
-					bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+			if(uri.startsWith("http:")){
+				URL url = new URL(uri);
+				URLConnection conn = url.openConnection();
+				HttpURLConnection httpConn = (HttpURLConnection) conn;
+				httpConn.setRequestMethod("GET");
+				httpConn.connect();
+				if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+					inputStream = httpConn.getInputStream();
+					if (inputStream != null) {
+						BitmapFactory.Options options = new BitmapFactory.Options();
+						options.inSampleSize = iSample;
+						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+					}else{
+						Log.w(TAG, "inputStream is null");
+					}
+				}
+			}else if(uri.startsWith(S3_FILE_PREFIX)){
+				int iBucketPos = S3_FILE_PREFIX.length();
+				int iFilePos = uri.indexOf("/", iBucketPos);
+				if(iFilePos > iBucketPos){
+					String strBucket = uri.substring(iBucketPos, iFilePos);
+					String strPath = uri.substring(iFilePos+1);
+					AmazonS3Client s3Client = new AmazonS3Client(myCredentials);
+					S3Object object = s3Client.getObject(new GetObjectRequest(strBucket, strPath));
+					//S3Object object = s3Client.getObject(new GetObjectRequest("2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser", "thumbnail/400x225/2014/05-22/09/{sEnd}1400751551309_{dur}10426_{r}1400750317346_{th}1400751550883.jpg"));
+					inputStream = new BufferedInputStream(object.getObjectContent()); //
+					if (inputStream != null) {
+						BitmapFactory.Options options = new BitmapFactory.Options();
+						options.inSampleSize = iSample;
+						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+					}
 				}
 			}
 		} catch (Exception e) {

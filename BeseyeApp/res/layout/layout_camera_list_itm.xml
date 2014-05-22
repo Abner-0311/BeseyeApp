@@ -55,6 +55,7 @@
 		        android:layout_width="336dp"
 		        android:layout_height="189dp"
 		        android:src="@drawable/cameralist_thumbnail" 
+		        android:background="@color/camera_list_video_bg"
 		        android:visibility="invisible" />
 		    
 		    <RelativeLayout

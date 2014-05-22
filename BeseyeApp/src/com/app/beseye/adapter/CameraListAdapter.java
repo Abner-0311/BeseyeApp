@@ -54,6 +54,9 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				}
 				
 				holder.mImgThumbnail = (RemoteImageView)convertView.findViewById(R.id.iv_cameralist_thumbnail);
+				if(null != holder.mImgThumbnail){
+					holder.mImgThumbnail.bringToFront();
+				}
 				
 				holder.mVgCamOff = (ViewGroup)convertView.findViewById(R.id.rl_cameralist_no_video);
 				holder.mVgCamDisconnected = (ViewGroup)convertView.findViewById(R.id.rl_camera_disconnected_solid);
@@ -87,8 +90,9 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				}
 				
 				if(null != holder.mImgThumbnail){
-					Log.i(TAG, "setupItem(), path="+BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB));
-					holder.mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB));
+					Log.i(TAG, "setupItem(), name"+BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_NAME)+", path="+BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB));
+					holder.mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB), R.drawable.cameralist_thumbnail);
+					holder.mImgThumbnail.loadImage();
 				}
 				
 				convertView.setEnabled((BeseyeConfig.COMPUTEX_DEMO && connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED))?false:true);
