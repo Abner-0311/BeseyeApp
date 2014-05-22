@@ -303,7 +303,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mIbSetting = (ImageButton)findViewById(R.id.ib_settings);
 		if(null != mIbSetting){
 			mIbSetting.setOnClickListener(this);
-			mIbSetting.setVisibility((!COMPUTEX_DEMO && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
+			mIbSetting.setVisibility((!COMPUTEX_DEMO && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
 			//mIbSetting.setEnabled(false);//not implement
 		}
 		
