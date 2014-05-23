@@ -1,6 +1,6 @@
 #include "AudioBufferMgr.h"
 
-int AudioBufferMgr::MAX_QUEUE_SIZE = (int) (SoundPair_Config::MAX_RECORDING_TIME*SoundPair_Config::SAMPLE_RATE_REC/SoundPair_Config::FRAME_SIZE_REC);//30;
+unsigned int AudioBufferMgr::MAX_QUEUE_SIZE = (int) (SoundPair_Config::MAX_RECORDING_TIME*SoundPair_Config::SAMPLE_RATE_REC/SoundPair_Config::FRAME_SIZE_REC);//30;
 AudioBufferMgr* AudioBufferMgr::sAudioBufferMgr = NULL;
 
 BufRecord::BufRecord(msec_t mlTs, ArrayRef<short> mbBuf, int miSampleRead){
@@ -32,7 +32,7 @@ AudioBufferMgr::AudioBufferMgr():
 miBufSize(0),
 miPivotRecording(0),
 miPivotAnalysis(0){
-	for(int i =0; i < AudioBufferMgr::MAX_QUEUE_SIZE ;i++){
+	for(unsigned int i =0; i < AudioBufferMgr::MAX_QUEUE_SIZE ;i++){
 		mAvailalbeBufList.push_back(ArrayRef<short>(new Array<short>(SoundPair_Config::FRAME_SIZE_REC)));
 	}
 	pthread_mutex_init(&mSrcBufMux, NULL);
@@ -88,7 +88,7 @@ ArrayRef<short> AudioBufferMgr::getBufByIndex(int iBufIndexInput, int iOffset, A
 	//Log.d(TAG, "getBufByIndex(), iBufIndexInput:"+iBufIndexInput+\n", iOffset:"+iOffset);
 	LOGD("getBufByIndex()+\n");
 	pthread_mutex_lock(&mSrcBufMux);
-	int iBufIndex = iBufIndexInput;
+	unsigned int iBufIndex = iBufIndexInput;
 	while(iOffset > SoundPair_Config::FRAME_SIZE_REC){
 		iOffset -= SoundPair_Config::FRAME_SIZE_REC;
 		iBufIndex = (iBufIndex+1)%AudioBufferMgr::MAX_QUEUE_SIZE;
@@ -232,12 +232,12 @@ void AudioBufferMgr::addToDataBuf(msec_t lTs, ArrayRef<short> buf, int iSampleRe
 	LOGD("addToDataBuf()-\n");
 }
 
-void AudioBufferMgr::trimAvailableBuf(int iRestCount){
+void AudioBufferMgr::trimAvailableBuf(unsigned int iRestCount){
 	//LOGI("trimAvailableBuf(), iRestCount:%d\n", iRestCount);
 
 	pthread_mutex_lock(&mDataBufMux);
 	LOGI("trimAvailableBuf(), iRestCount:%d, mDataBufList.size() :%d\n", iRestCount, mDataBufList.size());
-	int iCountToErase = (mDataBufList.size() >= iRestCount)?(mDataBufList.size() - iRestCount):0;
+	unsigned int iCountToErase = (mDataBufList.size() >= iRestCount)?(mDataBufList.size() - iRestCount):0;
 	while(0 < iCountToErase--){
 		mDataBufList.erase(mDataBufList.begin());
 	}
@@ -259,7 +259,8 @@ void AudioBufferMgr::waitForDataBuf(long lWaitTime){
 //	if(ETIMEDOUT == iRet)
 //		LOGI("waitForDataBuf(), iRet:ETIMEDOUT\n");
 //	else
-		LOGD("waitForDataBuf(), iRet:%d\n", iRet);
+	LOGD("waitForDataBuf(), iRet:%d\n", iRet);
+
 	pthread_mutex_unlock(&mDataBufMux);
 	LOGD("waitForDataBuf()-\n");
 }

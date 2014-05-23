@@ -33,7 +33,7 @@ public:
 
 class AudioBufferMgr : public Counted{
 public:
-	static int MAX_QUEUE_SIZE;
+	static unsigned int MAX_QUEUE_SIZE;
 
 	static AudioBufferMgr* getInstance();
 	void cleanRecordingBuf();
@@ -46,7 +46,7 @@ public:
 	Ref<BufRecord> getDataBuf();
 	Ref<BufRecord> getDataBuf(int iNumToRest);
 	void addToAvailableBuf(Ref<BufRecord> buf);
-	void trimAvailableBuf(int iRestCount);
+	void trimAvailableBuf(unsigned int iRestCount);
 
 	void recycleAllBuffer();
 	void waitForDataBuf(long lWaitTime);

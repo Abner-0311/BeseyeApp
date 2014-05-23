@@ -121,6 +121,8 @@ public:
 	static const int MAX_ENCODE_DATA_LEN = 4;//16;//127;
 	constexpr static const double EC_RATIO = 0.25f;
 
+	static const int MIN_PAIRING_MSG_LEN = (((12+2+10+2+4)*3)/2)-2;//-2 due to drop audio issue
+
 	static string PREFIX_DECODE;
 	static string POSTFIX_DECODE;
 	static string POSTFIX_DECODE_C1;

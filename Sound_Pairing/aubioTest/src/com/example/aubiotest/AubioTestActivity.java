@@ -638,7 +638,8 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
 				@Override
 				public void onClick(View arg0) {
 					if(!receiveAudioBufThreadRunning()){
-						if(receiveAudioBufFromCam(etDecode.getText().toString()))
+						String host = etDecode.getText().toString();
+						if(receiveAudioBufFromCam((null != host && 0<host.length())?host:"192.168.2.180"))
 							mBtnDelRec.setText("Stop Recording");
 					}else{
 						stopReceiveAudioBufThread();

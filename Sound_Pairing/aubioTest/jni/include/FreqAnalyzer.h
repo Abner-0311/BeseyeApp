@@ -79,6 +79,8 @@ private:
 	FreqAnalyzer* selfFreqAnalyzer;
 	MatchRetSet* mprevMatchRet;
 
+	bool mbLowSoundDetected;
+
 	FreqAnalyzer(bool bNeedToAutoCorrection);
 
 	static Ref<FreqAnalyzer> sFreqAnalyzer;
@@ -181,6 +183,9 @@ public:
     int getSessionOffset();
     bool checkEndPoint();
 
+
+    bool isDetectLowSound(){return mbLowSoundDetected;}
+    void setDetectLowSound(bool flag){mbLowSoundDetected = flag;}
     void triggerTimeout();
 
     bool canPerformAutoCorrection();
