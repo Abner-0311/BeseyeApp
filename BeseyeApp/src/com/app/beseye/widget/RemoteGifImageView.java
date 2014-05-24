@@ -43,12 +43,14 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
 
-public class RemoteImageView extends ImageView {
+public class RemoteGifImageView extends RemoteImageView {
 	final private static int EMPTY_DEFAULT_IMAGE = -1;
 	final private static int PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD = 48;//if mem class is greater than 48 MB, use sample rate 2, or use smaple rate 4
 	
-	private String mCachePath;
-	private String mURI;
+	private String[] mCachePath;
+	private String[] mURI;
+	private int miIvCount;
+	private int miCurDisplayIdx ;
 	private Float mRatio = (float) 1.0; // default image's ratio
 	private Float mDestRatio = (float) 1.0; // dest image's ratio
 	private int miDesireWidth = -1, miDesireHeight = -1;
@@ -63,10 +65,6 @@ public class RemoteImageView extends ImageView {
 	private boolean mbIsPhoto = false;
 	private boolean mbIsPhotoViewMode = false;
 	private boolean mbIsLoaded = false;
-	
-	static public final String CACHE_POSTFIX_SAMPLE_1 = "_s1";//set sample as 1
-	static public final String CACHE_POSTFIX_SAMPLE_2 = "_s2";//set sample as 2
-	static public final String CACHE_POSTFIX_HIGH_RES = "_hs";//set as high resolution
 	
 	//For Shadow feature
 	private static final float SHADOW_WIDTH = 3.0f;
@@ -83,17 +81,17 @@ public class RemoteImageView extends ImageView {
 		public void imageLoaded(boolean success);
 	}
 	
-	public RemoteImageView(Context context) {
+	public RemoteGifImageView(Context context) {
 		this(context, null, 0);
 		setShadowWidth(context);
 	}
 
-	public RemoteImageView(Context context, AttributeSet attrs) {
+	public RemoteGifImageView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 		setShadowWidth(context);
 	}
 
-	public RemoteImageView(Context context, AttributeSet attrs, int defStyle) {
+	public RemoteGifImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		setShadowWidth(context);
 	}
@@ -121,35 +119,50 @@ public class RemoteImageView extends ImageView {
 		mCallback = callback;
 	}
 
-	public void setURI(String uri) {
+	public void setURI(String[] uri) {
 		setURI(uri, EMPTY_DEFAULT_IMAGE);
 		mbIsLoaded = false;
 	}
 
-	public void setURI(String uri, int defaultImage) {
+	public void setURI(String[] uri, int defaultImage) {
 		mURI = uri;
 		mDefaultImage = defaultImage;
-		mCachePath = buildCachePath(getContext(), uri);
+		miIvCount = (null != mURI)?mURI.length:0;
+		if(0 < miIvCount){
+			mCachePath = new String[miIvCount];
+			for(int i = 0;i<miIvCount;i++){
+				mCachePath[i] = buildCachePath(getContext(), mURI[i]);
+			}
+		}
+		
 		mbIsPhoto = false;
 		mbIsPhotoViewMode = false;
 		mbIsLoaded = false;
+		miCurDisplayIdx = 0;
+		removeCallbacks(mLoadNextBmpRunnable);
 		
 //		if(DEBUG)
 //			Log.i(iKalaUtil.IKALA_APP_TAG, "setURI(), uri:"+uri); 
 	}
 
-	public void setURI(String uri, int defaultImage, float ratio, float fDestRatio) {
+	public void setURI(String[] uri, int defaultImage, float ratio, float fDestRatio) {
 		setURI(uri, defaultImage);
 		mRatio = ratio;
 		mDestRatio = fDestRatio;
 	}
 	
-	public void setURI(String uri, int defaultImage, int iDesireWidth, int iDesireHeight) {
+	public void setURI(String uri[], int defaultImage, int iDesireWidth, int iDesireHeight) {
 		setURI(uri, defaultImage);
 		miDesireWidth = iDesireWidth;
 		miDesireHeight = iDesireHeight;
 		if(0 < miDesireWidth && 0 < miDesireHeight){
-			mCachePath = String.format("%s_%s-%s", mCachePath, miDesireWidth, miDesireHeight);
+			int iLen = (null != mURI)?mURI.length:0;
+			if(0 < iLen){
+				mCachePath = new String[iLen];
+				for(int i = 0;i<iLen;i++){
+					mCachePath[i] = String.format("%s_%s-%s", mCachePath[i], miDesireWidth, miDesireHeight);
+				}
+			}
 		}
 	}
 
@@ -157,16 +170,16 @@ public class RemoteImageView extends ImageView {
 		setImage(file, EMPTY_DEFAULT_IMAGE);
 	}
 
-	public void setImage(String path, int defaultImage) {
+	public void setImage(String[] path, int defaultImage) {
 		mCachePath = path;
 		mDefaultImage = defaultImage;
 	}
 
-	public String getCachePath() {
+	public String[] getCachePaths() {
 		return mCachePath;
 	}
 
-	public String getURI() {
+	public String[] getURIs() {
 		return mURI;
 	}
 	
@@ -204,50 +217,35 @@ public class RemoteImageView extends ImageView {
 
 	static Hashtable<Integer, SoftReference<Bitmap>> mDefaultImageHolder = new Hashtable<Integer, SoftReference<Bitmap>>();
 
-	protected void loadDefaultImage() {
-		Bitmap bitmap = getDefaultImage();
-		if (bitmap != null) {
-			// add stretch method
-			if (!mRatio.equals((float) -1.0)) {
-				Matrix matrix = new Matrix();
-				matrix.postScale(mRatio, mRatio);
-
-				Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-				setImageBitmap(resizedBitmap);
-			} else {
-				setImageBitmap(bitmap);
-			}
-		}else{
-			//setImageBitmap(null);
-			setImageResource(R.color.transparent);
-		}
-	}
-
-	public Bitmap getDefaultImage() {
-		if (mDefaultImage == EMPTY_DEFAULT_IMAGE) {
-			return null;
-		}
-		
-		return BeseyeMemCache.getBmpByResId(getContext(), mDefaultImage, 0, 0);
-	}
-
 	public void loadImage() {
-		// load image from cache
-		Bitmap cBmp = BeseyeMemCache.getBitmapFromMemCache(mCachePath);
-		
-		if (cBmp != null) {
-			setImageBitmap(cBmp);
-			//We don't cache high quality pic in memory
-			if(mbIsPhotoViewMode){
-				loadRemoteImage();
+		int iLen = (null != mCachePath)?mCachePath.length:0;
+		if(miCurDisplayIdx < iLen){
+			// load image from cache
+			Bitmap cBmp = BeseyeMemCache.getBitmapFromMemCache(mCachePath[miCurDisplayIdx]);
+			
+			if (cBmp != null) {
+				setImageBitmap(cBmp);
+				//We don't cache high quality pic in memory
+				if(mbIsPhotoViewMode){
+					loadRemoteImage();
+				}
+				imageLoaded(true);
+				return;
+			} else {
+				loadDefaultImage();
 			}
-			imageLoaded(true);
-			return;
-		} else {
+			loadRemoteImage();
+		}else{
 			loadDefaultImage();
 		}
-		loadRemoteImage();
 	}
+	
+	private Runnable mLoadNextBmpRunnable = new Runnable(){
+		@Override
+		public void run() {
+			miCurDisplayIdx = (++miCurDisplayIdx)%miIvCount;
+			loadImage();
+		}};
 
 	@Override
 	public void setImageBitmap(Bitmap bm) {
@@ -262,20 +260,20 @@ public class RemoteImageView extends ImageView {
 			mFuture.cancel(true);
 			mFuture = null;
 		}
-		if(null != mURI && 0 < mURI.length()){
-			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath, mURI, mIsPreload, mbIsPhoto, mbIsPhotoViewMode));
+		if(null != mURI && miCurDisplayIdx < mURI.length && null != mURI[miCurDisplayIdx] && 0 < mURI[miCurDisplayIdx].length()){
+			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath[miCurDisplayIdx] , mURI[miCurDisplayIdx] , mIsPreload, mbIsPhoto, mbIsPhotoViewMode));
 		}
 	}
 
 	private void imageLoaded(final boolean success) {
 		post(new Runnable(){
-
 			@Override
 			public void run() {
 				mbIsLoaded = success;
 				if (mCallback != null) {
 					mCallback.imageLoaded(success);
 				}
+				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, 1000);
 			}});
 		
 	}

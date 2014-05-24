@@ -49,6 +49,9 @@ public class EventListActivity extends BeseyeBaseActivity{
 	private View mVwNavBar;
 	private ImageView mIvCancel, mIvFilter, mIvCalendar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
+	static final long SEVEN_DAYS_IN_MS = 7*24*60*60*1000;
+	
+	private String mStrVCamID = "2e26ea2bccb34937a65dfa02488e58dc";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,8 @@ public class EventListActivity extends BeseyeBaseActivity{
 		
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
+		
+		mStrVCamID = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_ID);
 		
 		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_cam_list_nav, null);
 		if(null != mVwNavBar){
@@ -99,7 +104,12 @@ public class EventListActivity extends BeseyeBaseActivity{
     			public void onRefresh() {
     				Log.i(TAG, "onRefresh()");	
     				mbNeedToCalcu = false;
-    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, "bes0001", "1389918731000", "600000");
+    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-SEVEN_DAYS_IN_MS)+"", SEVEN_DAYS_IN_MS+"");
+    				if(null != mGetThumbnailByEventListTask){
+    					mGetThumbnailByEventListTask.cancel(true);
+    					mGetThumbnailByEventListTask = null;
+    				}
+    				//monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, "1389918731000", "600000");
     			}
 
 				@Override
@@ -219,7 +229,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(this), true, "bes0001", "1389918731000", "600000");
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-SEVEN_DAYS_IN_MS)+"", SEVEN_DAYS_IN_MS+"");
 	}
 	
 	@Override
@@ -232,6 +242,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 					miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
 					if(0 < miEventCount){
 						JSONArray EntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);
+						getThumbnailByEventList(EntList);
 						JSONObject liveObj = new JSONObject();
 						try {
 							liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
@@ -250,9 +261,65 @@ public class EventListActivity extends BeseyeBaseActivity{
 						checkClockByTime();
 					}
 				}
+			}else if(task instanceof BeseyeMMBEHttpTask.GetThumbnailByEventListTask){
+				if(0 == iRetCode){
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					JSONArray thumbnailList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_THUMBNAILS);
+					if(null != thumbnailList){
+						JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+						if(null != EntList){
+							int iEventCount = EntList.length();
+							int iCount = thumbnailList.length();
+							if(iEventCount == (iCount+1)){
+								for(int i = 0;i<iCount;i++){
+									try {
+										EntList.getJSONObject(i+1).put(BeseyeJSONUtil.MM_THUMBNAIL, thumbnailList.getJSONObject(i));
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+								}
+								refreshList();
+							}
+						}
+					}
+				}
 			}else{
 				Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
 				super.onPostExecute(task, result, iRetCode);
+			}
+		}
+		
+		if(task.equals(mGetThumbnailByEventListTask)){
+			mGetThumbnailByEventListTask = null;
+		}
+	}
+	private BeseyeMMBEHttpTask.GetThumbnailByEventListTask mGetThumbnailByEventListTask;
+	private void getThumbnailByEventList(JSONArray EntList){
+		int iCount = (null != EntList)?EntList.length():0;
+		if(0 < iCount){
+			if(null != mGetThumbnailByEventListTask){
+				mGetThumbnailByEventListTask.cancel(true);
+			}
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(BeseyeJSONUtil.MM_VCAM_UUID, mStrVCamID);
+				obj.put(BeseyeJSONUtil.MM_SIZE, iCount);
+				obj.put(BeseyeJSONUtil.MM_MAX_NUM, 3);
+				JSONArray timeLst = new JSONArray();
+				for(int i = 0;i<iCount;i++){
+					JSONObject event = EntList.getJSONObject(i);
+					JSONObject time = new JSONObject();
+					long lStartTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_START_TIME);
+					long lEndTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_END_TIME);
+					time.put(BeseyeJSONUtil.MM_START_TIME, lStartTime);
+					time.put(BeseyeJSONUtil.MM_DURATION, (0 < lEndTime)?(lEndTime - lStartTime):3000);
+					timeLst.put(time);
+				}
+				obj.put(BeseyeJSONUtil.MM_EVT_LST, timeLst);
+				monitorAsyncTask(mGetThumbnailByEventListTask = new BeseyeMMBEHttpTask.GetThumbnailByEventListTask(EventListActivity.this), true, obj.toString());
+
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
 		}
 	}

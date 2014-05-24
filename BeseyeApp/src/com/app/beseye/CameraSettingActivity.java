@@ -10,6 +10,7 @@ import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
@@ -415,9 +416,13 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					onToastShow(task, "Dettach  Successfully.");
-					Bundle b = new Bundle();
-					b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-					launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+					if(BeseyeConfig.COMPUTEX_PAIRING){
+						invokeLogout();
+					}else{
+						Bundle b = new Bundle();
+						b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
+						launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+					}
 				}
 			}else if(task instanceof BeseyeAccountTask.SetCamAttrTask){
 				if(0 == iRetCode){

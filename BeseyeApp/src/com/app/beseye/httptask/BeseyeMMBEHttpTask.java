@@ -14,10 +14,11 @@ public class BeseyeMMBEHttpTask  {
 	static private final String URL_LIVE_STREAM_INFO 	= "live-stream/downstream_info/%s?narrowBW=%s";
 	static private final String URL_DVR_STREAM_INFO 	= "dvr/dvr_playlist/%s?startTime=%s&duration=%s&transc=aac";
 	
-	static private final String URL_GET_EVENT_LIST 	    = "events/%s?startTime=%s&duration=%s";
+	static private final String URL_GET_EVENT_LIST 	    = "events/%s?startTime=%s&duration=%s&order=desc";
 	static private final String URL_GET_EVENT_LIST_CNT 	= "events/count/%s?startTime=%s&duration=%s";
 	
 	static private final String URL_GET_LATEST_THUMB 	= "thumbnail/get_latest?vcamUuid=%s";
+	static private final String URL_GET_THUMB_BY_EVENT 	= "thumbnail/get_by_event_list";
 	
 	public static class GetLiveStreamTask extends BeseyeHttpTask{
 		private String strVcamId = null;
@@ -83,6 +84,18 @@ public class BeseyeMMBEHttpTask  {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			strVcamId = strParams[0];
 			return super.doInBackground(MM_HOST_PRODCTION+String.format(URL_GET_LATEST_THUMB, strParams[0]));
+		}
+	}
+	
+	public static class GetThumbnailByEventListTask extends BeseyeHttpTask{
+		public GetThumbnailByEventListTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(MM_HOST_PRODCTION+URL_GET_THUMB_BY_EVENT, strParams[0]);
 		}
 	}
 }

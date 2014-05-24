@@ -163,8 +163,16 @@ public class BeseyeJSONUtil {
 	public static final String MM_TYPE_IDS				= "typeIds";
 	public static final String MM_FACE_IDS 				= "faceIds";
 	public static final String MM_IS_LIVE 				= "isLive";
+	
 	public static final String MM_THUMBNAIL 			= "thumbnail";
 	public static final String MM_THUMBNAIL_PATH 		= "path";
+	public static final String MM_VCAM_UUID 			= "vcamUuid";	
+	public static final String MM_SIZE 					= "size";
+	public static final String MM_MAX_NUM 				= "maxNumber";
+	public static final String MM_EVT_LST 				= "eventList";
+	public static final String MM_THUMBNAILS 			= "thumbnails";
+	public static final String MM_TIMESTAMP 			= "timestamp";
+	
 	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "GCMProjectID";

@@ -10,7 +10,7 @@ import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
-import com.app.beseye.widget.RemoteImageView;
+import com.app.beseye.widget.RemoteGifImageView;
 
 import android.content.Context;
 import android.view.View;
@@ -29,7 +29,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 
 	static public class EventListItmHolder{
 		public TextView mTxtEventType;
-		public RemoteImageView mImgThumbnail;
+		public RemoteGifImageView mImgThumbnail;
 		public ImageView mImgDot;
 		public ImageView mImgFace;
 		public ImageView mImgFire;
@@ -52,7 +52,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 				EventListItmHolder holder = new EventListItmHolder();
 				holder.mTxtEventType = (TextView)convertView.findViewById(R.id.tv_eventlist_event_name);
 				
-				holder.mImgThumbnail = (RemoteImageView)convertView.findViewById(R.id.iv_timeline_video_thumbnail);
+				holder.mImgThumbnail = (RemoteGifImageView)convertView.findViewById(R.id.iv_timeline_video_thumbnail);
 				
 				holder.mImgDot = (ImageView)convertView.findViewById(R.id.iv_timeline_dot_greenblue);
 				holder.mImgFace = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_face);
@@ -82,6 +82,17 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 					if(null != holder.mTxtEventType){
 						holder.mTxtEventType.setText(R.string.event_itm_live);
 					}
+				}
+				
+				if(null != holder.mImgThumbnail){
+					String[] path = {"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858859902_{dur}10351_{r}1400850536594_{th}1400858859551.jpg",
+							"s3://beseye-thumbnail/taiwan_Taipei-101.jpg",
+							"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858901167_{dur}10445_{r}1400850536594_{th}1400858900722.jpg",
+							"s3://beseye-thumbnail/shanhai01.jpg",
+							"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858921935_{dur}10390_{r}1400850536594_{th}1400858921545.jpg",
+							"s3://beseye-thumbnail/taiwan_Taipei-101_2.jpg"};
+					holder.mImgThumbnail.setURI(path, R.drawable.eventlist_video_fake);
+					holder.mImgThumbnail.loadImage();
 				}
 				holder.mObjEvent = obj;
 				convertView.setTag(holder);

@@ -277,7 +277,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				return;
 			}
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
-			Toast.makeText(this, "show menu", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "logout", Toast.LENGTH_SHORT).show();
 			invokeLogout();
 			//monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(this), true, "5dc166880720448cafa563be507b9730");
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
