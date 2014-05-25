@@ -20,6 +20,8 @@ public class BeseyeMMBEHttpTask  {
 	static private final String URL_GET_LATEST_THUMB 	= "thumbnail/get_latest?vcamUuid=%s";
 	static private final String URL_GET_THUMB_BY_EVENT 	= "thumbnail/get_by_event_list";
 	
+	static public final long SEVEN_DAYS_IN_MS = 7*24*60*60*1000;
+	
 	public static class GetLiveStreamTask extends BeseyeHttpTask{
 		private String strVcamId = null;
 		public GetLiveStreamTask(OnHttpTaskCallback cb) {

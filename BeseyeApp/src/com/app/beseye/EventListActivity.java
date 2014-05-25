@@ -49,7 +49,6 @@ public class EventListActivity extends BeseyeBaseActivity{
 	private View mVwNavBar;
 	private ImageView mIvCancel, mIvFilter, mIvCalendar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
-	static final long SEVEN_DAYS_IN_MS = 7*24*60*60*1000;
 	
 	private String mStrVCamID = "2e26ea2bccb34937a65dfa02488e58dc";
 	
@@ -104,7 +103,7 @@ public class EventListActivity extends BeseyeBaseActivity{
     			public void onRefresh() {
     				Log.i(TAG, "onRefresh()");	
     				mbNeedToCalcu = false;
-    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-SEVEN_DAYS_IN_MS)+"", SEVEN_DAYS_IN_MS+"");
+    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS)+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS+"");
     				if(null != mGetThumbnailByEventListTask){
     					mGetThumbnailByEventListTask.cancel(true);
     					mGetThumbnailByEventListTask = null;
@@ -229,7 +228,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-SEVEN_DAYS_IN_MS)+"", SEVEN_DAYS_IN_MS+"");
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS)+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS+"");
 	}
 	
 	@Override

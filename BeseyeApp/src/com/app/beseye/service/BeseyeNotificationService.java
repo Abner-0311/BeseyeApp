@@ -10,9 +10,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.app.beseye.EventListActivity;
 import com.app.beseye.GCMIntentService;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeHttpTask;
+import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyePushServiceTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SessionData;
@@ -395,6 +397,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	static private final String PUSH_SERVICE_LAST_NOTIFY_ID 	= "beseye_push_last_notify_id";
 	static private final String PUSH_SERVICE_LAST_NOTIFY_TIME 	= "beseye_push_last_notify_time";
 	
+	static private final String PUSH_SERVICE_LAST_EVENT 		= "beseye_push_last_event";
+	private JSONObject mLastEventObj = null;
+	
 	private SharedPreferences mPref;
 	private boolean mbRegisterGCM = false;
 	private boolean mbRegisterReceiver = false;
@@ -434,11 +439,19 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         checkUserLoginState();
     }
     
+    private BeseyeMMBEHttpTask.GetEventListTask mGetEventListTask;
+    private String mStrVCamID = "2e26ea2bccb34937a65dfa02488e58dc";
+    
     private void checkUserLoginState(){
     	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isNotifyWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
-    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && false == WebsocketsMgr.getInstance().isNotifyWSChannelAlive()){
-    		if(NetworkMgr.getInstance().isNetworkConnected())
+    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated() && false == WebsocketsMgr.getInstance().isNotifyWSChannelAlive()){
+    		if(NetworkMgr.getInstance().isNetworkConnected()){
     			;//WebsocketsMgr.getInstance().constructNotifyWSChannel();
+    			if(null == mGetEventListTask){
+    				mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(this);
+        			mGetEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS)+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS+"");
+    			}
+    		}
     	}else{
     		WebsocketsMgr.getInstance().destroyNotifyWSChannel();
     	}
@@ -614,6 +627,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}
 	}
 	
+	private void setLastEventItem(JSONObject eventObj){
+		if(null != eventObj){
+			//mLastNotifyId = BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_ID);
+			BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_LAST_EVENT, eventObj.toString());
+			mLastEventObj = eventObj;
+		}
+	}
+	
 	private void showFirstUnreadNotification(){
 		if(null != mArrRet && 0 < mArrRet.length()){
 			JSONObject obj = null;
@@ -707,8 +728,33 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}
 	}
 	
-	private void showNotification(int iNotifyId, Intent intent, CharSequence text, JSONObject notifyObj) {
-		setLastNotifyItem(notifyObj);
+	private void showNotification(int iNotifyId, Intent intent, CharSequence text, JSONObject eventObj) {
+		setLastEventItem(eventObj);
+		long lTs = BeseyeJSONUtil.getJSONLong(eventObj, BeseyeJSONUtil.MM_START_TIME);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		if(null != contentIntent){
+			 final Notification notification = new Notification(
+				        				R.drawable.common_app_icon_shadow,       // the icon for the status bar
+				        				text,                        // the text to display in the ticker
+				        				/*System.currentTimeMillis()*/lTs); // the timestamp for the notification
+
+			 if(null != notification){
+				notification.setLatestEventInfo(
+						 this,                        // the context to use
+						 getText(R.string.app_name),
+						                              // the title for the notification
+						 text,                        // the details to display in the notification
+						 contentIntent);              // the contentIntent (see above)
+
+				notification.defaults = Notification.DEFAULT_ALL;
+				notification.flags = Notification.FLAG_AUTO_CANCEL;
+				
+				mNotificationManager.notify(
+				iNotifyId, // we use a string id because it is a unique
+				// number.  we use it later to cancel the notification
+				notification);
+			 }
+		}
 //		
 //		if(null == intent){
 //			intent = new Intent(this, iKalaDelegateActivity.class).putExtra(iKalaDelegateActivity.ACTION_BRING_FRONT, true);
@@ -963,6 +1009,40 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			}else if(task instanceof BeseyePushServiceTask.DelRegisterIDTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
 					Log.i(TAG, "onPostExecute(), DelRegisterIDTask OK");
+				}
+			}else if(task instanceof BeseyeMMBEHttpTask.GetEventListTask){
+				if(0 == iRetCode && null != result && 0 < result.size()){
+					int miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
+					if(0 < miEventCount){
+						JSONArray EntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);
+						for(int idx = 0;idx<miEventCount;idx++){
+							JSONObject obj;
+							try {
+								obj = EntList.getJSONObject(idx);
+								JSONArray typeArr = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_TYPE_IDS);
+								if(null != typeArr){
+									int iCount = typeArr.length();
+									for(int i = 0;i< iCount;i++){
+										int iType = typeArr.getInt(i);
+										if(1 == iType){
+											Intent intent = new Intent();
+											intent.setClassName(this, EventListActivity.class.getName());
+//											intent.putExtra(iKalaDelegateActivity.KEY_DELEGATE_INTENT, delegateIntent);
+//											intent.putExtra(iKalaBaseActivity.KEY_FROM_ACTIVITY, context.getClass().getSimpleName());
+											intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+											showNotification(NOTIFICATION_TYPE_INFO, intent, "New Event detected", obj);
+											break;
+										}
+									}
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				if(task == mGetEventListTask){
+					mGetEventListTask = null;
 				}
 			}
 		}
