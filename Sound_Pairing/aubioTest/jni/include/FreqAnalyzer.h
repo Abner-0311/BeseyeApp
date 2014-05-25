@@ -128,6 +128,8 @@ private:
 	void runAudioPreprocess(short * array, bool bRese);
 	void runAudioPreprocessAC(short * array, bool bRese);
 
+	void normalAnalysis(int iIndex);
+
 	static int sSampleRate;
 	static int sFrameSize;
 	static int sHalfFrameSize;

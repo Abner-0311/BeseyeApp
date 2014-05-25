@@ -42,7 +42,7 @@ miPivotAnalysis(0){
 
 AudioBufferMgr::~AudioBufferMgr(){
 	recycleAllBuffer();
-	pthread_mutex_lock(&mSrcBufMux);
+	acquireSrcBufMux();
 	mAvailalbeBufList.clear();
 //	for(int i =0; i < AudioBufferMgr::MAX_QUEUE_SIZE ;i++){
 //		ArrayRef<short> buf = mAvailalbeBufList.front();
@@ -51,7 +51,7 @@ AudioBufferMgr::~AudioBufferMgr(){
 //		}
 //		mAvailalbeBufList.erase(mAvailalbeBufList.begin());
 //	}
-	pthread_mutex_unlock(&mSrcBufMux);
+	releaseSrcBufMux();
 
 	pthread_cond_destroy(&mSyncObjCond);
 	pthread_mutex_destroy(&mDataBufMux);
@@ -59,20 +59,20 @@ AudioBufferMgr::~AudioBufferMgr(){
 }
 
 void AudioBufferMgr::cleanRecordingBuf(){
-	pthread_mutex_lock(&mSrcBufMux);
+	acquireSrcBufMux();
 	miPivotRecording = 0;
 	miPivotAnalysis = 0;
-	pthread_mutex_unlock(&mSrcBufMux);
+	releaseSrcBufMux();
 }
 
 int AudioBufferMgr::getBufIndex(ArrayRef<short> buf){
 	int iIndex = -1;
-	pthread_mutex_lock(&mSrcBufMux);
+	acquireSrcBufMux();
 	vector<ArrayRef<short> >::iterator findit = find(mAvailalbeBufList.begin(),mAvailalbeBufList.end(),buf);
 	if(mAvailalbeBufList.end() != findit){
 		iIndex = std::distance(mAvailalbeBufList.begin(), findit);
 	}
-	pthread_mutex_unlock(&mSrcBufMux);
+	releaseSrcBufMux();
 	return iIndex;
 }
 
@@ -87,7 +87,7 @@ int AudioBufferMgr::getBufferSize(){
 ArrayRef<short> AudioBufferMgr::getBufByIndex(int iBufIndexInput, int iOffset, ArrayRef<short> bufReturn){
 	//Log.d(TAG, "getBufByIndex(), iBufIndexInput:"+iBufIndexInput+\n", iOffset:"+iOffset);
 	LOGD("getBufByIndex()+\n");
-	pthread_mutex_lock(&mSrcBufMux);
+	acquireSrcBufMux();
 	unsigned int iBufIndex = iBufIndexInput;
 	while(iOffset > SoundPair_Config::FRAME_SIZE_REC){
 		iOffset -= SoundPair_Config::FRAME_SIZE_REC;
@@ -132,7 +132,7 @@ ArrayRef<short> AudioBufferMgr::getBufByIndex(int iBufIndexInput, int iOffset, A
 		}
 	}
 	//Log.i(TAG, "getBufByIndex(), bufReturn[0]:"+bufReturn[0]);
-	pthread_mutex_unlock(&mSrcBufMux);
+	releaseSrcBufMux();
 	//LOGD("getBufByIndex(), bufReturn:%d\n", bufReturn);
 	return bufReturn;
 }
@@ -145,7 +145,7 @@ void AudioBufferMgr::setRecordMode(bool isRecordMode){
 ArrayRef<short> AudioBufferMgr::getAvailableBuf(){
 	ArrayRef<short> buf = NULL;
 	LOGD("getAvailableBuf()+\n");
-	pthread_mutex_lock(&mSrcBufMux);
+	acquireSrcBufMux();
 	static bool bShowWarning = false;
 //#ifdef ANDROID
 	if(-1 == miPivotRecording){
@@ -173,7 +173,7 @@ ArrayRef<short> AudioBufferMgr::getAvailableBuf(){
 //	buf = mAvailalbeBufList[miPivotRecording];
 //	miPivotRecording = (++miPivotRecording)%AudioBufferMgr::MAX_QUEUE_SIZE;
 //#endif
-	pthread_mutex_unlock(&mSrcBufMux);
+	releaseSrcBufMux();
 	LOGD("getAvailableBuf()-\n");
 	return buf;
 }
@@ -185,13 +185,13 @@ Ref<BufRecord> AudioBufferMgr::getDataBuf(){
 Ref<BufRecord> AudioBufferMgr::getDataBuf(int iNumToRest){
 	Ref<BufRecord> br;
 	LOGD("getDataBuf()+\n");
-	pthread_mutex_lock(&mDataBufMux);
+	acquireDataBufMux();
 	int iSize = mDataBufList.size();
 	if((iNumToRest + 1) <= iSize){
 		br = mDataBufList.front();
 		mDataBufList.erase(mDataBufList.begin());
 	}
-	pthread_mutex_unlock(&mDataBufMux);
+	releaseDataBufMux();
 	LOGD("getDataBuf()-\n");
 	return br;
 }
@@ -203,7 +203,7 @@ void AudioBufferMgr::addToAvailableBuf(Ref<BufRecord> buf){
 
 void AudioBufferMgr::recycleAllBuffer(){
 	LOGI("recycleAllBuffer()+\n");
-	pthread_mutex_lock(&mDataBufMux);
+	acquireDataBufMux();
 	cleanRecordingBuf();
 	mDataBufList.clear();
 //	Ref<BufRecord> br = NULL;
@@ -212,14 +212,14 @@ void AudioBufferMgr::recycleAllBuffer(){
 //		mDataBufList.erase(mDataBufList.begin());
 //		delete br;
 //	}
-	pthread_mutex_unlock(&mDataBufMux);
+	releaseDataBufMux();
 	LOGI("recycleAllBuffer()-\n");
 }
 
 void AudioBufferMgr::addToDataBuf(msec_t lTs, ArrayRef<short> buf, int iSampleRead){
 	LOGD("addToDataBuf(), lTs:%lld\n", lTs);
 
-	pthread_mutex_lock(&mDataBufMux);
+	acquireDataBufMux();
 	//LOGD("addToDataBuf(), push_back\n");
 	mDataBufList.push_back(Ref<BufRecord>(new BufRecord(lTs, buf,iSampleRead)));
 	if(mDataBufList.size() > AudioBufferMgr::MAX_QUEUE_SIZE){
@@ -227,7 +227,7 @@ void AudioBufferMgr::addToDataBuf(msec_t lTs, ArrayRef<short> buf, int iSampleRe
 	}
 	//LOGD("addToDataBuf(), signal\n");
 	pthread_cond_signal(&mSyncObjCond);
-	pthread_mutex_unlock(&mDataBufMux);
+	releaseDataBufMux();
 
 	LOGD("addToDataBuf()-\n");
 }
@@ -235,7 +235,7 @@ void AudioBufferMgr::addToDataBuf(msec_t lTs, ArrayRef<short> buf, int iSampleRe
 void AudioBufferMgr::trimAvailableBuf(unsigned int iRestCount){
 	//LOGI("trimAvailableBuf(), iRestCount:%d\n", iRestCount);
 
-	pthread_mutex_lock(&mDataBufMux);
+	acquireDataBufMux();
 	LOGI("trimAvailableBuf(), iRestCount:%d, mDataBufList.size() :%d\n", iRestCount, mDataBufList.size());
 	unsigned int iCountToErase = (mDataBufList.size() >= iRestCount)?(mDataBufList.size() - iRestCount):0;
 	while(0 < iCountToErase--){
@@ -245,7 +245,7 @@ void AudioBufferMgr::trimAvailableBuf(unsigned int iRestCount){
 		miPivotAnalysis = mDataBufList[0]->miIndex;
 		LOGI("trimAvailableBuf(), miPivotAnalysis:%d, miPivotRecording :%d\n", miPivotAnalysis, miPivotRecording);
 	}
-	pthread_mutex_unlock(&mDataBufMux);
+	releaseDataBufMux();
 
 }
 
@@ -253,7 +253,7 @@ void AudioBufferMgr::waitForDataBuf(long lWaitTime){
 	struct timespec outtime;
 	getTimeSpecByDelay(outtime, lWaitTime);
 
-	pthread_mutex_lock(&mDataBufMux);
+	acquireDataBufMux();
 	LOGD("waitForDataBuf(), wait++++\n");
 	int iRet = pthread_cond_timedwait(&mSyncObjCond, &mDataBufMux, &outtime);
 //	if(ETIMEDOUT == iRet)
@@ -261,6 +261,34 @@ void AudioBufferMgr::waitForDataBuf(long lWaitTime){
 //	else
 	LOGD("waitForDataBuf(), iRet:%d\n", iRet);
 
-	pthread_mutex_unlock(&mDataBufMux);
+	releaseDataBufMux();
 	LOGD("waitForDataBuf()-\n");
+}
+
+static volatile int siSrcBufMuxCount = 0;
+void AudioBufferMgr::acquireSrcBufMux(){
+	siSrcBufMuxCount++;
+	if(1 < siSrcBufMuxCount)
+		LOGE("Error, siSrcBufMuxCount:%d\n", siSrcBufMuxCount);
+	pthread_mutex_lock(&mSrcBufMux);
+}
+
+void AudioBufferMgr::releaseSrcBufMux(){
+	pthread_mutex_unlock(&mSrcBufMux);
+	siSrcBufMuxCount--;
+	//LOGI("siSrcBufMuxCount:%d\n", siSrcBufMuxCount);
+}
+
+static volatile int siDataBufMuxCount = 0;
+void AudioBufferMgr::acquireDataBufMux(){
+	siDataBufMuxCount++;
+	if(1 < siDataBufMuxCount)
+		LOGE("Error, siDataBufMuxCount:%d\n", siDataBufMuxCount);
+	pthread_mutex_lock(&mDataBufMux);
+}
+
+void AudioBufferMgr::releaseDataBufMux(){
+	pthread_mutex_unlock(&mDataBufMux);
+	siDataBufMuxCount--;
+	//LOGI("siDataBufMuxCount:%d\n", siDataBufMuxCount);
 }

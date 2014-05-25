@@ -52,6 +52,12 @@ public:
 	void waitForDataBuf(long lWaitTime);
 
 	void setRecordMode(bool isRecordMode);
+
+	//for debug
+	void acquireSrcBufMux();
+	void releaseSrcBufMux();
+	void acquireDataBufMux();
+	void releaseDataBufMux();
 private:
 	static AudioBufferMgr* sAudioBufferMgr;
 	AudioBufferMgr();
