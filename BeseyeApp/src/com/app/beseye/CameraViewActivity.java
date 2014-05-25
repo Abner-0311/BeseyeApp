@@ -995,6 +995,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	boolean mIsPause = true;
 	boolean mIsStop = false;
 	int idx =1;
+	private int miStreamIdx = -1;
 	
 	private void beginLiveView(){
     	if(null == mStreamingView){
@@ -1030,7 +1031,20 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	             			streamFullPath = STREAM_PATH_LIST.get(CUR_STREAMING_PATH_IDX%STREAM_PATH_LIST.size());
 	             		}
 	             		
-	         			if(0 <= openStreaming(0, getNativeSurface(), streamFullPath, 0)){
+	         			miStreamIdx = 0;
+	         			int iRetCreateStreaming = 0;
+	         			do{
+	         				if(0 > iRetCreateStreaming){
+	         					miStreamIdx++;
+	         				}
+	         				Log.i(TAG, "open stream for idx"+miStreamIdx);
+	         				iRetCreateStreaming = openStreaming(miStreamIdx, getNativeSurface(), streamFullPath, 0);
+	         			}while(iRetCreateStreaming < 0 && miStreamIdx < 10);
+	         			
+	         			if(miStreamIdx >= 10){
+	         				miStreamIdx = -1;
+	         			}
+	         			if(0 <= iRetCreateStreaming){
 	             			setCamViewStatus(CameraView_Internal_Status.CV_STREAM_CLOSE);
 	                 		mCurCheckCount = 0;
 	             		}
@@ -1238,7 +1252,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     
     private void closeStreaming(){
     	cancelCheckVideoBlock();
-    	closeStreaming(0);
+    	
+    	if(0 <= miStreamIdx)
+    		closeStreaming(miStreamIdx);
+    	
     	mCurCheckCount = 0;
     }
     

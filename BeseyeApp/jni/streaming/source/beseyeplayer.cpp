@@ -178,15 +178,15 @@ void CBeseyePlayer::stream_close(VideoState *is)
 	av_log(NULL, AV_LOG_INFO, "stream_close()++, is:%d\n", is);
     VideoPicture *vp;
 
-    int iRet = -1;
-    if(NULL != rtmpRef){
-		iRet = cancel_rtmp_blocking_queue(rtmpRef);
-		if(0 > iRet){
-			av_log(NULL, AV_LOG_ERROR,"stream_close(), failed to cancel_rtmp_blocking_queue\n");
-		}
-	}else{
-		av_log(NULL, AV_LOG_ERROR,"stream_close(), rtmpRef is null\n");
-	}
+//    int iRet = -1;
+//    if(NULL != rtmpRef){
+//		iRet = cancel_rtmp_blocking_queue(rtmpRef);
+//		if(0 > iRet){
+//			av_log(NULL, AV_LOG_ERROR,"stream_close(), failed to cancel_rtmp_blocking_queue\n");
+//		}
+//	}else{
+//		av_log(NULL, AV_LOG_ERROR,"stream_close(), rtmpRef is null\n");
+//	}
 	rtmpRef = NULL;
     int i;
     /* XXX: use a special url_shutdown call to abort parse cleanly */
@@ -2256,7 +2256,7 @@ void CBeseyePlayer::event_loop(VideoState *cur_stream)
 			case SDL_QUIT:
 			case FF_QUIT_EVENT:
 				if(cur_stream == event.user.data1){
-                    addStreamingPath("dummy");//workaround, trigger read_thread
+                    //addStreamingPath("dummy");//workaround, trigger read_thread
 					do_exit((VideoState *)event.user.data1/*cur_stream*/);
 					cur_stream = NULL;
 				}else{

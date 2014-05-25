@@ -272,7 +272,7 @@ void JNICALL Java_com_app_beseye_CameraViewActivity_nativeInit(JNIEnv* env, jcla
 
 int iCurStreamIdx = 0;
 
-const int MAX_STREAM_COUNT = 2;
+const int MAX_STREAM_COUNT = 10;
 static jobject jni_host = NULL;
 
 CBeseyePlayer* player[MAX_STREAM_COUNT] ={0};
@@ -436,6 +436,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 			jni_env->DeleteGlobalRef(jni_host);
 		}else{
 			LOGE("openStreaming(), stream[%d] is playing", iStreamIdx);
+			iRet = -2;
 		}
 	}
 	LOGE("openStreaming(), end");

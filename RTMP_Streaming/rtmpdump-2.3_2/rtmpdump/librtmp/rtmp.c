@@ -283,7 +283,7 @@ RTMP_Init(RTMP *r)
   r->m_nServerBW = 2500000;
   r->m_fAudioCodecs = 3191.0;
   r->m_fVideoCodecs = 252.0;
-  r->Link.timeout = 30;
+  r->Link.timeout = 5;
   r->Link.swfAge = 30;
   r->m_bExitFlag = FALSE;
 }
@@ -874,9 +874,7 @@ RTMP_Connect0(RTMP *r, struct sockaddr * service)
   /* set timeout */
   {
     SET_RCVTIMEO(tv, r->Link.timeout);
-    if (setsockopt
-        (r->m_sb.sb_socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(tv)))
-      {
+    if (setsockopt(r->m_sb.sb_socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(tv))){
         RTMP_Log(RTMP_LOGERROR, "%s, Setting socket timeout to %ds failed!",
 	    __FUNCTION__, r->Link.timeout);
 
@@ -884,6 +882,14 @@ RTMP_Connect0(RTMP *r, struct sockaddr * service)
   		  r->m_rtmpErrorCallback(r->mUserCb, NETWORK_CONNECTION_ERROR, "Setting socket timeout failed");
         }
       }
+
+    if(setsockopt(r->m_sb.sb_socket, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv)) < 0){
+    	RTMP_Log(RTMP_LOGERROR, "%s, Setting socket timeout to %ds failed!",__FUNCTION__, r->Link.timeout);
+
+		if(r->m_rtmpErrorCallback){
+		  r->m_rtmpErrorCallback(r->mUserCb, NETWORK_CONNECTION_ERROR, "Setting socket timeout SO_SNDTIMEO failed");
+		}
+    }
   }
 
   setsockopt(r->m_sb.sb_socket, IPPROTO_TCP, TCP_NODELAY, (char *) &on, sizeof(on));
