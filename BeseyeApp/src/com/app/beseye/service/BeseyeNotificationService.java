@@ -1025,6 +1025,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 									for(int i = 0;i< iCount;i++){
 										int iType = typeArr.getInt(i);
 										if(1 == iType){
+											Log.i(TAG, "onPostExecute(), obj:"+obj.toString());
 											Intent intent = new Intent();
 											intent.setClassName(this, EventListActivity.class.getName());
 //											intent.putExtra(iKalaDelegateActivity.KEY_DELEGATE_INTENT, delegateIntent);

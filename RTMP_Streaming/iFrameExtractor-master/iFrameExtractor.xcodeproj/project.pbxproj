@@ -7,26 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0713D8821932F0D900BF6968 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161311856A07F00CFBC99 /* libavcodec.a */; };
+		0713D8831932F0D900BF6968 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161321856A07F00CFBC99 /* libavfilter.a */; };
+		0713D8841932F0D900BF6968 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161331856A07F00CFBC99 /* libavformat.a */; };
+		0713D8851932F0D900BF6968 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161341856A07F00CFBC99 /* libavutil.a */; };
+		0713D8861932F0D900BF6968 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761612F1856A07F00CFBC99 /* libswresample.a */; };
+		0713D8871932F0D900BF6968 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161301856A07F00CFBC99 /* libswscale.a */; };
+		0713D8881932F0D900BF6968 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161351856A07F00CFBC99 /* librtmp.a */; };
+		0713D8891932F0D900BF6968 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161361856A07F00CFBC99 /* libcrypto.a */; };
+		0713D88A1932F0D900BF6968 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161371856A07F00CFBC99 /* libssl.a */; };
 		076160F218569D3800CFBC99 /* BeseyeStreamer.xcodeproj in Resources */ = {isa = PBXBuildFile; fileRef = 076160F118569D3800CFBC99 /* BeseyeStreamer.xcodeproj */; };
 		0761611118569DC500CFBC99 /* libBeseyeStreamer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761611018569DC500CFBC99 /* libBeseyeStreamer.a */; };
-		076161381856A07F00CFBC99 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761612F1856A07F00CFBC99 /* libswresample.a */; };
-		076161391856A07F00CFBC99 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161301856A07F00CFBC99 /* libswscale.a */; };
-		0761613A1856A07F00CFBC99 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161311856A07F00CFBC99 /* libavcodec.a */; };
-		0761613B1856A07F00CFBC99 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161321856A07F00CFBC99 /* libavfilter.a */; };
-		0761613C1856A07F00CFBC99 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161331856A07F00CFBC99 /* libavformat.a */; };
-		0761613D1856A07F00CFBC99 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161341856A07F00CFBC99 /* libavutil.a */; };
-		0761613E1856A07F00CFBC99 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161351856A07F00CFBC99 /* librtmp.a */; };
-		0761613F1856A07F00CFBC99 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161361856A07F00CFBC99 /* libcrypto.a */; };
-		076161401856A07F00CFBC99 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161371856A07F00CFBC99 /* libssl.a */; };
-		0761614A1856A09C00CFBC99 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161411856A09C00CFBC99 /* libavcodec.a */; };
-		0761614B1856A09C00CFBC99 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161421856A09C00CFBC99 /* libavfilter.a */; };
-		0761614C1856A09C00CFBC99 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161431856A09C00CFBC99 /* libavformat.a */; };
-		0761614D1856A09C00CFBC99 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161441856A09C00CFBC99 /* libavutil.a */; };
-		0761614E1856A09C00CFBC99 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161451856A09C00CFBC99 /* libcrypto.a */; };
-		0761614F1856A09C00CFBC99 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161461856A09C00CFBC99 /* librtmp.a */; };
-		076161501856A09C00CFBC99 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161471856A09C00CFBC99 /* libssl.a */; };
-		076161511856A09C00CFBC99 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161481856A09C00CFBC99 /* libswresample.a */; };
-		076161521856A09C00CFBC99 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161491856A09C00CFBC99 /* libswscale.a */; };
 		07AD70711855A07D000BCD88 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E1977F185029D100E0CA98 /* libSDL2.a */; };
 		07B458D51929A02F00BE79BC /* beseye_audio_streamer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458C71929A02F00BE79BC /* beseye_audio_streamer.h */; };
 		07B458D61929A02F00BE79BC /* beseye_rtmp_observer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458C81929A02F00BE79BC /* beseye_rtmp_observer.h */; };
@@ -182,26 +173,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				076161381856A07F00CFBC99 /* libswresample.a in Frameworks */,
-				076161391856A07F00CFBC99 /* libswscale.a in Frameworks */,
-				076161521856A09C00CFBC99 /* libswscale.a in Frameworks */,
-				076161501856A09C00CFBC99 /* libssl.a in Frameworks */,
-				0761613A1856A07F00CFBC99 /* libavcodec.a in Frameworks */,
-				0761613B1856A07F00CFBC99 /* libavfilter.a in Frameworks */,
-				0761613C1856A07F00CFBC99 /* libavformat.a in Frameworks */,
-				0761614A1856A09C00CFBC99 /* libavcodec.a in Frameworks */,
-				0761614D1856A09C00CFBC99 /* libavutil.a in Frameworks */,
-				0761613D1856A07F00CFBC99 /* libavutil.a in Frameworks */,
-				0761613E1856A07F00CFBC99 /* librtmp.a in Frameworks */,
-				0761613F1856A07F00CFBC99 /* libcrypto.a in Frameworks */,
-				076161401856A07F00CFBC99 /* libssl.a in Frameworks */,
-				076161511856A09C00CFBC99 /* libswresample.a in Frameworks */,
-				0761614E1856A09C00CFBC99 /* libcrypto.a in Frameworks */,
+				0713D8821932F0D900BF6968 /* libavcodec.a in Frameworks */,
+				0713D8831932F0D900BF6968 /* libavfilter.a in Frameworks */,
+				0713D8841932F0D900BF6968 /* libavformat.a in Frameworks */,
+				0713D8851932F0D900BF6968 /* libavutil.a in Frameworks */,
+				0713D8861932F0D900BF6968 /* libswresample.a in Frameworks */,
+				0713D8871932F0D900BF6968 /* libswscale.a in Frameworks */,
+				0713D8881932F0D900BF6968 /* librtmp.a in Frameworks */,
+				0713D8891932F0D900BF6968 /* libcrypto.a in Frameworks */,
+				0713D88A1932F0D900BF6968 /* libssl.a in Frameworks */,
 				0761611118569DC500CFBC99 /* libBeseyeStreamer.a in Frameworks */,
 				07EC6C8018B4D6920018BEA4 /* libBeseyeSoundPairing.a in Frameworks */,
 				07AD70711855A07D000BCD88 /* libSDL2.a in Frameworks */,
 				156A981B15DCDD8C00898981 /* libbz2.1.0.dylib in Frameworks */,
-				0761614C1856A09C00CFBC99 /* libavformat.a in Frameworks */,
 				09A69722110EC23900FE1DA8 /* Foundation.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -209,8 +193,6 @@
 				07E19FB91850377D00E0CA98 /* CoreAudio.framework in Frameworks */,
 				07E19FBA1850377D00E0CA98 /* OpenGLES.framework in Frameworks */,
 				07E19FBB1850377D00E0CA98 /* QuartzCore.framework in Frameworks */,
-				0761614B1856A09C00CFBC99 /* libavfilter.a in Frameworks */,
-				0761614F1856A09C00CFBC99 /* librtmp.a in Frameworks */,
 				098D922B11DE19E900355815 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -539,6 +521,7 @@
 					"$(SRCROOT)/../../RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
 					"$(SRCROOT)/../../RTMP_Streaming/openssl-1.0.1e/build_ios/lib",
 					"$(SRCROOT)/../../ffmpeg_android/fat/lib",
+					"/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
 				);
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";
@@ -571,6 +554,7 @@
 					"$(SRCROOT)/../../RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
 					"$(SRCROOT)/../../RTMP_Streaming/openssl-1.0.1e/build_ios/lib",
 					"$(SRCROOT)/../../ffmpeg_android/fat/lib",
+					"/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
 				);
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";

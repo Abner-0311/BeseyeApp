@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0761615C1856A0B200CFBC99 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161531856A0B200CFBC99 /* libavcodec.a */; };
-		0761615D1856A0B200CFBC99 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161541856A0B200CFBC99 /* libavfilter.a */; };
-		0761615E1856A0B200CFBC99 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161551856A0B200CFBC99 /* libavformat.a */; };
-		0761615F1856A0B200CFBC99 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161561856A0B200CFBC99 /* libavutil.a */; };
-		076161601856A0B200CFBC99 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161571856A0B200CFBC99 /* libcrypto.a */; };
-		076161611856A0B200CFBC99 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161581856A0B200CFBC99 /* librtmp.a */; };
-		076161621856A0B200CFBC99 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161591856A0B200CFBC99 /* libssl.a */; };
-		076161631856A0B200CFBC99 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615A1856A0B200CFBC99 /* libswresample.a */; };
-		076161641856A0B200CFBC99 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615B1856A0B200CFBC99 /* libswscale.a */; };
+		0713D88B1932F12700BF6968 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161531856A0B200CFBC99 /* libavcodec.a */; };
+		0713D88C1932F12700BF6968 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161541856A0B200CFBC99 /* libavfilter.a */; };
+		0713D88D1932F12700BF6968 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161551856A0B200CFBC99 /* libavformat.a */; };
+		0713D88E1932F12700BF6968 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161561856A0B200CFBC99 /* libavutil.a */; };
+		0713D88F1932F12700BF6968 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615A1856A0B200CFBC99 /* libswresample.a */; };
+		0713D8901932F12700BF6968 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615B1856A0B200CFBC99 /* libswscale.a */; };
+		0713D8911932F12700BF6968 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161581856A0B200CFBC99 /* librtmp.a */; };
+		0713D8921932F12700BF6968 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161571856A0B200CFBC99 /* libcrypto.a */; };
+		0713D8931932F12700BF6968 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161591856A0B200CFBC99 /* libssl.a */; };
 		07BC6F381921116E009541A3 /* beseye_audio_streamer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F2C1921116E009541A3 /* beseye_audio_streamer.cpp */; };
 		07BC6F391921116E009541A3 /* beseye_rtmp_observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F2D1921116E009541A3 /* beseye_rtmp_observer.cpp */; };
 		07BC6F3A1921116E009541A3 /* beseyeplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F2E1921116E009541A3 /* beseyeplayer.cpp */; };
@@ -155,15 +155,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				076161631856A0B200CFBC99 /* libswresample.a in Frameworks */,
-				0761615E1856A0B200CFBC99 /* libavformat.a in Frameworks */,
-				076161601856A0B200CFBC99 /* libcrypto.a in Frameworks */,
-				076161621856A0B200CFBC99 /* libssl.a in Frameworks */,
-				076161611856A0B200CFBC99 /* librtmp.a in Frameworks */,
-				0761615D1856A0B200CFBC99 /* libavfilter.a in Frameworks */,
-				076161641856A0B200CFBC99 /* libswscale.a in Frameworks */,
-				0761615F1856A0B200CFBC99 /* libavutil.a in Frameworks */,
-				0761615C1856A0B200CFBC99 /* libavcodec.a in Frameworks */,
+				0713D88B1932F12700BF6968 /* libavcodec.a in Frameworks */,
+				0713D88C1932F12700BF6968 /* libavfilter.a in Frameworks */,
+				0713D88D1932F12700BF6968 /* libavformat.a in Frameworks */,
+				0713D88E1932F12700BF6968 /* libavutil.a in Frameworks */,
+				0713D88F1932F12700BF6968 /* libswresample.a in Frameworks */,
+				0713D8901932F12700BF6968 /* libswscale.a in Frameworks */,
+				0713D8911932F12700BF6968 /* librtmp.a in Frameworks */,
+				0713D8921932F12700BF6968 /* libcrypto.a in Frameworks */,
+				0713D8931932F12700BF6968 /* libssl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -499,6 +499,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
+					"/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -515,6 +516,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/Abner/Documents/Develop/Android_workspace/BS_HomeSecurity_App_Modules/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
+					"/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
