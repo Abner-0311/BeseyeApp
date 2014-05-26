@@ -221,8 +221,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
     
     private void tryToReconnect(){
+    	Log.i(TAG, "CameraViewActivity::tryToReconnect(), mActivityResume:"+mActivityResume+", mActivityDestroy:"+mActivityDestroy);
 		closeStreaming();
-		beginLiveView();
+		if(mActivityResume){
+			beginLiveView();
+		}else if(!mActivityDestroy){
+			mbIsPauseWhenPlaying = true;
+		}
     }
     
 	@Override
@@ -1057,6 +1062,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	         			int iTrial = 0;
 	         			int iRetCreateStreaming = 0;
 	         			do{
+	         				Log.i(TAG, "CameraViewActivity::beginLiveView(), mActivityResume:"+mActivityResume+", mActivityDestroy:"+mActivityDestroy);
+	         				if(mActivityDestroy){
+	         					return;
+	         				}else if(!mActivityResume){
+	         					mbIsPauseWhenPlaying = true;
+	         					return;
+	         				}
+	         				
 	         				if(0 > iRetCreateStreaming){
 	         					iTrial++;
 	         					try {
@@ -1073,6 +1086,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	         			if(miStreamIdx >= 10){
 	         				miStreamIdx = -1;
 	         			}
+	         			
 	         			if(0 <= iRetCreateStreaming){
 	             			setCamViewStatus(CameraView_Internal_Status.CV_STREAM_CLOSE);
 	                 		mCurCheckCount = 0;
@@ -1117,18 +1131,52 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	                     		Log.i(TAG, "mstrDVRStreamPathList.size():"+mstrDVRStreamPathList.size());
                          		}
     							
-    							if(0 <= openStreamingList(0, getNativeSurface(), strHost, streamList, 0)){
-    								//Log.i(TAG, "openStreamingList out");
-    	                 			setCamViewStatus(CameraView_Internal_Status.CV_STREAM_CLOSE);
-    	                     		mCurCheckCount = 0;
-//    	                     		//roll back
-//    	                     		synchronized(CameraViewActivity.this){
-//    		                     		while(0 < mstrDVRStreamPathList.size()){
-//    		                     			mstrPendingStreamPathList.add(mstrDVRStreamPathList.remove(0));
-//    		                     		}
-//    		                     		//Log.i(TAG, "mstrDVRStreamPathList.size():"+mstrDVRStreamPathList.size());
-//    	                     		}
-    							}
+//    							if(0 <= openStreamingList(0, getNativeSurface(), strHost, streamList, 0)){
+//    								//Log.i(TAG, "openStreamingList out");
+//    	                 			setCamViewStatus(CameraView_Internal_Status.CV_STREAM_CLOSE);
+//    	                     		mCurCheckCount = 0;
+////    	                     		//roll back
+////    	                     		synchronized(CameraViewActivity.this){
+////    		                     		while(0 < mstrDVRStreamPathList.size()){
+////    		                     			mstrPendingStreamPathList.add(mstrDVRStreamPathList.remove(0));
+////    		                     		}
+////    		                     		//Log.i(TAG, "mstrDVRStreamPathList.size():"+mstrDVRStreamPathList.size());
+////    	                     		}
+//    							}
+    							
+    							miStreamIdx = 0;
+    		         			int iTrial = 0;
+    		         			int iRetCreateStreaming = 0;
+    		         			do{
+    		         				Log.i(TAG, "CameraViewActivity::beginLiveView(), mActivityResume:"+mActivityResume+", mActivityDestroy:"+mActivityDestroy);
+    		         				if(mActivityDestroy){
+    		         					return;
+    		         				}else if(!mActivityResume){
+    		         					mbIsPauseWhenPlaying = true;
+    		         					return;
+    		         				}
+    		         				
+    		         				if(0 > iRetCreateStreaming){
+    		         					iTrial++;
+    		         					try {
+    										Thread.sleep(1000);
+    										Log.i(TAG, "open stream failed due to "+iRetCreateStreaming+", sleep one sec");
+    									} catch (InterruptedException e) {
+    										e.printStackTrace();
+    									}
+    		         				}
+    		         				Log.i(TAG, "open stream for idx"+miStreamIdx);
+    		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost, streamList, 0);
+    		         			}while(iRetCreateStreaming < 0 && iTrial < 10);
+    		         			
+    		         			if(miStreamIdx >= 10){
+    		         				miStreamIdx = -1;
+    		         			}
+    		         			
+    		         			if(0 <= iRetCreateStreaming){
+    		             			setCamViewStatus(CameraView_Internal_Status.CV_STREAM_CLOSE);
+    		                 		mCurCheckCount = 0;
+    		             		}
     						}
          				}
          			}else{
