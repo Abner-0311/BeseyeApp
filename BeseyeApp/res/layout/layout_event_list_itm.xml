@@ -37,22 +37,41 @@
 	        android:textColor="@color/liveview_font_normal_color"
 	        android:textSize="@dimen/login_fontRegular" />
 	    
-	    <com.app.beseye.widget.RemoteGifImageView
-	        android:id="@+id/iv_timeline_video_thumbnail"
-	        android:layout_width="225dp"
-	        android:layout_height="128dp"
+	    <RelativeLayout 
+	        android:id="@+id/vg_timeline_video_thumbnail"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
 	        android:layout_toRightOf="@id/iv_timeline_grayline"
-	        android:layout_below="@+id/tv_eventlist_event_name"
-	        android:layout_marginTop="@dimen/eventlist_thumbnail_top"
+		    android:layout_below="@+id/tv_eventlist_event_name"
+		    android:layout_marginTop="@dimen/eventlist_thumbnail_top"
 	        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
-	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
-	        android:src="@drawable/eventlist_video_fake" />
+	        android:layout_marginRight="@dimen/eventlist_thumbnail_right">
+	        <com.app.beseye.widget.RemoteGifImageView
+		        android:id="@+id/iv_timeline_video_thumbnail"
+		        android:layout_width="225dp"
+		        android:layout_height="128dp"
+		        android:src="@drawable/eventlist_video_fake" />
+	    </RelativeLayout>
+	    
+	    <TextView 
+	        android:id="@+id/btn_go_live"
+	        android:layout_width="225dp"
+	        android:layout_height="wrap_content"
+	        android:text="@string/event_go_live"
+	        android:textSize="24sp"
+	        android:textColor="@color/word_white"
+	        android:gravity="center"
+	     	android:background="@drawable/sl_event_list_live_btn_bg"
+	     	android:layout_centerInParent="true"
+	     	android:duplicateParentState="true"
+	     	android:layout_toRightOf="@id/iv_timeline_grayline"
+	     	android:visibility="gone"/>
 	    
 	    <ImageView
 	        android:id="@+id/iv_timeline_icon_face"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/iv_timeline_video_thumbnail"
+	        android:layout_toRightOf="@id/vg_timeline_video_thumbnail"
 	        android:layout_below="@+id/tv_eventlist_event_name"
 	        android:layout_marginTop="@dimen/eventlist_thumbnail_top"
 	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
@@ -63,7 +82,7 @@
 	        android:id="@+id/iv_timeline_icon_fire"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/iv_timeline_video_thumbnail"
+	        android:layout_toRightOf="@id/vg_timeline_video_thumbnail"
 	        android:layout_below="@+id/iv_timeline_icon_face"
 	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
 	        android:src="@drawable/eventlist_filter_icon_fire" 
@@ -72,7 +91,7 @@
 	        android:id="@+id/iv_timeline_icon_sound"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/iv_timeline_video_thumbnail"
+	        android:layout_toRightOf="@id/vg_timeline_video_thumbnail"
 	        android:layout_below="@+id/iv_timeline_icon_fire"
 	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
 	        android:src="@drawable/eventlist_filter_icon_sound" 
@@ -81,7 +100,7 @@
 	        android:id="@+id/iv_timeline_icon_motion"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/iv_timeline_video_thumbnail"
+	        android:layout_toRightOf="@id/vg_timeline_video_thumbnail"
 	        android:layout_below="@+id/iv_timeline_icon_sound"
 	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
 	        android:src="@drawable/eventlist_filter_icon_motion" 
@@ -91,7 +110,7 @@
 	        android:id="@+id/v_dummy"
 	        android:layout_width="0dp"
 	        android:layout_height="@dimen/eventlist_content_bottom"
-	        android:layout_below="@+id/iv_timeline_video_thumbnail"/>
+	        android:layout_below="@+id/vg_timeline_video_thumbnail"/>
 	</RelativeLayout>
 </RelativeLayout>
 

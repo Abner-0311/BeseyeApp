@@ -54,9 +54,6 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				}
 				
 				holder.mImgThumbnail = (RemoteImageView)convertView.findViewById(R.id.iv_cameralist_thumbnail);
-				if(null != holder.mImgThumbnail){
-					holder.mImgThumbnail.bringToFront();
-				}
 				
 				holder.mVgCamOff = (ViewGroup)convertView.findViewById(R.id.rl_cameralist_no_video);
 				holder.mVgCamDisconnected = (ViewGroup)convertView.findViewById(R.id.rl_camera_disconnected_solid);
@@ -79,7 +76,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				
 				CAM_CONN_STATUS connState = CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
 				
-				BeseyeUtils.setVisibility(holder.mImgThumbnail, connState.equals(CAM_CONN_STATUS.CAM_ON)?View.VISIBLE:View.INVISIBLE);
+				BeseyeUtils.setVisibility(holder.mImgThumbnail, connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED)?View.INVISIBLE:View.VISIBLE);
 				BeseyeUtils.setVisibility(holder.mVgCamOff, connState.equals(CAM_CONN_STATUS.CAM_OFF)?View.VISIBLE:View.GONE);
 				BeseyeUtils.setVisibility(holder.mVgCamDisconnected, connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED)?View.VISIBLE:View.GONE);
 				

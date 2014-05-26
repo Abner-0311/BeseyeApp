@@ -44,42 +44,10 @@ import android.util.Log;
 import android.widget.ImageView;
 
 public class RemoteGifImageView extends RemoteImageView {
-	final private static int EMPTY_DEFAULT_IMAGE = -1;
-	final private static int PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD = 48;//if mem class is greater than 48 MB, use sample rate 2, or use smaple rate 4
-	
 	private String[] mCachePath;
 	private String[] mURI;
 	private int miIvCount;
 	private int miCurDisplayIdx ;
-	private Float mRatio = (float) 1.0; // default image's ratio
-	private Float mDestRatio = (float) 1.0; // dest image's ratio
-	private int miDesireWidth = -1, miDesireHeight = -1;
-	private RemoteImageCallback mCallback;
-	private int mDefaultImage = EMPTY_DEFAULT_IMAGE;
-	private Handler mHandler = new Handler();
-	private static ExecutorService sExecutor = Executors.newFixedThreadPool(5);
-	private Future<?> mFuture;
-	private boolean mIsPreload;
-	private boolean mbMatchWidth = false;
-	
-	private boolean mbIsPhoto = false;
-	private boolean mbIsPhotoViewMode = false;
-	private boolean mbIsLoaded = false;
-	
-	//For Shadow feature
-	private static final float SHADOW_WIDTH = 3.0f;
-	private boolean mbEnableShadow = false;
-	private float mShadowWidth = SHADOW_WIDTH;
-	
-	private static AWSCredentials myCredentials;
-	final private static String S3_FILE_PREFIX = "s3://";
-	static{
-		myCredentials = new BasicAWSCredentials("AKIAIEILGPKIXSE6EDFQ", "TQst9ZqzmzrOq0qZcJJjdbOSnTIfpXIFWvKnWJcK"); 
-	}
-
-	public interface RemoteImageCallback {
-		public void imageLoaded(boolean success);
-	}
 	
 	public RemoteGifImageView(Context context) {
 		this(context, null, 0);
@@ -243,8 +211,12 @@ public class RemoteGifImageView extends RemoteImageView {
 	private Runnable mLoadNextBmpRunnable = new Runnable(){
 		@Override
 		public void run() {
-			miCurDisplayIdx = (++miCurDisplayIdx)%miIvCount;
-			loadImage();
+			if(0 < miIvCount){
+				miCurDisplayIdx = (++miCurDisplayIdx)%miIvCount;
+				loadImage();
+			}else{
+				loadDefaultImage();
+			}
 		}};
 
 	@Override

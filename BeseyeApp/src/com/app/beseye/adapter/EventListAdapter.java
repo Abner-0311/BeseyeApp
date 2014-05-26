@@ -16,6 +16,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +36,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		public ImageView mImgFire;
 		public ImageView mImgSound;
 		public ImageView mImgMotion;
+		public TextView mBtnGoLive;
 		public JSONObject mObjEvent;
 	}
 	
@@ -60,6 +62,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 				holder.mImgSound = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_sound);
 				holder.mImgMotion = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_motion);
 				
+				holder.mBtnGoLive = (TextView)convertView.findViewById(R.id.btn_go_live);
 				convertView.setOnClickListener(mItemOnClickListener);
 				convertView.setTag(holder);
 			}
@@ -84,15 +87,25 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 					}
 				}
 				
+				BeseyeUtils.setVisibility(holder.mTxtEventType, (0 == iPosition)?View.GONE:View.VISIBLE);
+				BeseyeUtils.setVisibility(holder.mBtnGoLive, (0 == iPosition)?View.VISIBLE:View.GONE);
+				
 				if(null != holder.mImgThumbnail){
-					String[] path = {"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858859902_{dur}10351_{r}1400850536594_{th}1400858859551.jpg",
-							"s3://beseye-thumbnail/taiwan_Taipei-101.jpg",
-							"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858901167_{dur}10445_{r}1400850536594_{th}1400858900722.jpg",
-							"s3://beseye-thumbnail/shanhai01.jpg",
-							"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858921935_{dur}10390_{r}1400850536594_{th}1400858921545.jpg",
-							"s3://beseye-thumbnail/taiwan_Taipei-101_2.jpg"};
-					holder.mImgThumbnail.setURI(path, R.drawable.eventlist_video_fake);
-					holder.mImgThumbnail.loadImage();
+					if(0 < iPosition){
+						String[] path = {"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858859902_{dur}10351_{r}1400850536594_{th}1400858859551.jpg",
+								"s3://beseye-thumbnail/taiwan_Taipei-101.jpg",
+								"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858901167_{dur}10445_{r}1400850536594_{th}1400858900722.jpg",
+								"s3://beseye-thumbnail/shanhai01.jpg",
+								"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858921935_{dur}10390_{r}1400850536594_{th}1400858921545.jpg",
+								"s3://beseye-thumbnail/taiwan_Taipei-101_2.jpg"};
+						holder.mImgThumbnail.setURI(path, R.drawable.eventlist_video_fake);
+						holder.mImgThumbnail.loadImage();
+					}else{
+						holder.mImgThumbnail.setURI(new String[]{}, R.drawable.eventlist_video_fake);
+						//holder.mImgThumbnail.loadDefaultImage();
+						holder.mImgThumbnail.setImageBitmap(null);
+						//holder.mImgThumbnail.setBackgroundColor(this.mContext.getResources().getColor(R.color.word_white));
+					}
 				}
 				holder.mObjEvent = obj;
 				convertView.setTag(holder);

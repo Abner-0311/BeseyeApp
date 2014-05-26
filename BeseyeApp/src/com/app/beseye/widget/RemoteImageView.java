@@ -44,37 +44,37 @@ import android.util.Log;
 import android.widget.ImageView;
 
 public class RemoteImageView extends ImageView {
-	final private static int EMPTY_DEFAULT_IMAGE = -1;
-	final private static int PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD = 48;//if mem class is greater than 48 MB, use sample rate 2, or use smaple rate 4
+	final protected static int EMPTY_DEFAULT_IMAGE = -1;
+	final protected static int PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD = 48;//if mem class is greater than 48 MB, use sample rate 2, or use smaple rate 4
 	
-	private String mCachePath;
-	private String mURI;
-	private Float mRatio = (float) 1.0; // default image's ratio
-	private Float mDestRatio = (float) 1.0; // dest image's ratio
-	private int miDesireWidth = -1, miDesireHeight = -1;
-	private RemoteImageCallback mCallback;
-	private int mDefaultImage = EMPTY_DEFAULT_IMAGE;
-	private Handler mHandler = new Handler();
-	private static ExecutorService sExecutor = Executors.newFixedThreadPool(5);
-	private Future<?> mFuture;
-	private boolean mIsPreload;
-	private boolean mbMatchWidth = false;
+	protected String mCachePath;
+	protected String mURI;
+	protected Float mRatio = (float) 1.0; // default image's ratio
+	protected Float mDestRatio = (float) 1.0; // dest image's ratio
+	protected int miDesireWidth = -1, miDesireHeight = -1;
+	protected RemoteImageCallback mCallback;
+	protected int mDefaultImage = EMPTY_DEFAULT_IMAGE;
+	protected Handler mHandler = new Handler();
+	protected static ExecutorService sExecutor = Executors.newFixedThreadPool(5);
+	protected Future<?> mFuture;
+	protected boolean mIsPreload;
+	protected boolean mbMatchWidth = false;
 	
-	private boolean mbIsPhoto = false;
-	private boolean mbIsPhotoViewMode = false;
-	private boolean mbIsLoaded = false;
+	protected boolean mbIsPhoto = false;
+	protected boolean mbIsPhotoViewMode = false;
+	protected boolean mbIsLoaded = false;
 	
 	static public final String CACHE_POSTFIX_SAMPLE_1 = "_s1";//set sample as 1
 	static public final String CACHE_POSTFIX_SAMPLE_2 = "_s2";//set sample as 2
 	static public final String CACHE_POSTFIX_HIGH_RES = "_hs";//set as high resolution
 	
 	//For Shadow feature
-	private static final float SHADOW_WIDTH = 3.0f;
-	private boolean mbEnableShadow = false;
-	private float mShadowWidth = SHADOW_WIDTH;
+	protected static final float SHADOW_WIDTH = 3.0f;
+	protected boolean mbEnableShadow = false;
+	protected float mShadowWidth = SHADOW_WIDTH;
 	
-	private static AWSCredentials myCredentials;
-	final private static String S3_FILE_PREFIX = "s3://";
+	protected static AWSCredentials myCredentials;
+	final protected static String S3_FILE_PREFIX = "s3://";
 	static{
 		myCredentials = new BasicAWSCredentials("AKIAIEILGPKIXSE6EDFQ", "TQst9ZqzmzrOq0qZcJJjdbOSnTIfpXIFWvKnWJcK"); 
 	}
@@ -204,7 +204,7 @@ public class RemoteImageView extends ImageView {
 
 	static Hashtable<Integer, SoftReference<Bitmap>> mDefaultImageHolder = new Hashtable<Integer, SoftReference<Bitmap>>();
 
-	protected void loadDefaultImage() {
+	public void loadDefaultImage() {
 		Bitmap bitmap = getDefaultImage();
 		if (bitmap != null) {
 			// add stretch method

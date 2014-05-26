@@ -5,6 +5,7 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 import java.util.Date;
 
 import com.app.beseye.R;
+import com.app.beseye.util.BeseyeUtils;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -55,6 +56,8 @@ public class BeseyeClockIndicator extends LinearLayout {
 	private int miIndHeight = 0;
 	private int miIndRange = 0;
 	private int miTop =0;
+	
+	private boolean mbNow = false;
 	
 	private void init(Context context){
 		LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -109,13 +112,21 @@ public class BeseyeClockIndicator extends LinearLayout {
 		miNextHour = date.getHours(); 
 		miNextMin = date.getMinutes();
 		
-		if(null != m_txtDate){
-			m_txtDate.setText(String.format("%02d/%02d", date.getMonth()+1, date.getDate()));
-		}
+		BeseyeUtils.setVisibility(m_txtTime, mbNow?View.GONE:View.VISIBLE);
 		
-		if(null != m_txtTime){
-			m_txtTime.setText(String.format("%02d:%02d", miNextHour, miNextMin));
-		}
+		if(mbNow){
+			if(null != m_txtDate){
+				m_txtDate.setText(this.getResources().getString(R.string.event_list_now));
+			}
+		}else{
+			if(null != m_txtDate){
+				m_txtDate.setText(String.format("%02d/%02d", date.getMonth()+1, date.getDate()));
+			}
+			
+			if(null != m_txtTime){
+				m_txtTime.setText(String.format("%02d:%02d", miNextHour, miNextMin));
+			}
+		}	
 		
 		if(inAnimation()){
 			miPendingHour = miNextHour;
@@ -123,6 +134,16 @@ public class BeseyeClockIndicator extends LinearLayout {
 		}else{
 			if(miCurHour != miNextHour || miCurMin != miNextMin){
 				performAnimation(miNextHour,miNextMin);
+			}
+		}
+	}
+	
+	public void updateToNow(boolean bNow){
+		mbNow = bNow;
+		if(mbNow){
+			BeseyeUtils.setVisibility(m_txtTime,View.GONE);
+			if(null != m_txtDate){
+				m_txtDate.setText(this.getResources().getString(R.string.event_list_now));
 			}
 		}
 	}

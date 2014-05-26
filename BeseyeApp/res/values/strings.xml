@@ -89,6 +89,7 @@
 	<string name="cam_setting_title_video_upside_down">Video upside-down</string>
 	<string name="cam_setting_title_wifi_setting">Wifi setting</string>
 	<string name="cam_setting_title_cam_info">Camera information</string>
+	<string name="cam_setting_empty_name_warning">Camera name can not be empty!</string>
 	
 	<string name="cam_info_cam_name">Camera name</string>
 	<string name="cam_info_sn">Serial number</string>
@@ -147,6 +148,7 @@
 	<string name="datetime_month">Month</string>
 	<string name="datetime_day">Day</string>
 	<string name="datetime_hour">Hour</string>
+	<string name="event_list_now">Now</string>
 	
 	<string name="camera_list_off">This camera is off</string>
 	<string name="camera_list_disconected">This camera is disconnected</string>

@@ -2034,7 +2034,7 @@ int read_thread(void *arg)
             if (ret == AVERROR_EOF || url_feof(ic->pb)){
             	av_log(NULL, AV_LOG_INFO, "read_thread(), eof, is:%d, ret:%d", is, ret);
                 eof = 1;
-                //player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
+                player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
             }
             if (ic->pb && ic->pb->error)
                 break;

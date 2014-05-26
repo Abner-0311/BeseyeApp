@@ -487,6 +487,32 @@ public class BeseyeJSONUtil {
 		return bRet;
 	}
 	
+	static public boolean setJSONInt(JSONObject obj, String strKey, int iVal){
+		boolean bRet = false;
+		try {
+			if(null != strKey){
+				obj.put(strKey, iVal);
+				bRet = true;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return bRet;
+	}
+	
+	static public boolean setJSONString(JSONObject obj, String strKey, String strVal){
+		boolean bRet = false;
+		try {
+			if(null != strKey && null != strVal){
+				obj.put(strKey, strVal);
+				bRet = true;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return bRet;
+	}
+	
 //	static public JSONObject getMsgReceiver(JSONArray members){
 //		JSONObject rec = null;
 //		if(null != members){

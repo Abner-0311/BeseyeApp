@@ -60,7 +60,7 @@ public class BeseyeMemCache {
 					option.inJustDecodeBounds = true;
 					BitmapFactory.decodeResource(context.getResources(), iResId, option);
 					if(option.outWidth > iDeisreWidth &&  option.outHeight > iDesireHeight){
-						//Log.i(iKalaUtil.IKALA_APP_TAG, "getBmpByResId(), downDample, ("+option.outWidth+", "+option.outHeight+"), desire:("+iDeisreWidth+", "+iDesireHeight+")");
+						Log.i(TAG, "getBmpByResId(), downDample, ("+option.outWidth+", "+option.outHeight+"), desire:("+iDeisreWidth+", "+iDesireHeight+")");
 						option.inSampleSize = 2;
 					}
 					option.inJustDecodeBounds = false;

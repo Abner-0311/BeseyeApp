@@ -414,8 +414,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 									}
 									
 									Bundle b = new Bundle();
-									b.putString(CameraListActivity.KEY_VCAM_ID, strVcamId);
-									b.putString(CameraListActivity.KEY_VCAM_NAME, strCamName);
+									b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
 									b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
 									launchDelegateActivity(CameraListActivity.class.getName(), b);
 								}
