@@ -131,7 +131,7 @@ JNIEXPORT void JNICALL Java_com_app_beseye_CameraViewActivity_endRecord(JNIEnv *
 }
 
 static jclass cls;
-static jmethodID  s_getBitmapMethod, s_drawStreamBitmapMethod, s_rtmpStatusCBMethod, s_rtmpErrorCBMethod/*, s_updateBitmapMethod = NULL*/;
+static jmethodID  s_getBitmapMethod, s_drawStreamBitmapMethod, s_rtmpStatusCBMethod, s_rtmpErrorCBMethod, s_rtmpClockCBMethod/*, s_updateBitmapMethod = NULL*/;
 
 /* Main activity */
 static jclass mActivityClass = NULL;
@@ -181,6 +181,12 @@ JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_nativeClassIni
 	s_rtmpErrorCBMethod = env->GetMethodID(cls, "updateRTMPErrorCallback", "(IILjava/lang/String;)V");
 	if(NULL == s_rtmpErrorCBMethod){
 		LOGE("s_rtmpErrorCBMethod is empty");
+		return 0;
+	}
+
+	s_rtmpClockCBMethod= env->GetMethodID(cls, "updateRTMPClockCallback", "(I)V");
+	if(NULL == s_rtmpClockCBMethod){
+		LOGE("s_rtmpClockCBMethod is empty");
 		return 0;
 	}
 
@@ -360,6 +366,9 @@ void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_C
 			}else if(cbType == CBeseyeRTMPObserver::ERROR_CB){
 				if(s_rtmpErrorCBMethod && jni_host)
 					 jni_env->CallVoidMethod(jni_host, s_rtmpErrorCBMethod, iMajorType, iMinorType, str2jstring(msg));
+			}else if(cbType == CBeseyeRTMPObserver::STREAM_CLOCK_CB){
+				if(s_rtmpClockCBMethod && jni_host)
+					jni_env->CallVoidMethod(jni_host, s_rtmpClockCBMethod, iMajorType);
 			}
     	}else{
     		LOGE("rtmpStreamStatusCb(), NULL jni_host");

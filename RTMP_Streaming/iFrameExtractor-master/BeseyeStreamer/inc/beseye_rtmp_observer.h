@@ -20,7 +20,8 @@ public:
 
 	enum Player_Callback {
 		STREAM_STATUS_CB,
-		ERROR_CB
+		ERROR_CB,
+		STREAM_CLOCK_CB
 	};
 
 	enum Player_Major_Error {

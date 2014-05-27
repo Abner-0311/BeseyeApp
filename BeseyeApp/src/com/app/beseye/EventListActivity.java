@@ -248,7 +248,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 			if(task instanceof BeseyeMMBEHttpTask.GetEventListTask){
 				JSONArray EntList = new JSONArray();
 				if(0 == iRetCode){
-					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 					miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
 					if(0 < miEventCount){
 						EntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);

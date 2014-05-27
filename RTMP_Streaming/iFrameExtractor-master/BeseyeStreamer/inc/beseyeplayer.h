@@ -88,6 +88,8 @@ public:
 
 	virtual void addPendingStreamPaths();
 
+	void setStreamClock(double dClock);
+
 private:
 	inline void fill_rectangle(SDL_Surface *screen, int x, int y, int w, int h, int color){
 	    SDL_Rect rect;
@@ -189,6 +191,7 @@ private:
 	enum AVDiscard skip_loop_filter;
 	int error_concealment;
 	int decoder_reorder_pts;
+	double mdStreamClock;
 
 	int exit_on_keydown;
 	int exit_on_mousedown;

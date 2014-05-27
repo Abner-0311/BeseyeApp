@@ -30,7 +30,7 @@ pFrameRGB(NULL),
 window(w),
 seek_by_bytes(-1),
 show_status(-1),
-av_sync_type(AV_SYNC_AUDIO_MASTER),
+av_sync_type(AV_SYNC_VIDEO_MASTER),
 start_time(AV_NOPTS_VALUE),
 duration(AV_NOPTS_VALUE),
 fast(0),
@@ -66,7 +66,8 @@ window_holder(NULL),
 getWindowByHolderFunc(NULL),
 mVecPendingStreamPaths(NULL),
 iNumOfPendingStreamPaths(0),
-rtmpRef(NULL){
+rtmpRef(NULL),
+mdStreamClock(0.0){
 	wanted_stream[AVMEDIA_TYPE_AUDIO] = -1;
 	wanted_stream[AVMEDIA_TYPE_VIDEO] = -1;
 	wanted_stream[AVMEDIA_TYPE_SUBTITLE] = -1;
@@ -409,6 +410,16 @@ void CBeseyePlayer::update_video_pts(VideoState *is, double pts, int64_t pos) {
     is->video_current_pts_drift = is->video_current_pts - time;
     is->video_current_pos = pos;
     is->frame_last_pts = pts;
+
+	int iClock = (pts >= 0.0)?(pts+0.0001):0;
+	int iStreamClock = (mdStreamClock >= 0.0)?(mdStreamClock+0.0001):0;
+	//av_log(NULL, AV_LOG_INFO, "update_video_pts(), clock:%d, mdStreamClock:%d\n", iClock, iStreamClock);
+	if(iClock > iStreamClock){
+		setStreamClock(pts);
+		triggerPlayCB(CBeseyeRTMPObserver::STREAM_CLOCK_CB, NULL, iClock, 0);
+	}
+
+	//av_log(NULL, AV_LOG_INFO, "update_video_pts(), pts:%7.2f\n", pts);
 }
 
 /* called to display each frame */
@@ -569,8 +580,14 @@ display:
                    is->video_st ? is->video_st->codec->pts_correction_num_faulty_pts : 0);
             fflush(stdout);
             last_time = cur_time;
+
         }
     }
+}
+
+void CBeseyePlayer::setStreamClock(double dClock){
+	//av_log(NULL, AV_LOG_INFO, "setStreamClock(), clock:%7.2f\n", dClock);
+	mdStreamClock = dClock;
 }
 
 /* allocate a picture (needs to do that in main thread to avoid
@@ -1710,6 +1727,8 @@ void CBeseyePlayer::stream_component_close(VideoState *is, int stream_index)
 int decode_interrupt_cb(void *ctx)
 {
     VideoState *is = (VideoState*)ctx;
+    if(is->abort_request)
+    	av_log(NULL, AV_LOG_ERROR, "decode_interrupt_cb() invoked: is->abort_request%d\n", is->abort_request);
     return is->abort_request;
 }
 
@@ -1751,6 +1770,7 @@ int read_thread(void *arg)
     is->last_video_stream = is->video_stream = -1;
     is->last_audio_stream = is->audio_stream = -1;
     is->last_subtitle_stream = is->subtitle_stream = -1;
+    is->abort_request = 0;
 
     //player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTING, 0);
 
@@ -1770,7 +1790,7 @@ int read_thread(void *arg)
 
     err = avformat_open_input(&ic, is->filename, is->iformat, &format_opts);
     if (err < 0) {
-    	av_log(NULL, AV_LOG_ERROR, "avformat_open_input() err:%d--", err);
+    	av_log(NULL, AV_LOG_ERROR, "avformat_open_input() err:0x%x--", err);
 
     	if(-5 == err){
     		int itrial = 0;
@@ -1798,6 +1818,8 @@ int read_thread(void *arg)
     	}
 
     }
+
+    player->setStreamClock(0.0);
 //    if ((t = av_dict_get(format_opts, "", NULL, AV_DICT_IGNORE_SUFFIX))) {
 //        av_log(NULL, AV_LOG_ERROR, "Option %s not found.\n", t->key);
 //        if(0!= strcmp(t->key, "holder")){
@@ -1815,15 +1837,18 @@ int read_thread(void *arg)
 
     //for video stream only
     //err = avformat_find_stream_info_ext(ic, opts);
+    av_log(NULL, AV_LOG_INFO, "avformat_find_stream_info_ext++");
+
     err = avformat_find_stream_info(ic, opts);
     if (err < 0) {
     	av_log(NULL, AV_LOG_ERROR, "avformat_find_stream_info() err:%d--", err);
         fprintf(stderr, "%s: could not find codec parameters\n", is->filename);
+        print_error_internal(player, is->filename, err);
         ret = -1;
         goto fail;
     }
 
-    av_log(NULL, AV_LOG_DEBUG, "avformat_find_stream_info_ext--");
+    av_log(NULL, AV_LOG_INFO, "avformat_find_stream_info_ext--");
 
     player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTED, 0);
     player->registerRtmpCallback(ic);
@@ -2034,7 +2059,8 @@ int read_thread(void *arg)
             if (ret == AVERROR_EOF || url_feof(ic->pb)){
             	av_log(NULL, AV_LOG_INFO, "read_thread(), eof, is:%d, ret:%d", is, ret);
                 eof = 1;
-                //player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
+                if(player->get_Stream_Status() != STREAM_EOF)
+                	player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
             }
             if (ic->pb && ic->pb->error)
                 break;
