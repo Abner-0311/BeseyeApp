@@ -3624,7 +3624,7 @@ RTMP_Close(RTMP *r)
 #endif
 
   if(r->m_rtmpStatusCallback)
-	  r->m_rtmpStatusCallback(r->mUserCb, STREAM_CLOSE, NULL);
+	  r->m_rtmpStatusCallback(r->mUserCb, STREAM_INTERNAL_CLOSE, NULL);
 
   RTMP_Log(RTMP_LOGERROR, "%s-",__FUNCTION__);
 }

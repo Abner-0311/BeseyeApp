@@ -222,7 +222,7 @@ void CBeseyePlayer::stream_close(VideoState *is)
     av_log(NULL, AV_LOG_INFO, "stream_close()--, is:%d\n", is);
     av_free(is);
     is = NULL;
-    //triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CLOSE);
+    triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CLOSE, 0);
 }
 
 void CBeseyePlayer::do_exit(VideoState *is)
@@ -2107,7 +2107,7 @@ int read_thread(void *arg)
 
     if (is->ic) {
         avformat_close_input(&is->ic);
-        player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CLOSE, 0);
+        //player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CLOSE, 0);
         player->unregisterRtmpCallback(is->ic);
     }
 

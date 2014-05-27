@@ -1496,7 +1496,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		STREAM_PLAYING,
 		STREAM_PAUSING,
 		STREAM_PAUSED,
+		STREAM_UNPAUSING,
 		STREAM_EOF,
+		STREAM_INTERNAL_CLOSE,
 		STREAM_CLOSE
 	};
 	

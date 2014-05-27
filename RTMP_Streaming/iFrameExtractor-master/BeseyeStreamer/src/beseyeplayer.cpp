@@ -222,7 +222,7 @@ void CBeseyePlayer::stream_close(VideoState *is)
     av_log(NULL, AV_LOG_INFO, "stream_close()--, is:%d\n", is);
     av_free(is);
     is = NULL;
-    //triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CLOSE);
+    triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CLOSE, 0);
 }
 
 void CBeseyePlayer::do_exit(VideoState *is)
@@ -805,11 +805,11 @@ int CBeseyePlayer::queue_picture(VideoState *is, AVFrame *src_frame, double pts1
 			sws_scale(is->img_convert_ctx, src_frame->data, src_frame->linesize, 0, src_frame->height, pFrameRGB->data, pFrameRGB->linesize);
 
 			vp->sample_aspect_ratio = av_guess_sample_aspect_ratio(is->ic, is->video_st, src_frame);
-
-			//workaround
-			if(/*get_Stream_Status() == STREAM_CONNECTED || */get_Stream_Status() == STREAM_PAUSED || get_Stream_Status() == STREAM_EOF){
-				triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PLAYING, 0);
-			}
+//
+//			//workaround
+//			if(/*get_Stream_Status() == STREAM_CONNECTED || */get_Stream_Status() == STREAM_PAUSED || get_Stream_Status() == STREAM_EOF){
+//				triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PLAYING, 0);
+//			}
 
 			if(mVideoCallback){
 				mVideoCallback(window, (uint8_t*)pFrameRGB->data[0], miFrameFormat, pFrameRGB->linesize[0], target_width, target_height);
@@ -2107,7 +2107,7 @@ int read_thread(void *arg)
 
     if (is->ic) {
         avformat_close_input(&is->ic);
-        player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CLOSE, 0);
+        //player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CLOSE, 0);
         player->unregisterRtmpCallback(is->ic);
     }
 
@@ -2508,7 +2508,9 @@ int CBeseyePlayer::pauseStreaming(){
 	av_log(NULL, AV_LOG_INFO, "pauseStreaming()++, mStream_Status:%d", mStream_Status);
 	if(NULL != is && !isStreamPaused() && mStream_Status >= STREAM_CONNECTED && mStream_Status < STREAM_CLOSE){
 		toggle_pause(is);
-		triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSING, 0);
+		//Abner: DVR abnormal behaviors
+		//triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSING, 0);
+		triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSED, 0);
 		iRet = 1;
 	}
 	return iRet;
