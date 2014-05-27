@@ -273,6 +273,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(this), true, mStrVCamID);
 				//monitorAsyncTask(new BeseyeCamBEHttpTask.SetWiFiConfigTask(this), true, mStrVCamID, "beseye", "0630BesEye", "3");
 				//showMyDialog(DIALOG_ID_CAM_INFO);
+				showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
 				break;
 			}
 			case R.id.vg_hw_settings:{
@@ -336,14 +337,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
             	builder.setMessage(String.format(getString(R.string.dialog_dettach_cam),mStrVCamName));
 				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				    public void onClick(DialogInterface dialog, int item) {
-				    	removeMyDialog(DIALOG_ID_WARNING);
+				    	removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
 				    	monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);
 				    }
 				});
 				builder.setOnCancelListener(new OnCancelListener(){
 					@Override
 					public void onCancel(DialogInterface dialog) {
-						removeMyDialog(DIALOG_ID_WARNING);
+						removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
 					}});
 				
 				dialog = builder.create();
@@ -352,7 +353,28 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}
 				break;
 			}
-
+			case DIALOG_ID_CAM_REBOOT_CONFIRM:{
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            	builder.setTitle(getString(R.string.dialog_title_warning));
+            	builder.setMessage(String.format(getString(R.string.dialog_reboot_cam),mStrVCamName));
+				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				    public void onClick(DialogInterface dialog, int item) {
+				    	removeMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this), true, mStrVCamID);
+				    }
+				});
+				builder.setOnCancelListener(new OnCancelListener(){
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						removeMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+					}});
+				
+				dialog = builder.create();
+				if(null != dialog){
+					dialog.setCanceledOnTouchOutside(true);
+				}
+				break;
+			}
 			default:
 				dialog = super.onCreateDialog(id);
 		}
@@ -497,8 +519,12 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 			}else if(task instanceof BeseyeCamBEHttpTask.RestartCamTask){
-				if(0 == iRetCode)
+				if(0 == iRetCode){
+					onToastShow(task, "Reboot cam Successfully.");
 					Log.i(TAG, "onPostExecute(), "+result.toString());
+				}else{
+					onToastShow(task, "Reboot cam failed.");
+				}
 			}else if(task instanceof BeseyeCamBEHttpTask.ReconnectMMTask){
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());

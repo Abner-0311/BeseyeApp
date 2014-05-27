@@ -171,6 +171,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_WIFI_AP_KEYINDEX= DIALOG_ID_WIFI_BASE+8; 
 	static public final int DIALOG_ID_CAM_INFO= DIALOG_ID_WIFI_BASE+9; 
 	static public final int DIALOG_ID_CAM_DETTACH_CONFIRM= DIALOG_ID_WIFI_BASE+10; 
+	static public final int DIALOG_ID_CAM_REBOOT_CONFIRM= DIALOG_ID_WIFI_BASE+11; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {
