@@ -2508,7 +2508,9 @@ int CBeseyePlayer::pauseStreaming(){
 	av_log(NULL, AV_LOG_INFO, "pauseStreaming()++, mStream_Status:%d", mStream_Status);
 	if(NULL != is && !isStreamPaused() && mStream_Status >= STREAM_CONNECTED && mStream_Status < STREAM_CLOSE){
 		toggle_pause(is);
-		triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSING, 0);
+		//Abner: DVR abnormal behaviors
+		//triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSING, 0);
+		triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSED, 0);
 		iRet = 1;
 	}
 	return iRet;

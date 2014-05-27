@@ -109,6 +109,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	CV_STREAM_WAITING_PAUSE,
     	CV_STREAM_PAUSING,
     	CV_STREAM_PAUSED,
+    	CV_STREAM_WAITING_UNPAUSE,
     	CV_STREAM_EOF,
     	CV_STREAM_WAITING_CLOSE,
     	CV_STREAM_CLOSE
@@ -182,7 +183,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			break;
 			    		}
 			    		case CV_STREAM_PLAYING:{
-			    			
+			    			//if(mCamViewStatus.equals(CameraView_Internal_Status.CV_STREAM_PAUSED)){
+			    				setImageRes(mIbPlayPause, R.drawable.sl_liveview_pause_btn);
+			    				setEnabled(mIbPlayPause, true);
+			    				setVisibility(mPbLoadingCursor, View.GONE);
+			    			//}
 			    			break;
 			    		}
 			    		case CV_STREAM_WAITING_PAUSE:{
@@ -196,6 +201,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			setVisibility(mPbLoadingCursor, View.GONE);
 			    			stopUpdateTime();
 			    			setImageRes(mIbPlayPause, R.drawable.sl_liveview_play_btn);
+			    			break;
+			    		}
+			    		case CV_STREAM_WAITING_UNPAUSE:{
+			    			setVisibility(mPbLoadingCursor, View.VISIBLE);
+			    			setEnabled(mIbPlayPause, false);
 			    			break;
 			    		}
 			    		case CV_STREAM_EOF:{
@@ -879,6 +889,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			            				}else
 				            				beginLiveView();
 									}}).start();
+	            			}else{
+	            				if(isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
+		            				Bundle b = new Bundle();
+		        					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
+		        					b.putBoolean(KEY_WARNING_CLOSE, true);
+		        					showMyDialog(DIALOG_ID_WARNING, b);
+	            				}
 	            			}
 						}
 					}
@@ -994,7 +1011,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						}
 					}else if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PAUSED)){
 						if(0 <= miStreamIdx){
-							resumeStreaming(miStreamIdx);
+							if(0 <=resumeStreaming(miStreamIdx))
+								setCamViewStatus(CameraView_Internal_Status.CV_STREAM_WAITING_UNPAUSE);
 						}
 					}else{
 						//beginLiveView();
