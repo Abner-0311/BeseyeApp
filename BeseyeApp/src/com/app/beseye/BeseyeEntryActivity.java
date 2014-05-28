@@ -2,6 +2,7 @@ package com.app.beseye;
 
 import java.util.Calendar;
 
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog.OnDatetimePickerClickListener;
 
@@ -20,7 +21,7 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		getSupportActionBar().hide();
-		
+		findViewById(R.id.iv_signup_top_logo).setOnClickListener(this);
 		mTvSetupAndSignup = (TextView)findViewById(R.id.button_signup);
 		if(null != mTvSetupAndSignup){
 			mTvSetupAndSignup.setOnClickListener(this);
@@ -41,6 +42,8 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 	protected int getLayoutId() {
 		return R.layout.layout_signup_firstpage;
 	}
+	
+	private int miDemoCount=0;
 
 	@Override
 	public void onClick(View view) {
@@ -56,6 +59,15 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 				break;
 			}
 			case R.id.tv_bottom_beseye:{
+				break;
+			}
+			case R.id.iv_signup_top_logo:{
+				if(BeseyeConfig.DEBUG){
+					miDemoCount++;
+					if(miDemoCount >=5){
+						launchActivityByClassName(BeseyeComputexModeActivity.class.getName());
+					}
+				}
 				break;
 			}
 			default:
