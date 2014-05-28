@@ -87,7 +87,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 					}
 				}
 				
-				BeseyeUtils.setVisibility(holder.mTxtEventType, (0 == iPosition)?View.GONE:View.VISIBLE);
+				BeseyeUtils.setVisibility(holder.mTxtEventType, (0 == iPosition)?View.INVISIBLE:View.VISIBLE);
 				BeseyeUtils.setVisibility(holder.mBtnGoLive, (0 == iPosition)?View.VISIBLE:View.GONE);
 				
 				if(null != holder.mImgThumbnail){

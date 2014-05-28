@@ -176,7 +176,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 			if(0 <= miEventCount){
 				ListView list  = mMainListView.getRefreshableView();
 				if(null != list){
-					View vFirstChild = list.getChildAt(list.getHeaderViewsCount());
+					View vFirstChild = list.getChildAt(list.getHeaderViewsCount()+((miEventCount>0)?1:0));
 					if(null != vFirstChild){
 						mVgIndicator.calculateTotalLvHeight(miEventCount+1, vFirstChild.getHeight(), list.getHeight());
 						mbNeedToCalcu = false;
@@ -196,11 +196,11 @@ public class EventListActivity extends BeseyeBaseActivity{
 						iFirstIdx = 1;
 					}
 					mVgIndicator.updateIndicatorPosition(iFirstIdx, topChild.getBottom());
-					//Log.i(TAG, "updateIndicatorPosition(), pos = "+mVgIndicator.getIndicatorPos());	
+					Log.i(TAG, "updateIndicatorPosition(), pos = "+mVgIndicator.getIndicatorPos());	
 					View view= findLvItmByPos(mVgIndicator.getIndicatorPos());
 					if(null != view){
 						EventListItmHolder holder = (EventListItmHolder)view.getTag();
-						mVgIndicator.updateToNow(1 >= iFirstIdx);
+						mVgIndicator.updateToNow(BeseyeJSONUtil.getJSONBoolean(holder.mObjEvent, BeseyeJSONUtil.MM_IS_LIVE, false));
 						mVgIndicator.updateDateTime(BeseyeJSONUtil.getJSONLong(holder.mObjEvent, BeseyeJSONUtil.MM_START_TIME));
 //						if(null != mEventListAdapter && mEventListAdapter.setSelectedItm(iFirstVisiblePos+i - list.getHeaderViewsCount())){
 //							mEventListAdapter.notifyDataSetChanged();

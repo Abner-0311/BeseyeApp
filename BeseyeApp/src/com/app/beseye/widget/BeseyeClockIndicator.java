@@ -94,10 +94,6 @@ public class BeseyeClockIndicator extends LinearLayout {
 		float fRatio = (float)iCurPos/(float)miTotalHeight;
 		miTop = (int) (miIndRange*fRatio);
 		
-		//workaround
-		if(1==miItmCount){
-			miTop = 0;
-		}
 		setY(miTop);
 		invalidate();
 

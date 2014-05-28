@@ -56,7 +56,7 @@ public class SignupActivity extends PairingBaseActivity {
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
 			if(DEBUG){
-				if(BeseyeConfig.COMPUTEX_PAIRING){
+				//if(BeseyeConfig.COMPUTEX_PAIRING){
 					File snFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_sn");
 					String strSN = "0000";
 					if(null != snFile && snFile.exists()){
@@ -89,7 +89,7 @@ public class SignupActivity extends PairingBaseActivity {
 				}else{
 					mEtUserName.setText(TEST_ACC);
 				}
-			}
+			//}
 		}
 		
 		mEtPassword = (EditText)findViewById(R.id.editText_password);
