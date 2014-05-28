@@ -134,12 +134,21 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			if(null != strP2P && 0 < strP2P.length()){
 				Intent intentLanuch = new Intent();
 				intentLanuch.setClassName(this, CameraViewActivity.class.getName());
+				JSONObject mCam_obj = new JSONObject();
+				//BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ID, mStrVCamID);
+		        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, strName);
+		        intentLanuch.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
 				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM, strP2P);
 				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM_NAME, strName);
 				startActivity(intentLanuch);
 				return;
 			}
 		}
+		
+		File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
+		COMPUTEX_PAIRING = (null != pairingFile)&&pairingFile.exists();
+		
+		Log.i(TAG, "OpeningPage::launchActivityByIntent(), COMPUTEX_PAIRING :"+COMPUTEX_PAIRING);
 		
 		Intent intentLanuch = null;
 		if(null == (intentLanuch = intent.getParcelableExtra(KEY_DELEGATE_INTENT))){

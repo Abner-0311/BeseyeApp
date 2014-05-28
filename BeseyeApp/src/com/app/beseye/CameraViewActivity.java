@@ -23,6 +23,7 @@ import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
@@ -46,6 +47,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Toast;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -367,7 +369,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mIbSetting = (ImageButton)findViewById(R.id.ib_settings);
 		if(null != mIbSetting){
 			mIbSetting.setOnClickListener(this);
-			mIbSetting.setVisibility((!COMPUTEX_DEMO && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
+			mIbSetting.setVisibility(((!COMPUTEX_DEMO || BeseyeConfig.COMPUTEX_PAIRING) && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
 			//mIbSetting.setEnabled(false);//not implement
 		}
 		
@@ -400,7 +402,18 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mstrLiveP2P = intent.getStringExtra(KEY_P2P_STREAM);
 			if(null != mstrLiveP2P && 0 < mstrLiveP2P.length()){
 				mbIsLiveMode = true;
-				mStrVCamName = intent.getStringExtra(KEY_P2P_STREAM_NAME);
+				//mStrVCamName = intent.getStringExtra(KEY_P2P_STREAM_NAME);
+				try {
+					mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+					if(null != mCam_obj){
+						mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+						mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
+						BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+					}
+				} catch (JSONException e1) {
+					Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
+				}
+				
 				Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), enter p2p mode");
 			}else{
 				try {
@@ -476,7 +489,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(null != mIbSetting){
 			//mIbSetting.setEnabled(!isInP2PMode());
-			mIbSetting.setVisibility((!COMPUTEX_DEMO && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
+			mIbSetting.setVisibility(((!COMPUTEX_DEMO || BeseyeConfig.COMPUTEX_PAIRING) && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
 			//mIbSetting.setVisibility(isInP2PMode()?View.INVISIBLE:View.VISIBLE);
 		}
 	}
@@ -749,7 +762,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 		
 		if(null != mIbSetting){
-			mIbSetting.setVisibility((!COMPUTEX_DEMO && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);		
+			mIbSetting.setVisibility(((!COMPUTEX_DEMO || BeseyeConfig.COMPUTEX_PAIRING) && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
 		}
 	}
 	
@@ -768,6 +781,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}
 			}
 		}else{
+			Log.d(TAG, "CameraViewActivity::getStreamingInfo(), play p2p stream:"+mstrLiveP2P);
 			updateUIByMode();
 			beginLiveView();
 		}
@@ -1148,7 +1162,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	   	             			setCamViewStatus(CameraView_Internal_Status.CV_STREAM_CLOSE);
 	   	                 		mCurCheckCount = 0;
 	   	             		}
-	            			}else{
+	            		}else{
 	   	         			String streamFullPath = null;
 	   	         			if(null != mstrLiveP2P && 0 < mstrLiveP2P.length()){
 	   	         				streamFullPath = mstrLiveP2P;
@@ -1692,10 +1706,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					
 					//workaround
 					if(!ASSIGN_ST_PATH && !isInP2PMode()){
-						Bundle b = new Bundle();
-						b.putString(KEY_WARNING_TEXT, getResources().getString(iErrStrId));
-						showMyDialog(DIALOG_ID_WARNING, b);
-				    	closeStreaming();
+						if(iErrStrId == R.string.streaming_error_unknown){
+							tryToReconnect();
+							Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
+						}else{
+							Bundle b = new Bundle();
+							b.putString(KEY_WARNING_TEXT, getResources().getString(iErrStrId));
+							showMyDialog(DIALOG_ID_WARNING, b);
+					    	closeStreaming();
+						}
 					}
 					
 				}});

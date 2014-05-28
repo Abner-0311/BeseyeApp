@@ -490,7 +490,7 @@ public class BeseyeJSONUtil {
 	static public boolean setJSONInt(JSONObject obj, String strKey, int iVal){
 		boolean bRet = false;
 		try {
-			if(null != strKey){
+			if(null != obj && null != strKey){
 				obj.put(strKey, iVal);
 				bRet = true;
 			}
@@ -503,7 +503,7 @@ public class BeseyeJSONUtil {
 	static public boolean setJSONString(JSONObject obj, String strKey, String strVal){
 		boolean bRet = false;
 		try {
-			if(null != strKey && null != strVal){
+			if(null != obj &&  null != strKey && null != strVal){
 				obj.put(strKey, strVal);
 				bRet = true;
 			}

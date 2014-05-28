@@ -173,7 +173,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	
 	private void calculateTotalLvHeight(){
 		if(mbNeedToCalcu){
-			if(0 < miEventCount){
+			if(0 <= miEventCount){
 				ListView list  = mMainListView.getRefreshableView();
 				if(null != list){
 					View vFirstChild = list.getChildAt(list.getHeaderViewsCount());
@@ -188,7 +188,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	
 	private void updateIndicatorPosition(int iFirstIdx){
 		ListView list  = mMainListView.getRefreshableView();
-		if(null != list && !mbNeedToCalcu && 0 < miEventCount){			
+		if(null != list && !mbNeedToCalcu && 0 <= miEventCount){			
 			if(0 <= iFirstIdx){
 				View topChild = list.getChildAt(0 == iFirstIdx?1:0);
 				if(null != topChild){
@@ -257,6 +257,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 						//getThumbnailByEventList(EntList);
 					}
 				}
+				
 				if(null != EntList){
 					JSONObject liveObj = new JSONObject();
 					try {
@@ -269,6 +270,11 @@ public class EventListActivity extends BeseyeBaseActivity{
 					
 					mEventListAdapter.updateResultList(EntList);
 				}
+				
+//				if(null != EntList && 1 == EntList.length()){
+//					calculateTotalLvHeight();
+//				}
+				
 				refreshList();
 				if(null != mMainListView){
 					mMainListView.onRefreshComplete();

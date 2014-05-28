@@ -124,7 +124,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		
 		TextView txtSiren = (TextView)findViewById(R.id.txt_setting_emergency_siren);
 		if(null != txtSiren){
-			txtSiren.setText("Trigger dettach cam !!!");
+			txtSiren.setText("Detach cam !!!");
 		}
 	}
 	
@@ -463,7 +463,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			}else if(task instanceof BeseyeAccountTask.CamDettachTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
-					onToastShow(task, "Dettach  Successfully.");
+					onToastShow(task, "Detach  Successfully.");
 					if(BeseyeConfig.COMPUTEX_PAIRING){
 						invokeLogout();
 					}else{

@@ -80,7 +80,7 @@ public class BeseyeClockIndicator extends LinearLayout {
 			miItmCount = iItmCount;
 			miItmHeight = iItmHeight;
 			miHolderHeight = iHolderHeight;
-			miTotalHeight = miItmCount*miItmHeight - miHolderHeight;
+			miTotalHeight = (miItmCount*miItmHeight >= miHolderHeight)?miItmCount*miItmHeight - miHolderHeight:(miItmCount*miItmHeight);
 			miIndHeight = getHeight();
 			miIndRange = iHolderHeight - miIndHeight;
 			Log.i(TAG, "calculateTotalLvHeight(), [ "+miItmHeight+", "+miHolderHeight+", "+miTotalHeight+", "+miIndHeight+", "+miIndRange+"]");	
@@ -93,12 +93,15 @@ public class BeseyeClockIndicator extends LinearLayout {
 		
 		float fRatio = (float)iCurPos/(float)miTotalHeight;
 		miTop = (int) (miIndRange*fRatio);
-		//layout(getLeft(), miTop, getLeft()+getWidth(), miTop+miIndHeight);
-		//setTop(miTop);
+		
+		//workaround
+		if(1==miItmCount){
+			miTop = 0;
+		}
 		setY(miTop);
 		invalidate();
-		//
-		//Log.i(TAG, "updateIndicatorPosition(), [ "+iFirstIdx+", "+iPosBottom+", "+iCurPos+", "+fRatio+", "+miTop+", "+miIndRange+"]");	
+
+		Log.i(TAG, "updateIndicatorPosition(), [ "+iFirstIdx+", "+iPosBottom+", "+iCurPos+", "+fRatio+", "+miTop+", "+miIndRange+"]");	
 	}
 	
 	public int getIndicatorPos(){
