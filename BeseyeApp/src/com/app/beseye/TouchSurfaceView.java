@@ -1012,17 +1012,20 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     public void drawStreamBitmap(Bitmap bmp){
     	Canvas canvas = getHolder().lockCanvas();
     	if(null != canvas){
-    		canvas.drawColor(miBackgroundColor/*, PorterDuff.Mode.CLEAR*/);
-            //Log.d(TAG, "drawStreamBitmap(), redundantXSpace:"+redundantXSpace+", redundantYSpace:"+redundantYSpace+", scale:"+scale);
-            updateMatrix();
-            
-//            if(REDDOT_DEMO)
-//            	canvas.clipRect(0, mfPaddingTop, mWidth, mHeight-mfPaddingBottom);
-            
-    		canvas.drawBitmap(bmp, matrix, null);
-    		getHolder().unlockCanvasAndPost(canvas);
+    		try{
+				canvas.drawColor(miBackgroundColor/*, PorterDuff.Mode.CLEAR*/);
+		        //Log.d(TAG, "drawStreamBitmap(), redundantXSpace:"+redundantXSpace+", redundantYSpace:"+redundantYSpace+", scale:"+scale);
+		        updateMatrix();
+		        
+		//            if(REDDOT_DEMO)
+		//            	canvas.clipRect(0, mfPaddingTop, mWidth, mHeight-mfPaddingBottom);
+		        
+				canvas.drawBitmap(bmp, matrix, null);
+				getHolder().unlockCanvasAndPost(canvas);
+    		}catch(java.lang.IllegalStateException e){
+    			Log.e(TAG, "drawStreamBitmap(), e"+e.toString());
+    		}
     	}
-
     }
     
     public void drawDefaultBackground(){

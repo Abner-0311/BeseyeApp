@@ -1354,8 +1354,8 @@ int avformat_find_stream_info_ext(AVFormatContext *ic, AVDictionary **options)
         if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
             if(st->codec->codec_id == CODEC_ID_RAWVIDEO && !st->codec->codec_tag && !st->codec->bits_per_coded_sample){
                 uint32_t tag= avcodec_pix_fmt_to_codec_tag(st->codec->pix_fmt);
-                if(ff_find_pix_fmt(ff_raw_pix_fmt_tags, tag) == st->codec->pix_fmt)
-                    st->codec->codec_tag= tag;
+//                if(ff_find_pix_fmt(ff_raw_pix_fmt_tags, tag) == st->codec->pix_fmt)
+//                    st->codec->codec_tag= tag;
             }
 
             if (st->codec_info_nb_frames>2 && !st->avg_frame_rate.num && st->info->codec_info_duration)

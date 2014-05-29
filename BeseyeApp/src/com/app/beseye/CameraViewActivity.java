@@ -214,7 +214,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			if(!precCamViewStatus.equals(CameraView_Internal_Status.CV_STREAM_EOF)){
 			    				setVisibility(mPbLoadingCursor, View.VISIBLE);
 				    			stopUpdateTime();
-				    			tryToReconnect();
+				    			BeseyeUtils.postRunnable(new Runnable(){
+									@Override
+									public void run() {
+										tryToReconnect();
+									}}, 0);
 			    			}
 			    			break;
 			    		}
@@ -419,6 +423,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				try {
 					mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 					if(null != mCam_obj){
+						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mCam_obj:"+mCam_obj.toString());
 						mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
 						mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
 						mbVCamAdmin = BeseyeJSONUtil.getJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN, true);
@@ -459,6 +464,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
 						}
 					}	
+					getIntent().putExtra(CameraViewActivity.KEY_PAIRING_DONE, false);
 				}
 			}
 		}
@@ -1715,6 +1721,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							showMyDialog(DIALOG_ID_WARNING, b);
 					    	closeStreaming();
 						}
+					}else if(isInP2PMode() && iErrStrId == R.string.streaming_error_unknown){
+						BeseyeUtils.postRunnable(new Runnable(){
+							@Override
+							public void run() {
+								tryToReconnect();
+							}}, 1000);
+						
+						Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
 					}
 					
 				}});

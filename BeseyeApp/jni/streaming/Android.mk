@@ -9,8 +9,7 @@ STREAMING_PATH := $(TOP_LOCAL_PATH)/streaming
 SRC_PATH  := $(STREAMING_PATH)/source
 
 LOCAL_MODULE    := ffmpegutils
-LOCAL_SRC_FILES := $(SRC_PATH)/ffmpeg_ext.c \
-				   $(SRC_PATH)/librtmp_ext.c \
+LOCAL_SRC_FILES := $(SRC_PATH)/librtmp_ext.c \
 				   $(SRC_PATH)/utils.cpp \
 				   $(SRC_PATH)/cmdutils.c \
 				   $(SRC_PATH)/ffmpeg.c \

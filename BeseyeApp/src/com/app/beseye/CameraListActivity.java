@@ -25,6 +25,7 @@ import com.app.beseye.adapter.CameraListAdapter;
 import com.app.beseye.adapter.CameraListAdapter.CameraListItmHolder;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
+import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -131,6 +132,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 	}
 	
+	protected int miOriginalVcamCnt = -1;
+	
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
 		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
@@ -140,6 +143,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 					JSONArray arrCamList = new JSONArray();
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
+					miOriginalVcamCnt = iVcamCnt;
 					if(0 < iVcamCnt){
 						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
 						for(int i = 0;i< iVcamCnt;i++){
@@ -285,6 +289,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			invokeLogout();
 			//monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(this), true, "5dc166880720448cafa563be507b9730");
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
+			Intent intent = new Intent();
+			intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
 			launchActivityByClassName(WifiSetupGuideActivity.class.getName());
 		}else
 			super.onClick(view);

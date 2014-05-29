@@ -30,7 +30,7 @@ pFrameRGB(NULL),
 window(w),
 seek_by_bytes(-1),
 show_status(-1),
-av_sync_type(AV_SYNC_VIDEO_MASTER),
+av_sync_type(AV_SYNC_AUDIO_MASTER),
 start_time(AV_NOPTS_VALUE),
 duration(AV_NOPTS_VALUE),
 fast(0),
@@ -1354,7 +1354,7 @@ int CBeseyePlayer::audio_decode_frame(VideoState *is, double *pts_ptr)
                 is->audio_src.fmt = dec->sample_fmt;
             }
 
-            if (is->swr_ctx) {
+            /*if (is->swr_ctx) {
                 const uint8_t **in = (const uint8_t **)is->frame->extended_data;
                 uint8_t *out[] = {is->audio_buf2};
                 int out_count = sizeof(is->audio_buf2) / is->audio_tgt.channels / av_get_bytes_per_sample(is->audio_tgt.fmt);
@@ -1376,7 +1376,7 @@ int CBeseyePlayer::audio_decode_frame(VideoState *is, double *pts_ptr)
                 }
                 is->audio_buf = is->audio_buf2;
                 resampled_data_size = len2 * is->audio_tgt.channels * av_get_bytes_per_sample(is->audio_tgt.fmt);
-            } else {
+            } else */{
                 is->audio_buf = is->frame->data[0];
                 resampled_data_size = data_size;
             }
@@ -2053,7 +2053,7 @@ int read_thread(void *arg)
             continue;
         }
 
-        ret = av_read_frame_ext(ic, pkt);
+        ret = av_read_frame(ic, pkt);
         //av_log(NULL, AV_LOG_ERROR, "read_thread(), av_read_frame, ret:%d", ret);
         if (ret < 0) {
             if (ret == AVERROR_EOF || url_feof(ic->pb)){
@@ -2358,11 +2358,92 @@ int CBeseyePlayer::lockmgr(void **mtx, enum AVLockOp op)
 #ifdef __cplusplus
  extern "C" {
 #endif
-extern char*  main12(int argc, char **argv);
+//extern char*  main12(int argc, char **argv);
 extern void  main13(int argc, char **argv);
 #ifdef __cplusplus
  }
 #endif
+
+ static char *input_filename;
+
+// static const OptionDef options[] = {
+// #include "cmdutils_common_opts.h"
+//     { "x", HAS_ARG, { (void*)opt_width }, "force displayed width", "width" },
+//     { "y", HAS_ARG, { (void*)opt_height }, "force displayed height", "height" },
+//     { "s", HAS_ARG | OPT_VIDEO, { (void*)opt_frame_size }, "set frame size (WxH or abbreviation)", "size" },
+//     { "fs", OPT_BOOL, { (void*)&is_full_screen }, "force full screen" },
+//     { "an", OPT_BOOL, { (void*)&audio_disable }, "disable audio" },
+//     { "vn", OPT_BOOL, { (void*)&video_disable }, "disable video" },
+//     { "ast", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&wanted_stream[AVMEDIA_TYPE_AUDIO] }, "select desired audio stream", "stream_number" },
+//     { "vst", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&wanted_stream[AVMEDIA_TYPE_VIDEO] }, "select desired video stream", "stream_number" },
+//     { "sst", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&wanted_stream[AVMEDIA_TYPE_SUBTITLE] }, "select desired subtitle stream", "stream_number" },
+//     { "ss", HAS_ARG, { (void*)&opt_seek }, "seek to a given position in seconds", "pos" },
+//     { "t", HAS_ARG, { (void*)&opt_duration }, "play  \"duration\" seconds of audio/video", "duration" },
+//     { "bytes", OPT_INT | HAS_ARG, { (void*)&seek_by_bytes }, "seek by bytes 0=off 1=on -1=auto", "val" },
+//     { "nodisp", OPT_BOOL, { (void*)&display_disable }, "disable graphical display" },
+//     { "f", HAS_ARG, { (void*)opt_format }, "force format", "fmt" },
+//     { "pix_fmt", HAS_ARG | OPT_EXPERT | OPT_VIDEO, { (void*)opt_frame_pix_fmt }, "set pixel format", "format" },
+//     { "stats", OPT_BOOL | OPT_EXPERT, { (void*)&show_status }, "show status", "" },
+//     { "bug", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&workaround_bugs }, "workaround bugs", "" },
+//     { "fast", OPT_BOOL | OPT_EXPERT, { (void*)&fast }, "non spec compliant optimizations", "" },
+//     { "genpts", OPT_BOOL | OPT_EXPERT, { (void*)&genpts }, "generate pts", "" },
+//     { "drp", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&decoder_reorder_pts }, "let decoder reorder pts 0=off 1=on -1=auto", ""},
+//     { "lowres", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&lowres }, "", "" },
+//     { "skiploop", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&skip_loop_filter }, "", "" },
+//     { "skipframe", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&skip_frame }, "", "" },
+//     { "skipidct", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&skip_idct }, "", "" },
+//     { "idct", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&idct }, "set idct algo",  "algo" },
+//     { "ec", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&error_concealment }, "set error concealment options",  "bit_mask" },
+//     { "sync", HAS_ARG | OPT_EXPERT, { (void*)opt_sync }, "set audio-video sync. type (type=audio/video/ext)", "type" },
+//     { "autoexit", OPT_BOOL | OPT_EXPERT, { (void*)&autoexit }, "exit at the end", "" },
+//     { "exitonkeydown", OPT_BOOL | OPT_EXPERT, { (void*)&exit_on_keydown }, "exit on key down", "" },
+//     { "exitonmousedown", OPT_BOOL | OPT_EXPERT, { (void*)&exit_on_mousedown }, "exit on mouse down", "" },
+//     { "loop", OPT_INT | HAS_ARG | OPT_EXPERT, { (void*)&loop }, "set number of times the playback shall be looped", "loop count" },
+//     { "framedrop", OPT_BOOL | OPT_EXPERT, { (void*)&framedrop }, "drop frames when cpu is too slow", "" },
+//     { "infbuf", OPT_BOOL | OPT_EXPERT, { (void*)&infinite_buffer }, "don't limit the input buffer size (useful with realtime streams)", "" },
+//     { "window_title", OPT_STRING | HAS_ARG, { (void*)&window_title }, "set window title", "window title" },
+// #if CONFIG_AVFILTER
+//     { "vf", OPT_STRING | HAS_ARG, { (void*)&vfilters }, "video filters", "filter list" },
+// #endif
+//     { "rdftspeed", OPT_INT | HAS_ARG| OPT_AUDIO | OPT_EXPERT, { (void*)&rdftspeed }, "rdft speed", "msecs" },
+//     { "showmode", HAS_ARG, {(void*)opt_show_mode}, "select show mode (0 = video, 1 = waves, 2 = RDFT)", "mode" },
+//     { "default", HAS_ARG | OPT_AUDIO | OPT_VIDEO | OPT_EXPERT, { (void*)opt_default }, "generic catch all option", "" },
+//     { "i", OPT_BOOL, {(void *)&dummy}, "read specified file", "input_file"},
+//     { "codec", HAS_ARG | OPT_FUNC2, {(void*)opt_codec}, "force decoder", "decoder" },
+//     { NULL, },
+// };
+
+
+ const char program_name2[] = "ffplay";
+
+ static void show_usage(void)
+ {
+     av_log(NULL, AV_LOG_INFO, "Simple media player\n");
+     av_log(NULL, AV_LOG_INFO, "usage: %s [options] input_file\n", program_name2);
+     av_log(NULL, AV_LOG_INFO, "\n");
+ }
+
+ static void opt_input_file(void *optctx, const char *filename)
+ {
+     if (input_filename) {
+         av_log(NULL, AV_LOG_FATAL,
+                "Argument '%s' provided as input filename, but '%s' was already specified.\n",
+                 filename, input_filename);
+         exit(1);
+     }
+     if (!strcmp(filename, "-"))
+         filename = "pipe:";
+     //input_filename = filename;
+ }
+
+ char* main12(int argc, char **argv)
+ {
+ 	//input_filename = NULL;
+ 	//parse_loglevel(argc, argv, options);
+ 	//show_banner(argc, argv, options);
+ 	//parse_options(NULL, argc, argv, options, opt_input_file);
+ 	return input_filename;
+ }
 
 int CBeseyePlayer::createStreaming(const char* streamHost, const char** streamPathList, int iStreamCount, int iSeekTimeInMs){
 	if(0 < iStreamCount){
@@ -2442,7 +2523,7 @@ int CBeseyePlayer::createStreaming(const char* fullPath){
 						  //"500000",
 						  (char*)fullPath,
 						  (char*)0x0 };
-		path2 = main12(sizeof(argg1)/sizeof(argg1[0])-1,argg1);
+		path2 = (char*)fullPath;//main12(sizeof(argg1)/sizeof(argg1[0])-1,argg1);
 	}
 
     //main13(4,argg1);
@@ -2623,6 +2704,9 @@ void CBeseyePlayer::invokeRtmpStatusCallback(int iStatus, void* extra){
 	if(iStatus == STREAM_CONNECTING){
 		rtmpRef = extra;
 	}else if(iStatus == STREAM_CLOSE){
+		rtmpRef = NULL;
+	}else if(iStatus == STREAM_INTERNAL_CLOSE){
+		is->abort_request = 1;
 		rtmpRef = NULL;
 	}
 	triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, iStatus, 0);

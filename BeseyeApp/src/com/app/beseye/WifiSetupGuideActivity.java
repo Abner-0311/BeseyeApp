@@ -7,6 +7,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
@@ -35,7 +36,9 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 		super.onCreate(savedInstanceState);
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
-		
+	
+		miOriginalVcamCnt = getIntent().getIntExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, 0);
+	
 		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_signup_nav, null);
 		if(null != mVwNavBar){
 			mIvBack = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_left_btn);

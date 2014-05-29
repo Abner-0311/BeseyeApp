@@ -42,7 +42,7 @@ public class SignupActivity extends PairingBaseActivity {
 	private EditText mEtUserName, mEtPassword;
 	private TextView mTvTermOfService, mTvPrivacyPolicy;
 	private Button mBtnSignUp;
-	
+	private String mstrSN;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,34 +58,22 @@ public class SignupActivity extends PairingBaseActivity {
 			if(DEBUG){
 				//if(BeseyeConfig.COMPUTEX_PAIRING){
 					File snFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_sn");
-					String strSN = "0000";
+					mstrSN = "0000";
 					if(null != snFile && snFile.exists()){
 						try {
 							BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(snFile)));
 							try {
-								strSN = (null != reader)?reader.readLine():null;
+								mstrSN = (null != reader)?reader.readLine():null;
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
 						}
-						snFile.delete();
 					}
 					
-					strSN = String.format("%04d", Integer.parseInt(strSN)+1);
-					Writer writer = null;
-					try {
-						writer = new BufferedWriter(new FileWriter(snFile));
-						if(null != writer){
-							writer.write(strSN);
-							writer.close();
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				    
-					mEtUserName.setText("beseye"+DeviceUuidFactory.getDeviceUuid().toString().substring(1,4)+strSN+"@beseye.com");
+					mstrSN = String.format("%04d", Integer.parseInt(mstrSN)+1);	    
+					mEtUserName.setText("beseye"+DeviceUuidFactory.getDeviceUuid().toString().substring(1,4)+mstrSN+"@beseye.com");
 				}else{
 					mEtUserName.setText(TEST_ACC);
 				}
@@ -222,6 +210,21 @@ public class SignupActivity extends PairingBaseActivity {
 							SessionMgr.getInstance().setUserid(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_ID));
 							SessionMgr.getInstance().setAccount(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_EMAIL));
 							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
+						}
+						
+						Writer writer = null;
+						try {
+							File snFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_sn");
+							snFile.delete();
+							if(null != snFile){
+								writer = new BufferedWriter(new FileWriter(snFile));
+								if(null != writer){
+									writer.write(mstrSN);
+									writer.close();
+								}
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
 					}
 					Bundle b = new Bundle();

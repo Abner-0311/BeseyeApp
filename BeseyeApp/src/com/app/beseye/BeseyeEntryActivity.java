@@ -50,12 +50,10 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 		switch(view.getId()){
 			case R.id.button_signup:{
 				launchActivityForResultByClassName(PairingRemindActivity.class.getName(), null, REQUEST_SIGNUP);
-				//launchActivityByClassName(PairingRemindActivity.class.getName());
 				break;
 			}
 			case R.id.button_signin:{
 				launchActivityForResultByClassName(LoginActivity.class.getName(), null, REQUEST_SIGNUP);
-				//launchActivityByClassName(LoginActivity.class.getName());
 				break;
 			}
 			case R.id.tv_bottom_beseye:{
@@ -66,6 +64,7 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 					miDemoCount++;
 					if(miDemoCount >=5){
 						launchActivityByClassName(BeseyeComputexModeActivity.class.getName());
+						miDemoCount =0;
 					}
 				}
 				break;

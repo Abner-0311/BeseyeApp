@@ -133,7 +133,7 @@ typedef struct VideoState {
     AVStream *audio_st;
     PacketQueue audioq;
     int audio_hw_buf_size;
-    DECLARE_ALIGNED(16,uint8_t,audio_buf2)[AVCODEC_MAX_AUDIO_FRAME_SIZE * 4];
+    //DECLARE_ALIGNED(16,uint8_t,audio_buf2)[AVCODEC_MAX_AUDIO_FRAME_SIZE * 4];
     uint8_t silence_buf[SDL_AUDIO_BUFFER_SIZE];
     uint8_t *audio_buf;
     uint8_t *audio_buf1;
