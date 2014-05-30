@@ -3,7 +3,7 @@ DIR_OPENSSL=`cd ../openssl-1.0.1e/build_ios;pwd`
 #echo $DIR_OPENSSL
 
 DEVELOPER=$(xcode-select --print-path)
-SDK_VERSION=$(xcrun -sdk iphoneos --show-sdk-version)
+SDK_VERSION=7.1
 SDK_VERSION_MIN=4.3
 
 DEVICE_PLATFORM="${DEVELOPER}/Platforms/iPhoneOS.platform"
@@ -57,8 +57,8 @@ build()
 build "armv7" "$DEVICE_PLATFORM" "$DEVICE_SDK"
 build "armv7s" "$DEVICE_PLATFORM" "$DEVICE_SDK"
 build "i386" "$SIMULATOR_PLATFORM" "$SIMULATOR_SDK"
-build "x86_64" "$SIMULATOR_PLATFORM" "$SIMULATOR_SDK"
-build "arm64" "$DEVICE_PLATFORM" "$DEVICE_SDK"
+#build "x86_64" "$SIMULATOR_PLATFORM" "$SIMULATOR_SDK"
+#build "arm64" "$DEVICE_PLATFORM" "$DEVICE_SDK"
 
 # remove temporary dir
 rm -rf rtmpdump-*
@@ -71,9 +71,11 @@ cp -r /tmp/librtmp-i386/include/librtmp include/
 mkdir lib
 xcrun lipo \
     /tmp/librtmp-i386/lib/librtmp.a \
-    /tmp/librtmp-x86_64/lib/librtmp.a \
 	/tmp/librtmp-armv7/lib/librtmp.a \
 	/tmp/librtmp-armv7s/lib/librtmp.a \
-    /tmp/librtmp-arm64/lib/librtmp.a \
     -create -output lib/librtmp.a
+
+#    /tmp/librtmp-arm64/lib/librtmp.a \
+#    /tmp/librtmp-x86_64/lib/librtmp.a \
+
 

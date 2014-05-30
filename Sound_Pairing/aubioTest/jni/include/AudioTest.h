@@ -81,6 +81,8 @@ public :
 	void acquireThresholdCtrlObj();
 	void releaseThresholdCtrlObj();
 
+	static void* verifyToken(void* userdata);
+
 #ifdef ANDROID
 	virtual void setCamCamWSServerInfo(string strHost, int iPort);
 	virtual int connectCamCamWSServer();

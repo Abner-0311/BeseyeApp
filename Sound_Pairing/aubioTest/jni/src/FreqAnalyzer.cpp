@@ -224,6 +224,9 @@ void FreqAnalyzer::triggerTimeout(){
 				normalAnalysis(iPosPostfix);
 			}else{
 				LOGW("detect postfix, try to find prefix in [%s] before %d\n", msbDecode.str().c_str(), iPosPostfix);
+//				string strPossibleDecode1 = msbDecode.str().substr(0, iPosPostfix+2);
+//				msbDecode.clear();
+//				msbDecode<<strPossibleDecode1;
 				string strFstPrefix = SoundPair_Config::PREFIX_DECODE.substr(0,1);
 				string strSndPrefix = SoundPair_Config::PREFIX_DECODE.substr(1,2);
 				int iPossiblePrefix = -1;
@@ -235,7 +238,10 @@ void FreqAnalyzer::triggerTimeout(){
 					int iPossibleFstPrefix = msbDecode.str().rfind(strFstPrefix, iPosPostfix-1);
 					if(0 <= iPossibleFstPrefix){
 						LOGE("triggerTimeout(), detect [%s] at %d+++++++++++++++++++++++++++++++++++++++++++++++++++++\n", strFstPrefix.c_str(), iPossibleFstPrefix);
-						iPossiblePrefix = iPossibleFstPrefix - 1;
+						iPossiblePrefix = iPossibleFstPrefix ;
+					}else{
+						LOGE("triggerTimeout(), can not detect one of prefix +++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+						iPossiblePrefix = 0;
 					}
 				}
 
@@ -251,7 +257,7 @@ void FreqAnalyzer::triggerTimeout(){
 //						mCodeRecordList.erase(mCodeRecordList.begin());
 //					}
 					LOGE("triggerTimeout(), to check result+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-					checkResult(optimizeDecodeString(0));
+					checkResult(optimizeDecodeString((iPosPostfix - iPossiblePrefix)));
 					mFreqRecordList.clear();
 				}
 			}
@@ -693,6 +699,7 @@ void FreqAnalyzer::normalAnalysis(int iIndex){
 
 string FreqAnalyzer::optimizeDecodeString(int iIndex){
 	//string strDecode = msbDecode.substr(0, msbDecode.length()-((-1 < msbDecode.rfind(POSTFIX_DECODE) )?POSTFIX_DECODE.length():1));
+	LOGE("optimizeDecodeString(), msbDecode:[%s], index is %d\n", msbDecode.str().c_str(), iIndex);
 	string strDecode = msbDecode.str().substr(0, iIndex);
 	int iLen = strDecode.length();
 	if(SoundPair_Config::getMultiplyByFFTYPE() > 1 && 0 != iLen%SoundPair_Config::getMultiplyByFFTYPE()){

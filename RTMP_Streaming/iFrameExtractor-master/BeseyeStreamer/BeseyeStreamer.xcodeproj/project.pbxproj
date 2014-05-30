@@ -7,22 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		070E2C4D19375124007D0189 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615A1856A0B200CFBC99 /* libswresample.a */; };
 		0713D88B1932F12700BF6968 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161531856A0B200CFBC99 /* libavcodec.a */; };
 		0713D88C1932F12700BF6968 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161541856A0B200CFBC99 /* libavfilter.a */; };
 		0713D88D1932F12700BF6968 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161551856A0B200CFBC99 /* libavformat.a */; };
 		0713D88E1932F12700BF6968 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161561856A0B200CFBC99 /* libavutil.a */; };
-		0713D88F1932F12700BF6968 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615A1856A0B200CFBC99 /* libswresample.a */; };
 		0713D8901932F12700BF6968 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615B1856A0B200CFBC99 /* libswscale.a */; };
 		0713D8911932F12700BF6968 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161581856A0B200CFBC99 /* librtmp.a */; };
 		0713D8921932F12700BF6968 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161571856A0B200CFBC99 /* libcrypto.a */; };
 		0713D8931932F12700BF6968 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161591856A0B200CFBC99 /* libssl.a */; };
-		07BC6F381921116E009541A3 /* beseye_audio_streamer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F2C1921116E009541A3 /* beseye_audio_streamer.cpp */; };
 		07BC6F391921116E009541A3 /* beseye_rtmp_observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F2D1921116E009541A3 /* beseye_rtmp_observer.cpp */; };
 		07BC6F3A1921116E009541A3 /* beseyeplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F2E1921116E009541A3 /* beseyeplayer.cpp */; };
 		07BC6F3B1921116E009541A3 /* cmdutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F2F1921116E009541A3 /* cmdutils.c */; };
-		07BC6F3C1921116E009541A3 /* ffmpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F301921116E009541A3 /* ffmpeg.c */; };
-		07BC6F3D1921116E009541A3 /* ffmpeg_ext.c in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F311921116E009541A3 /* ffmpeg_ext.c */; };
-		07BC6F3E1921116E009541A3 /* ffplay.c in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F321921116E009541A3 /* ffplay.c */; };
 		07BC6F401921116E009541A3 /* librtmp_ext.c in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F341921116E009541A3 /* librtmp_ext.c */; };
 		07BC6F411921116E009541A3 /* pkt_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F351921116E009541A3 /* pkt_queue.c */; };
 		07BC6F431921116E009541A3 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F371921116E009541A3 /* utils.cpp */; };
@@ -142,9 +138,6 @@
 		07BC6F2D1921116E009541A3 /* beseye_rtmp_observer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = beseye_rtmp_observer.cpp; sourceTree = "<group>"; };
 		07BC6F2E1921116E009541A3 /* beseyeplayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = beseyeplayer.cpp; sourceTree = "<group>"; };
 		07BC6F2F1921116E009541A3 /* cmdutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmdutils.c; sourceTree = "<group>"; };
-		07BC6F301921116E009541A3 /* ffmpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ffmpeg.c; sourceTree = "<group>"; };
-		07BC6F311921116E009541A3 /* ffmpeg_ext.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ffmpeg_ext.c; sourceTree = "<group>"; };
-		07BC6F321921116E009541A3 /* ffplay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ffplay.c; sourceTree = "<group>"; };
 		07BC6F341921116E009541A3 /* librtmp_ext.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = librtmp_ext.c; sourceTree = "<group>"; };
 		07BC6F351921116E009541A3 /* pkt_queue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pkt_queue.c; sourceTree = "<group>"; };
 		07BC6F371921116E009541A3 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
@@ -155,11 +148,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				070E2C4D19375124007D0189 /* libswresample.a in Frameworks */,
 				0713D88B1932F12700BF6968 /* libavcodec.a in Frameworks */,
 				0713D88C1932F12700BF6968 /* libavfilter.a in Frameworks */,
 				0713D88D1932F12700BF6968 /* libavformat.a in Frameworks */,
 				0713D88E1932F12700BF6968 /* libavutil.a in Frameworks */,
-				0713D88F1932F12700BF6968 /* libswresample.a in Frameworks */,
 				0713D8901932F12700BF6968 /* libswscale.a in Frameworks */,
 				0713D8911932F12700BF6968 /* librtmp.a in Frameworks */,
 				0713D8921932F12700BF6968 /* libcrypto.a in Frameworks */,
@@ -323,9 +316,6 @@
 				07BC6F2D1921116E009541A3 /* beseye_rtmp_observer.cpp */,
 				07BC6F2E1921116E009541A3 /* beseyeplayer.cpp */,
 				07BC6F2F1921116E009541A3 /* cmdutils.c */,
-				07BC6F301921116E009541A3 /* ffmpeg.c */,
-				07BC6F311921116E009541A3 /* ffmpeg_ext.c */,
-				07BC6F321921116E009541A3 /* ffplay.c */,
 				07BC6F341921116E009541A3 /* librtmp_ext.c */,
 				07BC6F351921116E009541A3 /* pkt_queue.c */,
 				07BC6F371921116E009541A3 /* utils.cpp */,
@@ -384,13 +374,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07BC6F3C1921116E009541A3 /* ffmpeg.c in Sources */,
 				07BC6F3B1921116E009541A3 /* cmdutils.c in Sources */,
-				07BC6F3E1921116E009541A3 /* ffplay.c in Sources */,
 				07BC6F431921116E009541A3 /* utils.cpp in Sources */,
 				07BC6F411921116E009541A3 /* pkt_queue.c in Sources */,
-				07BC6F3D1921116E009541A3 /* ffmpeg_ext.c in Sources */,
-				07BC6F381921116E009541A3 /* beseye_audio_streamer.cpp in Sources */,
 				07BC6F401921116E009541A3 /* librtmp_ext.c in Sources */,
 				07BC6F3A1921116E009541A3 /* beseyeplayer.cpp in Sources */,
 				07BC6F391921116E009541A3 /* beseye_rtmp_observer.cpp in Sources */,
@@ -404,7 +390,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -444,7 +430,7 @@
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
+				VALID_ARCHS = "armv7 armv7s i386";
 			};
 			name = Debug;
 		};
@@ -452,7 +438,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -486,13 +472,14 @@
 				);
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
+				VALID_ARCHS = "armv7 armv7s i386";
 			};
 			name = Release;
 		};
 		076160EC18569D2A00CFBC99 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				DSTROOT = /tmp/BeseyeStreamer.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BeseyeStreamer/BeseyeStreamer-Prefix.pch";
@@ -510,6 +497,7 @@
 		076160ED18569D2A00CFBC99 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				DSTROOT = /tmp/BeseyeStreamer.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BeseyeStreamer/BeseyeStreamer-Prefix.pch";

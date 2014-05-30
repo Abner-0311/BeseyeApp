@@ -22,7 +22,7 @@
 #  Change values here													  #
 #																		  #
 VERSION="1.0.1e"													      #
-SDKVERSION="7.0"														  #
+SDKVERSION="7.1"														  #
 #																		  #
 ###########################################################################
 #																		  #
@@ -34,7 +34,7 @@ mkdir build_ios
 cd build_ios
 
 CURRENTPATH=`pwd`
-ARCHS="i386 x86_64 armv7 armv7s arm64"
+ARCHS="i386 armv7 armv7s"
 DEVELOPER=`xcode-select -print-path`
 
 if [ ! -d "$DEVELOPER" ]; then

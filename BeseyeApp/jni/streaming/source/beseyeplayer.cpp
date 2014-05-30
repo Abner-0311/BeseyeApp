@@ -2447,6 +2447,8 @@ extern void  main13(int argc, char **argv);
 
 int CBeseyePlayer::createStreaming(const char* streamHost, const char** streamPathList, int iStreamCount, int iSeekTimeInMs){
 	if(0 < iStreamCount){
+		//Abner: temp solution for ffmpeg 2.2.2 aac audio sluggish
+		av_sync_type = AV_SYNC_EXTERNAL_CLOCK;
 		int idx = 1;
 		iNumOfPendingStreamPaths = iStreamCount -1;
 		for(; idx < iStreamCount;idx++){
@@ -2475,6 +2477,7 @@ int CBeseyePlayer::createStreaming(const char* fullPath, int iSeekTimeInMs){
 }
 
 int CBeseyePlayer::createStreaming(const char* fullPath){
+	av_sync_type = AV_SYNC_AUDIO_MASTER;
 	av_log(NULL, AV_LOG_INFO, "createStreaming()++: %s", fullPath);
 	if(NULL == fullPath){
 		return -1;

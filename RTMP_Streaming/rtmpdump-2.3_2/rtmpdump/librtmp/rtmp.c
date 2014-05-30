@@ -134,15 +134,18 @@ int RTMP_RegisterCB(RTMP *r,
 					void (*rtmpStatusCallback)(void* , int , void*),
 					void (*rtmpErrorCallback)(void* , int , void*),
 					void* userData){
+	int iRet = 0;
 	RTMP_Log(RTMP_LOGINFO, "%s++, r:%d, rtmpCallback:%x, rtmpStatusCallback:%x, userData:%x", __FUNCTION__, r,rtmpCallback, rtmpStatusCallback, userData);
 	if(NULL != r){
 		r->m_rtmpCallback = rtmpCallback;
 		r->m_rtmpStatusCallback = rtmpStatusCallback;
 		r->m_rtmpErrorCallback = rtmpErrorCallback;
 		r->mUserCb = userData;
+		iRet = 1;
 	}else{
 		RTMP_Log(RTMP_LOGINFO, "%s, r is null", __FUNCTION__);
 	}
+	return iRet;
 }
 
 static void (*metadata_callback)(RTMP* , AMFObject*) = NULL;
@@ -1805,7 +1808,7 @@ SendFCUnpublish(RTMP *r)
 
 SAVC(publish);
 SAVC(live);
-SAVC(record);
+//SAVC(record);
 
 static int
 SendPublish(RTMP *r)
