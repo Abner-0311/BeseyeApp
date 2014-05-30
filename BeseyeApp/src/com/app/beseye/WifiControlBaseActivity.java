@@ -62,6 +62,9 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		super.onCreate(savedInstanceState);
 		mlstScanResult = new ArrayList<WifiAPInfo>();
 		setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+		
+		miOriginalVcamCnt = getIntent().getIntExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, 0);
+		Log.i(TAG, "WifiControlBaseActivity::onCreate(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
 	}
 	
     @Override
@@ -454,6 +457,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 							intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
 							startActivity(intent);
 							setResult(RESULT_OK);
+							
+							Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
 //					    	if(null == mWifiAPSetupDelegator){
 //					    		mWifiAPSetupDelegator = new WifiAPSetupDelegator(mChosenWifiAPInfo, WifiListActivity.this);
 //					    	}else{

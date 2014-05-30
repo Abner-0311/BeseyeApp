@@ -48,6 +48,8 @@ public class RemoteGifImageView extends RemoteImageView {
 	private String[] mURI;
 	private int miIvCount;
 	private int miCurDisplayIdx ;
+	private boolean mbIsInitPage;
+	private boolean mbIsSameList = false;
 	
 	public RemoteGifImageView(Context context) {
 		this(context, null, 0);
@@ -93,20 +95,42 @@ public class RemoteGifImageView extends RemoteImageView {
 	}
 
 	public void setURI(String[] uri, int defaultImage) {
+		mbIsInitPage = true;
+		if(null != mURI && null != uri && mURI.length == uri.length){
+			boolean bDiff = false;
+			for(int i = 0 ;i<mURI.length;i++){
+				if(null != mURI[i] && null != uri[i] && !mURI[i].equals(uri[i])){
+					bDiff = true;
+					break;
+				}
+			}
+			if(!bDiff){
+				//Log.i(TAG, "same list(), ignore");
+				//mbIsSameList = true;
+				mbIsInitPage = false;
+				Log.i(TAG, "set mbIsInitPage as false ");
+				return;
+			}
+		}
+		mbIsSameList = false;
 		mURI = uri;
 		mDefaultImage = defaultImage;
 		miIvCount = (null != mURI)?mURI.length:0;
+		
 		if(0 < miIvCount){
 			mCachePath = new String[miIvCount];
 			for(int i = 0;i<miIvCount;i++){
 				mCachePath[i] = buildCachePath(getContext(), mURI[i]);
 			}
+		}else{
+			mCachePath=null;
 		}
 		
 		mbIsPhoto = false;
 		mbIsPhotoViewMode = false;
 		mbIsLoaded = false;
 		miCurDisplayIdx = 0;
+		
 		removeCallbacks(mLoadNextBmpRunnable);
 		
 //		if(DEBUG)
@@ -186,6 +210,9 @@ public class RemoteGifImageView extends RemoteImageView {
 	static Hashtable<Integer, SoftReference<Bitmap>> mDefaultImageHolder = new Hashtable<Integer, SoftReference<Bitmap>>();
 
 	public void loadImage() {
+		if(mbIsSameList){
+			return;
+		}
 		int iLen = (null != mCachePath)?mCachePath.length:0;
 		if(miCurDisplayIdx < iLen){
 			// load image from cache
@@ -193,39 +220,39 @@ public class RemoteGifImageView extends RemoteImageView {
 			
 			if (cBmp != null) {
 				setImageBitmap(cBmp);
-				//We don't cache high quality pic in memory
-				if(mbIsPhotoViewMode){
-					loadRemoteImage();
-				}
+//				//We don't cache high quality pic in memory
+//				if(mbIsPhotoViewMode){
+//					loadRemoteImage();
+//				}
 				imageLoaded(true);
 				return;
-			} else {
+			} else if(mbIsInitPage && 0 == miCurDisplayIdx){
+				Log.e(TAG, "loadDefaultImage(), 1");	
 				loadDefaultImage();
 			}
 			loadRemoteImage();
 		}else{
+			Log.e(TAG, "loadDefaultImage(), 2");	
 			loadDefaultImage();
 		}
+		mbIsInitPage = false;
 	}
 	
 	private Runnable mLoadNextBmpRunnable = new Runnable(){
 		@Override
 		public void run() {
 			if(0 < miIvCount){
+				Bitmap cBmp = BeseyeMemCache.getBitmapFromMemCache(mCachePath[miCurDisplayIdx]);
+				if (cBmp != null) {
+					setImageBitmap(cBmp);
+				}
 				miCurDisplayIdx = (++miCurDisplayIdx)%miIvCount;
 				loadImage();
 			}else{
-				loadDefaultImage();
+				//Log.e(TAG, "loadDefaultImage(), 3");	
+				//loadDefaultImage();
 			}
 		}};
-
-	@Override
-	public void setImageBitmap(Bitmap bm) {
-		if(mbMatchWidth){
-			
-		}
-		super.setImageBitmap(bm);
-	}
 
 	public void loadRemoteImage() {
 		if (null != mFuture) {
@@ -245,10 +272,17 @@ public class RemoteGifImageView extends RemoteImageView {
 				if (mCallback != null) {
 					mCallback.imageLoaded(success);
 				}
-				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, 1000);
+				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, 200);
 			}});
-		
 	}
+	
+//	private void imageOneLoaded() {
+//		post(new Runnable(){
+//			@Override
+//			public void run() {
+//				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, 333);
+//			}});
+//	}
 
 	class LoadImageRunnable implements Runnable {		
 		private String mLocal;
@@ -347,7 +381,7 @@ public class RemoteGifImageView extends RemoteImageView {
 								// HTTP get image
 								int retryCount = 0;
 								while (true) {
-									if ((downloadBitmap = imageHTTPTask(mRemote, mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:2))) != null) {
+									if ((downloadBitmap = imageHTTPTask(mRemote, mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:4))) != null) {
 										break;
 									}
 									if (++retryCount >= 3
@@ -363,7 +397,7 @@ public class RemoteGifImageView extends RemoteImageView {
 							}
 							if(DEBUG){
 								Log.w(TAG, "downloadBitmap width :"+downloadBitmap.getWidth()+", height :"+downloadBitmap.getHeight());
-								Log.w(TAG, "mDestRatio :"+mDestRatio+", miDesireWidth :"+miDesireWidth+", miDesireHeight :"+miDesireHeight);
+								//Log.w(TAG, "mDestRatio :"+mDestRatio+", miDesireWidth :"+miDesireWidth+", miDesireHeight :"+miDesireHeight);
 								
 								if(mbIsPhotoViewMode){
 									Log.w(TAG, "download file use high quality");

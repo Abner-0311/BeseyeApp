@@ -679,7 +679,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 							for(int i = 0;i < iCountNew;i++){
 								try {
 									int iTypeNew  = typeArrNew.getInt(i);
-									if(1 == iTypeNew || 4 == iTypeNew){
+									if(1 == iTypeNew || 2 == iTypeNew){
 										boolean bFoundNew = true;
 										for(int j = 0;j<iCountOld;j++){
 											int iTypeOld  = typeArrOld.getInt(i);
@@ -1118,7 +1118,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 									int iCount = typeArr.length();
 									for(int i = 0;i< iCount;i++){
 										int iType = typeArr.getInt(i);
-										if(1 == iType || 4 == iType){
+										if(1 == iType || 2 == iType){
 											
 											if(-1 == lLastEventStartTime || (isNewEvent(obj))){
 												Intent intent = new Intent();

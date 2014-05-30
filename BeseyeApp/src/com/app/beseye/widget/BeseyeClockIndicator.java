@@ -97,7 +97,7 @@ public class BeseyeClockIndicator extends LinearLayout {
 		setY(miTop);
 		invalidate();
 
-		Log.i(TAG, "updateIndicatorPosition(), [ "+iFirstIdx+", "+iPosBottom+", "+iCurPos+", "+fRatio+", "+miTop+", "+miIndRange+"]");	
+		//Log.i(TAG, "updateIndicatorPosition(), [ "+iFirstIdx+", "+iPosBottom+", "+iCurPos+", "+fRatio+", "+miTop+", "+miIndRange+"]");	
 	}
 	
 	public int getIndicatorPos(){

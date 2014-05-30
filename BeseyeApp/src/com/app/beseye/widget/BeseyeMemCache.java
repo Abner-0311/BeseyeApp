@@ -19,7 +19,7 @@ public class BeseyeMemCache {
 		sMemClass = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
 
 	    // Use 1/8th of the available memory for this memory cache.
-	    final int cacheSize = 1024 * 1024 * sMemClass / 8;
+	    final int cacheSize = 1024 * 1024 * sMemClass / 6;
 	    Log.i(TAG, "iKalaMemCache::init(), cacheSize, = "+cacheSize);
 	    
 	    sMemoryCache = new LruCache<String, Bitmap>(cacheSize) {

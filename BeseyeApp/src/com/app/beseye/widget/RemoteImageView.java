@@ -55,7 +55,7 @@ public class RemoteImageView extends ImageView {
 	protected RemoteImageCallback mCallback;
 	protected int mDefaultImage = EMPTY_DEFAULT_IMAGE;
 	protected Handler mHandler = new Handler();
-	protected static ExecutorService sExecutor = Executors.newFixedThreadPool(5);
+	protected static ExecutorService sExecutor = Executors.newFixedThreadPool(10);
 	protected Future<?> mFuture;
 	protected boolean mIsPreload;
 	protected boolean mbMatchWidth = false;

@@ -190,7 +190,7 @@ public class BeseyeJSONUtil {
 		try{
 			objRet = new JSONObject(json);
 		} catch (JSONException e) {
-			Log.w(TAG, "newJSONObject(), can't new JSONObject by "+json);
+			Log.d(TAG, "newJSONObject(), can't new JSONObject by "+json);
 			objRet = null;
 		}
 		return objRet;
@@ -201,7 +201,7 @@ public class BeseyeJSONUtil {
 		try{
 			objRet = new JSONArray(json);
 		} catch (JSONException e) {
-			Log.w(TAG, "newgetJSONArray(), can't new JSONArray by "+json);
+			Log.d(TAG, "newgetJSONArray(), can't new JSONArray by "+json);
 			objRet = null;
 		}
 		return objRet;
@@ -213,7 +213,7 @@ public class BeseyeJSONUtil {
 			try {
 				objRet = obj.getJSONObject(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONObject(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONObject(), can't get value by "+strKey);
 				objRet = null;
 			}
 		}
@@ -226,7 +226,7 @@ public class BeseyeJSONUtil {
 			try {
 				objRet = obj.getJSONArray(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONArray(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONArray(), can't get value by "+strKey);
 				objRet = null;
 			}
 		}
@@ -254,7 +254,7 @@ public class BeseyeJSONUtil {
 					strRet = strDefault;
 				}
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONString(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONString(), can't get value by "+strKey);
 				strRet = strDefault;
 			}
 		}
@@ -271,7 +271,7 @@ public class BeseyeJSONUtil {
 			try {
 				iRet = obj.getInt(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONInt(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONInt(), can't get value by "+strKey);
 			}
 		}
 		return iRet;
@@ -283,7 +283,7 @@ public class BeseyeJSONUtil {
 			try {
 				lRet = obj.getLong(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONLong(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONLong(), can't get value by "+strKey);
 				lRet = -1;
 			}
 		}
@@ -296,7 +296,7 @@ public class BeseyeJSONUtil {
 			try {
 				dRet = obj.getDouble(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONDouble(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONDouble(), can't get value by "+strKey);
 				dRet = Double.NaN;
 			}
 		}
@@ -313,7 +313,7 @@ public class BeseyeJSONUtil {
 			try {
 				bRet = obj.getBoolean(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONBoolean(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONBoolean(), can't get value by "+strKey);
 			}
 		}
 		return bRet;

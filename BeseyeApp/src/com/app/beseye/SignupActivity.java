@@ -119,11 +119,11 @@ public class SignupActivity extends PairingBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.tv_bottom_description_terms:{
-				Toast.makeText(this, "TOS click", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, "TOS click", Toast.LENGTH_SHORT).show();
 				break;
 			}
 			case R.id.tv_bottom_description_policy:{
-				Toast.makeText(this, "Privacy Policy click", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, "Privacy Policy click", Toast.LENGTH_SHORT).show();
 				break;
 			}
 			case R.id.button_continue:{

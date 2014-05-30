@@ -1,5 +1,7 @@
 package com.app.beseye.adapter;
 
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +15,7 @@ import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.RemoteGifImageView;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -92,14 +95,31 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 				
 				if(null != holder.mImgThumbnail){
 					if(0 < iPosition){
-						String[] path = {"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858859902_{dur}10351_{r}1400850536594_{th}1400858859551.jpg",
-								"s3://beseye-thumbnail/taiwan_Taipei-101.jpg",
-								"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858901167_{dur}10445_{r}1400850536594_{th}1400858900722.jpg",
-								"s3://beseye-thumbnail/shanhai01.jpg",
-								"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858921935_{dur}10390_{r}1400850536594_{th}1400858921545.jpg",
-								"s3://beseye-thumbnail/taiwan_Taipei-101_2.jpg"};
+						JSONArray arr = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_THUMBNAIL_PATH);
+						String[] path  = null;
+						if(null != arr && 0 < arr.length()){
+							path = new String[arr.length()];
+							for(int i = 0;i<arr.length();i++){
+								try {
+									path[i] = arr.getString(i);
+								} catch (JSONException e) {
+									e.printStackTrace();
+									Log.e(TAG, "setupItem(), e:"+e.toString());	
+								}
+							}
+							
+						}
+						//Log.e(TAG, "setupItem(), path="+((null != path)?path.toString():"null")+" at "+iPosition);	
+
 						holder.mImgThumbnail.setURI(path, R.drawable.eventlist_video_fake);
 						holder.mImgThumbnail.loadImage();
+//						String[] path = {"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858859902_{dur}10351_{r}1400850536594_{th}1400858859551.jpg",
+//								"s3://beseye-thumbnail/taiwan_Taipei-101.jpg",
+//								"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858901167_{dur}10445_{r}1400850536594_{th}1400858900722.jpg",
+//								"s3://beseye-thumbnail/shanhai01.jpg",
+//								"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858921935_{dur}10390_{r}1400850536594_{th}1400858921545.jpg",
+//								"s3://beseye-thumbnail/taiwan_Taipei-101_2.jpg"};
+						
 					}else{
 						holder.mImgThumbnail.setURI(new String[]{}, R.drawable.eventlist_video_fake);
 						//holder.mImgThumbnail.loadDefaultImage();
@@ -126,21 +146,21 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 				try {
 					String strType = null;
 					iType = typeArr.getInt(i);
-					if(1 == iType){
+					if(2 == iType){
 						strType = "Family Dectection";
 						BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
-					}else if(2 == iType){
+					}else if(8 == iType){
 						strType = "Fire Dectection";
 						BeseyeUtils.setVisibility(holder.mImgFire, View.VISIBLE);
-					}else if(3 == iType){
+					}else if(4 == iType){
 						strType = "Sound Dectection";
 						BeseyeUtils.setVisibility(holder.mImgSound, View.VISIBLE);
-					}else if(4 == iType){
+					}else if(1 == iType){
 						strType = "Motion Dectection";
 						BeseyeUtils.setVisibility(holder.mImgMotion, View.VISIBLE);
 					}
 					
-					strRet += (i == 0)?strType:(" & "+strType);
+					strRet += (null == strType)?strType:(" & "+strType);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}

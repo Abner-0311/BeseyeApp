@@ -214,11 +214,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			if(!precCamViewStatus.equals(CameraView_Internal_Status.CV_STREAM_EOF)){
 			    				setVisibility(mPbLoadingCursor, View.VISIBLE);
 				    			stopUpdateTime();
-				    			BeseyeUtils.postRunnable(new Runnable(){
-									@Override
-									public void run() {
-										tryToReconnect();
-									}}, 0);
+				    			if(mbIsLiveMode)
+					    			BeseyeUtils.postRunnable(new Runnable(){
+										@Override
+										public void run() {
+											tryToReconnect();
+										}}, 0);
 			    			}
 			    			break;
 			    		}
@@ -250,10 +251,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	Log.i(TAG, "CameraViewActivity::tryToReconnect(), mActivityResume:"+mActivityResume+", mActivityDestroy:"+mActivityDestroy);
     	if(!isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_INIT, CameraView_Internal_Status.CV_STREAM_PAUSED)){
     		int iReOpenDelay = 0;
-    		if(!isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_EOF, CameraView_Internal_Status.CV_STREAM_CLOSE) && 
+    		if(!isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_WAITING_CLOSE, CameraView_Internal_Status.CV_STREAM_CLOSE) || 
     		   !isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
     			closeStreaming();
-    			iReOpenDelay = 100;
+    			iReOpenDelay = 500;
     		}
     		
     		if(mActivityResume){

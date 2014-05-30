@@ -36,9 +36,7 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 		super.onCreate(savedInstanceState);
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
-	
-		miOriginalVcamCnt = getIntent().getIntExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, 0);
-	
+		
 		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_signup_nav, null);
 		if(null != mVwNavBar){
 			mIvBack = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_left_btn);
@@ -90,7 +88,9 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 				break;
 			}
 			case R.id.button_choose_network:{
-				launchActivityForResultByClassName(WifiListActivity.class.getName(), null, REQ_CODE_PICK_WIFI);
+				Bundle b = new Bundle();
+				b.putInt(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+				launchActivityForResultByClassName(WifiListActivity.class.getName(), b, REQ_CODE_PICK_WIFI);
 				break;
 			}
 			case R.id.button_wifi_yes:{
@@ -157,8 +157,9 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
-					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					//
 					miOriginalVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 				}
 			}else 
 				super.onPostExecute(task, result, iRetCode);

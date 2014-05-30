@@ -144,6 +144,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					JSONArray arrCamList = new JSONArray();
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
 					miOriginalVcamCnt = iVcamCnt;
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 					if(0 < iVcamCnt){
 						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
 						for(int i = 0;i< iVcamCnt;i++){
@@ -289,9 +290,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			invokeLogout();
 			//monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(this), true, "5dc166880720448cafa563be507b9730");
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
-			Intent intent = new Intent();
-			intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
-			launchActivityByClassName(WifiSetupGuideActivity.class.getName());
+			Bundle b = new Bundle();
+			b.putInt(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+			launchActivityByClassName(WifiSetupGuideActivity.class.getName(), b);
 		}else
 			super.onClick(view);
 	}

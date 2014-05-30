@@ -1,10 +1,28 @@
 package com.app.beseye.httptask;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Writer;
 import java.util.List;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.widget.BeseyeStorageAgent;
+
+import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 public class BeseyeMMBEHttpTask  {
@@ -93,14 +111,117 @@ public class BeseyeMMBEHttpTask  {
 	}
 	
 	public static class GetThumbnailByEventListTask extends BeseyeHttpTask{
+		private static JSONObject sObjThbCache = null;
+		private static File cacheFile;
+		private String mstrThbKey = null;
+		private String mstrThbPath = null;
 		public GetThumbnailByEventListTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
 		}
 		
+		public String getKey(){
+			return mstrThbKey;
+		}
+		
+		public String getPath(){
+			return mstrThbPath;
+		}
+		
+		static synchronized void checkCache(Context c){
+			if(null == sObjThbCache){
+				File picDir = BeseyeStorageAgent.getCacheDir(c);
+				if(null != picDir){
+					picDir.mkdir();
+				}
+				
+				cacheFile = new File(picDir.getAbsolutePath()+"/thbCache");
+				if(null != cacheFile){
+					if(cacheFile.exists()){
+						String strCache = null;
+						try {
+							BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(cacheFile)));
+							try {
+								strCache = (null != reader)?reader.readLine():null;
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+							Log.e(TAG, "checkCache(),e:"+e.toString());
+						}
+						
+						if(null != strCache && 0 < strCache.length()){
+							try {
+								sObjThbCache = new JSONObject(strCache);
+							} catch (JSONException e) {
+								e.printStackTrace();
+								Log.e(TAG, "checkCache(),e:"+e.toString());
+							}
+						}
+					}
+				}
+				
+				if(null == sObjThbCache	)
+					sObjThbCache = new JSONObject();
+			}
+		}
+		
+		static synchronized String findCache(String strKey){
+			String strRet = BeseyeJSONUtil.getJSONString(sObjThbCache, strKey, null);
+			return strRet;
+		}
+		
+		static synchronized void writeCache(String strKey, String strValue){
+			BeseyeJSONUtil.setJSONString(sObjThbCache, strKey, strValue);
+			if(null != cacheFile){
+				if(cacheFile.exists())
+					cacheFile.delete();
+				Writer writer = null;
+				try {
+					writer = new BufferedWriter(new FileWriter(cacheFile));
+					if(null != writer){
+						writer.write(sObjThbCache.toString());
+						writer.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+					Log.e(TAG, "writeCache(),e:"+e.toString());
+				}
+			}
+		}
+		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(MM_HOST_PRODCTION+URL_GET_THUMB_BY_EVENT, strParams[0]);
+			if(isCancelled()){
+				return null;
+			}
+			checkCache((Context)mOnHttpTaskCallback.get());
+			mstrThbKey = strParams[0];
+			mstrThbPath = findCache(mstrThbKey);
+			List<JSONObject> ret=null;
+			if(null != mstrThbPath && mstrThbPath.length() >0){
+				Log.e(TAG, "doInBackground(),find cache for key "+mstrThbKey);
+				miRetCode = 0;
+			}else{
+				ret = super.doInBackground(MM_HOST_PRODCTION+URL_GET_THUMB_BY_EVENT, strParams[1]);
+				if(getRetCode() == 0){
+					JSONArray thumbnailList = BeseyeJSONUtil.getJSONArray(ret.get(0), BeseyeJSONUtil.MM_THUMBNAILS);
+					if(null != thumbnailList){
+						try {
+							JSONArray path = BeseyeJSONUtil.getJSONArray(thumbnailList.getJSONObject(0),BeseyeJSONUtil.MM_THUMBNAIL_PATH);
+							if(null != path){
+								writeCache(mstrThbKey, path.toString());
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+							Log.e(TAG, "doInBackground(),e:"+e.toString());
+						}
+					}
+				}
+			}
+			
+			return ret;
 		}
 	}
 }
