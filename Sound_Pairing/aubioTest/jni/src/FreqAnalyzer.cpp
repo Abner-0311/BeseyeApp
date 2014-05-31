@@ -131,7 +131,7 @@ void FreqAnalyzer::beginToTrace(string strCode){
 	mlTraceTs = time_ms();
 	mlMaxWaitingTime = (0 == strCode.length())?25000:(strCode.length()*400+4000);
 
-	LOGI("beginToTrace(), mlTraceTs:%lld, mlMaxWaitingTime: %lld\n", mlTraceTs, mlMaxWaitingTime);
+	LOGW("beginToTrace(), mlTraceTs:%lld, mlMaxWaitingTime: %lld\n", mlTraceTs, mlMaxWaitingTime);
 }
 
 void FreqAnalyzer::endToTrace(){
@@ -204,11 +204,12 @@ void FreqAnalyzer::checkTimeout(msec_t lTs){
 		}else{
 
 			if(0 < iSize){
-				if(mbLowSoundDetected){
+				/*if(mbLowSoundDetected){
 					LOGE("checkTimeout(), 2 mbLowSoundDetected is true----------\n");
 					triggerTimeout();
-				}else if((lTs - mFreqRecordList[iSize-1]->mlTs) >= 15 * SoundPair_Config::TONE_PERIOD || getInvalidFreqCount() >= 15 || (lDelta > mlMaxWaitingTime)){
-					LOGE("checkTimeout(), cannot get ending char\n");
+				}else*/
+				if((lTs - mFreqRecordList[iSize-1]->mlTs) >= 15 * SoundPair_Config::TONE_PERIOD || getInvalidFreqCount() >= 15 || (lDelta > mlMaxWaitingTime)){
+					LOGE("checkTimeout(), cannot get ending char, lDelta:%l, mlMaxWaitingTime:%l\n", lDelta, mlMaxWaitingTime);
 					triggerTimeout();
 				}
 			}
@@ -319,6 +320,7 @@ int FreqAnalyzer::getInvalidFreqCount(){
 			break;
 		}
 	}
+	LOGE("getInvalidFreqCount(), iRet:%d\n", iRet);
 	return iRet;
 }
 
