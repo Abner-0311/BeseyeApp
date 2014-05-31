@@ -11,8 +11,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.CameraListActivity;
+import com.app.beseye.CameraViewActivity;
 import com.app.beseye.EventListActivity;
 import com.app.beseye.GCMIntentService;
+import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
@@ -50,6 +52,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.PowerManager;
 import android.os.RemoteException;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -286,6 +289,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			cancelNotification();
                 			setLastEventItem(null);
                 			BeseyeUtils.removeRunnable(mCheckEventRunnable);
+                			if(null != mGetEventListTask){
+                				mGetEventListTask.cancel(true);
+                				mGetEventListTask = null;
+                			}
                 		}//If Login
                 		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid()){
                 			registerGCMServer();
@@ -446,7 +453,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         WebsocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
         checkUserLoginState();
         
-        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ID, mStrVCamID);
+        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
         BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, "DVR Cam");
     }
     
@@ -468,7 +475,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
     }
     
-    static private final long TIME_TO_CHECK_EVENT = 60*1000;
+    static private final long TIME_TO_CHECK_EVENT = 5*1000;
     private Runnable mCheckEventRunnable = new Runnable(){
 		@Override
 		public void run() {
@@ -670,35 +677,17 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					Log.i(TAG, "isNewEvent(), lLastEventStartTime("+lLastEventStartTime+") < lNewEventStartTime ("+lNewEventStartTime+")");
 					return true;
 				}else if(lLastEventStartTime == lNewEventStartTime){
-					JSONArray typeArrOld = BeseyeJSONUtil.getJSONArray(mLastEventObj, BeseyeJSONUtil.MM_TYPE_IDS);
-					JSONArray typeArrNew = BeseyeJSONUtil.getJSONArray(eventObj, BeseyeJSONUtil.MM_TYPE_IDS);
-					if(null != typeArrNew){
-						int iCountNew = typeArrNew.length();
-						if(null != typeArrOld){
-							int iCountOld = typeArrOld.length();
-							for(int i = 0;i < iCountNew;i++){
-								try {
-									int iTypeNew  = typeArrNew.getInt(i);
-									if(1 == iTypeNew || 2 == iTypeNew){
-										boolean bFoundNew = true;
-										for(int j = 0;j<iCountOld;j++){
-											int iTypeOld  = typeArrOld.getInt(i);
-											if((1 == iTypeOld || 4 == iTypeOld) && iTypeNew <= iTypeOld){
-												bFoundNew = false;
-											}
-										}
-										if(bFoundNew){
-											Log.i(TAG, "isNewEvent(), found new event");
-											bRet = true;
-											break;
-										}
-									}
-									
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-							}
-						}else{
+					
+					int typeArrOld = BeseyeJSONUtil.getJSONInt(mLastEventObj, BeseyeJSONUtil.MM_TYPE_IDS);
+					int typeArrNew = BeseyeJSONUtil.getJSONInt(eventObj, BeseyeJSONUtil.MM_TYPE_IDS);
+					
+					if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArrNew) || 0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArrNew)){
+						boolean bFoundNew = true;
+						if((0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArrOld) || 0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArrOld)) && typeArrOld <= typeArrNew){
+							bFoundNew = false;
+						}
+						if(bFoundNew){
+							Log.i(TAG, "isNewEvent(), found new event");
 							bRet = true;
 						}
 					}
@@ -712,10 +701,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	private void setLastEventItem(JSONObject eventObj){
 		if(null != eventObj){
-			//mLastNotifyId = BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_ID);
+			Log.i(TAG, "setLastEventItem(), eventObj:"+eventObj.toString());
 			BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_LAST_EVENT, eventObj.toString());
 			mLastEventObj = eventObj;
 		}else{
+			Log.i(TAG, "setLastEventItem(), eventObj:"+null);
 			mLastEventObj = null;
 			BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_LAST_EVENT, "");
 		}
@@ -815,9 +805,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //	}
 	
 	private void showNotification(int iNotifyId, Intent intent, CharSequence text, JSONObject eventObj) {
-		setLastEventItem(eventObj);
 		long lTs = BeseyeJSONUtil.getJSONLong(eventObj, BeseyeJSONUtil.MM_START_TIME);
+		
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		
+		Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 		if(null != contentIntent){
 			 final Notification notification = new Notification(
 				        				R.drawable.common_app_icon_shadow,       // the icon for the status bar
@@ -828,7 +820,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				notification.setLatestEventInfo(
 						 this,                        // the context to use
 						 getText(R.string.app_name),
-						                              // the title for the notification
+						 							  // the title for the notification
 						 text,                        // the details to display in the notification
 						 contentIntent);              // the contentIntent (see above)
 
@@ -840,6 +832,18 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				// number.  we use it later to cancel the notification
 				notification);
 			 }
+			 
+//			 Notification myNotification =  new NotificationCompat.Builder(this)
+//		        .setSmallIcon(R.drawable.ic_launcher)
+//		        .setAutoCancel(true)
+//		        .setContentIntent(contentIntent)
+//		        .setContentTitle(getText(R.string.app_name))
+//		        .setContentText(text).build();
+//			 
+//			 mNotificationManager.notify(
+//						iNotifyId, // we use a string id because it is a unique
+//						// number.  we use it later to cancel the notification
+//						myNotification);
 		}
 //		
 //		if(null == intent){
@@ -1113,31 +1117,48 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 									break;
 								}
 								
-								JSONArray typeArr = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_TYPE_IDS);
-								if(null != typeArr){
-									int iCount = typeArr.length();
-									for(int i = 0;i< iCount;i++){
-										int iType = typeArr.getInt(i);
-										if(1 == iType || 2 == iType){
-											
-											if(-1 == lLastEventStartTime || (isNewEvent(obj))){
-												Intent intent = new Intent();
-												intent.setClassName(this, EventListActivity.class.getName());
-//												intent.putExtra(iKalaDelegateActivity.KEY_DELEGATE_INTENT, delegateIntent);
-//												intent.putExtra(iKalaBaseActivity.KEY_FROM_ACTIVITY, context.getClass().getSimpleName());
-												intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-												intent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-												String strMsg = null;
-												if(1 == iType){
-													//"[Register name] was recognized by [camera name] at [Time]"
-													strMsg = String.format("Stranger was identified by [%s] at %s", "DVR Cam", new Date(lNewEventStartTime).toLocaleString());
+								int typeArr = BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.MM_TYPE_IDS);
+								if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr) || 0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArr)){
+									if(-1 == lLastEventStartTime || (isNewEvent(obj))){
+										setLastEventItem(obj);
+										Intent intent = new Intent();
+										intent.setClassName(this, OpeningPage.class.getName());
+										
+										Intent delegateIntent = new Intent();
+										delegateIntent.setClassName(this, CameraViewActivity.class.getName());
+										delegateIntent.putExtra(CameraViewActivity.KEY_DVR_STREAM_MODE, true);
+										delegateIntent.putExtra(CameraViewActivity.KEY_TIMELINE_INFO, obj.toString());
+										delegateIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+										
+										intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+										intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);
+//										intent.putExtra(OpeningPage.KEY_FROM_ACTIVITY, context.getClass().getSimpleName());
+										
+										Log.i(TAG, "obj:"+obj.toString());
+										Log.i(TAG, "mCam_obj:"+mCam_obj.toString());
+										
+										//Log.i(TAG, "mCam_obj2:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+
+										String strMsg = null;
+										if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr)){
+											//"[Register name] was recognized by [camera name] at [Time]"
+											JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
+											if(null != faceList && 0 < faceList.length()){
+												BeseyeJSONUtil.FACE_LIST face = BeseyeJSONUtil.findFacebyId(faceList.getInt(faceList.length()-1)-1);
+												if(null != face){
+													strMsg = String.format("%s was recognized by %s at %s", face.mstrName, "DVR Cam", new Date(lNewEventStartTime).toLocaleString());
 												}else{
-													strMsg = String.format("Motion activity was detected by [%s] at %s", "DVR Cam", new Date(lNewEventStartTime).toLocaleString());
+													strMsg = String.format("Stranger was identified by %s at %s", "DVR Cam", new Date(lNewEventStartTime).toLocaleString());
 												}
-												showNotification(NOTIFICATION_TYPE_INFO, intent, strMsg, obj);
-												break;
+											}else{
+												strMsg = String.format("Stranger was identified by %s at %s", "DVR Cam", new Date(lNewEventStartTime).toLocaleString());
 											}
+										}else{
+											strMsg = String.format("Motion activity was detected by %s at %s", "DVR Cam", new Date(lNewEventStartTime).toLocaleString());
 										}
+										
+										showNotification(NOTIFICATION_TYPE_INFO, intent, strMsg, obj);
+										break;
 									}
 								}
 							} catch (JSONException e) {

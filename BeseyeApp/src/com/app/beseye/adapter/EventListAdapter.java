@@ -2,6 +2,8 @@ package com.app.beseye.adapter;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
+import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,7 +80,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		if(null != convertView){
 			EventListItmHolder holder = (EventListItmHolder)convertView.getTag();
 			if(null != holder){
-				genDetectionType(holder, BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_TYPE_IDS));
+				genDetectionType(holder, BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.MM_TYPE_IDS), obj);
 				convertView.setBackgroundResource((iPosition%2 == 0)?R.drawable.cl_event_itm_bg_gray_color:R.drawable.cl_event_itm_bg_white_color);
 				if(null != holder.mImgDot){
 					holder.mImgDot.setImageResource(0 == iPosition?R.drawable.eventlist_timeline_point_bluegreen:R.drawable.eventlist_timeline_point_gray);
@@ -111,7 +113,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 						}
 						//Log.e(TAG, "setupItem(), path="+((null != path)?path.toString():"null")+" at "+iPosition);	
 
-						holder.mImgThumbnail.setURI(path, R.drawable.eventlist_video_fake);
+						holder.mImgThumbnail.setURI(path, R.drawable.eventlist_s_eventview_noview_bg);
 						holder.mImgThumbnail.loadImage();
 //						String[] path = {"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858859902_{dur}10351_{r}1400850536594_{th}1400858859551.jpg",
 //								"s3://beseye-thumbnail/taiwan_Taipei-101.jpg",
@@ -121,7 +123,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 //								"s3://beseye-thumbnail/taiwan_Taipei-101_2.jpg"};
 						
 					}else{
-						holder.mImgThumbnail.setURI(new String[]{}, R.drawable.eventlist_video_fake);
+						holder.mImgThumbnail.setURI(new String[]{}, R.drawable.eventlist_s_eventview_noview_bg);
 						//holder.mImgThumbnail.loadDefaultImage();
 						holder.mImgThumbnail.setImageBitmap(null);
 						//holder.mImgThumbnail.setBackgroundColor(this.mContext.getResources().getColor(R.color.word_white));
@@ -133,43 +135,89 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		}
 	}
 	
-	private String genDetectionType(EventListItmHolder holder, JSONArray typeArr){
+	private String genDetectionType(EventListItmHolder holder, int typeArr, JSONObject obj){
+		//Log.e(TAG, "genDetectionType(), typeArr:"+typeArr);	
 		String strRet = "";
 		BeseyeUtils.setVisibility(holder.mImgFace, View.INVISIBLE);
 		BeseyeUtils.setVisibility(holder.mImgFire, View.INVISIBLE);
 		BeseyeUtils.setVisibility(holder.mImgSound, View.INVISIBLE);
 		BeseyeUtils.setVisibility(holder.mImgMotion, View.INVISIBLE);
-		if(null != typeArr){
-			int iCount = typeArr.length();
-			for(int i = 0;i< iCount;i++){
-				int iType;
+		
+		String strType = null;
+		if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr)){
+			JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
+			if(null != faceList && 0 < faceList.length()){
+				BeseyeJSONUtil.FACE_LIST face;
 				try {
-					String strType = null;
-					iType = typeArr.getInt(i);
-					if(2 == iType){
-						strType = "Family Dectection";
-						BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
-					}else if(8 == iType){
-						strType = "Fire Dectection";
-						BeseyeUtils.setVisibility(holder.mImgFire, View.VISIBLE);
-					}else if(4 == iType){
-						strType = "Sound Dectection";
-						BeseyeUtils.setVisibility(holder.mImgSound, View.VISIBLE);
-					}else if(1 == iType){
-						strType = "Motion Dectection";
-						BeseyeUtils.setVisibility(holder.mImgMotion, View.VISIBLE);
+					face = BeseyeJSONUtil.findFacebyId(faceList.getInt(faceList.length()-1)-1);
+					if(null != face){
+						strType = String.format("%s recognized", face.mstrName);
+					}else{
+						strType = "Stranger identified";
 					}
-					
-					strRet += (null == strType)?strType:(" & "+strType);
 				} catch (JSONException e) {
-					e.printStackTrace();
+					Log.e(TAG, "genDetectionType(), e:"+e.toString());	
 				}
+				
+			}else{
+				strType = "Stranger identified";
 			}
-			
-			if(null != holder.mTxtEventType){
-				holder.mTxtEventType.setText(strRet);
-			}
+			BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
 		}
+		
+		if(0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArr)){
+			strType = ((null != strType)?(strType+" & "):"" )+"Motion dectected";
+			BeseyeUtils.setVisibility(holder.mImgMotion, View.VISIBLE);
+		}
+		
+		if(null == strType){
+			strType ="Unknown Dectection";
+		}
+		
+		if(null != holder.mTxtEventType){
+			holder.mTxtEventType.setText(strType);
+		}
+		
+//		else if(4 == iType){
+//			strType = "Sound Dectection";
+//			BeseyeUtils.setVisibility(holder.mImgSound, View.VISIBLE);
+//		}else if(1 == iType){
+//			strType = "Motion Dectection";
+//			BeseyeUtils.setVisibility(holder.mImgMotion, View.VISIBLE);
+//		}
+//		
+//		strRet += (null == strType)?strType:(" & "+strType);
+//		if(null != typeArr){
+//			int iCount = typeArr.length();
+//			for(int i = 0;i< iCount;i++){
+//				int iType;
+//				try {
+//					String strType = null;
+//					iType = typeArr.getInt(i);
+//					if(2 == iType){
+//						strType = "Family Dectection";
+//						BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
+//					}else if(8 == iType){
+//						strType = "Fire Dectection";
+//						BeseyeUtils.setVisibility(holder.mImgFire, View.VISIBLE);
+//					}else if(4 == iType){
+//						strType = "Sound Dectection";
+//						BeseyeUtils.setVisibility(holder.mImgSound, View.VISIBLE);
+//					}else if(1 == iType){
+//						strType = "Motion Dectection";
+//						BeseyeUtils.setVisibility(holder.mImgMotion, View.VISIBLE);
+//					}
+//					
+//					strRet += (null == strType)?strType:(" & "+strType);
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			
+//			if(null != holder.mTxtEventType){
+//				holder.mTxtEventType.setText(strRet);
+//			}
+//		}
 		
 		return strRet;
 	}

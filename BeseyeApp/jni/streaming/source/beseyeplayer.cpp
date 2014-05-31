@@ -1293,6 +1293,9 @@ int CBeseyePlayer::audio_decode_frame(VideoState *is, double *pts_ptr)
     int flush_complete = 0;
     int wanted_nb_samples;
 
+    if(!is->av_sync_type == AV_SYNC_AUDIO_MASTER){
+    	return -1;
+    }
     for (;;) {
         /* NOTE: the audio packet can contain several frames */
         while (pkt_temp->size > 0 || (!pkt_temp->data && new_packet)) {
@@ -1898,12 +1901,16 @@ int read_thread(void *arg)
             av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO,
             		player->get_wanted_stream(AVMEDIA_TYPE_VIDEO), -1, NULL, 0);
 
+       //if(is->av_sync_type == AV_SYNC_AUDIO_MASTER){
+    	   st_index[AVMEDIA_TYPE_AUDIO] =
+    	               av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO,
+    	               		player->get_wanted_stream(AVMEDIA_TYPE_AUDIO),
+    	                                   st_index[AVMEDIA_TYPE_VIDEO],
+    	                                   NULL, 0);
+      // }
+
 //    //if (!audio_disable)
-        st_index[AVMEDIA_TYPE_AUDIO] =
-            av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO,
-            		player->get_wanted_stream(AVMEDIA_TYPE_AUDIO),
-                                st_index[AVMEDIA_TYPE_VIDEO],
-                                NULL, 0);
+
 //    //if (!video_disable)
 //        st_index[AVMEDIA_TYPE_SUBTITLE] =
 //            av_find_best_stream(ic, AVMEDIA_TYPE_SUBTITLE,
@@ -1925,10 +1932,12 @@ int read_thread(void *arg)
     	player->stream_component_open(is, st_index[AVMEDIA_TYPE_AUDIO]);
     }
 
-    ret = -1;
-    if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
-        ret = player->stream_component_open(is, st_index[AVMEDIA_TYPE_VIDEO]);
-    }
+    //if(is->av_sync_type == AV_SYNC_AUDIO_MASTER){
+		ret = -1;
+		if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
+			ret = player->stream_component_open(is, st_index[AVMEDIA_TYPE_VIDEO]);
+		}
+  //  }
 
     av_log(NULL, AV_LOG_DEBUG, "SDL_CreateThread--");
 
@@ -2448,7 +2457,8 @@ extern void  main13(int argc, char **argv);
 int CBeseyePlayer::createStreaming(const char* streamHost, const char** streamPathList, int iStreamCount, int iSeekTimeInMs){
 	if(0 < iStreamCount){
 		//Abner: temp solution for ffmpeg 2.2.2 aac audio sluggish
-		av_sync_type = AV_SYNC_EXTERNAL_CLOCK;
+		//av_sync_type = AV_SYNC_EXTERNAL_CLOCK;
+		av_sync_type = AV_SYNC_VIDEO_MASTER;
 		int idx = 1;
 		iNumOfPendingStreamPaths = iStreamCount -1;
 		for(; idx < iStreamCount;idx++){
@@ -2477,7 +2487,7 @@ int CBeseyePlayer::createStreaming(const char* fullPath, int iSeekTimeInMs){
 }
 
 int CBeseyePlayer::createStreaming(const char* fullPath){
-	av_sync_type = AV_SYNC_AUDIO_MASTER;
+	//av_sync_type = AV_SYNC_AUDIO_MASTER;
 	av_log(NULL, AV_LOG_INFO, "createStreaming()++: %s", fullPath);
 	if(NULL == fullPath){
 		return -1;
@@ -2649,7 +2659,6 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpCallback(), method:%s, content:%s",(NULL != method)?method->av_val:"", (NULL != content)?content->av_val:"");
 
 	if(AVMATCH(method, &RTMP_ON_STATUS)){
-
 		if(AVMATCH(content, &av_NetStream_Play_Stop)){
 			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Stop");
 			//closeStreaming();

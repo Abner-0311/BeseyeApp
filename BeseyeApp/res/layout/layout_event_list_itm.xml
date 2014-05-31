@@ -36,7 +36,8 @@
 	        android:text="Event Name"
 	        android:singleLine="true"
 	        android:textColor="@color/liveview_font_normal_color"
-	        android:textSize="@dimen/login_fontRegular" />
+	        android:textSize="@dimen/login_fontRegular" 
+	        android:layout_alignRight="@+id/vg_timeline_video_thumbnail"/>
 	    
 	    <RelativeLayout 
 	        android:id="@+id/vg_timeline_video_thumbnail"

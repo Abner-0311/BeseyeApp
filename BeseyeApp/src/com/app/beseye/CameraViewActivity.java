@@ -83,7 +83,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private Button mBtnPairingDoneOK; 
 	private ImageButton mIbOpenCam;
 	private JSONObject mCam_obj;
-	private String mStrVCamID = "Bes0001";
+	private String mStrVCamID = null;
 	private String mStrVCamName = null;
 	private boolean mbVCamAdmin = true;
 	
@@ -271,7 +271,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "CameraViewActivity::onCreate()");
+		Log.i(TAG, "CameraViewActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -345,7 +345,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mIvStreamType = (ImageView)findViewById(R.id.iv_streaming_type);
 		if(null != mIvStreamType){
 			mIvStreamType.setOnClickListener(this);
-			BeseyeUtils.setVisibility(mIvStreamType, mbIsLiveMode?View.VISIBLE:View.INVISIBLE);
+			mIvStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_h_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
+			//BeseyeUtils.setVisibility(mIvStreamType, mbIsLiveMode?View.VISIBLE:View.INVISIBLE);
 		}
 		
 		mIbTalk = (ImageButton)findViewById(R.id.ib_talk);
@@ -426,6 +427,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					if(null != mCam_obj){
 						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mCam_obj:"+mCam_obj.toString());
 						mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mStrVCamID:"+mStrVCamID);
+						if(null == mStrVCamID || 0 == mStrVCamID.length()){
+							//workaround, unknown issue
+							mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ID);
+							Log.i(TAG, "CameraViewActivity::updateAttrByIntent(),2 mStrVCamID:"+mStrVCamID);
+						}
 						mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
 						mbVCamAdmin = BeseyeJSONUtil.getJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN, true);
 					}
@@ -441,9 +448,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(null != strTsInfo && 0 < strTsInfo.length()){
 					try {
 						JSONObject tsInfo = new JSONObject(strTsInfo);
+						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), tsInfo:"+tsInfo.toString());
 						if(null != tsInfo && false == BeseyeJSONUtil.getJSONBoolean(tsInfo, BeseyeJSONUtil.MM_IS_LIVE, false)){
 							mbIsLiveMode = false;
-							mlDVRStartTs = BeseyeJSONUtil.getJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME);//System.currentTimeMillis() - 60*60*1000; //intent.getLongExtra(KEY_DVR_STREAM_TS, 0);
+							mlDVRStartTs = BeseyeJSONUtil.getJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME);
 							Log.i(TAG, "CameraViewActivity::onCreate(), mlDVRStartTs="+mlDVRStartTs);
 						}
 					} catch (JSONException e) {

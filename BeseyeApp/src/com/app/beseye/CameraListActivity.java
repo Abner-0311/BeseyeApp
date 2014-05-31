@@ -143,7 +143,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 					JSONArray arrCamList = new JSONArray();
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
-					miOriginalVcamCnt = iVcamCnt;
+					//miOriginalVcamCnt = iVcamCnt;
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 					if(0 < iVcamCnt){
 						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
@@ -157,6 +157,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 								e.printStackTrace();
 							}
 						}
+						miOriginalVcamCnt = arrCamList.length();
 						int iDemoVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_DEMO_VCAM_CNT);
 						if(0 < iDemoVcamCnt){
 							JSONArray DemoVcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_DEMO_VCAM_LST);
@@ -251,8 +252,12 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		int iCount = (null != arrCamList)?arrCamList.length():0;
 		for(int i = 0;i < iCount;i++){
 			try {
-				JSONObject camObj = arrCamList.getJSONObject(i);
-				monitorAsyncTask(new BeseyeMMBEHttpTask.GetLiveStreamTask(this).setDialogId(-1), true, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID), "false");
+				final JSONObject camObj = arrCamList.getJSONObject(i);
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						monitorAsyncTask(new BeseyeMMBEHttpTask.GetLiveStreamTask(CameraListActivity.this).setDialogId(-1), true, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID), "false");
+					}}, 1500*(i%10));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -309,10 +314,10 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					if(null != Cam_obj){
 						JSONArray camArr = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
 						int iCount = (null != camArr)?camArr.length():0;
-						String strVcamId = BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_VCAM_ID);
+						String strVcamId = BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_ID);
 						for(int i = 0;i<iCount;i++){
 							JSONObject obj = camArr.getJSONObject(i);
-							if(null != obj && BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_ID).equals(strVcamId)){
+							if(null != obj && BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID).equals(strVcamId)){
 								BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.ACC_NAME, BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_NAME));
 								BeseyeJSONUtil.setJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(Cam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE));
 								refreshList();

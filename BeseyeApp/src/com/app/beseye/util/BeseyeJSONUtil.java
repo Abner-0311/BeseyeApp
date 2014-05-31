@@ -161,7 +161,97 @@ public class BeseyeJSONUtil {
 	public static final String MM_OBJ_CNT 				= "objCount";
 	
 	public static final String MM_TYPE_IDS				= "typeIds";
+	public static final int MM_TYPE_ID_MOTION			= 1;
+	public static final int MM_TYPE_ID_FACE				= 2;
+	
 	public static final String MM_FACE_IDS 				= "faceIds";
+	
+	static public class FACE_LIST{
+		public int miId;
+		public String mstrName;
+		public String miPhototId;
+		
+		public FACE_LIST(int miId, String mstrName, String miPhototId) {
+			super();
+			this.miId = miId;
+			this.mstrName = mstrName;
+			this.miPhototId = miPhototId;
+		}
+	}
+	
+	static public FACE_LIST findFacebyId(int id){
+		if(0 <= id && id<faceList.length)
+			return faceList[id];
+		else
+			return null;
+	}
+	
+	static final public FACE_LIST faceList[] =
+		{
+		    new FACE_LIST(1, "Abner", "Abner 1.jpg"),
+
+		    new FACE_LIST(2, "Amos", "Amos.jpg"),
+
+		    new FACE_LIST(3, "Carlos", "Carlos.jpg"),
+
+		    new FACE_LIST(4, "Chris", "Chris_head.jpg"),
+
+		    new FACE_LIST(5, "Claudia", "Claudia_20110817.jpg"),
+
+		    new FACE_LIST(6, "Doris", "Doris.jpg"),
+
+		    new FACE_LIST(7, "Yolux", "DSC04568.JPG"),
+
+		    new FACE_LIST(8, "Giben", "Giben.Lin.png"),
+
+		    new FACE_LIST(9, "Olive", "Olive.jpg"),
+
+		    new FACE_LIST(10, "Peggy", "peggy.jpg"),
+
+		    new FACE_LIST(11, "Selena", "selena.JPG"),
+
+		    new FACE_LIST(12, "Shaq", "Shaq.jpg"),
+
+		    new FACE_LIST(13, "Yehudi", "Yehudi.JPG"),
+
+		    new FACE_LIST(14, "Zara", "zara.jpg"),
+
+		    new FACE_LIST(15, "Cuthbert", "Cuthbert1.jpg"),   //-4
+
+		    new FACE_LIST(16, "Cuthbert", "Cuthbert2.JPG"),   //-6
+
+		    new FACE_LIST(17, "Peggy", "IMG_9856.JPG"),
+
+		    new FACE_LIST(18, "Meg", "IMG_9868.JPG"),
+
+		    new FACE_LIST(19, "Olive", "IMG_9872.JPG"),
+
+		    new FACE_LIST(20, "Giben", "IMG_9873.JPG"),
+
+		    new FACE_LIST(21, "Zara", "IMG_9875.JPG"),
+
+		    new FACE_LIST(22, "Selena", "IMG_9876.JPG"),
+
+		    new FACE_LIST(23, "Yolux", "IMG_9880.JPG"),
+
+		    new FACE_LIST(24, "Chris", "IMG_9881.JPG"),
+
+		    new FACE_LIST(25, "Yehudi", "IMG_9882.JPG"),
+
+		    new FACE_LIST(26, "Carlos", "IMG_9883.JPG"),
+
+		    new FACE_LIST(27, "Abner", "IMG_9884.JPG"),
+
+		    new FACE_LIST(28, "Shaq", "IMG_9885.JPG"),
+
+		    new FACE_LIST(29, "Jobbie", "IMG_9886.JPG"),
+
+		    new FACE_LIST(30, "Karen", "IMG_9887.JPG"),
+
+		    new FACE_LIST(31, "Doris", "IMG_9890.JPG")
+
+		};
+	
 	public static final String MM_IS_LIVE 				= "isLive";
 	
 	public static final String MM_THUMBNAIL 			= "thumbnail";

@@ -4,6 +4,8 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.httptask.BeseyeAccountTask;
@@ -157,8 +159,24 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
-					//
-					miOriginalVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
+					JSONArray arrCamList = new JSONArray();
+					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
+					//miOriginalVcamCnt = iVcamCnt;
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
+					if(0 < iVcamCnt){
+						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
+						for(int i = 0;i< iVcamCnt;i++){
+							try {
+								JSONObject camObj = VcamList.getJSONObject(i);
+								if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+									arrCamList.put(camObj);
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+						miOriginalVcamCnt = arrCamList.length();
+					}
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 				}
 			}else 

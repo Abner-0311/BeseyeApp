@@ -272,7 +272,8 @@ public class RemoteGifImageView extends RemoteImageView {
 				if (mCallback != null) {
 					mCallback.imageLoaded(success);
 				}
-				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, 200);
+				RemoteGifImageView.this.removeCallbacks(mLoadNextBmpRunnable);
+				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, 2000);
 			}});
 	}
 	

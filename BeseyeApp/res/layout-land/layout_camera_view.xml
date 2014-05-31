@@ -72,7 +72,7 @@
 	    <ImageView 
 	       	android:id="@+id/iv_streaming_type"
 	       	android:layout_marginLeft="20dp"
-	       	android:layout_marginTop="2dp"
+	       	android:layout_centerVertical="true"
 	    	android:layout_width="wrap_content"
     		android:layout_height="wrap_content" 
     		android:src="@drawable/liveview_h_display_icon"/>
@@ -80,7 +80,7 @@
 	    <ImageButton 
 	       	android:id="@+id/ib_settings"
 	       	android:layout_marginRight="20dp"
-	       	android:layout_marginTop="2dp"
+	       	android:layout_centerVertical="true"
 	    	android:layout_width="wrap_content"
     		android:layout_height="wrap_content" 
     		android:layout_alignParentRight="true"

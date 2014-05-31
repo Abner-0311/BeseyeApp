@@ -56,7 +56,6 @@ public class EventListActivity extends BeseyeBaseActivity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//mbIgnoreSessionCheck = true;
 		
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -249,6 +248,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode+", "+System.currentTimeMillis());	
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeMMBEHttpTask.GetEventListTask){
+				Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 				JSONArray EntList = new JSONArray();
 				if(0 == iRetCode){
 					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
@@ -352,7 +352,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 			try {
 				obj.put(BeseyeJSONUtil.MM_VCAM_UUID, mStrVCamID);
 				obj.put(BeseyeJSONUtil.MM_SIZE, "small");
-				obj.put(BeseyeJSONUtil.MM_MAX_NUM, 30);
+				obj.put(BeseyeJSONUtil.MM_MAX_NUM, 10);
 				obj.put("ContinuousTimeQuery", false);
 				
 				for(int i = 0;i<iCount;i++){
