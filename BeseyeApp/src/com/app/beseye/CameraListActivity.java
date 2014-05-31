@@ -121,6 +121,18 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 	}
 	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(0 <= miLastTaskSeedNum){
+			Log.i(TAG, "onResume(), resume task , miLastTaskSeedNum="+miLastTaskSeedNum);	
+			this.updateCamItm(miLastTaskSeedNum);
+			miLastTaskSeedNum = -1;
+		}
+	}
+
+
 	private void refreshList(){
 		if(null != mCameraListAdapter){
 			mCameraListAdapter.notifyDataSetChanged();
@@ -180,7 +192,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						}
 						
 						postToLvRreshComplete();
-						getCamsInfo(arrCamList);
+						miCurUpdateIdx = 0;
+						updateCamItm(++miTaskSeedNum);
+						
 					}/*else{
 						onToastShow(task, "no Vcam attached.");
 						Bundle b = new Bundle();
@@ -201,7 +215,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 							if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
 								camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
 								refreshList();
-								monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, strVcamId);
+								monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this, ((BeseyeMMBEHttpTask.GetLiveStreamTask)task).getTaskSeed()).setDialogId(-1), true, strVcamId);
 								break;
 							}
 						} catch (JSONException e) {
@@ -209,6 +223,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						}
 					}
 				}
+				
+				updateCamItm(((BeseyeMMBEHttpTask.GetLiveStreamTask)task).getTaskSeed());
 			}else if(task instanceof BeseyeMMBEHttpTask.GetLatestThumbnailTask){
 				if(0 == iRetCode){
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
@@ -248,16 +264,43 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
 	
-	private void getCamsInfo(JSONArray arrCamList){
-		int iCount = (null != arrCamList)?arrCamList.length():0;
-		for(int i = 0;i < iCount;i++){
+	private int miTaskSeedNum = 0;
+	private int miLastTaskSeedNum = -1;
+	private int miCurUpdateIdx = -1;
+	
+//	private void getCamsInfo(JSONArray arrCamList, final int seed){
+//		int iCount = (null != arrCamList)?arrCamList.length():0;
+//		for(int i = 0;i < iCount;i++){
+//			try {
+//				final JSONObject camObj = arrCamList.getJSONObject(i);
+//				
+//
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
+	
+	private void updateCamItm(int iSeed){
+		if(iSeed != miTaskSeedNum || mActivityDestroy){
+			Log.e(TAG, "updateCamItm(), iSeed="+iSeed+", miTaskSeedNum="+miTaskSeedNum+", mActivityDestroy="+mActivityDestroy);
+			return;
+		}
+		
+		if(!mActivityResume){
+			Log.e(TAG, "updateCamItm(), mActivityResume="+mActivityResume+", iSeed="+iSeed);
+			miLastTaskSeedNum  = iSeed;
+			return;
+		}
+		
+		if(null != mCameraListAdapter){
+			JSONArray arrCamList = mCameraListAdapter.getJSONList();
+			int iCount = (null != arrCamList)?arrCamList.length():0;
 			try {
-				final JSONObject camObj = arrCamList.getJSONObject(i);
-				BeseyeUtils.postRunnable(new Runnable(){
-					@Override
-					public void run() {
-						monitorAsyncTask(new BeseyeMMBEHttpTask.GetLiveStreamTask(CameraListActivity.this).setDialogId(-1), true, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID), "false");
-					}}, 1500*(i%10));
+				if(miCurUpdateIdx < iCount){
+					final JSONObject camObj = arrCamList.getJSONObject(miCurUpdateIdx++);
+					monitorAsyncTask(new BeseyeMMBEHttpTask.GetLiveStreamTask(CameraListActivity.this, iSeed).setDialogId(-1), true, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID), "false");
+				}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

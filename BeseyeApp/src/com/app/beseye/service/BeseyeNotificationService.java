@@ -471,11 +471,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		WebsocketsMgr.getInstance().destroyNotifyWSChannel();
     	}
     	
-    	if(false == COMPUTEX_DEMO)
-    		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
+//    	if(false == COMPUTEX_DEMO)
+//    		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
     }
     
-    static private final long TIME_TO_CHECK_EVENT = 5*1000;
+    static private final long TIME_TO_CHECK_EVENT = 60*1000;
     private Runnable mCheckEventRunnable = new Runnable(){
 		@Override
 		public void run() {

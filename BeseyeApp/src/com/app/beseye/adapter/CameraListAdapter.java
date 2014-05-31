@@ -87,7 +87,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				}
 				
 				if(null != holder.mImgThumbnail){
-					Log.i(TAG, "setupItem(), name"+BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_NAME)+", path="+BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB));
+					//Log.i(TAG, "setupItem(), name"+BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_NAME)+", path="+BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB));
 					holder.mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB), R.drawable.cameralist_thumbnail);
 					holder.mImgThumbnail.loadImage();
 				}

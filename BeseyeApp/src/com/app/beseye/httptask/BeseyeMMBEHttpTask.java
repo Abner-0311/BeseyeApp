@@ -45,12 +45,18 @@ public class BeseyeMMBEHttpTask  {
 	
 	public static class GetLiveStreamTask extends BeseyeHttpTask{
 		private String strVcamId = null;
-		public GetLiveStreamTask(OnHttpTaskCallback cb) {
+		private int iTaskSeed = 0;
+		public GetLiveStreamTask(OnHttpTaskCallback cb, int seed) {
 			super(cb);
+			iTaskSeed = seed;
 		}
 		
 		public String getVcamId(){
 			return strVcamId;
+		}
+		
+		public int getTaskSeed(){
+			return iTaskSeed;
 		}
 		
 		@Override
@@ -95,12 +101,19 @@ public class BeseyeMMBEHttpTask  {
 	
 	public static class GetLatestThumbnailTask extends BeseyeHttpTask{
 		private String strVcamId = null;
-		public GetLatestThumbnailTask(OnHttpTaskCallback cb) {
+		private int iTaskSeed = 0;
+		
+		public GetLatestThumbnailTask(OnHttpTaskCallback cb, int seed) {
 			super(cb);
+			iTaskSeed = seed;
 		}
 		
 		public String getVcamId(){
 			return strVcamId;
+		}
+		
+		public int getTaskSeed(){
+			return iTaskSeed;
 		}
 		
 		@Override

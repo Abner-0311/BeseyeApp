@@ -182,14 +182,25 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			setImageRes(mIbPlayPause, R.drawable.sl_liveview_pause_btn);
 			    			
 			    			hideInvalidStateMask();
+			    			
+			    			if(!mActivityResume){
+			    				Log.w(TAG, "mActivityResume is false when connected");
+			    				closeStreaming();
+			    			}
 			    			break;
 			    		}
 			    		case CV_STREAM_PLAYING:{
-			    			//if(mCamViewStatus.equals(CameraView_Internal_Status.CV_STREAM_PAUSED)){
+			    			if(!mActivityResume){
+			    				Log.w(TAG, "mActivityResume is false when playing");
+			    				closeStreaming();
+			    			}else{
+			    				//if(mCamViewStatus.equals(CameraView_Internal_Status.CV_STREAM_PAUSED)){
 			    				setImageRes(mIbPlayPause, R.drawable.sl_liveview_pause_btn);
 			    				setEnabled(mIbPlayPause, true);
 			    				setVisibility(mPbLoadingCursor, View.GONE);
 			    			//}
+			    			}
+			    			
 			    			break;
 			    		}
 			    		case CV_STREAM_WAITING_PAUSE:{
@@ -203,6 +214,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			setVisibility(mPbLoadingCursor, View.GONE);
 			    			stopUpdateTime();
 			    			setImageRes(mIbPlayPause, R.drawable.sl_liveview_play_btn);
+			    			
+			    			if(!mActivityResume){
+			    				Log.w(TAG, "mActivityResume is false when paused");
+			    				closeStreaming();
+			    			}
 			    			break;
 			    		}
 			    		case CV_STREAM_WAITING_UNPAUSE:{
@@ -220,6 +236,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 										public void run() {
 											tryToReconnect();
 										}}, 0);
+			    			}
+			    			
+			    			if(!mActivityResume){
+			    				Log.w(TAG, "mActivityResume is false when eof");
+			    				closeStreaming();
 			    			}
 			    			break;
 			    		}
@@ -595,7 +616,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		public void run() {
 			CameraViewActivity act = mCameraViewActivity.get();
 			if(null != act){
-				if(act.isCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTED) || act.isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING)){
+				if(act.isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PLAYING)){
 					Log.d(TAG, "CameraViewActivity::onPause()->run(), pause when playing");
 					act.mbIsPauseWhenPlaying = true;
 				}
@@ -788,7 +809,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(false == isInP2PMode()){
 			if(mbIsLiveMode){
 				if(null == mLiveStreamTask)
-					monitorAsyncTask(mLiveStreamTask = new BeseyeMMBEHttpTask.GetLiveStreamTask(this), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, "false");
+					monitorAsyncTask(mLiveStreamTask = new BeseyeMMBEHttpTask.GetLiveStreamTask(this, -1), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, "false");
 			}else{
 				if(null == mDVRStreamTask){
 					monitorAsyncTask(mDVRStreamTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(DIALOG_ID_LOADING), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, mlDVRStartTs+"", DVR_REQ_TIME);

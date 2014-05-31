@@ -191,7 +191,9 @@ void CBeseyePlayer::stream_close(VideoState *is)
 	rtmpRef = NULL;
     int i;
     /* XXX: use a special url_shutdown call to abort parse cleanly */
+    av_log(NULL, AV_LOG_INFO, "stream_close(), abort_request = 1-------------------------\n");
     is->abort_request = 1;
+
     av_log(NULL, AV_LOG_INFO, "stream_close(), SDL_WaitThread read\n");
     SDL_WaitThread(is->read_tid, NULL);
     av_log(NULL, AV_LOG_INFO, "stream_close(), SDL_WaitThread refresh\n");
@@ -1293,9 +1295,11 @@ int CBeseyePlayer::audio_decode_frame(VideoState *is, double *pts_ptr)
     int flush_complete = 0;
     int wanted_nb_samples;
 
+    //Workaround for DVR
     if(!is->av_sync_type == AV_SYNC_AUDIO_MASTER){
     	return -1;
     }
+
     for (;;) {
         /* NOTE: the audio packet can contain several frames */
         while (pkt_temp->size > 0 || (!pkt_temp->data && new_packet)) {
@@ -1894,34 +1898,19 @@ int read_thread(void *arg)
     for (i = 0; i < ic->nb_streams; i++)
         ic->streams[i]->discard = AVDISCARD_ALL;
 
-    av_log(NULL, AV_LOG_DEBUG, "read_thread(),  st_index[AVMEDIA_TYPE_VIDEO]:%d, %d", st_index[AVMEDIA_TYPE_VIDEO], player->get_wanted_stream(AVMEDIA_TYPE_VIDEO));
+    av_log(NULL, AV_LOG_INFO, "read_thread(),  st_index[AVMEDIA_TYPE_VIDEO]:%d, %d", st_index[AVMEDIA_TYPE_VIDEO], player->get_wanted_stream(AVMEDIA_TYPE_VIDEO));
 
     //if (!video_disable)
-        st_index[AVMEDIA_TYPE_VIDEO] =
+       st_index[AVMEDIA_TYPE_VIDEO] =
             av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO,
             		player->get_wanted_stream(AVMEDIA_TYPE_VIDEO), -1, NULL, 0);
 
-       //if(is->av_sync_type == AV_SYNC_AUDIO_MASTER){
-    	   st_index[AVMEDIA_TYPE_AUDIO] =
-    	               av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO,
-    	               		player->get_wanted_stream(AVMEDIA_TYPE_AUDIO),
-    	                                   st_index[AVMEDIA_TYPE_VIDEO],
-    	                                   NULL, 0);
-      // }
+	   st_index[AVMEDIA_TYPE_AUDIO] =
+				   av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO,
+						player->get_wanted_stream(AVMEDIA_TYPE_AUDIO),
+									   st_index[AVMEDIA_TYPE_VIDEO],
+									   NULL, 0);
 
-//    //if (!audio_disable)
-
-//    //if (!video_disable)
-//        st_index[AVMEDIA_TYPE_SUBTITLE] =
-//            av_find_best_stream(ic, AVMEDIA_TYPE_SUBTITLE,
-//            		player->get_wanted_stream(AVMEDIA_TYPE_SUBTITLE),
-//                                (st_index[AVMEDIA_TYPE_AUDIO] >= 0 ?
-//                                 st_index[AVMEDIA_TYPE_AUDIO] :
-//                                 st_index[AVMEDIA_TYPE_VIDEO]),
-//                                NULL, 0);
-//    if (player->show_status) {
-//        av_dump_format(ic, 0, is->filename, 0);
-//    }
 
     av_log(NULL, AV_LOG_DEBUG, "read_thread(), --- st_index[AVMEDIA_TYPE_VIDEO]:%d, %d, st_index[AVMEDIA_TYPE_AUDIO]:%d", st_index[AVMEDIA_TYPE_VIDEO], player->get_wanted_stream(AVMEDIA_TYPE_VIDEO), st_index[AVMEDIA_TYPE_AUDIO]);
 
@@ -1932,12 +1921,10 @@ int read_thread(void *arg)
     	player->stream_component_open(is, st_index[AVMEDIA_TYPE_AUDIO]);
     }
 
-    //if(is->av_sync_type == AV_SYNC_AUDIO_MASTER){
-		ret = -1;
-		if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
-			ret = player->stream_component_open(is, st_index[AVMEDIA_TYPE_VIDEO]);
-		}
-  //  }
+	ret = -1;
+	if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
+		ret = player->stream_component_open(is, st_index[AVMEDIA_TYPE_VIDEO]);
+	}
 
     av_log(NULL, AV_LOG_DEBUG, "SDL_CreateThread--");
 
@@ -1959,6 +1946,8 @@ int read_thread(void *arg)
         ret = -1;
         goto fail;
     }
+
+    player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PLAYING, 0);
 
     for (;;) {
     	//av_log(NULL, AV_LOG_ERROR, "for loop");
@@ -2457,8 +2446,8 @@ extern void  main13(int argc, char **argv);
 int CBeseyePlayer::createStreaming(const char* streamHost, const char** streamPathList, int iStreamCount, int iSeekTimeInMs){
 	if(0 < iStreamCount){
 		//Abner: temp solution for ffmpeg 2.2.2 aac audio sluggish
-		//av_sync_type = AV_SYNC_EXTERNAL_CLOCK;
-		av_sync_type = AV_SYNC_VIDEO_MASTER;
+		av_sync_type = AV_SYNC_EXTERNAL_CLOCK;
+		//av_sync_type = AV_SYNC_VIDEO_MASTER;
 		int idx = 1;
 		iNumOfPendingStreamPaths = iStreamCount -1;
 		for(; idx < iStreamCount;idx++){
@@ -2718,6 +2707,7 @@ void CBeseyePlayer::invokeRtmpStatusCallback(int iStatus, void* extra){
 	}else if(iStatus == STREAM_CLOSE){
 		rtmpRef = NULL;
 	}else if(iStatus == STREAM_INTERNAL_CLOSE){
+		av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpStatusCallback(), abort_request = 1 ---------------\n");
 		is->abort_request = 1;
 		rtmpRef = NULL;
 	}
