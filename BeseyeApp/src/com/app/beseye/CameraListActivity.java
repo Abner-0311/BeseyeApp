@@ -67,7 +67,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			mIvAddCam = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_add_cam_btn);
 			if(null != mIvAddCam){
 				mIvAddCam.setOnClickListener(this);
-				mIvAddCam.setVisibility(COMPUTEX_DEMO?View.INVISIBLE:View.VISIBLE);
+				mIvAddCam.setVisibility((COMPUTEX_DEMO && !COMPUTEX_PAIRING)?View.INVISIBLE:View.VISIBLE);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
@@ -127,7 +127,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		super.onResume();
 		if(0 <= miLastTaskSeedNum){
 			Log.i(TAG, "onResume(), resume task , miLastTaskSeedNum="+miLastTaskSeedNum);	
-			this.updateCamItm(miLastTaskSeedNum);
+			updateCamItm(miLastTaskSeedNum);
 			miLastTaskSeedNum = -1;
 		}
 	}
@@ -148,11 +148,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
-		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		Log.d(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
-					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					Log.d(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 					JSONArray arrCamList = new JSONArray();
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
 					//miOriginalVcamCnt = iVcamCnt;
@@ -227,7 +227,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				updateCamItm(((BeseyeMMBEHttpTask.GetLiveStreamTask)task).getTaskSeed());
 			}else if(task instanceof BeseyeMMBEHttpTask.GetLatestThumbnailTask){
 				if(0 == iRetCode){
-					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					//Log.d(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 					String strVcamId = ((BeseyeMMBEHttpTask.GetLatestThumbnailTask)task).getVcamId();
 					//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> VCAMID = "+strVcamId+", result.get(0)="+result.get(0).toString());
 					JSONArray arrCamList = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
@@ -259,7 +259,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		if(task instanceof BeseyeAccountTask.GetVCamListTask){
 			postToLvRreshComplete();
 		}else if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
-			Log.e(TAG, "onPostExecute(), GetLiveStreamTask failed");
+			//Log.e(TAG, "onPostExecute(), GetLiveStreamTask failed");
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}

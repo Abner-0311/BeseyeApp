@@ -2,6 +2,8 @@ package com.app.beseye.widget;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 
+import com.app.beseye.util.BeseyeConfig;
+
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -20,7 +22,7 @@ public class BeseyeMemCache {
 
 	    // Use 1/8th of the available memory for this memory cache.
 	    final int cacheSize = 1024 * 1024 * sMemClass / 6;
-	    Log.i(TAG, "iKalaMemCache::init(), cacheSize, = "+cacheSize);
+	    Log.i(TAG, "BeseyeMemCache::init(), cacheSize, = "+cacheSize);
 	    
 	    sMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
 	        @Override
@@ -41,8 +43,8 @@ public class BeseyeMemCache {
 	static public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
 	    if (null != key && getBitmapFromMemCache(key) == null) {
 	    	sMemoryCache.put(key, bitmap);
-//	    	if(Configuration.DEBUG)
-//	    		Log.i(iKalaUtil.IKALA_APP_TAG, "iKalaMemCache::addBitmapToMemoryCache(), size, = "+(bitmap.getRowBytes()*bitmap.getHeight())/1024);
+//	    	if(BeseyeConfig.DEBUG)
+//	    		Log.i(TAG, "BeseyeMemCache::addBitmapToMemoryCache(), size, = "+(bitmap.getRowBytes()*bitmap.getHeight())/1024+", for ["+key+"]");
 	    }
 	}
 

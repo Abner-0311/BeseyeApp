@@ -275,7 +275,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 			addResult(getJSONfromURL(strUrlFile));
 			
 			if(BeseyeConfig.DEBUG)
-				Log.e(TAG, "doInBackground(), method: "+mHttpMethod+" takes "+(System.currentTimeMillis()-lStartTime)+" ms for "+filterPrivacyData(strUrlFile[0]));
+				Log.i(TAG, "doInBackground(), method: "+mHttpMethod+" takes "+(System.currentTimeMillis()-lStartTime)+" ms for "+filterPrivacyData(strUrlFile[0]));
 		}
 		return mResults;
 	}

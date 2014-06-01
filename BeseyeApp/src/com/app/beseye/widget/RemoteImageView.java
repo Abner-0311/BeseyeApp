@@ -199,7 +199,14 @@ public class RemoteImageView extends ImageView {
 		if(null != picDir){
 			picDir.mkdir();
 		}
-		return String.format("%s%s", picDir.getAbsolutePath()+ "/", URLEncoder.encode(cacheName));
+		String strEncode = URLEncoder.encode(cacheName);
+		int iIdx = strEncode.indexOf(".jpg");
+		if(-1 < iIdx){
+			strEncode = strEncode.substring(0, iIdx+4);
+		}else{
+			strEncode = strEncode.substring(0, (strEncode.length()<150)?strEncode.length():150);
+		}
+		return String.format("%s%s", picDir.getAbsolutePath()+ "/", strEncode);
 	}
 
 	static Hashtable<Integer, SoftReference<Bitmap>> mDefaultImageHolder = new Hashtable<Integer, SoftReference<Bitmap>>();

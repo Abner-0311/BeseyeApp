@@ -42,6 +42,8 @@ public class BeseyeMMBEHttpTask  {
 	static private final String URL_GET_THUMB_BY_EVENT 	= "thumbnail/get_by_event_list";
 	
 	static public final long SEVEN_DAYS_IN_MS = 7*24*60*60*1000;
+	static public final long ONE_DAY_IN_MS = 24*60*60*1000;
+	static public final long ONE_HOUR_IN_MS = 60*60*1000;
 	
 	public static class GetLiveStreamTask extends BeseyeHttpTask{
 		private String strVcamId = null;
@@ -128,9 +130,12 @@ public class BeseyeMMBEHttpTask  {
 		private static File cacheFile;
 		private String mstrThbKey = null;
 		private String mstrThbPath = null;
-		public GetThumbnailByEventListTask(OnHttpTaskCallback cb) {
+		private int iTaskSeed = 0;
+		
+		public GetThumbnailByEventListTask(OnHttpTaskCallback cb, int seed) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			iTaskSeed = seed;
 		}
 		
 		public String getKey(){
@@ -139,6 +144,10 @@ public class BeseyeMMBEHttpTask  {
 		
 		public String getPath(){
 			return mstrThbPath;
+		}
+		
+		public int getTaskSeed(){
+			return iTaskSeed;
 		}
 		
 		static synchronized void checkCache(Context c){
@@ -181,7 +190,7 @@ public class BeseyeMMBEHttpTask  {
 		}
 		
 		static synchronized String findCache(String strKey){
-			String strRet = BeseyeJSONUtil.getJSONString(sObjThbCache, strKey, null);
+			String strRet = (null == strKey || 0 == strKey.length())?"":BeseyeJSONUtil.getJSONString(sObjThbCache, strKey, null);
 			return strRet;
 		}
 		
@@ -209,6 +218,7 @@ public class BeseyeMMBEHttpTask  {
 			if(isCancelled()){
 				return null;
 			}
+			
 			checkCache((Context)mOnHttpTaskCallback.get());
 			mstrThbKey = strParams[0];
 			mstrThbPath = findCache(mstrThbKey);
@@ -218,20 +228,20 @@ public class BeseyeMMBEHttpTask  {
 				miRetCode = 0;
 			}else{
 				ret = super.doInBackground(MM_HOST_PRODCTION+URL_GET_THUMB_BY_EVENT, strParams[1]);
-				if(getRetCode() == 0){
-					JSONArray thumbnailList = BeseyeJSONUtil.getJSONArray(ret.get(0), BeseyeJSONUtil.MM_THUMBNAILS);
-					if(null != thumbnailList){
-						try {
-							JSONArray path = BeseyeJSONUtil.getJSONArray(thumbnailList.getJSONObject(0),BeseyeJSONUtil.MM_THUMBNAIL_PATH);
-							if(null != path){
-								writeCache(mstrThbKey, path.toString());
-							}
-						} catch (JSONException e) {
-							e.printStackTrace();
-							Log.e(TAG, "doInBackground(),e:"+e.toString());
-						}
-					}
-				}
+//				if(getRetCode() == 0){
+//					JSONArray thumbnailList = BeseyeJSONUtil.getJSONArray(ret.get(0), BeseyeJSONUtil.MM_THUMBNAILS);
+//					if(null != thumbnailList){
+//						try {
+//							JSONArray path = BeseyeJSONUtil.getJSONArray(thumbnailList.getJSONObject(0),BeseyeJSONUtil.MM_THUMBNAIL_PATH);
+//							if(null != path){
+//								writeCache(mstrThbKey, path.toString());
+//							}
+//						} catch (JSONException e) {
+//							e.printStackTrace();
+//							Log.e(TAG, "doInBackground(),e:"+e.toString());
+//						}
+//					}
+//				}
 			}
 			
 			return ret;

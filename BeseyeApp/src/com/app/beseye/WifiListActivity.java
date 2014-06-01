@@ -281,15 +281,19 @@ public class WifiListActivity extends WifiControlBaseActivity
 
 	@Override
 	public void onClick(View view) {
-		WifoInfoHolder info = (WifoInfoHolder)view.getTag();
-		if(null != info){
-			mChosenWifiAPInfo = (WifiAPInfo)info.mUserData;
-			
-//			if(mChosenWifiAPInfo.SSID.equals("Tenda1")){
-//				BeseyeHttpTask task = new BeseyeHttpTask();
-//				task.execute();
-//			}else
-				showMyDialog(DIALOG_ID_WIFI_AP_INFO);
+		if(view.getId() == R.id.iv_nav_left_btn){
+			finish();
+		}else if(view.getTag() instanceof WifoInfoHolder){
+			WifoInfoHolder info = (WifoInfoHolder)view.getTag();
+			if(null != info){
+				mChosenWifiAPInfo = (WifiAPInfo)info.mUserData;
+				
+//				if(mChosenWifiAPInfo.SSID.equals("Tenda1")){
+//					BeseyeHttpTask task = new BeseyeHttpTask();
+//					task.execute();
+//				}else
+					showMyDialog(DIALOG_ID_WIFI_AP_INFO);
+			}
 		}
 	}
 	

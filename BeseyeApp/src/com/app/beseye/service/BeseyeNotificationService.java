@@ -471,11 +471,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		WebsocketsMgr.getInstance().destroyNotifyWSChannel();
     	}
     	
-//    	if(false == COMPUTEX_DEMO)
-//    		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
+    	if(false == COMPUTEX_P2P)
+    		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
     }
     
-    static private final long TIME_TO_CHECK_EVENT = 60*1000;
+    static private final long TIME_TO_CHECK_EVENT = 30*1000;
     private Runnable mCheckEventRunnable = new Runnable(){
 		@Override
 		public void run() {
@@ -483,11 +483,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}};
     
     private void checkEvents(){
-    	if(SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated()){
+    	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
     		if(NetworkMgr.getInstance().isNetworkConnected()){
     			if(null == mGetEventListTask){
     				mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(this);
-        			mGetEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS)+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS+"");
+        			mGetEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_HOUR_IN_MS)+"", BeseyeMMBEHttpTask.ONE_HOUR_IN_MS+"");
     			}
     		}
     		BeseyeUtils.removeRunnable(mCheckEventRunnable);
@@ -669,7 +669,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		boolean bRet = false;
 		if(null != eventObj){
 			if(null != mLastEventObj){
-				Log.i(TAG, "isNewEvent(), mLastEventObj: ("+mLastEventObj+")\n" +
+				Log.d(TAG, "isNewEvent(), mLastEventObj: ("+mLastEventObj+")\n" +
 						   "	              eventObj: ("+eventObj+")");
 				long lLastEventStartTime = BeseyeJSONUtil.getJSONLong(mLastEventObj, BeseyeJSONUtil.MM_START_TIME);
 				long lNewEventStartTime = BeseyeJSONUtil.getJSONLong(eventObj, BeseyeJSONUtil.MM_START_TIME);
@@ -803,13 +803,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 ////	    	}
 //		}
 //	}
+	static int sRequestCode = (int) (System.currentTimeMillis()%100000);
 	
 	private void showNotification(int iNotifyId, Intent intent, CharSequence text, JSONObject eventObj) {
 		long lTs = BeseyeJSONUtil.getJSONLong(eventObj, BeseyeJSONUtil.MM_START_TIME);
 		
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, sRequestCode++ , intent, 0);
 		
-		Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+		//Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 		if(null != contentIntent){
 			 final Notification notification = new Notification(
 				        				R.drawable.common_app_icon_shadow,       // the icon for the status bar
@@ -1113,7 +1114,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 								
 								long lNewEventStartTime = BeseyeJSONUtil.getJSONLong(obj, BeseyeJSONUtil.MM_START_TIME);
 								if(lNewEventStartTime < lLastEventStartTime){
-									Log.i(TAG, "no new events, break");
+									Log.d(TAG, "no new events, break");
 									break;
 								}
 								

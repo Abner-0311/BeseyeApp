@@ -95,6 +95,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private List<JSONObject> mstrPendingStreamPathList;
 	private long mlDVRStartTs;
 	private long mlDVRFirstSegmentStartTs = -1;
+	private long mlPairingDoneBeginTs = -1;
 	
 	private boolean mbIsFirstLaunch = true;
 	private boolean mbIsPauseWhenPlaying = false;
@@ -187,6 +188,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    				Log.w(TAG, "mActivityResume is false when connected");
 			    				closeStreaming();
 			    			}
+			    			
+			    			if(null != mVgPairingDone && mVgPairingDone.getVisibility() == View.GONE){
+			    				mVgPairingDone = null;
+			    			}
 			    			break;
 			    		}
 			    		case CV_STREAM_PLAYING:{
@@ -270,7 +275,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     
     private void tryToReconnect(){
     	Log.i(TAG, "CameraViewActivity::tryToReconnect(), mActivityResume:"+mActivityResume+", mActivityDestroy:"+mActivityDestroy);
-    	if(!isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_INIT, CameraView_Internal_Status.CV_STREAM_PAUSED)){
+    	//if(!isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_INIT, CameraView_Internal_Status.CV_STREAM_PAUSED)){
     		int iReOpenDelay = 0;
     		if(!isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_WAITING_CLOSE, CameraView_Internal_Status.CV_STREAM_CLOSE) || 
     		   !isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
@@ -287,7 +292,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		}else if(!mActivityDestroy){
     			mbIsPauseWhenPlaying = true;
     		}
-    	}
+    		
+    		if(null != mVgPairingDone){
+    			setVisibility(mPbLoadingCursor, View.VISIBLE);
+    		}
+    	//}
     }
     
 	@Override
@@ -481,6 +490,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}
 				
 				if(intent.getBooleanExtra(KEY_PAIRING_DONE, false)){
+					mlPairingDoneBeginTs = System.currentTimeMillis();
 					mVgPairingDone = (ViewGroup)findViewById(R.id.vg_pairing_done);
 					if(null != mVgPairingDone){
 						BeseyeUtils.setVisibility(mVgPairingDone, View.VISIBLE);
@@ -492,6 +502,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							}
 							//worksround
 							BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+							setVisibility(mPbLoadingCursor, View.VISIBLE);
 						}
 					}	
 					getIntent().putExtra(CameraViewActivity.KEY_PAIRING_DONE, false);
@@ -645,7 +656,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 		BeseyeUtils.removeRunnable(mPauseCameraViewRunnable);
 		BeseyeUtils.postRunnable(mPauseCameraViewRunnable, TIME_TO_CONFIRM_PAUSE);
-		
+		mlStartLogoutTs = -1;
 		super.onPause();
 	}
 
@@ -902,13 +913,22 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					//Workaround
 					beginLiveView();
 				}else{
+					if(null != mVgPairingDone){
+						if(System.currentTimeMillis() - mlPairingDoneBeginTs < 30*1000){
+							BeseyeUtils.postRunnable(new Runnable(){
+								@Override
+								public void run() {
+									getStreamingInfo();
+								}}, 300);
+						}	
+					}
 				
-					//Workaround
-					mstrLiveStreamServer = "rtmp://54.238.191.39:1935/live-edge/_definst_";
-					mstrLiveStreamPath = "{o}54.250.149.50/live-origin-record/_definst_/"+mStrVCamID;
-//					mstrLiveStreamServer = "rtmp://54.250.149.50/vods3/_definst_";//rtmp://54.238.191.39:1935/live-edge/_definst_";
-//					mstrLiveStreamPath = "mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4";//{o}54.250.149.50/live-origin-record/_definst_/1001_aac";
-					beginLiveView();
+//					//Workaround
+//					mstrLiveStreamServer = "rtmp://54.238.191.39:1935/live-edge/_definst_";
+//					mstrLiveStreamPath = "{o}54.250.149.50/live-origin-record/_definst_/"+mStrVCamID;
+////					mstrLiveStreamServer = "rtmp://54.250.149.50/vods3/_definst_";//rtmp://54.238.191.39:1935/live-edge/_definst_";
+////					mstrLiveStreamPath = "mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4";//{o}54.250.149.50/live-origin-record/_definst_/1001_aac";
+//					beginLiveView();
 				}
 			}else if(task instanceof BeseyeMMBEHttpTask.GetDVRStreamTask){
 				if(0 == iRetCode){
@@ -977,15 +997,18 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_playing_error));
-					b.putBoolean(KEY_WARNING_CLOSE, true);
-					showMyDialog(DIALOG_ID_WARNING, b);
-				}}, 0);
-			
+			if(null == mVgPairingDone){
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						Bundle b = new Bundle();
+						b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_playing_error));
+						b.putBoolean(KEY_WARNING_CLOSE, true);
+						showMyDialog(DIALOG_ID_WARNING, b);
+					}}, 0);
+			}else{
+				return;
+			}
 		}else if(task instanceof BeseyeMMBEHttpTask.GetDVRStreamTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
@@ -1002,6 +1025,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	protected int getLayoutId(){
 		return R.layout.layout_camera_view;
 	}
+	
+	private long mlStartLogoutTs = -1;
+	private int mlStartLogoutClickCount= 0;
 
 	@Override
 	public void onClick(View view) {
@@ -1104,6 +1130,16 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //				Bundle b = new Bundle();
 //				b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
 //				launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+				if(isInP2PMode()){
+					if(-1 == mlStartLogoutTs){
+						mlStartLogoutTs = System.currentTimeMillis();
+						mlStartLogoutClickCount = 0;
+					}
+					
+					if(++mlStartLogoutClickCount >=5 && (System.currentTimeMillis() - mlStartLogoutTs) <= 7*1000){
+						invokeLogout();
+					}
+				}
 				break;
 			}
 			case R.id.ib_open_cam:{
@@ -1318,7 +1354,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	       									}
 	       		         				}
 	       		         				Log.i(TAG, "open stream for idx"+miStreamIdx);
-	       		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost, streamList, (int)lOffset);
+	       		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost, streamList, /*(int)lOffset8*/0);
 	       		         			}while(iRetCreateStreaming < 0 && iTrial < 8);
 	       		         			
 	       		         			if(miStreamIdx >= 10){

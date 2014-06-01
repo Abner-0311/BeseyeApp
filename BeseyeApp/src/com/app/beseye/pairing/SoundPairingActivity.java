@@ -32,6 +32,7 @@ import com.app.beseye.R;
 import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
@@ -257,19 +258,21 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					else{
 						sbFinishToPlay = false;
 						estimatePairingTime();
-						BeseyeUtils.postRunnable(new Runnable(){
-							@Override
-							public void run() {
-								mStrCamName = null;
-								if(null != sStrCamNameCandidate){
-									mEtCamName.setText(sStrCamNameCandidate);
-									mStrCamName = sStrCamNameCandidate;
-									sStrCamNameCandidate = null;
-								}
-								BeseyeUtils.setVisibility(mVgCamNameHolder, View.VISIBLE);	
-								mEtCamName.requestFocus();
-								BeseyeUtils.showSoftKeyboard(SoundPairingActivity.this, mEtCamName);
-							}}, 2000);
+						if(false == BeseyeConfig.COMPUTEX_DEMO){
+							BeseyeUtils.postRunnable(new Runnable(){
+								@Override
+								public void run() {
+									mStrCamName = null;
+									if(null != sStrCamNameCandidate){
+										mEtCamName.setText(sStrCamNameCandidate);
+										mStrCamName = sStrCamNameCandidate;
+										sStrCamNameCandidate = null;
+									}
+									BeseyeUtils.setVisibility(mVgCamNameHolder, View.VISIBLE);	
+									mEtCamName.requestFocus();
+									BeseyeUtils.showSoftKeyboard(SoundPairingActivity.this, mEtCamName);
+								}}, 2000);
+						}
 					}
 				}}, 500);			
 		}else{
@@ -359,8 +362,13 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
 		Log.e(TAG, "onErrorReport(), "+task.getClass().getSimpleName()+", iErrType="+iErrType);	
 		if(task instanceof BeseyeAccountTask.StartCamPairingTask){
-			//beginToPlayPairingTone(65432);
 			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_pairing_error));
+		}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(SoundPairingActivity.this), true);
+				}}, 500);
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -375,6 +383,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					beginToPlayPairingTone(Integer.parseInt(BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.ACC_PAIRING_TOKEN), 16));
+					updateProgress(0);
 					//monitorAsyncTask(new BeseyeAccountTask.CamBeeValidateTask(this), true, BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.ACC_PAIRING_TOKEN), mChosenWifiAPInfo.BSSID, "1a1b1005c6574d0aa406da3c981bef5f", "82e13cea4c75f7dd7556a99d96f533a09418feaec6bfeb6be02bc22c14b3207469c3104ca51aa261479a60bacfe2b084b94190f2a19c55bf01709a0257826926");
 					//Log.i(TAG, "onPostExecute(), "+result.toString());
 					//monitorAsyncTask(new BeseyeAccountTask.CamAttchTask(this), true, BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.ACC_PAIRING_TOKEN), mChosenWifiAPInfo.BSSID);
@@ -429,6 +438,10 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 								if(null != cam_obj){
 									String strVcamId = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID);
 									String strCamName = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME);
+									
+									if(BeseyeConfig.COMPUTEX_DEMO)
+										mStrCamName = "New Camera";
+									
 									if(null != mStrCamName && 0 < mStrCamName.length()){
 										strCamName = mStrCamName;
 										BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME, strCamName);
@@ -436,6 +449,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 										monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(this).setDialogId(-1), false, strVcamId, strCamName);
 									}
 									
+									//workaround
+									SessionMgr.getInstance().setIsCertificated(true);
 									Bundle b = new Bundle();
 									b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
 									b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);

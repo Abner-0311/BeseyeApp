@@ -104,17 +104,26 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 							for(int i = 0;i<arr.length();i++){
 								try {
 									path[i] = arr.getString(i);
+//									Log.e(TAG, "setupItem(), "+iPosition+"-"+i+" ="+path[i] );	
+//									if(i == 0){
+//										Log.e(TAG, "setupItem(), path[i] ="+path[i] );	
+//									}
+//									
+//									path[i] =path[i].replace("\\/", "/");
+//									
+//									if(i == 0){
+//										Log.e(TAG, "setupItem(),2 path[i] ="+path[i] );	
+//									}
 								} catch (JSONException e) {
-									e.printStackTrace();
 									Log.e(TAG, "setupItem(), e:"+e.toString());	
 								}
 							}
 							
 						}
-						//Log.e(TAG, "setupItem(), path="+((null != path)?path.toString():"null")+" at "+iPosition);	
+//						Log.e(TAG, "setupItem(), path="+((null != path)?path.length:"null")+" at "+iPosition);	
 
 						holder.mImgThumbnail.setURI(path, R.drawable.eventlist_s_eventview_noview_bg);
-						holder.mImgThumbnail.loadImage();
+						holder.mImgThumbnail.loadImage(true);
 //						String[] path = {"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858859902_{dur}10351_{r}1400850536594_{th}1400858859551.jpg",
 //								"s3://beseye-thumbnail/taiwan_Taipei-101.jpg",
 //								"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858901167_{dur}10445_{r}1400850536594_{th}1400858900722.jpg",

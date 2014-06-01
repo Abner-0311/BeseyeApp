@@ -132,6 +132,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			Log.i(TAG, "OpeningPage::launchActivityByIntent(), strP2P :"+strP2P+", p2pFile:"+p2pFile.getAbsolutePath());
 			
 			if(null != strP2P && 0 < strP2P.length()){
+				COMPUTEX_P2P = true;
 				Intent intentLanuch = new Intent();
 				intentLanuch.setClassName(this, CameraViewActivity.class.getName());
 				JSONObject mCam_obj = new JSONObject();
@@ -142,6 +143,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM_NAME, strName);
 				startActivity(intentLanuch);
 				return;
+			}else{
+				COMPUTEX_P2P = false;
 			}
 		}
 		
@@ -181,6 +184,9 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			intentBroadcast.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, GCMIntentService.FORWARD_ACTION_TYPE_CHECK_DIALOG);
 	        sendBroadcast(intentBroadcast);
 		}
+		
+		String strTsInfo = intentLanuch.getStringExtra(CameraViewActivity.KEY_TIMELINE_INFO);
+		Log.i(TAG, "OpeningPage::launchActivityByIntent(), strTsInfo:"+strTsInfo);
 		
 		//intentLanuch.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		if(sbFirstLaunch || (!SessionMgr.getInstance().getIsCertificated() && !intent.getBooleanExtra(KEY_IGNORE_ACTIVATED_FLAG, false))){

@@ -13,6 +13,7 @@ import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
@@ -289,6 +290,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		}
 	}
 	private String mstrNameCandidate ;
+	private boolean mbTriggerDetachAfterReboot = false;
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		Log.d(TAG, "CameraSettingActivity::onCreateDialog()");
@@ -338,7 +340,15 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				    public void onClick(DialogInterface dialog, int item) {
 				    	removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
-				    	monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);
+				    	//mbTriggerDetachAfterReboot = true;
+				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(-1), true, mStrVCamID);
+				    	BeseyeUtils.postRunnable(new Runnable(){
+
+							@Override
+							public void run() {
+								monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);								
+							}}, 1000);
+				    	//monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);
 				    }
 				});
 				builder.setOnCancelListener(new OnCancelListener(){
@@ -525,6 +535,12 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}else{
 					onToastShow(task, "Reboot cam failed.");
 				}
+				
+				if(mbTriggerDetachAfterReboot){
+					monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);
+					//mbTriggerDetachAfterReboot = false;
+				}
+				
 			}else if(task instanceof BeseyeCamBEHttpTask.ReconnectMMTask){
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());

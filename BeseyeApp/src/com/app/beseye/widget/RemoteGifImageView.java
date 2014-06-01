@@ -195,20 +195,23 @@ public class RemoteGifImageView extends RemoteImageView {
 		return false;
 	}
 
-	static public String buildCachePath(Context context, String cacheName) {
-		if (cacheName == null || cacheName.length() == 0) {
-			return null;
-		}
-
-		File picDir = BeseyeStorageAgent.getCacheDir(context);
-		if(null != picDir){
-			picDir.mkdir();
-		}
-		return String.format("%s%s", picDir.getAbsolutePath()+ "/", URLEncoder.encode(cacheName));
-	}
-
 	static Hashtable<Integer, SoftReference<Bitmap>> mDefaultImageHolder = new Hashtable<Integer, SoftReference<Bitmap>>();
 
+	public void loadImage(boolean bFirstLoad) {
+		if(bFirstLoad){
+			int iLen = (null != mCachePath)?mCachePath.length:0;
+			for(int i = 0; i< iLen;i++){
+				if(null != BeseyeMemCache.getBitmapFromMemCache(mCachePath[i])){
+					miCurDisplayIdx = i;
+					Log.e(TAG, "loadImage(), shift miCurDisplayIdx to "+miCurDisplayIdx);	
+					break;
+				}
+			}
+		}
+		
+		loadImage();
+	}
+	
 	public void loadImage() {
 		if(mbIsSameList){
 			return;
@@ -227,7 +230,7 @@ public class RemoteGifImageView extends RemoteImageView {
 				imageLoaded(true);
 				return;
 			} else if(mbIsInitPage && 0 == miCurDisplayIdx){
-				Log.e(TAG, "loadDefaultImage(), 1");	
+				Log.e(TAG, "loadDefaultImage(), 1 for "+mCachePath[miCurDisplayIdx]);	
 				loadDefaultImage();
 			}
 			loadRemoteImage();
@@ -259,8 +262,9 @@ public class RemoteGifImageView extends RemoteImageView {
 			mFuture.cancel(true);
 			mFuture = null;
 		}
+		
 		if(null != mURI && miCurDisplayIdx < mURI.length && null != mURI[miCurDisplayIdx] && 0 < mURI[miCurDisplayIdx].length()){
-			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath[miCurDisplayIdx] , mURI[miCurDisplayIdx] , mIsPreload, mbIsPhoto, mbIsPhotoViewMode));
+			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath[miCurDisplayIdx] , mURI[miCurDisplayIdx] , mIsPreload, false, false));
 		}
 	}
 
@@ -273,7 +277,7 @@ public class RemoteGifImageView extends RemoteImageView {
 					mCallback.imageLoaded(success);
 				}
 				RemoteGifImageView.this.removeCallbacks(mLoadNextBmpRunnable);
-				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, 2000);
+				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, 1000);
 			}});
 	}
 	
@@ -367,6 +371,7 @@ public class RemoteGifImageView extends RemoteImageView {
 					
 					if(fileExist(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample)){
 						bitmap = BitmapFactory.decodeFile(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample);
+						BeseyeMemCache.addBitmapToMemoryCache(mLocal, bitmap);
 						if(mbIsPhotoViewMode && DEBUG){
 							Log.i(TAG, "decode file use high quality");
 						}
@@ -382,7 +387,7 @@ public class RemoteGifImageView extends RemoteImageView {
 								// HTTP get image
 								int retryCount = 0;
 								while (true) {
-									if ((downloadBitmap = imageHTTPTask(mRemote, mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:4))) != null) {
+									if ((downloadBitmap = imageHTTPTask(mRemote, mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?2:2))) != null) {
 										break;
 									}
 									if (++retryCount >= 3
@@ -475,8 +480,9 @@ public class RemoteGifImageView extends RemoteImageView {
 		}
 		InputStream inputStream = null;
 		Bitmap bitmap = null;
+		long lStartTs = System.currentTimeMillis();
 		try {
-			if(uri.startsWith("http:")){
+			if(uri.startsWith("http")){
 				URL url = new URL(uri);
 				URLConnection conn = url.openConnection();
 				HttpURLConnection httpConn = (HttpURLConnection) conn;
@@ -514,6 +520,7 @@ public class RemoteGifImageView extends RemoteImageView {
 		} finally {
 			closeStream(inputStream);
 		}
+		Log.w(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs));
 		return bitmap;
 	}
 

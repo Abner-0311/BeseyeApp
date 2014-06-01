@@ -512,6 +512,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreamingList(J
 			jni_env->DeleteGlobalRef(jni_host);
 		}else{
 			LOGE("openStreaming(), stream[%d] is playing", iStreamIdx);
+			player[iStreamIdx]->closeStreaming();
 		}
 	}
 	LOGE("openStreaming(), end");

@@ -1857,9 +1857,7 @@ int read_thread(void *arg)
 
     av_log(NULL, AV_LOG_INFO, "avformat_find_stream_info_ext--");
 
-    player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTED, 0);
     player->registerRtmpCallback(ic);
-
     player->addPendingStreamPaths();
 
     for (i = 0; i < orig_nb_streams; i++)
@@ -1923,8 +1921,15 @@ int read_thread(void *arg)
 
 	ret = -1;
 	if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
+//		if(st_index[AVMEDIA_TYPE_VIDEO] == 0){
+//			av_log(NULL, AV_LOG_ERROR, "st_index[AVMEDIA_TYPE_VIDEO] = 0, try to assign 28--------------------------------------------");
+//			st_index[AVMEDIA_TYPE_VIDEO] =28;
+//		}
+
 		ret = player->stream_component_open(is, st_index[AVMEDIA_TYPE_VIDEO]);
 	}
+
+	player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTED, 0);
 
     av_log(NULL, AV_LOG_DEBUG, "SDL_CreateThread--");
 
