@@ -209,7 +209,7 @@ void FreqAnalyzer::checkTimeout(msec_t lTs){
 					triggerTimeout();
 				}else*/
 				if((lTs - mFreqRecordList[iSize-1]->mlTs) >= 15 * SoundPair_Config::TONE_PERIOD || getInvalidFreqCount() >= 15 || (lDelta > mlMaxWaitingTime)){
-					LOGE("checkTimeout(), cannot get ending char, lDelta:%l, mlMaxWaitingTime:%l\n", lDelta, mlMaxWaitingTime);
+					LOGE("checkTimeout(), cannot get ending char, lDelta:%lld, mlMaxWaitingTime:%lld\n", lDelta, mlMaxWaitingTime);
 					triggerTimeout();
 				}
 			}
@@ -1112,10 +1112,10 @@ bool FreqAnalyzer::checkEndPoint(){
 				int iDxSndC = msbDecode.str().find(SoundPair_Config::POSTFIX_DECODE_C2);
 
 				if(0 <= iNewIndex){
-					if(0 < iDxFstC && iDxFstC < iNewIndex){//special case 1: ...H...HI
+					if(0 < iDxFstC && iDxFstC < iNewIndex && iDxFstC >= SoundPair_Config::MIN_PAIRING_MSG_LEN){//special case 1: ...H...HI
 						LOGE("checkEndPoint(), special case 1, iDxFstC=%d\n",iDxFstC);
 						iNewIndex = iDxFstC;
-					}else if(0 < iDxSndC && iDxSndC < iNewIndex+1){//special case 2: ...I...HI
+					}else if(0 < iDxSndC && iDxSndC < iNewIndex+1 && iDxSndC -1 >= SoundPair_Config::MIN_PAIRING_MSG_LEN){//special case 2: ...I...HI
 						LOGE("checkEndPoint(), special case 2, iDxSndC=%d\n",iDxSndC);
 						iNewIndex = iDxSndC - 1;
 					}

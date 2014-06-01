@@ -1269,17 +1269,20 @@ void checkPairingResult(string strCode){
 			int iRet = system(cmd) >> 8;
 			if(0 == iRet){
 				LOGE("wifi set OK\n");
-				long lCheckTime = time_ms();
-				long lDelta;
+				//long lCheckTime = time_ms();
+				//long lDelta;
 				int iNetworkRet = 0;
+				int iTrials = 0;
 				do{
-					sleep(1);
-					iNetworkRet = system("/beseye/cam_main/beseye_network_check") >> 8;
-					lDelta = (time_ms() - lCheckTime);
-					//LOGE("wifi check ret:%d, ts:%ld, flag:%d \n", iNetworkRet, lDelta, ((iNetworkRet != 0) && (15000 > lDelta)));
-				}while((iNetworkRet != 0) && (15000 > lDelta));
+					if(0 < iTrials)
+						sleep(1);
 
-				LOGE("network checking complete, iNetworkRet:%d, ts:%ld\n", iNetworkRet, lDelta);
+					iNetworkRet = system("/beseye/cam_main/beseye_network_check") >> 8;
+					//lDelta = (time_ms() - lCheckTime);
+					LOGE("wifi check ret:%d, ts:%ld, flag:%d, time:%lld \n", iNetworkRet, iTrials, ((iNetworkRet != 0) && (15 > ++iTrials)), time_ms());
+				}while((iNetworkRet != 0) && (15 > ++iTrials));
+
+				LOGE("network checking complete, iNetworkRet:%d, iTrials:%ld\n", iNetworkRet, iTrials);
 
 				if(0 == iNetworkRet){
 					LOGE("network connected\n");
@@ -1530,6 +1533,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 			LOGE("onTimeout(), checkEndPoint is true, bFromAutoCorrection:%d", bFromAutoCorrection);
 			if(bFromAutoCorrection){
 				deinitTestRound();
+				changePairingMode(PAIRING_ERROR);
 			}
 			return;
 		}
