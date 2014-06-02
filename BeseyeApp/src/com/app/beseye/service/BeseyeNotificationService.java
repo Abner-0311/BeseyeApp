@@ -1186,7 +1186,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 											//"[Register name] was recognized by [camera name] at [Time]"
 											JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
 											if(null != faceList && 0 < faceList.length()){
-												BeseyeJSONUtil.FACE_LIST face = BeseyeJSONUtil.findFacebyId(faceList.getInt(faceList.length()-1)-1);
+												int iFaceId = -1;
+												for(int i = faceList.length()-1;i >=0;i--){
+													if(0 < faceList.getInt(i)){
+														iFaceId = faceList.getInt(i);
+														break;
+													}
+												}
+												FACE_LIST face = BeseyeJSONUtil.findFacebyId(iFaceId-1);
+												//BeseyeJSONUtil.FACE_LIST face = BeseyeJSONUtil.findFacebyId(faceList.getInt(faceList.length()-1)-1);
 												if(null != face){
 													strMsg = String.format("%s was recognized by %s at %s", face.mstrName, "Face Room", new Date(lNewEventStartTime).toLocaleString());
 												}else{

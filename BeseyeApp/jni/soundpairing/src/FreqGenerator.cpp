@@ -92,7 +92,7 @@ bool FreqGenerator::playCode2(const string strCodeInputASCII, const bool bNeedEn
 
 	string strEncodeMark = strEncode;//SoundPair_Config::encodeConsecutiveDigits(strEncode);
 	string strCode = bNeedEncode?
-							(SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4))):
+							("123X"+SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4)))+"789":
 							strEncode;
 
 	pthread_mutex_lock(&mSyncObj);

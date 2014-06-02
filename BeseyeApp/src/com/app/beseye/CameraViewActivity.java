@@ -98,6 +98,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private long mlPairingDoneBeginTs = -1;
 	
 	private boolean mbIsFirstLaunch = true;
+	private boolean mbIsRetryAtNextResume = false;
 	private boolean mbIsPauseWhenPlaying = false;
 	private boolean mbIsCamSettingChanged = false;
 	private boolean mbIsWifiSettingChanged = false;
@@ -169,7 +170,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    		}
 			    		case CV_STREAM_CONNECTED:{
 			    			BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
-			    			setVisibility(mPbLoadingCursor, View.GONE);
+			    			//setVisibility(mPbLoadingCursor, View.GONE);
 			    			cancelCheckVideoConn();
 			    			
 			    			setEnabled(mIbTalk, mbIsLiveMode && !isInP2PMode());
@@ -202,7 +203,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    				//if(mCamViewStatus.equals(CameraView_Internal_Status.CV_STREAM_PAUSED)){
 			    				setImageRes(mIbPlayPause, R.drawable.sl_liveview_pause_btn);
 			    				setEnabled(mIbPlayPause, true);
-			    				setVisibility(mPbLoadingCursor, View.GONE);
 			    			//}
 			    			}
 			    			
@@ -558,7 +558,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkAndExtendHideHeader();
 		
-		if(!mbFirstResume){
+		if(!mbFirstResume || mbIsRetryAtNextResume){
 			triggerPlay();
 		}
 	}
@@ -783,7 +783,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		Log.i(TAG, "CameraViewActivity::checkPlayState(), bPowerOn:"+bPowerOn+", bNetworkConnected:"+bNetworkConnected);
 		
-		if(bNetworkConnected && bPowerOn && (mbIsFirstLaunch || mbIsPauseWhenPlaying || mbIsCamSettingChanged || mbIsWifiSettingChanged)){
+		if(bNetworkConnected && bPowerOn && (mbIsFirstLaunch || mbIsPauseWhenPlaying || mbIsCamSettingChanged || mbIsWifiSettingChanged || mbIsRetryAtNextResume)){
+			mbIsRetryAtNextResume = false;
 			getStreamingInfo();
 		}/*else{
 			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
@@ -921,6 +922,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 									getStreamingInfo();
 								}}, 300);
 						}	
+					}else{
+						mbIsRetryAtNextResume = true;
 					}
 				
 //					//Workaround
@@ -1018,8 +1021,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					b.putBoolean(KEY_WARNING_CLOSE, true);
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
-		}
-		super.onErrorReport(task, iErrType, strTitle, strMsg);
+		}else
+			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
 
 	protected int getLayoutId(){
@@ -1240,9 +1243,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	   	         				streamFullPath = mstrLiveP2P;
 	   	         			}else if(null != mstrLiveStreamServer && null != mstrLiveStreamPath){
 	   	             			streamFullPath = mstrLiveStreamServer+"/"+mstrLiveStreamPath;
-	   	             		}else{
+	   	             		}/*else{
 	   	             			streamFullPath = STREAM_PATH_LIST.get(CUR_STREAMING_PATH_IDX%STREAM_PATH_LIST.size());
-	   	             		}
+	   	             		}*/
+	   	         			
+	   	         			if(null == streamFullPath){
+	   	         				return;
+	   	         			}
 	   	             		
 	   	         			miStreamIdx = 0;
 	   	         			int iTrial = 0;
@@ -1259,6 +1266,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
    		         				}
 	   	         				
 	   	         				if(0 > iRetCreateStreaming){
+		   	         				if(-2 ==iRetCreateStreaming){
+	   	         						closeStreaming(0);
+	   	         					}
 	   	         					iTrial++;
 	   	         					try {
 	   									Thread.sleep(1000);
@@ -1504,6 +1514,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     private CheckVideoBlockRunnable mCheckVideoBlockRunnable;
     
     public void drawStreamBitmap(){
+    	
+    	if(mPbLoadingCursor.getVisibility()!=View.GONE){
+    		setVisibility(mPbLoadingCursor, View.GONE);
+    	}
+    	
     	if(null != mStreamingView)
     		mStreamingView.drawStreamBitmap();
     	
@@ -1780,7 +1795,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					if(!ASSIGN_ST_PATH && !isInP2PMode()){
 						if(iErrStrId == R.string.streaming_error_unknown){
 							tryToReconnect();
-							Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
+							if(mActivityResume)
+								Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
 						}else{
 							Bundle b = new Bundle();
 							b.putString(KEY_WARNING_TEXT, getResources().getString(iErrStrId));
@@ -1793,8 +1809,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							public void run() {
 								tryToReconnect();
 							}}, 1000);
-						
-						Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
+						if(mActivityResume)
+							Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
 					}
 					
 				}});

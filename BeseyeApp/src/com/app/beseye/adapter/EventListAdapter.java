@@ -158,7 +158,14 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 			if(null != faceList && 0 < faceList.length()){
 				BeseyeJSONUtil.FACE_LIST face;
 				try {
-					face = BeseyeJSONUtil.findFacebyId(faceList.getInt(faceList.length()-1)-1);
+					int iFaceId = -1;
+					for(int i = faceList.length()-1;i >=0;i--){
+						if(0 < faceList.getInt(i)){
+							iFaceId = faceList.getInt(i);
+							break;
+						}
+					}
+					face = BeseyeJSONUtil.findFacebyId(iFaceId-1);
 					if(null != face){
 						strType = String.format("%s recognized", face.mstrName);
 					}else{
