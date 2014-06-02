@@ -161,7 +161,7 @@ PLATFORM="iPhoneOS"
 
 if [ "${ARCH}" == "arm64" ];
 then
-EXTRA_CONFIG="--arch=arm --target-os=darwin --enable-cross-compile --disable-armv5te"
+EXTRA_CONFIG="--arch=arm64 --target-os=darwin --enable-cross-compile --disable-armv5te"
 else
 EXTRA_CONFIG="--arch=arm --target-os=darwin --enable-cross-compile --cpu=cortex-a9 --disable-armv5te"
 fi

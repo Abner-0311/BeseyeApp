@@ -297,9 +297,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			cancelNotification();
                 			setLastEventItem(null);
                 			BeseyeUtils.removeRunnable(mCheckEventRunnable);
-                			if(null != mGetEventListTask){
-                				mGetEventListTask.cancel(true);
-                				mGetEventListTask = null;
+                			if(null != mGetIMPEventListTask){
+                				mGetIMPEventListTask.cancel(true);
+                				mGetIMPEventListTask = null;
                 			}
                 		}//If Login
                 		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid()){
@@ -496,7 +496,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
  		Log.i(TAG, "BeseyeNotificationService::checkEventPeriod(), TIME_TO_CHECK_EVENT :"+TIME_TO_CHECK_EVENT+", p2p mode is "+(null != p2pFile && p2pFile.exists()));
     }
     
-    private BeseyeMMBEHttpTask.GetEventListTask mGetEventListTask;
+    private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
     private JSONObject mCam_obj = new JSONObject();
     private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
     
@@ -524,9 +524,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     private void checkEvents(){
     	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
     		if(NetworkMgr.getInstance().isNetworkConnected()){
-    			if(null == mGetEventListTask && 0 < TIME_TO_CHECK_EVENT){
-    				mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(this);
-        			mGetEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_HOUR_IN_MS)+"", BeseyeMMBEHttpTask.ONE_HOUR_IN_MS+"");
+    			if(null == mGetIMPEventListTask && 0 < TIME_TO_CHECK_EVENT){
+    				mGetIMPEventListTask = new BeseyeMMBEHttpTask.GetIMPEventListTask(this);
+    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT)+"", TIME_TO_CHECK_EVENT+"");
+        			//mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS+"");
     			}
     		}
     		BeseyeUtils.removeRunnable(mCheckEventRunnable);
@@ -717,12 +718,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				if(lLastEventStartTime < lNewEventStartTime){
 					Log.i(TAG, "isNewEvent(), lLastEventStartTime("+lLastEventStartTime+") < lNewEventStartTime ("+lNewEventStartTime+")");
 					return true;
-				}else if(lLastEventStartTime == lNewEventStartTime){
+				}/*else if(lLastEventStartTime == lNewEventStartTime){
 					
 					int typeArrOld = BeseyeJSONUtil.getJSONInt(mLastEventObj, BeseyeJSONUtil.MM_TYPE_IDS);
 					int typeArrNew = BeseyeJSONUtil.getJSONInt(eventObj, BeseyeJSONUtil.MM_TYPE_IDS);
 					
-					if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArrNew) || 0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArrNew)){
+					if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArrNew)){
 						boolean bFoundNew = true;
 						if((0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArrOld) || 0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArrOld)) && typeArrOld <= typeArrNew){
 							bFoundNew = false;
@@ -732,7 +733,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 							bRet = true;
 						}
 					}
-				}
+				}*/
 			}else{
 				bRet =  true;
 			}
@@ -1142,7 +1143,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				if(0 == iRetCode && null != result && 0 < result.size()){
 					Log.i(TAG, "onPostExecute(), DelRegisterIDTask OK");
 				}
-			}else if(task instanceof BeseyeMMBEHttpTask.GetEventListTask){
+			}else if(task instanceof BeseyeMMBEHttpTask.GetIMPEventListTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
 					int miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
 					if(0 < miEventCount){
@@ -1160,7 +1161,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 								}
 								
 								int typeArr = BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.MM_TYPE_IDS);
-								if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr) || 0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArr)){
+								if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr)){
 									if(-1 == lLastEventStartTime || (isNewEvent(obj))){
 										setLastEventItem(obj);
 										Intent intent = new Intent();
@@ -1187,7 +1188,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 											JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
 											if(null != faceList && 0 < faceList.length()){
 												int iFaceId = -1;
-												for(int i = faceList.length()-1;i >=0;i--){
+												for(int i = 0;i < faceList.length();i++){
 													if(0 < faceList.getInt(i)){
 														iFaceId = faceList.getInt(i);
 														break;
@@ -1217,8 +1218,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						}
 					}
 				}
-				if(task == mGetEventListTask){
-					mGetEventListTask = null;
+				if(task == mGetIMPEventListTask){
+					mGetIMPEventListTask = null;
 				}
 			}
 		}

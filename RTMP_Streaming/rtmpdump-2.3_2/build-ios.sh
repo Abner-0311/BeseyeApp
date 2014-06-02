@@ -56,9 +56,9 @@ build()
 
 build "armv7" "$DEVICE_PLATFORM" "$DEVICE_SDK"
 build "armv7s" "$DEVICE_PLATFORM" "$DEVICE_SDK"
+#build "arm64" "$DEVICE_PLATFORM" "$DEVICE_SDK"
 build "i386" "$SIMULATOR_PLATFORM" "$SIMULATOR_SDK"
 #build "x86_64" "$SIMULATOR_PLATFORM" "$SIMULATOR_SDK"
-#build "arm64" "$DEVICE_PLATFORM" "$DEVICE_SDK"
 
 # remove temporary dir
 rm -rf rtmpdump-*

@@ -285,13 +285,64 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         [self performSelectorOnMainThread:@selector(disableButton:) withObject:playButton waitUntilDone:NO];
         [self performSelectorOnMainThread:@selector(enableButton:) withObject:stopButton waitUntilDone:NO];
         
-        player1->createStreaming(//"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/1001_aac"
-                                 //"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
-                                 //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4", 0
-                                 //"rtsp://admin:password@192.168.3.100/h264"
-                                 //"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin/_definst_/3313916c77ff42cf82f8c7ad9c437442"
-                                 "rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/2e26ea2bccb34937a65dfa02488e58dc"
-                                 );
+//        player1->createStreaming(//"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/1001_aac"
+//                                 //"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
+//                                 //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4", 0
+//                                 //"rtsp://admin:password@192.168.3.100/h264"
+//                                 //"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin/_definst_/3313916c77ff42cf82f8c7ad9c437442"
+//                                 "rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/2e26ea2bccb34937a65dfa02488e58dc"
+//                                 );
+        player1->createStreaming("rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin/_definst_/3313916c77ff42cf82f8c7ad9c437442");
+        
+        const char* path[] = {"mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+                              "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+                              "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4","mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+                              "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513294505_{dur}3156_{r}1401510902433.mp4"};
+        
+        player1->createStreaming("rtmp://54.238.191.39:1935/vods3/_definst_/", path, 4, 0);
+
+        
+        //                                 //"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
+        //                                 //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4", 0
+        //                                 //"rtsp://admin:password@192.168.3.100/h264"
+        //                                 //"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin/_definst_/3313916c77ff42cf82f8c7ad9c437442"
+        //                                 "rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/2e26ea2bccb34937a65dfa02488e58dc"
+        
         player1->unregisterVideoCallback();
         delete player1;
         player1= NULL;

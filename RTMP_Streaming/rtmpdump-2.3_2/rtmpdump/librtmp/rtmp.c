@@ -286,7 +286,7 @@ RTMP_Init(RTMP *r)
   r->m_nServerBW = 2500000;
   r->m_fAudioCodecs = 3191.0;
   r->m_fVideoCodecs = 252.0;
-  r->Link.timeout = 10;
+  r->Link.timeout = 9;
   r->Link.swfAge = 30;
   r->m_bExitFlag = FALSE;
 }

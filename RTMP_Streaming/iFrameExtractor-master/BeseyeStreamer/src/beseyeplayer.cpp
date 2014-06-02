@@ -67,7 +67,7 @@ getWindowByHolderFunc(NULL),
 mVecPendingStreamPaths(NULL),
 iNumOfPendingStreamPaths(0),
 rtmpRef(NULL),
-mdStreamClock(0.0){
+mdStreamClock(-1.0){
 	wanted_stream[AVMEDIA_TYPE_AUDIO] = -1;
 	wanted_stream[AVMEDIA_TYPE_VIDEO] = -1;
 	wanted_stream[AVMEDIA_TYPE_SUBTITLE] = -1;
@@ -414,7 +414,7 @@ void CBeseyePlayer::update_video_pts(VideoState *is, double pts, int64_t pos) {
     is->frame_last_pts = pts;
 
 	int iClock = (pts >= 0.0)?(pts+0.0001):0;
-	int iStreamClock = (mdStreamClock >= 0.0)?(mdStreamClock+0.0001):0;
+	int iStreamClock = (mdStreamClock >= 0.0)?(mdStreamClock+0.0001):-1;
 	//av_log(NULL, AV_LOG_INFO, "update_video_pts(), clock:%d, mdStreamClock:%d\n", iClock, iStreamClock);
 	if(iClock > iStreamClock){
 		setStreamClock(pts);
@@ -1785,15 +1785,15 @@ int read_thread(void *arg)
     ic->interrupt_callback.callback = decode_interrupt_cb;
     ic->interrupt_callback.opaque = is;
 
-//    //[Workaround Abner]:pass func callback to RTMP lb
-//    beseyeCBFuncHolder holder;
-//    //holder.value = "beseye";
-//    holder.rtmpCallback = rtmpStreamMethodCallback;
-//    holder.rtmpStatusCallback = rtmpStatusCallback;
-//    holder.rtmpErrorCallback = rtmpErrorCallback;
-//    holder.userData = player;
-//
-//    av_dict_set(&format_opts, "holder", (const char*)&holder, 0);
+    //[Workaround Abner]:pass func callback to RTMP lb
+    beseyeCBFuncHolder holder;
+    //holder.value = "beseye";
+    holder.rtmpCallback = rtmpStreamMethodCallback;
+    holder.rtmpStatusCallback = rtmpStatusCallback;
+    holder.rtmpErrorCallback = rtmpErrorCallback;
+    holder.userData = player;
+
+    av_dict_set(&format_opts, "holder", (const char*)&holder, 0);
 
     err = avformat_open_input(&ic, is->filename, is->iformat, &format_opts);
     if (err < 0) {
@@ -1857,9 +1857,7 @@ int read_thread(void *arg)
 
     av_log(NULL, AV_LOG_INFO, "avformat_find_stream_info_ext--");
 
-    player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTED, 0);
     player->registerRtmpCallback(ic);
-
     player->addPendingStreamPaths();
 
     for (i = 0; i < orig_nb_streams; i++)
@@ -1923,8 +1921,15 @@ int read_thread(void *arg)
 
 	ret = -1;
 	if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
+//		if(st_index[AVMEDIA_TYPE_VIDEO] == 0){
+//			av_log(NULL, AV_LOG_ERROR, "st_index[AVMEDIA_TYPE_VIDEO] = 0, try to assign 28--------------------------------------------");
+//			st_index[AVMEDIA_TYPE_VIDEO] =28;
+//		}
+
 		ret = player->stream_component_open(is, st_index[AVMEDIA_TYPE_VIDEO]);
 	}
+
+	player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTED, 0);
 
     av_log(NULL, AV_LOG_DEBUG, "SDL_CreateThread--");
 
@@ -1955,6 +1960,7 @@ int read_thread(void *arg)
         	av_log(NULL, AV_LOG_INFO, "read_thread(),break loop");
             break;
         }
+
         if (is->paused != is->last_paused) {
             is->last_paused = is->paused;
             if (is->paused){
@@ -2015,6 +2021,7 @@ int read_thread(void *arg)
             SDL_Delay(10);
             continue;
         }
+
         if (eof) {
             if (is->video_stream >= 0) {
                 av_init_packet(pkt);
@@ -2256,7 +2263,7 @@ void CBeseyePlayer::step_to_next_frame(VideoState *is)
 /* handle an event sent by the GUI */
 void CBeseyePlayer::event_loop(VideoState *cur_stream)
 {
-	av_log(NULL, AV_LOG_DEBUG, "event_loop(), cur_stream:%d", cur_stream);
+	av_log(NULL, AV_LOG_INFO, "event_loop(), cur_stream:%d", cur_stream);
     SDL_Event event;
     //double incr, pos, frac;
 
@@ -2276,15 +2283,16 @@ void CBeseyePlayer::event_loop(VideoState *cur_stream)
 //        }
 
         switch (event.type) {
-
 			case SDL_QUIT:
 			case FF_QUIT_EVENT:
 				if(cur_stream == event.user.data1){
                     //addStreamingPath("dummy");//workaround, trigger read_thread
 					do_exit((VideoState *)event.user.data1/*cur_stream*/);
+					av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_stream:%d", cur_stream);
 					cur_stream = NULL;
 				}else{
-					SDL_PushEvent(&event);
+					av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_stream:%d, event.user.data1:%d", cur_stream, event.user.data1);
+					//SDL_PushEvent(&event);
 				}
 				break;
 			case FF_ALLOC_EVENT:{
@@ -2612,12 +2620,15 @@ int CBeseyePlayer::resumeStreaming(){
 int CBeseyePlayer::closeStreaming(){
 	av_log(NULL, AV_LOG_INFO, "closeStreaming()++, is:%d", is);
 	int iRet = 0;
-	if(NULL != is && mStream_Status > STREAM_UNINIT && mStream_Status < STREAM_CLOSE){
+	if(NULL != is && mStream_Status > STREAM_UNINIT && mStream_Status <= STREAM_CLOSE){
+		is->abort_request = 1;
 		SDL_Event event;
 		event.type = FF_QUIT_EVENT;
 		event.user.data1 = is;
 		SDL_PushEvent(&event);
 		iRet = 1;
+	}else{
+		av_log(NULL, AV_LOG_INFO, "closeStreaming(), mStream_Status:%d, skip it", mStream_Status);
 	}
 	av_log(NULL, AV_LOG_INFO, "closeStreaming()--, iRet:%d", iRet);
 	return iRet;

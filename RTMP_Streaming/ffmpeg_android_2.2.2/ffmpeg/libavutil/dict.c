@@ -75,8 +75,6 @@ int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags
             oldval = tag->value;
         else if(0!=strcmp(key, "holder"))//Abner workaround 20140218
             av_free(tag->value);
-        else
-            av_free(tag->value);
 
         av_free(tag->key);
         *tag = m->elems[--m->count];

@@ -526,11 +526,27 @@ int avformat_open_input(AVFormatContext **ps, const char *filename,
     if (fmt)
         s->iformat = fmt;
 
+//    AVDictionaryEntry *tt = NULL;
+//    tt = av_dict_get(*options, "holder", NULL, 0);
+//    if(NULL != tt && NULL != tt->value){
+//    	av_log(NULL, AV_LOG_ERROR, "avformat_open_input(), check holder value:%x\n", tt->value);
+//    }
+
     if (options)
         av_dict_copy(&tmp, *options, 0);
 
+//	tt = av_dict_get(tmp, "holder", NULL, 0);
+//	if(NULL != tt && NULL != tt->value){
+//		av_log(NULL, AV_LOG_ERROR, "avformat_open_input(), check holder value:%x\n", tt->value);
+//	}
+
     if ((ret = av_opt_set_dict(s, &tmp)) < 0)
         goto fail;
+
+//	tt = av_dict_get(tmp, "holder", NULL, 0);
+//	if(NULL != tt && NULL != tt->value){
+//		av_log(NULL, AV_LOG_ERROR, "avformat_open_input(), check holder value:%x\n", tt->value);
+//	}
 
     if ((ret = init_input(s, filename, &tmp)) < 0)
         goto fail;

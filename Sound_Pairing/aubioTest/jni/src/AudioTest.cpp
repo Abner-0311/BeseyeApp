@@ -900,50 +900,50 @@ void writeBuf(unsigned char* charBuf, int iLen){
 							LOGW("--------------------------------------------------------------------------->ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD);
 							sPairingMode = PAIRING_WAITING;
 						}
-					}
-
-					if(ANALYSIS_START_THRESHHOLD < sMaxValue){
-						LOGW("--------------------------------------------------------------------------->sMaxValue:%d, iAboveThreshHoldCount:%d, iUnderThreshHoldCount:%d\n", sMaxValue, iAboveThreshHoldCount, iUnderThreshHoldCount);
-						iAboveThreshHoldCount++;
-						if(false == AudioTest::getInstance()->getAboveThresholdFlag() && iAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
-							LOGE("trigger analysis-----\n");
-							//trigger analysis
-							if(AudioTest::getInstance()->isPairingAnalysisMode()){
-								changePairingMode(PAIRING_ANALYSIS);
-								FreqAnalyzer::getInstance()->setDetectLowSound(false);
-								AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*3));
-								AudioBufferMgr::getInstance()->setRecordMode(false);
+					}else{
+						if(ANALYSIS_START_THRESHHOLD < sMaxValue){
+							LOGW("--------------------------------------------------------------------------->sMaxValue:%d, iAboveThreshHoldCount:%d, iUnderThreshHoldCount:%d\n", sMaxValue, iAboveThreshHoldCount, iUnderThreshHoldCount);
+							iAboveThreshHoldCount++;
+							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && iAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
+								LOGE("trigger analysis-----\n");
+								//trigger analysis
+								if(AudioTest::getInstance()->isPairingAnalysisMode()){
+									changePairingMode(PAIRING_ANALYSIS);
+									FreqAnalyzer::getInstance()->setDetectLowSound(false);
+									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*3));
+									AudioBufferMgr::getInstance()->setRecordMode(false);
+								}
+								AudioTest::getInstance()->setAboveThresholdFlag(true);
+								iAboveThreshHoldCount = 0;
 							}
-							AudioTest::getInstance()->setAboveThresholdFlag(true);
+							iUnderThreshHoldCount = 0;
+						}else if(ANALYSIS_END_THRESHHOLD > sMaxValue){
+							iUnderThreshHoldCount++;
+							if(AudioTest::getInstance()->getAboveThresholdFlag() && iUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
+								LOGE("trigger stop analysis-----\n");
+								//stop analysis
+								if(AudioTest::getInstance()->isPairingAnalysisMode()){
+									AudioBufferMgr::getInstance()->setRecordMode(true);
+								}
+								int iStopAnalysisIdx = AudioBufferMgr::getInstance()->getBufIndex(shortsRecBuf);
+								if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
+									AudioTest::getInstance()->setStopAnalysisBufIdx(iStopAnalysisIdx);
+									LOGE("miStopAnalysisBufIdx:%d\n",iStopAnalysisIdx);
+								}else{
+									LOGE("miStopAnalysisBufIdx != -1\n");
+								}
+
+								FreqAnalyzer::getInstance()->setDetectLowSound(true);
+	//							AudioTest::getInstance()->setAboveThresholdFlag(false);
+	//							changePairingMode(PAIRING_WAITING);
+								//AudioTest::getInstance()->resetBuffer();
+								iUnderThreshHoldCount = 0;
+							}
+							iAboveThreshHoldCount = 0;
+						}else{
+							iUnderThreshHoldCount = 0;
 							iAboveThreshHoldCount = 0;
 						}
-						iUnderThreshHoldCount = 0;
-					}else if(ANALYSIS_END_THRESHHOLD > sMaxValue){
-						iUnderThreshHoldCount++;
-						if(AudioTest::getInstance()->getAboveThresholdFlag() && iUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
-							LOGE("trigger stop analysis-----\n");
-							//stop analysis
-							if(AudioTest::getInstance()->isPairingAnalysisMode()){
-								AudioBufferMgr::getInstance()->setRecordMode(true);
-							}
-							int iStopAnalysisIdx = AudioBufferMgr::getInstance()->getBufIndex(shortsRecBuf);
-							if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
-								AudioTest::getInstance()->setStopAnalysisBufIdx(iStopAnalysisIdx);
-								LOGE("miStopAnalysisBufIdx:%d\n",iStopAnalysisIdx);
-							}else{
-								LOGE("miStopAnalysisBufIdx != -1\n");
-							}
-
-							FreqAnalyzer::getInstance()->setDetectLowSound(true);
-//							AudioTest::getInstance()->setAboveThresholdFlag(false);
-//							changePairingMode(PAIRING_WAITING);
-							//AudioTest::getInstance()->resetBuffer();
-							iUnderThreshHoldCount = 0;
-						}
-						iAboveThreshHoldCount = 0;
-					}else{
-						iUnderThreshHoldCount = 0;
-						iAboveThreshHoldCount = 0;
 					}
 
 					//iRefCount = 0;
@@ -952,11 +952,13 @@ void writeBuf(unsigned char* charBuf, int iLen){
 			}
 			iRefCount++;
 
-			if(iCurIdx == shortsRecBuf->size()-1){
-				//LOGE("writeBuf(), add rec buf at %lld, iIdxOffset:%d, iCurIdx:%d, shortsRecBuf->size():%d\n", lTs1, iIdxOffset, iCurIdx, shortsRecBuf->size() );
-				AudioBufferMgr::getInstance()->addToDataBuf(lTs1, shortsRecBuf, shortsRecBuf->size());
-				shortsRecBuf = NULL;
-			}
+			//if(PAIRING_INIT != sPairingMode){
+				if(iCurIdx == shortsRecBuf->size()-1){
+					//LOGE("writeBuf(), add rec buf at %lld, iIdxOffset:%d, iCurIdx:%d, shortsRecBuf->size():%d\n", lTs1, iIdxOffset, iCurIdx, shortsRecBuf->size() );
+					AudioBufferMgr::getInstance()->addToDataBuf(lTs1, shortsRecBuf, shortsRecBuf->size());
+					shortsRecBuf = NULL;
+				}
+			//}
 		}else{
 			LOGW("shortsRecBuf is NULL");
 		}
@@ -1033,7 +1035,17 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 	char session[SESSION_SIZE];
 	memset(session, 0, sizeof(session));
 
-	if(GetSession(HOST_NAME, session) != 0) {
+	int iTrial = 0;
+	int iRet = 0;
+	do{
+		if(0 < iTrial++){
+			LOGE("Get session failed, iTrial:%d", iTrial);
+			sleep(iTrial);
+		}
+		iRet = GetSession(HOST_NAME, session);
+	}while(0 != iRet && iTrial < 5);
+
+	if(iRet != 0){
 		LOGE("Get session failed.");
 	}else{
 		LOGE("runAudioBufRecord(), begin to GetAudioBufCGI\n");
@@ -1191,7 +1203,7 @@ void AudioTest::onAppendResult(string strCode){
 #endif
 
 //#include "delegate/account_mgr.h"
-void checkPairingResult(string strCode){
+void checkPairingResult(string strCode, string strDecodeUnmark){
 #ifdef CAM_ENV
 	LOGE("++, strCode:[%s]\n", strCode.c_str());
 
@@ -1199,7 +1211,44 @@ void checkPairingResult(string strCode){
 	int iPower = SoundPair_Config::getPowerByFFTYPE();
 
 	if(0 == strCode.find("error")){
-		LOGE("Error\n");
+		LOGE("Error, trying to get pairing code\n");
+		int idx = strDecodeUnmark.find("1b", 20);
+		if(0 < idx){
+			string strToken = strDecodeUnmark.substr(idx+2, 4);
+			LOGE("Possible pairing code [%s]\n",strToken.c_str());
+			int iRet = 0;
+			char cmd[BUF_SIZE]={0};
+			sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", "e03f4905f970", strToken.c_str());
+			LOGE("attach cmd:[%s]\n", cmd);
+			iRet = system(cmd) >> 8;
+			if(0 == iRet){
+				LOGE("Cam attach OK\n");
+				iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
+				if(0 == iRet){
+					LOGE("Token verification OK\n");
+					AudioTest::getInstance()->setPairingReturnCode(0);
+				}else{
+					LOGE("Token verification failed\n");
+				}
+			}else{
+				LOGE("Cam attach failed, try another\n");
+				sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", "107befd9322f", strToken.c_str());
+				LOGE("attach cmd:[%s]\n", cmd);
+				iRet = system(cmd) >> 8;
+				if(0 == iRet){
+					LOGE("Cam attach OK\n");
+					iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
+					if(0 == iRet){
+						LOGE("Token verification OK\n");
+						AudioTest::getInstance()->setPairingReturnCode(0);
+					}else{
+						LOGE("Token verification failed\n");
+					}
+				}else{
+					LOGE("Cam attach failed\n");
+				}
+			}
+		}
 	}else{
 		int toDecodeSize = strCode.length()/iMultiply;
 		LOGE("toDecodeSize:%d\n", toDecodeSize);
@@ -1267,7 +1316,7 @@ void checkPairingResult(string strCode){
 			sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", retMacAddr.str().c_str(), strPW.c_str());
 			LOGE("wifi set cmd:[%s]\n", cmd);
 			int iRet = system(cmd) >> 8;
-			if(0 == iRet){
+			//if(0 == iRet){
 				LOGE("wifi set OK\n");
 				//long lCheckTime = time_ms();
 				//long lDelta;
@@ -1321,9 +1370,9 @@ void checkPairingResult(string strCode){
 				}else{
 					LOGE("network disconnected\n");
 				}
-			}else{
-				LOGE("wifi set failed\n");
-			}
+//			}else{
+//				LOGE("wifi set failed\n");
+//			}
 
 //			LOGE("sUserId:[%u]\n",sUserId);
 //			char testData[BUF_SIZE]={0};
@@ -1344,7 +1393,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 	LOGI("onSetResult(), strCode:%s, strDecodeMark = %s\n", strCode.c_str(), strDecodeMark.c_str());
 #ifdef CAM_ENV
 	if(mbPairingAnalysisMode && 0 < strCode.length()){
-		checkPairingResult(strCode);
+		checkPairingResult(strCode, strDecodeUnmark);
 		if(0 <= miPairingReturnCode){
 			LOGE("miPairingReturnCode:[%d], close sp\n",miPairingReturnCode);
 			changePairingMode(PAIRING_DONE);

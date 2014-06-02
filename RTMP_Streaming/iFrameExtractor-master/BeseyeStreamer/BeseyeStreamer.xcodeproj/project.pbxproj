@@ -428,7 +428,7 @@
 					../ffmpeg/compiled/i386/lib,
 					../ffmpeg/compiled/i386/include/include,
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 armv7s i386";
 			};
@@ -470,6 +470,7 @@
 					../ffmpeg/compiled/i386/lib,
 					../ffmpeg/compiled/i386/include/include,
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "armv7 armv7s i386";
