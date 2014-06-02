@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name_alpha">Beseye(α)</string>
-    <string name="app_name">Beseye</string>
+    <!-- <string name="app_name_alpha">Beseye(α)</string> -->
+    <string name="app_name_alpha">Beseye</string>
+    <string name="app_name">BesEye</string>
     <string name="crash_toast_text"></string>
     
     <string name="connect">Connect</string>

@@ -123,7 +123,7 @@ public abstract class BeseyeJSONAdapter extends BaseAdapter {
 	}
 	
 	protected RemoteImageView setImage(Map<String, Object> holder, String strLabel, String strUrl){
-		return setImage(holder, strLabel, strUrl, R.drawable.common_app_icon_shadow, true);
+		return setImage(holder, strLabel, strUrl, R.drawable.common_app_icon, true);
 	}
 	
 	protected RemoteImageView setImage(Map<String, Object> holder, String strLabel, String strUrl, int iDefRes, boolean bNeedAttachHost){

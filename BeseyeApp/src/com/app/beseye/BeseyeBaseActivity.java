@@ -258,7 +258,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					strMsgRes = args.getString(KEY_WARNING_TEXT);
 				}
 				if(dialog instanceof AlertDialog){
-					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon_shadow);
+					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon);
 					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_warning):strTitleRes);
 					if(0 < strMsgRes.length())
 						((AlertDialog) dialog).setMessage(strMsgRes);

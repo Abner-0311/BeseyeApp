@@ -50,7 +50,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	private ImageView mIvCancel, mIvFilter, mIvCalendar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	private JSONObject mCam_obj;
-	private String mStrVCamID = "2e26ea2bccb34937a65dfa02488e58dc";
+	private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
 	private String mStrVCamName;
 	
 	@Override
@@ -64,8 +64,9 @@ public class EventListActivity extends BeseyeBaseActivity{
 			mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 			if(null != mCam_obj){
 				//workaround
-				BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
-				//mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+				//BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
+				
+				mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
 				mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
 			}
 		} catch (JSONException e1) {

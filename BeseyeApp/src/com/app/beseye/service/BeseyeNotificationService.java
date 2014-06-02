@@ -2,6 +2,12 @@ package com.app.beseye.service;
 import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +52,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -284,6 +291,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			mMsgInfo = null;
                 			sendMessage(Message.obtain(null,MSG_SET_NOTIFY_NUM,0,0));
                 			sendMessage(Message.obtain(null,MSG_SET_UNREAD_MSG_NUM,0,0));
+                			
                 			if(!SessionMgr.getInstance().isUseridValid())
                 				unregisterGCMServer();
                 			cancelNotification();
@@ -296,6 +304,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 		}//If Login
                 		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid()){
                 			registerGCMServer();
+                			checkEventPeriod();
 //                			try {
 //            		        	mMessenger.send(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0));
 //            				} catch (RemoteException e) {
@@ -451,15 +460,45 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}
         registerGCMServer();
         WebsocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
+        
+        checkEventPeriod();
         checkUserLoginState();
         
         BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
-        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, "DVR Cam");
+        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, "Face Room");
+    }
+    
+    private void checkEventPeriod(){
+    	 File notifyFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_notify");
+ 		int iPeriod = 5;
+ 		if(null != notifyFile && notifyFile.exists()){
+ 			try {
+ 				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(notifyFile)));
+ 				try {
+ 					String strPeriod = (null != reader)?reader.readLine():null;
+ 					if(null != strPeriod && 0 < strPeriod.length())
+ 						iPeriod = Integer.parseInt(strPeriod);
+ 				} catch (IOException e) {
+ 					e.printStackTrace();
+ 				}
+ 			} catch (FileNotFoundException e) {
+ 				e.printStackTrace();
+ 			}
+ 		}
+ 		
+ 		TIME_TO_CHECK_EVENT = iPeriod*1000;
+ 		
+ 		File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
+		if(null != p2pFile && p2pFile.exists()){
+			TIME_TO_CHECK_EVENT = 0;
+		}
+ 		
+ 		Log.i(TAG, "BeseyeNotificationService::checkEventPeriod(), TIME_TO_CHECK_EVENT :"+TIME_TO_CHECK_EVENT+", p2p mode is "+(null != p2pFile && p2pFile.exists()));
     }
     
     private BeseyeMMBEHttpTask.GetEventListTask mGetEventListTask;
     private JSONObject mCam_obj = new JSONObject();
-    private String mStrVCamID = "2e26ea2bccb34937a65dfa02488e58dc";
+    private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
     
     private void checkUserLoginState(){
     	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isNotifyWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
@@ -471,11 +510,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		WebsocketsMgr.getInstance().destroyNotifyWSChannel();
     	}
     	
-    	if(false == COMPUTEX_P2P)
+    	if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
     		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
     }
     
-    static private final long TIME_TO_CHECK_EVENT = 30*1000;
+    static private long TIME_TO_CHECK_EVENT = 30*1000;
     private Runnable mCheckEventRunnable = new Runnable(){
 		@Override
 		public void run() {
@@ -485,13 +524,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     private void checkEvents(){
     	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
     		if(NetworkMgr.getInstance().isNetworkConnected()){
-    			if(null == mGetEventListTask){
+    			if(null == mGetEventListTask && 0 < TIME_TO_CHECK_EVENT){
     				mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(this);
         			mGetEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_HOUR_IN_MS)+"", BeseyeMMBEHttpTask.ONE_HOUR_IN_MS+"");
     			}
     		}
     		BeseyeUtils.removeRunnable(mCheckEventRunnable);
-			BeseyeUtils.postRunnable(mCheckEventRunnable, TIME_TO_CHECK_EVENT);
+    		
+    		if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
+    			BeseyeUtils.postRunnable(mCheckEventRunnable, TIME_TO_CHECK_EVENT);
     	}
     }
     
@@ -813,7 +854,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		//Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 		if(null != contentIntent){
 			 final Notification notification = new Notification(
-				        				R.drawable.common_app_icon_shadow,       // the icon for the status bar
+				        				R.drawable.common_app_icon,       // the icon for the status bar
 				        				text,                        // the text to display in the ticker
 				        				/*System.currentTimeMillis()*/lTs); // the timestamp for the notification
 
@@ -894,7 +935,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		/*if(null != contentIntent)*/{
 			 final Notification notification = new Notification(
-				        				R.drawable.common_app_icon_shadow,       // the icon for the status bar
+				        				R.drawable.common_app_icon,       // the icon for the status bar
 				        				"RegId got",                        // the text to display in the ticker
 				        				/*System.currentTimeMillis()*/mLastNotifyUpdateTime); // the timestamp for the notification
 
@@ -1147,15 +1188,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 											if(null != faceList && 0 < faceList.length()){
 												BeseyeJSONUtil.FACE_LIST face = BeseyeJSONUtil.findFacebyId(faceList.getInt(faceList.length()-1)-1);
 												if(null != face){
-													strMsg = String.format("%s was recognized by %s at %s", face.mstrName, "DVR Cam", new Date(lNewEventStartTime).toLocaleString());
+													strMsg = String.format("%s was recognized by %s at %s", face.mstrName, "Face Room", new Date(lNewEventStartTime).toLocaleString());
 												}else{
-													strMsg = String.format("Stranger was identified by %s at %s", "DVR Cam", new Date(lNewEventStartTime).toLocaleString());
+													strMsg = String.format("Stranger was identified by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
 												}
 											}else{
-												strMsg = String.format("Stranger was identified by %s at %s", "DVR Cam", new Date(lNewEventStartTime).toLocaleString());
+												strMsg = String.format("Stranger was identified by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
 											}
 										}else{
-											strMsg = String.format("Motion activity was detected by %s at %s", "DVR Cam", new Date(lNewEventStartTime).toLocaleString());
+											strMsg = String.format("Motion activity was detected by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
 										}
 										
 										showNotification(NOTIFICATION_TYPE_INFO, intent, strMsg, obj);

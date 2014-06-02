@@ -2,13 +2,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/beseye_opening_color"
-    android:orientation="vertical"
-    tools:context=".MainActivity" >
+    android:background="@color/beseye_opening_color" >
 	<ImageView 
 	    android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:src="@drawable/openpage_h_logo"
-    	android:layout_centerInParent="true"
+    	android:src="@drawable/openpage_logo"
+    	android:layout_marginTop="160dp"
+    	android:layout_centerHorizontal="true"
+    />
+	
+	<ImageView 
+	    android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:src="@drawable/openpage_pattern_bg"
+    	android:layout_alignParentBottom="true"
     />
 </RelativeLayout>

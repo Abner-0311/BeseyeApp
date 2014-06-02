@@ -201,7 +201,7 @@ public class RemoteGifImageView extends RemoteImageView {
 		if(bFirstLoad){
 			int iLen = (null != mCachePath)?mCachePath.length:0;
 			for(int i = 0; i< iLen;i++){
-				if(null != BeseyeMemCache.getBitmapFromMemCache(mCachePath[i])){
+				if(null != BeseyeMemCache.getBitmapFromMemCache(mCachePath[i]) || fileExist(mCachePath[i]+(mbIsPhoto?CACHE_POSTFIX_SAMPLE_1:CACHE_POSTFIX_SAMPLE_2))){
 					miCurDisplayIdx = i;
 					Log.e(TAG, "loadImage(), shift miCurDisplayIdx to "+miCurDisplayIdx);	
 					break;
@@ -393,6 +393,9 @@ public class RemoteGifImageView extends RemoteImageView {
 									if (++retryCount >= 3
 											|| Thread.currentThread()
 													.isInterrupted()) {
+										Log.w(TAG, "download image failed, mRemote:"+mRemote);
+										RemoteGifImageView.this.removeCallbacks(mLoadNextBmpRunnable);
+										RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, 0);
 										return;
 									}
 									try {

@@ -42,7 +42,8 @@
         android:inputType="textEmailAddress"
         android:paddingLeft="@dimen/login_marginMedium"
         android:paddingRight="@dimen/login_marginMedium"
-        android:textSize="@dimen/login_fontRegular" />
+        android:textSize="@dimen/login_fontRegular" 
+        android:singleLine="true"/>
     
     <EditText
         android:id="@+id/editText_cam_name"
@@ -56,7 +57,26 @@
         android:background="@drawable/sl_account_input_bg"
         android:ems="10"
         android:text="Live View-1"
-  
+  		android:singleLine="true"
+        android:paddingLeft="@dimen/login_marginMedium"
+        android:paddingRight="@dimen/login_marginMedium"
+        android:textSize="@dimen/login_fontRegular"/>
+    
+    <EditText
+        android:id="@+id/editText_notify_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText_ip"
+        android:layout_alignRight="@+id/editText_ip"
+        android:layout_below="@+id/editText_cam_name"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/login_marginMedium"
+        android:background="@drawable/sl_account_input_bg"
+        android:ems="10"
+        android:hint="Notify period in sec"
+        android:textColorHint="#ffaaaaaa"
+  		android:singleLine="true"
+  		android:inputType="number"
         android:paddingLeft="@dimen/login_marginMedium"
         android:paddingRight="@dimen/login_marginMedium"
         android:textSize="@dimen/login_fontRegular"/>

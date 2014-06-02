@@ -455,14 +455,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				try {
 					mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 					if(null != mCam_obj){
-						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mCam_obj:"+mCam_obj.toString());
+						Log.d(TAG, "CameraViewActivity::updateAttrByIntent(), mCam_obj:"+mCam_obj.toString());
 						mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
-						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mStrVCamID:"+mStrVCamID);
-						if(null == mStrVCamID || 0 == mStrVCamID.length()){
-							//workaround, unknown issue
-							mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ID);
-							Log.i(TAG, "CameraViewActivity::updateAttrByIntent(),2 mStrVCamID:"+mStrVCamID);
-						}
+//						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mStrVCamID:"+mStrVCamID);
+//						if(null == mStrVCamID || 0 == mStrVCamID.length()){
+//							//workaround, unknown issue
+//							mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ID);
+//							Log.i(TAG, "CameraViewActivity::updateAttrByIntent(),2 mStrVCamID:"+mStrVCamID);
+//						}
 						mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
 						mbVCamAdmin = BeseyeJSONUtil.getJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN, true);
 					}
