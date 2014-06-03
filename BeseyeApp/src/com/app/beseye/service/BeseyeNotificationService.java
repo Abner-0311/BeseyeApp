@@ -526,7 +526,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		if(NetworkMgr.getInstance().isNetworkConnected()){
     			if(null == mGetIMPEventListTask && 0 < TIME_TO_CHECK_EVENT){
     				mGetIMPEventListTask = new BeseyeMMBEHttpTask.GetIMPEventListTask(this);
-    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT)+"", TIME_TO_CHECK_EVENT+"");
+    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT*2)+"", TIME_TO_CHECK_EVENT*2+"");
         			//mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS+"");
     			}
     		}
@@ -711,7 +711,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		boolean bRet = false;
 		if(null != eventObj){
 			if(null != mLastEventObj){
-				Log.d(TAG, "isNewEvent(), mLastEventObj: ("+mLastEventObj+")\n" +
+				Log.i(TAG, "isNewEvent(), mLastEventObj: ("+mLastEventObj+")\n" +
 						   "	              eventObj: ("+eventObj+")");
 				long lLastEventStartTime = BeseyeJSONUtil.getJSONLong(mLastEventObj, BeseyeJSONUtil.MM_START_TIME);
 				long lNewEventStartTime = BeseyeJSONUtil.getJSONLong(eventObj, BeseyeJSONUtil.MM_START_TIME);
@@ -852,7 +852,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		
 		PendingIntent contentIntent = PendingIntent.getActivity(this, sRequestCode++ , intent, 0);
 		
-		//Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+		Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 		if(null != contentIntent){
 			 final Notification notification = new Notification(
 				        				R.drawable.common_app_icon,       // the icon for the status bar
@@ -867,7 +867,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						 text,                        // the details to display in the notification
 						 contentIntent);              // the contentIntent (see above)
 
-				notification.defaults = Notification.DEFAULT_ALL;
+				notification.defaults = Notification.DEFAULT_VIBRATE;
 				notification.flags = Notification.FLAG_AUTO_CANCEL;
 				
 				mNotificationManager.notify(
@@ -1145,6 +1145,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 			}else if(task instanceof BeseyeMMBEHttpTask.GetIMPEventListTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
+					Log.i(TAG, "onPostExecute(), GetIMPEventListTask "+result.get(0).toString());
 					int miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
 					if(0 < miEventCount){
 						JSONArray EntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);

@@ -477,8 +477,9 @@ public class RemoteImageView extends ImageView {
 		}
 		InputStream inputStream = null;
 		Bitmap bitmap = null;
+		long lStartTs = System.currentTimeMillis();
 		try {
-			if(uri.startsWith("http:")){
+			if(uri.startsWith("http")){
 				URL url = new URL(uri);
 				URLConnection conn = url.openConnection();
 				HttpURLConnection httpConn = (HttpURLConnection) conn;
@@ -508,6 +509,8 @@ public class RemoteImageView extends ImageView {
 						BitmapFactory.Options options = new BitmapFactory.Options();
 						options.inSampleSize = iSample;
 						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+						
+						Log.w(TAG, "image decode "+uri+", bitmap="+(null == bitmap?"null":"not null"));
 					}
 				}
 			}
@@ -516,8 +519,10 @@ public class RemoteImageView extends ImageView {
 		} finally {
 			closeStream(inputStream);
 		}
+		Log.w(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs));
 		return bitmap;
 	}
+
 
 	static public void createParentDir(String path) {
 		if (path == null) {
