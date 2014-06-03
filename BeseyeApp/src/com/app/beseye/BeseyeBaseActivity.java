@@ -446,7 +446,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeAccountTask.CheckAccountTask){
-			onSessionInvalid();
+			//onSessionInvalid();
 		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 			SessionMgr.getInstance().cleanSession();
 			onSessionInvalid();
