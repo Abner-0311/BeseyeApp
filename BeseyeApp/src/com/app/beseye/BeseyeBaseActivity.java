@@ -483,7 +483,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		runOnUiThread(new Runnable(){
 			@Override
 			public void run() {
-					Toast.makeText(BeseyeBaseActivity.this, strMsg, Toast.LENGTH_LONG).show();
+					//Toast.makeText(BeseyeBaseActivity.this, strMsg, Toast.LENGTH_LONG).show();
 			}});
 	}
 	

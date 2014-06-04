@@ -1795,8 +1795,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					if(!ASSIGN_ST_PATH && !isInP2PMode()){
 						if(iErrStrId == R.string.streaming_error_unknown){
 							tryToReconnect();
-							if(mActivityResume)
-								Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
+//							if(mActivityResume)
+//								Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
 						}else{
 							Bundle b = new Bundle();
 							b.putString(KEY_WARNING_TEXT, getResources().getString(iErrStrId));
@@ -1809,8 +1809,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							public void run() {
 								tryToReconnect();
 							}}, 1000);
-						if(mActivityResume)
-							Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
+//						if(mActivityResume)
+//							Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
 					}
 					
 				}});

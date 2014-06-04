@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
-    android:versionCode="14"
-    android:versionName="0.1.14" 
+    android:versionCode="15"
+    android:versionName="0.1.15" 
     android:installLocation="auto">
 
+    
     <!-- Android 2.3.3 -->
     <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="14" />
 

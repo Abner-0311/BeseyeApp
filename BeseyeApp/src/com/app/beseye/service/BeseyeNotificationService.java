@@ -526,7 +526,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		if(NetworkMgr.getInstance().isNetworkConnected()){
     			if(null == mGetIMPEventListTask && 0 < TIME_TO_CHECK_EVENT){
     				mGetIMPEventListTask = new BeseyeMMBEHttpTask.GetIMPEventListTask(this);
-    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT*2)+"", TIME_TO_CHECK_EVENT*2+"");
+    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT*3)+"", TIME_TO_CHECK_EVENT*3+"");
         			//mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS+"");
     			}
     		}
