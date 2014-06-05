@@ -226,6 +226,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         maxScale = 4;
         superMinScale = SUPER_MIN_MULTIPLIER * minScale;
         superMaxScale = SUPER_MAX_MULTIPLIER * maxScale;
+        drawStreamBitmap();
         //setImageMatrix(matrix);
         //setScaleType(ScaleType.MATRIX);
         setState(NONE);
@@ -465,6 +466,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         fixTrans();
         Log.i(TAG, "onMeasure(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale);
         //setImageMatrix(matrix);
+        drawStreamBitmap();
     }
     
     /**
@@ -638,6 +640,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             }
             
             //setImageMatrix(matrix);
+            drawStreamBitmap();
             invalidate();
             //
             // indicate event was handled
@@ -757,6 +760,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 			scaleImage(deltaScale, bitmapX, bitmapY, stretchImageToSuper);
 			translateImageToCenterTouchPosition(t);
 			fixScaleTrans();
+			drawStreamBitmap();
 			//setImageMatrix(matrix);
 			
 			if (t < 1f) {
@@ -920,6 +924,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 	            matrix.postTranslate(transX, transY);
 	            fixTrans();
 	            //setImageMatrix(matrix);
+	            drawStreamBitmap();
 	            compatPostOnAnimation(this);
         	}
 		}
@@ -1032,7 +1037,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 		//            if(REDDOT_DEMO)
 		//            	canvas.clipRect(0, mfPaddingTop, mWidth, mHeight-mfPaddingBottom);
 		        
-				canvas.drawBitmap(bmp, matrix, null);
+				if(null != bmp && false == bmp.isRecycled())
+					canvas.drawBitmap(bmp, matrix, null);
 				getHolder().unlockCanvasAndPost(canvas);
     		}catch(java.lang.IllegalStateException e){
     			Log.e(TAG, "drawStreamBitmap(), e"+e.toString());

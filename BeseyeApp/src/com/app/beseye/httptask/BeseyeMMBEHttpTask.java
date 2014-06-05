@@ -237,7 +237,7 @@ public class BeseyeMMBEHttpTask  {
 				Log.e(TAG, "doInBackground(),find cache for key "+mstrThbKey);
 				miRetCode = 0;
 			}else{
-				ret = super.doInBackground("http://54.199.241.138/"+URL_GET_THUMB_BY_EVENT, strParams[1]);
+				ret = super.doInBackground(MM_HOST_PRODCTION+URL_GET_THUMB_BY_EVENT, strParams[1]);
 //				if(getRetCode() == 0){
 //					JSONArray thumbnailList = BeseyeJSONUtil.getJSONArray(ret.get(0), BeseyeJSONUtil.MM_THUMBNAILS);
 //					if(null != thumbnailList){
