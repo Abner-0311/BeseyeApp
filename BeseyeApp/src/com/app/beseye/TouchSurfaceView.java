@@ -13,6 +13,7 @@ import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -29,7 +30,7 @@ import android.widget.Scroller;
 
 public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callback{
 
-	protected static float mWidth, mHeight;
+	protected static float mSurfaceWidth, mSurfaceHeight;
 	
 	//
 	// SuperMin and SuperMax multipliers. Determine how much the image can be
@@ -139,18 +140,18 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             break;
         }
 
-        mWidth = width;
-        mHeight = height;
+        mSurfaceWidth = width;
+        mSurfaceHeight = height;
         
-        if(((float)mWidth/mHeight) > 16.0/9/0){
-        	displayHeight = (int) mHeight;
+        if(((float)mSurfaceWidth/mSurfaceHeight) > 16.0/9/0){
+        	displayHeight = (int) mSurfaceHeight;
         	displayWidth = (int) ((displayHeight/9.0)*16.0);
         }else{
-        	displayWidth = (int) mWidth;
+        	displayWidth = (int) mSurfaceWidth;
         	displayHeight = (int) ((displayWidth/16.0)*9.0);
         }
         
-        Log.d(TAG, "surfaceChanged(), mWidth:"+mWidth+", mHeight:"+mHeight+", displayWidth:"+displayWidth+", displayHeight:"+displayHeight);
+        Log.d(TAG, "surfaceChanged(), mWidth:"+mSurfaceWidth+", mHeight:"+mSurfaceHeight+", displayWidth:"+displayWidth+", displayHeight:"+displayHeight);
         //SDLActivity.onNativeResize(width, height, sdlFormat);
         Log.v(TAG, "Window size:" + width + "x"+height);
         
@@ -222,7 +223,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         m = new float[9];
         normalizedScale = 1;
         minScale = 1;
-        maxScale = 3;
+        maxScale = 4;
         superMinScale = SUPER_MIN_MULTIPLIER * minScale;
         superMaxScale = SUPER_MAX_MULTIPLIER * maxScale;
         //setImageMatrix(matrix);
@@ -375,86 +376,88 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     	return matchViewHeight * normalizedScale;
     }
 
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        Drawable drawable = null;//getDrawable();
-//        if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        Surface drawable = getNativeSurface();//getDrawable();
+//        if (mStreamBitmap == null || mStreamBitmap.getWidth() == 0 || mStreamBitmap.getHeight() == 0) {
+//        	super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 //        	return;
 //        }
-//        
-//        int drawableWidth = drawable.getIntrinsicWidth();
-//        int drawableHeight = drawable.getIntrinsicHeight();
-//        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-//        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-//        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-//        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-//        viewWidth = setViewSize(widthMode, widthSize, drawableWidth);
-//        viewHeight = setViewSize(heightMode, heightSize, drawableHeight);
-//        
-//        //
-//        // Set view dimensions
-//        //
-//        setMeasuredDimension(viewWidth, viewHeight);
-//        
-//        //
-//    	// Scale image for view
-//    	//
-//        float scaleX = (float) viewWidth / drawableWidth;
-//        float scaleY = (float) viewHeight / drawableHeight;
-//        float scale = Math.min(scaleX, scaleY);
-//
-//        //
-//        // Center the image
-//        //
-//        float redundantYSpace = viewHeight - (scale * drawableHeight);
-//        float redundantXSpace = viewWidth - (scale * drawableWidth);
-//        matchViewWidth = viewWidth - redundantXSpace;
-//        matchViewHeight = viewHeight - redundantYSpace;
-//        
-//        if (normalizedScale == 1) {
-//        	//
-//        	// Stretch and center image to fit view
-//        	//
-//        	matrix.setScale(scale, scale);
-//        	matrix.postTranslate(redundantXSpace / 2, redundantYSpace / 2);
-//        	
-//        } else {
-//        	prevMatrix.getValues(m);
-//        	
-//        	//
-//        	// Rescale Matrix after rotation
-//        	//
-//        	m[Matrix.MSCALE_X] = matchViewWidth / drawableWidth * normalizedScale;
-//        	m[Matrix.MSCALE_Y] = matchViewHeight / drawableHeight * normalizedScale;
-//        	
-//        	//
-//        	// TransX and TransY from previous matrix
-//        	//
-//            float transX = m[Matrix.MTRANS_X];
-//            float transY = m[Matrix.MTRANS_Y];
-//            
-//            //
-//            // Width
-//            //
-//            float prevActualWidth = prevMatchViewWidth * normalizedScale;
-//            float actualWidth = getImageWidth();
-//            translateMatrixAfterRotate(Matrix.MTRANS_X, transX, prevActualWidth, actualWidth, prevViewWidth, viewWidth, drawableWidth);
-//            
-//            //
-//            // Height
-//            //
-//            float prevActualHeight = prevMatchViewHeight * normalizedScale;
-//            float actualHeight = getImageHeight();
-//            translateMatrixAfterRotate(Matrix.MTRANS_Y, transY, prevActualHeight, actualHeight, prevViewHeight, viewHeight, drawableHeight);
-//            
-//            //
-//            // Set the matrix to the adjusted scale and translate values.
-//            //
-//            matrix.setValues(m);
-//        }
-//        fixTrans();
-//        //setImageMatrix(matrix);
-//    }
+        
+        int drawableWidth = 1280;//null != mStreamBitmap ?mStreamBitmap.getWidth():0;
+        int drawableHeight = 720;//null != mStreamBitmap ? mStreamBitmap.getHeight():0;
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        viewWidth = setViewSize(widthMode, widthSize, drawableWidth);
+        viewHeight = setViewSize(heightMode, heightSize, drawableHeight);
+        
+        //
+        // Set view dimensions
+        //
+        setMeasuredDimension(viewWidth, viewHeight);
+        
+        //
+    	// Scale image for view
+    	//
+        float scaleX = (float) viewWidth / drawableWidth;
+        float scaleY = (float) viewHeight / drawableHeight;
+        float scale = Math.min(scaleX, scaleY);
+
+        //
+        // Center the image
+        //
+        float redundantYSpace = viewHeight - (scale * drawableHeight);
+        float redundantXSpace = viewWidth - (scale * drawableWidth);
+        matchViewWidth = viewWidth - redundantXSpace;
+        matchViewHeight = viewHeight - redundantYSpace;
+        
+        if (normalizedScale == 1) {
+        	//
+        	// Stretch and center image to fit view
+        	//
+        	matrix.setScale(scale, scale);
+        	matrix.postTranslate(redundantXSpace / 2, redundantYSpace / 2);
+        	
+        } else {
+        	prevMatrix.getValues(m);
+        	
+        	//
+        	// Rescale Matrix after rotation
+        	//
+        	m[Matrix.MSCALE_X] = matchViewWidth / drawableWidth * normalizedScale;
+        	m[Matrix.MSCALE_Y] = matchViewHeight / drawableHeight * normalizedScale;
+        	
+        	//
+        	// TransX and TransY from previous matrix
+        	//
+            float transX = m[Matrix.MTRANS_X];
+            float transY = m[Matrix.MTRANS_Y];
+            
+            //
+            // Width
+            //
+            float prevActualWidth = prevMatchViewWidth * normalizedScale;
+            float actualWidth = getImageWidth();
+            translateMatrixAfterRotate(Matrix.MTRANS_X, transX, prevActualWidth, actualWidth, prevViewWidth, viewWidth, drawableWidth);
+            
+            //
+            // Height
+            //
+            float prevActualHeight = prevMatchViewHeight * normalizedScale;
+            float actualHeight = getImageHeight();
+            translateMatrixAfterRotate(Matrix.MTRANS_Y, transY, prevActualHeight, actualHeight, prevViewHeight, viewHeight, drawableHeight);
+            
+            //
+            // Set the matrix to the adjusted scale and translate values.
+            //
+            matrix.setValues(m);
+        }
+        fixTrans();
+        Log.i(TAG, "onMeasure(), matrix:"+matrix.toString());
+        //setImageMatrix(matrix);
+    }
     
     /**
      * Set view dimensions based on layout params
@@ -809,8 +812,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
      */
     private PointF transformCoordTouchToBitmap(float x, float y, boolean clipToBitmap) {
          matrix.getValues(m);
-         float origW = 0;//getDrawable().getIntrinsicWidth();
-         float origH = 0;//getDrawable().getIntrinsicHeight();
+         float origW = 1280;//getDrawable().getIntrinsicWidth();
+         float origH = 720;//getDrawable().getIntrinsicHeight();
          float transX = m[Matrix.MTRANS_X];
          float transY = m[Matrix.MTRANS_Y];
          float finalX = ((x - transX) * origW) / getImageWidth();
@@ -833,8 +836,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
      */
     private PointF transformCoordBitmapToTouch(float bx, float by) {
         matrix.getValues(m);        
-        float origW = 0;//getDrawable().getIntrinsicWidth();
-        float origH = 0;//getDrawable().getIntrinsicHeight();
+        float origW = 1280;//getDrawable().getIntrinsicWidth();
+        float origH = 720;//getDrawable().getIntrinsicHeight();
         float px = bx / origW;
         float py = by / origH;
         float finalX = m[Matrix.MTRANS_X] + getImageWidth() * px;
@@ -982,14 +985,14 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     	if(null == mStreamBitmap){
     		mStreamBitmap = Bitmap.createBitmap(iWidth, iHeight, Config.RGB_565);
     		
-    		float scaleX = (float) mWidth / iWidth ;
-            float scaleY = (float) mHeight / iHeight ;
+    		float scaleX = (float) mSurfaceWidth / iWidth ;
+            float scaleY = (float) mSurfaceHeight / iHeight ;
             scale = Math.min(scaleX, scaleY);
             //scale = (mbUpsideDown)?-scale:scale;
             //c
     		
-            redundantXSpace = mWidth - iWidth*scale;
-            redundantYSpace = mHeight - iHeight*scale;
+            redundantXSpace = mSurfaceWidth - iWidth*scale;
+            redundantYSpace = mSurfaceHeight - iHeight*scale;
             updateMatrix();
     	}
     	
@@ -1015,7 +1018,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     		try{
 				canvas.drawColor(miBackgroundColor/*, PorterDuff.Mode.CLEAR*/);
 		        //Log.d(TAG, "drawStreamBitmap(), redundantXSpace:"+redundantXSpace+", redundantYSpace:"+redundantYSpace+", scale:"+scale);
-		        updateMatrix();
+		        //updateMatrix();
+				//printMatrixInfo();
 		        
 		//            if(REDDOT_DEMO)
 		//            	canvas.clipRect(0, mfPaddingTop, mWidth, mHeight-mfPaddingBottom);

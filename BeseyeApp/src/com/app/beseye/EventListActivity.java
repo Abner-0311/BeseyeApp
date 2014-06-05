@@ -116,7 +116,7 @@ public class EventListActivity extends BeseyeBaseActivity{
     			public void onRefresh() {
     				Log.i(TAG, "onRefresh()");	
     				mbNeedToCalcu = false;
-    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS )+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS +"");
+    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_HOUR_IN_MS )+"", BeseyeMMBEHttpTask.ONE_HOUR_IN_MS +"");
     				if(null != mGetThumbnailByEventListTask){
     					mGetThumbnailByEventListTask.cancel(true);
     					mGetThumbnailByEventListTask = null;
@@ -251,7 +251,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS )+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS +"");
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_HOUR_IN_MS )+"", BeseyeMMBEHttpTask.ONE_HOUR_IN_MS +"");
 	}
 	
 	private int miTaskSeedNum = 0;

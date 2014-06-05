@@ -120,7 +120,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 							}
 							
 						}
-//						Log.e(TAG, "setupItem(), path="+((null != path)?path.length:"null")+" at "+iPosition);	
+						Log.e(TAG, "setupItem(), path="+((null != path)?path.length:"null")+" at "+iPosition);	
 
 						holder.mImgThumbnail.setURI(path, R.drawable.eventlist_s_eventview_noview_bg);
 						holder.mImgThumbnail.loadImage(true);

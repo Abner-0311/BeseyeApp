@@ -340,15 +340,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				    public void onClick(DialogInterface dialog, int item) {
 				    	removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
+				    	monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);	
 				    	//mbTriggerDetachAfterReboot = true;
-				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(-1), true, mStrVCamID);
-				    	BeseyeUtils.postRunnable(new Runnable(){
-
-							@Override
-							public void run() {
-								monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);								
-							}}, 1000);
-				    	//monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);
+				    	//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(-1), true, mStrVCamID);
+//				    	BeseyeUtils.postRunnable(new Runnable(){
+//							@Override
+//							public void run() {
+//															
+//							}}, 1000);
 				    }
 				});
 				builder.setOnCancelListener(new OnCancelListener(){
