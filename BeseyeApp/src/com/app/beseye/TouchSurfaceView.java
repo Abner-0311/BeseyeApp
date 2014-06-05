@@ -265,6 +265,14 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
       	super.onRestoreInstanceState(state);
     }
+    
+    public void onOrientationChanged(){
+    	prevMatrix.setValues(m);
+        prevMatchViewHeight = matchViewHeight;
+        prevMatchViewWidth = matchViewWidth;
+        prevViewHeight = viewHeight;
+        prevViewWidth = viewWidth;
+    }
 
     /**
      * Set the max zoom multiplier. Default value: 3.
@@ -455,7 +463,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             matrix.setValues(m);
         }
         fixTrans();
-        Log.i(TAG, "onMeasure(), matrix:"+matrix.toString());
+        Log.i(TAG, "onMeasure(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale);
         //setImageMatrix(matrix);
     }
     
@@ -929,7 +937,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     
     private void printMatrixInfo() {
     	matrix.getValues(m);
-    	Log.d(TAG, "Scale: " + m[Matrix.MSCALE_X] + " TransX: " + m[Matrix.MTRANS_X] + " TransY: " + m[Matrix.MTRANS_Y]);
+    	Log.i(TAG, "Scale: " + m[Matrix.MSCALE_X] + " TransX: " + m[Matrix.MTRANS_X] + " TransY: " + m[Matrix.MTRANS_Y]);
     }
     
     //Abner Add Begin

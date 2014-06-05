@@ -53,6 +53,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -420,6 +421,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		
 		AudioWebSocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
+		
+		Configuration config = getResources().getConfiguration();		
+		setMarginByOrientation(config.orientation);
 	}
 	
 	@Override
@@ -675,6 +679,32 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 
             //Log.v(TAG, "Finished waiting for SDL thread");
         }
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		Log.i(TAG, "onConfigurationChanged " + newConfig);
+		super.onConfigurationChanged(newConfig);
+		
+		setMarginByOrientation(newConfig.orientation);
+		
+		if(null != mStreamingView){
+			mStreamingView.onOrientationChanged();
+		}
+	}
+	
+	private void setMarginByOrientation(int iOrient){
+		if(null != mIbSetting){
+			RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)mIbSetting.getLayoutParams();
+			params.setMargins(0, 0, (iOrient == Configuration.ORIENTATION_PORTRAIT)?20:40, 0);
+			mIbSetting.setLayoutParams(params);
+		}
+		
+		if(null != mIvStreamType){
+			RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)mIvStreamType.getLayoutParams();
+			params.setMargins((iOrient == Configuration.ORIENTATION_PORTRAIT)?20:40, 0, 0, 0);
+			mIvStreamType.setLayoutParams(params);
+		}
 	}
 	
 	@Override

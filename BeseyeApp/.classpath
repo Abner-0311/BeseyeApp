@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="libs/androidasync.jar"/>
 	<classpathentry kind="lib" path="libs/aws-android-sdk-1.7.1.1-core.jar"/>
 	<classpathentry kind="lib" path="libs/aws-android-sdk-1.7.1.1-s3.jar"/>
+	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
