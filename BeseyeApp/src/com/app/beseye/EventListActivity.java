@@ -472,7 +472,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 		int iCount = (null != EntList)?EntList.length():0;
 		int iStartIdx = miCurUpdateIdx;
 		if(0 < iCount && iStartIdx < iCount){
-			//Log.e(TAG, "getThumbnailByEventList(), iCount="+iCount+", iStartIdx="+iStartIdx);
+			Log.e(TAG, "getThumbnailByEventList(), iCount="+iCount+", iStartIdx="+iStartIdx);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(BeseyeJSONUtil.MM_VCAM_UUID, mStrVCamID);
