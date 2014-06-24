@@ -9,8 +9,17 @@
     <dimen name="liveview_toolbar_height_portrait">112dp</dimen>
     <dimen name="liveview_footer_height_portrait">56dp</dimen>
     
+    <dimen name="liveview_protrait_btn_hori_margin">20dp</dimen>
+    
+    <dimen name="liveview_mic_bg_margin_bottom">22dp</dimen>
+    <dimen name="liveview_hold_to_talk_margin_bottom">32dp</dimen>
+    <dimen name="liveview_hold_to_talk_margin_right">22dp</dimen>
+    
     <dimen name="liveview_navbar_font_size_large">22sp</dimen>
+    
     <dimen name="liveview_navbar_font_size">16sp</dimen>
+    <dimen name="liveview_navbar_margin_hori">10dp</dimen>
+    
     <dimen name="liveview_toolbar_font_size">25sp</dimen>
     <dimen name="liveview_power_state_font_size">21sp</dimen>
     <dimen name="liveview_power_state_sub_font_size">18sp</dimen>

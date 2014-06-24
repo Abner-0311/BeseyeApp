@@ -163,4 +163,5 @@
 	<string name="loading_latest_update">Last update&#160;%s</string>
 	<string name="no_camera">No camera attached</string>
 	<string name="cam_list_tilte">My Cameras</string>
+	<string name="liveview_hold_to_talk">Hold to talk</string>
 </resources>

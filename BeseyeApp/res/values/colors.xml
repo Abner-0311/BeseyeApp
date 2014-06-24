@@ -25,6 +25,8 @@
     <color name="listview_item_backgroundcolor">#e5e5e4</color>
     <color name="listview_item_backgroundcolor_selected">#44e5e5e4</color>
     
+    <color name="listview_hold_to_talk_font_color">#00bbb3</color>
+    
     <color name="wifi_list_title_color">#18b4ab</color>
     <color name="wifi_list_item_bg_color">#F0EFEF</color>
     <color name="wifi_list_item_bg_color_selected">@color/beseye_color</color>

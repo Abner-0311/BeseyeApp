@@ -1,10 +1,17 @@
 package com.app.beseye.widget;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
+
+import java.lang.ref.WeakReference;
+
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -113,9 +120,17 @@ public class CameraViewControlAnimator {
 		}
 	};
 	
+	private WeakReference<ActionBarActivity> mActionBarActivity;
+	
+	private int miOrientation;
+	public void setOrientation(int iOrient){
+		miOrientation = iOrient;
+	}
+	
 	public CameraViewControlAnimator(Context context, RelativeLayout headerLayout, RelativeLayout toolbarLayout) {
 		m_vgHeaderLayout = headerLayout;
 		m_vgToolbarLayout = toolbarLayout;
+		mActionBarActivity = new WeakReference<ActionBarActivity>((ActionBarActivity)context);
 		initViews(context);
 	}
 
@@ -187,14 +202,34 @@ public class CameraViewControlAnimator {
 		if(false == isInAnimation()){
 			if(null != m_vgHeaderLayout){
 				Animation animation = null;
+				ActionBarActivity act = mActionBarActivity.get();
 				if(View.VISIBLE == m_vgHeaderLayout.getVisibility()){
 					animation = s_aniHeaderFadeOut;
 					m_vgHeaderLayout.startAnimation(animation);
+					
+					if(null != act){
+						act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+						act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+						act.getSupportActionBar().hide();
+					}
+					
 				}else{
 					//animation = s_aniHeaderFadeIn;
 					m_vgHeaderLayout.bringToFront();
 					m_vgHeaderLayout.setVisibility(View.VISIBLE);
 					startHideControlRunnable();
+					
+					if(null != act){
+						if(Configuration.ORIENTATION_PORTRAIT == this.miOrientation){
+							act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+							act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+							//act.getSupportActionBar().show();
+						}else{
+							act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+							act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+							act.getSupportActionBar().hide();
+						}
+					}
 				}
 			}
 			

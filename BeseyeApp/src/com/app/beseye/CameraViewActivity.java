@@ -30,6 +30,7 @@ import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.websockets.AudioWebSocketsMgr;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
+import com.app.beseye.widget.AmplitudeImageView;
 import com.app.beseye.widget.CameraViewControlAnimator;
 
 import android.util.Log;
@@ -83,6 +84,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private ViewGroup mVgPowerState, mVgCamInvalidState, mVgPairingDone;
 	private Button mBtnPairingDoneOK; 
 	private ImageButton mIbOpenCam;
+	private AmplitudeImageView mAmplitudeImageView;
+	
 	private JSONObject mCam_obj;
 	private String mStrVCamID = null;
 	private String mStrVCamName = null;
@@ -305,12 +308,23 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		Log.i(TAG, "CameraViewActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		getSupportActionBar().hide();
 		
 		updateAttrByIntent(getIntent());
+		
+		mVgHeader = (RelativeLayout)findViewById(R.id.vg_streaming_view_header);
+		if(null != mVgHeader){
+			mVgHeader.setOnClickListener(this);
+			
+			LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			if(null != inflater){	
+				ViewGroup child = (ViewGroup)inflater.inflate(R.layout.layout_camera_view_navbar, null);
+				mVgHeader.addView(child, LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+			}
+		}
 		
 		mStreamingView = (TouchSurfaceView)findViewById(R.id.surface_streaming_view);
 		if(null != mStreamingView){
@@ -340,11 +354,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		mUpdateDateTimeRunnable = new UpdateDateTimeRunnable(mTxtDate, mTxtTime);
 		
-		mVgHeader = (RelativeLayout)findViewById(R.id.vg_streaming_view_header);
-		if(null != mVgHeader){
-			mVgHeader.setOnClickListener(this);
-		}
-		
 		mVgToolbar = (RelativeLayout)findViewById(R.id.vg_streaming_view_footer);
 		if(null != mVgToolbar){
 			mVgToolbar.setOnClickListener(this);
@@ -357,7 +366,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}else{
 					child = (ViewGroup)inflater.inflate(R.layout.layout_camera_view_footer_event, null);
 				}
-				mVgToolbar.addView(child, LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+				mVgToolbar.addView(child, LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
 			}
 		}
 		
@@ -412,18 +421,21 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		mPbLoadingCursor = (ProgressBar)findViewById(R.id.pb_loadingCursor);
 		
+		mAmplitudeImageView = (AmplitudeImageView)findViewById(R.id.img_hold_to_talk_mic_mask);
+		
 		mCameraViewControlAnimator = new CameraViewControlAnimator(this, mVgHeader, mVgToolbar);
 		if(null != mCameraViewControlAnimator){
 			mCameraViewControlAnimator.setP2PMode(isInP2PMode());
 		}
+		
+		Configuration config = getResources().getConfiguration();		
+		setMarginByOrientation(config.orientation);
+		
 		mSingleton = this;
 		
 		setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		
 		AudioWebSocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
-		
-		Configuration config = getResources().getConfiguration();		
-		setMarginByOrientation(config.orientation);
 	}
 	
 	@Override
@@ -694,6 +706,20 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	private void setMarginByOrientation(int iOrient){
+		if(iOrient == Configuration.ORIENTATION_PORTRAIT){
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            //getSupportActionBar().show();
+		}else{
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getSupportActionBar().hide();
+		}
+		
+		if(null != mCameraViewControlAnimator){
+			mCameraViewControlAnimator.setOrientation(iOrient);
+		}
+		
 		if(null != mIbSetting){
 			RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)mIbSetting.getLayoutParams();
 			params.setMargins(0, 0, (iOrient == Configuration.ORIENTATION_PORTRAIT)?20:40, 0);
@@ -923,6 +949,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
 					JSONArray arr = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.OBJ_DATA);
 					try {
+						AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
 						AudioWebSocketsMgr.getInstance().setAudioWSServerIP(arr.getString(0));
 						AudioWebSocketsMgr.getInstance().constructNotifyWSChannel();
 					} catch (JSONException e) {
@@ -1959,5 +1986,16 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	public void onChannelClosed() {
 		Log.i(TAG, "onChannelCloased()---");
+	}
+	
+	@Override
+	public void onAudioAmplitudeUpdate(final float fRatio){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(null != mAmplitudeImageView){
+					mAmplitudeImageView.setAmplitudeRatio(fRatio);
+				}
+			}}, 0);
 	}
 }

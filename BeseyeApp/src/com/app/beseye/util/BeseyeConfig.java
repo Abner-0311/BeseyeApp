@@ -28,7 +28,7 @@ public class BeseyeConfig {
 	static public final String RELAY_AP_PW = "whoisyourdaddy";
 	
 	static public final String TMP_MM_VCAM_ID = "1001";
-	static public final String TEST_ACC 	= "computexcam@beseye.com";
+	static public final String TEST_ACC 	= "privatecam@beseye.com";
 	
 	static public final String TMP_VCAM_ID = "SN0000011";
 	static public final String TMP_CAM_ID = "BeseyeCam001";

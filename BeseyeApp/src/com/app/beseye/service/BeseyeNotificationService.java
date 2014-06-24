@@ -1270,6 +1270,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		
     	}
 	}
+	
+	@Override
+	public void onAudioAmplitudeUpdate(final float fRatio){
+		
+	}
 
 	@Override
 	public void onConnectivityChanged(boolean bNetworkConnected) {

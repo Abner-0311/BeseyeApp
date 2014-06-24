@@ -76,7 +76,7 @@ bool FreqGenerator::playCode2(const string strCodeInputASCII, const bool bNeedEn
 
 	for(int i = 0; i< iLen;i++){
 		char ch = strCodeInputASCII.at(i);
-		sstrCodeInput << SoundPair_Config::sCodeTable.at(ch >> iPower);
+		sstrCodeInput << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
 		sstrCodeInput << SoundPair_Config::sCodeTable.at(ch & 0x0f);
 
 		//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
