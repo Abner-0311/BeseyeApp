@@ -163,7 +163,7 @@ CPU=
 
 if [ $ARCH = "armv7" ]
 then
-CPU="--cpu=cortex-a8"
+CPU="--cpu="
 fi
 
 		XCRUN_SDK=`echo $PLATFORM | tr '[:upper:]' '[:lower:]'`
