@@ -17,10 +17,10 @@ public class PairingFailActivity extends PairingBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getSupportActionBar().hide();
+		//getSupportActionBar().hide();
 		
 		if(null != mTxtNavTitle){
-			mTxtNavTitle.setText(R.string.signup_title_create_account);
+			mTxtNavTitle.setText(R.string.signup_title_cam_pair_fail);
 		}
 		
 		mBtnTryAgain = (Button)findViewById(R.id.button_continue);

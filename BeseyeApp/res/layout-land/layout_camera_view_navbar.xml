@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+   	android:layout_height="@dimen/liveview_navbar_height_landscape"
+   	android:background="@drawable/liveview_h_navbar_bg">
+   	
+    <ImageView 
+       	android:id="@+id/iv_streaming_type"
+       	android:layout_marginLeft="@dimen/liveview_navbar_margin_hori"
+       	android:layout_centerVertical="true"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content" 
+   		android:src="@drawable/liveview_h_display_icon"/>
+    
+    <ImageButton 
+       	android:id="@+id/ib_settings"
+       	android:layout_marginRight="@dimen/liveview_navbar_margin_hori"
+       	android:layout_centerVertical="true"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content" 
+   		android:layout_alignParentRight="true"
+   		android:src="@drawable/sl_liveview_settings_btn"
+   		android:background="@android:color/transparent"/>
+    
+    <TextView 
+       	android:id="@+id/txt_cam_name"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:layout_centerHorizontal="true"
+   		android:layout_marginTop="4dp"
+   		android:textSize="@dimen/liveview_navbar_font_size_large"
+   		android:textColor="@color/liveview_font_normal_color"
+   		android:text="@string/cam_info_cam_name"/>
+    
+  	<ImageView 
+       	android:id="@+id/iv_time_divider"
+    	android:layout_width="1dp"
+   		android:layout_height="@dimen/liveview_navbar_font_size" 
+   		android:layout_below="@+id/txt_cam_name"
+   		android:layout_marginTop="6dp"
+   		android:layout_centerHorizontal="true"
+   		android:src="@color/beseye_color"/>
+    
+    <TextView 
+       	android:id="@+id/txt_streaming_date"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:layout_marginRight="16dp" 
+   		android:layout_toLeftOf="@+id/iv_time_divider"
+   		android:layout_below="@+id/txt_cam_name"
+   		android:layout_marginTop="2dp"
+   		android:layout_alignBaseline="@+id/iv_time_divider"
+   		android:textSize="@dimen/liveview_navbar_font_size"
+   		android:textColor="@color/liveview_font_normal_color"
+   		android:text="@string/camerview_init_date"/>
+    	    
+    <TextView 
+       	android:id="@+id/txt_streaming_time"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content" 
+   		android:layout_marginLeft="16dp" 
+   		android:layout_toRightOf="@+id/iv_time_divider"
+   		android:layout_toLeftOf="@+id/ib_settings"
+   		android:layout_below="@+id/txt_cam_name"
+   		android:layout_marginTop="2dp"
+   		android:layout_alignBaseline="@+id/iv_time_divider"
+   		android:textSize="@dimen/liveview_navbar_font_size"
+   		android:textColor="@color/liveview_font_normal_color"
+   		android:text="@string/camerview_init_time"/>
+    
+</RelativeLayout>

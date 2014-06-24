@@ -64,10 +64,11 @@ static pthread_t sWsServerThread;
 static pthread_mutex_t sWSServerSyncObj;
 static pthread_cond_t sWSServerSyncObjCond;
 
+
 static bool volatile bWSServerAuth = FALSE;
-static char ws_server_auth_job_id[32] = "\0";
-static int ws_server_deny_deflate;
-static int ws_server_deny_mux;
+//static char ws_server_auth_job_id[32] = "\0";
+//static int ws_server_deny_deflate;
+//static int ws_server_deny_mux;
 static int ws_server_was_closed;
 
 const static int   server_host_port_listen = 5432;
@@ -107,7 +108,8 @@ static bool volatile bIsWSClientInited = FALSE;
 static bool volatile bWSClientAuth = FALSE;
 static int ws_client_force_exit = 0;
 
-static char ws_client_auth_job_id[32] = "\0";
+
+//static char ws_client_auth_job_id[32] = "\0";
 static int volatile ws_client_was_closed;
 
 enum beseye_ws_client_protocols {
@@ -137,7 +139,7 @@ callback_soundpair_server(struct libwebsocket_context *this,
 			enum libwebsocket_callback_reasons reason,
 					       void *user, void *in, size_t len)
 {
-	LOGE( "user:%d, reason:%d\n", user, reason);
+	LOGE( "user:%p, reason:%d\n", user, reason);
 	switch (reason) {
 
 	case LWS_CALLBACK_CLIENT_ESTABLISHED:
@@ -187,11 +189,11 @@ callback_soundpair_server(struct libwebsocket_context *this,
 void constructWebSocketsServer(void* userData){
 	do{
 		int n = 0;
-		int ret = 0;
-		int use_ssl = 0;
+//		int ret = 0;
+//		int use_ssl = 0;
 		struct libwebsocket_context *context;
 
-		int ietf_version = -1; /* latest */
+//		int ietf_version = -1; /* latest */
 		struct lws_context_creation_info info;
 
 		memset(&info, 0, sizeof info);
@@ -217,7 +219,7 @@ void constructWebSocketsServer(void* userData){
 		context = libwebsocket_create_context(&info);
 		if (context == NULL) {
 			LOGE( "Creating libwebsocket context failed\n");
-			return 1;
+			return;
 		}
 
 	//	/* create a client websocket using dumb increment protocol */
@@ -245,8 +247,8 @@ void constructWebSocketsServer(void* userData){
 			sleep(1);
 		}
 
-		fail:
-			libwebsocket_context_destroy(context);
+//		fail:
+		libwebsocket_context_destroy(context);
 
 		LOGE( "-- \n");
 		if(!force_exit){
@@ -255,7 +257,7 @@ void constructWebSocketsServer(void* userData){
 		}
 	}while(!force_exit);
 
-	sWsServerThread = NULL;
+	sWsServerThread = (pthread_t)NULL;
 
 	Delegate_detachCurrentThread();
 }
@@ -332,7 +334,7 @@ int send_msg_to_client(const char* msg){
 		iRet = writeToWebSocket(wsi_server, msg);
 		LOGI( "send_msg_to_client(), iRet:%d\n", iRet);
 	}else{
-		LOGI( "send_msg_to_client(), bIsMgrInited:%d, wsi_server is %d\n", bIsMgrInited, wsi_server);
+		LOGI( "send_msg_to_client(), bIsMgrInited:%d, wsi_server is %p\n", bIsMgrInited, wsi_server);
 	}
 	pthread_mutex_unlock(&sWSServerSyncObj);
 	return iRet;
@@ -346,7 +348,7 @@ callback_soundpair_client(struct libwebsocket_context *this,
 			enum libwebsocket_callback_reasons reason,
 					       void *user, void *in, size_t len)
 {
-	LOGE( "callback_soundpair_client(), user:%d, reason:%d\n", user, reason);
+	LOGE( "callback_soundpair_client(), user:%p, reason:%d\n", user, reason);
 	switch (reason) {
 
 	case LWS_CALLBACK_CLIENT_ESTABLISHED:
@@ -426,7 +428,7 @@ void constructWebSocketsClient(void* userData){
 	context = libwebsocket_create_context(&info);
 	if (context == NULL) {
 		LOGE( "Creating libwebsocket context failed\n");
-		return 1;
+		return;
 	}
 
 	/* create a client websocket using dumb increment protocol */
@@ -504,6 +506,7 @@ int init_websocket_client(const char* server_ip, int server_port, void (*wsCb)(c
 	}
 	pthread_mutex_unlock(&sWSClientSyncObj);
 	LOGE( "init_websocket_client--\n");
+	return iRet;
 }
 
 int deinit_websocket_client(){

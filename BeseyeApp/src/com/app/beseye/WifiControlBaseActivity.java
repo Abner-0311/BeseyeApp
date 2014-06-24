@@ -62,6 +62,9 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		super.onCreate(savedInstanceState);
 		mlstScanResult = new ArrayList<WifiAPInfo>();
 		setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+		
+		miOriginalVcamCnt = getIntent().getIntExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, 0);
+		Log.i(TAG, "WifiControlBaseActivity::onCreate(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
 	}
 	
     @Override
@@ -454,6 +457,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 							intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
 							startActivity(intent);
 							setResult(RESULT_OK);
+							
+							Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
 //					    	if(null == mWifiAPSetupDelegator){
 //					    		mWifiAPSetupDelegator = new WifiAPSetupDelegator(mChosenWifiAPInfo, WifiListActivity.this);
 //					    	}else{
@@ -474,7 +479,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 						final EditText etPassword = (EditText)vgPassord.findViewById(R.id.et_password_value);
 						if(null != etPassword){
 							if(DEBUG){
-								etPassword.setText(mChosenWifiAPInfo.cipher.contains(WifiAPInfo.AUTHNICATION_WPA)?"0630BesEye":"0630BesEye123");
+								etPassword.setText(mChosenWifiAPInfo.cipher.contains(WifiAPInfo.AUTHNICATION_WPA)?(mChosenWifiAPInfo.BSSID.equals("beseye")?"0630BesEye":"0630BesEye"):"0630BesEye123");
 							}
 							mWifiApPassword = etPassword.getText().toString();
 							etPassword.addTextChangedListener(new TextWatcher(){

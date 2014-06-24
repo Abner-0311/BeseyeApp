@@ -29,16 +29,16 @@
 #import "beseyeplayer.h"
 #import "beseye_audio_streamer.h"
 
-#include <zxing/common/reedsolomon/GenericGF.h>
-#include <zxing/common/reedsolomon/ReedSolomonEncoder.h>
+//#include <zxing/common/reedsolomon/GenericGF.h>
+//#include <zxing/common/reedsolomon/ReedSolomonEncoder.h>
 #include "sp_config.h"
 #include "beseye_sound_pairing.h"
 #include "FreqGenerator.h"
 #include "soundpairing_error.h"
 
-#import "SDL_config.h"
+//#import "SDL_config.h"
 /* import the SDL main definition header */
-#import "SDL_main.h"
+//#import "SDL_main.h"
 
 #import <libavcodec/avcodec.h>
 #import <libavformat/avformat.h>
@@ -168,13 +168,17 @@ void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_C
     if(obj == player1 || obj == player2){
         NSLog(@"rtmpStreamStatusCb(), %s cbType:%d, msg:%s, iMainType:%d, iDetailType:%d",(obj == player1?"player1":"player2"),cbType, (msg?msg:""),iMainType, iDetailType);
         if(cbType == CBeseyeRTMPObserver::STREAM_STATUS_CB){
-            
+            CBeseyePlayer* player = (CBeseyePlayer* )obj;
+            player->getWindow();
         }else if(cbType == CBeseyeRTMPObserver::ERROR_CB){
             
+        }else if(cbType == CBeseyeRTMPObserver::STREAM_CLOCK_CB){
+            NSLog(@"rtmpStreamStatusCb(), %s cbType:STREAM_CLOCK_CB, sec:%d",(obj == player1?"player1":"player2"),iMainType);
         }
-    }else if(obj == &CBeseyeAudioStreamer::getInstance()){
-        NSLog(@"rtmpStreamStatusCb(), audio Streamer cbType:%d, msg:%s, iMainType:%d, iDetailType:%d",cbType, (msg?msg:""),iMainType, iDetailType);
     }
+//    else if(obj == &CBeseyeAudioStreamer::getInstance()){
+//        NSLog(@"rtmpStreamStatusCb(), audio Streamer cbType:%d, msg:%s, iMainType:%d, iDetailType:%d",cbType, (msg?msg:""),iMainType, iDetailType);
+//    }
 }
 
 - (void) playToneCBWrapper:(FreqGenerator::Play_Tone_Status) status withCode:(const char *) code withType:(int) iType{
@@ -218,6 +222,7 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         [ticketsThreadtwo start];
     }else if (sender == stopButton) {
         if(player1){
+             NSLog(@"player1->closeStreaming()");
             player1->closeStreaming();
         }
     }else if (sender == stopButton2) {
@@ -225,10 +230,10 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
             player2->closeStreaming();
         }
     }else if (sender == stopButton3) {
-        CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
-        if(!audioStreamer.checkExit()){
-            audioStreamer.closeAudioStreaming();
-        }
+//        CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
+//        if(!audioStreamer.checkExit()){
+//            audioStreamer.closeAudioStreaming();
+//        }
     }else if(sender == playToneButton){
         SoundPair_Config::init();
         FreqGenerator::getInstance()->setOnPlayToneCallback(playToneCB, playToneButton);
@@ -240,7 +245,7 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         //secType => 0:none; 1:WEP; 2:WPA; 3:WPA2
         //tmpUserToken => temp user token from Account BE
         
-        unsigned int iRet =FreqGenerator::getInstance()->playPairingCode("313233343536", "0630BesEye", 12345);
+        unsigned int iRet =FreqGenerator::getInstance()->playPairingCode("60a44c39fcf8", "0630BesEye", 28645);
         if(R_OK == iRet){
             //[playToneButton setEnabled:NO];
             
@@ -280,10 +285,64 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         [self performSelectorOnMainThread:@selector(disableButton:) withObject:playButton waitUntilDone:NO];
         [self performSelectorOnMainThread:@selector(enableButton:) withObject:stopButton waitUntilDone:NO];
         
-        player1->createStreaming(//"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
-                                 //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4"
-                                 "rtsp://admin:password@192.168.3.100/h264"
-                                 );
+//        player1->createStreaming(//"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/1001_aac"
+//                                 //"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
+//                                 //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4", 0
+//                                 //"rtsp://admin:password@192.168.3.100/h264"
+//                                 //"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin/_definst_/3313916c77ff42cf82f8c7ad9c437442"
+//                                 "rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/2e26ea2bccb34937a65dfa02488e58dc"
+//                                 );
+        player1->createStreaming("rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin/_definst_/3313916c77ff42cf82f8c7ad9c437442");
+        
+        const char* path[] = {"mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+                              "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+                              "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4","mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
+            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
+                              "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513294505_{dur}3156_{r}1401510902433.mp4"};
+        
+        player1->createStreaming("rtmp://54.238.191.39:1935/vods3/_definst_/", path, 4, 0);
+
+        
+        //                                 //"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
+        //                                 //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4", 0
+        //                                 //"rtsp://admin:password@192.168.3.100/h264"
+        //                                 //"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin/_definst_/3313916c77ff42cf82f8c7ad9c437442"
+        //                                 "rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/2e26ea2bccb34937a65dfa02488e58dc"
+        
         player1->unregisterVideoCallback();
         delete player1;
         player1= NULL;
@@ -306,8 +365,8 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         [self performSelectorOnMainThread:@selector(enableButton:) withObject:stopButton2 waitUntilDone:NO];
         [self performSelectorOnMainThread:@selector(enableButton:) withObject:addButton waitUntilDone:NO];
         
-        player2->createStreaming("rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
-                                 //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_0.mp4"
+        player2->createStreaming(//"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
+                                 "rtmp://54.238.191.39:1935/vods3/_definst_/mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4"
                                  );
         player2->unregisterVideoCallback();
         delete player2;
@@ -362,82 +421,82 @@ void pipeDeinitCallback(void){
 //    }
 //    NSLog(@"recording");
 
-    CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
-    if(CBeseyeAudioStreamer::checkExit()){
-        mPipe = [[NSPipe alloc] init];
-        NSFileHandle *writeHandle = [mPipe fileHandleForWriting];
-        NSFileHandle *readHandle = [mPipe fileHandleForReading];
-        
-        int    mPipeRFD = [readHandle fileDescriptor];
-        int    mPipeWFD = [writeHandle fileDescriptor];
-        NSLog(@"runAudioStreamer: %d, %d",mPipeRFD, mPipeWFD);
-        
-            SDL_AudioSpec wanted_spec, spec;
-            wanted_spec.channels = 1;
-            wanted_spec.freq = 16000;
-            wanted_spec.format = AUDIO_S16SYS;
-            wanted_spec.silence = 0;
-            wanted_spec.samples = SDL_AUDIO_BUFFER_SIZE;
-            wanted_spec.callback = sdl_audio_record_callback;
-            wanted_spec.userdata = writeHandle;//opaque;
-        
-            SDL_Init(SDL_INIT_AUDIO);
-            if (!SDL_WasInit(SDL_INIT_AUDIO)) {
-                if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
-                    NSLog(@"Failed to SDL_INIT_AUDIO: %s\n", SDL_GetError());
-                }
-            }
-        
-            int dev = SDL_OpenAudioDevice(NULL, 1, &wanted_spec, &wanted_spec, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
-            if (dev == 0) {
-                //printf("Failed to open audio: %s\n", SDL_GetError());
-                NSLog(@"Failed to open audio: %s\n", SDL_GetError());
-            } else {
-        
-           }
-        
-        
-        if(audioStreamer.setStreamingInfo("rtmp://192.168.2.224:1935/myapp/audiostream", mPipeRFD, mPipeWFD, pipeDeinitCallback)){
-            NSThread* audioFeedThread = [[NSThread alloc] initWithTarget:self selector:@selector(runAudioFeed:) object:(writeHandle)];
-            [audioFeedThread setName:@"audioFeedThread"];
-            [audioFeedThread start];
-            
-            audioStreamer.registerCallback(rtmpStreamStatusCb);
-            [self performSelectorOnMainThread:@selector(disableButton:) withObject:talkButton waitUntilDone:NO];
-            [self performSelectorOnMainThread:@selector(enableButton:) withObject:stopButton3 waitUntilDone:NO];
-            audioStreamer.startAudioStreaming();
-            
-            [self performSelectorOnMainThread:@selector(enableButton:) withObject:talkButton waitUntilDone:NO];
-            [self performSelectorOnMainThread:@selector(disableButton:) withObject:stopButton3 waitUntilDone:NO];
-        }
-    }
+//    CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
+//    if(CBeseyeAudioStreamer::checkExit()){
+//        mPipe = [[NSPipe alloc] init];
+//        NSFileHandle *writeHandle = [mPipe fileHandleForWriting];
+//        NSFileHandle *readHandle = [mPipe fileHandleForReading];
+//        
+//        int    mPipeRFD = [readHandle fileDescriptor];
+//        int    mPipeWFD = [writeHandle fileDescriptor];
+//        NSLog(@"runAudioStreamer: %d, %d",mPipeRFD, mPipeWFD);
+//        
+//            SDL_AudioSpec wanted_spec, spec;
+//            wanted_spec.channels = 1;
+//            wanted_spec.freq = 16000;
+//            wanted_spec.format = AUDIO_S16SYS;
+//            wanted_spec.silence = 0;
+//            wanted_spec.samples = SDL_AUDIO_BUFFER_SIZE;
+//            wanted_spec.callback = sdl_audio_record_callback;
+//            wanted_spec.userdata = writeHandle;//opaque;
+//        
+//            SDL_Init(SDL_INIT_AUDIO);
+//            if (!SDL_WasInit(SDL_INIT_AUDIO)) {
+//                if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
+//                    NSLog(@"Failed to SDL_INIT_AUDIO: %s\n", SDL_GetError());
+//                }
+//            }
+//        
+//            int dev = SDL_OpenAudioDevice(NULL, 1, &wanted_spec, &wanted_spec, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
+//            if (dev == 0) {
+//                //printf("Failed to open audio: %s\n", SDL_GetError());
+//                NSLog(@"Failed to open audio: %s\n", SDL_GetError());
+//            } else {
+//        
+//           }
+//        
+//        
+//        if(audioStreamer.setStreamingInfo("rtmp://192.168.2.224:1935/myapp/audiostream", mPipeRFD, mPipeWFD, pipeDeinitCallback)){
+//            NSThread* audioFeedThread = [[NSThread alloc] initWithTarget:self selector:@selector(runAudioFeed:) object:(writeHandle)];
+//            [audioFeedThread setName:@"audioFeedThread"];
+//            [audioFeedThread start];
+//            
+//            audioStreamer.registerCallback(rtmpStreamStatusCb);
+//            [self performSelectorOnMainThread:@selector(disableButton:) withObject:talkButton waitUntilDone:NO];
+//            [self performSelectorOnMainThread:@selector(enableButton:) withObject:stopButton3 waitUntilDone:NO];
+//            audioStreamer.startAudioStreaming();
+//            
+//            [self performSelectorOnMainThread:@selector(enableButton:) withObject:talkButton waitUntilDone:NO];
+//            [self performSelectorOnMainThread:@selector(disableButton:) withObject:stopButton3 waitUntilDone:NO];
+//        }
+//    }
 }
 
  - (void)runAudioFeed:(id)arg {
-    //NSFileHandle *writeHandle = (NSFileHandle *)arg;
-     int iSize = 512;
-    char* msg = (char*)malloc(sizeof(char)*iSize);
-    //memset(msg, 128, 512);
-    //NSData* data = [[NSData alloc] initWithBytes:(msg) length:(100)];
-    while (TRUE) {
-        //[writeHandle writeData:(data)];
-        //NSLog(@"runAudioFeed() in\n");
-        CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
-        if(STREAM_CLOSE == audioStreamer.get_Stream_Status()){
-            break;
-        }
-        audioStreamer.writeAudioBuffer(msg, iSize);
-        //NSLog(@"runAudioFeed() sleep\n");
-        //sleep(10);
-        SDL_Delay(10);
-        //NSLog(@"runAudioFeed() out\n");
-    }
+//    //NSFileHandle *writeHandle = (NSFileHandle *)arg;
+//     int iSize = 512;
+//    char* msg = (char*)malloc(sizeof(char)*iSize);
+//    //memset(msg, 128, 512);
+//    //NSData* data = [[NSData alloc] initWithBytes:(msg) length:(100)];
+//    while (TRUE) {
+//        //[writeHandle writeData:(data)];
+//        //NSLog(@"runAudioFeed() in\n");
+//        CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
+//        if(STREAM_CLOSE == audioStreamer.get_Stream_Status()){
+//            break;
+//        }
+//        audioStreamer.writeAudioBuffer(msg, iSize);
+//        //NSLog(@"runAudioFeed() sleep\n");
+//        //sleep(10);
+//        SDL_Delay(10);
+//        //NSLog(@"runAudioFeed() out\n");
+//    }
 }
 
 void sdl_audio_record_callback(void *opaque, Uint8 *stream, int len){
-    NSLog(@"sdl_audio_record_callback(), %d\n", len);
-    CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
-    audioStreamer.writeAudioBuffer((char*)stream, len);
+   // NSLog(@"sdl_audio_record_callback(), %d\n", len);
+    //CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
+    //audioStreamer.writeAudioBuffer((char*)stream, len);
 }
 
 - (IBAction)showTime:(id)sender {

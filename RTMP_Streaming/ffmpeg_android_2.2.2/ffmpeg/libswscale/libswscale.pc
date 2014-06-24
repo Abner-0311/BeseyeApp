@@ -1,0 +1,14 @@
+prefix=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/ffmpeg_android_2.2.2/build/built/armv7
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libswscale
+Description: FFmpeg image rescaling library
+Version: 2.5.102
+Requires: libavutil = 52.66.100
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lswscale -lm
+Libs.private: 
+Cflags: -I${includedir}

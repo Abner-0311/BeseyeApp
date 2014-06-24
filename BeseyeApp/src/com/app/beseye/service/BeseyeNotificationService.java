@@ -2,6 +2,12 @@ package com.app.beseye.service;
 import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,9 +16,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.app.beseye.CameraListActivity;
+import com.app.beseye.CameraViewActivity;
+import com.app.beseye.EventListActivity;
 import com.app.beseye.GCMIntentService;
+import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeHttpTask;
+import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyePushServiceTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SessionData;
@@ -41,12 +52,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.PowerManager;
 import android.os.RemoteException;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -278,12 +291,20 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			mMsgInfo = null;
                 			sendMessage(Message.obtain(null,MSG_SET_NOTIFY_NUM,0,0));
                 			sendMessage(Message.obtain(null,MSG_SET_UNREAD_MSG_NUM,0,0));
+                			
                 			if(!SessionMgr.getInstance().isUseridValid())
                 				unregisterGCMServer();
                 			cancelNotification();
+                			setLastEventItem(null);
+                			BeseyeUtils.removeRunnable(mCheckEventRunnable);
+                			if(null != mGetIMPEventListTask){
+                				mGetIMPEventListTask.cancel(true);
+                				mGetIMPEventListTask = null;
+                			}
                 		}//If Login
                 		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid()){
                 			registerGCMServer();
+                			checkEventPeriod();
 //                			try {
 //            		        	mMessenger.send(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0));
 //            				} catch (RemoteException e) {
@@ -395,6 +416,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	static private final String PUSH_SERVICE_LAST_NOTIFY_ID 	= "beseye_push_last_notify_id";
 	static private final String PUSH_SERVICE_LAST_NOTIFY_TIME 	= "beseye_push_last_notify_time";
 	
+	static private final String PUSH_SERVICE_LAST_EVENT 		= "beseye_push_last_event";
+	private JSONObject mLastEventObj = null;
+	
 	private SharedPreferences mPref;
 	private boolean mbRegisterGCM = false;
 	private boolean mbRegisterReceiver = false;
@@ -429,18 +453,87 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         mLastNotifyId = BeseyeSharedPreferenceUtil.getPrefStringValue(mPref, PUSH_SERVICE_LAST_NOTIFY_ID);
         mLastNotifyUpdateTime = BeseyeSharedPreferenceUtil.getPrefLongValue(mPref, PUSH_SERVICE_LAST_NOTIFY_TIME, -1L);
         
+        try {
+        	mLastEventObj = new JSONObject(BeseyeSharedPreferenceUtil.getPrefStringValue(mPref, PUSH_SERVICE_LAST_EVENT));
+		} catch (JSONException e) {
+			Log.i(TAG, "BeseyeNotificationService::onCreate(), there is no last event");
+		}
         registerGCMServer();
         WebsocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
+        
+        checkEventPeriod();
         checkUserLoginState();
+        
+        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
+        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, "Face Room");
     }
+    
+    private void checkEventPeriod(){
+    	 File notifyFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_notify");
+ 		int iPeriod = 5;
+ 		if(null != notifyFile && notifyFile.exists()){
+ 			try {
+ 				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(notifyFile)));
+ 				try {
+ 					String strPeriod = (null != reader)?reader.readLine():null;
+ 					if(null != strPeriod && 0 < strPeriod.length())
+ 						iPeriod = Integer.parseInt(strPeriod);
+ 				} catch (IOException e) {
+ 					e.printStackTrace();
+ 				}
+ 			} catch (FileNotFoundException e) {
+ 				e.printStackTrace();
+ 			}
+ 		}
+ 		
+ 		TIME_TO_CHECK_EVENT = iPeriod*1000;
+ 		
+ 		File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
+		if(null != p2pFile && p2pFile.exists()){
+			TIME_TO_CHECK_EVENT = 0;
+		}
+ 		
+ 		Log.i(TAG, "BeseyeNotificationService::checkEventPeriod(), TIME_TO_CHECK_EVENT :"+TIME_TO_CHECK_EVENT+", p2p mode is "+(null != p2pFile && p2pFile.exists()));
+    }
+    
+    private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
+    private JSONObject mCam_obj = new JSONObject();
+    private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
     
     private void checkUserLoginState(){
     	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isNotifyWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
-    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && false == WebsocketsMgr.getInstance().isNotifyWSChannelAlive()){
-    		if(NetworkMgr.getInstance().isNetworkConnected())
+    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated() && false == WebsocketsMgr.getInstance().isNotifyWSChannelAlive()){
+    		if(NetworkMgr.getInstance().isNetworkConnected()){
     			;//WebsocketsMgr.getInstance().constructNotifyWSChannel();
+    		}
     	}else{
     		WebsocketsMgr.getInstance().destroyNotifyWSChannel();
+    	}
+    	
+    	if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
+    		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
+    }
+    
+    static private long TIME_TO_CHECK_EVENT = 30*1000;
+    private Runnable mCheckEventRunnable = new Runnable(){
+		@Override
+		public void run() {
+			checkEvents();
+		}};
+    
+    private void checkEvents(){
+    	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
+    		if(NetworkMgr.getInstance().isNetworkConnected()){
+    			if(null == mGetIMPEventListTask && 0 < TIME_TO_CHECK_EVENT){
+    				mGetIMPEventListTask = new BeseyeMMBEHttpTask.GetIMPEventListTask(this);
+    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT*3)+"", TIME_TO_CHECK_EVENT*3+"");
+        			//mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS+"");
+    			}
+    		}
+    		BeseyeUtils.removeRunnable(mCheckEventRunnable);
+    		
+    		if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
+    			BeseyeUtils.postRunnable(mCheckEventRunnable, TIME_TO_CHECK_EVENT);
     	}
     }
     
@@ -614,101 +707,187 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}
 	}
 	
-	private void showFirstUnreadNotification(){
-		if(null != mArrRet && 0 < mArrRet.length()){
-			JSONObject obj = null;
-//			int iNotifyTypes = iKalaSettingsMgr.getInstance().getPushNotifyTypes();
-//			
-//			//get first unread itm
-//			if(null != mArrRet && 0 < iNotifyTypes){
-//	    		int iSize = mArrRet.length();
-//	    		for(int iIndex = 0 ; iIndex < iSize ; iIndex++){
-//	    			try {
-//	    				obj = (JSONObject) mArrRet.get(iIndex);
-//	    				if(null != obj && BeseyeJSONUtil.getJSONBoolean(obj, UNREAD)){
-//	    					JSONObject notifyObj = obj;//iKalaJSONUtil.getJSONObject(obj, NOTIFY_DATA);
-//    						if(null != notifyObj){
-//    							if(null != mLastNotifyId){
-//    								if(mLastNotifyUpdateTime > BeseyeJSONUtil.getJSONLong(notifyObj, UPDATE_TIME))
-//    									return;
-//    								
-//    								if(mLastNotifyId.equals(BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_ID)))
-//    									continue;
-//    							}
-//    							String strNotifyType = BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_TYPE);
-//    							if(null != strNotifyType){
-//    								JSONObject fromObj = BeseyeJSONUtil.getJSONObject(notifyObj, FROM);
-//    								if(null != fromObj){
-//    									if(NOTIFY_T_FRIEND_INVITE.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_INVITE_CHORUS.value())){
-//    										showNotification(NOTIFICATION_TYPE_INFO, 
-//    														 createDelegateIntent(getApplicationContext(),createIntent(getApplicationContext(), iChannelSocialListActivity.class.getName()).putExtra("QuerySocialType", QuerySocialType.FRIEND.toString())), 
-//    														 getForegroundSpanText(this, getFriendInviteNotifyString(getApplicationContext(), fromObj),BeseyeJSONUtil.getJSONString(fromObj, USER_NAME)), 
-//    														 notifyObj);
-//    										return;
-//    									}
-//    									
-//    									
-//    									JSONObject workObj = BeseyeJSONUtil.getJSONObject(notifyObj, WORK_DATA);
-//    									String sWorktrType = null;
-//    									if(null != workObj){
-//    										sWorktrType = BeseyeJSONUtil.getJSONString(workObj, WORK_TYPE);
-//    										if(NOTIFY_T_CREATE.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_WORK_CMNT.value())){
-//    											showNotification(NOTIFICATION_TYPE_INFO, 
-//    															 createDelegateIntent(getApplicationContext(),createIntentToPlayer(getApplicationContext(), fromObj, workObj)), 
-//    															 getForegroundSpanText(this, getCreateNotifyString(getApplicationContext(), workObj, fromObj, sWorktrType),BeseyeJSONUtil.getJSONString(fromObj, USER_NAME), BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
-//    															 notifyObj);
-//    											return;
-//    										}
-//    										else if(NOTIFY_T_COMMENT.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_WORK_CMNT.value())){
-//    											showNotification(NOTIFICATION_TYPE_MSG, 
-//    															 createDelegateIntent(getApplicationContext(),createIntentToStatusMsgPage(getApplicationContext(), fromObj, workObj)), 
-//    															 getForegroundSpanText(this, getCommentNotifyString(getApplicationContext(), fromObj, workObj, sWorktrType), BeseyeJSONUtil.getJSONString(fromObj, USER_NAME),BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
-//    															 notifyObj);
-//    											return;
-//    										}
-//    										else if(NOTIFY_T_COMMENT_REPLY.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_WORK_CMNT.value())){
-//    											showNotification(NOTIFICATION_TYPE_MSG, 
-//    															 createDelegateIntent(getApplicationContext(),createIntentToStatusMsgPage(getApplicationContext(), fromObj, workObj)), 
-//    															 getForegroundSpanText(this, getMsgReplyNotifyString(getApplicationContext(), fromObj), BeseyeJSONUtil.getJSONString(fromObj, USER_NAME)), 
-//    															 notifyObj);
-//    											return;
-//    										}
-//    										else if(NOTIFY_T_CHO_INVITE.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_INVITE_CHORUS.value())){
-//    											showNotification(NOTIFICATION_TYPE_INFO, null, 
-//    															 iKalaNotificationUtil.getForegroundSpanText(this, getChrorusInviteNotifyString(getApplicationContext(), fromObj, workObj),  BeseyeJSONUtil.getJSONString(fromObj, USER_NAME),BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
-//    															 notifyObj);
-//    											return;
-//    										}
-//    										else if(NOTIFY_T_CHO_COMMIT.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_INVITE_CHORUS.value())){
-//    											showNotification(NOTIFICATION_TYPE_INFO, null, 
-//    															 iKalaNotificationUtil.getForegroundSpanText(this, getChrorusCommitNotifyString(getApplicationContext(), fromObj, workObj),  BeseyeJSONUtil.getJSONString(fromObj, USER_NAME),BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
-//    															 notifyObj);
-//    											return;
-//    										}
-//    										else if(NOTIFY_T_MSG.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_MSG.value())){
-//        										showNotification(NOTIFICATION_TYPE_MSG, 
-//        														 createDelegateIntent(getApplicationContext(),createIntentToConversationPage(getApplicationContext(), fromObj, workObj)),
-//        														 getForegroundSpanText(this, getSendMsgNotifyString(getApplicationContext(), fromObj), BeseyeJSONUtil.getJSONString(fromObj, USER_NAME)), 
-//        														 notifyObj);      									
-//        										return;
-//        									}
-//    										else 
-//    											Log.e(TAG, "setupItem(), invalid type "+strNotifyType);
-//    									}
-//    								}
-//    							}
-//    						}
-//	    				}
-//	    			} catch (JSONException e) {
-//	    				e.printStackTrace();
-//	    			}
-//	    		}
-//	    	}
+	private boolean isNewEvent(JSONObject eventObj){
+		boolean bRet = false;
+		if(null != eventObj){
+			if(null != mLastEventObj){
+				Log.i(TAG, "isNewEvent(), mLastEventObj: ("+mLastEventObj+")\n" +
+						   "	              eventObj: ("+eventObj+")");
+				long lLastEventStartTime = BeseyeJSONUtil.getJSONLong(mLastEventObj, BeseyeJSONUtil.MM_START_TIME);
+				long lNewEventStartTime = BeseyeJSONUtil.getJSONLong(eventObj, BeseyeJSONUtil.MM_START_TIME);
+				if(lLastEventStartTime < lNewEventStartTime){
+					Log.i(TAG, "isNewEvent(), lLastEventStartTime("+lLastEventStartTime+") < lNewEventStartTime ("+lNewEventStartTime+")");
+					return true;
+				}/*else if(lLastEventStartTime == lNewEventStartTime){
+					
+					int typeArrOld = BeseyeJSONUtil.getJSONInt(mLastEventObj, BeseyeJSONUtil.MM_TYPE_IDS);
+					int typeArrNew = BeseyeJSONUtil.getJSONInt(eventObj, BeseyeJSONUtil.MM_TYPE_IDS);
+					
+					if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArrNew)){
+						boolean bFoundNew = true;
+						if((0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArrOld) || 0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArrOld)) && typeArrOld <= typeArrNew){
+							bFoundNew = false;
+						}
+						if(bFoundNew){
+							Log.i(TAG, "isNewEvent(), found new event");
+							bRet = true;
+						}
+					}
+				}*/
+			}else{
+				bRet =  true;
+			}
+		}
+		return bRet;
+	}
+	
+	private void setLastEventItem(JSONObject eventObj){
+		if(null != eventObj){
+			Log.i(TAG, "setLastEventItem(), eventObj:"+eventObj.toString());
+			BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_LAST_EVENT, eventObj.toString());
+			mLastEventObj = eventObj;
+		}else{
+			Log.i(TAG, "setLastEventItem(), eventObj:"+null);
+			mLastEventObj = null;
+			BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_LAST_EVENT, "");
 		}
 	}
 	
-	private void showNotification(int iNotifyId, Intent intent, CharSequence text, JSONObject notifyObj) {
-		setLastNotifyItem(notifyObj);
+//	private void showFirstUnreadNotification(){
+//		if(null != mArrRet && 0 < mArrRet.length()){
+//			JSONObject obj = null;
+////			int iNotifyTypes = iKalaSettingsMgr.getInstance().getPushNotifyTypes();
+////			
+////			//get first unread itm
+////			if(null != mArrRet && 0 < iNotifyTypes){
+////	    		int iSize = mArrRet.length();
+////	    		for(int iIndex = 0 ; iIndex < iSize ; iIndex++){
+////	    			try {
+////	    				obj = (JSONObject) mArrRet.get(iIndex);
+////	    				if(null != obj && BeseyeJSONUtil.getJSONBoolean(obj, UNREAD)){
+////	    					JSONObject notifyObj = obj;//iKalaJSONUtil.getJSONObject(obj, NOTIFY_DATA);
+////    						if(null != notifyObj){
+////    							if(null != mLastNotifyId){
+////    								if(mLastNotifyUpdateTime > BeseyeJSONUtil.getJSONLong(notifyObj, UPDATE_TIME))
+////    									return;
+////    								
+////    								if(mLastNotifyId.equals(BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_ID)))
+////    									continue;
+////    							}
+////    							String strNotifyType = BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_TYPE);
+////    							if(null != strNotifyType){
+////    								JSONObject fromObj = BeseyeJSONUtil.getJSONObject(notifyObj, FROM);
+////    								if(null != fromObj){
+////    									if(NOTIFY_T_FRIEND_INVITE.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_INVITE_CHORUS.value())){
+////    										showNotification(NOTIFICATION_TYPE_INFO, 
+////    														 createDelegateIntent(getApplicationContext(),createIntent(getApplicationContext(), iChannelSocialListActivity.class.getName()).putExtra("QuerySocialType", QuerySocialType.FRIEND.toString())), 
+////    														 getForegroundSpanText(this, getFriendInviteNotifyString(getApplicationContext(), fromObj),BeseyeJSONUtil.getJSONString(fromObj, USER_NAME)), 
+////    														 notifyObj);
+////    										return;
+////    									}
+////    									
+////    									
+////    									JSONObject workObj = BeseyeJSONUtil.getJSONObject(notifyObj, WORK_DATA);
+////    									String sWorktrType = null;
+////    									if(null != workObj){
+////    										sWorktrType = BeseyeJSONUtil.getJSONString(workObj, WORK_TYPE);
+////    										if(NOTIFY_T_CREATE.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_WORK_CMNT.value())){
+////    											showNotification(NOTIFICATION_TYPE_INFO, 
+////    															 createDelegateIntent(getApplicationContext(),createIntentToPlayer(getApplicationContext(), fromObj, workObj)), 
+////    															 getForegroundSpanText(this, getCreateNotifyString(getApplicationContext(), workObj, fromObj, sWorktrType),BeseyeJSONUtil.getJSONString(fromObj, USER_NAME), BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
+////    															 notifyObj);
+////    											return;
+////    										}
+////    										else if(NOTIFY_T_COMMENT.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_WORK_CMNT.value())){
+////    											showNotification(NOTIFICATION_TYPE_MSG, 
+////    															 createDelegateIntent(getApplicationContext(),createIntentToStatusMsgPage(getApplicationContext(), fromObj, workObj)), 
+////    															 getForegroundSpanText(this, getCommentNotifyString(getApplicationContext(), fromObj, workObj, sWorktrType), BeseyeJSONUtil.getJSONString(fromObj, USER_NAME),BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
+////    															 notifyObj);
+////    											return;
+////    										}
+////    										else if(NOTIFY_T_COMMENT_REPLY.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_WORK_CMNT.value())){
+////    											showNotification(NOTIFICATION_TYPE_MSG, 
+////    															 createDelegateIntent(getApplicationContext(),createIntentToStatusMsgPage(getApplicationContext(), fromObj, workObj)), 
+////    															 getForegroundSpanText(this, getMsgReplyNotifyString(getApplicationContext(), fromObj), BeseyeJSONUtil.getJSONString(fromObj, USER_NAME)), 
+////    															 notifyObj);
+////    											return;
+////    										}
+////    										else if(NOTIFY_T_CHO_INVITE.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_INVITE_CHORUS.value())){
+////    											showNotification(NOTIFICATION_TYPE_INFO, null, 
+////    															 iKalaNotificationUtil.getForegroundSpanText(this, getChrorusInviteNotifyString(getApplicationContext(), fromObj, workObj),  BeseyeJSONUtil.getJSONString(fromObj, USER_NAME),BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
+////    															 notifyObj);
+////    											return;
+////    										}
+////    										else if(NOTIFY_T_CHO_COMMIT.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_INVITE_CHORUS.value())){
+////    											showNotification(NOTIFICATION_TYPE_INFO, null, 
+////    															 iKalaNotificationUtil.getForegroundSpanText(this, getChrorusCommitNotifyString(getApplicationContext(), fromObj, workObj),  BeseyeJSONUtil.getJSONString(fromObj, USER_NAME),BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
+////    															 notifyObj);
+////    											return;
+////    										}
+////    										else if(NOTIFY_T_MSG.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_MSG.value())){
+////        										showNotification(NOTIFICATION_TYPE_MSG, 
+////        														 createDelegateIntent(getApplicationContext(),createIntentToConversationPage(getApplicationContext(), fromObj, workObj)),
+////        														 getForegroundSpanText(this, getSendMsgNotifyString(getApplicationContext(), fromObj), BeseyeJSONUtil.getJSONString(fromObj, USER_NAME)), 
+////        														 notifyObj);      									
+////        										return;
+////        									}
+////    										else 
+////    											Log.e(TAG, "setupItem(), invalid type "+strNotifyType);
+////    									}
+////    								}
+////    							}
+////    						}
+////	    				}
+////	    			} catch (JSONException e) {
+////	    				e.printStackTrace();
+////	    			}
+////	    		}
+////	    	}
+//		}
+//	}
+	static int sRequestCode = (int) (System.currentTimeMillis()%100000);
+	
+	private void showNotification(int iNotifyId, Intent intent, CharSequence text, JSONObject eventObj) {
+		long lTs = BeseyeJSONUtil.getJSONLong(eventObj, BeseyeJSONUtil.MM_START_TIME);
+		
+		PendingIntent contentIntent = PendingIntent.getActivity(this, sRequestCode++ , intent, 0);
+		
+		Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+		if(null != contentIntent){
+			 final Notification notification = new Notification(
+				        				R.drawable.common_app_icon,       // the icon for the status bar
+				        				text,                        // the text to display in the ticker
+				        				/*System.currentTimeMillis()*/lTs); // the timestamp for the notification
+
+			 if(null != notification){
+				notification.setLatestEventInfo(
+						 this,                        // the context to use
+						 getText(R.string.app_name),
+						 							  // the title for the notification
+						 text,                        // the details to display in the notification
+						 contentIntent);              // the contentIntent (see above)
+
+				notification.defaults = Notification.DEFAULT_VIBRATE;
+				notification.flags = Notification.FLAG_AUTO_CANCEL;
+				
+				mNotificationManager.notify(
+				iNotifyId, // we use a string id because it is a unique
+				// number.  we use it later to cancel the notification
+				notification);
+			 }
+			 
+//			 Notification myNotification =  new NotificationCompat.Builder(this)
+//		        .setSmallIcon(R.drawable.ic_launcher)
+//		        .setAutoCancel(true)
+//		        .setContentIntent(contentIntent)
+//		        .setContentTitle(getText(R.string.app_name))
+//		        .setContentText(text).build();
+//			 
+//			 mNotificationManager.notify(
+//						iNotifyId, // we use a string id because it is a unique
+//						// number.  we use it later to cancel the notification
+//						myNotification);
+		}
 //		
 //		if(null == intent){
 //			intent = new Intent(this, iKalaDelegateActivity.class).putExtra(iKalaDelegateActivity.ACTION_BRING_FRONT, true);
@@ -757,7 +936,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		/*if(null != contentIntent)*/{
 			 final Notification notification = new Notification(
-				        				R.drawable.common_app_icon_shadow,       // the icon for the status bar
+				        				R.drawable.common_app_icon,       // the icon for the status bar
 				        				"RegId got",                        // the text to display in the ticker
 				        				/*System.currentTimeMillis()*/mLastNotifyUpdateTime); // the timestamp for the notification
 
@@ -964,6 +1143,85 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				if(0 == iRetCode && null != result && 0 < result.size()){
 					Log.i(TAG, "onPostExecute(), DelRegisterIDTask OK");
 				}
+			}else if(task instanceof BeseyeMMBEHttpTask.GetIMPEventListTask){
+				if(0 == iRetCode && null != result && 0 < result.size()){
+					Log.i(TAG, "onPostExecute(), GetIMPEventListTask "+result.get(0).toString());
+					int miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
+					if(0 < miEventCount){
+						JSONArray EntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);
+						long lLastEventStartTime = null != mLastEventObj?BeseyeJSONUtil.getJSONLong(mLastEventObj, BeseyeJSONUtil.MM_START_TIME):-1;
+						for(int idx = 0;idx<miEventCount;idx++){
+							JSONObject obj;
+							try {
+								obj = EntList.getJSONObject(idx);
+								
+								long lNewEventStartTime = BeseyeJSONUtil.getJSONLong(obj, BeseyeJSONUtil.MM_START_TIME);
+								if(lNewEventStartTime < lLastEventStartTime){
+									Log.d(TAG, "no new events, break");
+									break;
+								}
+								
+								int typeArr = BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.MM_TYPE_IDS);
+								if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr)){
+									if(-1 == lLastEventStartTime || (isNewEvent(obj))){
+										setLastEventItem(obj);
+										Intent intent = new Intent();
+										intent.setClassName(this, OpeningPage.class.getName());
+										
+										Intent delegateIntent = new Intent();
+										delegateIntent.setClassName(this, CameraViewActivity.class.getName());
+										delegateIntent.putExtra(CameraViewActivity.KEY_DVR_STREAM_MODE, true);
+										delegateIntent.putExtra(CameraViewActivity.KEY_TIMELINE_INFO, obj.toString());
+										delegateIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+										
+										intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+										intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);
+//										intent.putExtra(OpeningPage.KEY_FROM_ACTIVITY, context.getClass().getSimpleName());
+										
+										Log.i(TAG, "obj:"+obj.toString());
+										Log.i(TAG, "mCam_obj:"+mCam_obj.toString());
+										
+										//Log.i(TAG, "mCam_obj2:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+
+										String strMsg = null;
+										if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr)){
+											//"[Register name] was recognized by [camera name] at [Time]"
+											JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
+											if(null != faceList && 0 < faceList.length()){
+												int iFaceId = -1;
+												for(int i = 0;i < faceList.length();i++){
+													if(0 < faceList.getInt(i)){
+														iFaceId = faceList.getInt(i);
+														break;
+													}
+												}
+												FACE_LIST face = BeseyeJSONUtil.findFacebyId(iFaceId-1);
+												//BeseyeJSONUtil.FACE_LIST face = BeseyeJSONUtil.findFacebyId(faceList.getInt(faceList.length()-1)-1);
+												if(null != face){
+													strMsg = String.format("%s was recognized by %s at %s", face.mstrName, "Face Room", new Date(lNewEventStartTime).toLocaleString());
+												}else{
+													strMsg = String.format("Stranger was identified by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
+												}
+											}else{
+												strMsg = String.format("Stranger was identified by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
+											}
+										}else{
+											strMsg = String.format("Motion activity was detected by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
+										}
+										
+										showNotification(NOTIFICATION_TYPE_INFO, intent, strMsg, obj);
+										break;
+									}
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				if(task == mGetIMPEventListTask){
+					mGetIMPEventListTask = null;
+				}
 			}
 		}
 	}
@@ -1011,6 +1269,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}}, (miWSDisconnectRetry++)*1000);
     		
     	}
+	}
+	
+	@Override
+	public void onAudioAmplitudeUpdate(final float fRatio){
+		
 	}
 
 	@Override

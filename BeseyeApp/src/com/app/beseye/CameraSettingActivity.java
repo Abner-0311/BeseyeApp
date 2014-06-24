@@ -4,16 +4,21 @@ import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
+import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,8 +46,7 @@ import android.widget.Toast;
 public class CameraSettingActivity extends BeseyeBaseActivity 
 								   implements OnSwitchBtnStateChangedListener,
 								   			  OnClickListener{
-	static public final String KEY_VCAM_ID = "KEY_VCAM_ID";
-	static public final String KEY_VCAM_NAME = "KEY_VCAM_NAME";
+	
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerDesc,  mTxtPowerTitle, mTxtViewUpDownTitle;
 	private ImageView mIvViewUpDownCheck, mIvViewUpDownCheckBg;
@@ -50,6 +54,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	private String mStrVCamID = "Bes0001";
 	private String mStrVCamName = null;
 	private String mStrOldVCamName = null;
+	private JSONObject mCam_obj;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +68,18 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		getSupportActionBar().setTitle(R.string.cam_setting_title);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		mStrVCamID = getIntent().getStringExtra(KEY_VCAM_ID);
-		mStrVCamName = getIntent().getStringExtra(KEY_VCAM_NAME);
+		try {
+			mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+			if(null != mCam_obj){
+				mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+				mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
+			}
+		} catch (JSONException e1) {
+			Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
+		}
+		
+//		mStrVCamID = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_ID);
+//		mStrVCamName = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_NAME);
 		mCamSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_camera_switch);
 		if(null != mCamSwitchBtn){
 			mCamSwitchBtn.setOnSwitchBtnStateChangedListener(this);
@@ -110,7 +125,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		
 		TextView txtSiren = (TextView)findViewById(R.id.txt_setting_emergency_siren);
 		if(null != txtSiren){
-			txtSiren.setText("Trigger dettach cam !!!");
+			txtSiren.setText("Detach cam !!!");
 		}
 	}
 	
@@ -162,7 +177,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 	
 	private void updateSettingState(){
-		CAM_CONN_STATUS iCamState = CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID);
+		CAM_CONN_STATUS iCamState =  CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
 		if(null != mCamSwitchBtn){
 			if(CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
 				mCamSwitchBtn.setEnabled(false);
@@ -181,7 +196,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			}else{
 				mTxtViewUpDownTitle.setEnabled(true);
 				mIvViewUpDownCheckBg.setEnabled(true);
-				mIvViewUpDownCheck.setVisibility((0 == CamSettingMgr.getInstance().getVideoUpsideDown(TMP_CAM_ID))?View.INVISIBLE:View.VISIBLE);
+				mIvViewUpDownCheck.setVisibility((0 == BeseyeJSONUtil.getJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, 0))?View.INVISIBLE:View.VISIBLE);
 			}
 		}
 		
@@ -205,9 +220,12 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 
 	@Override
-	public void onSwitchBtnStateChanged(SwitchState state) {
-		CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.toCamConnStatus((SwitchState.SWITCH_ON.equals(state))?1:0));
-		setResult(RESULT_OK);
+	public void onSwitchBtnStateChanged(SwitchState state, View view) {
+		BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, SwitchState.SWITCH_ON.equals(state)?1:0);
+		//CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.toCamConnStatus((SwitchState.SWITCH_ON.equals(state))?1:0));
+		Intent resultIntent = new Intent();
+		resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+		setResult(RESULT_OK, resultIntent);
 		updatePowerDesc(state);
 		//monitorAsyncTask(new BeseyeCamBEHttpTask.SetLEDStatusTask(this), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
 		monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
@@ -228,8 +246,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			case R.id.iv_video_upside_down_check_bg:{
 				if(null != mIvViewUpDownCheck){
 					mIvViewUpDownCheck.setVisibility((View.VISIBLE == mIvViewUpDownCheck.getVisibility())?View.INVISIBLE:View.VISIBLE);
-					CamSettingMgr.getInstance().setVideoUpsideDown(TMP_CAM_ID, (View.VISIBLE == mIvViewUpDownCheck.getVisibility())?1:0);
-					setResult(RESULT_OK);
+					//CamSettingMgr.getInstance().setVideoUpsideDown(TMP_CAM_ID, (View.VISIBLE == mIvViewUpDownCheck.getVisibility())?1:0);
+					BeseyeJSONUtil.setJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, (View.VISIBLE == mIvViewUpDownCheck.getVisibility())?1:0);
+					Intent resultIntent = new Intent();
+					resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+					setResult(RESULT_OK, resultIntent);
 				}
 				break;
 			}
@@ -253,6 +274,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(this), true, mStrVCamID);
 				//monitorAsyncTask(new BeseyeCamBEHttpTask.SetWiFiConfigTask(this), true, mStrVCamID, "beseye", "0630BesEye", "3");
 				//showMyDialog(DIALOG_ID_CAM_INFO);
+				showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
 				break;
 			}
 			case R.id.vg_hw_settings:{
@@ -260,14 +282,15 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				break;
 			}
 			case R.id.vg_siren:{
-				monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(this), true, mStrVCamID);
+				showMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
 				break;
 			}
 			default:
 				Log.d(TAG, "CameraSettingActivity::onClick(), unhandled event by view:"+view);
 		}
 	}
-	
+	private String mstrNameCandidate ;
+	private boolean mbTriggerDetachAfterReboot = false;
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		Log.d(TAG, "CameraSettingActivity::onCreateDialog()");
@@ -292,19 +315,75 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 							EditText etCamName = (EditText)((Dialog)dialog).findViewById(R.id.et_cam_name);
 							if(null != etCamName){
 								Log.i(TAG, "onDismiss(), cam name is "+etCamName.getText().toString());
-								CamSettingMgr.getInstance().setCamName(TMP_CAM_ID, etCamName.getText().toString());
-								if(ASSIGN_ST_PATH){
-									STREAM_PATH_LIST.set(0, CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
-								}else if(!mStrVCamName.equals(etCamName.getText().toString())){
-									monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(CameraSettingActivity.this), true, mStrVCamID, etCamName.getText().toString());
+								mstrNameCandidate = etCamName.getText().toString();
+								if(null != mstrNameCandidate && 0 < mstrNameCandidate.length()){
+									if(ASSIGN_ST_PATH){
+										STREAM_PATH_LIST.set(0, mstrNameCandidate);
+									}else if(null == mStrVCamName || !mStrVCamName.equals(mstrNameCandidate)){
+										monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(CameraSettingActivity.this), true, mStrVCamID, etCamName.getText().toString());
+									}
+								}else{
+									Bundle b = new Bundle();
+									b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_empty_name_warning));
+									showMyDialog(DIALOG_ID_WARNING, b);
 								}
-								setResult(RESULT_OK);
+								//CamSettingMgr.getInstance().setCamName(TMP_CAM_ID, etCamName.getText().toString());
 							}
 						}});
 				}
             	break;
 			}
-
+			case DIALOG_ID_CAM_DETTACH_CONFIRM:{
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            	builder.setTitle(getString(R.string.dialog_title_warning));
+            	builder.setMessage(String.format(getString(R.string.dialog_dettach_cam),mStrVCamName));
+				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				    public void onClick(DialogInterface dialog, int item) {
+				    	removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
+				    	monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);	
+				    	//mbTriggerDetachAfterReboot = true;
+				    	//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(-1), true, mStrVCamID);
+//				    	BeseyeUtils.postRunnable(new Runnable(){
+//							@Override
+//							public void run() {
+//															
+//							}}, 1000);
+				    }
+				});
+				builder.setOnCancelListener(new OnCancelListener(){
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
+					}});
+				
+				dialog = builder.create();
+				if(null != dialog){
+					dialog.setCanceledOnTouchOutside(true);
+				}
+				break;
+			}
+			case DIALOG_ID_CAM_REBOOT_CONFIRM:{
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            	builder.setTitle(getString(R.string.dialog_title_warning));
+            	builder.setMessage(String.format(getString(R.string.dialog_reboot_cam),mStrVCamName));
+				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				    public void onClick(DialogInterface dialog, int item) {
+				    	removeMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this), true, mStrVCamID);
+				    }
+				});
+				builder.setOnCancelListener(new OnCancelListener(){
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						removeMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+					}});
+				
+				dialog = builder.create();
+				if(null != dialog){
+					dialog.setCanceledOnTouchOutside(true);
+				}
+				break;
+			}
 			default:
 				dialog = super.onCreateDialog(id);
 		}
@@ -379,7 +458,8 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						int iState = getJSONInt(obj, LED_STATUS, 0);
-						CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.toCamConnStatus(iState));
+						BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.toCamConnStatus(iState).getValue());
+						//CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.toCamConnStatus(iState));
 						updatePowerDesc(iState > 0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
 						updateSettingState();
 					}
@@ -392,15 +472,24 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			}else if(task instanceof BeseyeAccountTask.CamDettachTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
-					onToastShow(task, "Dettach  Successfully.");
-					Bundle b = new Bundle();
-					b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-					launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+					onToastShow(task, "Detach  Successfully.");
+					if(BeseyeConfig.COMPUTEX_PAIRING){
+						invokeLogout();
+					}else{
+						Bundle b = new Bundle();
+						b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
+						launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+					}
 				}
 			}else if(task instanceof BeseyeAccountTask.SetCamAttrTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					onToastShow(task, "Change cam name Successfully.");
+					mStrVCamName = mstrNameCandidate;
+					BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, mstrNameCandidate);
+					Intent resultIntent = new Intent();
+					resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+					setResult(RESULT_OK, resultIntent);
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetSpeakerStatusTask){
 				if(0 == iRetCode)
@@ -439,8 +528,18 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 			}else if(task instanceof BeseyeCamBEHttpTask.RestartCamTask){
-				if(0 == iRetCode)
+				if(0 == iRetCode){
+					onToastShow(task, "Reboot cam Successfully.");
 					Log.i(TAG, "onPostExecute(), "+result.toString());
+				}else{
+					onToastShow(task, "Reboot cam failed.");
+				}
+				
+				if(mbTriggerDetachAfterReboot){
+					monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);
+					//mbTriggerDetachAfterReboot = false;
+				}
+				
 			}else if(task instanceof BeseyeCamBEHttpTask.ReconnectMMTask){
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());

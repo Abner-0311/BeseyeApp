@@ -134,15 +134,18 @@ int RTMP_RegisterCB(RTMP *r,
 					void (*rtmpStatusCallback)(void* , int , void*),
 					void (*rtmpErrorCallback)(void* , int , void*),
 					void* userData){
+	int iRet = 0;
 	RTMP_Log(RTMP_LOGINFO, "%s++, r:%d, rtmpCallback:%x, rtmpStatusCallback:%x, userData:%x", __FUNCTION__, r,rtmpCallback, rtmpStatusCallback, userData);
 	if(NULL != r){
 		r->m_rtmpCallback = rtmpCallback;
 		r->m_rtmpStatusCallback = rtmpStatusCallback;
 		r->m_rtmpErrorCallback = rtmpErrorCallback;
 		r->mUserCb = userData;
+		iRet = 1;
 	}else{
 		RTMP_Log(RTMP_LOGINFO, "%s, r is null", __FUNCTION__);
 	}
+	return iRet;
 }
 
 static void (*metadata_callback)(RTMP* , AMFObject*) = NULL;
@@ -283,8 +286,9 @@ RTMP_Init(RTMP *r)
   r->m_nServerBW = 2500000;
   r->m_fAudioCodecs = 3191.0;
   r->m_fVideoCodecs = 252.0;
-  r->Link.timeout = 30;
+  r->Link.timeout = 9;
   r->Link.swfAge = 30;
+  r->m_bExitFlag = FALSE;
 }
 
 void
@@ -873,9 +877,7 @@ RTMP_Connect0(RTMP *r, struct sockaddr * service)
   /* set timeout */
   {
     SET_RCVTIMEO(tv, r->Link.timeout);
-    if (setsockopt
-        (r->m_sb.sb_socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(tv)))
-      {
+    if (setsockopt(r->m_sb.sb_socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(tv))){
         RTMP_Log(RTMP_LOGERROR, "%s, Setting socket timeout to %ds failed!",
 	    __FUNCTION__, r->Link.timeout);
 
@@ -883,6 +885,15 @@ RTMP_Connect0(RTMP *r, struct sockaddr * service)
   		  r->m_rtmpErrorCallback(r->mUserCb, NETWORK_CONNECTION_ERROR, "Setting socket timeout failed");
         }
       }
+
+    SET_RCVTIMEO(tv2, 6);
+    if(setsockopt(r->m_sb.sb_socket, SOL_SOCKET, SO_SNDTIMEO, &tv2, sizeof(tv2)) < 0){
+    	RTMP_Log(RTMP_LOGERROR, "%s, Setting socket timeout to %ds failed!",__FUNCTION__, 6);
+
+		if(r->m_rtmpErrorCallback){
+		  r->m_rtmpErrorCallback(r->mUserCb, NETWORK_CONNECTION_ERROR, "Setting socket timeout SO_SNDTIMEO failed");
+		}
+    }
   }
 
   setsockopt(r->m_sb.sb_socket, IPPROTO_TCP, TCP_NODELAY, (char *) &on, sizeof(on));
@@ -944,6 +955,7 @@ RTMP_Connect1(RTMP *r, RTMPPacket *cp)
       RTMP_Close(r);
       return FALSE;
     }
+  RTMP_Log(RTMP_LOGERROR, "%s --- ", __FUNCTION__);
   return TRUE;
 }
 
@@ -974,6 +986,9 @@ RTMP_Connect(RTMP *r, RTMPPacket *cp)
     return FALSE;
 
   r->m_bSendCounter = TRUE;
+
+  if(r->m_rtmpStatusCallback)
+  	  r->m_rtmpStatusCallback(r->mUserCb, STREAM_CONNECTING, r);
 
   return RTMP_Connect1(r, cp);
 }
@@ -1028,8 +1043,9 @@ RTMP_ConnectStream(RTMP *r, int seekTime)
 
   r->m_mediaChannel = 0;
 
-  while (!r->m_bPlaying && RTMP_IsConnected(r) && RTMP_ReadPacket(r, &packet))
+  while (!r->m_bExitFlag && !r->m_bPlaying && RTMP_IsConnected(r) && RTMP_ReadPacket(r, &packet))
     {
+	  RTMP_Log(RTMP_LOGERROR, "%s, %d --- ", __FUNCTION__, r->m_bExitFlag);
       if (RTMPPacket_IsReady(&packet))
 	{
 	  if (!packet.m_nBodySize)
@@ -1792,7 +1808,7 @@ SendFCUnpublish(RTMP *r)
 
 SAVC(publish);
 SAVC(live);
-SAVC(record);
+//SAVC(record);
 
 static int
 SendPublish(RTMP *r)
@@ -2287,6 +2303,7 @@ RTMP_SendCtrl(RTMP *r, short nType, unsigned int nObject, unsigned int nTime)
 static void
 AV_erase(RTMP_METHOD *vals, int *num, int i, int freeit)
 {
+  //RTMP_Log(RTMP_LOGERROR, "AV_erase(), vals[%d].name.av_val %s", i, vals[i].name.av_val);
   if (freeit)
     free(vals[i].name.av_val);
   (*num)--;
@@ -2317,6 +2334,8 @@ AV_queue(RTMP_METHOD **vals, int *num, AVal *av, int txn)
   (*vals)[*num].num = txn;
   (*vals)[*num].name.av_len = av->av_len;
   (*vals)[(*num)++].name.av_val = tmp;
+
+  //RTMP_Log(RTMP_LOGERROR, "AV_queue(), Invoking %s, txn:%d", av->av_val, txn);
 }
 
 static void
@@ -2630,6 +2649,7 @@ HandleInvoke(RTMP *r, const char *body, unsigned int nBodySize)
     }
 leave:
   AMF_Reset(&obj);
+  //RTMP_Log(RTMP_LOGERROR, "HandleInvoke(), ret: %d", ret);
   return ret;
 }
 
@@ -3484,7 +3504,7 @@ RTMP_SendPacket(RTMP *r, RTMPPacket *packet, int queue)
       char *ptr;
       ptr = packet->m_body + (packet->m_packetType == 0x11?2:1);
       AMF_DecodeString(ptr, &method);
-      RTMP_Log(RTMP_LOGDEBUG, "Invoking %s", method.av_val);
+      RTMP_Log(RTMP_LOGERROR, "Invoking %s", method.av_val);
       /* keep it in call queue till result arrives */
       if (queue) {
         int txn;
@@ -3607,7 +3627,7 @@ RTMP_Close(RTMP *r)
 #endif
 
   if(r->m_rtmpStatusCallback)
-	  r->m_rtmpStatusCallback(r->mUserCb, STREAM_CLOSE, NULL);
+	  r->m_rtmpStatusCallback(r->mUserCb, STREAM_INTERNAL_CLOSE, NULL);
 
   RTMP_Log(RTMP_LOGERROR, "%s-",__FUNCTION__);
 }

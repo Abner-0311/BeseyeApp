@@ -399,7 +399,7 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
     private void connectToCamViaWS(){
     	if(!isCamWSServerConnected()){
     		if(miRetryWSServer++ < 5){
-    			connectCamWSServer("192.168.2.85", 5432);
+    			connectCamWSServer("192.168.2.88", 5432);
     		}else{
     			enterStopMode();
     			System.exit(0);
@@ -637,14 +637,17 @@ public class AubioTestActivity extends Activity implements IFreqAnalyzeResultCB{
         	mBtnDelRec.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View arg0) {
-					
 					if(!receiveAudioBufThreadRunning()){
-						receiveAudioBufFromCam("");
+						String host = etDecode.getText().toString();
+						if(receiveAudioBufFromCam((null != host && 0<host.length())?host:"192.168.2.180"))
+							mBtnDelRec.setText("Stop Recording");
 					}else{
 						stopReceiveAudioBufThread();
+						Toast.makeText(AubioTestActivity.this, "get file from /mnt/sdcard/beseye.pcm", Toast.LENGTH_LONG).show();
+						mBtnDelRec.setText("Start Recording");
 					}
 					
-					setTestMode(true, true);
+					//setTestMode(true, true);
 //					//BT Testing
 //					int iDistance = etDistance.getText().length() == 0 ? 0 : Integer.parseInt(etDistance.getText().toString());
 //					StringBuilder tmp = new StringBuilder();

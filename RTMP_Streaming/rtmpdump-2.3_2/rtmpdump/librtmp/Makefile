@@ -4,9 +4,10 @@ prefix=/usr/local
 
 CC=$(CROSS_COMPILE)gcc
 LD=$(CROSS_COMPILE)ld
-AR=$(CROSS_COMPILE)ar
+#AR=$(CROSS_COMPILE)ar
 #iOS
-#AR=xcrun ar
+AR=xcrun ar
+#AR=/Volumes/Xcode/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar
 
 SYS=posix
 CRYPTO=OPENSSL

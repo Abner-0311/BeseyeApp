@@ -278,8 +278,8 @@ public class WifiAPSetupDelegator implements OnSupplicantStatusChangeCallback, O
 					BeseyeUtils.removeRunnable(mTargetAPConnectExpire);
 					mTargetAPConnectExpire = null;
 				}
-				if(!REDDOT_DEMO)
-					pingTargetAP();
+//				if(!REDDOT_DEMO)
+//					pingTargetAP();
 				break;
 			}
 			case TARGET_AP_CONNECTIVITY_VERIFYING:{

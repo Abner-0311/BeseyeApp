@@ -105,6 +105,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_NAME 				= "Name";
 	public static final String ACC_LOC 					= "Location";
 	public static final String ACC_ACTIVATED 			= "IsActivated";
+	public static final String ACC_VCAM 				= "Vcam";
 	
 	public static final String ACC_SES 					= "UserSession";
 	public static final String ACC_SES_TOKEN 			= "SessionToken";
@@ -128,9 +129,14 @@ public class BeseyeJSONUtil {
 	public static final String ACC_USER_ID 				= "user_id";
 	public static final String ACC_VCAM_ID 				= "VcamUid";
 	public static final String ACC_VCAM_ATTR 			= "VcamAttr";
+	public static final String ACC_VCAM_ATTACHED 		= "IsAttached";
+	public static final String ACC_VCAM_CONN_STATE 		= "VcamConnState";
+	public static final String ACC_VCAM_THUMB 			= "VcamThumbnail";
 	
 	public static final String ACC_VCAM_CNT 			= "VcamsCnt";
 	public static final String ACC_VCAM_LST 			= "Vcams";
+	public static final String ACC_DEMO_VCAM_CNT 		= "DemoVcamsCnt";
+	public static final String ACC_DEMO_VCAM_LST 		= "DemoVcams";
 	public static final String ACC_VCAM_PLAN 			= "Plan";
 	public static final String ACC_VCAM_HW_ID 			= "PhyCamHwSn";
 	
@@ -147,8 +153,116 @@ public class BeseyeJSONUtil {
 	public static final String MM_SERVER 				= "server";
 	public static final String MM_STREAM 				= "stream";
 	public static final String MM_START_TIME 			= "startTime";
+	public static final String MM_END_TIME 				= "endTime";
 	public static final String MM_DURATION 				= "duration";
 	public static final String MM_PLAYLIST 				= "playList";
+	
+	public static final String MM_OBJ_LST 				= "objs";
+	public static final String MM_OBJ_CNT 				= "objCount";
+	
+	public static final String MM_TYPE_IDS				= "typeIds";
+	public static final int MM_TYPE_ID_MOTION			= 1;
+	public static final int MM_TYPE_ID_FACE				= 2;
+	
+	public static final String MM_FACE_IDS 				= "faceIds";
+	
+	static public class FACE_LIST{
+		public int miId;
+		public String mstrName;
+		public String miPhototId;
+		
+		public FACE_LIST(int miId, String mstrName, String miPhototId) {
+			super();
+			this.miId = miId;
+			this.mstrName = mstrName;
+			this.miPhototId = miPhototId;
+		}
+	}
+	
+	static public FACE_LIST findFacebyId(int id){
+		if(0 <= id && id<faceList.length)
+			return faceList[id];
+		else
+			return null;
+	}
+	
+	static final public FACE_LIST faceList[] =
+		{
+		    new FACE_LIST(1, "Abner", "Abner 1.jpg"),
+
+		    new FACE_LIST(2, "Amos", "Amos.jpg"),
+
+		    new FACE_LIST(3, "Carlos", "Carlos.jpg"),
+
+		    new FACE_LIST(4, "Chris", "Chris_head.jpg"),
+
+		    new FACE_LIST(5, "Claudia", "Claudia_20110817.jpg"),
+
+		    new FACE_LIST(6, "Doris", "Doris.jpg"),
+
+		    new FACE_LIST(7, "Yolux", "DSC04568.JPG"),
+
+		    new FACE_LIST(8, "Giben", "Giben.Lin.png"),
+
+		    new FACE_LIST(9, "Olive", "Olive.jpg"),
+
+		    new FACE_LIST(10, "Peggy", "peggy.jpg"),
+
+		    new FACE_LIST(11, "Selena", "selena.JPG"),
+
+		    new FACE_LIST(12, "Shaq", "Shaq.jpg"),
+
+		    new FACE_LIST(13, "Yehudi", "Yehudi.JPG"),
+
+		    new FACE_LIST(14, "Zara", "zara.jpg"),
+
+		    new FACE_LIST(15, "Cuthbert", "Cuthbert1.jpg"),   //-4
+
+		    new FACE_LIST(16, "Cuthbert", "Cuthbert2.JPG"),   //-6
+
+		    new FACE_LIST(17, "Peggy", "IMG_9856.JPG"),
+
+		    new FACE_LIST(18, "Meg", "IMG_9868.JPG"),
+
+		    new FACE_LIST(19, "Olive", "IMG_9872.JPG"),
+
+		    new FACE_LIST(20, "Giben", "IMG_9873.JPG"),
+
+		    new FACE_LIST(21, "Zara", "IMG_9875.JPG"),
+
+		    new FACE_LIST(22, "Selena", "IMG_9876.JPG"),
+
+		    new FACE_LIST(23, "Yolux", "IMG_9880.JPG"),
+
+		    new FACE_LIST(24, "Chris", "IMG_9881.JPG"),
+
+		    new FACE_LIST(25, "Yehudi", "IMG_9882.JPG"),
+
+		    new FACE_LIST(26, "Carlos", "IMG_9883.JPG"),
+
+		    new FACE_LIST(27, "Abner", "IMG_9884.JPG"),
+
+		    new FACE_LIST(28, "Shaq", "IMG_9885.JPG"),
+
+		    new FACE_LIST(29, "Jobbie", "IMG_9886.JPG"),
+
+		    new FACE_LIST(30, "Karen", "IMG_9887.JPG"),
+
+		    new FACE_LIST(31, "Doris", "IMG_9890.JPG")
+
+		};
+	
+	public static final String MM_IS_LIVE 				= "isLive";
+	
+	public static final String MM_THUMBNAIL 			= "thumbnail";
+	public static final String MM_THUMBNAIL_PATH 		= "path";
+	public static final String MM_VCAM_UUID 			= "vcamUuid";	
+	public static final String MM_SIZE 					= "size";
+	public static final String MM_MAX_NUM 				= "maxNumber";
+	public static final String MM_EVT_LST 				= "eventList";
+	public static final String MM_THUMBNAILS 			= "thumbnails";
+	public static final String MM_TIMESTAMP 			= "timestamp";
+	
 	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "GCMProjectID";
@@ -166,7 +280,7 @@ public class BeseyeJSONUtil {
 		try{
 			objRet = new JSONObject(json);
 		} catch (JSONException e) {
-			Log.w(TAG, "newJSONObject(), can't new JSONObject by "+json);
+			Log.d(TAG, "newJSONObject(), can't new JSONObject by "+json);
 			objRet = null;
 		}
 		return objRet;
@@ -177,7 +291,7 @@ public class BeseyeJSONUtil {
 		try{
 			objRet = new JSONArray(json);
 		} catch (JSONException e) {
-			Log.w(TAG, "newgetJSONArray(), can't new JSONArray by "+json);
+			Log.d(TAG, "newgetJSONArray(), can't new JSONArray by "+json);
 			objRet = null;
 		}
 		return objRet;
@@ -189,7 +303,7 @@ public class BeseyeJSONUtil {
 			try {
 				objRet = obj.getJSONObject(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONObject(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONObject(), can't get value by "+strKey);
 				objRet = null;
 			}
 		}
@@ -202,7 +316,7 @@ public class BeseyeJSONUtil {
 			try {
 				objRet = obj.getJSONArray(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONArray(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONArray(), can't get value by "+strKey);
 				objRet = null;
 			}
 		}
@@ -230,7 +344,7 @@ public class BeseyeJSONUtil {
 					strRet = strDefault;
 				}
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONString(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONString(), can't get value by "+strKey);
 				strRet = strDefault;
 			}
 		}
@@ -247,7 +361,7 @@ public class BeseyeJSONUtil {
 			try {
 				iRet = obj.getInt(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONInt(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONInt(), can't get value by "+strKey);
 			}
 		}
 		return iRet;
@@ -259,7 +373,7 @@ public class BeseyeJSONUtil {
 			try {
 				lRet = obj.getLong(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONLong(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONLong(), can't get value by "+strKey);
 				lRet = -1;
 			}
 		}
@@ -272,7 +386,7 @@ public class BeseyeJSONUtil {
 			try {
 				dRet = obj.getDouble(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONDouble(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONDouble(), can't get value by "+strKey);
 				dRet = Double.NaN;
 			}
 		}
@@ -289,7 +403,7 @@ public class BeseyeJSONUtil {
 			try {
 				bRet = obj.getBoolean(strKey);
 			} catch (JSONException e) {
-				Log.w(TAG, "getJSONBoolean(), can't get value by "+strKey);
+				Log.d(TAG, "getJSONBoolean(), can't get value by "+strKey);
 			}
 		}
 		return bRet;
@@ -357,20 +471,35 @@ public class BeseyeJSONUtil {
 		if(null != dest && null != obj){
 			JSONArray arr = BeseyeJSONUtil.getJSONArray(dest, OBJ_LST);
 			if(null != arr){
-				try {
-					JSONArray copy = new JSONArray(arr.toString());
-					if(null != copy){
-						arr.put(0, obj);
-						int iCount = copy.length();
-						for(int i = 0 ;i< iCount;i++){
-							arr.put(i+1, copy.getJSONObject(i));
-						}
+				if(appendObjToArrayBegin(arr, obj)){
+					try {
 						dest.put(OBJ_CNT, BeseyeJSONUtil.getJSONInt(dest, OBJ_CNT)+1);
 						bRet = true;
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-				} catch (JSONException e) {
-					e.printStackTrace();
 				}
+			}
+		}
+		return bRet;
+	}
+	
+	static public boolean appendObjToArrayBegin(JSONArray arr, JSONObject obj){
+		boolean bRet = false;
+		if(null != arr){
+			try {
+				JSONArray copy = new JSONArray(arr.toString());
+				if(null != copy){
+					arr.put(0, obj);
+					int iCount = copy.length();
+					for(int i = 0 ;i< iCount;i++){
+						arr.put(i+1, copy.getJSONObject(i));
+					}
+					bRet = true;
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
 		}
 		return bRet;
@@ -444,6 +573,32 @@ public class BeseyeJSONUtil {
 				}
 				bRet = true;
 			}
+		}
+		return bRet;
+	}
+	
+	static public boolean setJSONInt(JSONObject obj, String strKey, int iVal){
+		boolean bRet = false;
+		try {
+			if(null != obj && null != strKey){
+				obj.put(strKey, iVal);
+				bRet = true;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return bRet;
+	}
+	
+	static public boolean setJSONString(JSONObject obj, String strKey, String strVal){
+		boolean bRet = false;
+		try {
+			if(null != obj &&  null != strKey && null != strVal){
+				obj.put(strKey, strVal);
+				bRet = true;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 		return bRet;
 	}

@@ -52,6 +52,7 @@ public class WebsocketsMgr {
 		public void onChannelConnected();
 		public void onMessageReceived(String msg);
 		public void onChannelClosed();
+		public void onAudioAmplitudeUpdate(float fRatio);
 	}
 	
 	public void registerOnWSChannelStateChangeListener(OnWSChannelStateChangeListener listener){

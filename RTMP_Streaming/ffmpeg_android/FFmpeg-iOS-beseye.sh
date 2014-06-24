@@ -4,7 +4,7 @@
 
 IOS_LIBRTMP=`cd ../rtmpdump-2.3_2;pwd`
 DIR_OPENSSL=`cd ../openssl-1.0.1e/build_ios;pwd`
-rm ffmpeg/config.h
+#rm ffmpeg/config.h
 
 FFMPEG_FLAGS2="--enable-cross-compile --disable-debug --disable-ffmpeg \
 --disable-ffplay --disable-ffprobe --disable-ffserver \

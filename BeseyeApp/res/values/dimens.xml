@@ -9,8 +9,17 @@
     <dimen name="liveview_toolbar_height_portrait">112dp</dimen>
     <dimen name="liveview_footer_height_portrait">56dp</dimen>
     
+    <dimen name="liveview_protrait_btn_hori_margin">20dp</dimen>
+    
+    <dimen name="liveview_mic_bg_margin_bottom">22dp</dimen>
+    <dimen name="liveview_hold_to_talk_margin_bottom">32dp</dimen>
+    <dimen name="liveview_hold_to_talk_margin_right">22dp</dimen>
+    
     <dimen name="liveview_navbar_font_size_large">22sp</dimen>
+    
     <dimen name="liveview_navbar_font_size">16sp</dimen>
+    <dimen name="liveview_navbar_margin_hori">10dp</dimen>
+    
     <dimen name="liveview_toolbar_font_size">25sp</dimen>
     <dimen name="liveview_power_state_font_size">21sp</dimen>
     <dimen name="liveview_power_state_sub_font_size">18sp</dimen>
@@ -97,6 +106,8 @@
     <dimen name="datetime_picker_desc_marginTop">32dp</dimen>
     <dimen name="datetime_picker_desc_marginBottom">32dp</dimen>
     
+    <dimen name="cameralist_nav_margin_hori">10dp</dimen>
+    
     <dimen name="cameralist_videoblock_margin">6dp</dimen>
     <dimen name="cameralist_videoblock_marginTop">8dp</dimen>
     <dimen name="cameralist_videoblock_inner">7dp</dimen>
@@ -120,4 +131,28 @@
     <dimen name="cameralist_failedBottom_top">24dp</dimen>
     <dimen name="cameralist_failed_text_margin">16dp</dimen>
     
+    
+    <dimen name="beseyeLoadingVertiMargin">10dp</dimen>
+    <dimen name="beseyeLoadingVertiPadding">5dp</dimen>
+    
+    <dimen name="indicator_right_padding">10dp</dimen>
+    <dimen name="indicator_corner_radius">12dp</dimen>
+    <dimen name="indicator_internal_padding">4dp</dimen>
+    
+    <dimen name="eventlist_ind_margin_left">20dp</dimen>
+    
+    <dimen name="eventlist_gray_line_width">3dp</dimen>
+    <dimen name="eventlist_gray_line_left">60dp</dimen>
+    <dimen name="eventlist_gray_line_right">16dp</dimen>
+    <dimen name="eventlist_timeline_dot_left">48dp</dimen>
+    <dimen name="eventlist_content_top">16dp</dimen>
+    <dimen name="eventlist_content_bottom">10dp</dimen>
+    <dimen name="eventlist_thumbnail_top">6dp</dimen>
+    <dimen name="eventlist_thumbnail_bottom">12dp</dimen>
+    <dimen name="eventlist_thumbnail_right">14dp</dimen>
+    <dimen name="eventlist_icon_bottom">10dp</dimen>
+    <dimen name="eventlist_calendar_bottom">14dp</dimen>
+    <dimen name="eventlist_calendar_left">14dp</dimen>
+    
+    <dimen name="eventlist_clock_font_size">12sp</dimen>
 </resources>

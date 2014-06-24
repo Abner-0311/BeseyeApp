@@ -58,6 +58,8 @@ public :
 	virtual void soundpairReceiverCallback(const char* cb_type, void* data);
 
 	bool isAutoTestBeginAnalyzeOnReceiver(){return mbAutoTestBeginAnalyzeOnReceiver;}
+	void setAutoTestBeginAnalyzeOnReceiver(bool flag);
+
 	bool isPairingAnalysisMode(){return mbPairingAnalysisMode;}
 	void setPairingReturnCode(int code){miPairingReturnCode = code;}
 	virtual int getPairingReturnCode(){return miPairingReturnCode;}
@@ -65,6 +67,22 @@ public :
 	void setAboveThresholdFlag(bool flag);
 	bool getAboveThresholdFlag();
 	void resetBuffer();
+
+	void setStopAnalysisBufIdx(int idx){ miStopAnalysisBufIdx = idx;}
+	int getStopAnalysisBufIdx(){return miStopAnalysisBufIdx;}
+
+	//for debug
+	void acquireSyncObj();
+	void releaseSyncObj();
+	void acquireSendPairingCodeObj();
+	void releaseSendPairingCodeObj();
+	void acquireAutoTestCtrlObj();
+	void releaseAutoTestCtrlObj();
+	void acquireThresholdCtrlObj();
+	void releaseThresholdCtrlObj();
+
+	static void* verifyToken(void* userdata);
+
 #ifdef ANDROID
 	virtual void setCamCamWSServerInfo(string strHost, int iPort);
 	virtual int connectCamCamWSServer();
@@ -84,6 +102,7 @@ private:
 
 	pthread_mutex_t mSyncObj;
 	pthread_cond_t mSyncObjCond;
+	volatile int miSyncObjInvokeCount;
 
 	string mstrCurTransferCode;
 	string mstrCurTransferTs;
@@ -92,17 +111,23 @@ private:
 	//Control pairing code transfer
 	pthread_mutex_t mSendPairingCodeObj;
 	pthread_cond_t mSendPairingCodeObjCond;
+	volatile int miSendPairingCodeObjInvokeCount;
 
 	//Control auto test round
 	pthread_mutex_t mAutoTestCtrlObj;
 	pthread_cond_t mAutoTestCtrlObjCond;
+	volatile int miAutoTestCtrlObjInvokeCount;
+
 	bool mbAutoTestBeginOnReceiver;
 	bool mbAutoTestBeginAnalyzeOnReceiver;
 
 	//Pairing analysis threshold control
 	pthread_mutex_t mThresholdCtrlObj;
 	pthread_cond_t mThresholdCtrlObjCond;
+	volatile int miThresholdCtrlObjInvokeCount;
+
 	bool mbAboveThreshold;
+	int miStopAnalysisBufIdx;
 
 	void sendPlayPairingCode(string strCode);
 
@@ -116,8 +141,8 @@ private:
 	static void* runAudioBufRecord(void* userdata);
 	static void* runAudioBufAnalysis(void* userdata);
 
-	static Ref<BufRecord> getBuf();
-	static Ref<BufRecord> getBuf(int iNumToRest);
+	Ref<BufRecord> getBuf();
+	Ref<BufRecord> getBuf(int iNumToRest);
 
 	bool mbNeedToResetFFT;
 	stringstream tmpRet;

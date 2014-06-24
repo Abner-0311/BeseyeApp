@@ -76,7 +76,7 @@ bool FreqGenerator::playCode2(const string strCodeInputASCII, const bool bNeedEn
 
 	for(int i = 0; i< iLen;i++){
 		char ch = strCodeInputASCII.at(i);
-		sstrCodeInput << SoundPair_Config::sCodeTable.at(ch >> iPower);
+		sstrCodeInput << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
 		sstrCodeInput << SoundPair_Config::sCodeTable.at(ch & 0x0f);
 
 		//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
@@ -92,7 +92,7 @@ bool FreqGenerator::playCode2(const string strCodeInputASCII, const bool bNeedEn
 
 	string strEncodeMark = strEncode;//SoundPair_Config::encodeConsecutiveDigits(strEncode);
 	string strCode = bNeedEncode?
-							(SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4))):
+							("123X"+SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4)))+"789":
 							strEncode;
 
 	pthread_mutex_lock(&mSyncObj);

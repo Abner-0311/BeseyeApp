@@ -2,6 +2,7 @@ package com.app.beseye;
 
 import java.util.Calendar;
 
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog.OnDatetimePickerClickListener;
 
@@ -20,7 +21,7 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		getSupportActionBar().hide();
-		
+		findViewById(R.id.iv_signup_top_logo).setOnClickListener(this);
 		mTvSetupAndSignup = (TextView)findViewById(R.id.button_signup);
 		if(null != mTvSetupAndSignup){
 			mTvSetupAndSignup.setOnClickListener(this);
@@ -35,41 +36,37 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 		if(null != mTvLogin){
 			mTvLogin.setOnClickListener(this);
 		}
-		
-//		BeseyeDatetimePickerDialog d = new BeseyeDatetimePickerDialog(this); 
-//		d.setOnDatetimePickerClickListener(new OnDatetimePickerClickListener(){
-//			@Override
-//			public void onBtnOKClick(Calendar pickDate) {
-//				Toast.makeText(BeseyeEntryActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
-//			}
-//
-//			@Override
-//			public void onBtnCancelClick() {
-//				Toast.makeText(BeseyeEntryActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
-//			}});
-//		
-//		d.show();
 	}
 	
 	@Override
 	protected int getLayoutId() {
 		return R.layout.layout_signup_firstpage;
 	}
+	
+	private int miDemoCount=0;
 
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_signup:{
 				launchActivityForResultByClassName(PairingRemindActivity.class.getName(), null, REQUEST_SIGNUP);
-				//launchActivityByClassName(PairingRemindActivity.class.getName());
 				break;
 			}
 			case R.id.button_signin:{
 				launchActivityForResultByClassName(LoginActivity.class.getName(), null, REQUEST_SIGNUP);
-				//launchActivityByClassName(LoginActivity.class.getName());
 				break;
 			}
 			case R.id.tv_bottom_beseye:{
+				break;
+			}
+			case R.id.iv_signup_top_logo:{
+				if(BeseyeConfig.DEBUG){
+					miDemoCount++;
+					if(miDemoCount >=5){
+						launchActivityByClassName(BeseyeComputexModeActivity.class.getName());
+						miDemoCount =0;
+					}
+				}
 				break;
 			}
 			default:

@@ -146,6 +146,7 @@ static int rtmp_open2(URLContext *s, const char *uri, int flags, AVDictionary **
         RTMP_EnableWrite(r);
 
     if (!RTMP_Connect(r, NULL) || !RTMP_ConnectStream(r, 0)) {
+    	av_log(NULL, AV_LOG_INFO, "failed to connect\n");
         rc = AVERROR_UNKNOWN;
         goto fail;
     }
@@ -155,6 +156,7 @@ static int rtmp_open2(URLContext *s, const char *uri, int flags, AVDictionary **
 fail:
     if (filename != s->filename)
         av_freep(&filename);
+    av_log(NULL, AV_LOG_INFO, "rtmp_open2(), rc:%d\n", rc);
     return rc;
 }
 

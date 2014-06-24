@@ -45,7 +45,7 @@ import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServer.WebSocketRequestCallback;
 
 public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallback {
-	static final boolean ENABLE_INTERNAL_SERVER = false;
+	static final boolean ENABLE_INTERNAL_SERVER = true;
 	static final boolean AUDIO_REC_FILE = false;
 	
 	String mSWID = "3eb1ef7b06673a2562aa";
@@ -99,6 +99,12 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			sWebsocketsMgr = new AudioWebSocketsMgr();
 		}
 		return sWebsocketsMgr;
+	}
+	
+	private String mStrVCamId;
+	
+	public void setVCamId(String id){
+		mStrVCamId = id;
 	}
 	
 	public void setAudioWSServerIP(String ip){
@@ -178,7 +184,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 												Log.i(TAG, "onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
 											}
 										}else{
-											new BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask(AudioWebSocketsMgr.this).execute("Bes0001");
+											new BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask(AudioWebSocketsMgr.this).execute(mStrVCamId);
 										}
 										
 									}else if(null != mStrAudioConnJobId && mStrAudioConnJobId.equals(strJobID) && 0 == iRetCode){
@@ -275,7 +281,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			try {
 				obj.put("username", "admin");
 				obj.put("password", "password");
-				return super.doInBackground("http://192.168.2.85/sray/login.cgi", obj.toString());
+				return super.doInBackground("http://192.168.2.209/sray/login.cgi", obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -309,17 +315,19 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     }
     
     static public final String WS_CMD_FORMAT_AUDIO 			= "[\"%s\", \"data\":%s]";
-    
+    private int iRefCount = 0;
+    private static final int COUNT_TO_CHECK = 3;//0.1 second 
     class AudioSendThread extends Thread {
     	@Override
     	public void run(){
+    		iRefCount = 0;
 		    OutputStream os = null;
 		    Socket socket = null;
 		    FileOutputStream fos = null;
 		    
 		    if(ENABLE_INTERNAL_SERVER){
 		    	try{
-				    socket = new Socket("192.168.2.85", 80);
+				    socket = new Socket("192.168.2.209", 80);
 				    os = socket.getOutputStream();
 				    //String header = "POST /cgi/audio/transmit.cgi?session="+session+"&httptype=singlepart HTTP/1.1\r\nHost:192.168.2.4\r\n\r\n";
 				    
@@ -359,6 +367,24 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    	readsize = audioRecord.read(audiodata, 0, bufferSizeInBytes);
 		    	//Log.i(TAG, "run(), readsize="+readsize);
 		    	if (AudioRecord.ERROR_INVALID_OPERATION != readsize) {
+		    		if(0 == (iRefCount++)%COUNT_TO_CHECK){
+	    				int iMaxVal = 0;
+	    				for(int idx = 0; idx < readsize/2;idx++){
+	    					//Log.i(TAG, "run(), audiodata[2*idx]:"+audiodata[2*idx]+", audiodata[2*idx+1]:"+ audiodata[2*idx+1]);
+	    					int iVal = Math.abs(audiodata[2*idx+1]<<8 | audiodata[2*idx]);
+	    					if(iMaxVal < iVal){
+	    						iMaxVal = iVal;
+	    					}
+	    				}
+	    				
+	    				//Log.i(TAG, "run(), iMaxVal:"+iMaxVal);
+	    				
+	    				OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
+		    			if(null != listener){
+		    				listener.onAudioAmplitudeUpdate((iMaxVal)/32767.0f);
+		    			}
+	    			}
+		    		
 		    		InputStream is = new ByteArrayInputStream(audiodata);
 		    		UlawEncoderInputStream uis=null;
 		    		try {
@@ -375,6 +401,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						    		os.write(buff, 0, len);
 								    os.flush();
 					    		}else{
+					    			
 					    			//mFNotifyWSChannel.get().send(buff);
 					    			JSONObject data_obj = new JSONObject();
 					    			JSONArray arr = new JSONArray();

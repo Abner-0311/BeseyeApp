@@ -50,4 +50,18 @@
 	
 	<style name="Widget.GifMoviewView" parent="@android:style/Widget"></style>
 
+	<style name="StyleTextView_ShadowBlack">
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowRadius">4.0</item>
+    </style>
+
+    <style name="StyleTextView_ShadowBlack_Lite">
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowRadius">1.0</item>
+    </style>
+
+    <style name="StyleTextView_Singleline_Eclipse">
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+    </style>
 </resources>

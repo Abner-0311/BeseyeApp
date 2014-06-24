@@ -776,9 +776,12 @@ int avio_open2(AVIOContext **s, const char *filename, int flags,
     int err;
 
     err = ffurl_open(&h, filename, flags, int_cb, options);
+    av_log(0, AV_LOG_ERROR, "avio_open2(), err:%d\n", err);
     if (err < 0)
         return err;
+
     err = ffio_fdopen(s, h);
+    av_log(0, AV_LOG_ERROR, "avio_open2(),2 err:%d\n", err);
     if (err < 0) {
         ffurl_close(h);
         return err;

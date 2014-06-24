@@ -45,6 +45,7 @@
         android:src="@drawable/cameralist_cloud_top" />
     
     <RelativeLayout
+        android:id="@+id/vg_msg_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

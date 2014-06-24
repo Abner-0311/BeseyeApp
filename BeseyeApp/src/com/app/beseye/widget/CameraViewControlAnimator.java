@@ -1,10 +1,17 @@
 package com.app.beseye.widget;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
+
+import java.lang.ref.WeakReference;
+
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -77,7 +84,7 @@ public class CameraViewControlAnimator {
 	private AnimationListener mToolbarFadeInListener = new AnimationListener(){
 		public void onAnimationEnd(Animation animation) {
 			if(null != m_vgToolbarLayout){
-				m_vgToolbarLayout.setVisibility(View.VISIBLE);
+				m_vgToolbarLayout.setVisibility(mbP2PMode?View.INVISIBLE:View.VISIBLE);
 			}
 			m_bInToolbarAnimation = false;
 			Log.d(TAG, "mToolbarFadeInListener::onAnimationEnd()");
@@ -87,7 +94,8 @@ public class CameraViewControlAnimator {
 		}
 
 		public void onAnimationStart(Animation animation) {
-			m_vgToolbarLayout.bringToFront();
+			if(!mbP2PMode)
+				m_vgToolbarLayout.bringToFront();
 			m_bInToolbarAnimation = true;
 			Log.d(TAG, "mToolbarFadeInListener::onAnimationStart()");
 		}
@@ -112,9 +120,17 @@ public class CameraViewControlAnimator {
 		}
 	};
 	
+	private WeakReference<ActionBarActivity> mActionBarActivity;
+	
+	private int miOrientation;
+	public void setOrientation(int iOrient){
+		miOrientation = iOrient;
+	}
+	
 	public CameraViewControlAnimator(Context context, RelativeLayout headerLayout, RelativeLayout toolbarLayout) {
 		m_vgHeaderLayout = headerLayout;
 		m_vgToolbarLayout = toolbarLayout;
+		mActionBarActivity = new WeakReference<ActionBarActivity>((ActionBarActivity)context);
 		initViews(context);
 	}
 
@@ -186,14 +202,34 @@ public class CameraViewControlAnimator {
 		if(false == isInAnimation()){
 			if(null != m_vgHeaderLayout){
 				Animation animation = null;
+				ActionBarActivity act = mActionBarActivity.get();
 				if(View.VISIBLE == m_vgHeaderLayout.getVisibility()){
 					animation = s_aniHeaderFadeOut;
 					m_vgHeaderLayout.startAnimation(animation);
+					
+					if(null != act){
+						act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+						act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+						act.getSupportActionBar().hide();
+					}
+					
 				}else{
 					//animation = s_aniHeaderFadeIn;
 					m_vgHeaderLayout.bringToFront();
 					m_vgHeaderLayout.setVisibility(View.VISIBLE);
 					startHideControlRunnable();
+					
+					if(null != act){
+						if(Configuration.ORIENTATION_PORTRAIT == this.miOrientation){
+							act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+							act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+							//act.getSupportActionBar().show();
+						}else{
+							act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+							act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+							act.getSupportActionBar().hide();
+						}
+					}
 				}
 			}
 			
@@ -202,7 +238,7 @@ public class CameraViewControlAnimator {
 				if(View.VISIBLE == m_vgToolbarLayout.getVisibility()){
 					animation = s_aniToolbarFadeOut;
 					m_vgToolbarLayout.startAnimation(animation);
-				}else{
+				}else if(!mbP2PMode){
 					//animation = s_aniToolbarFadeIn;
 					m_vgToolbarLayout.bringToFront();
 					m_vgToolbarLayout.setVisibility(View.VISIBLE);
@@ -233,7 +269,7 @@ public class CameraViewControlAnimator {
 			m_vgHeaderLayout.setVisibility(visibility);
 		
 		if(null != m_vgToolbarLayout)
-			m_vgToolbarLayout.setVisibility(visibility);
+			m_vgToolbarLayout.setVisibility(mbP2PMode?View.INVISIBLE:visibility);
 	}
 	
 	public void showControl(){
@@ -242,5 +278,15 @@ public class CameraViewControlAnimator {
 	
 	public void hideControl(){
 		setControlVisibility(View.GONE);
+	}
+	
+	private boolean mbP2PMode = false;
+	
+	public void setP2PMode(boolean bIsP2P){
+		mbP2PMode = bIsP2P;
+		if(null != m_vgToolbarLayout && mbP2PMode){
+			if(null != m_vgToolbarLayout)
+				m_vgToolbarLayout.setVisibility(View.INVISIBLE);
+		}
 	}
 }

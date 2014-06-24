@@ -92,10 +92,10 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_startRecord(JNIEnv 
 	int iRet = 0;
 	LOGE("startRecord()++++++++++++++++++++++++++");
 	/*if(NULL == audioStreamer)*/{
-		CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
-		if(CBeseyeAudioStreamer::checkExit() && audioStreamer.setStreamingInfo("rtmp://192.168.2.224:1935/myapp/audiostream", "/data/data/com.churnlabs.ffmpegsample/beseye.fifo")){
-			iRet = audioStreamer.startAudioStreaming();
-		}
+//		CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
+//		if(CBeseyeAudioStreamer::checkExit() && audioStreamer.setStreamingInfo("rtmp://192.168.2.224:1935/myapp/audiostream", "/data/data/com.churnlabs.ffmpegsample/beseye.fifo")){
+//			iRet = audioStreamer.startAudioStreaming();
+//		}
 	}
 
 	LOGE("startRecord()-");
@@ -105,9 +105,9 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_startRecord(JNIEnv 
 JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_isRecording(JNIEnv * env, jobject obj){
 	int iRet = 0;
 
-	CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
-	LOGW("isRecording(), status:%d",audioStreamer.get_Stream_Status());
-	iRet = audioStreamer.isStreamingPlaying();
+//	CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
+//	LOGW("isRecording(), status:%d",audioStreamer.get_Stream_Status());
+//	iRet = audioStreamer.isStreamingPlaying();
 
 	//LOGE("isRecording()-");
 	return iRet;
@@ -115,23 +115,23 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_isRecording(JNIEnv 
 
 JNIEXPORT void JNICALL Java_com_app_beseye_CameraViewActivity_recordAudio(JNIEnv * env, jobject obj, jbyteArray array, int iBufSize)
 {
-	DECLARE_JNIENV_WITHOUT_RETURN()
-	CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
-	jbyte *bytes = jni_env->GetByteArrayElements(array, NULL);
-	audioStreamer.writeAudioBuffer((char*)bytes, iBufSize);
-	jni_env->ReleaseByteArrayElements( array, bytes, 0);
+//	DECLARE_JNIENV_WITHOUT_RETURN()
+//	CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
+//	jbyte *bytes = jni_env->GetByteArrayElements(array, NULL);
+//	audioStreamer.writeAudioBuffer((char*)bytes, iBufSize);
+//	jni_env->ReleaseByteArrayElements( array, bytes, 0);
     //LOGE("recordAudio()-");
 }
 
 JNIEXPORT void JNICALL Java_com_app_beseye_CameraViewActivity_endRecord(JNIEnv * env, jobject obj){
 
-	CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
-	audioStreamer.closeAudioStreaming();
-	LOGE("endRecord()-");
+//	CBeseyeAudioStreamer& audioStreamer = CBeseyeAudioStreamer::getInstance();
+//	audioStreamer.closeAudioStreaming();
+//	LOGE("endRecord()-");
 }
 
 static jclass cls;
-static jmethodID  s_getBitmapMethod, s_drawStreamBitmapMethod, s_rtmpStatusCBMethod, s_rtmpErrorCBMethod/*, s_updateBitmapMethod = NULL*/;
+static jmethodID  s_getBitmapMethod, s_drawStreamBitmapMethod, s_rtmpStatusCBMethod, s_rtmpErrorCBMethod, s_rtmpClockCBMethod/*, s_updateBitmapMethod = NULL*/;
 
 /* Main activity */
 static jclass mActivityClass = NULL;
@@ -181,6 +181,12 @@ JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_nativeClassIni
 	s_rtmpErrorCBMethod = env->GetMethodID(cls, "updateRTMPErrorCallback", "(IILjava/lang/String;)V");
 	if(NULL == s_rtmpErrorCBMethod){
 		LOGE("s_rtmpErrorCBMethod is empty");
+		return 0;
+	}
+
+	s_rtmpClockCBMethod= env->GetMethodID(cls, "updateRTMPClockCallback", "(I)V");
+	if(NULL == s_rtmpClockCBMethod){
+		LOGE("s_rtmpClockCBMethod is empty");
 		return 0;
 	}
 
@@ -272,7 +278,7 @@ void JNICALL Java_com_app_beseye_CameraViewActivity_nativeInit(JNIEnv* env, jcla
 
 int iCurStreamIdx = 0;
 
-const int MAX_STREAM_COUNT = 2;
+const int MAX_STREAM_COUNT = 10;
 static jobject jni_host = NULL;
 
 CBeseyePlayer* player[MAX_STREAM_COUNT] ={0};
@@ -360,14 +366,17 @@ void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_C
 			}else if(cbType == CBeseyeRTMPObserver::ERROR_CB){
 				if(s_rtmpErrorCBMethod && jni_host)
 					 jni_env->CallVoidMethod(jni_host, s_rtmpErrorCBMethod, iMajorType, iMinorType, str2jstring(msg));
+			}else if(cbType == CBeseyeRTMPObserver::STREAM_CLOCK_CB){
+				if(s_rtmpClockCBMethod && jni_host)
+					jni_env->CallVoidMethod(jni_host, s_rtmpClockCBMethod, iMajorType);
 			}
     	}else{
     		LOGE("rtmpStreamStatusCb(), NULL jni_host");
     	}
 
-    }else if(obj == &CBeseyeAudioStreamer::getInstance()){
+    }/*else if(obj == &CBeseyeAudioStreamer::getInstance()){
     	LOGI("rtmpStreamStatusCb(), audio Streamer cbType:%d, msg:%s, iStatusType:%d",cbType, (msg?msg:""),iMajorType);
-    }
+    }*/
 
 	//jvm->DetachCurrentThread();
 }
@@ -436,6 +445,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 			jni_env->DeleteGlobalRef(jni_host);
 		}else{
 			LOGE("openStreaming(), stream[%d] is playing", iStreamIdx);
+			iRet = -2;
 		}
 	}
 	LOGE("openStreaming(), end");
@@ -502,6 +512,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreamingList(J
 			jni_env->DeleteGlobalRef(jni_host);
 		}else{
 			LOGE("openStreaming(), stream[%d] is playing", iStreamIdx);
+			player[iStreamIdx]->closeStreaming();
 		}
 	}
 	LOGE("openStreaming(), end");

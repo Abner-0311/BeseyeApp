@@ -121,7 +121,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private boolean checkSession(){
 		if(SessionMgr.getInstance().isTokenValid()){
-			monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this), true, SessionMgr.getInstance().getAuthToken());
+			monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this).setDialogId(mbFirstResume?DIALOG_ID_LOADING:-1), true, SessionMgr.getInstance().getAuthToken());
 			//invokeSessionComplete();
 			return false;
 		}	
@@ -155,6 +155,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	static public final String KEY_WARNING_TITLE = "KEY_WARNING_TITLE";
 	static public final String KEY_WARNING_TEXT = "KEY_WARNING_TEXT";
+	static public final String KEY_WARNING_CLOSE = "KEY_WARNING_CLOSE";
 	
 	static public final int DIALOG_ID_LOADING = 1; 
 	static public final int DIALOG_ID_WARNING = 2; 
@@ -169,6 +170,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_WIFI_AP_INCORRECT_PW = DIALOG_ID_WIFI_BASE+7; 
 	static public final int DIALOG_ID_WIFI_AP_KEYINDEX= DIALOG_ID_WIFI_BASE+8; 
 	static public final int DIALOG_ID_CAM_INFO= DIALOG_ID_WIFI_BASE+9; 
+	static public final int DIALOG_ID_CAM_DETTACH_CONFIRM= DIALOG_ID_WIFI_BASE+10; 
+	static public final int DIALOG_ID_CAM_REBOOT_CONFIRM= DIALOG_ID_WIFI_BASE+11; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {
@@ -255,7 +258,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					strMsgRes = args.getString(KEY_WARNING_TEXT);
 				}
 				if(dialog instanceof AlertDialog){
-					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon_shadow);
+					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon);
 					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_warning):strTitleRes);
 					if(0 < strMsgRes.length())
 						((AlertDialog) dialog).setMessage(strMsgRes);
@@ -443,7 +446,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeAccountTask.CheckAccountTask){
-			onSessionInvalid();
+			//onSessionInvalid();
 		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 			SessionMgr.getInstance().cleanSession();
 			onSessionInvalid();
@@ -480,7 +483,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		runOnUiThread(new Runnable(){
 			@Override
 			public void run() {
-					Toast.makeText(BeseyeBaseActivity.this, strMsg, Toast.LENGTH_LONG).show();
+					//Toast.makeText(BeseyeBaseActivity.this, strMsg, Toast.LENGTH_LONG).show();
 			}});
 	}
 	

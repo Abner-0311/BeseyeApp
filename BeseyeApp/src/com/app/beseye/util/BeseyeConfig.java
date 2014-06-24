@@ -18,12 +18,17 @@ public class BeseyeConfig {
 	static public final boolean ASSIGN_ST_PATH = false;
 	static public final boolean FAKE_AUDIO_RECEIVER = false;
 	
-	static public final boolean REDDOT_DEMO = false;
+	static public final boolean REDDOT_DEMO = false;//deprecated
+	
+	static public final boolean COMPUTEX_DEMO = true;
+	static public boolean COMPUTEX_PAIRING = false;
+	static public boolean COMPUTEX_P2P = false;
+	
 	static public final String RELAY_AP_SSID = "raylios WiFi";
 	static public final String RELAY_AP_PW = "whoisyourdaddy";
 	
 	static public final String TMP_MM_VCAM_ID = "1001";
-	static public final String TEST_ACC 	= "beseye_tester6@beseye.com";
+	static public final String TEST_ACC 	= "privatecam@beseye.com";
 	
 	static public final String TMP_VCAM_ID = "SN0000011";
 	static public final String TMP_CAM_ID = "BeseyeCam001";
@@ -53,31 +58,31 @@ public class BeseyeConfig {
 	
 	static public final String[] REDDOT_STREAM_PATH = {
 													 //"rtsp://admin:password@192.168.12.184/h264"
-//													"rtsp://admin:password@192.168.12.180/h264_2"
-//													,"rtsp://admin:password@192.168.12.182/h264_2"
-////													,"rtsp://admin:password@192.168.12.184/h264_2"
-//													,"rtsp://admin:password@192.168.12.186/h264_2"
-//													 "rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:08
-//													,"rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:B8
+//														"rtsp://admin:password@192.168.12.180/h264_2"
+//														,"rtsp://admin:password@192.168.12.182/h264_2"
+////														,"rtsp://admin:password@192.168.12.184/h264_2"
+//														,"rtsp://admin:password@192.168.12.186/h264_2"
+//														 "rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:08
+//														,"rtsp://admin:password@192.168.12.182/h264_2"//00:0C:43:30:50:B8
 													 //"rtsp://admin:password@192.168.12.184/h264_2"//00:0C:43:30:50:D0
 													"rtsp://admin:password@192.168.2.169/h264"//00:0C:43:30:50:28
 													 };
 	static public final List<String> STREAM_PATH_LIST = new ArrayList<String>();
 	static public final Map<String, String> REDDOT_STREAM_PATH_MAP = new HashMap<String, String>();
 	static{
-		if(REDDOT_DEMO){
-			for(int i = 1; i<= REDDOT_STREAM_PATH.length;i++){
-				STREAM_PATH_LIST.add(REDDOT_STREAM_PATH[i-1]);
-				REDDOT_STREAM_PATH_MAP.put(REDDOT_STREAM_PATH[i-1], "No. "+i);
-			}
-		}else{
+//		if(REDDOT_DEMO){
+//			for(int i = 1; i<= REDDOT_STREAM_PATH.length;i++){
+//				STREAM_PATH_LIST.add(REDDOT_STREAM_PATH[i-1]);
+//				REDDOT_STREAM_PATH_MAP.put(REDDOT_STREAM_PATH[i-1], "No. "+i);
+//			}
+//		}else{
 			if(ASSIGN_ST_PATH)
 				STREAM_PATH_LIST.add(CamSettingMgr.getInstance().getCamName(TMP_CAM_ID));
 			
 			for(int i = 0; i< DEMO_STREAM_PATH.length;i++){
 				STREAM_PATH_LIST.add(DEMO_STREAM_PATH[i]);
 			}
-		}
+//		}
 	}
 	
 	static public int CUR_STREAMING_PATH_IDX = 0;

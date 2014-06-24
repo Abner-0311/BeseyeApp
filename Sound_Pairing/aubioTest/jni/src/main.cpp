@@ -10,6 +10,7 @@
 
 static int was_closed;
 static int force_exit = 0;
+static bool sbPairingMode = false;
 
 void sighandler(int sig){
     force_exit = 1;
@@ -25,12 +26,14 @@ int main(int argc, char** argv) {
 		AudioTest::getInstance()->setReceiverMode(true);
 		AudioTest::getInstance()->startAutoTest("", iDigitalToTest);
 	}else{
+		sbPairingMode = true;
 		AudioTest::getInstance()->setReceiverMode();
 		AudioTest::getInstance()->startPairingAnalysis();
 	}
 
-	LOGE("-----\n");
-    return AudioTest::getInstance()->getPairingReturnCode();
+	int iRetCode = AudioTest::getInstance()->getPairingReturnCode();
+	LOGE("-----, iRetCode:%d\n", iRetCode);
+    return iRetCode;
 }
 
 int Delegate_OpenAudioDevice(int sampleRate, int is16Bit, int channelCount, int desiredBufferFrames){
@@ -80,37 +83,41 @@ static const int AUTO_CORRECTION_TYPE = 2;
 static int mTypeCounter [AUTO_CORRECTION_TYPE][DESC_RESULT_TYPE];
 
 void Delegate_BeginToSaveResult(){
-	if(NULL != fp){
-		fclose(fp);
-		fp = NULL;
+	if(!sbPairingMode){
+		if(NULL != fp){
+			fclose(fp);
+			fp = NULL;
 
-		if(buf){
-			free(buf);
-			buf = NULL;
+			if(buf){
+				free(buf);
+				buf = NULL;
+			}
 		}
-	}
 
-	fp=fopen(filePath, "wb");
-	if(!fp){
-		LOGE("failed to %s\n", filePath);
-	}else{
-		LOGE("Succeed to %s\n", filePath);
-		//buf = (char*)malloc(2048);
-		for(int i = 0;i<AUTO_CORRECTION_TYPE;i++){
-			for(int j = 0;j<DESC_RESULT_TYPE;j++){
-				mTypeCounter[i][j]=0;
+		fp=fopen(filePath, "wb");
+		if(!fp){
+			LOGE("failed to %s\n", filePath);
+		}else{
+			LOGE("Succeed to %s\n", filePath);
+			//buf = (char*)malloc(2048);
+			for(int i = 0;i<AUTO_CORRECTION_TYPE;i++){
+				for(int j = 0;j<DESC_RESULT_TYPE;j++){
+					mTypeCounter[i][j]=0;
+				}
 			}
 		}
 	}
 }
 
 void Delegate_EndToSaveResult(){
-	if(NULL != fp){
-		fclose(fp);
-		fp = NULL;
-		if(buf){
-			free(buf);
-			buf = NULL;
+	if(!sbPairingMode){
+		if(NULL != fp){
+			fclose(fp);
+			fp = NULL;
+			if(buf){
+				free(buf);
+				buf = NULL;
+			}
 		}
 	}
 }
@@ -119,24 +126,26 @@ static char msgStatistics[256]={0};
 static char msgSent[2048]={0};
 
 void Delegate_FeedbackMatchResult(string strCode, string strECCode, string strEncodeMark, string strDecode, string strDecodeUnmark, string strDecodeMark, int iMatchDesc, bool bFromAutoCorrection){
-	if(fp){
-		string ret = strCode+"\t"+strECCode+"\t"+strEncodeMark+"\t"+strDecode+"\t"+strDecodeUnmark+"\t"+strDecodeMark+"\t"+MATCH_RESULTStoString((MATCH_RESULTS)iMatchDesc)+(bFromAutoCorrection?"_AC":"")+"\n";
-		fwrite(ret.c_str(), sizeof(char), ret.length(), fp);
-		fflush(fp);
+	if(!sbPairingMode){
+		if(fp){
+			string ret = strCode+"\t"+strECCode+"\t"+strEncodeMark+"\t"+strDecode+"\t"+strDecodeUnmark+"\t"+strDecodeMark+"\t"+MATCH_RESULTStoString((MATCH_RESULTS)iMatchDesc)+(bFromAutoCorrection?"_AC":"")+"\n";
+			fwrite(ret.c_str(), sizeof(char), ret.length(), fp);
+			fflush(fp);
 
-		int iAC_TYPE = bFromAutoCorrection?1:0;
-		mTypeCounter[iAC_TYPE][iMatchDesc]++;
+			int iAC_TYPE = bFromAutoCorrection?1:0;
+			mTypeCounter[iAC_TYPE][iMatchDesc]++;
 
-		sprintf(msgStatistics, "[%d, %d, %d, %d, %d, %d, %d][%d, %d, %d, %d, %d, %d, %d]\n",  mTypeCounter[0][0],  mTypeCounter[0][1],  mTypeCounter[0][2],  mTypeCounter[0][3],  mTypeCounter[0][4],  mTypeCounter[0][5],  mTypeCounter[0][6]
-																						         ,  mTypeCounter[1][0],  mTypeCounter[1][1],  mTypeCounter[1][2],  mTypeCounter[1][3],  mTypeCounter[1][4],  mTypeCounter[1][5],  mTypeCounter[1][6]);
-		sprintf(msgSent,
-				SoundPair_Config::BT_MSG_FORMAT_SENDER.c_str(),
-				SoundPair_Config::MSG_TEST_ROUND_RESULT.c_str(),
-				ret.c_str(),
-				msgStatistics);
+			sprintf(msgStatistics, "[%d, %d, %d, %d, %d, %d, %d][%d, %d, %d, %d, %d, %d, %d]\n",  mTypeCounter[0][0],  mTypeCounter[0][1],  mTypeCounter[0][2],  mTypeCounter[0][3],  mTypeCounter[0][4],  mTypeCounter[0][5],  mTypeCounter[0][6]
+																									 ,  mTypeCounter[1][0],  mTypeCounter[1][1],  mTypeCounter[1][2],  mTypeCounter[1][3],  mTypeCounter[1][4],  mTypeCounter[1][5],  mTypeCounter[1][6]);
+			sprintf(msgSent,
+					SoundPair_Config::BT_MSG_FORMAT_SENDER.c_str(),
+					SoundPair_Config::MSG_TEST_ROUND_RESULT.c_str(),
+					ret.c_str(),
+					msgStatistics);
 
-		int iRet = send_msg_to_client(msgSent);
-		LOGE("Delegate_FeedbackMatchResult(), send_msg_to_client, iRet:[%d]\n", iRet);
+			int iRet = send_msg_to_client(msgSent);
+			LOGE("Delegate_FeedbackMatchResult(), send_msg_to_client, iRet:[%d]\n", iRet);
+		}
 	}
 	return;
 }

@@ -7,46 +7,49 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		070E2C4E19375133007D0189 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761612F1856A07F00CFBC99 /* libswresample.a */; };
+		0713D8821932F0D900BF6968 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161311856A07F00CFBC99 /* libavcodec.a */; };
+		0713D8831932F0D900BF6968 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161321856A07F00CFBC99 /* libavfilter.a */; };
+		0713D8841932F0D900BF6968 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161331856A07F00CFBC99 /* libavformat.a */; };
+		0713D8851932F0D900BF6968 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161341856A07F00CFBC99 /* libavutil.a */; };
+		0713D8871932F0D900BF6968 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161301856A07F00CFBC99 /* libswscale.a */; };
+		0713D8881932F0D900BF6968 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161351856A07F00CFBC99 /* librtmp.a */; };
+		0713D8891932F0D900BF6968 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161361856A07F00CFBC99 /* libcrypto.a */; };
+		0713D88A1932F0D900BF6968 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161371856A07F00CFBC99 /* libssl.a */; };
 		076160F218569D3800CFBC99 /* BeseyeStreamer.xcodeproj in Resources */ = {isa = PBXBuildFile; fileRef = 076160F118569D3800CFBC99 /* BeseyeStreamer.xcodeproj */; };
 		0761611118569DC500CFBC99 /* libBeseyeStreamer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761611018569DC500CFBC99 /* libBeseyeStreamer.a */; };
-		076161381856A07F00CFBC99 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761612F1856A07F00CFBC99 /* libswresample.a */; };
-		076161391856A07F00CFBC99 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161301856A07F00CFBC99 /* libswscale.a */; };
-		0761613A1856A07F00CFBC99 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161311856A07F00CFBC99 /* libavcodec.a */; };
-		0761613B1856A07F00CFBC99 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161321856A07F00CFBC99 /* libavfilter.a */; };
-		0761613C1856A07F00CFBC99 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161331856A07F00CFBC99 /* libavformat.a */; };
-		0761613D1856A07F00CFBC99 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161341856A07F00CFBC99 /* libavutil.a */; };
-		0761613E1856A07F00CFBC99 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161351856A07F00CFBC99 /* librtmp.a */; };
-		0761613F1856A07F00CFBC99 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161361856A07F00CFBC99 /* libcrypto.a */; };
-		076161401856A07F00CFBC99 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161371856A07F00CFBC99 /* libssl.a */; };
-		0761614A1856A09C00CFBC99 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161411856A09C00CFBC99 /* libavcodec.a */; };
-		0761614B1856A09C00CFBC99 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161421856A09C00CFBC99 /* libavfilter.a */; };
-		0761614C1856A09C00CFBC99 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161431856A09C00CFBC99 /* libavformat.a */; };
-		0761614D1856A09C00CFBC99 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161441856A09C00CFBC99 /* libavutil.a */; };
-		0761614E1856A09C00CFBC99 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161451856A09C00CFBC99 /* libcrypto.a */; };
-		0761614F1856A09C00CFBC99 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161461856A09C00CFBC99 /* librtmp.a */; };
-		076161501856A09C00CFBC99 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161471856A09C00CFBC99 /* libssl.a */; };
-		076161511856A09C00CFBC99 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161481856A09C00CFBC99 /* libswresample.a */; };
-		076161521856A09C00CFBC99 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161491856A09C00CFBC99 /* libswscale.a */; };
 		07AD70711855A07D000BCD88 /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E1977F185029D100E0CA98 /* libSDL2.a */; };
+		07B458D51929A02F00BE79BC /* beseye_audio_streamer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458C71929A02F00BE79BC /* beseye_audio_streamer.h */; };
+		07B458D61929A02F00BE79BC /* beseye_rtmp_observer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458C81929A02F00BE79BC /* beseye_rtmp_observer.h */; };
+		07B458D71929A02F00BE79BC /* beseyeplayer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458C91929A02F00BE79BC /* beseyeplayer.h */; };
+		07B458D81929A02F00BE79BC /* cmdutils_common_opts.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458CA1929A02F00BE79BC /* cmdutils_common_opts.h */; };
+		07B458D91929A02F00BE79BC /* cmdutils.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458CB1929A02F00BE79BC /* cmdutils.h */; };
+		07B458DA1929A02F00BE79BC /* config.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458CC1929A02F00BE79BC /* config.h */; };
+		07B458DB1929A02F00BE79BC /* ffmpeg_ext.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458CD1929A02F00BE79BC /* ffmpeg_ext.h */; };
+		07B458DC1929A02F00BE79BC /* ffmpeg.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458CE1929A02F00BE79BC /* ffmpeg.h */; };
+		07B458DD1929A02F00BE79BC /* http_cgi.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458CF1929A02F00BE79BC /* http_cgi.h */; };
+		07B458DE1929A02F00BE79BC /* librtmp_ext.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458D01929A02F00BE79BC /* librtmp_ext.h */; };
+		07B458DF1929A02F00BE79BC /* pkt_queue.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458D11929A02F00BE79BC /* pkt_queue.h */; };
+		07B458E01929A02F00BE79BC /* player.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458D21929A02F00BE79BC /* player.h */; };
+		07B458E11929A02F00BE79BC /* utils.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458D31929A02F00BE79BC /* utils.h */; };
+		07B458E21929A02F00BE79BC /* version.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458D41929A02F00BE79BC /* version.h */; };
+		07B458F51929F4C500BE79BC /* FreqGenerator.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458F41929F4C500BE79BC /* FreqGenerator.h */; };
+		07B458F71929F9F800BE79BC /* SDL_main.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458F61929F9F800BE79BC /* SDL_main.h */; };
+		07B459011929FA4100BE79BC /* IllegalArgumentException.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458F81929FA4100BE79BC /* IllegalArgumentException.h */; };
+		07B459021929FA4100BE79BC /* GenericGF.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458F91929FA4100BE79BC /* GenericGF.h */; };
+		07B459031929FA4100BE79BC /* GenericGFPoly.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FA1929FA4100BE79BC /* GenericGFPoly.h */; };
+		07B459041929FA4100BE79BC /* ReedSolomonEncoder.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FB1929FA4100BE79BC /* ReedSolomonEncoder.h */; };
+		07B459051929FA4100BE79BC /* ReedSolomonException.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FC1929FA4100BE79BC /* ReedSolomonException.h */; };
+		07B459061929FA4100BE79BC /* Exception.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FD1929FA4100BE79BC /* Exception.h */; };
+		07B459071929FA4100BE79BC /* IllegalStateException.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FE1929FA4100BE79BC /* IllegalStateException.h */; };
+		07B459081929FA4100BE79BC /* ReaderException.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B458FF1929FA4100BE79BC /* ReaderException.h */; };
+		07B459091929FA4100BE79BC /* ZXing.h in Resources */ = {isa = PBXBuildFile; fileRef = 07B459001929FA4100BE79BC /* ZXing.h */; };
 		07E19FB81850377D00E0CA98 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E19FB41850377D00E0CA98 /* AudioToolbox.framework */; };
 		07E19FB91850377D00E0CA98 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E19FB51850377D00E0CA98 /* CoreAudio.framework */; };
 		07E19FBA1850377D00E0CA98 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E19FB61850377D00E0CA98 /* OpenGLES.framework */; };
 		07E19FBB1850377D00E0CA98 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E19FB71850377D00E0CA98 /* QuartzCore.framework */; };
 		07E19FDF18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 07E19FDE18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm */; };
 		07EC6C8018B4D6920018BEA4 /* libBeseyeSoundPairing.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07EC6C7F18B4D6920018BEA4 /* libBeseyeSoundPairing.a */; };
-		07EC6D3818B5BCCF0018BEA4 /* beseye_audio_streamer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D2B18B5BCCF0018BEA4 /* beseye_audio_streamer.h */; };
-		07EC6D3918B5BCCF0018BEA4 /* beseye_rtmp_observer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D2C18B5BCCF0018BEA4 /* beseye_rtmp_observer.h */; };
-		07EC6D3A18B5BCCF0018BEA4 /* beseyeplayer.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D2D18B5BCCF0018BEA4 /* beseyeplayer.h */; };
-		07EC6D3B18B5BCCF0018BEA4 /* cmdutils.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D2E18B5BCCF0018BEA4 /* cmdutils.h */; };
-		07EC6D3C18B5BCCF0018BEA4 /* cmdutils_common_opts.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D2F18B5BCCF0018BEA4 /* cmdutils_common_opts.h */; };
-		07EC6D3D18B5BCCF0018BEA4 /* config.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D3018B5BCCF0018BEA4 /* config.h */; };
-		07EC6D3E18B5BCCF0018BEA4 /* ffmpeg.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D3118B5BCCF0018BEA4 /* ffmpeg.h */; };
-		07EC6D3F18B5BCCF0018BEA4 /* ffmpeg_ext.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D3218B5BCCF0018BEA4 /* ffmpeg_ext.h */; };
-		07EC6D4018B5BCCF0018BEA4 /* librtmp_ext.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D3318B5BCCF0018BEA4 /* librtmp_ext.h */; };
-		07EC6D4118B5BCCF0018BEA4 /* pkt_queue.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D3418B5BCCF0018BEA4 /* pkt_queue.h */; };
-		07EC6D4218B5BCCF0018BEA4 /* player.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D3518B5BCCF0018BEA4 /* player.h */; };
-		07EC6D4318B5BCCF0018BEA4 /* utils.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D3618B5BCCF0018BEA4 /* utils.h */; };
-		07EC6D4418B5BCCF0018BEA4 /* version.h in Resources */ = {isa = PBXBuildFile; fileRef = 07EC6D3718B5BCCF0018BEA4 /* version.h */; };
 		07F3AACE1754B0D50046934B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07F3AACD1754B0D50046934B /* Default-568h@2x.png */; };
 		0918E6D110F839FC00300130 /* sophie.mov in Resources */ = {isa = PBXBuildFile; fileRef = 0918E6D010F839FC00300130 /* sophie.mov */; };
 		0921E14110FADAFB004EAA40 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0921E14010FADAFB004EAA40 /* Utilities.m */; };
@@ -79,6 +82,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0701A29319382AC2008F6DD3 /* beseye_audio_streamer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_audio_streamer.h; path = BeseyeStreamer/inc/beseye_audio_streamer.h; sourceTree = "<group>"; };
+		0701A29419382AC2008F6DD3 /* beseye_rtmp_observer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_rtmp_observer.h; path = BeseyeStreamer/inc/beseye_rtmp_observer.h; sourceTree = "<group>"; };
+		0701A29519382AC2008F6DD3 /* beseyeplayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseyeplayer.h; path = BeseyeStreamer/inc/beseyeplayer.h; sourceTree = "<group>"; };
+		0701A29619382AC2008F6DD3 /* cmdutils_common_opts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cmdutils_common_opts.h; path = BeseyeStreamer/inc/cmdutils_common_opts.h; sourceTree = "<group>"; };
+		0701A29719382AC2008F6DD3 /* cmdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cmdutils.h; path = BeseyeStreamer/inc/cmdutils.h; sourceTree = "<group>"; };
+		0701A29819382AC2008F6DD3 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = BeseyeStreamer/inc/config.h; sourceTree = "<group>"; };
+		0701A29919382AC2008F6DD3 /* ffmpeg_ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ffmpeg_ext.h; path = BeseyeStreamer/inc/ffmpeg_ext.h; sourceTree = "<group>"; };
+		0701A29A19382AC2008F6DD3 /* ffmpeg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ffmpeg.h; path = BeseyeStreamer/inc/ffmpeg.h; sourceTree = "<group>"; };
+		0701A29B19382AC2008F6DD3 /* http_cgi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = http_cgi.h; path = BeseyeStreamer/inc/http_cgi.h; sourceTree = "<group>"; };
+		0701A29C19382AC2008F6DD3 /* librtmp_ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = librtmp_ext.h; path = BeseyeStreamer/inc/librtmp_ext.h; sourceTree = "<group>"; };
+		0701A29D19382AC2008F6DD3 /* pkt_queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pkt_queue.h; path = BeseyeStreamer/inc/pkt_queue.h; sourceTree = "<group>"; };
+		0701A29E19382AC2008F6DD3 /* player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = player.h; path = BeseyeStreamer/inc/player.h; sourceTree = "<group>"; };
+		0701A29F19382AC2008F6DD3 /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utils.h; path = BeseyeStreamer/inc/utils.h; sourceTree = "<group>"; };
+		0701A2A019382AC2008F6DD3 /* version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = version.h; path = BeseyeStreamer/inc/version.h; sourceTree = "<group>"; };
 		076160F118569D3800CFBC99 /* BeseyeStreamer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BeseyeStreamer.xcodeproj; path = iFrameExtractor.xcodeproj/../BeseyeStreamer/BeseyeStreamer.xcodeproj; sourceTree = "<group>"; };
 		0761611018569DC500CFBC99 /* libBeseyeStreamer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBeseyeStreamer.a; path = "BeseyeStreamer/build/Debug-iphoneos/libBeseyeStreamer.a"; sourceTree = "<group>"; };
 		0761612F1856A07F00CFBC99 /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswresample.a; path = ffmpeg/compiled/i386/lib/libswresample.a; sourceTree = "<group>"; };
@@ -99,6 +116,31 @@
 		076161471856A09C00CFBC99 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = compiled/i386/lib/libssl.a; sourceTree = "<group>"; };
 		076161481856A09C00CFBC99 /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswresample.a; path = compiled/i386/lib/libswresample.a; sourceTree = "<group>"; };
 		076161491856A09C00CFBC99 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = compiled/i386/lib/libswscale.a; sourceTree = "<group>"; };
+		07B458C71929A02F00BE79BC /* beseye_audio_streamer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_audio_streamer.h; path = BeseyeStreamer/inc/beseye_audio_streamer.h; sourceTree = "<group>"; };
+		07B458C81929A02F00BE79BC /* beseye_rtmp_observer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_rtmp_observer.h; path = BeseyeStreamer/inc/beseye_rtmp_observer.h; sourceTree = "<group>"; };
+		07B458C91929A02F00BE79BC /* beseyeplayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseyeplayer.h; path = BeseyeStreamer/inc/beseyeplayer.h; sourceTree = "<group>"; };
+		07B458CA1929A02F00BE79BC /* cmdutils_common_opts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cmdutils_common_opts.h; path = BeseyeStreamer/inc/cmdutils_common_opts.h; sourceTree = "<group>"; };
+		07B458CB1929A02F00BE79BC /* cmdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cmdutils.h; path = BeseyeStreamer/inc/cmdutils.h; sourceTree = "<group>"; };
+		07B458CC1929A02F00BE79BC /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = BeseyeStreamer/inc/config.h; sourceTree = "<group>"; };
+		07B458CD1929A02F00BE79BC /* ffmpeg_ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ffmpeg_ext.h; path = BeseyeStreamer/inc/ffmpeg_ext.h; sourceTree = "<group>"; };
+		07B458CE1929A02F00BE79BC /* ffmpeg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ffmpeg.h; path = BeseyeStreamer/inc/ffmpeg.h; sourceTree = "<group>"; };
+		07B458CF1929A02F00BE79BC /* http_cgi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = http_cgi.h; path = BeseyeStreamer/inc/http_cgi.h; sourceTree = "<group>"; };
+		07B458D01929A02F00BE79BC /* librtmp_ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = librtmp_ext.h; path = BeseyeStreamer/inc/librtmp_ext.h; sourceTree = "<group>"; };
+		07B458D11929A02F00BE79BC /* pkt_queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pkt_queue.h; path = BeseyeStreamer/inc/pkt_queue.h; sourceTree = "<group>"; };
+		07B458D21929A02F00BE79BC /* player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = player.h; path = BeseyeStreamer/inc/player.h; sourceTree = "<group>"; };
+		07B458D31929A02F00BE79BC /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utils.h; path = BeseyeStreamer/inc/utils.h; sourceTree = "<group>"; };
+		07B458D41929A02F00BE79BC /* version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = version.h; path = BeseyeStreamer/inc/version.h; sourceTree = "<group>"; };
+		07B458F41929F4C500BE79BC /* FreqGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FreqGenerator.h; path = BeseyeSoundPairing/inc/FreqGenerator.h; sourceTree = "<group>"; };
+		07B458F61929F9F800BE79BC /* SDL_main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SDL_main.h; path = ffmpeg/compiled/i386/include/include/SDL_main.h; sourceTree = "<group>"; };
+		07B458F81929FA4100BE79BC /* IllegalArgumentException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IllegalArgumentException.h; path = BeseyeSoundPairing/zxing/common/IllegalArgumentException.h; sourceTree = "<group>"; };
+		07B458F91929FA4100BE79BC /* GenericGF.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericGF.h; path = BeseyeSoundPairing/zxing/common/reedsolomon/GenericGF.h; sourceTree = "<group>"; };
+		07B458FA1929FA4100BE79BC /* GenericGFPoly.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericGFPoly.h; path = BeseyeSoundPairing/zxing/common/reedsolomon/GenericGFPoly.h; sourceTree = "<group>"; };
+		07B458FB1929FA4100BE79BC /* ReedSolomonEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ReedSolomonEncoder.h; path = BeseyeSoundPairing/zxing/common/reedsolomon/ReedSolomonEncoder.h; sourceTree = "<group>"; };
+		07B458FC1929FA4100BE79BC /* ReedSolomonException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ReedSolomonException.h; path = BeseyeSoundPairing/zxing/common/reedsolomon/ReedSolomonException.h; sourceTree = "<group>"; };
+		07B458FD1929FA4100BE79BC /* Exception.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = BeseyeSoundPairing/zxing/Exception.h; sourceTree = "<group>"; };
+		07B458FE1929FA4100BE79BC /* IllegalStateException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IllegalStateException.h; path = BeseyeSoundPairing/zxing/IllegalStateException.h; sourceTree = "<group>"; };
+		07B458FF1929FA4100BE79BC /* ReaderException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ReaderException.h; path = BeseyeSoundPairing/zxing/ReaderException.h; sourceTree = "<group>"; };
+		07B459001929FA4100BE79BC /* ZXing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZXing.h; path = BeseyeSoundPairing/zxing/ZXing.h; sourceTree = "<group>"; };
 		07E196F71850282100E0CA98 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		07E19779185029D000E0CA98 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = SDL/SDL/SDL.xcodeproj; sourceTree = "<group>"; };
 		07E19FB41850377D00E0CA98 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -107,19 +149,6 @@
 		07E19FB71850377D00E0CA98 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		07E19FDE18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iFrameExtractorAppDelegate.mm; sourceTree = "<group>"; };
 		07EC6C7F18B4D6920018BEA4 /* libBeseyeSoundPairing.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBeseyeSoundPairing.a; path = "BeseyeSoundPairing/build/Debug-iphoneos/libBeseyeSoundPairing.a"; sourceTree = "<group>"; };
-		07EC6D2B18B5BCCF0018BEA4 /* beseye_audio_streamer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_audio_streamer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseye_audio_streamer.h; sourceTree = "<group>"; };
-		07EC6D2C18B5BCCF0018BEA4 /* beseye_rtmp_observer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_rtmp_observer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseye_rtmp_observer.h; sourceTree = "<group>"; };
-		07EC6D2D18B5BCCF0018BEA4 /* beseyeplayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseyeplayer.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/beseyeplayer.h; sourceTree = "<group>"; };
-		07EC6D2E18B5BCCF0018BEA4 /* cmdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cmdutils.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/cmdutils.h; sourceTree = "<group>"; };
-		07EC6D2F18B5BCCF0018BEA4 /* cmdutils_common_opts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cmdutils_common_opts.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/cmdutils_common_opts.h; sourceTree = "<group>"; };
-		07EC6D3018B5BCCF0018BEA4 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/config.h; sourceTree = "<group>"; };
-		07EC6D3118B5BCCF0018BEA4 /* ffmpeg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ffmpeg.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/ffmpeg.h; sourceTree = "<group>"; };
-		07EC6D3218B5BCCF0018BEA4 /* ffmpeg_ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ffmpeg_ext.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/ffmpeg_ext.h; sourceTree = "<group>"; };
-		07EC6D3318B5BCCF0018BEA4 /* librtmp_ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = librtmp_ext.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/librtmp_ext.h; sourceTree = "<group>"; };
-		07EC6D3418B5BCCF0018BEA4 /* pkt_queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pkt_queue.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/pkt_queue.h; sourceTree = "<group>"; };
-		07EC6D3518B5BCCF0018BEA4 /* player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = player.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/player.h; sourceTree = "<group>"; };
-		07EC6D3618B5BCCF0018BEA4 /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = utils.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/utils.h; sourceTree = "<group>"; };
-		07EC6D3718B5BCCF0018BEA4 /* version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = version.h; path = BeseyeStreamer/BeseyeStreamer/../../../RTMP_Streaming_Test/jni/main/header/version.h; sourceTree = "<group>"; };
 		07F3AACD1754B0D50046934B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0918E6D010F839FC00300130 /* sophie.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = sophie.mov; sourceTree = "<group>"; };
 		0921E13F10FADAFB004EAA40 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
@@ -145,26 +174,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				076161381856A07F00CFBC99 /* libswresample.a in Frameworks */,
-				076161391856A07F00CFBC99 /* libswscale.a in Frameworks */,
-				076161521856A09C00CFBC99 /* libswscale.a in Frameworks */,
-				076161501856A09C00CFBC99 /* libssl.a in Frameworks */,
-				0761613A1856A07F00CFBC99 /* libavcodec.a in Frameworks */,
-				0761613B1856A07F00CFBC99 /* libavfilter.a in Frameworks */,
-				0761613C1856A07F00CFBC99 /* libavformat.a in Frameworks */,
-				0761614A1856A09C00CFBC99 /* libavcodec.a in Frameworks */,
-				0761614D1856A09C00CFBC99 /* libavutil.a in Frameworks */,
-				0761613D1856A07F00CFBC99 /* libavutil.a in Frameworks */,
-				0761613E1856A07F00CFBC99 /* librtmp.a in Frameworks */,
-				0761613F1856A07F00CFBC99 /* libcrypto.a in Frameworks */,
-				076161401856A07F00CFBC99 /* libssl.a in Frameworks */,
-				076161511856A09C00CFBC99 /* libswresample.a in Frameworks */,
-				0761614E1856A09C00CFBC99 /* libcrypto.a in Frameworks */,
+				070E2C4E19375133007D0189 /* libswresample.a in Frameworks */,
+				0713D8821932F0D900BF6968 /* libavcodec.a in Frameworks */,
+				0713D8831932F0D900BF6968 /* libavfilter.a in Frameworks */,
+				0713D8841932F0D900BF6968 /* libavformat.a in Frameworks */,
+				0713D8851932F0D900BF6968 /* libavutil.a in Frameworks */,
+				0713D8871932F0D900BF6968 /* libswscale.a in Frameworks */,
+				0713D8881932F0D900BF6968 /* librtmp.a in Frameworks */,
+				0713D8891932F0D900BF6968 /* libcrypto.a in Frameworks */,
+				0713D88A1932F0D900BF6968 /* libssl.a in Frameworks */,
 				0761611118569DC500CFBC99 /* libBeseyeStreamer.a in Frameworks */,
 				07EC6C8018B4D6920018BEA4 /* libBeseyeSoundPairing.a in Frameworks */,
 				07AD70711855A07D000BCD88 /* libSDL2.a in Frameworks */,
 				156A981B15DCDD8C00898981 /* libbz2.1.0.dylib in Frameworks */,
-				0761614C1856A09C00CFBC99 /* libavformat.a in Frameworks */,
 				09A69722110EC23900FE1DA8 /* Foundation.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -172,8 +194,6 @@
 				07E19FB91850377D00E0CA98 /* CoreAudio.framework in Frameworks */,
 				07E19FBA1850377D00E0CA98 /* OpenGLES.framework in Frameworks */,
 				07E19FBB1850377D00E0CA98 /* QuartzCore.framework in Frameworks */,
-				0761614B1856A09C00CFBC99 /* libavfilter.a in Frameworks */,
-				0761614F1856A09C00CFBC99 /* librtmp.a in Frameworks */,
 				098D922B11DE19E900355815 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -192,19 +212,20 @@
 		073AFAF5185AE39C008CBD7E /* BeseyeStreamerHeader */ = {
 			isa = PBXGroup;
 			children = (
-				07EC6D2B18B5BCCF0018BEA4 /* beseye_audio_streamer.h */,
-				07EC6D2C18B5BCCF0018BEA4 /* beseye_rtmp_observer.h */,
-				07EC6D2D18B5BCCF0018BEA4 /* beseyeplayer.h */,
-				07EC6D2E18B5BCCF0018BEA4 /* cmdutils.h */,
-				07EC6D2F18B5BCCF0018BEA4 /* cmdutils_common_opts.h */,
-				07EC6D3018B5BCCF0018BEA4 /* config.h */,
-				07EC6D3118B5BCCF0018BEA4 /* ffmpeg.h */,
-				07EC6D3218B5BCCF0018BEA4 /* ffmpeg_ext.h */,
-				07EC6D3318B5BCCF0018BEA4 /* librtmp_ext.h */,
-				07EC6D3418B5BCCF0018BEA4 /* pkt_queue.h */,
-				07EC6D3518B5BCCF0018BEA4 /* player.h */,
-				07EC6D3618B5BCCF0018BEA4 /* utils.h */,
-				07EC6D3718B5BCCF0018BEA4 /* version.h */,
+				0701A29319382AC2008F6DD3 /* beseye_audio_streamer.h */,
+				0701A29419382AC2008F6DD3 /* beseye_rtmp_observer.h */,
+				0701A29519382AC2008F6DD3 /* beseyeplayer.h */,
+				0701A29619382AC2008F6DD3 /* cmdutils_common_opts.h */,
+				0701A29719382AC2008F6DD3 /* cmdutils.h */,
+				0701A29819382AC2008F6DD3 /* config.h */,
+				0701A29919382AC2008F6DD3 /* ffmpeg_ext.h */,
+				0701A29A19382AC2008F6DD3 /* ffmpeg.h */,
+				0701A29B19382AC2008F6DD3 /* http_cgi.h */,
+				0701A29C19382AC2008F6DD3 /* librtmp_ext.h */,
+				0701A29D19382AC2008F6DD3 /* pkt_queue.h */,
+				0701A29E19382AC2008F6DD3 /* player.h */,
+				0701A29F19382AC2008F6DD3 /* utils.h */,
+				0701A2A019382AC2008F6DD3 /* version.h */,
 			);
 			name = BeseyeStreamerHeader;
 			sourceTree = "<group>";
@@ -258,6 +279,31 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				07B458F81929FA4100BE79BC /* IllegalArgumentException.h */,
+				07B458F91929FA4100BE79BC /* GenericGF.h */,
+				07B458FA1929FA4100BE79BC /* GenericGFPoly.h */,
+				07B458FB1929FA4100BE79BC /* ReedSolomonEncoder.h */,
+				07B458FC1929FA4100BE79BC /* ReedSolomonException.h */,
+				07B458FD1929FA4100BE79BC /* Exception.h */,
+				07B458FE1929FA4100BE79BC /* IllegalStateException.h */,
+				07B458FF1929FA4100BE79BC /* ReaderException.h */,
+				07B459001929FA4100BE79BC /* ZXing.h */,
+				07B458F61929F9F800BE79BC /* SDL_main.h */,
+				07B458F41929F4C500BE79BC /* FreqGenerator.h */,
+				07B458C71929A02F00BE79BC /* beseye_audio_streamer.h */,
+				07B458C81929A02F00BE79BC /* beseye_rtmp_observer.h */,
+				07B458C91929A02F00BE79BC /* beseyeplayer.h */,
+				07B458CA1929A02F00BE79BC /* cmdutils_common_opts.h */,
+				07B458CB1929A02F00BE79BC /* cmdutils.h */,
+				07B458CC1929A02F00BE79BC /* config.h */,
+				07B458CD1929A02F00BE79BC /* ffmpeg_ext.h */,
+				07B458CE1929A02F00BE79BC /* ffmpeg.h */,
+				07B458CF1929A02F00BE79BC /* http_cgi.h */,
+				07B458D01929A02F00BE79BC /* librtmp_ext.h */,
+				07B458D11929A02F00BE79BC /* pkt_queue.h */,
+				07B458D21929A02F00BE79BC /* player.h */,
+				07B458D31929A02F00BE79BC /* utils.h */,
+				07B458D41929A02F00BE79BC /* version.h */,
 				07E19779185029D000E0CA98 /* SDL.xcodeproj */,
 				076160F118569D3800CFBC99 /* BeseyeStreamer.xcodeproj */,
 				073AFAF5185AE39C008CBD7E /* BeseyeStreamerHeader */,
@@ -401,23 +447,35 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07EC6D3B18B5BCCF0018BEA4 /* cmdutils.h in Resources */,
-				07EC6D4018B5BCCF0018BEA4 /* librtmp_ext.h in Resources */,
+				07B459011929FA4100BE79BC /* IllegalArgumentException.h in Resources */,
+				07B459021929FA4100BE79BC /* GenericGF.h in Resources */,
+				07B459031929FA4100BE79BC /* GenericGFPoly.h in Resources */,
+				07B459041929FA4100BE79BC /* ReedSolomonEncoder.h in Resources */,
+				07B459051929FA4100BE79BC /* ReedSolomonException.h in Resources */,
+				07B459061929FA4100BE79BC /* Exception.h in Resources */,
+				07B459071929FA4100BE79BC /* IllegalStateException.h in Resources */,
+				07B459081929FA4100BE79BC /* ReaderException.h in Resources */,
+				07B459091929FA4100BE79BC /* ZXing.h in Resources */,
+				07B458F71929F9F800BE79BC /* SDL_main.h in Resources */,
+				07B458F51929F4C500BE79BC /* FreqGenerator.h in Resources */,
+				07B458D51929A02F00BE79BC /* beseye_audio_streamer.h in Resources */,
+				07B458D61929A02F00BE79BC /* beseye_rtmp_observer.h in Resources */,
+				07B458D71929A02F00BE79BC /* beseyeplayer.h in Resources */,
+				07B458D81929A02F00BE79BC /* cmdutils_common_opts.h in Resources */,
+				07B458D91929A02F00BE79BC /* cmdutils.h in Resources */,
+				07B458DA1929A02F00BE79BC /* config.h in Resources */,
+				07B458DB1929A02F00BE79BC /* ffmpeg_ext.h in Resources */,
+				07B458DC1929A02F00BE79BC /* ffmpeg.h in Resources */,
+				07B458DD1929A02F00BE79BC /* http_cgi.h in Resources */,
+				07B458DE1929A02F00BE79BC /* librtmp_ext.h in Resources */,
+				07B458DF1929A02F00BE79BC /* pkt_queue.h in Resources */,
+				07B458E01929A02F00BE79BC /* player.h in Resources */,
+				07B458E11929A02F00BE79BC /* utils.h in Resources */,
+				07B458E21929A02F00BE79BC /* version.h in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
-				07EC6D4118B5BCCF0018BEA4 /* pkt_queue.h in Resources */,
 				0918E6D110F839FC00300130 /* sophie.mov in Resources */,
 				076160F218569D3800CFBC99 /* BeseyeStreamer.xcodeproj in Resources */,
-				07EC6D3818B5BCCF0018BEA4 /* beseye_audio_streamer.h in Resources */,
 				09F1D692110ED3AA00F50511 /* Default.png in Resources */,
-				07EC6D3918B5BCCF0018BEA4 /* beseye_rtmp_observer.h in Resources */,
-				07EC6D3E18B5BCCF0018BEA4 /* ffmpeg.h in Resources */,
-				07EC6D3A18B5BCCF0018BEA4 /* beseyeplayer.h in Resources */,
-				07EC6D4218B5BCCF0018BEA4 /* player.h in Resources */,
-				07EC6D4318B5BCCF0018BEA4 /* utils.h in Resources */,
-				07EC6D4418B5BCCF0018BEA4 /* version.h in Resources */,
-				07EC6D3D18B5BCCF0018BEA4 /* config.h in Resources */,
-				07EC6D3C18B5BCCF0018BEA4 /* cmdutils_common_opts.h in Resources */,
-				07EC6D3F18B5BCCF0018BEA4 /* ffmpeg_ext.h in Resources */,
 				07F3AACE1754B0D50046934B /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -453,9 +511,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iFrameExtractor_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/include\"",
-					"\"$(SRCROOT)/../../Sound_Pairing/aubioTest/jni/include\"",
-					"\"$(SRCROOT)/../../Sound_Pairing/aubioTest/jni\"",
 				);
 				INFOPLIST_FILE = "iFrameExtractor-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -464,7 +522,7 @@
 					"$(SRCROOT)/../../RTMP_Streaming/rtmpdump-2.3_2/lib",
 					"$(SRCROOT)/../../RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
 					"$(SRCROOT)/../../RTMP_Streaming/openssl-1.0.1e/build_ios/lib",
-					"$(SRCROOT)/../../ffmpeg_android/fat/lib",
+					"/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
 				);
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";
@@ -485,9 +543,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iFrameExtractor_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/include\"",
-					"\"$(SRCROOT)/../../Sound_Pairing/aubioTest/jni/include\"",
-					"\"$(SRCROOT)/../../Sound_Pairing/aubioTest/jni\"",
 				);
 				INFOPLIST_FILE = "iFrameExtractor-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -496,7 +554,7 @@
 					"$(SRCROOT)/../../RTMP_Streaming/rtmpdump-2.3_2/lib",
 					"$(SRCROOT)/../../RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
 					"$(SRCROOT)/../../RTMP_Streaming/openssl-1.0.1e/build_ios/lib",
-					"$(SRCROOT)/../../ffmpeg_android/fat/lib",
+					"/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
 				);
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";
@@ -508,7 +566,7 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -516,12 +574,21 @@
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ./ffmpeg;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					./ffmpeg,
+					./BeseyeSoundPairing/inc,
+					./BeseyeSoundPairing,
+					./ffmpeg/compiled/i386/include/include,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-I",
 					/compiled/i386/include/,
+					"-I",
+					/compiled/i386/include/include/,
 				);
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
@@ -531,7 +598,7 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -539,11 +606,21 @@
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ./ffmpeg;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					./ffmpeg,
+					./BeseyeSoundPairing/inc,
+					./BeseyeSoundPairing,
+					./ffmpeg/compiled/i386/include/include,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-I",
 					/compiled/i386/include/,
+					"-I",
+					/compiled/i386/include/include/,
 				);
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";

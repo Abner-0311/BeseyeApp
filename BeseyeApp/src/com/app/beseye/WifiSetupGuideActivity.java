@@ -4,9 +4,12 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
@@ -83,11 +86,13 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.iv_nav_left_btn:{
-				finish();
+				this.invokeLogout();
 				break;
 			}
 			case R.id.button_choose_network:{
-				launchActivityForResultByClassName(WifiListActivity.class.getName(), null, REQ_CODE_PICK_WIFI);
+				Bundle b = new Bundle();
+				b.putInt(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+				launchActivityForResultByClassName(WifiListActivity.class.getName(), b, REQ_CODE_PICK_WIFI);
 				break;
 			}
 			case R.id.button_wifi_yes:{
@@ -154,8 +159,25 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
-					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
-					miOriginalVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
+					JSONArray arrCamList = new JSONArray();
+					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
+					//miOriginalVcamCnt = iVcamCnt;
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
+					if(0 < iVcamCnt){
+						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
+						for(int i = 0;i< iVcamCnt;i++){
+							try {
+								JSONObject camObj = VcamList.getJSONObject(i);
+								if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+									arrCamList.put(camObj);
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+						miOriginalVcamCnt = arrCamList.length();
+					}
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 				}
 			}else 
 				super.onPostExecute(task, result, iRetCode);

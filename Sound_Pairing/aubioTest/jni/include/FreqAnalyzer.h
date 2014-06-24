@@ -79,6 +79,8 @@ private:
 	FreqAnalyzer* selfFreqAnalyzer;
 	MatchRetSet* mprevMatchRet;
 
+	bool mbLowSoundDetected;
+
 	FreqAnalyzer(bool bNeedToAutoCorrection);
 
 	static Ref<FreqAnalyzer> sFreqAnalyzer;
@@ -125,6 +127,8 @@ private:
 	SpeexPreprocessState *stPreprocess, *stPreprocessAC;
 	void runAudioPreprocess(short * array, bool bRese);
 	void runAudioPreprocessAC(short * array, bool bRese);
+
+	void normalAnalysis(int iIndex);
 
 	static int sSampleRate;
 	static int sFrameSize;
@@ -181,6 +185,9 @@ public:
     int getSessionOffset();
     bool checkEndPoint();
 
+
+    bool isDetectLowSound(){return mbLowSoundDetected;}
+    void setDetectLowSound(bool flag){mbLowSoundDetected = flag;}
     void triggerTimeout();
 
     bool canPerformAutoCorrection();

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name_alpha">Beseye(α)</string>
-    <string name="app_name">Beseye</string>
+    <!-- <string name="app_name_alpha">Beseye(α)</string> -->
+    <string name="app_name_alpha">Beseye</string>
+    <string name="app_name">BesEye</string>
     <string name="crash_toast_text"></string>
     
     <string name="connect">Connect</string>
@@ -20,6 +21,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="event_cam_view">Event</string>
     <string name="event_go_live">Go Live</string>
+    <string name="event_itm_live">Live</string>
     <string name="camerview_init_date">---.--.----</string>
     <string name="camerview_init_time">--:--:-- --</string>
     <string name="can_power_state_off">The cam is off</string>
@@ -65,6 +67,9 @@
     
     <string name="dialog_wifi_ap_key_index">Key index</string>
     
+    <string name="dialog_dettach_cam">Are you sure to dettach this cam [%s]?</string>
+    <string name="dialog_reboot_cam">Are you sure to reboot this cam [%s]?</string>
+    
     <string name="cam_setting_title">Settings</string>
     <string name="cam_setting_title_power_setting">Power settings</string>
 	<string name="cam_setting_title_power">Camera power</string>
@@ -86,6 +91,7 @@
 	<string name="cam_setting_title_video_upside_down">Video upside-down</string>
 	<string name="cam_setting_title_wifi_setting">Wifi setting</string>
 	<string name="cam_setting_title_cam_info">Camera information</string>
+	<string name="cam_setting_empty_name_warning">Camera name can not be empty!</string>
 	
 	<string name="cam_info_cam_name">Camera name</string>
 	<string name="cam_info_sn">Serial number</string>
@@ -121,9 +127,10 @@
 	<string name="signup_title_create_account">Create Account</string>
 	<string name="signup_title_cam_wifi_settings">Camera WiFi Settings</string>
 	<string name="signup_title_cam_pair_fail">Please try again</string>
+	<string name="signup_title_wifi_list">WiFi List</string>
 	<string name="signup_learn_more">Learn more about</string>
 	<string name="signup_beseye">Beseye</string>
-	<string name="signup_bottom_login">Login</string>
+	<string name="signup_bottom_login">Log In</string>
 	<string name="signup_bottom_signup">Setup camera and Sign up</string>
 	<string name="signup_before_setup_start">Start</string>
 	<string name="signup_before_setup_description">Please plug in your camera and place it to within 3 meters distance of you</string>
@@ -144,11 +151,17 @@
 	<string name="datetime_month">Month</string>
 	<string name="datetime_day">Day</string>
 	<string name="datetime_hour">Hour</string>
+	<string name="event_list_now">Now</string>
 	
-	<string name="camera_list_disconected">This camera is disconect</string>
+	<string name="camera_list_off">This camera is off</string>
+	<string name="camera_list_disconected">This camera is disconnected</string>
 	<string name="camera_list_more">Click for more</string>
 	<string name="camera_list_add">You can add a new camera here.\nor you can check out our featured cameras.</string>
 	<string name="camera_list_failed_title">Failed to connect with your camera.</string>
 	<string name="camera_list_failed_content">Please check network on mobile device and camera,then try again.</string>
 	
+	<string name="loading_latest_update">Last update&#160;%s</string>
+	<string name="no_camera">No camera attached</string>
+	<string name="cam_list_tilte">My Cameras</string>
+	<string name="liveview_hold_to_talk">Hold to talk</string>
 </resources>

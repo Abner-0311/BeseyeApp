@@ -368,7 +368,7 @@ int getdataExt(char* url, const char* session, void(* writeBufCB)(unsigned char*
 
       nread = (curl_off_t)iolen;
       if(!bFirst){
-    	  writeBufCB(buf, iolen);
+    	  //writeBufCB(buf, iolen);
 
     	  if(fp)
     	    fwrite(buf, sizeof(buf[0]), iolen, fp);

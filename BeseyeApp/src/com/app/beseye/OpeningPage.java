@@ -2,6 +2,13 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -19,6 +26,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -26,7 +34,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	public static final String ACTION_BRING_FRONT 		= "BringFront";
 	public static final String KEY_DELEGATE_INTENT 		= "KEY_DELEGATE_INTENT";
 	public static final String KEY_IGNORE_ACTIVATED_FLAG= "KEY_IGNORE_ACTIVATED_FLAG";
-	public static final String FIRST_PAGE 				= CameraViewActivity.class.getName();
+	public static final String FIRST_PAGE 				= CameraListActivity.class.getName();
 	
 	private static boolean sbFirstLaunch = true;
 	private static final long TIME_TO_CLOSE_OPENING_PAGE = 3000L;
@@ -87,8 +95,6 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		sbFirstLaunch = false;
 	}
 	
-	
-	
 	@Override
 	protected void onPause() {
 		if(null != mGetUserInfoTask){
@@ -105,6 +111,48 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	private BeseyeHttpTask mGetVCamListTask;
 	
 	private void launchActivityByIntent(Intent intent){
+		if(SessionMgr.getInstance().isTokenValid()){
+			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
+			String strP2P = null;
+			String strName = null;
+			if(null != p2pFile && p2pFile.exists()){
+				try {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(p2pFile)));
+					try {
+						strP2P = (null != reader)?reader.readLine():null;
+						strName = (null != reader)?reader.readLine():null;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			Log.i(TAG, "OpeningPage::launchActivityByIntent(), strP2P :"+strP2P+", p2pFile:"+p2pFile.getAbsolutePath());
+			
+			if(null != strP2P && 0 < strP2P.length()){
+				COMPUTEX_P2P = true;
+				Intent intentLanuch = new Intent();
+				intentLanuch.setClassName(this, CameraViewActivity.class.getName());
+				JSONObject mCam_obj = new JSONObject();
+				//BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ID, mStrVCamID);
+		        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, strName);
+		        intentLanuch.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM, strP2P);
+				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM_NAME, strName);
+				startActivity(intentLanuch);
+				return;
+			}else{
+				COMPUTEX_P2P = false;
+			}
+		}
+		
+		File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
+		COMPUTEX_PAIRING = (null != pairingFile)&&pairingFile.exists();
+		
+		Log.i(TAG, "OpeningPage::launchActivityByIntent(), COMPUTEX_PAIRING :"+COMPUTEX_PAIRING);
+		
 		Intent intentLanuch = null;
 		if(null == (intentLanuch = intent.getParcelableExtra(KEY_DELEGATE_INTENT))){
 			intentLanuch = new Intent();
@@ -136,6 +184,9 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			intentBroadcast.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, GCMIntentService.FORWARD_ACTION_TYPE_CHECK_DIALOG);
 	        sendBroadcast(intentBroadcast);
 		}
+		
+		String strTsInfo = intentLanuch.getStringExtra(CameraViewActivity.KEY_TIMELINE_INFO);
+		Log.i(TAG, "OpeningPage::launchActivityByIntent(), strTsInfo:"+strTsInfo);
 		
 		//intentLanuch.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		if(sbFirstLaunch || (!SessionMgr.getInstance().getIsCertificated() && !intent.getBooleanExtra(KEY_IGNORE_ACTIVATED_FLAG, false))){
