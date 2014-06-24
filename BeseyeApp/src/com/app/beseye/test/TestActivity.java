@@ -18,7 +18,7 @@ public class TestActivity extends ActionBarActivity implements View.OnClickListe
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.layout_signup_paring_done);
+		setContentView(R.layout.layout_camera_list);
 		//Hide actionbar
 		getSupportActionBar().hide();
 	}
