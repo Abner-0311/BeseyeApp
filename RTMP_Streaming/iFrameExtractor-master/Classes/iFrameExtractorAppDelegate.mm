@@ -245,7 +245,7 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         //secType => 0:none; 1:WEP; 2:WPA; 3:WPA2
         //tmpUserToken => temp user token from Account BE
         
-        unsigned int iRet =FreqGenerator::getInstance()->playPairingCode("313233343536", "0630BesEye", 12345);
+        unsigned int iRet =FreqGenerator::getInstance()->playPairingCode("60a44c39fcf8", "0630BesEye", 28645);
         if(R_OK == iRet){
             //[playToneButton setEnabled:NO];
             
@@ -365,8 +365,8 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         [self performSelectorOnMainThread:@selector(enableButton:) withObject:stopButton2 waitUntilDone:NO];
         [self performSelectorOnMainThread:@selector(enableButton:) withObject:addButton waitUntilDone:NO];
         
-        player2->createStreaming("rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
-                                 //"rtmp://54.250.149.50/vods3/_definst_/mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_0.mp4"
+        player2->createStreaming(//"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"
+                                 "rtmp://54.238.191.39:1935/vods3/_definst_/mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4"
                                  );
         player2->unregisterVideoCallback();
         delete player2;

@@ -34,7 +34,7 @@ mkdir build_ios
 cd build_ios
 
 CURRENTPATH=`pwd`
-ARCHS="i386 armv7 armv7s"
+ARCHS="arm64 i386 armv7 armv7s"
 DEVELOPER=`xcode-select -print-path`
 
 if [ ! -d "$DEVELOPER" ]; then

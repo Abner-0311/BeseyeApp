@@ -3,7 +3,7 @@
 ###########################################################################
 #  Choose your ffmpeg version and your currently-installed iOS SDK version:
 #
-VERSION="2.1"
+VERSION="2.2.2"
 SDKVERSION="7.1"
 
 
@@ -21,7 +21,7 @@ SDKVERSION="7.1"
 #echo "install finished."
 
 IOS_LIBRTMP=`cd ../rtmpdump-2.3_2;pwd`
-DIR_OPENSSL=`cd ../openssl-1.0.1e/build_ios;pwd`
+DIR_OPENSSL=`cd ../openssl-1.0.1h/build_ios;pwd`
 
 FFMPEG_FLAGS="--enable-cross-compile \
 --disable-symver \
@@ -92,9 +92,11 @@ FFMPEG_FLAGS="--enable-cross-compile \
 
 # No need to change this since xcode build will only compile in the
 # necessary bits from the libraries we create
-ARCHS="armv7 armv7s i386"
+ARCHS="armv7 armv7s"
 
 DEVELOPER=`xcode-select -print-path`
+
+echo "DEVELOPER is $DEVELOPER"
 
 cd "`dirname \"$0\"`"
 REPOROOT=$(pwd)
@@ -146,11 +148,13 @@ set -e # back to regular "bail out on error" mode
 
 for ARCH in ${ARCHS}
 do
-if [ "${ARCH}" == "i386" ];
+echo "Begin to build $ARCH ..."
+
+if [ "${ARCH}" == "i386" -o "${ARCH}" == "x86_64" ];
 then
 PLATFORM="iPhoneSimulator"
-EXTRA_CONFIG="--arch=i386 --disable-asm --enable-cross-compile --target-os=darwin --cpu=i386"
-EXTRA_CFLAGS="-arch i386 -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include -no-integrated-as"
+EXTRA_CONFIG="--arch=${ARCH} --disable-asm --enable-cross-compile --target-os=darwin --cpu=${ARCH}"
+EXTRA_CFLAGS="-arch ${ARCH} -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include -no-integrated-as"
 EXTRA_LDFLAGS="-I${DEVELOPER}/Platforms/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDKVERSION}.sdk/usr/lib -mfpu=neon -L${IOS_LIBRTMP}/lib -L${DIR_OPENSSL}/lib"
 
 XCRUN_SDK=`echo $PLATFORM | tr '[:upper:]' '[:lower:]'`
@@ -159,24 +163,32 @@ CC="xcrun -sdk $XCRUN_SDK clang"
 else
 PLATFORM="iPhoneOS"
 
-if [ "${ARCH}" == "arm64" ];
+CPU=
+#if [ $ARCH = "armv7s" ]
+#then
+#CPU="--cpu=cortex-a9"
+#fi
+
+if [ $ARCH = "armv7" ]
 then
-EXTRA_CONFIG="--arch=arm64 --target-os=darwin --enable-cross-compile --disable-armv5te"
-else
-EXTRA_CONFIG="--arch=arm --target-os=darwin --enable-cross-compile --cpu=cortex-a9 --disable-armv5te"
+CPU="--cpu=cortex-a8"
 fi
 
+
+EXTRA_CONFIG="--arch=arm --target-os=darwin --enable-cross-compile ${CPU} --disable-armv5te"
 EXTRA_CFLAGS="-w -arch ${ARCH} -mfpu=neon -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include -no-integrated-as"
 EXTRA_LDFLAGS="-mfpu=neon -L${IOS_LIBRTMP}/lib -L${DIR_OPENSSL}/lib"
 
 XCRUN_SDK=`echo $PLATFORM | tr '[:upper:]' '[:lower:]'`
 CC="xcrun -sdk $XCRUN_SDK clang"
 
+echo "CC is $CC"
+
 fi
 
 mkdir -p "${INTERDIR}/${ARCH}"
 
-./configure --prefix="${INTERDIR}/${ARCH}" $FFMPEG_FLAGS --sysroot="${DEVELOPER}/Platforms/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDKVERSION}.sdk" --cc="$CC" --as='/usr/local/bin/gas-preprocessor.pl /Applications/XCode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang' --extra-cflags="${EXTRA_CFLAGS} -miphoneos-version-min=${SDKVERSION} -I${OUTPUTDIR}/include" --extra-ldflags="-arch ${ARCH} ${EXTRA_LDFLAGS} -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDKVERSION}.sdk -miphoneos-version-min=${SDKVERSION} -L${OUTPUTDIR}/lib" ${EXTRA_CONFIG} --enable-pic --extra-cxxflags="$CPPFLAGS -I${OUTPUTDIR}/include -isysroot ${DEVELOPER}/Platforms/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDKVERSION}.sdk"
+./configure --prefix="${INTERDIR}/${ARCH}" $FFMPEG_FLAGS --sysroot="${DEVELOPER}/Platforms/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDKVERSION}.sdk" --cc="$CC" --extra-cflags="${EXTRA_CFLAGS} -miphoneos-version-min=7.0 -I${OUTPUTDIR}/include" --extra-ldflags="-arch ${ARCH} ${EXTRA_LDFLAGS} -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDKVERSION}.sdk -miphoneos-version-min=7.0 -L${OUTPUTDIR}/lib" ${EXTRA_CONFIG} --enable-pic --extra-cxxflags="$CPPFLAGS -I${OUTPUTDIR}/include -isysroot ${DEVELOPER}/Platforms/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDKVERSION}.sdk"
 
 make clean
 make && make install && make clean
@@ -190,7 +202,7 @@ for file in *.a
 do
 
 cd ${INTERDIR}
-xcrun -sdk iphoneos lipo -output universal/lib/$file  -create -arch armv7 armv7/lib/$file -arch armv7s armv7s/lib/$file -arch i386 i386/lib/$file
+xcrun -sdk iphoneos lipo -output universal/lib/$file  -create -arch armv7 armv7/lib/$file -arch armv7s armv7s/lib/$file -arch arm64 arm64/lib/$file -arch i386 i386/lib/$file -arch x86_64 x86_64/lib/$file
 echo "Universal $file created."
 
 done

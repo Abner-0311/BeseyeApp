@@ -1,4 +1,4 @@
-prefix=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/ffmpeg_android_2.2.2/build/built/i386
+prefix=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/ffmpeg_android_2.2.2/build/built/armv7
 exec_prefix=${prefix}
 libdir=${prefix}/lib
 includedir=${prefix}/include
