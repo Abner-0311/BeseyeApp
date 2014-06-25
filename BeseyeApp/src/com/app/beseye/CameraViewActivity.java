@@ -378,7 +378,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mCameraViewControlAnimator = new CameraViewControlAnimator(this, mVgHeader, mVgToolbar, getStatusBarHeight(this));
 		if(null != mCameraViewControlAnimator){
 			mCameraViewControlAnimator.setP2PMode(isInP2PMode());
-			//mCameraViewControlAnimator.setStatusBarHeight(getStatusBarHeight(this));
 			
 			Configuration config = getResources().getConfiguration();		
 			setMarginByOrientation(config.orientation);
@@ -388,7 +387,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(config.orientation == Configuration.ORIENTATION_LANDSCAPE)
 					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_h_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
 				else
-					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_s_header_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
+					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_s_header_display_icon:R.drawable.liveview_s_header_display_icon_event);
 				//BeseyeUtils.setVisibility(mIvStreamType, mbIsLiveMode?View.VISIBLE:View.INVISIBLE);
 			}
 			
@@ -1190,6 +1189,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onSingleTapConfirm() {
 		if(null != mCameraViewControlAnimator && false == mCameraViewControlAnimator.isInAnimation())
 			mCameraViewControlAnimator.performControlAnimation();
+	}
+	
+	@Override
+	public void onDoubleTapConfirm() {
+		if(null != mCameraViewControlAnimator)
+			mCameraViewControlAnimator.hideControl();
 	}
 	
 	private void checkAndExtendHideHeader(){
