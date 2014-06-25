@@ -23,10 +23,10 @@
 @c @set arch-x86 no
 @c @set arch-x86-32 no
 @c @set arch-x86-64 no
-@c @set have-armv5te no
-@c @set have-armv6 no
-@c @set have-armv6t2 no
-@c @set have-neon no
+@set have-armv5te yes
+@set have-armv6 yes
+@set have-armv6t2 yes
+@set have-neon yes
 @set have-vfp yes
 @set have-vfpv3 yes
 @c @set have-amd3dnow no
@@ -117,7 +117,7 @@
 @c @set have-symver no
 @c @set have-yasm no
 @c @set have-bigendian no
-@set have-fast-unaligned yes
+@c @set have-fast-unaligned no
 @c @set have-incompatible-libav-abi no
 @c @set have-incompatible-fork-abi no
 @set have-pthreads yes
@@ -139,8 +139,8 @@
 @set have-ldexpf yes
 @set have-llrint yes
 @set have-llrintf yes
-@set have-log2 yes
-@set have-log2f yes
+@c @set have-log2 no
+@c @set have-log2f no
 @set have-log10f yes
 @set have-lrint yes
 @set have-lrintf yes
@@ -158,7 +158,7 @@
 @c @set have-altivec-h no
 @set have-arpa-inet-h yes
 @set have-asm-mod-q yes
-@c @set have-asm-types-h no
+@set have-asm-types-h yes
 @c @set have-atomic-cas-ptr no
 @set have-atomics-native yes
 @set have-attribute-may-alias yes
@@ -166,7 +166,7 @@
 @c @set have-cdio-paranoia-h no
 @c @set have-cdio-paranoia-paranoia-h no
 @c @set have-cl-cl-h no
-@c @set have-clock-gettime no
+@set have-clock-gettime yes
 @c @set have-closesocket no
 @c @set have-commandlinetoargvw no
 @c @set have-cryptgenrandom no
@@ -185,7 +185,7 @@
 @c @set have-ebx-available no
 @c @set have-es2-gl-h no
 @c @set have-fast-64bit no
-@set have-fast-clz yes
+@c @set have-fast-clz no
 @c @set have-fast-cmov no
 @set have-fcntl yes
 @set have-fork yes
@@ -199,7 +199,7 @@
 @set have-getrusage yes
 @set have-getservbyport yes
 @set have-gettimeofday yes
-@set have-glob yes
+@c @set have-glob no
 @c @set have-glxgetprocaddress no
 @set have-gnu-as yes
 @c @set have-gnu-windres no
@@ -224,9 +224,9 @@
 @c @set have-machine-ioctl-meteor-h no
 @c @set have-machine-rw-barrier no
 @set have-makeinfo yes
-@c @set have-malloc-h no
+@set have-malloc-h yes
 @c @set have-mapviewoffile no
-@c @set have-memalign no
+@set have-memalign yes
 @c @set have-memorybarrier no
 @set have-mkstemp yes
 @c @set have-mm-empty no
@@ -239,9 +239,9 @@
 @set have-perl yes
 @set have-pod2man yes
 @set have-poll-h yes
-@set have-posix-memalign yes
+@c @set have-posix-memalign no
 @set have-pragma-deprecated yes
-@set have-pthread-cancel yes
+@c @set have-pthread-cancel no
 @c @set have-rdtsc no
 @c @set have-rsync-contimeout no
 @set have-sarestart yes
@@ -263,15 +263,15 @@
 @set have-struct-rusage-ru-maxrss yes
 @c @set have-struct-sctp-event-subscribe no
 @set have-struct-sockaddr-in6 yes
-@set have-struct-sockaddr-sa-len yes
+@c @set have-struct-sockaddr-sa-len no
 @set have-struct-sockaddr-storage yes
 @c @set have-struct-stat-st-mtim-tv-nsec no
 @c @set have-struct-v4l2-frmivalenum-discrete no
 @c @set have-symver-asm-label no
-@c @set have-symver-gnu-asm no
+@set have-symver-gnu-asm yes
 @set have-sync-val-compare-and-swap yes
 @set have-sysconf yes
-@set have-sysctl yes
+@c @set have-sysctl no
 @set have-sys-mman-h yes
 @set have-sys-param-h yes
 @set have-sys-resource-h yes
@@ -302,7 +302,7 @@
 @c @set config-hwaccels no
 @set config-indevs yes
 @set config-muxers yes
-@c @set config-outdevs no
+@set config-outdevs yes
 @set config-parsers yes
 @set config-protocols yes
 @c @set config-doc no
@@ -317,10 +317,10 @@
 @set config-filtering-audio-example yes
 @set config-filtering-video-example yes
 @set config-metadata-example yes
-@set config-muxing-example yes
+@c @set config-muxing-example no
 @set config-remuxing-example yes
 @set config-resampling-audio-example yes
-@set config-scaling-video-example yes
+@c @set config-scaling-video-example no
 @set config-transcode-aac-example yes
 @c @set config-avisynth no
 @c @set config-bzlib no
@@ -329,7 +329,7 @@
 @c @set config-fontconfig no
 @c @set config-frei0r no
 @c @set config-gnutls no
-@set config-iconv yes
+@c @set config-iconv no
 @c @set config-ladspa no
 @c @set config-libaacplus no
 @c @set config-libass no
@@ -399,7 +399,7 @@
 @set config-avutil yes
 @c @set config-postproc no
 @set config-swresample yes
-@set config-swscale yes
+@c @set config-swscale no
 @c @set config-ffplay no
 @c @set config-ffprobe no
 @c @set config-ffserver no
@@ -407,7 +407,7 @@
 @c @set config-dct no
 @c @set config-dwt no
 @set config-error-resilience yes
-@set config-fast-unaligned yes
+@c @set config-fast-unaligned no
 @set config-fft yes
 @c @set config-ftrapv no
 @c @set config-gpl no
@@ -428,12 +428,12 @@
 @set config-rdft yes
 @set config-runtime-cpudetect yes
 @set config-safe-bitstream-reader yes
-@c @set config-shared no
+@set config-shared yes
 @c @set config-small no
 @c @set config-sram no
 @set config-static yes
 @set config-swscale-alpha yes
-@set config-thumb yes
+@c @set config-thumb no
 @set config-version3 yes
 @c @set config-xmm-clobber-test no
 @c @set config-aandcttables no
@@ -916,7 +916,7 @@
 @c @set config-dsicin-demuxer no
 @c @set config-dts-demuxer no
 @c @set config-dtshd-demuxer no
-@c @set config-dv-demuxer no
+@set config-dv-demuxer yes
 @c @set config-dxa-demuxer no
 @c @set config-ea-demuxer no
 @c @set config-ea-cdata-demuxer no
@@ -1450,8 +1450,8 @@
 @c @set config-alsa-indev no
 @c @set config-bktr-indev no
 @c @set config-dshow-indev no
-@c @set config-dv1394-indev no
-@c @set config-fbdev-indev no
+@set config-dv1394-indev yes
+@set config-fbdev-indev yes
 @c @set config-iec61883-indev no
 @c @set config-jack-indev no
 @set config-lavfi-indev yes
@@ -1459,7 +1459,7 @@
 @c @set config-oss-indev no
 @c @set config-pulse-indev no
 @c @set config-sndio-indev no
-@c @set config-v4l2-indev no
+@set config-v4l2-indev yes
 @c @set config-vfwcap-indev no
 @c @set config-x11grab-indev no
 @c @set config-libcdio-indev no
@@ -1601,13 +1601,13 @@
 @c @set config-alsa-outdev no
 @c @set config-caca-outdev no
 @c @set config-decklink-outdev no
-@c @set config-fbdev-outdev no
+@set config-fbdev-outdev yes
 @c @set config-opengl-outdev no
 @c @set config-oss-outdev no
 @c @set config-pulse-outdev no
 @c @set config-sdl-outdev no
 @c @set config-sndio-outdev no
-@c @set config-v4l2-outdev no
+@set config-v4l2-outdev yes
 @c @set config-xv-outdev no
 @set config-aac-parser yes
 @c @set config-aac-latm-parser no

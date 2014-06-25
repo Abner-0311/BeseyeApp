@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/opt/local/bin/perl5
 
 
 # Perl c_rehash script, scan all files in a directory
@@ -6,8 +6,8 @@
 
 my $openssl;
 
-my $dir = "/usr/local/ssl";
-my $prefix = "/usr/local/ssl";
+my $dir = "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/openssl-1.0.1h/build_android/ssl";
+my $prefix = "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/openssl-1.0.1h/build_android";
 
 if(defined $ENV{OPENSSL}) {
 	$openssl = $ENV{OPENSSL};

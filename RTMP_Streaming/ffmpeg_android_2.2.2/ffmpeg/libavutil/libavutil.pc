@@ -1,4 +1,4 @@
-prefix=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/ffmpeg_android_2.2.2/build/built/armv7
+prefix=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/ffmpeg_android_2.2.2/build/ffmpeg/armv7
 exec_prefix=${prefix}
 libdir=${prefix}/lib
 includedir=${prefix}/include
@@ -9,6 +9,6 @@ Version: 52.66.100
 Requires: 
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavutil -lm
-Libs.private: 
+Libs: -L${libdir}  -lavutil 
+Libs.private: -lm
 Cflags: -I${includedir}

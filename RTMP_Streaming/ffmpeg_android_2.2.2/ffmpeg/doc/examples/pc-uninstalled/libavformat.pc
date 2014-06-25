@@ -8,5 +8,5 @@ Description: FFmpeg container format library
 Version: 55.33.100
 Requires: libavcodec = 55.52.102
 Conflicts:
-Libs: -L${libdir} -Wl,-rpath,${libdir} -lavformat -liconv -lm -lbz2 -lz -pthread
+Libs: -L${libdir} -Wl,-rpath,${libdir} -lavformat 
 Cflags: -I${includedir}
