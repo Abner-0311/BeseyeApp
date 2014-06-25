@@ -273,6 +273,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         prevMatchViewWidth = matchViewWidth;
         prevViewHeight = viewHeight;
         prevViewWidth = viewWidth;
+        
+        drawStreamBitmap();
     }
 
     /**

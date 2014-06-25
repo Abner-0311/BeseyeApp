@@ -1,5 +1,8 @@
 package com.app.beseye.util;
 
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
+import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -12,6 +15,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -33,6 +37,33 @@ public class BeseyeUtils {
 			return act.getWindowManager().getDefaultDisplay().getHeight();
 		}
 		return 0;
+	}
+	
+	static public int getStatusBarHeight(Activity act) {
+		int statusBar = 0;
+		Class c = null;
+		try {
+			c = Class.forName("com.android.internal.R$dimen");
+			Object obj = c.newInstance();
+			Field field = c.getField("status_bar_height");
+			int x = Integer.parseInt(field.get(obj).toString());
+			statusBar= act.getResources().getDimensionPixelSize(x);
+		  Log.i(TAG, "CameraListActivity::statusBar(), statusBar="+statusBar);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	  return statusBar;
 	}
 	
 	static public void setEnabled(final View view, final boolean bEnabled){

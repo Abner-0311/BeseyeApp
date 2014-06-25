@@ -2,12 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
    	android:layout_height="wrap_content">
-   	
+   	<RelativeLayout 
+        android:id="@+id/vg_nav_bar_title_up"
+        android:layout_width="match_parent"
+   		android:layout_height="wrap_content"
+        android:background="@color/signup_nav_bg_color">
+   	</RelativeLayout>
     <RelativeLayout 
         android:id="@+id/vg_nav_bar_title"
         android:layout_width="match_parent"
    		android:layout_height="@dimen/liveview_navbar_height_landscape"
-        android:background="@color/signup_nav_bg_color">
+        android:background="@color/signup_nav_bg_color"
+        android:layout_below="@+id/vg_nav_bar_title_up">
         <ImageView 
 	       	android:id="@+id/iv_streaming_type"
 	       	android:layout_marginLeft="@dimen/liveview_navbar_margin_hori"
