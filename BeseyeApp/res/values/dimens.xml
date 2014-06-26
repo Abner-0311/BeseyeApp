@@ -155,4 +155,14 @@
     <dimen name="eventlist_calendar_left">14dp</dimen>
     
     <dimen name="eventlist_clock_font_size">12sp</dimen>
+    
+    <dimen name="news_timeline_width">2dp</dimen>
+    <dimen name="news_timeline_left">26dp</dimen>
+    <dimen name="news_timeline_right">16dp</dimen>
+    <dimen name="news_timeline_dot_left">21dp</dimen>
+    <dimen name="news_list_padding_topdown">12dp</dimen>
+    <dimen name="news_list_padding_right">20dp</dimen>
+    <dimen name="news_list_line_height">2dp</dimen>
+    
+    
 </resources>

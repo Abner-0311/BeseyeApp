@@ -164,4 +164,9 @@
 	<string name="no_camera">No camera attached</string>
 	<string name="cam_list_tilte">My Cameras</string>
 	<string name="liveview_hold_to_talk">Hold to talk</string>
+	
+	<string name="news_release_date">2014.7.13</string>
+	<string name="news_title">BesEye camera firmware 6.7 update</string>
+	<string name="news_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue augue id...</string>
+	
 </resources>

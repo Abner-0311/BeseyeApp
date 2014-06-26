@@ -1,0 +1,224 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.app.beseye"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color">
+    
+	<RelativeLayout
+	    android:id="@+id/rl_news_list_unread"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@color/newslist_unread_bg">
+	    
+	    <ImageView
+	        android:id="@+id/iv_news_timeline_unread"
+	        android:layout_width="@dimen/news_timeline_width"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="@dimen/news_timeline_left"
+	        android:layout_marginRight="@dimen/news_timeline_right"
+	        android:layout_alignParentTop="true"
+	        android:src="@color/news_timeline_unread"
+	        android:layout_alignBottom="@+id/iv_border_bottom" />
+	    
+	    <ImageView
+	        android:id="@+id/iv_news_dot_greenblue"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_marginLeft="@dimen/news_timeline_dot_left"
+	        android:src="@drawable/news_timeline_dot_bluegreen" />
+	    
+	    <TextView 
+	        android:id="@+id/tv_news_release_date"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/news_release_date"
+	        android:textSize="@dimen/login_fontNormal"
+	        android:textColor="@color/word_gray"
+	     	android:layout_toRightOf="@id/iv_news_timeline_unread"
+	     	android:layout_marginTop="@dimen/news_list_padding_topdown"
+	     	android:layout_marginRight="@dimen/news_list_padding_right" />
+	    
+	    <TextView 
+	        android:id="@+id/tv_news_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/news_title"
+	        android:textSize="@dimen/login_fontRegular"
+	        android:textColor="@color/beseye_color_normal"
+	     	android:layout_toRightOf="@id/iv_news_timeline_unread"
+	     	android:layout_below="@+id/tv_news_release_date"
+	     	android:layout_marginTop="@dimen/news_list_line_height"
+	     	android:layout_marginRight="@dimen/news_list_padding_right" />
+	    
+	    <TextView 
+	        android:id="@+id/tv_news_description"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/news_description"
+	        android:textSize="@dimen/login_fontNormal"
+	        android:textColor="@color/news_content_font"
+	     	android:layout_toRightOf="@id/iv_news_timeline_unread"
+	     	android:layout_below="@+id/tv_news_title"
+	     	android:layout_marginTop="@dimen/news_list_line_height"
+	     	android:layout_marginBottom="@dimen/news_list_padding_topdown"
+	     	android:layout_marginRight="@dimen/news_list_padding_right" />    
+	    
+	    <ImageView
+	        android:id="@+id/iv_border_bottom"
+	        android:layout_width="match_parent"
+	        android:layout_height="1dp"
+	        android:src="@color/background_white"
+	        android:layout_below="@+id/tv_news_description" />
+	    
+	</RelativeLayout>
+	<RelativeLayout
+	    android:id="@+id/rl_news_list_read_white"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingRight="10dp"
+	    android:background="@color/eventlist_bg_2"
+	    android:layout_below="@+id/rl_news_list_unread">
+	    
+	    <ImageView
+	        android:id="@+id/iv_news_timeline_unread"
+	        android:layout_width="@dimen/news_timeline_width"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="@dimen/news_timeline_left"
+	        android:layout_marginRight="@dimen/news_timeline_right"
+	        android:layout_alignParentTop="true"
+	        android:src="@color/news_timeline_unread"
+	        android:layout_alignBottom="@+id/iv_border_bottom" />
+	    
+	    <ImageView
+	        android:id="@+id/iv_news_dot_greenblue"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_marginLeft="@dimen/news_timeline_dot_left"
+	        android:src="@drawable/news_timeline_dot_bluegreen" />
+	    
+	    <TextView 
+	        android:id="@+id/tv_news_release_date"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/news_release_date"
+	        android:textSize="@dimen/login_fontNormal"
+	        android:textColor="@color/word_gray"
+	     	android:layout_toRightOf="@id/iv_news_timeline_unread"
+	     	android:layout_marginTop="@dimen/news_list_padding_topdown"
+	     	android:layout_marginRight="@dimen/news_list_padding_right" />
+	    
+	    <TextView 
+	        android:id="@+id/tv_news_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/news_title"
+	        android:textSize="@dimen/login_fontRegular"
+	        android:textColor="@color/beseye_color_normal"
+	     	android:layout_toRightOf="@id/iv_news_timeline_unread"
+	     	android:layout_below="@+id/tv_news_release_date"
+	     	android:layout_marginTop="@dimen/news_list_line_height"
+	     	android:layout_marginRight="@dimen/news_list_padding_right" />
+	    
+	    <TextView 
+	        android:id="@+id/tv_news_description"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/news_description"
+	        android:textSize="@dimen/login_fontNormal"
+	        android:textColor="@color/news_content_font"
+	     	android:layout_toRightOf="@id/iv_news_timeline_unread"
+	     	android:layout_below="@+id/tv_news_title"
+	     	android:layout_marginTop="@dimen/news_list_line_height"
+	     	android:layout_marginBottom="@dimen/news_list_padding_topdown"
+	     	android:layout_marginRight="@dimen/news_list_padding_right" />    
+	    
+	<ImageView
+	        android:id="@+id/iv_border_bottom"
+	        android:layout_width="match_parent"
+	        android:layout_height="1dp"
+	        android:src="@color/background_white"
+	        android:layout_below="@+id/tv_news_description" />
+	    
+	</RelativeLayout>
+	<RelativeLayout
+	    android:id="@+id/rl_news_list_read_gray"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:paddingRight="10dp"
+	    android:background="@color/eventlist_bg_1"
+	    android:layout_below="@+id/rl_news_list_read_white">
+	    
+	    <ImageView
+	        android:id="@+id/iv_news_timeline_unread"
+	        android:layout_width="@dimen/news_timeline_width"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="@dimen/news_timeline_left"
+	        android:layout_marginRight="@dimen/news_timeline_right"
+	        android:layout_alignParentTop="true"
+	        android:src="@color/news_timeline_unread"
+	        android:layout_alignBottom="@+id/iv_border_bottom" />
+	    
+	    <ImageView
+	        android:id="@+id/iv_news_dot_greenblue"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_marginLeft="@dimen/news_timeline_dot_left"
+	        android:src="@drawable/news_timeline_dot_bluegreen" />
+	    
+	    <TextView 
+	        android:id="@+id/tv_news_release_date"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/news_release_date"
+	        android:textSize="@dimen/login_fontNormal"
+	        android:textColor="@color/word_gray"
+	     	android:layout_toRightOf="@id/iv_news_timeline_unread"
+	     	android:layout_marginTop="@dimen/news_list_padding_topdown"
+	     	android:layout_marginRight="@dimen/news_list_padding_right" />
+	    
+	    <TextView 
+	        android:id="@+id/tv_news_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/news_title"
+	        android:textSize="@dimen/login_fontRegular"
+	        android:textColor="@color/beseye_color_normal"
+	     	android:layout_toRightOf="@id/iv_news_timeline_unread"
+	     	android:layout_below="@+id/tv_news_release_date"
+	     	android:layout_marginTop="@dimen/news_list_line_height"
+	     	android:layout_marginRight="@dimen/news_list_padding_right" />
+	    
+	    <TextView 
+	        android:id="@+id/tv_news_description"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/news_description"
+	        android:textSize="@dimen/login_fontNormal"
+	        android:textColor="@color/news_content_font"
+	     	android:layout_toRightOf="@id/iv_news_timeline_unread"
+	     	android:layout_below="@+id/tv_news_title"
+	     	android:layout_marginTop="@dimen/news_list_line_height"
+	     	android:layout_marginBottom="@dimen/news_list_padding_topdown"
+	     	android:layout_marginRight="@dimen/news_list_padding_right" />    
+	    
+	    <ImageView
+	        android:id="@+id/iv_border_bottom"
+	        android:layout_width="match_parent"
+	        android:layout_height="1dp"
+	        android:src="@color/background_white"
+	        android:layout_below="@+id/tv_news_description" />
+	    
+	</RelativeLayout>
+</RelativeLayout>
+
+
+
+   
+		
+	
+ 
+
+
