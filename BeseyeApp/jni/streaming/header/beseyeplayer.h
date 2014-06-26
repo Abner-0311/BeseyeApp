@@ -61,11 +61,13 @@ public:
 	virtual void stream_component_close(VideoState *is, int stream_index);
 	virtual void stream_seek(VideoState *is, int64_t pos, int64_t rel, int seek_by_bytes);
 
-	virtual int queue_picture(VideoState *is, AVFrame *src_frame, double pts1, int64_t pos);
-	virtual int get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, AVPacket *pkt);
+	virtual int queue_picture(VideoState *is, AVFrame *src_frame, double pts, double duration, int64_t pos, int serial);
+	virtual int get_video_frame(VideoState *is, AVFrame *frame, AVPacket *pkt, int *serial);
+
 	virtual void stream_toggle_pause(VideoState *is);
 	virtual void update_sample_display(VideoState *is, short *samples, int samples_size);
-	virtual int audio_decode_frame(VideoState *is, double *pts_ptr);
+	//virtual int audio_decode_frame(VideoState *is, double *pts_ptr);
+	virtual int audio_decode_frame(VideoState *is);
 
 	virtual int64_t get_start_time();
 	virtual int64_t get_duration();
@@ -89,6 +91,8 @@ public:
 	virtual void addPendingStreamPaths();
 
 	void setStreamClock(double dClock);
+	virtual void sync_clock_to_slave(Clock *c, Clock *slave);
+	virtual void set_clock_at(Clock *c, double pts, int serial, double time);
 
 private:
 	inline void fill_rectangle(SDL_Surface *screen, int x, int y, int w, int h, int color){
@@ -112,15 +116,23 @@ private:
 	//virtual int video_open(VideoState *is, int force_set_video_mode);
 	virtual void video_display(VideoState *is);
 
-	virtual double get_audio_clock(VideoState *is);
-	virtual double get_video_clock(VideoState *is);
-	virtual double get_external_clock(VideoState *is);
+	virtual double get_clock(Clock *c);
+	virtual void set_clock(Clock *c, double pts, int serial);
+	virtual void set_clock_speed(Clock *c, double speed);
+	virtual void init_clock(Clock *c, int *queue_serial);
+
+	virtual void check_external_clock_speed(VideoState *is) ;
+
+//	virtual double get_audio_clock(VideoState *is);
+//	virtual double get_video_clock(VideoState *is);
+//	virtual double get_external_clock(VideoState *is);
+	virtual int get_master_sync_type(VideoState *is);
 	virtual double get_master_clock(VideoState *is);
 
 	virtual double compute_target_delay(double delay, VideoState *is);
 	virtual void pictq_next_picture(VideoState *is);
-	virtual void update_video_pts(VideoState *is, double pts, int64_t pos);
-	virtual void video_refresh(void *opaque);
+	virtual void update_video_pts(VideoState *is, double pts, int64_t pos, int serial);
+	virtual void video_refresh(void *opaque, double *remaining_time);
 	virtual void alloc_picture(AllocEventProps *event_props);
 
 //#if CONFIG_AVFILTER
@@ -142,6 +154,7 @@ private:
 	//virtual void toggle_audio_display(VideoState *is);
 
 	virtual void event_loop(VideoState *cur_stream);
+	virtual void refresh_loop_wait_event(VideoState *is, SDL_Event *event);
 	static int lockmgr(void **mtx, enum AVLockOp op);
 
 private:

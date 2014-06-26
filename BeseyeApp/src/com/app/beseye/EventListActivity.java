@@ -251,7 +251,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_HOUR_IN_MS )+"", BeseyeMMBEHttpTask.ONE_HOUR_IN_MS +"");
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS*20 )+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS*20 +"");
 	}
 	
 	private int miTaskSeedNum = 0;

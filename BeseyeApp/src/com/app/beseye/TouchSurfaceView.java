@@ -358,7 +358,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         float fixTransY = getFixTrans(transY, viewHeight, getImageHeight());
         
         if (fixTransX != 0 || fixTransY != 0) {
-        	Log.i(TAG, "fixTrans()....., call postTranslate, fixTransX="+fixTransX);
+        	//Log.i(TAG, "fixTrans()....., call postTranslate, fixTransX="+fixTransX);
             matrix.postTranslate(fixTransX, fixTransY);
         }
     }

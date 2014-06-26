@@ -31,6 +31,7 @@
 //#endif
 
 #include "SDL.h"
+#include "SDL_events.h"
 #include "SDL_thread.h"
 
 #include <assert.h>
@@ -45,16 +46,28 @@
    A/V sync as SDL does not have hardware buffer fullness info. */
 #define SDL_AUDIO_BUFFER_SIZE 1024
 
-/* no AV sync correction is done if below the AV sync threshold */
-#define AV_SYNC_THRESHOLD 0.01
+/* no AV sync correction is done if below the minimum AV sync threshold */
+#define AV_SYNC_THRESHOLD_MIN 0.01
+/* AV sync correction is done if above the maximum AV sync threshold */
+#define AV_SYNC_THRESHOLD_MAX 0.1
+/* If a frame duration is longer than this, it will not be duplicated to compensate AV sync */
+#define AV_SYNC_FRAMEDUP_THRESHOLD 0.1
 /* no AV correction is done if too big error */
 #define AV_NOSYNC_THRESHOLD 10.0
 
 /* maximum audio speed change to get correct sync */
 #define SAMPLE_CORRECTION_PERCENT_MAX 10
 
+/* external clock speed adjustment constants for realtime sources based on buffer fullness */
+#define EXTERNAL_CLOCK_SPEED_MIN  0.900
+#define EXTERNAL_CLOCK_SPEED_MAX  1.010
+#define EXTERNAL_CLOCK_SPEED_STEP 0.001
+
 /* we use about AUDIO_DIFF_AVG_NB A-V differences to make the average */
 #define AUDIO_DIFF_AVG_NB   20
+
+/* polls for possible required screen refresh at least this often, should be less than 1/fps */
+#define REFRESH_RATE 0.01
 
 /* NOTE: the size must be big enough to compensate the hardware audio buffersize size */
 #define SAMPLE_ARRAY_SIZE (2 * 65536)
@@ -70,31 +83,42 @@ static int sws_flags = SWS_BICUBIC;
 #define FF_UPDATE_SCREEN_EVENT    (SDL_USEREVENT + 3)
 
 typedef struct VideoPicture {
-    double pts;                                  ///< presentation time stamp for this picture
-    int64_t pos;                                 ///< byte position in file
-    int skip;
-    //SDL_Overlay *bmp;
+    double pts;             // presentation timestamp for this picture
+    double duration;        // estimated duration based on frame rate
+    int64_t pos;            // byte position in file
+//    SDL_Overlay *bmp;
     int width, height; /* source height & width */
-    AVRational sample_aspect_ratio;
     int allocated;
     int reallocate;
+    int serial;
 
-//#if CONFIG_AVFILTER
-//    AVFilterBufferRef *picref;
-//#endif
+    AVRational sar;
 } VideoPicture;
 
 typedef struct SubPicture {
     double pts; /* presentation time stamp for this picture */
     AVSubtitle sub;
+    int serial;
 } SubPicture;
 
 typedef struct AudioParams {
     int freq;
     int channels;
-    int channel_layout;
+    int64_t channel_layout;
     enum AVSampleFormat fmt;
+    int frame_size;
+    int bytes_per_sec;
 } AudioParams;
+
+typedef struct Clock {
+    double pts;           /* clock base */
+    double pts_drift;     /* clock base minus time at which we updated the clock */
+    double last_updated;
+    double speed;
+    int serial;           /* clock is based on a packet with this serial */
+    int paused;
+    int *queue_serial;    /* pointer to the current packet queue serial, used for obsolete clock detection */
+} Clock;
 
 enum {
     AV_SYNC_AUDIO_MASTER, /* default choice */
@@ -105,7 +129,7 @@ enum {
 typedef struct VideoState {
     SDL_Thread *read_tid;
     SDL_Thread *video_tid;
-    SDL_Thread *refresh_tid;
+    //SDL_Thread *refresh_tid;
     AVInputFormat *iformat;
     int no_background;
     int abort_request;
@@ -119,8 +143,25 @@ typedef struct VideoState {
     int read_pause_return;
     AVFormatContext *ic;
 
-    int audio_stream;
+    int realtime;
+	int audio_finished;
+	int video_finished;
 
+	Clock audclk;
+	Clock vidclk;
+	Clock extclk;
+    double max_frame_duration;      // maximum duration of a frame - above this, we consider the jump a timestamp discontinuit
+    double last_vis_time;
+    int audio_buf_frames_pending;
+    int audio_pkt_temp_serial;
+    int64_t audio_frame_next_pts;
+    int audio_last_serial;
+    int audio_clock_serial;
+#if CONFIG_AVFILTER
+    struct AudioParams audio_filter_src;
+#endif
+
+    int audio_stream;
     int av_sync_type;
     double external_clock; /* external clock base */
     int64_t external_clock_time;
@@ -207,6 +248,8 @@ typedef struct VideoState {
 
     int refresh;
     int last_video_stream, last_audio_stream, last_subtitle_stream;
+
+    SDL_cond *continue_read_thread;
 } VideoState;
 
 typedef struct AllocEventProps {
