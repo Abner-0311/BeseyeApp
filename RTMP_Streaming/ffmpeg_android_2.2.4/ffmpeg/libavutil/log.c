@@ -277,6 +277,11 @@ end:
 
 static void (*av_log_callback)(void*, int, const char*, va_list) =
     av_log_default_callback;
+//Abner Add
+static void (*av_log_callback2)(void*, int, const char*) = NULL;
+
+static const int MAX_PRINT_LEN =2048;
+static char *strcb2 = NULL;
 
 void av_log(void* avcl, int level, const char *fmt, ...)
 {
@@ -286,7 +291,16 @@ void av_log(void* avcl, int level, const char *fmt, ...)
     if (avc && avc->version >= (50 << 16 | 15 << 8 | 2) &&
         avc->log_level_offset_offset && level >= AV_LOG_FATAL)
         level += *(int *) (((uint8_t *) avcl) + avc->log_level_offset_offset);
+
     av_vlog(avcl, level, fmt, vl);
+    //Abner Add
+    if(av_log_callback2){
+   		if(NULL == strcb2){
+   			strcb2 = (char*)av_mallocz(MAX_PRINT_LEN*sizeof(char));
+   		}
+   		vsnprintf(strcb2, MAX_PRINT_LEN-1, fmt, vl);
+   		av_log_callback2(avcl, level, strcb2);
+   	}
     va_end(vl);
 }
 
@@ -315,6 +329,11 @@ void av_log_set_flags(int arg)
 void av_log_set_callback(void (*callback)(void*, int, const char*, va_list))
 {
     av_log_callback = callback;
+}
+
+void av_log_set_callback2(void (*callback)(void*, int, const char*))
+{
+    av_log_callback2 = callback;
 }
 
 static void missing_feature_sample(int sample, void *avc, const char *msg,

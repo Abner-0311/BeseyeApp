@@ -265,6 +265,10 @@ void av_log_set_callback(void (*callback)(void*, int, const char*, va_list));
 void av_log_default_callback(void *avcl, int level, const char *fmt,
                              va_list vl);
 
+//Abner Add
+void av_log_set_callback2(void (*)(void*, int, const char*));
+void av_log_default_callback2(void* ptr, int level, const char* msg);
+
 /**
  * Return the context name
  *

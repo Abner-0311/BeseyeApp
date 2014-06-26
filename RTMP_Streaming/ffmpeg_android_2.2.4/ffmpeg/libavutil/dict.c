@@ -73,8 +73,11 @@ int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags
             return 0;
         if (flags & AV_DICT_APPEND)
             oldval = tag->value;
+        else if(0!=strcmp(key, "holder"))//Abner workaround 20140218
+            av_free(tag->value);
         else
             av_free(tag->value);
+
         av_free(tag->key);
         *tag = m->elems[--m->count];
     } else {
@@ -85,13 +88,17 @@ int av_dict_set(AVDictionary **pm, const char *key, const char *value, int flags
             return AVERROR(ENOMEM);
     }
     if (value) {
+
         if (flags & AV_DICT_DONT_STRDUP_KEY) {
             m->elems[m->count].key = (char*)(intptr_t)key;
         } else
             m->elems[m->count].key = av_strdup(key);
-        if (flags & AV_DICT_DONT_STRDUP_VAL) {
-            m->elems[m->count].value = (char*)(intptr_t)value;
-        } else if (oldval && flags & AV_DICT_APPEND) {
+
+        //Abner workaround 20140218
+		if ((flags & AV_DICT_DONT_STRDUP_VAL) || 0 == strcmp(key, "holder")) {
+			av_log(NULL, AV_LOG_DEBUG, "av_dict_set(), set value\n");
+			m->elems[m->count].value = (char*)(intptr_t)value;
+		}  else if (oldval && flags & AV_DICT_APPEND) {
             int len = strlen(oldval) + strlen(value) + 1;
             char *newval = av_mallocz(len);
             if (!newval)
@@ -165,8 +172,11 @@ void av_dict_free(AVDictionary **pm)
 
     if (m) {
         while(m->count--) {
-            av_free(m->elems[m->count].key);
-            av_free(m->elems[m->count].value);
+        	//Abner workaround 20140218
+			if(0 != strcmp(m->elems[m->count].key, "holder"))
+				av_free(m->elems[m->count].value);
+
+			av_free(m->elems[m->count].key);
         }
         av_free(m->elems);
     }
