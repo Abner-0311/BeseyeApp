@@ -2,19 +2,16 @@
 
 static int packet_queue_put_private(PacketQueue *q, AVPacket *pkt)
 {
-    MyAVPacketList *pkt1;
+    AVPacketList *pkt1;
 
     if (q->abort_request)
        return -1;
 
-    pkt1 = av_malloc(sizeof(MyAVPacketList));
+    pkt1 = av_malloc(sizeof(AVPacketList));
     if (!pkt1)
         return -1;
     pkt1->pkt = *pkt;
     pkt1->next = NULL;
-    if (pkt == &flush_pkt)
-        q->serial++;
-    pkt1->serial = q->serial;
 
     if (!q->last_pkt)
         q->first_pkt = pkt1;
@@ -46,16 +43,6 @@ int packet_queue_put(PacketQueue *q, AVPacket *pkt)
     return ret;
 }
 
-int packet_queue_put_nullpacket(PacketQueue *q, int stream_index)
-{
-    AVPacket pkt1, *pkt = &pkt1;
-    av_init_packet(pkt);
-    pkt->data = NULL;
-    pkt->size = 0;
-    pkt->stream_index = stream_index;
-    return packet_queue_put(q, pkt);
-}
-
 /* packet queue handling */
 void packet_queue_init(PacketQueue *q)
 {
@@ -67,7 +54,7 @@ void packet_queue_init(PacketQueue *q)
 
 void packet_queue_flush(PacketQueue *q)
 {
-    MyAVPacketList *pkt, *pkt1;
+    AVPacketList *pkt, *pkt1;
 
     SDL_LockMutex(q->mutex);
     for (pkt = q->first_pkt; pkt != NULL; pkt = pkt1) {
@@ -109,9 +96,9 @@ void packet_queue_start(PacketQueue *q)
 }
 
 /* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
-int packet_queue_get(PacketQueue *q, AVPacket *pkt, int block, int *serial)
+int packet_queue_get(PacketQueue *q, AVPacket *pkt, int block)
 {
-    MyAVPacketList *pkt1;
+    AVPacketList *pkt1;
     int ret;
 
     SDL_LockMutex(q->mutex);
@@ -130,8 +117,6 @@ int packet_queue_get(PacketQueue *q, AVPacket *pkt, int block, int *serial)
             q->nb_packets--;
             q->size -= pkt1->pkt.size + sizeof(*pkt1);
             *pkt = pkt1->pkt;
-            if (serial)
-                *serial = pkt1->serial;
             av_free(pkt1);
             ret = 1;
             break;
