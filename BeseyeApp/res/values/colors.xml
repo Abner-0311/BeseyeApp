@@ -63,4 +63,10 @@
     <color name="eventlist_bg_2">#ffffff</color>
     <color name="eventlist_bg_pressed">#e9e9e9</color>
     <color name="eventlist_gray_line">#dcdcdd</color>
+    
+    <color name="newslist_unread_bg">#ebfaf9</color>
+    <color name="news_timeline_unread">#00bbb3</color>
+    <color name="news_content_font">#666666</color>
+    
+    
 </resources>
