@@ -19,8 +19,12 @@
 //#include "libavdevice/avdevice.h"
 #include "libswscale/swscale.h"
 #include "libavutil/opt.h"
+#include "libavutil/mem.h"
 #include "libavcodec/avfft.h"
 #include "libswresample/swresample.h"
+
+#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
+
 
 //#if CONFIG_AVFILTER
 //# include "libavfilter/avcodec.h"
@@ -94,8 +98,6 @@ typedef struct AudioParams {
     int channels;
     int channel_layout;
     enum AVSampleFormat fmt;
-    int frame_size;
-    int bytes_per_sec;
 } AudioParams;
 
 enum {
@@ -135,13 +137,11 @@ typedef struct VideoState {
     AVStream *audio_st;
     PacketQueue audioq;
     int audio_hw_buf_size;
-    //DECLARE_ALIGNED(16,uint8_t,audio_buf2)[AVCODEC_MAX_AUDIO_FRAME_SIZE * 4];
+    DECLARE_ALIGNED(16,uint8_t,audio_buf2)[AVCODEC_MAX_AUDIO_FRAME_SIZE * 4];
     uint8_t silence_buf[SDL_AUDIO_BUFFER_SIZE];
     uint8_t *audio_buf;
     uint8_t *audio_buf1;
-
     unsigned int audio_buf_size; /* in bytes */
-    unsigned int audio_buf1_size;
     int audio_buf_index; /* in bytes */
     int audio_write_buf_size;
     AVPacket audio_pkt_temp;
