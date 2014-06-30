@@ -61,7 +61,7 @@ public class CameraViewControlAnimator {
 	private Runnable mHideHeaderRunnable = new Runnable(){
 		@Override
 		public void run() {
-			if(View.VISIBLE == getVisibility())
+			if(View.VISIBLE == getVisibility() && false == isInAnimation())
 				performControlAnimation();
 		}};
 	
@@ -364,6 +364,7 @@ public class CameraViewControlAnimator {
 				Animation animation = null;
 				CameraViewActivity act = mCameraViewActivity.get();
 				if(View.VISIBLE == m_vgHeaderLayout.getVisibility()){
+					
 					animation = s_aniHeaderFadeOut;
 					m_vgHeaderLayout.startAnimation(animation);
 					
@@ -371,7 +372,7 @@ public class CameraViewControlAnimator {
 						act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 						act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 					}
-					
+					cancelHideControl();
 				}else{
 					//animation = s_aniHeaderFadeIn;
 					m_vgHeaderLayout.bringToFront();
@@ -395,6 +396,7 @@ public class CameraViewControlAnimator {
 				if(View.VISIBLE == m_vgToolbarLayout.getVisibility()){
 					animation = s_aniToolbarFadeOut;
 					m_vgToolbarLayout.startAnimation(animation);
+					cancelHideControl();
 				}else if(!mbP2PMode){
 					//animation = s_aniToolbarFadeIn;
 					m_vgToolbarLayout.bringToFront();

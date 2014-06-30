@@ -161,16 +161,31 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 					if(0 < iVcamCnt){
 						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
+						
+						final String DEMO_CAM_ID = "a6edbe2f3fef4a5183f8a237c2556775";
+						
 						for(int i = 0;i< iVcamCnt;i++){
 							try {
 								JSONObject camObj = VcamList.getJSONObject(i);
-								if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+								if(DEMO_CAM_ID.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID)) && BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
 									arrCamList.put(camObj);
 								}
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
 						}
+						
+						for(int i = 0;i< iVcamCnt;i++){
+							try {
+								JSONObject camObj = VcamList.getJSONObject(i);
+								if(!DEMO_CAM_ID.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID)) && BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+									arrCamList.put(camObj);
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+						
 						miOriginalVcamCnt = arrCamList.length();
 						int iDemoVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_DEMO_VCAM_CNT);
 						if(0 < iDemoVcamCnt){

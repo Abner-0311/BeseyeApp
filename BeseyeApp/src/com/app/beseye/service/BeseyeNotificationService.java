@@ -465,7 +465,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         checkUserLoginState();
         
         BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
-        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, "Face Room");
+        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, sStrVcamName);
     }
     
     private void checkEventPeriod(){
@@ -498,7 +498,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     
     private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
     private JSONObject mCam_obj = new JSONObject();
-    private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
+    private String mStrVCamID = "a6edbe2f3fef4a5183f8a237c2556775";//"928d102eab1643eb9f001e0ede19c848";
+    private String sStrVcamName = "Meeting Room";
     
     private void checkUserLoginState(){
     	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isNotifyWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
@@ -1198,15 +1199,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 												FACE_LIST face = BeseyeJSONUtil.findFacebyId(iFaceId-1);
 												//BeseyeJSONUtil.FACE_LIST face = BeseyeJSONUtil.findFacebyId(faceList.getInt(faceList.length()-1)-1);
 												if(null != face){
-													strMsg = String.format("%s was recognized by %s at %s", face.mstrName, "Face Room", new Date(lNewEventStartTime).toLocaleString());
+													strMsg = String.format("%s was recognized by %s at %s", face.mstrName, sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 												}else{
-													strMsg = String.format("Stranger was identified by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
+													strMsg = String.format("Stranger was identified by %s at %s", sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 												}
 											}else{
-												strMsg = String.format("Stranger was identified by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
+												strMsg = String.format("Stranger was identified by %s at %s", sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 											}
 										}else{
-											strMsg = String.format("Motion activity was detected by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
+											strMsg = String.format("Motion activity was detected by %s at %s", sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 										}
 										
 										showNotification(NOTIFICATION_TYPE_INFO, intent, strMsg, obj);
