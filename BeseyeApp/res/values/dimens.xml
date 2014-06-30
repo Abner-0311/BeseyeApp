@@ -110,6 +110,7 @@
     
     <dimen name="cameralist_videoblock_margin">6dp</dimen>
     <dimen name="cameralist_videoblock_marginTop">8dp</dimen>
+    <dimen name="cameralist_videoblock_innerTop">4dp</dimen>
     <dimen name="cameralist_videoblock_inner">7dp</dimen>
     <dimen name="cameralist_videoTitle_marginTop">4dp</dimen>
     <dimen name="cameralist_videoTitle_marginSide">12dp</dimen>
@@ -131,7 +132,7 @@
     <dimen name="cameralist_failedBottom_top">24dp</dimen>
     <dimen name="cameralist_failed_text_margin">16dp</dimen>
     
-    
+   
     <dimen name="beseyeLoadingVertiMargin">10dp</dimen>
     <dimen name="beseyeLoadingVertiPadding">5dp</dimen>
     
@@ -163,6 +164,12 @@
     <dimen name="news_list_padding_topdown">12dp</dimen>
     <dimen name="news_list_padding_right">20dp</dimen>
     <dimen name="news_list_line_height">2dp</dimen>
+    
+    <dimen name="firmware_update_inner">20dp</dimen>
+    <dimen name="firmware_update_margin_small">2dp</dimen>
+    <dimen name="firmware_update_margin_medium">4dp</dimen>
+    <dimen name="firmware_update_btn_inner">10dp</dimen>
+    <dimen name="firmware_update_btn_margin">10dp</dimen>
     
     
 </resources>

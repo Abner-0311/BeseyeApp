@@ -169,4 +169,9 @@
 	<string name="news_title">BesEye camera firmware 6.7 update</string>
 	<string name="news_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue augue id...</string>
 	
+	<string name="firmware_update_error_title">Update incomplete</string>
+	<string name="firmware_update_error_summary">This might cause by temporary\nnetwork problem.</string>
+	<string name="firmware_update_btn_later">Update later</string>
+	<string name="firmware_update_btn_again">Try again</string>
+	
 </resources>
