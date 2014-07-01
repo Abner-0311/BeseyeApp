@@ -479,7 +479,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 						final EditText etPassword = (EditText)vgPassord.findViewById(R.id.et_password_value);
 						if(null != etPassword){
 							if(DEBUG){
-								etPassword.setText(mChosenWifiAPInfo.cipher.contains(WifiAPInfo.AUTHNICATION_WPA)?(mChosenWifiAPInfo.BSSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
+								etPassword.setText(mChosenWifiAPInfo.cipher.contains(WifiAPInfo.AUTHNICATION_WPA)?(mChosenWifiAPInfo.BSSID.equals("beseye")?"0630BesEye":"0630BesEye"):"0630BesEye123");
 							}
 							mWifiApPassword = etPassword.getText().toString();
 							etPassword.addTextChangedListener(new TextWatcher(){
