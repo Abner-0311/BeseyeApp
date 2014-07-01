@@ -166,7 +166,7 @@ public class BeseyeUtils {
 	}
 	
 	static public String getAndroidUUid(){
-		return "{Android}_{"+DeviceUuidFactory.getDeviceUuid()+"}";
+		return "{Mobile}_{Android}_{"+DeviceUuidFactory.getDeviceUuid()+"}";
 	}
 	
 	static public String getUserAgent(){

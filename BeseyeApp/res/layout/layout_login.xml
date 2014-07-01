@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_white"
+    android:background="@color/signup_bg_color"
     tools:context=".MainActivity" >
 
     <ImageView
@@ -34,7 +34,7 @@
         android:layout_below="@+id/iv_beseyeLogo"
         android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/login_marginXLarge"
-        android:background="@drawable/sl_account_input_bg"
+        android:background="@drawable/sl_signup_create_account_input"
         android:ems="10"
         android:hint="@string/username"
         android:inputType="textEmailAddress"
@@ -51,7 +51,7 @@
         android:layout_below="@+id/editText_username"
         android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/login_marginMedium"
-        android:background="@drawable/sl_account_input_bg"
+        android:background="@drawable/sl_signup_create_account_input"
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
