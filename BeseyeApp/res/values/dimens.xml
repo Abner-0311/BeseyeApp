@@ -171,5 +171,13 @@
     <dimen name="firmware_update_btn_inner">10dp</dimen>
     <dimen name="firmware_update_btn_margin">10dp</dimen>
     
+    <dimen name="forget_pw_instruction_ill_bottom">52dp</dimen>
+    <dimen name="forget_pw_instruction_txt_marginTop">32dp</dimen>
+    <dimen name="forget_pw_instruction_txt_marginBottom">12dp</dimen>
+    <dimen name="forget_pw_instruction_txt_marginSide">26dp</dimen>
+    
+    <dimen name="check_mail_summary_bottom">24dp</dimen>
+    <dimen name="check_mail_division_bottom">4dp</dimen>
+    <dimen name="check_mail_note_bottom">32dp</dimen>
     
 </resources>
