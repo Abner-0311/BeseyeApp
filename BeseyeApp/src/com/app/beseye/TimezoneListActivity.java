@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +19,7 @@ import android.widget.Toast;
 
 import com.app.beseye.adapter.TimezoneInfoAdapter;
 import com.app.beseye.adapter.TimezoneInfoAdapter.TimezoneInfoHolder;
-import com.app.beseye.widget.BeseyeSwitchBtn;
+import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.PullToRefreshListView;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 
@@ -39,26 +41,35 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
+		getSupportActionBar().setIcon(R.drawable.sl_nav_back_btn);
+		getSupportActionBar().setDisplayShowHomeEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		//getSupportActionBar().setLogo(R.drawable.sl_nav_back_btn);
+		//getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_wifilist_nav, null);
+		//workaround 
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+			}}, 100);
+		
+		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_timezonelist_nav, null);
 		if(null != mVwNavBar){
 			ImageView mIvBack = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_left_btn);
 			if(null != mIvBack){
 				mIvBack.setOnClickListener(this);
+				mIvBack.setVisibility(View.GONE);
 			}
-			
-			BeseyeSwitchBtn mWifiSwitchBtn = (BeseyeSwitchBtn)mVwNavBar.findViewById(R.id.sb_wifi_btn);
-			if(null != mWifiSwitchBtn){
-				mWifiSwitchBtn.setVisibility(View.GONE);
-			}
-			
+						
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
 				txtTitle.setText(R.string.title_timezone);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
-			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+			//mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
 
@@ -96,4 +107,55 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 			finish();
 		}
 	}
+	
+	static final private int MENU_ALPHABETICAL =0;
+	static final private int MENU_TIMEZONE =1;
+	private boolean mSortedByTimezone = true;
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, MENU_ALPHABETICAL, 0, R.string.zone_list_menu_sort_alphabetically);
+        menu.add(0, MENU_TIMEZONE, 0, R.string.zone_list_menu_sort_by_timezone);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (mSortedByTimezone) {
+            menu.findItem(MENU_TIMEZONE).setVisible(false);
+            menu.findItem(MENU_ALPHABETICAL).setVisible(true);
+        } else {
+            menu.findItem(MENU_TIMEZONE).setVisible(true);
+            menu.findItem(MENU_ALPHABETICAL).setVisible(false);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        	case android.R.id.home:{
+        		finish();
+        		return true;
+        	}  
+            case MENU_TIMEZONE:
+                setSorting(true);
+                return true;
+                
+            case MENU_ALPHABETICAL:
+                setSorting(false);
+                return true;
+                
+            default:
+                return false;
+        }
+    }
+    
+    private void setSorting(boolean timezone) {
+        //setListAdapter(timezone ? mTimezoneSortedAdapter : mAlphabeticalAdapter);
+        mSortedByTimezone = timezone;
+        if(null != mTimezoneInfoAdapter){
+        	mTimezoneInfoAdapter.setSortByTimezone(mSortedByTimezone);
+        	mTimezoneInfoAdapter.notifyDataSetChanged();
+        }
+    }
 }

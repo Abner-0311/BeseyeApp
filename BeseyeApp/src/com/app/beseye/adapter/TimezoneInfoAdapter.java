@@ -30,13 +30,12 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 		miLayoutId = iLayoutId;
 		mItemOnClickListener = itemOnClickListener;
 		
-		final TimeZoneComparator comparator = new TimeZoneComparator();
-        //final List<HashMap<String, Object>> sortedList = getZones(context);
+		final TimeZoneComparator comparator = new TimeZoneComparator(true);
         Collections.sort(mlstTimezoneResult, comparator);
         
         for(int idx = 0; idx < mlstTimezoneResult.size();){
         	TimeZone tzCur = mlstTimezoneResult.get(idx);
-        	if(tzCur.getID().toLowerCase().startsWith("etc/")){
+        	if(tzCur.getID().toLowerCase().startsWith("etc/") || tzCur.getDisplayName().toLowerCase().startsWith("gmt") || tzCur.getDisplayName().toLowerCase().startsWith("utc")){
         		mlstTimezoneResult.remove(idx);
         		continue;
         	}
@@ -54,6 +53,11 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 		if(null != mContext){
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
+	}
+	
+	public void setSortByTimezone(boolean bSortByTimezone){
+		final TimeZoneComparator comparator = new TimeZoneComparator(bSortByTimezone);
+        Collections.sort(mlstTimezoneResult, comparator);
 	}
 	
 	@Override
@@ -131,28 +135,24 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 	}
 	
 	private static class TimeZoneComparator implements Comparator<TimeZone> {
-
+		private boolean mbSortByTimezone = true;
+		
+		public TimeZoneComparator(boolean bSortByTimezone){
+			mbSortByTimezone = bSortByTimezone;
+		}
+		
         public int compare(TimeZone zone1, TimeZone zone2) {
-        	if(zone1.getRawOffset() == zone2.getRawOffset()){
-        		return zone1.getDisplayName().compareTo(zone2.getDisplayName());
-        	}else if(zone1.getRawOffset() < zone2.getRawOffset()){
-        		return -1;
+        	if(mbSortByTimezone){
+        		if(zone1.getRawOffset() == zone2.getRawOffset()){
+            		return zone1.getDisplayName().compareTo(zone2.getDisplayName());
+            	}else if(zone1.getRawOffset() < zone2.getRawOffset()){
+            		return -1;
+            	}else{
+            		return 1;
+            	}
         	}else{
-        		return 1;
+        		return zone1.getDisplayName().compareTo(zone2.getDisplayName()); 
         	}
-//        	if(!isComparable(zone1)) {
-//                return isComparable(zone2) ? 1 : 0;
-//            } else if (!isComparable(zone2)) {
-//                return -1;
-//            }
-//            return ((Comparable) zone1).compareTo(zone2);
         }
-//        
-//        private boolean isComparable(Object value) {
-//            return (value != null) && (value instanceof Comparable); 
-//        }
     }
-	
-	
-
 }

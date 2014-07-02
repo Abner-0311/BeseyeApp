@@ -27,10 +27,25 @@
         <item name="actionBarStyle">@style/ActionBarThemeWiFiList</item>
 	</style>
 	
+    <style name="AppThemePopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@color/signup_nav_bg_color</item>
+    </style>
+	
     <style name="ActionBarThemeWiFiList" parent="android:Widget.ActionBar">
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:background">@drawable/wifisetup_wifi_title_bg</item>
         <item name="android:height">50dp</item>
+    </style>
+    
+    <style name="AppTheme.TimeZoneList">
+        <item name="actionBarStyle">@style/ActionBarThemeTimeZoneList</item>
+	</style>
+	
+    <style name="ActionBarThemeTimeZoneList" parent="android:Widget.ActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:background">@color/signup_nav_bg_color</item>
+        <item name="android:height">50dp</item>
+        <item name="android:icon">@drawable/sl_nav_back_btn</item>
     </style>
 	
     <style name="style1"></style>

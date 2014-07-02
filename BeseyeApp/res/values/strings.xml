@@ -43,7 +43,9 @@
     <string name="network_secure_with">Secured with %s </string>
     
     <string name="title_wifi">Wifi</string>
-    <string name="title_timezone">Time Zone</string>
+    <string name="title_timezone">Select Time Zone</string>
+    <string name="zone_list_menu_sort_alphabetically">Sort alphabetically</string>
+    <string name="zone_list_menu_sort_by_timezone">Sort by timezone</string>
     
     <string name="dialog_title_warning">Warning</string>
     <string name="dialog_no_connectivity">Please check out your network connection.</string>

@@ -35,7 +35,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	public static final String ACTION_BRING_FRONT 		= "BringFront";
 	public static final String KEY_DELEGATE_INTENT 		= "KEY_DELEGATE_INTENT";
 	public static final String KEY_IGNORE_ACTIVATED_FLAG= "KEY_IGNORE_ACTIVATED_FLAG";
-	public static final String FIRST_PAGE 				= TimezoneListActivity.class.getName();
+	public static final String FIRST_PAGE 				= CameraListActivity.class.getName();
 	
 	private static boolean sbFirstLaunch = true;
 	private static final long TIME_TO_CLOSE_OPENING_PAGE = 3000L;
@@ -56,29 +56,6 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			finish();
 			return;
 		}
-		
-//		 String[] ids=TimeZone.getAvailableIDs();
-//		   for(int i=0;i<ids.length;i++)
-//		   {
-//			   
-//		       TimeZone d= TimeZone.getTimeZone(ids[i]);
-//		       
-//		       Log.i(TAG, "Availalbe ids.................."+ids[i]+" time zone."+d.getDisplayName() +" savings."+d.getDSTSavings()+" offset."+d.getRawOffset()+", id."+d.getID());
-//
-//		      /////////////////////////////////////////////////////
-//		      if (!ids[i].matches(".*/.*")) {
-//		          continue;
-//		      }
-//
-//		      String region = ids[i].replaceAll(".*/", "").replaceAll("_", " ");
-//		      int hours = Math.abs(d.getRawOffset()) / 3600000;
-//		      int minutes = Math.abs(d.getRawOffset() / 60000) % 60;
-//		      String sign = d.getRawOffset() >= 0 ? "+" : "-";
-//
-//		      String timeZonePretty = String.format("(UTC %s %02d:%02d) %s", sign, hours, minutes, region);
-//		      Log.i(TAG, timeZonePretty);
-//		      //////////////////////////////////////////////////////////////////
-//		   }
 		
 		launchActivityByIntent(getIntent());
 	}
