@@ -46,6 +46,7 @@
     <string name="dialog_title_warning">Warning</string>
     <string name="dialog_no_connectivity">Please check out your network connection.</string>
     <string name="dialog_loading">Loading&#8230;</string>
+    <string name="dialog_init_cam">Talk initializing&#8230;</string>
     <string name="dialog_wifi_turning_on">Turning on Wifi&#8230;</string>
     <string name="dialog_wifi_scanning">Wifi scanning&#8230;</string>
     <string name="dialog_wifi_setting">Wifi setting&#8230;</string>

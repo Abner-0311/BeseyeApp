@@ -357,7 +357,7 @@ jstring str2jstring(const char * msg) {
 void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_Callback cbType, const char * msg, int iMajorType, int iMinorType){
 	DECLARE_JNIENV_WITHOUT_RETURN()
 	if(obj == player[0] || obj == player[1]){
-    	LOGI("rtmpStreamStatusCb(), %s cbType:%d, msg:%s, iMajorType:%d",(obj == player[0] ?"player1":"player2"),cbType, (msg?msg:""),iMajorType);
+    	//LOGI("rtmpStreamStatusCb(), %s cbType:%d, msg:%s, iMajorType:%d",(obj == player[0] ?"player1":"player2"),cbType, (msg?msg:""),iMajorType);
     	if(jni_host){
     		 if(cbType == CBeseyeRTMPObserver::STREAM_STATUS_CB){
 				if(s_rtmpStatusCBMethod && jni_host)

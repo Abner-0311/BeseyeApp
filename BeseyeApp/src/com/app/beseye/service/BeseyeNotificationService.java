@@ -502,13 +502,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     private String sStrVcamName = "Meeting Room";
     
     private void checkUserLoginState(){
-    	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isNotifyWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
-    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated() && false == WebsocketsMgr.getInstance().isNotifyWSChannelAlive()){
+    	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
+    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated() && false == WebsocketsMgr.getInstance().isWSChannelAlive()){
     		if(NetworkMgr.getInstance().isNetworkConnected()){
     			;//WebsocketsMgr.getInstance().constructNotifyWSChannel();
     		}
     	}else{
-    		WebsocketsMgr.getInstance().destroyNotifyWSChannel();
+    		WebsocketsMgr.getInstance().destroyWSChannel();
     	}
     	
     	if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
@@ -1266,7 +1266,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					WebsocketsMgr.getInstance().constructNotifyWSChannel();
+					WebsocketsMgr.getInstance().constructWSChannel();
 				}}, (miWSDisconnectRetry++)*1000);
     		
     	}

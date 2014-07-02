@@ -45,7 +45,7 @@ import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServer.WebSocketRequestCallback;
 
 public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallback {
-	static final boolean ENABLE_INTERNAL_SERVER = true;
+	static final boolean ENABLE_INTERNAL_SERVER = false;
 	static final boolean AUDIO_REC_FILE = false;
 	
 	String mSWID = "3eb1ef7b06673a2562aa";
@@ -281,7 +281,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			try {
 				obj.put("username", "admin");
 				obj.put("password", "password");
-				return super.doInBackground("http://192.168.2.209/sray/login.cgi", obj.toString());
+				return super.doInBackground("http://192.168.2.208/sray/login.cgi", obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -314,6 +314,11 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     	}
     }
     
+    public void setSienceFlag(boolean bSilent){
+    	mbSilent = bSilent;
+    }
+    
+    private boolean mbSilent = false;
     static public final String WS_CMD_FORMAT_AUDIO 			= "[\"%s\", \"data\":%s]";
     private int iRefCount = 0;
     private static final int COUNT_TO_CHECK = 3;//0.1 second 
@@ -327,7 +332,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    
 		    if(ENABLE_INTERNAL_SERVER){
 		    	try{
-				    socket = new Socket("192.168.2.209", 80);
+				    socket = new Socket("192.168.2.208", 80);
 				    os = socket.getOutputStream();
 				    //String header = "POST /cgi/audio/transmit.cgi?session="+session+"&httptype=singlepart HTTP/1.1\r\nHost:192.168.2.4\r\n\r\n";
 				    
@@ -363,7 +368,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    byte[] audiodata = new byte[bufferSizeInBytes];
 		    int readsize = 0;
 
-		    while (AudioWebSocketsMgr.getInstance().isNotifyWSChannelAlive() == true){
+		    while (AudioWebSocketsMgr.getInstance().isWSChannelAlive() == true){
 		    	readsize = audioRecord.read(audiodata, 0, bufferSizeInBytes);
 		    	//Log.i(TAG, "run(), readsize="+readsize);
 		    	if (AudioRecord.ERROR_INVALID_OPERATION != readsize) {
@@ -385,44 +390,48 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    			}
 	    			}
 		    		
-		    		InputStream is = new ByteArrayInputStream(audiodata);
-		    		UlawEncoderInputStream uis=null;
-		    		try {
-					    uis = new UlawEncoderInputStream(is,0);
-					    byte buff[] = new byte[320];
-					    int len = uis.read(buff);
-					    while (len > 0) {
-					    	
-					    	if(AUDIO_REC_FILE){
-					    		fos.write(buff, 0, len);
-					    		fos.flush();
-					    	}else{
-					    		if(ENABLE_INTERNAL_SERVER){
-						    		os.write(buff, 0, len);
-								    os.flush();
-					    		}else{
-					    			
-					    			//mFNotifyWSChannel.get().send(buff);
-					    			JSONObject data_obj = new JSONObject();
-					    			JSONArray arr = new JSONArray();
-					    			if(null != arr){
-					    				for(int i = 0;i< len;i++)
-					    					arr.put(buff[i]+128);
-					    			}
-					    			//String data = arr.toString().substring(1, arr.toString().length()-2);
-				    				data_obj.put(WS_ATTR_DATA, arr);//new String(buff,0, len, "UTF-8"));
-				    				String strSent = String.format(WS_CMD_FORMAT, WS_FUNC_BIN_TRANSFER, data_obj.toString());
-					    			mFNotifyWSChannel.get().send(strSent);	
-					    			//Log.i(TAG, "run(), len="+len+", strSent=\n"+strSent);
-					    		}
-					    	}
-						    len = uis.read(buff);
+		    		if(false == mbSilent){
+		    			InputStream is = new ByteArrayInputStream(audiodata);
+			    		UlawEncoderInputStream uis=null;
+			    		try {
+						    uis = new UlawEncoderInputStream(is,0);
+						    byte buff[] = new byte[320];
+						    int len = uis.read(buff);
+						    while (len > 0) {
+						    	
+						    	if(AUDIO_REC_FILE){
+						    		fos.write(buff, 0, len);
+						    		fos.flush();
+						    	}else{
+						    		if(ENABLE_INTERNAL_SERVER){
+							    		os.write(buff, 0, len);
+									    os.flush();
+						    		}else{
+						    			{
+							    			//mFNotifyWSChannel.get().send(buff);
+							    			JSONObject data_obj = new JSONObject();
+							    			JSONArray arr = new JSONArray();
+							    			if(null != arr){
+							    				for(int i = 0;i< len;i++)
+							    					arr.put(buff[i]+128);
+							    			}
+							    			//String data = arr.toString().substring(1, arr.toString().length()-2);
+						    				data_obj.put(WS_ATTR_DATA, arr);//new String(buff,0, len, "UTF-8"));
+						    				String strSent = String.format(WS_CMD_FORMAT, WS_FUNC_BIN_TRANSFER, data_obj.toString());
+							    			mFNotifyWSChannel.get().send(strSent);	
+						    			}
+						    			//Log.i(TAG, "run(), len="+len+", strSent=\n"+strSent);
+						    		}
+						    	}
+							    len = uis.read(buff);
+						    }
+			    		} catch (Exception e) {
+			    			Log.i(TAG, "run(), Exception:"+e.toString());	
+			    		} finally{
+			    			try {uis.close();} catch (Exception e) {}
 					    }
-		    		} catch (Exception e) {
-		    			Log.i(TAG, "run(), Exception:"+e.toString());	
-		    		} finally{
-		    			try {uis.close();} catch (Exception e) {}
-				    }
+		    		}
+		    		
 		    	}
 		    }
 		    
@@ -629,9 +638,11 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			//Log.i(TAG, "onPostExecute(), result = "+result.toString());
 			//if(0 == iRetCode){
 				JSONObject obj = result.get(0);
-				Log.i(TAG, "onPostExecute(), obj = "+obj.toString());
-				session = BeseyeJSONUtil.getJSONString(obj, "session");
-				transferAudioBuf();
+//				Log.i(TAG, "onPostExecute(), obj = "+obj.toString());
+				if(null != obj){
+					session = BeseyeJSONUtil.getJSONString(obj, "session");
+					transferAudioBuf();
+				}
 			//}
 		}else if(task instanceof BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask){
 			if(0 == iRetCode){

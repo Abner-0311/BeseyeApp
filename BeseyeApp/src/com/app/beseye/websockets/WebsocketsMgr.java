@@ -69,16 +69,16 @@ public class WebsocketsMgr {
 		if(null == mFNotifyWSChannel){
 			Log.i(TAG, "printNotifyWSChannelState(), mFNotifyWSChannel is null");
 		}else{
-			Log.i(TAG, "printNotifyWSChannelState(), mFNotifyWSChannel:[ "+mFNotifyWSChannel.isCancelled() +", "+mFNotifyWSChannel.isDone()+"], mBConstructingNotifyWSChannel="+mBConstructingNotifyWSChannel);
+			Log.i(TAG, "printNotifyWSChannelState(), mFNotifyWSChannel:["+mFNotifyWSChannel.isCancelled() +", "+mFNotifyWSChannel.isDone()+"], mBConstructingNotifyWSChannel="+mBConstructingNotifyWSChannel);
 		}
 	}
 	
-	public boolean constructNotifyWSChannel(){
-		Log.i(TAG, "constructNotifyWSChannel(), ++");
+	public boolean constructWSChannel(){
+		Log.i(TAG, "constructWSChannel(), ++");
 		boolean bRet = false;
 		try {
 			//printNotifyWSChannelState();
-			if(isNotifyWSChannelAlive()){
+			if(isWSChannelAlive()){
 				bRet = false;
 			}else{
 				synchronized(this){
@@ -89,11 +89,11 @@ public class WebsocketsMgr {
 					listener.onChannelConnecting();
 				}
 				
-				//Log.i(TAG, "constructNotifyWSChannel()");
+				//Log.i(TAG, "constructWSChannel()");
 				mFNotifyWSChannel = AsyncHttpClient.getDefaultInstance().websocket(getWSPath(), getWSProtocol(), getWebSocketConnectCallback());
 				
 				WebSocket ws = mFNotifyWSChannel.get();
-				Log.i(TAG, "constructNotifyWSChannel(), ws is null =>"+(null == ws));
+				Log.i(TAG, "constructWSChannel(), ws is null =>"+(null == ws));
 				if(null == ws){
 					mFNotifyWSChannel = null;
 				}
@@ -112,7 +112,7 @@ public class WebsocketsMgr {
 		return bRet;
 	}
 	
-	public boolean isNotifyWSChannelAlive(){
+	public boolean isWSChannelAlive(){
 		//Log.i(TAG, "isNotifyWSChannelAlive(), ++");
 		boolean bRet = false;
 		//printNotifyWSChannelState();
@@ -124,12 +124,12 @@ public class WebsocketsMgr {
 			}
 		}
 	
-		Log.d(TAG, "isNotifyWSChannelAlive()--, bRet="+bRet);
+		//Log.i(TAG, "isWSChannelAlive()--, bRet="+bRet);
 		return bRet;
 	}
 	
-	public boolean destroyNotifyWSChannel(){
-		Log.i(TAG, "destroyNotifyWSChannel(), ++");
+	public boolean destroyWSChannel(){
+		Log.i(TAG, "destroyWSChannel(), ++");
 		boolean bRet = false;
 		printNotifyWSChannelState();
 		
@@ -144,7 +144,9 @@ public class WebsocketsMgr {
 					}else if(true == mFNotifyWSChannel.isDone() && null != (ws = (WebSocket) mFNotifyWSChannel.get())){
 						ws.close();
 						bRet = true;
-						Log.i(TAG, "destroyNotifyWSChannel(), call close");
+						Log.i(TAG, "destroyWSChannel(), call close");
+						
+						mFNotifyWSChannel = null;//workaround 0702
 					}
 				}
 			} catch (InterruptedException e) {

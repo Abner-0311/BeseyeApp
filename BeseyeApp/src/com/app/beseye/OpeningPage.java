@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,6 +56,29 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			finish();
 			return;
 		}
+		
+//		 String[] ids=TimeZone.getAvailableIDs();
+//		   for(int i=0;i<ids.length;i++)
+//		   {
+//			   
+//		       TimeZone d= TimeZone.getTimeZone(ids[i]);
+//		       
+//		       Log.i(TAG, "Availalbe ids.................."+ids[i]+" time zone."+d.getDisplayName() +" savings."+d.getDSTSavings()+" offset."+d.getRawOffset()+", id."+d.getID());
+//
+//		      /////////////////////////////////////////////////////
+//		      if (!ids[i].matches(".*/.*")) {
+//		          continue;
+//		      }
+//
+//		      String region = ids[i].replaceAll(".*/", "").replaceAll("_", " ");
+//		      int hours = Math.abs(d.getRawOffset()) / 3600000;
+//		      int minutes = Math.abs(d.getRawOffset() / 60000) % 60;
+//		      String sign = d.getRawOffset() >= 0 ? "+" : "-";
+//
+//		      String timeZonePretty = String.format("(UTC %s %02d:%02d) %s", sign, hours, minutes, region);
+//		      Log.i(TAG, timeZonePretty);
+//		      //////////////////////////////////////////////////////////////////
+//		   }
 		
 		launchActivityByIntent(getIntent());
 	}
