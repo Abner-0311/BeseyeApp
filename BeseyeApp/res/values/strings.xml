@@ -43,6 +43,8 @@
     <string name="network_secure_with">Secured with %s </string>
     
     <string name="title_wifi">Wifi</string>
+    <string name="title_timezone">Time Zone</string>
+    
     <string name="dialog_title_warning">Warning</string>
     <string name="dialog_no_connectivity">Please check out your network connection.</string>
     <string name="dialog_loading">Loading&#8230;</string>

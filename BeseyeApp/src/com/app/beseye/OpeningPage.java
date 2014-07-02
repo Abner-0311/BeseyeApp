@@ -35,7 +35,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	public static final String ACTION_BRING_FRONT 		= "BringFront";
 	public static final String KEY_DELEGATE_INTENT 		= "KEY_DELEGATE_INTENT";
 	public static final String KEY_IGNORE_ACTIVATED_FLAG= "KEY_IGNORE_ACTIVATED_FLAG";
-	public static final String FIRST_PAGE 				= CameraListActivity.class.getName();
+	public static final String FIRST_PAGE 				= TimezoneListActivity.class.getName();
 	
 	private static boolean sbFirstLaunch = true;
 	private static final long TIME_TO_CLOSE_OPENING_PAGE = 3000L;
