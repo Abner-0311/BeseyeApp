@@ -251,7 +251,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_HOUR_IN_MS)+"", BeseyeMMBEHttpTask.ONE_HOUR_IN_MS +"");
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS)+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
 	}
 	
 	private int miTaskSeedNum = 0;
@@ -563,6 +563,14 @@ public class EventListActivity extends BeseyeBaseActivity{
 				public void onBtnOKClick(Calendar pickDate) {
 					if(!COMPUTEX_DEMO)
 						Toast.makeText(EventListActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
+					
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(pickDate.getTime());
+					calendar.set(Calendar.MINUTE, 0);
+					calendar.set(Calendar.SECOND, 0);
+					
+					Date timeToCheck= calendar.getTime();
+					gotoEventByTime(timeToCheck);
 				}
 	
 				@Override
@@ -574,6 +582,46 @@ public class EventListActivity extends BeseyeBaseActivity{
 			d.show();
 		}else
 			super.onClick(view);
+	}
+	
+	private void gotoEventByTime(Date time){
+		JSONArray evtList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+		int iEventCnt = (null != evtList)?evtList.length():0;
+		long lTimeToCheck = time.getTime();
+		int iIdxToJump = -1;
+		ListView listview = mMainListView.getRefreshableView();
+		if(0 < iEventCnt && null != listview){
+			int idx = 1;
+			for(; idx < iEventCnt;idx++){
+				JSONObject event;
+				try {
+					event = evtList.getJSONObject(idx);
+					long lStartTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_START_TIME);
+					if(lTimeToCheck > lStartTime){
+						iIdxToJump = (idx-1) + listview.getHeaderViewsCount();
+						Log.i(TAG, "gotoEventByTime(), lStartTime="+new Date(lStartTime));
+						break;
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(1 == iIdxToJump){
+				//iIdxToJump = 2;
+			}else if(idx == iEventCnt && -1 == iIdxToJump){
+				Log.e(TAG, "gotoEventByTime(), can not find time ");
+				iIdxToJump = iEventCnt;
+			}
+		}
+		
+		Log.e(TAG, "gotoEventByTime(), iIdxToJump="+iIdxToJump+", time="+time);
+		if(0 <= iIdxToJump){
+			//mMainListView.getRefreshableView().smoothScrollToPosition(iIdxToJump);
+			//mMainListView.getRefreshableView().setSelection(iIdxToJump);
+			
+			mMainListView.getRefreshableView().setSelectionFromTop(iIdxToJump, 0);
+		}
 	}
 
 	@Override
