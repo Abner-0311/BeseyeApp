@@ -24,6 +24,7 @@ import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask.GetAudioWSServerTask;
 import com.app.beseye.setting.CamSettingMgr;
+import com.app.beseye.setting.CameraSettingActivity;
 import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -1060,8 +1061,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
 			case R.id.txt_events:{
 				Bundle b = new Bundle();
-//				b.putString(CameraListActivity.KEY_VCAM_ID, mStrVCamID);
-//				b.putString(CameraListActivity.KEY_VCAM_NAME, mStrVCamName);
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
 				launchActivityByClassName(EventListActivity.class.getName(), b);
 				break;

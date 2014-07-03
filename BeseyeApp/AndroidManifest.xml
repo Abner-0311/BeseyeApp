@@ -86,7 +86,15 @@
         </activity>
         
         <activity
-            android:name=".CameraSettingActivity"
+            android:name=".setting.CameraSettingActivity"
+            android:label="@string/app_name" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="unspecified"
+            android:launchMode="singleTop">
+        </activity>
+        
+        <activity
+            android:name=".setting.HWSettingsActivity"
             android:label="@string/app_name" 
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="unspecified"
@@ -97,7 +105,7 @@
             android:name=".WifiListActivity"
             android:label="@string/app_name" 
             android:configChanges="keyboardHidden|orientation|screenSize" 
-            android:screenOrientation="portrait"
+            android:screenOrientation="unspecified"
             android:theme="@style/AppTheme.WifiList">
         </activity>
         
@@ -105,8 +113,8 @@
             android:name=".TimezoneListActivity"
             android:label="@string/app_name" 
             android:configChanges="keyboardHidden|orientation|screenSize" 
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.WifiList">
+            android:screenOrientation="unspecified"
+            android:theme="@style/AppTheme.TimeZoneList">
         </activity>
 
         <activity

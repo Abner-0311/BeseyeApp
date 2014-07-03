@@ -33,7 +33,7 @@
 		    android:id="@+id/vg_siren"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:background="@drawable/setting_inf_bg_white"
+		    android:background="@drawable/cl_setting_item_bg"
 		    tools:context=".MainActivity" >
 		
 		    <View 
@@ -70,7 +70,7 @@
 		    android:id="@+id/vg_cam_info"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:background="@drawable/setting_inf_bg_white"
+		    android:background="@drawable/cl_setting_item_bg"
 		    tools:context=".MainActivity" >
 		
 		    <View 

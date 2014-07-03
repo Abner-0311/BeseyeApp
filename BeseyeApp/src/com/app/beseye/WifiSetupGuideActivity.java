@@ -86,7 +86,7 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.iv_nav_left_btn:{
-				this.invokeLogout();
+				invokeLogout();
 				break;
 			}
 			case R.id.button_choose_network:{

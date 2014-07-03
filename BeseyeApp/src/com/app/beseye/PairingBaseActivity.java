@@ -37,16 +37,4 @@ public abstract class PairingBaseActivity extends BeseyeBaseActivity {
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
 	}
-	
-	@Override
-	public void onClick(View view) {
-		switch(view.getId()){
-			case R.id.iv_nav_left_btn:{
-				finish();
-				break;
-			}
-			default:
-				super.onClick(view);
-		}		
-	}
 }

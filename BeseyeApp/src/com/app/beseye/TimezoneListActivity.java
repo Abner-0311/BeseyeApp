@@ -44,18 +44,16 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		getSupportActionBar().setIcon(R.drawable.sl_nav_back_btn);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
-		//getSupportActionBar().setLogo(R.drawable.sl_nav_back_btn);
-		//getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		//workaround 
+		//workaround to make icon clickable
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
 				getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 			}}, 100);
 		
-		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_timezonelist_nav, null);
+		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_base_nav, null);
 		if(null != mVwNavBar){
 			ImageView mIvBack = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_left_btn);
 			if(null != mIvBack){
@@ -103,8 +101,8 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 			if(null != info){
 				Toast.makeText(this, info.mTimeZone.toString(), Toast.LENGTH_SHORT).show();
 			}
-		}else if(view.getId() == R.id.iv_nav_left_btn){
-			finish();
+		}else {
+			super.onClick(view);
 		}
 	}
 	

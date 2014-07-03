@@ -76,6 +76,7 @@
     <string name="dialog_reboot_cam">Are you sure to reboot this cam [%s]?</string>
     
     <string name="cam_setting_title">Settings</string>
+    <string name="cam_hardware_setting_title">Hardware settings</string>
     <string name="cam_setting_title_power_setting">Power settings</string>
 	<string name="cam_setting_title_power">Camera power</string>
 	<string name="cam_setting_title_power_time">Power schedule</string>
@@ -92,6 +93,19 @@
 	<string name="cam_setting_title_power_on">on</string>
 	<string name="cam_setting_title_power_off">off</string>
 	<string name="cam_setting_title_power_disconnected">disconnected</string>
+	
+	<string name="cam_setting_hw_hd_quality_title">HD quality</string>
+	<string name="cam_setting_hw_hd_quality_desc">60GB data usage for non-stop 30 days uploading</string>
+	
+	<string name="cam_setting_hw_mic_sensitivity_title">Microphone sensitivity</string>
+	<string name="cam_setting_hw_status_light_title">Status light</string>
+	
+	<string name="cam_setting_hw_night_vision_title">Night vision</string>
+	<string name="cam_setting_hw_night_vision_auto">Auto</string>
+	<string name="cam_setting_hw_night_vision_on">On</string>
+	<string name="cam_setting_hw_night_vision_off">Off</string>
+	
+	<string name="cam_setting_hw_timezone_title">Time zone</string>
     
 	<string name="cam_setting_title_video_upside_down">Video upside-down</string>
 	<string name="cam_setting_title_wifi_setting">Wifi setting</string>

@@ -281,9 +281,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 
 	@Override
 	public void onClick(View view) {
-		if(view.getId() == R.id.iv_nav_left_btn){
-			finish();
-		}else if(view.getTag() instanceof WifoInfoHolder){
+		if(view.getTag() instanceof WifoInfoHolder){
 			WifoInfoHolder info = (WifoInfoHolder)view.getTag();
 			if(null != info){
 				mChosenWifiAPInfo = (WifiAPInfo)info.mUserData;
@@ -294,6 +292,8 @@ public class WifiListActivity extends WifiControlBaseActivity
 //				}else
 					showMyDialog(DIALOG_ID_WIFI_AP_INFO);
 			}
+		}else{
+			super.onClick(view);
 		}
 	}
 	

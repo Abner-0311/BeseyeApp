@@ -25,13 +25,13 @@ import android.widget.Toast;
 
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
-import com.app.beseye.CameraSettingActivity;
 import com.app.beseye.CameraViewActivity;
 import com.app.beseye.PairingFailActivity;
 import com.app.beseye.R;
 import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.setting.CameraSettingActivity;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -258,7 +258,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					else{
 						sbFinishToPlay = false;
 						estimatePairingTime();
-						if(false == BeseyeConfig.COMPUTEX_DEMO){
+						/*if(false == BeseyeConfig.COMPUTEX_DEMO)*/{
 							BeseyeUtils.postRunnable(new Runnable(){
 								@Override
 								public void run() {
@@ -439,8 +439,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 									String strVcamId = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID);
 									String strCamName = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME);
 									
-									if(BeseyeConfig.COMPUTEX_DEMO)
-										mStrCamName = "New Camera";
+//									if(BeseyeConfig.COMPUTEX_DEMO)
+//										mStrCamName = "New Camera";
 									
 									if(null != mStrCamName && 0 < mStrCamName.length()){
 										strCamName = mStrCamName;
