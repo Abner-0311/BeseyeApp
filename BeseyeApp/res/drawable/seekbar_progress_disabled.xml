@@ -7,7 +7,7 @@
     <item
         android:id="@android:id/progress" >
         <clip>
-        <nine-patch android:src="@drawable/setting_voice_control_bar_disable" />
+        	<nine-patch android:src="@drawable/setting_voice_control_bar_disable" />
         </clip>
     </item>
 </layer-list>

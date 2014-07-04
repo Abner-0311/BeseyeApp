@@ -226,7 +226,8 @@
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
 			   		android:textColor="@color/cl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_hw_night_vision_auto"
-			   		android:layout_alignParentRight="true"/>
+			   		android:layout_alignParentRight="true"
+			   		android:paddingRight="@dimen/hw_setting_night_vision_horin_margin"/>
 		    </RelativeLayout>   
 		</RelativeLayout>
 		<RelativeLayout 

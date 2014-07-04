@@ -77,7 +77,7 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 	
 	static public class TimezoneInfoHolder{
 		TextView mtxtName;
-		TextView mtxtZoneInfo;
+		public TextView mtxtZoneInfo;
 		public TimeZone mTimeZone;
 	}
 

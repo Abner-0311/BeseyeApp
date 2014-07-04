@@ -170,7 +170,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 			case R.id.vg_night_vision:{
 				//launchActivityForResultByClassName(TimezoneListActivity.class.getName(), null, REQUEST_TIMEZONE_CHANGED);
-				this.showDialog(DIALOG_ID_WIFI_AP_KEYINDEX);
+				this.showDialog(DIALOG_ID_CAM_NIGHT_VISION);
 				break;
 			}
 			default:
@@ -203,18 +203,18 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		Log.d(TAG, "WifiListActivity::onCreateDialog()");
 		Dialog dialog;
 		switch(id){
-			case DIALOG_ID_WIFI_AP_KEYINDEX:{
+			case DIALOG_ID_CAM_NIGHT_VISION:{
 				dialog = new Dialog(this);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 				dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-				dialog.setContentView(createKeyIdxDialog());
+				dialog.setContentView(createNoghtVisionDialog());
 				
 				if(null != dialog){
 					dialog.setCanceledOnTouchOutside(true);
 					dialog.setOnCancelListener(new OnCancelListener(){
 						@Override
 						public void onCancel(DialogInterface arg0) {
-							removeMyDialog(DIALOG_ID_WIFI_AP_KEYINDEX);
+							removeMyDialog(DIALOG_ID_CAM_NIGHT_VISION);
 						}});
 					dialog.setOnDismissListener(new OnDismissListener(){
 						@Override
@@ -231,44 +231,47 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		return dialog;
 	}
 	
-	private View createKeyIdxDialog(){
+	static private final int NUM_NIGHT_VISION_MODE = 3;
+	
+	private static int[] sStridNightVisionMode = {R.string.cam_setting_hw_night_vision_auto, 
+												  R.string.cam_setting_hw_night_vision_on,
+												  R.string.cam_setting_hw_night_vision_off}; 
+	
+	private View createNoghtVisionDialog(){
 		View viewRet = null;
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		if(null != inflater){
-			viewRet = (View)inflater.inflate(R.layout.wifi_ap_key_index_dialog, null);
+			viewRet = (View)inflater.inflate(R.layout.night_vision_mode_dialog, null);
 			if(null != viewRet){
-				ImageView[] ivKeyIdx = new ImageView[NetworkMgr.NUM_WEP_KEY_IDX]; 
+				ImageView[] ivKeyIdx = new ImageView[NUM_NIGHT_VISION_MODE]; 
 				if(null != ivKeyIdx){
-					ivKeyIdx[0] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_1_check);
-					ivKeyIdx[1] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_2_check);
-					ivKeyIdx[2] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_3_check);
-					ivKeyIdx[3] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_4_check);
+					ivKeyIdx[0] = (ImageView)viewRet.findViewById(R.id.iv_key_auto_check);
+					ivKeyIdx[1] = (ImageView)viewRet.findViewById(R.id.iv_key_on_check);
+					ivKeyIdx[2] = (ImageView)viewRet.findViewById(R.id.iv_key_off_check);
 				}
 				
-				final ViewGroup[] vgKeyIdx = new ViewGroup[NetworkMgr.NUM_WEP_KEY_IDX];  
+				final ViewGroup[] vgKeyIdx = new ViewGroup[NUM_NIGHT_VISION_MODE];  
 				if(null != vgKeyIdx){
-					vgKeyIdx[0] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_1_holder);
-					vgKeyIdx[1] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_2_holder);
-					vgKeyIdx[2] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_3_holder);
-					vgKeyIdx[3] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_4_holder);
+					vgKeyIdx[0] = (ViewGroup)viewRet.findViewById(R.id.vg_nv_holder_auto);
+					vgKeyIdx[1] = (ViewGroup)viewRet.findViewById(R.id.vg_nv_holder_on);
+					vgKeyIdx[2] = (ViewGroup)viewRet.findViewById(R.id.vg_nv_holder_off);
 				}
 				
 				OnClickListener keyIdxClick = new OnClickListener(){
 					@Override
 					public void onClick(View view) {
-						removeMyDialog(DIALOG_ID_WIFI_AP_KEYINDEX);
-						for(int idx = 0; idx < NetworkMgr.NUM_WEP_KEY_IDX;idx++){
+						removeMyDialog(DIALOG_ID_CAM_NIGHT_VISION);
+						for(int idx = 0; idx < NUM_NIGHT_VISION_MODE;idx++){
 							if(vgKeyIdx[idx] == view){
-//								mChosenWifiAPInfo.wepkeyIdx = idx;
-//								if(null != mtxtKeyIndex){
-//									mtxtKeyIndex.setText(String.valueOf(mChosenWifiAPInfo.wepkeyIdx+1));
-//								}
+								if(null != mTxtNightVision){
+									mTxtNightVision.setText(sStridNightVisionMode[idx]);
+								}
 								break;
 							}
 						}
 					}};
 				
-				for(int idx = 0; idx < NetworkMgr.NUM_WEP_KEY_IDX;idx++){
+				for(int idx = 0; idx < NUM_NIGHT_VISION_MODE;idx++){
 					//ivKeyIdx[idx].setVisibility((idx == (mChosenWifiAPInfo.wepkeyIdx))?View.VISIBLE:View.INVISIBLE);
 					vgKeyIdx[idx].setOnClickListener(keyIdxClick);
 				}

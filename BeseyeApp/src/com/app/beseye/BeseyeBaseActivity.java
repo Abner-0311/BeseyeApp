@@ -173,6 +173,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_CAM_DETTACH_CONFIRM= DIALOG_ID_WIFI_BASE+10; 
 	static public final int DIALOG_ID_CAM_REBOOT_CONFIRM= DIALOG_ID_WIFI_BASE+11; 
 	static public final int DIALOG_ID_CAM_TALK_INIT= DIALOG_ID_WIFI_BASE+12; 
+	static public final int DIALOG_ID_CAM_NIGHT_VISION= DIALOG_ID_WIFI_BASE+13; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {

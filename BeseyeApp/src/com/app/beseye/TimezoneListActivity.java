@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.app.beseye.adapter.TimezoneInfoAdapter;
 import com.app.beseye.adapter.TimezoneInfoAdapter.TimezoneInfoHolder;
+import com.app.beseye.setting.HWSettingsActivity;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.PullToRefreshListView;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
@@ -99,7 +101,11 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		if(view.getTag() instanceof TimezoneInfoHolder){
 			TimezoneInfoHolder info = (TimezoneInfoHolder)view.getTag();
 			if(null != info){
-				Toast.makeText(this, info.mTimeZone.toString(), Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, info.mTimeZone.toString(), Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent();
+				intent.putExtra(HWSettingsActivity.TIME_ZONE_INFO, info.mtxtZoneInfo.getText());
+				setResult(RESULT_OK, intent);
+				finish();
 			}
 		}else {
 			super.onClick(view);
