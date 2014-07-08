@@ -68,5 +68,7 @@
     <color name="news_timeline_unread">#00bbb3</color>
     <color name="news_content_font">#666666</color>
     
+    <color name="forget_pw_mail_division">#adadad</color>
+    
     
 </resources>

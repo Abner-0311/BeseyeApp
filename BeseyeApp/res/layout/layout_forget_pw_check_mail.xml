@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color" >
+
+    <ImageView
+        android:id="@+id/iv_check_mail_ill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_chech_mail_note"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/check_mail_ill" />
+    
+    <TextView
+        android:id="@+id/tv_chech_mail_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/forget_pw_instruction_txt_marginTop"
+        android:layout_marginBottom="@dimen/check_mail_summary_bottom"
+        android:layout_marginLeft="@dimen/forget_pw_instruction_txt_marginSide"
+	    android:layout_marginRight="@dimen/forget_pw_instruction_txt_marginSide"
+        android:text="@string/forget_password_check_mail_summary"
+        android:textColor="@color/signup_font_description_color"
+        android:textSize="@dimen/login_fontRegular" />
+    
+    <TextView
+        android:id="@+id/tv_chech_mail_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_chech_mail_summary"
+        android:layout_marginBottom="@dimen/forget_pw_instruction_txt_marginBottom"
+        android:layout_marginLeft="@dimen/forget_pw_instruction_txt_marginSide"
+	    android:layout_marginRight="@dimen/forget_pw_instruction_txt_marginSide"
+        android:text="@string/forget_password_check_mail_address"
+        android:textColor="@color/signup_font_description_color"
+        android:textSize="@dimen/login_fontRegular" />
+    
+    <View 
+	    android:id="@+id/v_check_mail_division"
+	    android:layout_width="match_parent"
+	    android:layout_height="1dp"
+	    android:layout_marginLeft="@dimen/forget_pw_instruction_txt_marginSide"
+	    android:layout_marginRight="@dimen/forget_pw_instruction_txt_marginSide"
+	    android:layout_marginBottom="@dimen/check_mail_division_bottom"
+	    android:layout_below="@+id/tv_chech_mail_address"
+	    android:background="@color/forget_pw_mail_division" />
+    
+    <TextView
+        android:id="@+id/tv_chech_mail_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/v_check_mail_division"
+        android:layout_marginBottom="@dimen/check_mail_note_bottom"
+        android:layout_marginLeft="@dimen/forget_pw_instruction_txt_marginSide"
+	    android:layout_marginRight="@dimen/forget_pw_instruction_txt_marginSide"
+        android:text="@string/forget_password_check_mail_note"
+        android:textColor="@color/liveview_power_state_sub_font_color"
+        android:textSize="@dimen/login_fontSmall" />
+
+</RelativeLayout>
