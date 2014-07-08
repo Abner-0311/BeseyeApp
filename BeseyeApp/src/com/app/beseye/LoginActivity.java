@@ -82,16 +82,14 @@ public class LoginActivity extends BeseyeBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.tv_forgetpw:{
-				Toast.makeText(this, "Forget PW click", Toast.LENGTH_SHORT).show();
+				launchActivityByClassName(ForgetPasswordActivity.class.getName());
 				break;
 			}
 			case R.id.tv_create_account:{
-				//Toast.makeText(this, "Create Account click", Toast.LENGTH_SHORT).show();
 				launchActivityByClassName(SignupActivity.class.getName());
 				break;
 			}
 			case R.id.button_login:{
-				//Toast.makeText(this, "Login click", Toast.LENGTH_SHORT).show();
 				checkLoginInfo();
 				break;
 			}

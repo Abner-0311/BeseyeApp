@@ -452,7 +452,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		    		if(strRetCode.startsWith("0x")){
 		    			strRetCode = strRetCode.substring(2);
 		    		}
-		    		miRetCode = Integer.valueOf(strRetCode, 16).intValue();
+		    		miRetCode = Integer.parseInt(strRetCode);//Integer.valueOf(strRetCode, 16).intValue();
 		    	}
 	    	}
 	    	

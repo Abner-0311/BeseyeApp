@@ -137,6 +137,7 @@
 	<string name="msg_pw_too_short">Your password is too short.</string>
 	<string name="msg_signup_err_email_used">Email was used. Please specify another one.</string>
 	<string name="msg_login_wrong_password">Wrong password. Please check it again.</string>
+	<string name="msg_account_not_found">This email account is not used. Please check it again.</string>
 	
 	<string name="toast_pairing_wait">Pairing is processing. Please wait for a while.</string>
 	<string name="toast_pairing_enter_cam_name">Please assign the camera name.</string>
@@ -196,6 +197,7 @@
 	<string name="firmware_update_btn_later">Update later</string>
 	<string name="firmware_update_btn_again">Try again</string>
 	
+	<string name="forget_password_check_title">Check your email</string>
 	<string name="forget_password_btn_submit">Submit</string>
 	<string name="forget_password_instruction">Don’t worry! Just fill in your email address and we’ll sent you password reset instructions.</string>
 	<string name="forget_password_check_mail_summary">We’ve sent you password reset instructions to the following address:</string>

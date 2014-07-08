@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public abstract class PairingBaseActivity extends BeseyeBaseActivity {
+public abstract class BeseyeAccountBaseActivity extends BeseyeBaseActivity {
 	protected View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	protected ImageView mIvBack;

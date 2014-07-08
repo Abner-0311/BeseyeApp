@@ -29,6 +29,7 @@ public class BeseyeAccountTask {
 	public static final String URL_QUERY_VCAM		="user/vcam/query";
 	public static final String URL_GET_INFO			="user/info";
 	public static final String URL_GET_VCAM_INFO	="user/vcam/info";
+	public static final String URL_FORGET_PW		="user/password_forget";
 	
 	public static final String URL_CAM_ATTACH		="vcam/attach";
 	public static final String URL_CAM_DEATTACH		="user/vcam/detach";
@@ -185,6 +186,27 @@ public class BeseyeAccountTask {
 				
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_SET_ATTR, obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;	
+		}
+	}
+	
+	static public class SendForgetPWTask extends BeseyeHttpTask {	 	
+		public SendForgetPWTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(ACC_EMAIL, strParams[0]);				
+				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_FORGET_PW, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
