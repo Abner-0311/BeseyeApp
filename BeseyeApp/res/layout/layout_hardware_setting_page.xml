@@ -100,7 +100,8 @@
 		    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding" 
 		    	android:layout_centerVertical="true"
 		    	android:layout_alignParentRight="true"
-		    	android:src="@drawable/sl_mic_high_vol_icon"/>
+		    	android:src="@drawable/sl_mic_high_vol_icon"/>	
+
 			<SeekBar
 			    android:id="@+id/sb_mic_sensitivity"
 			    android:layout_width="match_parent"
@@ -112,10 +113,11 @@
 			    android:layout_toLeftOf="@+id/img_mic_vol_max"
 			    android:thumb="@drawable/sl_mic_seekbar_thumb"
 			    android:progressDrawable="@drawable/seekbar_progress"
-			    android:max="80"
+			    android:maxHeight="7dp"
+			    android:max="79"
         		android:progress="0"
-        		android:secondaryProgress="0"/>
-		    
+        		android:secondaryProgress="0"
+        		android:visibility="visible"/>
 		</RelativeLayout>
 		
 		<RelativeLayout 

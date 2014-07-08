@@ -52,16 +52,21 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	protected TextView mtxtKeyIndex;
 	protected String mWifiApPassword = null;
 	protected WifiAPInfo mChosenWifiAPInfo;
+	protected boolean mbChangeWifi = false;
 	
 	//workaround
 	protected int miOriginalVcamCnt = -1;
+	static public final String KEY_CHANGE_WIFI_ONLY = "KEY_CHANGE_WIFI_ONLY";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "WifiControlBaseActivity::onCreate()");
 		super.onCreate(savedInstanceState);
+		
+		mbChangeWifi = getIntent().getBooleanExtra(KEY_CHANGE_WIFI_ONLY, false);
 		mlstScanResult = new ArrayList<WifiAPInfo>();
-		setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+		if(false == mbChangeWifi)
+			setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
 		
 		miOriginalVcamCnt = getIntent().getIntExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, 0);
 		Log.i(TAG, "WifiControlBaseActivity::onCreate(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
@@ -71,21 +76,24 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	protected void onResume() {
     	Log.d(TAG, "WifiControlBaseActivity::onResume()");
 		super.onResume();
-		NetworkMgr.getInstance().registerNetworkChangeCallback(this);
-		NetworkMgr.getInstance().registerWifiStatusChangeCallback(this);
-		
-		if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
-			setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
-		}
+		if(false == mbChangeWifi){
+			NetworkMgr.getInstance().registerNetworkChangeCallback(this);
+			NetworkMgr.getInstance().registerWifiStatusChangeCallback(this);
+			if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
+				setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+			}
+		}	
 	}
     
 	@Override
 	protected void onPause() {
 		Log.d(TAG, "WifiControlBaseActivity::onPause()");
-		if(inWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_SCANNING))
-			cancelScanWifi();
-		NetworkMgr.getInstance().unregisterNetworkChangeCallback(this);
-		NetworkMgr.getInstance().unregisterWifiStatusChangeCallback(this);
+		if(false == mbChangeWifi){
+			if(inWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_SCANNING))
+				cancelScanWifi();
+			NetworkMgr.getInstance().unregisterNetworkChangeCallback(this);
+			NetworkMgr.getInstance().unregisterWifiStatusChangeCallback(this);
+		}
 		super.onPause();
 	}
 	
@@ -439,6 +447,10 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 
 				final Button btnConnect = (Button)vgApInfo.findViewById(R.id.btn_connect);
 				if(null != btnConnect){
+					if(getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false)){
+						btnConnect.setText(R.string.select);
+					}
+					
 					btnConnect.setOnClickListener(new OnClickListener(){
 						@Override
 						public void onClick(View arg0) {
@@ -452,11 +464,17 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 					    	mChosenWifiAPInfo.wepkeyIdx = Integer.parseInt(String.valueOf(mtxtKeyIndex.getText())) -1;
 					    	
 							Intent intent = new Intent();
-							intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
+							
 							intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
-							intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
-							startActivity(intent);
-							setResult(RESULT_OK);
+							if(getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false)){
+								setResult(RESULT_OK, intent);
+								finish();
+							}else{
+								intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
+								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+								startActivity(intent);
+								setResult(RESULT_OK);
+							}
 							
 							Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
 //					    	if(null == mWifiAPSetupDelegator){

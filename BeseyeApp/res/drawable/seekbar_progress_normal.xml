@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">    
     <item 
         android:id="@android:id/background">
-        <nine-patch android:src="@drawable/setting_voice_control_bar_disable" />
+        <nine-patch android:src="@drawable/setting_voice_control_bar" />
     </item>
     <item
         android:id="@android:id/progress" >

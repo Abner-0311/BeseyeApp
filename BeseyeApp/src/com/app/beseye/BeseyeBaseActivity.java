@@ -197,6 +197,14 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				dialog = builder.create();
 				if(null != dialog){
 					dialog.setCanceledOnTouchOutside(true);
+					if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
+						((android.app.AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
+						    public void onClick(DialogInterface dialog, int item) {
+						    	removeMyDialog(DIALOG_ID_WARNING);
+						    	finish();
+						    }
+						});
+					}
 				}
 				break;
 			}

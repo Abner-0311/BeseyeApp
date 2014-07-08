@@ -39,6 +39,7 @@
     
     <style name="AppTheme.TimeZoneList">
         <item name="actionBarStyle">@style/ActionBarThemeTimeZoneList</item>
+        <item name="actionOverflowButtonStyle">@style/ActionBarThemeTimeZoneListOverFlow</item>
 	</style>
 	
     <style name="ActionBarThemeTimeZoneList" parent="android:Widget.ActionBar">
@@ -47,6 +48,10 @@
         <item name="android:height">50dp</item>
         <item name="android:icon">@drawable/sl_nav_back_btn</item>
     </style>
+    
+    <style name="ActionBarThemeTimeZoneListOverFlow" parent="@android:Widget.Holo.ActionButton.Overflow">
+	    <item name="android:src">@drawable/sl_actionbar_overflow_icon</item>
+	</style>
 	
     <style name="style1"></style>
     

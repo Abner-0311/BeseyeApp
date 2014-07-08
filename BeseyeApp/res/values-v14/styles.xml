@@ -11,5 +11,6 @@
 	
     <style name="AppTheme.TimeZoneList">
         <item name="android:actionBarStyle">@style/ActionBarThemeTimeZoneList</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionBarThemeTimeZoneListOverFlow</item>
 	</style>
 </resources>

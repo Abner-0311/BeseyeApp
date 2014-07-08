@@ -9,6 +9,7 @@
     <string name="connect">Connect</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="select">Select</string>
     <string name="password">Password</string>
     <string name="show_password">Show password</string>
     <string name="forget_password">Forget password</string>
@@ -93,6 +94,8 @@
 	<string name="cam_setting_title_power_on">on</string>
 	<string name="cam_setting_title_power_off">off</string>
 	<string name="cam_setting_title_power_disconnected">disconnected</string>
+	<string name="cam_setting_fail_to_get_cam_info">Fail to get camera info. Please try again later.</string>
+	<string name="cam_setting_fail_to_get_wifi_list">Fail to get WiFi list from camera. Please try again later.</string>
 	
 	<string name="cam_setting_hw_hd_quality_title">HD quality</string>
 	<string name="cam_setting_hw_hd_quality_desc">60GB data usage for non-stop 30 days uploading</string>
