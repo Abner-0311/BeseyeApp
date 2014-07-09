@@ -3,5 +3,14 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    
+    <dimen name="signup_paring_container">600dp</dimen>
+    <dimen name="signup_paring_margin_label_bottom">58dp</dimen>
+    <dimen name="signup_paring_margin_medium">28dp</dimen>
+    
+    <dimen name="signup_beforeSetup_img_marginTop">120dp</dimen>
+    
+    <dimen name="login_marginMedium">24dp</dimen>
+    
 
 </resources>
