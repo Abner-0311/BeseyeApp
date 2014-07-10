@@ -21,6 +21,7 @@ $(ZXING_PATH)/common/reedsolomon/GenericGF.cpp \
 $(ZXING_PATH)/common/reedsolomon/GenericGFPoly.cpp \
 $(ZXING_PATH)/common/reedsolomon/ReedSolomonDecoder.cpp \
 $(SRC_PATH)/../common/src/utils.cpp \
+$(SRC_PATH)/../common/src/json_utils.cpp \
 $(SRC_PATH)/sp_config.cpp \
 $(SRC_PATH)/AudioBufferMgr.cpp \
 $(SRC_PATH)/FreqAnalyzer.cpp \
@@ -36,7 +37,6 @@ $(SRC_PATH)/preprocess/smallft.c \
 $(SRC_PATH)/preprocess/fftwrap.c \
 $(SRC_PATH)/preprocess/filterbank.c \
 $(SRC_PATH)/preprocess/preprocess.c \
-$(SRC_PATH)/../common/src/json_utils.c \
 $(SRC_PATH)/../http_cgi_lib/src/http_cgi.c \
 $(SRC_PATH)/../libwebsockets/src/simple_websocket_mgr.c
 

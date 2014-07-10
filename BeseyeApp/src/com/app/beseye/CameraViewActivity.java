@@ -161,9 +161,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				    			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), isCamPowerOn() && NetworkMgr.getInstance().isNetworkConnected());
 				    			setEnabled(mCameraViewControlAnimator.getFastForwardView(), false);
 				    			
-				    			Configuration config = getResources().getConfiguration();	
-				    			setImageRes(mCameraViewControlAnimator.getPlayPauseView(), Configuration.ORIENTATION_LANDSCAPE == config.orientation?R.drawable.sl_liveview_play_btn:R.drawable.sl_liveview_play_btn_round);
-				    			setImageRes(mCameraViewControlAnimator.getPlayPauseViewOrient(), Configuration.ORIENTATION_PORTRAIT == config.orientation?R.drawable.sl_liveview_play_btn:R.drawable.sl_liveview_play_btn_round);
+				    			updatePlayPauseBtnByStatus(status);
 			    			}
 			    			setVisibility(mPbLoadingCursor, View.GONE);
 			    			hideInvalidStateMask();
@@ -193,9 +191,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				    			//setEnabled(mIbFastForward, !mbIsLiveMode);
 				    			//setVisibility(mPbLoadingCursor, View.GONE);
 				    			
-				    			Configuration config = getResources().getConfiguration();	
-				    			setImageRes(mCameraViewControlAnimator.getPlayPauseView(), Configuration.ORIENTATION_LANDSCAPE == config.orientation?R.drawable.sl_liveview_pause_btn:R.drawable.sl_liveview_pause_btn_round);
-				    			setImageRes(mCameraViewControlAnimator.getPlayPauseViewOrient(), Configuration.ORIENTATION_PORTRAIT == config.orientation?R.drawable.sl_liveview_pause_btn:R.drawable.sl_liveview_pause_btn_round);
+				    			updatePlayPauseBtnByStatus(status);
 			    			}
 			    			
 			    			if(mbIsLiveMode)
@@ -219,10 +215,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    				closeStreaming();
 			    			}else{
 			    				//if(mCamViewStatus.equals(CameraView_Internal_Status.CV_STREAM_PAUSED)){
+			    				
+			    				updatePlayPauseBtnByStatus(status);
+			    				
 			    				if(null != mCameraViewControlAnimator){
-			    					Configuration config = getResources().getConfiguration();	
-					    			setImageRes(mCameraViewControlAnimator.getPlayPauseView(), Configuration.ORIENTATION_LANDSCAPE == config.orientation?R.drawable.sl_liveview_pause_btn:R.drawable.sl_liveview_pause_btn_round);
-					    			setImageRes(mCameraViewControlAnimator.getPlayPauseViewOrient(), Configuration.ORIENTATION_PORTRAIT == config.orientation?R.drawable.sl_liveview_pause_btn:R.drawable.sl_liveview_pause_btn_round);
 				    				setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
 			    				}
 			    			//}
@@ -240,9 +236,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				    			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
 				    			setEnabled(mCameraViewControlAnimator.getFastForwardView(), false);
 				    			
-				    			Configuration config = getResources().getConfiguration();	
-				    			setImageRes(mCameraViewControlAnimator.getPlayPauseView(), Configuration.ORIENTATION_LANDSCAPE == config.orientation?R.drawable.sl_liveview_play_btn:R.drawable.sl_liveview_play_btn_round);
-				    			setImageRes(mCameraViewControlAnimator.getPlayPauseViewOrient(), Configuration.ORIENTATION_PORTRAIT == config.orientation?R.drawable.sl_liveview_play_btn:R.drawable.sl_liveview_play_btn_round);
+				    			updatePlayPauseBtnByStatus(status);
 			    			}
 			    			setVisibility(mPbLoadingCursor, View.GONE);
 			    			stopUpdateTime();
@@ -300,6 +294,20 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    	mCamViewStatus = status;
 				}});
     	}
+    }
+    
+    private void updatePlayPauseBtnByStatus(CameraView_Internal_Status status){
+    	Configuration config = getResources().getConfiguration();	
+    	if(null != mCameraViewControlAnimator){
+    		if((CameraView_Internal_Status.CV_STATUS_UNINIT.ordinal() <= status.ordinal() && status.ordinal() <= CameraView_Internal_Status.CV_STREAM_CONNECTING.ordinal()) || 
+    		   CameraView_Internal_Status.CV_STREAM_PAUSED == status ){
+    			setImageRes(mCameraViewControlAnimator.getPlayPauseView(), Configuration.ORIENTATION_LANDSCAPE == config.orientation?R.drawable.sl_liveview_play_btn:R.drawable.sl_liveview_play_btn_round);
+    			setImageRes(mCameraViewControlAnimator.getPlayPauseViewOrient(), Configuration.ORIENTATION_PORTRAIT == config.orientation?R.drawable.sl_liveview_play_btn:R.drawable.sl_liveview_play_btn_round);
+    		}else{
+    			setImageRes(mCameraViewControlAnimator.getPlayPauseView(), Configuration.ORIENTATION_LANDSCAPE == config.orientation?R.drawable.sl_liveview_pause_btn:R.drawable.sl_liveview_pause_btn_round);
+    			setImageRes(mCameraViewControlAnimator.getPlayPauseViewOrient(), Configuration.ORIENTATION_PORTRAIT == config.orientation?R.drawable.sl_liveview_pause_btn:R.drawable.sl_liveview_pause_btn_round);
+    		}
+		}
     }
     
     private void tryToReconnect(){
@@ -673,6 +681,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private void setMarginByOrientation(int iOrient){
 		if(null != mCameraViewControlAnimator){
 			mCameraViewControlAnimator.setOrientation(iOrient);
+			updatePlayPauseBtnByStatus(mCamViewStatus);
 			if(null != mUpdateDateTimeRunnable)
 				mUpdateDateTimeRunnable.updateDateTimeView(mCameraViewControlAnimator.getDateView(), mCameraViewControlAnimator.getTimeView());
 			else

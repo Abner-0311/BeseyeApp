@@ -746,7 +746,7 @@ typedef enum{
 
 static Pairing_Mode sPairingMode = PAIRING_INIT;
 static Pairing_Mode sPedningPairingMode = PAIRING_NONE;
-static const int ERROR_LED_PERIOD = 6;
+static const int ERROR_LED_PERIOD = 10;
 static int sCurLEDCnt = 0;
 
 void changePairingMode(Pairing_Mode mode){
@@ -807,7 +807,7 @@ void* AudioTest::verifyToken(void* userdata){
 
 			if(false == sbLEDOn){
 				if(PAIRING_INIT == sPairingMode){
-					setLedLight(1,1,1);
+					setLedLight(1,1,0);
 				}else if(PAIRING_WAITING == sPairingMode){
 					setLedLight(0,1,0);
 				}else if(PAIRING_ANALYSIS == sPairingMode){
@@ -824,8 +824,10 @@ void* AudioTest::verifyToken(void* userdata){
 			if(PAIRING_ERROR == sPairingMode){
 				sCurLEDCnt++;
 				checkLEDByMode();
+				sbLEDOn = false;
+			}else{
+				sbLEDOn = !sbLEDOn;
 			}
-			sbLEDOn = !sbLEDOn;
 		}
 
 		sleep(TIME_TO_CHECK_LED);

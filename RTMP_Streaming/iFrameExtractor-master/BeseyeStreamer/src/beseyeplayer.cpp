@@ -1295,10 +1295,10 @@ int CBeseyePlayer::audio_decode_frame(VideoState *is, double *pts_ptr)
     int flush_complete = 0;
     int wanted_nb_samples;
 
-    //Workaround for DVR
-    if(!is->av_sync_type == AV_SYNC_AUDIO_MASTER){
-    	return -1;
-    }
+//    //Workaround for DVR
+//    if(!is->av_sync_type == AV_SYNC_AUDIO_MASTER){
+//    	return -1;
+//    }
 
     for (;;) {
         /* NOTE: the audio packet can contain several frames */
@@ -1361,7 +1361,7 @@ int CBeseyePlayer::audio_decode_frame(VideoState *is, double *pts_ptr)
                 is->audio_src.fmt = dec->sample_fmt;
             }
 
-            /*if (is->swr_ctx) {
+            if (is->swr_ctx) {
                 const uint8_t **in = (const uint8_t **)is->frame->extended_data;
                 uint8_t *out[] = {is->audio_buf2};
                 int out_count = sizeof(is->audio_buf2) / is->audio_tgt.channels / av_get_bytes_per_sample(is->audio_tgt.fmt);
@@ -1383,7 +1383,7 @@ int CBeseyePlayer::audio_decode_frame(VideoState *is, double *pts_ptr)
                 }
                 is->audio_buf = is->audio_buf2;
                 resampled_data_size = len2 * is->audio_tgt.channels * av_get_bytes_per_sample(is->audio_tgt.fmt);
-            } else */{
+            } else {
                 is->audio_buf = is->frame->data[0];
                 resampled_data_size = data_size;
             }
@@ -2454,7 +2454,7 @@ extern void  main13(int argc, char **argv);
 int CBeseyePlayer::createStreaming(const char* streamHost, const char** streamPathList, int iStreamCount, int iSeekTimeInMs){
 	if(0 < iStreamCount){
 		//Abner: temp solution for ffmpeg 2.2.2 aac audio sluggish
-		av_sync_type = AV_SYNC_EXTERNAL_CLOCK;
+		//av_sync_type = AV_SYNC_EXTERNAL_CLOCK;
 		//av_sync_type = AV_SYNC_VIDEO_MASTER;
 		int idx = 1;
 		iNumOfPendingStreamPaths = iStreamCount -1;
