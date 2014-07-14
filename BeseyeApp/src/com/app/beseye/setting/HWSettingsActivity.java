@@ -2,6 +2,8 @@ package com.app.beseye.setting;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
 
 import java.util.List;
 
@@ -175,6 +177,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	protected void onSessionComplete(){
+		super.onSessionComplete();
 		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
 	}
 	
@@ -471,5 +474,25 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 		}
 	}
-
+	
+	protected void onCamSettingChangedCallback(JSONObject DataObj){
+    	super.onCamSettingChangedCallback(DataObj);
+    	if(null != DataObj){
+			String strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
+			long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
+			if(mStrVCamID.equals(strCamUID)){
+				if(!mActivityDestroy){
+		    		if(!mActivityResume){
+		    			setOnResumeRunnable(new Runnable(){
+							@Override
+							public void run() {
+								monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(HWSettingsActivity.this), true, mStrVCamID);
+							}});
+		    		}else{
+		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		    		}
+		    	}
+			}
+		}
+    }
 }

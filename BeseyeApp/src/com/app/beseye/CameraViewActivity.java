@@ -32,6 +32,7 @@ import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.websockets.AudioWebSocketsMgr;
+import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioAmplitudeUpdateListener;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.app.beseye.widget.AmplitudeImageView;
 import com.app.beseye.widget.CameraViewControlAnimator;
@@ -69,7 +70,8 @@ import android.os.PowerManager;
 
 public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSurfaceCallback,
 																	  OnNetworkChangeCallback,
-																	  OnWSChannelStateChangeListener{
+																	  OnWSChannelStateChangeListener,
+																	  OnAudioAmplitudeUpdateListener{
 	static public final String KEY_PAIRING_DONE 	= "KEY_PAIRING_DONE";
 	static public final String KEY_TIMELINE_INFO    = "KEY_TIMELINE_INFO";
 	static public final String KEY_DVR_STREAM_MODE  = "KEY_DVR_STREAM_MODE";
@@ -410,6 +412,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		
 		AudioWebSocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
+		AudioWebSocketsMgr.getInstance().registerOnAudioAmplitudeUpdateListener(this);
 	}
 	
 	@Override
@@ -546,6 +549,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	protected void onSessionComplete(){
+		super.onSessionComplete();
 		triggerPlay();
 	}
 	
@@ -652,6 +656,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	protected void onDestroy() {
 		Log.d(TAG, "CameraViewActivity::onDestroy()");
+		AudioWebSocketsMgr.getInstance().unregisterOnAudioAmplitudeUpdateListener();
+		AudioWebSocketsMgr.getInstance().unregisterOnWSChannelStateChangeListener();
+		
 		super.onDestroy();
 		// Now wait for the SDL thread to quit
         if (TouchSurfaceView.mSDLThread != null) {

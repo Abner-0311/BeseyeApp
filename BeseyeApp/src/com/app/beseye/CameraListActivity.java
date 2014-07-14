@@ -143,6 +143,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
+		super.onSessionComplete();
 		monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 	}
 	

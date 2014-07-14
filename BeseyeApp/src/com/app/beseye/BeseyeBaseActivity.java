@@ -6,6 +6,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.BeseyeApplication.BeseyeAppStateChangeListener;
@@ -15,6 +16,7 @@ import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.service.BeseyeNotificationService;
+import com.app.beseye.util.BeseyeUtils;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -78,6 +80,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		//if(! mbIgnoreSessionCheck && checkSession())
 	    if( mbIgnoreSessionCheck || checkSession())
 			invokeSessionComplete();
+	    
+	    checkOnResumeRunnable();
 		mActivityResume = true;
 	}
 	
@@ -140,7 +144,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	protected void onSessionComplete(){
-		 
+		checkOnResumeRunnable();
 	}
 	
 	private void checkForCrashes() {
@@ -619,12 +623,21 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-//                case BeseyeNotificationService.MSG_SET_NOTIFY_NUM:{
-//                	BeseyeBaseActivity act = mActivity.get();
-//                	if(null != act)
-//                		act.onUnReadNotificationCallback(msg.arg1);
-//                    break;
-//                }
+            	  
+                case BeseyeNotificationService.MSG_CAM_SEETING_UPDATED:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCamSettingChangedCallback(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                    break;
+                }
 //                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{
 //                	BeseyeBaseActivity act = mActivity.get();
 //                	if(null != act)
@@ -745,6 +758,22 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
             //unbindService(mUploadConnection);
             mIsBound = false;
         }
+    }
+    
+    protected void onCamSettingChangedCallback(JSONObject DataObj){}
+    
+    private Runnable mOnResumeRunnable = null;
+    protected void setOnResumeRunnable(Runnable run){
+    	Log.i(TAG, "setOnResumeRunnable()");
+    	mOnResumeRunnable = run;
+    }
+    
+    private void checkOnResumeRunnable(){
+    	if(null != mOnResumeRunnable){
+    		Log.i(TAG, "checkOnResumeRunnable(), trigger...");
+    		BeseyeUtils.postRunnable(mOnResumeRunnable, 0);
+    		mOnResumeRunnable = null;
+    	}
     }
 
 	protected abstract int getLayoutId();

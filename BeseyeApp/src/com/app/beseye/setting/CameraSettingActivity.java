@@ -2,6 +2,8 @@ package com.app.beseye.setting;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
 import static com.app.beseye.setting.CamSettingMgr.*;
 
 import java.util.List;
@@ -197,6 +199,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 	
 	protected void onSessionComplete(){
+		super.onSessionComplete();
 		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.GetWiFiConfigTask(this), true, mStrVCamID);
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.GetWiFiSSIDListTask(this), true, mStrVCamID);
@@ -638,4 +641,25 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	       // Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
 	    }
 	}
+	
+	protected void onCamSettingChangedCallback(JSONObject DataObj){
+    	super.onCamSettingChangedCallback(DataObj);
+    	if(null != DataObj){
+			String strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
+			long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
+			if(mStrVCamID.equals(strCamUID)){
+				if(!mActivityDestroy){
+		    		if(!mActivityResume){
+		    			setOnResumeRunnable(new Runnable(){
+							@Override
+							public void run() {
+								monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(CameraSettingActivity.this), true, mStrVCamID);
+							}});
+		    		}else{
+		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		    		}
+		    	}
+			}
+		}
+    }
 }

@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.util.List;
 
@@ -31,6 +32,7 @@ import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.koushikdutta.async.AsyncServer;
 import com.koushikdutta.async.ByteBufferList;
 import com.koushikdutta.async.DataEmitter;
@@ -121,6 +123,22 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	
 	protected String getWSProtocol(){
 		return null;//ENABLE_INTERNAL_SERVER?null:"beseye-audio-protocol";
+	}
+	
+	private WeakReference<OnAudioAmplitudeUpdateListener> mOnAudioAmplitudeUpdateListener = null;
+	
+	static public interface OnAudioAmplitudeUpdateListener{
+		public void onAudioAmplitudeUpdate(float fRatio);
+	}
+	
+	public void registerOnAudioAmplitudeUpdateListener(OnAudioAmplitudeUpdateListener listener){
+		if(null != listener){
+			mOnAudioAmplitudeUpdateListener = new WeakReference<OnAudioAmplitudeUpdateListener>(listener);
+		}
+	}
+	
+	public void unregisterOnAudioAmplitudeUpdateListener(){
+		mOnAudioAmplitudeUpdateListener = null;
 	}
 	
 	private WebSocketConnectCallback mWebSocketConnectCallback = new WebSocketConnectCallback() {
@@ -384,7 +402,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	    				
 	    				//Log.i(TAG, "run(), iMaxVal:"+iMaxVal);
 	    				
-	    				OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
+	    				OnAudioAmplitudeUpdateListener listener = (null != mOnAudioAmplitudeUpdateListener)?mOnAudioAmplitudeUpdateListener.get():null;
 		    			if(null != listener){
 		    				listener.onAudioAmplitudeUpdate((iMaxVal)/32767.0f);
 		    			}
