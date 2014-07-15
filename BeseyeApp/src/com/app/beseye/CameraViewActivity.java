@@ -448,7 +448,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				try {
 					mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 					if(null != mCam_obj){
-						Log.d(TAG, "CameraViewActivity::updateAttrByIntent(), mCam_obj:"+mCam_obj.toString());
+						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mCam_obj:"+mCam_obj.toString());
 						mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
 //						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mStrVCamID:"+mStrVCamID);
 //						if(null == mStrVCamID || 0 == mStrVCamID.length()){
@@ -1191,11 +1191,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		Log.w(TAG, "CameraViewActivity::onActivityResult(), requestCode:"+requestCode+", resultCode:"+resultCode);
 		if(REQUEST_CAM_SETTING_CHANGED == requestCode){
 			mbIsCamSettingChanged = (resultCode == RESULT_OK);
 			if(resultCode == RESULT_OK){
 				//monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this), true, mStrVCamID);
-				updateAttrByIntent(getIntent());
+				updateAttrByIntent(intent);
 				setResult(RESULT_OK, intent);
 			}
 		}else if(REQUEST_WIFI_SETTING_CHANGED== requestCode){

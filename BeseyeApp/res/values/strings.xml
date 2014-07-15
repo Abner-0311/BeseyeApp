@@ -133,8 +133,10 @@
 	<string name="cam_setting_schedule_abort_confirm">Are you sure you want to exit without saving this schedule?</string>	
 	
 	<string name="cam_info_cam_name">Camera name</string>
+	<string name="cam_info_sw_ver">Software version</string>
 	<string name="cam_info_sn">Serial number</string>
 	<string name="cam_info_mac">MAC address</string>
+	<string name="unknown">N/A</string>
 	
 	<string name="streaming_invalid_dvr">Invalid DVR streaming path. Please try again later.</string>
 	<string name="streaming_playing_error">Invalid streaming path or server error. Please try again later.</string>

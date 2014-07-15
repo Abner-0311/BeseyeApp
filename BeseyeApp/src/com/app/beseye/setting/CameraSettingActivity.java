@@ -278,11 +278,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				break;
 			}
 			case R.id.vg_cam_info:{
-				if(null == mStrVCamSN)
-					monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
-				else{
-					showDialog(DIALOG_ID_CAM_INFO);
-				}
+//				if(null == mStrVCamSN)
+//					monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
+//				else{
+//					showDialog(DIALOG_ID_CAM_INFO);
+//				}
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				launchActivityForResultByClassName(CameraInfoActivity.class.getName(),b, REQUEST_CAM_INFO_CHANGED);
 				break;
 			}
 			case R.id.btn_ok:{
@@ -645,6 +648,24 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	    } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
 	       // Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
 	    }
+	}
+	
+	static public final int REQUEST_CAM_INFO_CHANGED = 2001;
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		Log.w(TAG, "CameraSettingActivity::onActivityResult(), requestCode:"+requestCode+", resultCode:"+resultCode);
+		if(REQUEST_CAM_INFO_CHANGED == requestCode && resultCode == RESULT_OK){
+			try {
+				mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+				Intent resultIntent = new Intent();
+				resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				setResult(RESULT_OK, resultIntent);
+			} catch (JSONException e) {
+				Log.e(TAG, "onActivityResult(), e:"+e.toString());
+			}
+		}else
+			super.onActivityResult(requestCode, resultCode, intent);
 	}
 	
 	protected void onCamSettingChangedCallback(JSONObject DataObj){

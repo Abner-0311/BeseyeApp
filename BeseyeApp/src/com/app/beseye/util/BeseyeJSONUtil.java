@@ -90,6 +90,7 @@ public class BeseyeJSONUtil {
 	
 	public static final String CAM_SN 					= "SerialNumber";
 	public static final String CAM_MAC_ADDR 			= "MACAddr";
+	public static final String CAM_SOFTWARE 			= "Firmware";
 	
 	public static final String SCHED_FROM 				= "from";
 	public static final String SCHED_TO 				= "to";
