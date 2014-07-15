@@ -294,11 +294,16 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(this), true, mStrVCamID);
 				//monitorAsyncTask(new BeseyeCamBEHttpTask.SetWiFiConfigTask(this), true, mStrVCamID, "beseye", "0630BesEye", "3");
 				//showMyDialog(DIALOG_ID_CAM_INFO);
-				showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				//showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				launchActivityByClassName(PowerScheduleActivity.class.getName(),b);
 				break;
 			}
 			case R.id.vg_location_aware:{
 				//launchActivityByClassName(TimezoneListActivity.class.getName());
+				showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
 				break;
 			}
 			case R.id.vg_hw_settings:{

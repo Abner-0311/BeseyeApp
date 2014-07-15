@@ -108,6 +108,9 @@
     <dimen name="datetime_picker_desc_marginTop">32dp</dimen>
     <dimen name="datetime_picker_desc_marginBottom">32dp</dimen>
     
+    <dimen name="time_picker_horiz_margin">65dp</dimen>
+    <dimen name="time_picker_horiz_distance">30dp</dimen>
+    
     <dimen name="cameralist_nav_margin_hori">10dp</dimen>
     
     <dimen name="cameralist_videoblock_margin">6dp</dimen>

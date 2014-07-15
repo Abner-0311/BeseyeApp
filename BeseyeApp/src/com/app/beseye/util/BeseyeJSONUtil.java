@@ -91,6 +91,10 @@ public class BeseyeJSONUtil {
 	public static final String CAM_SN 					= "SerialNumber";
 	public static final String CAM_MAC_ADDR 			= "MACAddr";
 	
+	public static final String SCHED_FROM 				= "from";
+	public static final String SCHED_TO 				= "to";
+	public static final String SCHED_DAYS 				= "days";
+	
 	//WS BE service
 	public static final String CAM_UUID 				= "camUuid";
 	public static final String DEV_ID 					= "deviceId";

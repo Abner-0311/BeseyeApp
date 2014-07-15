@@ -164,20 +164,22 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_LOADING = 1; 
 	static public final int DIALOG_ID_WARNING = 2; 
 	
-	static public final int DIALOG_ID_WIFI_BASE = 0x1000; 
-	static public final int DIALOG_ID_TURN_ON_WIFI = DIALOG_ID_WIFI_BASE+1; 
-	static public final int DIALOG_ID_WIFI_SCANNING = DIALOG_ID_WIFI_BASE+2; 
-	static public final int DIALOG_ID_WIFI_SETTING = DIALOG_ID_WIFI_BASE+3; 
-	static public final int DIALOG_ID_WIFI_TURN_ON_FAILED = DIALOG_ID_WIFI_BASE+4; 
-	static public final int DIALOG_ID_WIFI_SCAN_FAILED = DIALOG_ID_WIFI_BASE+5; 
-	static public final int DIALOG_ID_WIFI_AP_INFO = DIALOG_ID_WIFI_BASE+6; 
-	static public final int DIALOG_ID_WIFI_AP_INCORRECT_PW = DIALOG_ID_WIFI_BASE+7; 
-	static public final int DIALOG_ID_WIFI_AP_KEYINDEX= DIALOG_ID_WIFI_BASE+8; 
-	static public final int DIALOG_ID_CAM_INFO= DIALOG_ID_WIFI_BASE+9; 
-	static public final int DIALOG_ID_CAM_DETTACH_CONFIRM= DIALOG_ID_WIFI_BASE+10; 
-	static public final int DIALOG_ID_CAM_REBOOT_CONFIRM= DIALOG_ID_WIFI_BASE+11; 
-	static public final int DIALOG_ID_CAM_TALK_INIT= DIALOG_ID_WIFI_BASE+12; 
-	static public final int DIALOG_ID_CAM_NIGHT_VISION= DIALOG_ID_WIFI_BASE+13; 
+	static public final int DIALOG_ID_WIFI_BASE 			= 0x1000; 
+	static public final int DIALOG_ID_TURN_ON_WIFI 			= DIALOG_ID_WIFI_BASE+1; 
+	static public final int DIALOG_ID_WIFI_SCANNING 		= DIALOG_ID_WIFI_BASE+2; 
+	static public final int DIALOG_ID_WIFI_SETTING 			= DIALOG_ID_WIFI_BASE+3; 
+	static public final int DIALOG_ID_WIFI_TURN_ON_FAILED 	= DIALOG_ID_WIFI_BASE+4; 
+	static public final int DIALOG_ID_WIFI_SCAN_FAILED 		= DIALOG_ID_WIFI_BASE+5; 
+	static public final int DIALOG_ID_WIFI_AP_INFO 			= DIALOG_ID_WIFI_BASE+6; 
+	static public final int DIALOG_ID_WIFI_AP_INCORRECT_PW 	= DIALOG_ID_WIFI_BASE+7; 
+	static public final int DIALOG_ID_WIFI_AP_KEYINDEX		= DIALOG_ID_WIFI_BASE+8; 
+	static public final int DIALOG_ID_CAM_INFO				= DIALOG_ID_WIFI_BASE+9; 
+	static public final int DIALOG_ID_CAM_DETTACH_CONFIRM	= DIALOG_ID_WIFI_BASE+10; 
+	static public final int DIALOG_ID_CAM_REBOOT_CONFIRM	= DIALOG_ID_WIFI_BASE+11; 
+	static public final int DIALOG_ID_CAM_TALK_INIT			= DIALOG_ID_WIFI_BASE+12; 
+	static public final int DIALOG_ID_CAM_NIGHT_VISION		= DIALOG_ID_WIFI_BASE+13; 
+	static public final int DIALOG_ID_CAM_SCHED_DELETE		= DIALOG_ID_WIFI_BASE+14; 
+	static public final int DIALOG_ID_CAM_SCHED_ABORT		= DIALOG_ID_WIFI_BASE+15; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {

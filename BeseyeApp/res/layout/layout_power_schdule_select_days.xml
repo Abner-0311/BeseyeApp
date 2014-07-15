@@ -1,0 +1,38 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+	<include 
+	    android:id="@+id/vg_monday"
+	    layout="@layout/layout_power_schdule_select_days_itm"></include>
+	<include 
+	    android:id="@+id/vg_tuesday"
+	    layout="@layout/layout_power_schdule_select_days_itm"></include>
+	<include 
+	    android:id="@+id/vg_wednesday"
+	    layout="@layout/layout_power_schdule_select_days_itm"></include>
+	<include 
+	    android:id="@+id/vg_thursday"
+	    layout="@layout/layout_power_schdule_select_days_itm"></include>
+	<include 
+	    android:id="@+id/vg_friday"
+	    layout="@layout/layout_power_schdule_select_days_itm"></include>
+	<include 
+	    android:id="@+id/vg_saturday"
+	    layout="@layout/layout_power_schdule_select_days_itm"></include>
+	<include 
+	    android:id="@+id/vg_sunday"
+	    layout="@layout/layout_power_schdule_select_days_itm"></include>
+</LinearLayout>
+
+
+
+
+   
+		
+	
+ 
+
+

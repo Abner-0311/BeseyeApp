@@ -18,7 +18,17 @@
     	android:layout_toRightOf="@+id/vw_margin_left"
     	android:layout_centerVertical="true">
     </ImageView>
-    	
+    
+    <ImageView
+        android:id="@+id/iv_nav_right_btn"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentRight="true"
+		android:layout_marginRight="@dimen/signup_paring_nav_margin"
+    	android:layout_centerVertical="true"
+    	android:visibility="gone">
+    </ImageView>
+    
   	<TextView 
   	    android:id="@+id/txt_nav_title"
   	    android:layout_width="wrap_content"

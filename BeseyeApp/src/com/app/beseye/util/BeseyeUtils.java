@@ -3,11 +3,15 @@ package com.app.beseye.util;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -210,6 +214,64 @@ public class BeseyeUtils {
 			strRet = getDateString(updateTime, "yyyy-MM-dd a hh:mm");
 		}
 		
+		return strRet;
+	}
+	
+	public static final int DEFAULT_FROM_TIME = 19*60*60; //PM 07:00
+	public static final int DEFAULT_TO_TIME   = 7*60*60;  //AM 07:00
+	public static final int DAY_IN_SECONDS    = 24*60*60; //86400
+	
+	static public String getTimeBySeconds(int iSeconds){
+		int iTotalMinutes = (iSeconds/60);
+		int iMinutes = iTotalMinutes%60;
+		int iHours = (iTotalMinutes/60)%24;
+
+		return String.format("%02d:%02d", iHours, iMinutes);
+	}
+	
+	static public Date getTimeObjBySeconds(int iSeconds){
+		Calendar c = Calendar.getInstance();
+		int iTotalMinutes = (iSeconds/60);
+		int iMinutes = iTotalMinutes%60;
+		int iHours = iTotalMinutes/60;
+		
+		c.set(Calendar.HOUR_OF_DAY, iHours);
+		c.set(Calendar.MINUTE, iMinutes);
+
+		return c.getTime();
+	}
+	
+	static public String getSchdelDaysInShort(JSONArray arrDays){
+		String strRet = "";
+		int iSize = (null != arrDays)?arrDays.length():0;
+		for(int idx = 0;idx < iSize;idx++){
+			if(idx > 0){
+				strRet += ",";
+			}
+			try {
+				strRet+=getSchdelDayInShort(arrDays.getInt(idx));
+			} catch (JSONException e) {
+				Log.e(TAG, "PowerScheduleEditActivity::getSchdelDaysInShort(), failed to parse, e:"+e.toString());
+			}
+		}
+		return strRet;
+	}
+	
+	static public String getSchdelDayInShort(int iDay){
+		String strRet = "";
+		SimpleDateFormat dayFormat = new SimpleDateFormat("E");
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY+iDay); //Sunday ~ Saturday => 0 ~ 6, Calendar.SUNDAY~Calendar.SATURDAY => 1~7
+		strRet = dayFormat.format(calendar.getTime());
+		return strRet;
+	}
+	
+	static public String getSchdelDay(int iDay){
+		String strRet = "";
+		SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY+iDay); //Sunday ~ Saturday => 0 ~ 6, Calendar.SUNDAY~Calendar.SATURDAY => 1~7
+		strRet = dayFormat.format(calendar.getTime());
 		return strRet;
 	}
 }
