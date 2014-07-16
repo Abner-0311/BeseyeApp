@@ -9,11 +9,14 @@ import java.lang.ref.WeakReference;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -40,6 +43,9 @@ public class CameraViewControlAnimator {
 	static private Animation s_aniToolbarFadeIn = null;
 	static private Animation s_aniToolbarFadeOut = null;
 	
+	static private Animation s_aniHoldToTalkFadeIn = null;
+	static private Animation s_aniHoldToTalkFadeOut = null;
+	
 	private RelativeLayout m_vgHeaderLayout = null;
 	private RelativeLayout m_vgToolbarLayout = null;
 	
@@ -48,6 +54,9 @@ public class CameraViewControlAnimator {
 	private ViewGroup mVgNavbarLandscape;
 	private ViewGroup mVgToolbarLandscape;
 	
+	private ViewGroup mVgHoldToTalk;
+	private AmplitudeImageView mAmplitudeImageView;
+	
 	private TextView mTxtDate, mTxtCamName, mTxtTime, mTxtEvent, mTxtGoLive;
 	private ImageView mIvStreamType;
 	private ImageButton mIbTalk, mIbRewind, mIbPlayPause, mIbFastForward, mIbSetting;	
@@ -55,19 +64,26 @@ public class CameraViewControlAnimator {
 	private WeakReference<CameraViewActivity> mCameraViewActivity;
 	private int miOrientation;
 	private int miStatusBarHeight = 0;
+	private Rect mRectTalkBtn;
+	
 	private boolean m_bInHeaderAnimation = false;
 	private boolean m_bInToolbarAnimation = false;
+	private boolean m_bInHoldToTalkAnimation = false;
+	private boolean m_bCheckHoldToTalkAfterAnim = false;
 	
 	private Runnable mHideHeaderRunnable = new Runnable(){
 		@Override
 		public void run() {
-			if(View.VISIBLE == getVisibility())
+			if(View.VISIBLE == getVisibility() && false == isInAnimation())
 				performControlAnimation();
 		}};
 	
 	
 	public void setOrientation(int iOrient){
 		miOrientation = iOrient;
+		
+		onTalkBtnReleased();
+		
 		CameraViewActivity act = mCameraViewActivity.get();
 		if(null != act){
 			if(Configuration.ORIENTATION_PORTRAIT == miOrientation){
@@ -169,7 +185,24 @@ public class CameraViewControlAnimator {
 			if(null != ibTalk){
 				syncViewProprety(mIbTalk, ibTalk);
 				mIbTalk = ibTalk;
-				mIbTalk.setOnClickListener(act);
+				//mIbTalk.setOnClickListener(act);
+				mIbTalk.setOnTouchListener(new OnTouchListener(){
+					@Override
+					public boolean onTouch(View view, MotionEvent event) {
+						//Log.i(TAG, "onTouch(), event.getAction()="+event.getAction());
+
+						if (event.getAction() == MotionEvent.ACTION_DOWN){
+							onTalkBtnPressed(view);
+						}else if (event.getAction() == MotionEvent.ACTION_MOVE){
+							if(null != mRectTalkBtn && !mRectTalkBtn.contains(view.getLeft() + (int) event.getX(), view.getTop() + (int) event.getY())){
+					            // User moved outside bounds
+								onTalkBtnReleased();
+					        }
+			            }else if (event.getAction() == MotionEvent.ACTION_UP){
+			            	onTalkBtnReleased();
+			            }
+						return false;
+					}});
 				//mIbTalk.setEnabled(false);//not implement
 			}
 			
@@ -269,9 +302,10 @@ public class CameraViewControlAnimator {
 		miStatusBarHeight = iHeight;
 	}
 	
-	public CameraViewControlAnimator(Context context, RelativeLayout headerLayout, RelativeLayout toolbarLayout, int iStatusBarHeight) {
+	public CameraViewControlAnimator(Context context, RelativeLayout headerLayout, RelativeLayout toolbarLayout, ViewGroup vgHoldToTalk, int iStatusBarHeight) {
 		m_vgHeaderLayout = headerLayout;
 		m_vgToolbarLayout = toolbarLayout;
+		mVgHoldToTalk = vgHoldToTalk;
 		miStatusBarHeight = iStatusBarHeight;
 		mCameraViewActivity = new WeakReference<CameraViewActivity>((CameraViewActivity)context);
 		initViews(context);
@@ -295,7 +329,16 @@ public class CameraViewControlAnimator {
 			
 			mVgToolbarLandscape = (ViewGroup)inflater.inflate(R.layout.layout_camera_view_footer_live_land, null);
 		}
+		
+		mAmplitudeImageView = (AmplitudeImageView)mVgHoldToTalk.findViewById(R.id.img_hold_to_talk_mic_mask);
+		
 		initAnimations(context);
+	}
+	
+	public void setAmplitudeRatio(float fRatio){
+		if(null != mAmplitudeImageView){
+			mAmplitudeImageView.setAmplitudeRatio(fRatio);
+		}
 	}
 
 	private void initAnimations(Context context){
@@ -315,6 +358,14 @@ public class CameraViewControlAnimator {
 			s_aniToolbarFadeOut = AnimationUtils.loadAnimation(context, R.anim.footer_exit);
 		}
 		
+		if(null == s_aniHoldToTalkFadeIn){
+			s_aniHoldToTalkFadeIn = AnimationUtils.loadAnimation(context, R.anim.hold_to_talk_enter);
+		}
+		
+		if(null == s_aniHoldToTalkFadeOut){
+			s_aniHoldToTalkFadeOut = AnimationUtils.loadAnimation(context, R.anim.hold_to_talk_exit);
+		}
+		
 		registerAnimationListeners();
 	}
 	
@@ -331,6 +382,12 @@ public class CameraViewControlAnimator {
 		
 		if(null != s_aniToolbarFadeOut)
 			s_aniToolbarFadeOut.setAnimationListener(mToolbarFadeOutListener);
+		
+		if(null != s_aniHoldToTalkFadeIn)
+			s_aniHoldToTalkFadeIn.setAnimationListener(mHoldToTalkFadeInListener);
+		
+		if(null != s_aniHoldToTalkFadeOut)
+			s_aniHoldToTalkFadeOut.setAnimationListener(mHoldToTalkFadeOutListener);
 	}
 	
 	public int getVisibility(){
@@ -364,6 +421,7 @@ public class CameraViewControlAnimator {
 				Animation animation = null;
 				CameraViewActivity act = mCameraViewActivity.get();
 				if(View.VISIBLE == m_vgHeaderLayout.getVisibility()){
+					
 					animation = s_aniHeaderFadeOut;
 					m_vgHeaderLayout.startAnimation(animation);
 					
@@ -371,7 +429,7 @@ public class CameraViewControlAnimator {
 						act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 						act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 					}
-					
+					cancelHideControl();
 				}else{
 					//animation = s_aniHeaderFadeIn;
 					m_vgHeaderLayout.bringToFront();
@@ -395,12 +453,32 @@ public class CameraViewControlAnimator {
 				if(View.VISIBLE == m_vgToolbarLayout.getVisibility()){
 					animation = s_aniToolbarFadeOut;
 					m_vgToolbarLayout.startAnimation(animation);
+					cancelHideControl();
 				}else if(!mbP2PMode){
 					//animation = s_aniToolbarFadeIn;
 					m_vgToolbarLayout.bringToFront();
 					m_vgToolbarLayout.setVisibility(View.VISIBLE);
 				}
 			}
+		}
+	}
+	
+	public void performHoldToTalkAnimation(){
+		if(false == m_bInHoldToTalkAnimation){
+			if(null != mVgHoldToTalk){
+				Animation animation = null;
+				CameraViewActivity act = mCameraViewActivity.get();
+				if(View.VISIBLE == mVgHoldToTalk.getVisibility()){					
+					animation = s_aniHoldToTalkFadeOut;
+					mVgHoldToTalk.startAnimation(animation);
+				}else{
+					//animation = s_aniHeaderFadeIn;
+					mVgHoldToTalk.bringToFront();
+					mVgHoldToTalk.setVisibility(View.VISIBLE);
+				}
+			}
+		}else{
+			m_bCheckHoldToTalkAfterAnim = true;
 		}
 	}
 	
@@ -537,4 +615,95 @@ public class CameraViewControlAnimator {
 			Log.d(TAG, "mToolbarFadeOutListener::onAnimationStart()");
 		}
 	};
+	
+	private AnimationListener mHoldToTalkFadeInListener = new AnimationListener(){
+		public void onAnimationEnd(Animation animation) {
+			if(null != mVgHoldToTalk){
+				mVgHoldToTalk.setVisibility(mbP2PMode?View.INVISIBLE:View.VISIBLE);
+			}
+			m_bInHoldToTalkAnimation = false;
+			Log.d(TAG, "mHoldToTalkFadeInListener::onAnimationEnd()");
+			
+			checkHoldToTalkBtnStatus();
+		}
+
+		public void onAnimationRepeat(Animation animation) {
+		}
+
+		public void onAnimationStart(Animation animation) {
+			if(!mbP2PMode)
+				mVgHoldToTalk.bringToFront();
+			m_bInHoldToTalkAnimation = true;
+			Log.d(TAG, "mHoldToTalkFadeInListener::onAnimationStart()");
+		}
+	};
+	
+	private AnimationListener mHoldToTalkFadeOutListener = new AnimationListener(){
+		public void onAnimationEnd(Animation animation) {
+			if(null != mVgHoldToTalk){
+				mVgHoldToTalk.setVisibility(View.INVISIBLE);
+			}
+			
+			m_bInHoldToTalkAnimation = false;
+			Log.d(TAG, "mHoldToTalkFadeOutListener::onAnimationEnd()");
+			checkHoldToTalkBtnStatus();
+		}
+
+		public void onAnimationRepeat(Animation animation) {
+		}
+
+		public void onAnimationStart(Animation animation) {
+			m_bInHoldToTalkAnimation = true;
+			Log.d(TAG, "mHoldToTalkFadeOutListener::onAnimationStart()");
+		}
+	};
+	
+	private void checkHoldToTalkBtnStatus(){
+		if(m_bCheckHoldToTalkAfterAnim){
+			m_bCheckHoldToTalkAfterAnim = false;
+			
+			if((mVgHoldToTalk.getVisibility() == View.INVISIBLE && mIbTalk.isPressed()) || (mVgHoldToTalk.getVisibility() == View.VISIBLE && !mIbTalk.isPressed()) ){
+				performHoldToTalkAnimation();
+			}
+		}
+	}
+	
+	private void onTalkBtnPressed(View view){
+		Log.i(TAG, "onTalkBtnPressed()");
+		if(null == mRectTalkBtn){
+			mRectTalkBtn = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+	        cancelHideControl();
+	        performHoldToTalkAnimation();
+	        CameraViewActivity act = mCameraViewActivity.get();
+			if(null != act){
+				act.openAudioChannel();
+			}
+		}else{
+			Log.w(TAG, "onTalkBtnPressed(), mRectTalkBtn isn't null");
+		}
+	}
+	
+	private void onTalkBtnReleased(){
+		Log.i(TAG, "onTalkBtnReleased()");
+		if(null != mRectTalkBtn){
+        	startHideControlRunnable();
+        	performHoldToTalkAnimation();
+        	mRectTalkBtn = null;
+        	CameraViewActivity act = mCameraViewActivity.get();
+			if(null != act){
+				act.closeAudioChannel(false);
+			}
+    	}else{
+    		Log.w(TAG, "onTalkBtnReleased(), mRectTalkBtn is null");
+    	}
+	}
+	
+	public void terminateTalkMode(){
+		Log.i(TAG, "terminateTalkMode()");
+		onTalkBtnReleased();
+	}
+	
+	public boolean isInHoldToTalkMode(){
+		return mRectTalkBtn != null;
+	}
 }

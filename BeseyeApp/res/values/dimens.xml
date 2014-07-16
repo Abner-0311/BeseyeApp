@@ -60,10 +60,14 @@
     <dimen name="dt_picker_dialog_padding_horiz">30dp</dimen>
     
     <dimen name="cam_setting_item_padding_right">34dp</dimen>
+    <dimen name="hw_setting_mic_seekbar_horin_margin">6dp</dimen>
+    <dimen name="hw_setting_night_vision_horin_margin">10dp</dimen>
     
     <dimen name="caminfo_dialog_attr_main_font_size">15sp</dimen>
     <dimen name="caminfo_dialog_attr_value_font_size">19sp</dimen>
     <dimen name="caminfo_dialog_attr_padding_vertical">6sp</dimen>
+    
+    <dimen name="caminfo_cam_name_padding_hori">8dp</dimen>
     
     <dimen name="caminfo_dialog_item_height">70dp</dimen>
     
@@ -105,6 +109,9 @@
     <dimen name="datetime_picker_horiz_margin">32dp</dimen>
     <dimen name="datetime_picker_desc_marginTop">32dp</dimen>
     <dimen name="datetime_picker_desc_marginBottom">32dp</dimen>
+    
+    <dimen name="time_picker_horiz_margin">65dp</dimen>
+    <dimen name="time_picker_horiz_distance">30dp</dimen>
     
     <dimen name="cameralist_nav_margin_hori">10dp</dimen>
     

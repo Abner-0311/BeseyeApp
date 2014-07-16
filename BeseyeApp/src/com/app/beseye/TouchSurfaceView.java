@@ -3,6 +3,8 @@ package com.app.beseye;
 import static com.app.beseye.TouchSurfaceView.State.*;
 import static com.app.beseye.util.BeseyeConfig.*;
 
+import com.app.beseye.util.BeseyeUtils;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -25,6 +27,7 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Scroller;
 
@@ -89,12 +92,13 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
+		Log.i(TAG, "surfaceCreated()......");
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 	}
 	
 	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+		Log.i(TAG, "surfaceChanged()......");
         int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
         switch (format) {
         case PixelFormat.A_8:
@@ -162,11 +166,27 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         TouchSurfaceView.mIsSurfaceReady = true;
         //SDLActivity.onNativeSurfaceChanged();
         drawDefaultBackground();
+        
+        BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				Log.i(TAG, "Trigger onMeasure()......, matrix="+matrix);
+				//fixScaleTrans();
+				prevMatrix.setValues(m);
+		        prevMatchViewHeight = matchViewHeight;
+		        prevMatchViewWidth = matchViewWidth;
+		        prevViewHeight = viewHeight;
+		        prevViewWidth = viewWidth;
+				TouchSurfaceView.this.measure(MeasureSpec.makeMeasureSpec((int)mSurfaceHeight, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((int)mSurfaceHeight, MeasureSpec.EXACTLY));
+				TouchSurfaceView.this.measure(MeasureSpec.makeMeasureSpec((int)mSurfaceWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((int)mSurfaceHeight, MeasureSpec.EXACTLY));
+				drawStreamBitmap();
+			}}, 0);
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		TouchSurfaceView.mIsSurfaceReady = false;
+		Log.i(TAG, "surfaceDestroyed()......");
 	}
 	
 	static{
@@ -212,6 +232,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 	}
 	
     private void sharedConstructing(Context context) {
+    	Log.i(TAG, "sharedConstructing()");
         super.setClickable(true);
         getHolder().addCallback(this);	
         
@@ -237,16 +258,17 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     
     @Override
     public Parcelable onSaveInstanceState() {
-      Bundle bundle = new Bundle();
-      bundle.putParcelable("instanceState", super.onSaveInstanceState());
-      bundle.putFloat("saveScale", normalizedScale);
-      bundle.putFloat("matchViewHeight", matchViewHeight);
-      bundle.putFloat("matchViewWidth", matchViewWidth);
-      bundle.putInt("viewWidth", viewWidth);
-      bundle.putInt("viewHeight", viewHeight);
-      matrix.getValues(m);
-      bundle.putFloatArray("matrix", m);
-      return bundle;
+		Bundle bundle = new Bundle();
+		bundle.putParcelable("instanceState", super.onSaveInstanceState());
+		bundle.putFloat("saveScale", normalizedScale);
+		bundle.putFloat("matchViewHeight", matchViewHeight);
+		bundle.putFloat("matchViewWidth", matchViewWidth);
+		bundle.putInt("viewWidth", viewWidth);
+		bundle.putInt("viewHeight", viewHeight);
+		matrix.getValues(m);
+		bundle.putFloatArray("matrix", m);
+		Log.i(TAG, "onSaveInstanceState(), matrix="+matrix);
+		return bundle;
     }
 
     @Override
@@ -261,6 +283,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 	        prevViewHeight = bundle.getInt("viewHeight");
 	        prevViewWidth = bundle.getInt("viewWidth");
 	        super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
+	        Log.i(TAG, "onRestoreInstanceState(), prevMatrix="+prevMatrix);
 	        return;
       	}
 
@@ -268,12 +291,18 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     public void onOrientationChanged(){
+    	restoreDisplayAttr();
+    }
+    
+    private void restoreDisplayAttr(){
+    	
+    	fixScaleTrans();
     	prevMatrix.setValues(m);
         prevMatchViewHeight = matchViewHeight;
         prevMatchViewWidth = matchViewWidth;
         prevViewHeight = viewHeight;
         prevViewWidth = viewWidth;
-        
+        Log.i(TAG, "restoreDisplayAttr()....., prevMatrix="+prevMatrix);
         drawStreamBitmap();
     }
 
@@ -329,6 +358,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         float fixTransY = getFixTrans(transY, viewHeight, getImageHeight());
         
         if (fixTransX != 0 || fixTransY != 0) {
+        	//Log.i(TAG, "fixTrans()....., call postTranslate, fixTransX="+fixTransX);
             matrix.postTranslate(fixTransX, fixTransY);
         }
     }
@@ -466,7 +496,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             matrix.setValues(m);
         }
         fixTrans();
-        Log.i(TAG, "onMeasure(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale);
+        Log.i(TAG, "onMeasure(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale+", matchViewWidth="+matchViewWidth+", matchViewHeight="+matchViewHeight);
         //setImageMatrix(matrix);
         drawStreamBitmap();
     }
@@ -585,6 +615,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         	Log.i(TAG, "onDoubleTap()");
         	boolean consumed = false;
         	if (state == NONE) {
+        		triggermDoubleTapCallback();
 	        	float targetZoom = (normalizedScale == minScale) ? maxScale : minScale;
 	        	DoubleTapZoom doubleTap = new DoubleTapZoom(normalizedScale, targetZoom, e.getX(), e.getY(), false);
 	        	compatPostOnAnimation(doubleTap);
@@ -952,6 +983,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     
     static public interface OnTouchSurfaceCallback{
     	public void onSingleTapConfirm();
+    	public void onDoubleTapConfirm();
     	public void onTouch();
     }
     
@@ -966,6 +998,12 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     private void triggermSingleTapCallback(){
     	if(null != mOnTouchSurfaceCallback){
     		mOnTouchSurfaceCallback.onSingleTapConfirm();
+    	}
+    }
+    
+    private void triggermDoubleTapCallback(){
+    	if(null != mOnTouchSurfaceCallback){
+    		mOnTouchSurfaceCallback.onDoubleTapConfirm();
     	}
     }
     
@@ -1035,9 +1073,6 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 		        //Log.d(TAG, "drawStreamBitmap(), redundantXSpace:"+redundantXSpace+", redundantYSpace:"+redundantYSpace+", scale:"+scale);
 		        //updateMatrix();
 				//printMatrixInfo();
-		        
-		//            if(REDDOT_DEMO)
-		//            	canvas.clipRect(0, mfPaddingTop, mWidth, mHeight-mfPaddingBottom);
 		        
 				if(null != bmp && false == bmp.isRecycled())
 					canvas.drawBitmap(bmp, matrix, null);

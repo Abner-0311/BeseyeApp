@@ -95,3 +95,5 @@ BeseyeApp/libs/armeabi/libsoundpairing.so
 RTMP_Streaming/openssl-1.0.1e/apps/CA.pl.bak
 
 Sound_Pairing/aubioTest/jni/common
+
+Sound_Pairing/aubioTest/jni/soundpairing

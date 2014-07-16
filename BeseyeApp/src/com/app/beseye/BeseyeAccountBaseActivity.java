@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public abstract class PairingBaseActivity extends BeseyeBaseActivity {
+public abstract class BeseyeAccountBaseActivity extends BeseyeBaseActivity {
 	protected View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	protected ImageView mIvBack;
@@ -36,17 +36,5 @@ public abstract class PairingBaseActivity extends BeseyeBaseActivity {
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
-	}
-	
-	@Override
-	public void onClick(View view) {
-		switch(view.getId()){
-			case R.id.iv_nav_left_btn:{
-				finish();
-				break;
-			}
-			default:
-				super.onClick(view);
-		}		
 	}
 }

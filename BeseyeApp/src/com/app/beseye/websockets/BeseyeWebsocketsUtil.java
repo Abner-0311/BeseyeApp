@@ -53,12 +53,21 @@ public class BeseyeWebsocketsUtil {
     static public final int WS_ATTR_TYPE_GET 			= 0;
     static public final int WS_ATTR_TYPE_SET 			= 1;
 
-    static public final String WS_ATTR_COMM 			= "Command";
-    static public final int WS_ATTR_COMM_AUTH 			= 0x0100;
+    
+    static public final int WS_ATTR_COMM_AUTH 					= 0x0100;
+    
+    static public final int WS_ATTR_COMM_SYS_INFO 				= 0x000C;
+    static public final int WS_ATTR_COMM_KEEP_ALIVE 			= 0x000D;
+    static public final int WS_ATTR_COMM_WS_RECONNECT 			= 0x0010;
+    static public final int WS_ATTR_COMM_CAM_SETTING_CHANGED 	= 0x0017;
+    static public final int WS_ATTR_COMM_DETECTION_NOTIFY 		= 0x0018;
 
+    static public final String WS_ATTR_COMM 			= "Command";
     static public final String WS_ATTR_JOB_ID 			= "JobID";
     static public final String WS_ATTR_CODE 			= "Code";
     static public final String WS_ATTR_MSG 				= "Msg";
+    static public final String WS_ATTR_CAM_UID 			= "CamUID";
+    static public final String WS_ATTR_TS 				= "Timestamp";
 
     static public final String WS_ATTR_INTERNAL_DATA 	= "Data";
     static public final String WS_ATTR_CONN_ID 			= "connection_id";

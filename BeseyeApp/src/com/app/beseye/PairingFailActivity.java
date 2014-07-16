@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PairingFailActivity extends PairingBaseActivity {
+public class PairingFailActivity extends BeseyeAccountBaseActivity {
 	private Button mBtnTryAgain;
 	private TextView mTxtSetupGuide;
 	

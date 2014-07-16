@@ -15,6 +15,8 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_SPK_VOLUME 		= "cam/%s/speaker/volume";
 	static private final String URL_CAM_MIC_STATUS 		= "cam/%s/mic/onoff";
 	static private final String URL_CAM_MIC_GAIN 		= "cam/%s/mic/gain";
+	static private final String URL_CAM_VIDEO_RES		= "cam/%s/videores";
+	
 	
 	static private final String URL_CAM_IRCUT_STATUS 	= "cam/%s/ir/setup";
 	static private final String URL_CAM_IMG_SETTING 	= "cam/%s/image/setting";
@@ -227,6 +229,40 @@ public class BeseyeCamBEHttpTask  {
 			try {
 				obj.put(MIC_GAIN, Integer.parseInt(strParams[1]));
 				return super.doInBackground(HOST_ADDR+String.format(URL_CAM_MIC_GAIN, strParams[0]), obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+	
+	
+	
+	public static class GetVideoResTask extends BeseyeHttpTask{
+		public GetVideoResTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_VIDEO_RES, strParams[0]));
+		}
+	}
+	
+	public static class SetVideoResTask extends BeseyeHttpTask{
+		public SetVideoResTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPut.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(VIDEO_RES, Integer.parseInt(strParams[1]));
+				return super.doInBackground(HOST_ADDR+String.format(URL_CAM_VIDEO_RES, strParams[0]), obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {

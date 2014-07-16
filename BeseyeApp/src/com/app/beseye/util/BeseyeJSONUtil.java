@@ -66,6 +66,7 @@ public class BeseyeJSONUtil {
 	public static final String MIC_STATUS 				= "MicStatus";
 	public static final String MIC_GAIN 				= "MicGain";
 	public static final String IRCUT_STATUS 			= "IRStatus";
+	public static final String VIDEO_RES 				= "VideoResolution";
 	
 	public static final String IMG_FLIP 				= "Flip";
 	public static final String IMG_MIRROR 				= "Mirror";
@@ -82,9 +83,18 @@ public class BeseyeJSONUtil {
 	
 	public static final String WIFI_SSIDLST 			= "SSIDList";
 	public static final String WIFI_SSIDLST_ID 			= "ssid";
+	public static final String WIFI_SSIDLST_BSSID 		= "bssid";
 	public static final String WIFI_SSIDLST_SGL 		= "signal";
 	public static final String WIFI_SSIDLST_SEC 		= "sec";
 	public static final String WIFI_SSIDLST_USED 		= "CurrentUsed";
+	
+	public static final String CAM_SN 					= "SerialNumber";
+	public static final String CAM_MAC_ADDR 			= "MACAddr";
+	public static final String CAM_SOFTWARE 			= "Firmware";
+	
+	public static final String SCHED_FROM 				= "from";
+	public static final String SCHED_TO 				= "to";
+	public static final String SCHED_DAYS 				= "days";
 	
 	//WS BE service
 	public static final String CAM_UUID 				= "camUuid";

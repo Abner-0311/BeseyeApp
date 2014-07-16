@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.app.beseye.R;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.receiver.NetworkChangeReceiver;
@@ -736,6 +740,30 @@ public class NetworkMgr {
 		}
 	}
 	
+	public void filterWifiAPInfo(List<WifiAPInfo> dest, JSONArray src){
+		if(null != dest){
+			dest.clear();
+			String strAciveBSSID = NetworkMgr.getInstance().getActiveWifiBSSID();
+			Log.i(TAG, "filterWifiAPInfo(), strAciveBSSID = "+strAciveBSSID);
+			if(null != src){
+				int iCount = src.length();
+				for(int idx = 0;idx< iCount;idx++){
+					JSONObject ret;
+					try {
+						ret = src.getJSONObject(idx);
+						if(null != ret){
+							WifiAPInfo info = transformFromScanResult(ret, strAciveBSSID);
+							dest.add(info);
+						}
+					} catch (JSONException e) {
+						Log.i(TAG, "filterWifiAPInfo(), e = "+e.toString());
+						
+					}
+				}
+			}
+		}
+	}
+	
 	public WifiAPInfo getWifiAPInfoBySSID(String SSID){
 		WifiAPInfo retInfo = null;
 		List<ScanResult> src = getWifiScanList();
@@ -790,6 +818,31 @@ public class NetworkMgr {
 						strCipher = WifiAPInfo.AUTHNICATION_WPA+" "+WifiAPInfo.AUTHNICATION_SUB_PSK;
 					}
 				}
+			}
+			retInfo.cipher = strCipher;
+			//Log.i(TAG, "transformFromScanResult(), ret.SSID=<"+ret.SSID+">, ret.BSSID=<"+ret.BSSID+">, ret.capabilities=<"+ret.capabilities+">, strCipher=<"+strCipher+">");
+		}
+		return retInfo;
+	}
+	
+	private WifiAPInfo transformFromScanResult(JSONObject ret, String activeSSID){
+		WifiAPInfo retInfo = null;
+		if(null != ret){
+			retInfo = new WifiAPInfo();
+			retInfo.SSID = BeseyeJSONUtil.getJSONString(ret, BeseyeJSONUtil.WIFI_SSIDLST_ID);
+			retInfo.BSSID = BeseyeJSONUtil.getJSONString(ret, BeseyeJSONUtil.WIFI_SSIDLST_BSSID);
+			retInfo.bActiveConn = retInfo.BSSID.equals(activeSSID);
+			//retInfo.frequency = ret.frequency;
+			retInfo.signalLevel = WifiManager.calculateSignalLevel(BeseyeJSONUtil.getJSONInt(ret, BeseyeJSONUtil.WIFI_SSIDLST_SGL), WifiAPInfo.MAX_SIGNAL_LEVEL);
+			
+			String strCipher = WifiAPInfo.AUTHNICATION_NONE;
+			int iSecType = BeseyeJSONUtil.getJSONInt(ret, BeseyeJSONUtil.WIFI_SSIDLST_SEC);
+			if(1 == iSecType){
+				strCipher = WifiAPInfo.AUTHNICATION_WEP;
+			}else if(2 == iSecType){
+				strCipher = WifiAPInfo.AUTHNICATION_WPA;
+			}else if(3 == iSecType){
+				strCipher = WifiAPInfo.AUTHNICATION_WPA2;
 			}
 			retInfo.cipher = strCipher;
 			//Log.i(TAG, "transformFromScanResult(), ret.SSID=<"+ret.SSID+">, ret.BSSID=<"+ret.BSSID+">, ret.capabilities=<"+ret.capabilities+">, strCipher=<"+strCipher+">");

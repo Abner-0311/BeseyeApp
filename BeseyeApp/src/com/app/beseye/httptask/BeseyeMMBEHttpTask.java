@@ -29,6 +29,8 @@ public class BeseyeMMBEHttpTask  {
 	static private final String MM_HOST 				= "http://54.178.141.19/";
 	static private final String MM_HOST_PRODCTION 	    = "http://54.178.141.19/";
 	static private final String MM_HOST_EVENT 	    	= "http://ec2-54-178-141-19.ap-northeast-1.compute.amazonaws.com/";
+
+	//static private final String MM_HOST_EVENT 	    	= "http://beseye-mm00-forext-stage.no-ip.org/";
 	
 	static private final String URL_LIVE_STREAM_INFO 	= "live-stream/downstream_info/%s?narrowBW=%s";
 	static private final String URL_DVR_STREAM_INFO 	= "dvr/dvr_playlist/%s?startTime=%s&duration=%s&transc=aac";

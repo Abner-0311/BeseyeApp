@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class PairingRemindActivity extends PairingBaseActivity {
+public class PairingRemindActivity extends BeseyeAccountBaseActivity {
 	private Button mBtnStart;
 	
 	@Override

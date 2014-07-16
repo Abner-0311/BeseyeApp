@@ -38,7 +38,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SignupActivity extends PairingBaseActivity {
+public class SignupActivity extends BeseyeAccountBaseActivity {
 	private EditText mEtUserName, mEtPassword;
 	private TextView mTvTermOfService, mTvPrivacyPolicy;
 	private Button mBtnSignUp;

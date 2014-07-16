@@ -6,6 +6,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.BeseyeApplication.BeseyeAppStateChangeListener;
@@ -15,6 +16,7 @@ import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.service.BeseyeNotificationService;
+import com.app.beseye.util.BeseyeUtils;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -78,6 +80,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		//if(! mbIgnoreSessionCheck && checkSession())
 	    if( mbIgnoreSessionCheck || checkSession())
 			invokeSessionComplete();
+	    
+	    checkOnResumeRunnable();
 		mActivityResume = true;
 	}
 	
@@ -140,7 +144,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	protected void onSessionComplete(){
-		 
+		checkOnResumeRunnable();
 	}
 	
 	private void checkForCrashes() {
@@ -160,18 +164,22 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_LOADING = 1; 
 	static public final int DIALOG_ID_WARNING = 2; 
 	
-	static public final int DIALOG_ID_WIFI_BASE = 0x1000; 
-	static public final int DIALOG_ID_TURN_ON_WIFI = DIALOG_ID_WIFI_BASE+1; 
-	static public final int DIALOG_ID_WIFI_SCANNING = DIALOG_ID_WIFI_BASE+2; 
-	static public final int DIALOG_ID_WIFI_SETTING = DIALOG_ID_WIFI_BASE+3; 
-	static public final int DIALOG_ID_WIFI_TURN_ON_FAILED = DIALOG_ID_WIFI_BASE+4; 
-	static public final int DIALOG_ID_WIFI_SCAN_FAILED = DIALOG_ID_WIFI_BASE+5; 
-	static public final int DIALOG_ID_WIFI_AP_INFO = DIALOG_ID_WIFI_BASE+6; 
-	static public final int DIALOG_ID_WIFI_AP_INCORRECT_PW = DIALOG_ID_WIFI_BASE+7; 
-	static public final int DIALOG_ID_WIFI_AP_KEYINDEX= DIALOG_ID_WIFI_BASE+8; 
-	static public final int DIALOG_ID_CAM_INFO= DIALOG_ID_WIFI_BASE+9; 
-	static public final int DIALOG_ID_CAM_DETTACH_CONFIRM= DIALOG_ID_WIFI_BASE+10; 
-	static public final int DIALOG_ID_CAM_REBOOT_CONFIRM= DIALOG_ID_WIFI_BASE+11; 
+	static public final int DIALOG_ID_WIFI_BASE 			= 0x1000; 
+	static public final int DIALOG_ID_TURN_ON_WIFI 			= DIALOG_ID_WIFI_BASE+1; 
+	static public final int DIALOG_ID_WIFI_SCANNING 		= DIALOG_ID_WIFI_BASE+2; 
+	static public final int DIALOG_ID_WIFI_SETTING 			= DIALOG_ID_WIFI_BASE+3; 
+	static public final int DIALOG_ID_WIFI_TURN_ON_FAILED 	= DIALOG_ID_WIFI_BASE+4; 
+	static public final int DIALOG_ID_WIFI_SCAN_FAILED 		= DIALOG_ID_WIFI_BASE+5; 
+	static public final int DIALOG_ID_WIFI_AP_INFO 			= DIALOG_ID_WIFI_BASE+6; 
+	static public final int DIALOG_ID_WIFI_AP_INCORRECT_PW 	= DIALOG_ID_WIFI_BASE+7; 
+	static public final int DIALOG_ID_WIFI_AP_KEYINDEX		= DIALOG_ID_WIFI_BASE+8; 
+	static public final int DIALOG_ID_CAM_INFO				= DIALOG_ID_WIFI_BASE+9; 
+	static public final int DIALOG_ID_CAM_DETTACH_CONFIRM	= DIALOG_ID_WIFI_BASE+10; 
+	static public final int DIALOG_ID_CAM_REBOOT_CONFIRM	= DIALOG_ID_WIFI_BASE+11; 
+	static public final int DIALOG_ID_CAM_TALK_INIT			= DIALOG_ID_WIFI_BASE+12; 
+	static public final int DIALOG_ID_CAM_NIGHT_VISION		= DIALOG_ID_WIFI_BASE+13; 
+	static public final int DIALOG_ID_CAM_SCHED_DELETE		= DIALOG_ID_WIFI_BASE+14; 
+	static public final int DIALOG_ID_CAM_SCHED_ABORT		= DIALOG_ID_WIFI_BASE+15; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {
@@ -195,6 +203,14 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				dialog = builder.create();
 				if(null != dialog){
 					dialog.setCanceledOnTouchOutside(true);
+					if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
+						((android.app.AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
+						    public void onClick(DialogInterface dialog, int item) {
+						    	removeMyDialog(DIALOG_ID_WARNING);
+						    	finish();
+						    }
+						});
+					}
 				}
 				break;
 			}
@@ -328,9 +344,16 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 
 	@Override
-	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onClick(View view) {
+		switch(view.getId()){
+			case R.id.iv_nav_left_btn:{
+				finish();
+				break;
+			}
+			default:{
+				Log.w(TAG, "BeseyeBaseActivity::onClick(), unhandled event by view:"+view);
+			}
+		}
 	}
 	
 	/*
@@ -602,12 +625,21 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-//                case BeseyeNotificationService.MSG_SET_NOTIFY_NUM:{
-//                	BeseyeBaseActivity act = mActivity.get();
-//                	if(null != act)
-//                		act.onUnReadNotificationCallback(msg.arg1);
-//                    break;
-//                }
+            	  
+                case BeseyeNotificationService.MSG_CAM_SEETING_UPDATED:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCamSettingChangedCallback(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                    break;
+                }
 //                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{
 //                	BeseyeBaseActivity act = mActivity.get();
 //                	if(null != act)
@@ -728,6 +760,22 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
             //unbindService(mUploadConnection);
             mIsBound = false;
         }
+    }
+    
+    protected void onCamSettingChangedCallback(JSONObject DataObj){}
+    
+    private Runnable mOnResumeRunnable = null;
+    protected void setOnResumeRunnable(Runnable run){
+    	Log.i(TAG, "setOnResumeRunnable()");
+    	mOnResumeRunnable = run;
+    }
+    
+    private void checkOnResumeRunnable(){
+    	if(null != mOnResumeRunnable){
+    		Log.i(TAG, "checkOnResumeRunnable(), trigger...");
+    		BeseyeUtils.postRunnable(mOnResumeRunnable, 0);
+    		mOnResumeRunnable = null;
+    	}
     }
 
 	protected abstract int getLayoutId();

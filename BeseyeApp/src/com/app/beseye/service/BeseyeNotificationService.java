@@ -1,6 +1,15 @@
 package com.app.beseye.service;
 import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_COMM;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_COMM_CAM_SETTING_CHANGED;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_COMM_DETECTION_NOTIFY;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_COMM_KEEP_ALIVE;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_COMM_SYS_INFO;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_COMM_WS_RECONNECT;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_INTERNAL_DATA;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -81,6 +90,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private static final int NOTIFICATION_TYPE_INFO = NOTIFICATION_TYPE_BASE+1;
 	private static final int NOTIFICATION_TYPE_MSG  = NOTIFICATION_TYPE_INFO;//NOTIFICATION_TYPE_BASE+2;
 	
+	public static final String MSG_REF_JSON_OBJ 		= "MSG_REF_JSON_OBJ";
 	
 	/** Keeps track of all current registered clients. */
     ArrayList<Messenger> mClients = new ArrayList<Messenger>();
@@ -122,6 +132,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public static final int MSG_GSM_ERR 					= 23;
     public static final int MSG_CHECK_DIALOG 			    = 24;
     
+    public static final int MSG_CAM_SEETING_UPDATED 		= 25;
+    
     /**
      * Handler of incoming messages from clients.
      */
@@ -138,6 +150,23 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_UNREGISTER_CLIENT:
                     mClients.remove(msg.replyTo);
                     break;
+                case MSG_CAM_SEETING_UPDATED:{
+                	for (int i=mClients.size()-1; i>=0; i--) {
+                		try {
+                			Bundle b = new Bundle();
+                			b.putString(MSG_REF_JSON_OBJ, (String)msg.obj);
+                			Message msgToSend = Message.obtain(null, MSG_CAM_SEETING_UPDATED);
+                			msgToSend.setData(b);
+                			mClients.get(i).send(msgToSend);
+                		} catch (RemoteException e) {
+                			// The client is dead.  Remove it from the list;
+                			// we are going through the list from back to front
+                			// so this is safe to do inside the loop.
+                			mClients.remove(i);
+                		}
+                	}
+                	break;
+                }
 //                case MSG_CHECK_NOTIFY_NUM:{
 //                	if(!SessionMgr.getInstance().isUseridValid() || !SessionMgr.getInstance().getIsCertificated()){
 //                		//sendMessageDelayed(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0), 30*1000L);
@@ -465,7 +494,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         checkUserLoginState();
         
         BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
-        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, "Face Room");
+        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, sStrVcamName);
     }
     
     private void checkEventPeriod(){
@@ -498,16 +527,17 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     
     private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
     private JSONObject mCam_obj = new JSONObject();
-    private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
+    private String mStrVCamID = "a6edbe2f3fef4a5183f8a237c2556775";//"928d102eab1643eb9f001e0ede19c848";
+    private String sStrVcamName = "Meeting Room";
     
     private void checkUserLoginState(){
-    	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isNotifyWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
-    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated() && false == WebsocketsMgr.getInstance().isNotifyWSChannelAlive()){
+    	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
+    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated() && false == WebsocketsMgr.getInstance().isWSChannelAlive()){
     		if(NetworkMgr.getInstance().isNetworkConnected()){
-    			;//WebsocketsMgr.getInstance().constructNotifyWSChannel();
+    			WebsocketsMgr.getInstance().constructWSChannel();
     		}
     	}else{
-    		WebsocketsMgr.getInstance().destroyNotifyWSChannel();
+    		WebsocketsMgr.getInstance().destroyWSChannel();
     	}
     	
     	if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
@@ -1198,15 +1228,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 												FACE_LIST face = BeseyeJSONUtil.findFacebyId(iFaceId-1);
 												//BeseyeJSONUtil.FACE_LIST face = BeseyeJSONUtil.findFacebyId(faceList.getInt(faceList.length()-1)-1);
 												if(null != face){
-													strMsg = String.format("%s was recognized by %s at %s", face.mstrName, "Face Room", new Date(lNewEventStartTime).toLocaleString());
+													strMsg = String.format("%s was recognized by %s at %s", face.mstrName, sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 												}else{
-													strMsg = String.format("Stranger was identified by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
+													strMsg = String.format("Stranger was identified by %s at %s", sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 												}
 											}else{
-												strMsg = String.format("Stranger was identified by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
+												strMsg = String.format("Stranger was identified by %s at %s", sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 											}
 										}else{
-											strMsg = String.format("Motion activity was detected by %s at %s", "Face Room", new Date(lNewEventStartTime).toLocaleString());
+											strMsg = String.format("Motion activity was detected by %s at %s", sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 										}
 										
 										showNotification(NOTIFICATION_TYPE_INFO, intent, strMsg, obj);
@@ -1253,8 +1283,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 
 	@Override
 	public void onMessageReceived(String msg) {
-		// TODO Auto-generated method stub
-		
+		try {
+			JSONObject dataObj = new JSONObject(msg);
+			handleWSEvent(dataObj);
+		} catch (JSONException e) {
+			Log.e(TAG, "onMessageReceived(), failed to parse : "+msg);
+		}
 	}
 
 	@Override
@@ -1265,19 +1299,58 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					WebsocketsMgr.getInstance().constructNotifyWSChannel();
+					WebsocketsMgr.getInstance().constructWSChannel();
 				}}, (miWSDisconnectRetry++)*1000);
-    		
     	}
-	}
-	
-	@Override
-	public void onAudioAmplitudeUpdate(final float fRatio){
-		
 	}
 
 	@Override
 	public void onConnectivityChanged(boolean bNetworkConnected) {
 		checkUserLoginState();
 	}
+	
+	 private void handleWSEvent(JSONObject dataObj){
+    	if(null != dataObj){
+			int iCmd = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_COMM);
+			String strCamUID = null;
+			long lTs = -1;
+			JSONObject DataObj = BeseyeJSONUtil.getJSONObject(dataObj, WS_ATTR_INTERNAL_DATA);
+			if(null != DataObj){
+				strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
+				lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
+			}
+			
+			int iMsgType = -1;
+			switch(iCmd){
+				case WS_ATTR_COMM_CAM_SETTING_CHANGED:{
+					iMsgType = MSG_CAM_SEETING_UPDATED;
+					break;
+				}
+				case WS_ATTR_COMM_DETECTION_NOTIFY:{
+					break;
+				}
+				case WS_ATTR_COMM_SYS_INFO:{
+					break;
+				}
+				case WS_ATTR_COMM_KEEP_ALIVE:{
+					break;
+				}
+				case WS_ATTR_COMM_WS_RECONNECT:{
+					break;
+				}
+				default:{
+					Log.w(TAG, "handleWSEvent(), not handled evt, iCmd="+iCmd);	
+				}
+			}
+			
+			try {
+				if(null != mMessenger)
+					mMessenger.send(Message.obtain(null, iMsgType, DataObj.toString()));
+			} catch (RemoteException e) {
+				Log.e(TAG, "handleWSEvent(), RemoteException, e="+e.toString());	
+			}
+		}else{
+			Log.e(TAG, "handleWSEvent(), dataObj is null");	
+		}
+    }
 }

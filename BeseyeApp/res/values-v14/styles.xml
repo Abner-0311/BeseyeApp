@@ -5,7 +5,12 @@
         <item name="android:actionBarStyle">@style/ActionBarTheme</item>
     </style>
 	
-        <style name="AppTheme.WifiList">
+    <style name="AppTheme.WifiList">
         <item name="android:actionBarStyle">@style/ActionBarThemeWiFiList</item>
+	</style>
+	
+    <style name="AppTheme.TimeZoneList">
+        <item name="android:actionBarStyle">@style/ActionBarThemeTimeZoneList</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionBarThemeTimeZoneListOverFlow</item>
 	</style>
 </resources>

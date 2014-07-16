@@ -41,6 +41,7 @@ public class WebsocketsMgr {
 	protected boolean mBAuth = false;
 	protected boolean mBConstructingNotifyWSChannel = false;
 	protected WeakReference<OnWSChannelStateChangeListener> mOnWSChannelStateChangeListener = null;
+	protected long mlLastTimeToGetKeepAlive = -1;
 	
 	protected WebsocketsMgr(){
 		
@@ -52,7 +53,6 @@ public class WebsocketsMgr {
 		public void onChannelConnected();
 		public void onMessageReceived(String msg);
 		public void onChannelClosed();
-		public void onAudioAmplitudeUpdate(float fRatio);
 	}
 	
 	public void registerOnWSChannelStateChangeListener(OnWSChannelStateChangeListener listener){
@@ -69,16 +69,16 @@ public class WebsocketsMgr {
 		if(null == mFNotifyWSChannel){
 			Log.i(TAG, "printNotifyWSChannelState(), mFNotifyWSChannel is null");
 		}else{
-			Log.i(TAG, "printNotifyWSChannelState(), mFNotifyWSChannel:[ "+mFNotifyWSChannel.isCancelled() +", "+mFNotifyWSChannel.isDone()+"], mBConstructingNotifyWSChannel="+mBConstructingNotifyWSChannel);
+			Log.i(TAG, "printNotifyWSChannelState(), mFNotifyWSChannel:["+mFNotifyWSChannel.isCancelled() +", "+mFNotifyWSChannel.isDone()+"], mBConstructingNotifyWSChannel="+mBConstructingNotifyWSChannel);
 		}
 	}
 	
-	public boolean constructNotifyWSChannel(){
-		Log.i(TAG, "constructNotifyWSChannel(), ++");
+	public boolean constructWSChannel(){
+		Log.i(TAG, "constructWSChannel(), ++");
 		boolean bRet = false;
 		try {
 			//printNotifyWSChannelState();
-			if(isNotifyWSChannelAlive()){
+			if(isWSChannelAlive()){
 				bRet = false;
 			}else{
 				synchronized(this){
@@ -89,11 +89,11 @@ public class WebsocketsMgr {
 					listener.onChannelConnecting();
 				}
 				
-				//Log.i(TAG, "constructNotifyWSChannel()");
+				//Log.i(TAG, "constructWSChannel()");
 				mFNotifyWSChannel = AsyncHttpClient.getDefaultInstance().websocket(getWSPath(), getWSProtocol(), getWebSocketConnectCallback());
 				
 				WebSocket ws = mFNotifyWSChannel.get();
-				Log.i(TAG, "constructNotifyWSChannel(), ws is null =>"+(null == ws));
+				Log.i(TAG, "constructWSChannel(), ws is null =>"+(null == ws));
 				if(null == ws){
 					mFNotifyWSChannel = null;
 				}
@@ -112,7 +112,7 @@ public class WebsocketsMgr {
 		return bRet;
 	}
 	
-	public boolean isNotifyWSChannelAlive(){
+	public boolean isWSChannelAlive(){
 		//Log.i(TAG, "isNotifyWSChannelAlive(), ++");
 		boolean bRet = false;
 		//printNotifyWSChannelState();
@@ -124,12 +124,12 @@ public class WebsocketsMgr {
 			}
 		}
 	
-		Log.d(TAG, "isNotifyWSChannelAlive()--, bRet="+bRet);
+		//Log.i(TAG, "isWSChannelAlive()--, bRet="+bRet);
 		return bRet;
 	}
 	
-	public boolean destroyNotifyWSChannel(){
-		Log.i(TAG, "destroyNotifyWSChannel(), ++");
+	public boolean destroyWSChannel(){
+		Log.i(TAG, "destroyWSChannel(), ++");
 		boolean bRet = false;
 		printNotifyWSChannelState();
 		
@@ -144,7 +144,9 @@ public class WebsocketsMgr {
 					}else if(true == mFNotifyWSChannel.isDone() && null != (ws = (WebSocket) mFNotifyWSChannel.get())){
 						ws.close();
 						bRet = true;
-						Log.i(TAG, "destroyNotifyWSChannel(), call close");
+						Log.i(TAG, "destroyWSChannel(), call close");
+						
+						mFNotifyWSChannel = null;//workaround 0702
 					}
 				}
 			} catch (InterruptedException e) {
@@ -191,8 +193,8 @@ public class WebsocketsMgr {
                 			JSONArray arrNew = arrPkt.getJSONArray(0);
                 			String strCmd = arrNew.getString(0);
                 			String strBody = arrNew.getString(1);
-							Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
 							if(WS_CB_CLIENT_CONNECTION.equals(strCmd)){
+								Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_CONNECTED, wrapWSBaseMsg().toString()));
 								JSONObject authObj = BeseyeWebsocketsUtil.genAuthMsg();
 								if(null != authObj){
@@ -202,9 +204,12 @@ public class WebsocketsMgr {
 									Log.i(TAG, "onStringAvailable(), strAuthJobId="+mStrAuthJobId);
 								}
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_KEEP_ALIVE, wrapWSBaseMsg().toString()));
+								mlLastTimeToGetKeepAlive = System.currentTimeMillis();
 							}else if(WS_CB_KEEP_ALIVE.equals(strCmd)){
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_KEEP_ALIVE, wrapWSBaseMsg().toString()));
+								mlLastTimeToGetKeepAlive = System.currentTimeMillis();
 							}else if(WS_CB_ACK.equals(strCmd)){
+								Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
 								JSONObject dataObj = BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.newJSONObject(strBody),WS_ATTR_DATA);
 								if(null != dataObj){
 									String strJobID = BeseyeJSONUtil.getJSONString(dataObj, WS_ATTR_JOB_ID);
@@ -215,12 +220,19 @@ public class WebsocketsMgr {
 										mBAuth = true;
 									}
 								}
-							}else{
-								Log.w(TAG, "onStringAvailable(), not handle cmd="+strCmd);
+							}else if(WS_CB_EVT.equals(strCmd)){
+								Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
+								JSONObject dataObj = BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.newJSONObject(strBody),WS_ATTR_DATA),WS_ATTR_DATA);
 								OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 								if(null != listener){
-									listener.onMessageReceived(s);
+									listener.onMessageReceived(dataObj.toString());
 								}
+							}else{
+								Log.w(TAG, "onStringAvailable(), not handle cmd=["+strCmd+"], strBody"+strBody);
+//								OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
+//								if(null != listener){
+//									listener.onMessageReceived(s);
+//								}
 							}
 							
 						} catch (JSONException e) {
