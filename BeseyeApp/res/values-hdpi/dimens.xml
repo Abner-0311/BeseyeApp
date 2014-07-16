@@ -12,5 +12,7 @@
     
     <dimen name="login_marginMedium">24dp</dimen>
     
+    <dimen name="news_timeline_dot_left">20dp</dimen>
+    
 
 </resources>
