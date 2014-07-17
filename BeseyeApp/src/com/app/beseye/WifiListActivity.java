@@ -75,9 +75,6 @@ public class WifiListActivity extends WifiControlBaseActivity
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
-	private String mStrVCamID = "";
-	private JSONObject mCam_obj;
-	
 	static private final String KEY_MAYBE_WRONG_PW = "KEY_MAYBE_WRONG_PW";
 	
 	@Override

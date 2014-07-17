@@ -209,7 +209,7 @@ public class WebsocketsMgr {
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_KEEP_ALIVE, wrapWSBaseMsg().toString()));
 								mlLastTimeToGetKeepAlive = System.currentTimeMillis();
 							}else if(WS_CB_ACK.equals(strCmd)){
-								Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
+								//Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
 								JSONObject dataObj = BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.newJSONObject(strBody),WS_ATTR_DATA);
 								if(null != dataObj){
 									String strJobID = BeseyeJSONUtil.getJSONString(dataObj, WS_ATTR_JOB_ID);

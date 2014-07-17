@@ -1066,20 +1066,22 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     public void drawStreamBitmap(Bitmap bmp){
-    	Canvas canvas = getHolder().lockCanvas();
-    	if(null != canvas){
-    		try{
-				canvas.drawColor(miBackgroundColor/*, PorterDuff.Mode.CLEAR*/);
-		        //Log.d(TAG, "drawStreamBitmap(), redundantXSpace:"+redundantXSpace+", redundantYSpace:"+redundantYSpace+", scale:"+scale);
-		        //updateMatrix();
-				//printMatrixInfo();
-		        
-				if(null != bmp && false == bmp.isRecycled())
-					canvas.drawBitmap(bmp, matrix, null);
-				getHolder().unlockCanvasAndPost(canvas);
-    		}catch(java.lang.IllegalStateException e){
-    			Log.e(TAG, "drawStreamBitmap(), e"+e.toString());
-    		}
+    	if(isCameraStatusOn()){
+    		Canvas canvas = getHolder().lockCanvas();
+        	if(null != canvas){
+        		try{
+    				canvas.drawColor(miBackgroundColor/*, PorterDuff.Mode.CLEAR*/);
+    		        //Log.d(TAG, "drawStreamBitmap(), redundantXSpace:"+redundantXSpace+", redundantYSpace:"+redundantYSpace+", scale:"+scale);
+    		        //updateMatrix();
+    				//printMatrixInfo();
+    		        
+    				if(null != bmp && false == bmp.isRecycled())
+    					canvas.drawBitmap(bmp, matrix, null);
+    				getHolder().unlockCanvasAndPost(canvas);
+        		}catch(java.lang.IllegalStateException e){
+        			Log.e(TAG, "drawStreamBitmap(), e"+e.toString());
+        		}
+        	}
     	}
     }
     
@@ -1090,5 +1092,24 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     		getHolder().unlockCanvasAndPost(canvas);
     	}
     }
+    
+    static public interface CameraStatusCallback{
+    	public boolean isCameraStatusOn();
+    }
+    
+    private CameraStatusCallback mCameraStatusCallback;
+    
+    public void registerCameraStatusCallback(CameraStatusCallback cb){
+    	mCameraStatusCallback = cb;
+    } 
+    
+    public void unregisterCameraStatusCallback(){
+    	mCameraStatusCallback = null;
+    } 
+    
+    private boolean isCameraStatusOn(){
+    	return null != mCameraStatusCallback && mCameraStatusCallback.isCameraStatusOn();
+    }
+    
     //Abner Add End
 }

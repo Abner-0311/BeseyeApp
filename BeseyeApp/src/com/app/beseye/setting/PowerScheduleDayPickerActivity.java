@@ -33,8 +33,7 @@ public class PowerScheduleDayPickerActivity extends BeseyeBaseActivity{
 	
 	private ImageView mIvDayOfWeekCheck[], mIvDayOfWeekCheckBg[];
 	private TextView mTxtSchedDays[];
-	private String mStrVCamID = "Bes0001";
-	private JSONObject mCam_obj, mSched_obj;
+	private JSONObject mSched_obj;
 	
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
@@ -162,27 +161,6 @@ public class PowerScheduleDayPickerActivity extends BeseyeBaseActivity{
 		
 		return iRet;
 	}
-	
-	protected void onCamSettingChangedCallback(JSONObject DataObj){
-    	super.onCamSettingChangedCallback(DataObj);
-    	if(null != DataObj){
-			String strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
-			long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
-			if(mStrVCamID.equals(strCamUID)){
-				if(!mActivityDestroy){
-		    		if(!mActivityResume){
-		    			setOnResumeRunnable(new Runnable(){
-							@Override
-							public void run() {
-								monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(PowerScheduleDayPickerActivity.this), true, mStrVCamID);
-							}});
-		    		}else{
-		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
-		    		}
-		    	}
-			}
-		}
-    }
 	
 	private void setPickResult(){
 		JSONArray arrRet = new JSONArray();

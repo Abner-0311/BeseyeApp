@@ -16,9 +16,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.R;
+import com.app.beseye.TouchSurfaceView.CameraStatusCallback;
 import com.app.beseye.TouchSurfaceView.OnTouchSurfaceCallback;
 import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
@@ -36,6 +38,7 @@ import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioAmplitudeUpdateListen
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.app.beseye.widget.AmplitudeImageView;
 import com.app.beseye.widget.CameraViewControlAnimator;
+import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
 import android.util.Log;
 import android.view.InputDevice;
@@ -71,7 +74,8 @@ import android.os.PowerManager;
 public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSurfaceCallback,
 																	  OnNetworkChangeCallback,
 																	  OnWSChannelStateChangeListener,
-																	  OnAudioAmplitudeUpdateListener{
+																	  OnAudioAmplitudeUpdateListener,
+																	  CameraStatusCallback{
 	static public final String KEY_PAIRING_DONE 	= "KEY_PAIRING_DONE";
 	static public final String KEY_TIMELINE_INFO    = "KEY_TIMELINE_INFO";
 	static public final String KEY_DVR_STREAM_MODE  = "KEY_DVR_STREAM_MODE";
@@ -92,10 +96,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private ViewGroup mVgPowerState, mVgCamInvalidState, mVgPairingDone;
 	private Button mBtnPairingDoneOK; 
 	private ImageButton mIbOpenCam;
-	
-	private JSONObject mCam_obj;
-	private String mStrVCamID = null;
-	private String mStrVCamName = null;
 	private boolean mbVCamAdmin = true;
 	
 	private boolean mbIsLiveMode = true;//false means VOD
@@ -367,6 +367,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mStreamingView = (TouchSurfaceView)findViewById(R.id.surface_streaming_view);
 		if(null != mStreamingView){
 			mStreamingView.registerSingleTapCallback(this);
+			mStreamingView.registerCameraStatusCallback(this);
 		}
 		
 		mVgPowerState = (ViewGroup)findViewById(R.id.vg_cam_power_state);
@@ -656,8 +657,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	protected void onDestroy() {
 		Log.d(TAG, "CameraViewActivity::onDestroy()");
+		
 		AudioWebSocketsMgr.getInstance().unregisterOnAudioAmplitudeUpdateListener();
 		AudioWebSocketsMgr.getInstance().unregisterOnWSChannelStateChangeListener();
+		if(null != mStreamingView){
+			mStreamingView.unregisterCameraStatusCallback();
+		}
 		
 		super.onDestroy();
 		// Now wait for the SDL thread to quit
@@ -1015,6 +1020,24 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						Log.e(TAG, "onPostExecute(), mStrVCamID:"+mStrVCamID);
 					}
 				}
+			}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
+				if(0 == iRetCode){
+					BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+					Intent resultIntent = new Intent();
+					resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+					setResult(RESULT_OK, resultIntent);
+					mbIsCamSettingChanged = true;
+					checkPlayState();
+				}
+			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+				if(0 == iRetCode){
+					super.onPostExecute(task, result, iRetCode);
+					if(isCamPowerOff() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED)){
+						closeStreaming();
+					}
+					mbIsCamSettingChanged = true;
+					checkPlayState();
+				}
 			}else{
 				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
 				super.onPostExecute(task, result, iRetCode);
@@ -1037,10 +1060,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				BeseyeUtils.postRunnable(new Runnable(){
 					@Override
 					public void run() {
-						Bundle b = new Bundle();
-						b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_playing_error));
-						b.putBoolean(KEY_WARNING_CLOSE, true);
-						showMyDialog(DIALOG_ID_WARNING, b);
+						if(isCamPowerOn()){
+							Bundle b = new Bundle();
+							b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_playing_error));
+							b.putBoolean(KEY_WARNING_CLOSE, true);
+							showMyDialog(DIALOG_ID_WARNING, b);
+						}
+						
 					}}, 0);
 			}else{
 				return;
@@ -1053,6 +1079,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
 					b.putBoolean(KEY_WARNING_CLOSE, true);
 					showMyDialog(DIALOG_ID_WARNING, b);
+				}}, 0);
+		}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_update_cam_status));
+					showMyDialog(DIALOG_ID_WARNING, b);
+
 				}}, 0);
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
@@ -1173,12 +1208,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				break;
 			}
 			case R.id.ib_open_cam:{
-				BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
-				Intent resultIntent = new Intent();
-				resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-				setResult(RESULT_OK, resultIntent);
-				mbIsCamSettingChanged = true;
-				checkPlayState();
+				monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true, mStrVCamID, "1");
 				break;
 			}
 			default:
@@ -1246,7 +1276,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private int miStreamIdx = -1;
 	private Thread mPlayStreamThread = null;
 	private void beginLiveView(){
-    	if(null == mStreamingView){
+    	if(null == mStreamingView || !isCamPowerOn()){
     		Log.w(TAG, "beginLiveView(), mStreamingView is null");
     		return;
     	}
@@ -1564,7 +1594,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		setVisibility(mPbLoadingCursor, View.GONE);
     	}
     	
-    	if(null != mStreamingView)
+    	if(null != mStreamingView && isCamPowerOn())
     		mStreamingView.drawStreamBitmap();
     	
     	if(mbIsLiveMode){
@@ -2070,5 +2100,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					mCameraViewControlAnimator.setAmplitudeRatio(fRatio);
 				}
 			}}, 0);
+	}
+
+	@Override
+	public boolean isCameraStatusOn() {
+		return isCamPowerOn();
 	}
 }

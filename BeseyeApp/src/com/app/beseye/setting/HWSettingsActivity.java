@@ -54,8 +54,6 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	private ImageView mIvViewUpDownCheck, mIvViewUpDownCheckBg, mIvMicNoVol, mIvMicMaxVol;
 	private ViewGroup mVgWifiSetting, mVgTimezone, mVgNightVision;
 	private SeekBar mSbMicSensitivity;
-	private String mStrVCamID = "";
-	private JSONObject mCam_obj;
 	
 	private int miIRCutStatus = 0;//0:auto, 1:on, 2:off
 	
@@ -379,10 +377,9 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-					JSONObject obj = result.get(0);
-					if(null != obj){
-						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
+					super.onPostExecute(task, result, iRetCode);
+					if(null != mCam_obj){
+						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
 						if(null != dataObj){
 							int iLEDStatus = getJSONInt(dataObj, LED_STATUS, 0);
 							if(null != mStatusLightSwitchBtn){
@@ -460,12 +457,6 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}else if(task instanceof BeseyeCamBEHttpTask.GetImageSettingTask){
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());
-			}else if(task instanceof BeseyeCamBEHttpTask.ReconnectMMTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-			}else if(task instanceof BeseyeCamBEHttpTask.GetWiFiConfigTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
 			}else if(task instanceof BeseyeCamBEHttpTask.SetWiFiConfigTask){
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());
@@ -474,25 +465,4 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 		}
 	}
-	
-	protected void onCamSettingChangedCallback(JSONObject DataObj){
-    	super.onCamSettingChangedCallback(DataObj);
-    	if(null != DataObj){
-			String strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
-			long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
-			if(mStrVCamID.equals(strCamUID)){
-				if(!mActivityDestroy){
-		    		if(!mActivityResume){
-		    			setOnResumeRunnable(new Runnable(){
-							@Override
-							public void run() {
-								monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(HWSettingsActivity.this), true, mStrVCamID);
-							}});
-		    		}else{
-		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
-		    		}
-		    	}
-			}
-		}
-    }
 }

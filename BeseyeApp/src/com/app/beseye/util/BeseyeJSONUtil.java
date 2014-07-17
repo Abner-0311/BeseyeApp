@@ -600,11 +600,37 @@ public class BeseyeJSONUtil {
 		return bRet;
 	}
 	
+	static public boolean setJSONLong(JSONObject obj, String strKey, long lVal){
+		boolean bRet = false;
+		try {
+			if(null != obj && null != strKey){
+				obj.put(strKey, lVal);
+				bRet = true;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return bRet;
+	}
+	
 	static public boolean setJSONString(JSONObject obj, String strKey, String strVal){
 		boolean bRet = false;
 		try {
 			if(null != obj &&  null != strKey && null != strVal){
 				obj.put(strKey, strVal);
+				bRet = true;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return bRet;
+	}
+	
+	static public boolean setJSONObject(JSONObject obj, String strKey, JSONObject objVal){
+		boolean bRet = false;
+		try {
+			if(null != obj &&  null != strKey && null != objVal){
+				obj.put(strKey, objVal);
 				bRet = true;
 			}
 		} catch (JSONException e) {

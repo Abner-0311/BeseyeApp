@@ -5,6 +5,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
+
 import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 public class BeseyeCamBEHttpTask  {
@@ -36,12 +39,29 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_SW_UPDATE 		= "cam/%s/software/update";
 	
 	public static class GetCamSetupTask extends BeseyeHttpTask{
+		private String strVcamId = null;
+		private int iTaskSeed = 0;
+		
 		public GetCamSetupTask(OnHttpTaskCallback cb) {
+			this(cb,-1);
+		}
+		
+		public GetCamSetupTask(OnHttpTaskCallback cb, int seed) {
 			super(cb);
+			iTaskSeed = seed;
+		}
+		
+		public String getVcamId(){
+			return strVcamId;
+		}
+		
+		public int getTaskSeed(){
+			return iTaskSeed;
 		}
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			strVcamId = strParams[0];
 			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_SETUP, strParams[0]));
 		}
 	}
@@ -58,15 +78,21 @@ public class BeseyeCamBEHttpTask  {
 	}
 	
 	public static class SetCamStatusTask extends BeseyeHttpTask{
+		private String strVcamId = null;
 		public SetCamStatusTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPut.METHOD_NAME);
+		}
+		
+		public String getVcamId(){
+			return strVcamId;
 		}
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {
+				strVcamId = strParams[0];
 				obj.put(CAM_STATUS, Integer.parseInt(strParams[1]));
 				return super.doInBackground(HOST_ADDR+String.format(URL_CAM_STATUS, strParams[0]), obj.toString());
 			} catch (NumberFormatException e) {

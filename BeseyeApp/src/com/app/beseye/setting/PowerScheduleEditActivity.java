@@ -69,8 +69,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	private ViewGroup mVgPickDays, mVgFromTime, mVgToTime;
 	private Button mBtnRemove;
 	private TextView mTxtTimeFrom, mTxtTimeTo, mTxtSchedDays;
-	private String mStrVCamID = "Bes0001";
-	private JSONObject mCam_obj, mSched_obj, mSched_obj_edit;
+	private JSONObject mSched_obj, mSched_obj_edit;
 	private boolean mbEditMode = false;
 	
 	private View mVwNavBar;
@@ -443,25 +442,4 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 		}
 		return dialog;
 	}
-	
-	protected void onCamSettingChangedCallback(JSONObject DataObj){
-    	super.onCamSettingChangedCallback(DataObj);
-    	if(null != DataObj){
-			String strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
-			long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
-			if(mStrVCamID.equals(strCamUID)){
-				if(!mActivityDestroy){
-		    		if(!mActivityResume){
-		    			setOnResumeRunnable(new Runnable(){
-							@Override
-							public void run() {
-								monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(PowerScheduleEditActivity.this), true, mStrVCamID);
-							}});
-		    		}else{
-		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
-		    		}
-		    	}
-			}
-		}
-    }
 }

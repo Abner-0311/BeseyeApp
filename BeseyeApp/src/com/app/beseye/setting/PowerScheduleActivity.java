@@ -62,9 +62,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	private BeseyeSwitchBtn mScheduleSwitchBtn;
 	private ViewGroup mVgAddPowerSchedule, mVgPowerScheduleContainer;
 	private List<ViewGroup> mArrVgSchedules;
-	private String mStrVCamID = "Bes0001";
-	private JSONObject mCam_obj;
-	
+
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
@@ -258,27 +256,6 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 			}
 		}
 	}
-	
-	protected void onCamSettingChangedCallback(JSONObject DataObj){
-    	super.onCamSettingChangedCallback(DataObj);
-    	if(null != DataObj){
-			String strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
-			long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
-			if(mStrVCamID.equals(strCamUID)){
-				if(!mActivityDestroy){
-		    		if(!mActivityResume){
-		    			setOnResumeRunnable(new Runnable(){
-							@Override
-							public void run() {
-								monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(PowerScheduleActivity.this), true, mStrVCamID);
-							}});
-		    		}else{
-		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
-		    		}
-		    	}
-			}
-		}
-    }
 	
 	static public final int REQUEST_SCHEDULE_CHANGED = 101;
 	static public final int REQUEST_SCHEDULE_ADD 	 = 102;

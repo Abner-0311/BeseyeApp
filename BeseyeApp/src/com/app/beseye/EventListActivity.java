@@ -49,9 +49,8 @@ public class EventListActivity extends BeseyeBaseActivity{
 	private View mVwNavBar;
 	private ImageView mIvCancel, mIvFilter, mIvCalendar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
-	private JSONObject mCam_obj;
-	private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
-	private String mStrVCamName;
+
+	//private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
