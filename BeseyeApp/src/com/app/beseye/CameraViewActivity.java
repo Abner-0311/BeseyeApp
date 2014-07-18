@@ -183,7 +183,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			break;
 			    		}
 			    		case CV_STREAM_CONNECTED:{
-			    			BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+			    			//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
 			    			//setVisibility(mPbLoadingCursor, View.GONE);
 			    			cancelCheckVideoConn();
 			    			if(null != mCameraViewControlAnimator){
@@ -438,7 +438,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					if(null != mCam_obj){
 						mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
 						mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
-						BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+						//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
 					}
 				} catch (JSONException e1) {
 					Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
@@ -495,7 +495,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 								mBtnPairingDoneOK.setOnClickListener(this);
 							}
 							//worksround
-							BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+							//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
 							setVisibility(mPbLoadingCursor, View.VISIBLE);
 						}
 					}	
@@ -572,9 +572,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(null != mVgCamInvalidState){
 			mVgCamInvalidState.setVisibility(View.GONE);
 			if(isCamPowerDisconnected()){
-				BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+				//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
 				mbIsCamSettingChanged = true;
-				Log.d(TAG, "CameraViewActivity::onPostResume(), make mbIsCamSettingChanged: true.............");
+				Log.d(TAG, "CameraViewActivity::triggerPlay(), make mbIsCamSettingChanged: true.............");
 			}
 		}
 		
@@ -789,7 +789,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			public void run() {
 				if(null != mVgCamInvalidState){
 					mVgCamInvalidState.setVisibility(View.VISIBLE);
-					BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_DISCONNECTED.getValue());
+					//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_DISCONNECTED.getValue());
 				}
 			}});
 	}
@@ -871,17 +871,17 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	private boolean isCamPowerOn(){
-		return (BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1) == CAM_CONN_STATUS.CAM_ON.getValue());
+		return !mbIsLiveMode || (BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1) == CAM_CONN_STATUS.CAM_ON.getValue());
 		//return (CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID) == CAM_CONN_STATUS.CAM_ON) ;
 	}
 	
 	private boolean isCamPowerOff(){
-		return (BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1) == CAM_CONN_STATUS.CAM_OFF.getValue());
+		return mbIsLiveMode && (BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1) == CAM_CONN_STATUS.CAM_OFF.getValue());
 		//return (CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID) == CAM_CONN_STATUS.CAM_OFF) ;
 	}
 	
 	private boolean isCamPowerDisconnected(){
-		return (BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1) == CAM_CONN_STATUS.CAM_DISCONNECTED.getValue());
+		return mbIsLiveMode && (BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1) == CAM_CONN_STATUS.CAM_DISCONNECTED.getValue());
 		//return (CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID) == CAM_CONN_STATUS.CAM_DISCONNECTED) ;
 	}
 	
@@ -1277,7 +1277,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private Thread mPlayStreamThread = null;
 	private void beginLiveView(){
     	if(null == mStreamingView || !isCamPowerOn()){
-    		Log.w(TAG, "beginLiveView(), mStreamingView is null");
+    		Log.w(TAG, "beginLiveView(), mStreamingView is null or isCamPowerOn() is "+isCamPowerOn());
     		return;
     	}
     	
@@ -1341,7 +1341,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	   									e.printStackTrace();
 	   								}
 	   	         				}
-	   	         				Log.i(TAG, "open stream for idx"+miStreamIdx);
+	   	         				Log.i(TAG, "open stream for idx:"+miStreamIdx);
 	   	         				iRetCreateStreaming = openStreaming(miStreamIdx, getNativeSurface(), streamFullPath, 0);
 	   	         			}while(iRetCreateStreaming < 0 && iTrial < 8);
 	   	         			

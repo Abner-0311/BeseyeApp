@@ -66,7 +66,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	public static final String KEY_SCHED_EDIT_MODE = "KEY_SCHED_EDIT_MODE";
 	
 	private ImageView mIvTurnoffAllDayCheck, mIvTurnoffAllDayCheckBg;
-	private ViewGroup mVgPickDays, mVgFromTime, mVgToTime;
+	private ViewGroup mVgPickDays, mVgFromTime, mVgToTime, mVgTurnOffAllDay;
 	private Button mBtnRemove;
 	private TextView mTxtTimeFrom, mTxtTimeTo, mTxtSchedDays;
 	private JSONObject mSched_obj, mSched_obj_edit;
@@ -166,15 +166,21 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 				mTxtTimeTo.setText(BeseyeUtils.getTimeBySeconds(iToTime));
 		}
 		
+		mVgTurnOffAllDay = (ViewGroup)findViewById(R.id.vg_turnoff_all_day);
+		if(null != mVgTurnOffAllDay){
+			mVgTurnOffAllDay.setOnClickListener(this);
+		}
+		
+		
 		mIvTurnoffAllDayCheck = (ImageView)findViewById(R.id.iv_turnoff_all_day_check);
 		if(null != mIvTurnoffAllDayCheck){
 			mIvTurnoffAllDayCheck.setVisibility(View.INVISIBLE);
 		}
 		
 		mIvTurnoffAllDayCheckBg = (ImageView)findViewById(R.id.iv_turnoff_all_day_check_bg);
-		if(null != mIvTurnoffAllDayCheckBg){
-			mIvTurnoffAllDayCheckBg.setOnClickListener(this);
-		}
+//		if(null != mIvTurnoffAllDayCheckBg){
+//			mIvTurnoffAllDayCheckBg.setOnClickListener(this);
+//		}
 		
 		if(bAllDay)
 			toggleTurnoffAllday();
@@ -226,7 +232,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 				launchActivityForResultByClassName(PowerScheduleDayPickerActivity.class.getName(),b, REQUEST_DAY_PICK_CHANGED);
 				break;
 			}
-			case R.id.iv_turnoff_all_day_check_bg:{
+			case R.id.vg_turnoff_all_day:{
 				toggleTurnoffAllday();
 				break;
 			}

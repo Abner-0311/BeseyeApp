@@ -75,7 +75,14 @@
             android:name=".CameraListActivity"
             android:label="@string/app_name" 
             android:configChanges="locale|orientation" 
-            android:screenOrientation="portrait" android:launchMode="singleTop">
+            android:screenOrientation="portrait">
+        </activity>
+        
+        <activity
+            android:name=".BeseyeNewsActivity"
+            android:label="@string/app_name" 
+            android:configChanges="locale|orientation" 
+            android:screenOrientation="portrait">
         </activity>
         
         <activity

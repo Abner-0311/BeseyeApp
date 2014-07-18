@@ -187,4 +187,8 @@
     <dimen name="check_mail_division_bottom">4dp</dimen>
     <dimen name="check_mail_note_bottom">32dp</dimen>
     
+    <dimen name="cam_list_item_main_font_size">18sp</dimen>
+    <dimen name="cam_list_item_horizontal_padding">10dp</dimen>
+    <dimen name="cam_list_item_margin_right">60dp</dimen>
+    
 </resources>

@@ -31,6 +31,7 @@ import android.widget.TextView;
 public class PowerScheduleDayPickerActivity extends BeseyeBaseActivity{
 	static private final int DAY_OF_WEEK = 7;
 	
+	private ViewGroup mVgDayOfWeek[];
 	private ImageView mIvDayOfWeekCheck[], mIvDayOfWeekCheckBg[];
 	private TextView mTxtSchedDays[];
 	private JSONObject mSched_obj;
@@ -75,27 +76,29 @@ public class PowerScheduleDayPickerActivity extends BeseyeBaseActivity{
 			Log.e(TAG, "PowerScheduleDayPickerActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 		}
 		
+		mVgDayOfWeek = new ViewGroup[DAY_OF_WEEK];
 		mIvDayOfWeekCheck = new ImageView[DAY_OF_WEEK];
 		mIvDayOfWeekCheckBg = new ImageView[DAY_OF_WEEK];
 		mTxtSchedDays = new TextView[DAY_OF_WEEK];
 		
 		int iVgIds[] = {R.id.vg_sunday, R.id.vg_monday, R.id.vg_tuesday, R.id.vg_wednesday, R.id.vg_thursday, R.id.vg_friday, R.id.vg_saturday};
 		for(int idx = 0; idx < DAY_OF_WEEK;idx++){
-			ViewGroup vgDay = (ViewGroup)findViewById(iVgIds[idx]);
-			if(null != vgDay){
-				mIvDayOfWeekCheck[idx] = (ImageView)vgDay.findViewById(R.id.iv_day_check);
+			mVgDayOfWeek[idx] = (ViewGroup)findViewById(iVgIds[idx]);
+			if(null != mVgDayOfWeek[idx]){
+				mIvDayOfWeekCheck[idx] = (ImageView)mVgDayOfWeek[idx].findViewById(R.id.iv_day_check);
 				BeseyeUtils.setVisibility(mIvDayOfWeekCheck[idx], View.INVISIBLE);
 				
-				mIvDayOfWeekCheckBg[idx] = (ImageView)vgDay.findViewById(R.id.iv_day_check_bg);
+				mIvDayOfWeekCheckBg[idx] = (ImageView)mVgDayOfWeek[idx].findViewById(R.id.iv_day_check_bg);
 				if(null != mIvDayOfWeekCheckBg[idx]){
 					mIvDayOfWeekCheckBg[idx].setTag(idx);
-					mIvDayOfWeekCheckBg[idx].setOnClickListener(this);
+					//mIvDayOfWeekCheckBg[idx].setOnClickListener(this);
 				}
 				
-				mTxtSchedDays[idx] = (TextView)vgDay.findViewById(R.id.txt_day_title);
+				mTxtSchedDays[idx] = (TextView)mVgDayOfWeek[idx].findViewById(R.id.txt_day_title);
 				if(null != mTxtSchedDays[idx]){
 					mTxtSchedDays[idx].setText(BeseyeUtils.getSchdelDay(idx));
 				}
+				mVgDayOfWeek[idx].setOnClickListener(this);
 			}
 		}
 		
@@ -153,7 +156,7 @@ public class PowerScheduleDayPickerActivity extends BeseyeBaseActivity{
 	private int findIdxByView(View view){
 		int iRet = -1;
 		for(int idx = 0; idx < DAY_OF_WEEK;idx++){
-			if(view == mIvDayOfWeekCheckBg[idx]){
+			if(view == mVgDayOfWeek[idx]){
 				iRet = idx;
 				break;
 			}
