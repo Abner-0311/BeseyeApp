@@ -1066,7 +1066,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     public void drawStreamBitmap(Bitmap bmp){
-    	if(isCameraStatusOn()){
+    	if(isCameraStatusOn() && TouchSurfaceView.mIsSurfaceReady){
     		Canvas canvas = getHolder().lockCanvas();
         	if(null != canvas){
         		try{
@@ -1077,7 +1077,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     		        
     				if(null != bmp && false == bmp.isRecycled())
     					canvas.drawBitmap(bmp, matrix, null);
-    				getHolder().unlockCanvasAndPost(canvas);
+    				if(TouchSurfaceView.mIsSurfaceReady)
+    					getHolder().unlockCanvasAndPost(canvas);
         		}catch(java.lang.IllegalStateException e){
         			Log.e(TAG, "drawStreamBitmap(), e"+e.toString());
         		}
