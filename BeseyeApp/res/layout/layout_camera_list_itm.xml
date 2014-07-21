@@ -54,9 +54,9 @@
 		        android:id="@+id/iv_cameralist_thumbnail"
 		        android:layout_width="336dp"
 		        android:layout_height="189dp"
-		        android:src="@drawable/cameralist_thumbnail" 
 		        android:background="@color/camera_list_video_bg"
-		        android:visibility="invisible" />
+		        android:src="@drawable/cameralist_thumbnail"
+		        android:visibility="visible" />
 		    
 		    <RelativeLayout
 		        android:id="@+id/rl_camera_disconnected_solid"
@@ -92,7 +92,7 @@
 		        android:layout_width="336dp"
 		        android:layout_height="189dp"
 		        android:background="@color/camera_list_video_mask"
-		        android:visibility="visible" >
+		        android:visibility="invisible" >
 
 			    <RelativeLayout
 			        android:id="@+id/rl_camera_disconnected_mask"
