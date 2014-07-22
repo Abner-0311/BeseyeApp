@@ -232,6 +232,17 @@ void AudioBufferMgr::addToDataBuf(msec_t lTs, ArrayRef<short> buf, int iSampleRe
 	LOGD("addToDataBuf()-\n");
 }
 
+int AudioBufferMgr::getLastDataBufIndex(){
+	int iRet = -1;
+	acquireDataBufMux();
+	int iSize = mDataBufList.size();
+	if(0 < iSize){
+		iRet = mDataBufList[iSize-1]->miIndex;
+	}
+	releaseDataBufMux();
+	return iRet;
+}
+
 void AudioBufferMgr::trimAvailableBuf(unsigned int iRestCount){
 	//LOGI("trimAvailableBuf(), iRestCount:%d\n", iRestCount);
 

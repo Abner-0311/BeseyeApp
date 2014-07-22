@@ -1,3 +1,5 @@
+#AUTO_TEST_FLAG=0
+
 TOOLCHAIN=/opt/buildroot-gcc342
 TOOLCHAIN_BIN=$(TOOLCHAIN)/bin/
 CROSS_COMP=mipsel-linux-
@@ -33,8 +35,11 @@ $(SRC_PATH)/preprocess/kiss_fftr.c \
 $(SRC_PATH)/preprocess/mdf.c \
 $(SRC_PATH)/preprocess/fftwrap.c \
 $(SRC_PATH)/preprocess/filterbank.c \
-$(SRC_PATH)/preprocess/preprocess.c \
-$(SRC_PATH)/../libwebsockets/src/simple_websocket_mgr.c
+$(SRC_PATH)/preprocess/preprocess.c
+
+ifdef AUTO_TEST_FLAG
+SOURCES+= $(SRC_PATH)/../libwebsockets/src/simple_websocket_mgr.c
+endif
 
 OBJECTS=$(SOURCES:.c=.o)
 
@@ -45,6 +50,10 @@ LDFLAGS=-L$(TOOLCHAIN)/lib -lcurl -ljson-c -lbeseye-common -lhttp-cgi -lwebsocke
 #-lspeexdsp
 CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -fforce-addr -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -Iws-client/inc -Ilibwebsockets/inc -I$(TOOLCHAIN)/include -DCAM_ENV
 
+ifdef AUTO_TEST_FLAG
+CFLAGS+= -DAUTO_TEST
+CXXFLAGS+= -DAUTO_TEST
+endif
 all:$(CXXSOURCES) $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE):$(OBJECTS) $(CXXOBJECTS)
