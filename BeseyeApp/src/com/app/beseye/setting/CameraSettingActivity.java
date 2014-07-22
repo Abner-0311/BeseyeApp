@@ -573,7 +573,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					onToastShow(task, "Detach  Successfully.");
 					if(BeseyeConfig.COMPUTEX_PAIRING){
-						invokeLogout();
+						//invokeLogout();
 					}else{
 						Bundle b = new Bundle();
 						b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);

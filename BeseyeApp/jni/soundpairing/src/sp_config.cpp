@@ -7,11 +7,11 @@ std::vector<Ref<FreqRange> > SoundPair_Config::sFreqRangeTable;
 std::vector<string> SoundPair_Config::sCodeTable;
 Ref<GenericGF> SoundPair_Config::gf = GenericGF::QR_CODE_FIELD_256;
 
-float SoundPair_Config::AMP_BASE_RATIO[] = {1.00f, 1.00f, 1.10f, 1.10f, // 1093.75, 1187.50, 1781.25, 1968.75,
-											1.04f, 1.00f, 1.00f, 1.05f, // 1281.25, 1468.75, 1593.75, 1687.5,
-											0.60f, 0.98f, 1.02f, 1.00f, // 2843.75, 2093.75, 2187.50, 2375.0,
-											1.00f, 0.90f, 0.80f, 0.68f, // 2468.75, 2562.50, 2656.25, 2750.0,
-											0.80f, 1.00f, 0.40f      }; // 1406.25, 2281.25, 3218.75,
+float SoundPair_Config::AMP_BASE_RATIO[] = {1.00f, 1.00f, 1.10f, 1.10f,  // 1093.75, 1187.50, 1781.25, 1968.75,
+											1.04f, 1.00f, 1.00f, 1.05f,  // 1281.25, 1468.75, 1593.75, 1687.5,
+											0.60f, 0.98f, 1.02f, 1.00f,  // 2843.75, 2093.75, 2187.50, 2375.0,
+											1.00f, 0.90f, 0.80f, 0.68f,  // 2468.75, 2562.50, 2656.25, 2750.0,
+											0.80f, 1.00f, 0.80f, 1.00f}; // 1406.25, 2281.25, 3218.75, 7775.00
 
 const string SoundPair_Config::BT_MSG_ACK = "BT_MSG_ACK";
 const string SoundPair_Config::BT_MSG_PURE = "?P?";
@@ -19,18 +19,26 @@ const string SoundPair_Config::BT_BINDING_MAC = "D4:20:6D:EA:0F:3F";// XL  "BC:C
 const string SoundPair_Config::BT_BINDING_MAC_SENDER = "7C:61:93:BF:32:3D";// FLYER
 const long SoundPair_Config::TONE_PERIOD     = (long)(SoundPair_Config::TONE_DURATION*1000);
 const float SoundPair_Config::BIN_SIZE       = (float)SoundPair_Config::SAMPLE_RATE_REC/(float)SoundPair_Config::FRAME_SIZE_REC;
-string SoundPair_Config::PREFIX_DECODE = "w~";
-string SoundPair_Config::POSTFIX_DECODE = "~w";
-string SoundPair_Config::POSTFIX_DECODE_C1 = "~w";
-string SoundPair_Config::POSTFIX_DECODE_C2 = "~w";
+
+string SoundPair_Config::PREFIX_DECODE;
+string SoundPair_Config::POSTFIX_DECODE;
+string SoundPair_Config::POSTFIX_DECODE_C1;
+string SoundPair_Config::POSTFIX_DECODE_C2;
 string SoundPair_Config::PEER_SIGNAL = "}#";
 string SoundPair_Config::CONSECUTIVE_MARK = "";
 string SoundPair_Config::DIVIDER = "";
 string SoundPair_Config::BT_MSG_DIVIDER;
 string SoundPair_Config::BT_MSG_FORMAT;
+string SoundPair_Config::BT_MSG_FORMAT_SENDER;
 string SoundPair_Config::BT_MSG_SET_VOLUME = "BTVOL_";
 string SoundPair_Config::BT_MSG_SET_VOLUME_END = "_VOLBT";
 string SoundPair_Config::MISSING_CHAR = "%";
+string SoundPair_Config::MSG_TEST_ROUND_RESULT ="MSG_TEST_ROUND_RESULT";
+
+string SoundPair_Config::MSG_AUTO_TEST_BEGIN = "BES_AUTO_TEST_BEGIN";
+string SoundPair_Config::MSG_AUTO_TEST_END   = "BES_AUTO_TEST_END";
+
+string SoundPair_Config::PAIRING_DIVIDER;
 
 void SoundPair_Config::normalizeRatio(){
 	int iLen = TONE_TYPE;//sizeof(AMP_BASE_RATIO)/sizeof(AMP_BASE_RATIO[0]);
@@ -125,7 +133,7 @@ void SoundPair_Config::init(){
 		LOGE("init(), have init, return");
 		return;
 	}
-	double dDelta = (dEndValue - dStartValue)/(16+3);//Plus additional 5 char for special use
+	double dDelta = (dEndValue - dStartValue)/(16+4);//Plus additional 4 char for special use
 	double dValue = dStartValue;
 
 	double freqs[] = {
@@ -152,6 +160,7 @@ void SoundPair_Config::init(){
 					1375.75,
 					2281.25,
 					3218.75,
+					3375.00
 			  };
 
 	int iDx = 0;
@@ -166,7 +175,7 @@ void SoundPair_Config::init(){
 	}
 
 	//A~I
-	for(char i = 0x61; i<= 0x69 ; i++, dValue+=dDelta, iDx++){
+	for(char i = 0x61; i<= 0x6a ; i++, dValue+=dDelta, iDx++){
 		string strCode;
 		strCode.push_back(i);
 		sCodeTable.push_back(strCode);
@@ -176,19 +185,21 @@ void SoundPair_Config::init(){
 
 	int iCodeTblSIze = sCodeTable.size();
 
-	PREFIX_DECODE 	 = sCodeTable[iCodeTblSIze-3]+sCodeTable[iCodeTblSIze-1];//IK
+	PREFIX_DECODE 	 = sCodeTable[iCodeTblSIze-4]+sCodeTable[iCodeTblSIze-2];//gi
 
-	POSTFIX_DECODE_C1= sCodeTable[iCodeTblSIze-2];
-	POSTFIX_DECODE_C2= sCodeTable[iCodeTblSIze-1];
+	POSTFIX_DECODE_C1= sCodeTable[iCodeTblSIze-3];
+	POSTFIX_DECODE_C2= sCodeTable[iCodeTblSIze-2];
 
-	POSTFIX_DECODE 	 = POSTFIX_DECODE_C1 + POSTFIX_DECODE_C2;//KI
+	POSTFIX_DECODE 	 = POSTFIX_DECODE_C1 + POSTFIX_DECODE_C2;//hi
 
+	PAIRING_DIVIDER = sCodeTable[iCodeTblSIze-1];
 	//AubioTestConfig.PEER_SIGNAL 	 = sCodeTable.get(iCodeTblSIze-4)+sCodeTable.get(iCodeTblSIze-1);
-	CONSECUTIVE_MARK = sCodeTable[iCodeTblSIze-3];
+	CONSECUTIVE_MARK = sCodeTable[iCodeTblSIze-4];
 	//AubioTestConfig.DIVIDER			 = sCodeTable.get(iCodeTblSIze-5);
 
-	BT_MSG_DIVIDER = sCodeTable[iCodeTblSIze-2]+sCodeTable[iCodeTblSIze-1];
+	BT_MSG_DIVIDER = sCodeTable[iCodeTblSIze-3]+sCodeTable[iCodeTblSIze-2];
 	BT_MSG_FORMAT = "%s"+BT_MSG_DIVIDER+"%s";
+	BT_MSG_FORMAT_SENDER = "%s"+BT_MSG_DIVIDER+"%s"+BT_MSG_DIVIDER+"%s";
 
 	resolveFreqRangeConflict();
 	normalizeRatio();
@@ -623,14 +634,14 @@ Ref<CodeRecord> CodeRecord::combineNewCodeRecord(Ref<CodeRecord> cr1, Ref<CodeRe
 				for(int idx = 0; idx < SoundPair_Config::TONE_FRAME_COUNT-iSize; idx++){
 					msec_t lTsByIdx = lSesBeginTs - (idx+1)*SoundPair_Config::FRAME_TS;
 					lstFreqRec.insert(lstFreqRec.begin(),  Ref<FreqRecord>(new FreqRecord(lTsByIdx, -1.0f, SoundPair_Config::MISSING_CHAR, -1, NULL)));
-					LOGI("combineNewCodeRecord()**, ====>>>> add missing char to lstFreqRec to head at %d",(lTsByIdx));
+					LOGI("combineNewCodeRecord()**, ====>>>> add missing char to lstFreqRec to head at %d\n",(lTsByIdx));
 				}
 			}else if(NULL == cr2){
 				msec_t lSesTailTs = lstFreqRec[iSize-1]->mlTs;
 				for(int idx = 0; idx < SoundPair_Config::TONE_FRAME_COUNT-iSize; idx++){
 					msec_t lTsByIdx = lSesTailTs + (idx+1)*SoundPair_Config::FRAME_TS;
 					lstFreqRec.push_back( Ref<FreqRecord>(new FreqRecord(lTsByIdx, -1.0f, SoundPair_Config::MISSING_CHAR, -1, NULL)));
-					LOGI("combineNewCodeRecord()**, ====>>>> add missing char to lstFreqRec to tail at %d",(lTsByIdx));
+					LOGI("combineNewCodeRecord()**, ====>>>> add missing char to lstFreqRec to tail at %d\n",(lTsByIdx));
 				}
 			}
 		}

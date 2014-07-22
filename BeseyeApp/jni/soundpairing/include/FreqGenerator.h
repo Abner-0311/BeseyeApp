@@ -91,6 +91,7 @@ public:
 	//void playCode(const string strCodeInput, const bool bNeedEncode);
 	//void stopPlay();
 	bool playCode2(const string strCodeInput, const bool bNeedEncode);
+	bool playCode2(const string strMacAddr, const string strWifiKey, const string strToken, const bool bNeedEncode);
 	static void* runPlayCode2(void* userdata);
 	void invokePlayCode2();
 	void stopPlay2();
