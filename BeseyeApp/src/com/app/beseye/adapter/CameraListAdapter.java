@@ -26,6 +26,7 @@ import android.widget.TextView;
 public class CameraListAdapter extends BeseyeJSONAdapter {
 	private OnSwitchBtnStateChangedListener mOnSwitchBtnStateChangedListener;
 	private int miThumbnailWidth;
+	private boolean mbIsDemoCamList = false;
 	
 	public CameraListAdapter(Context context, JSONArray list, int iLayoutId,
 			OnClickListener itemOnClickListener, OnSwitchBtnStateChangedListener onSwitchBtnStateChangedListener) {
@@ -46,6 +47,10 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 		public JSONObject mObjCam;
 	}
 	
+	public void setIsDemoCamList(boolean bIsDemoCamList){
+		mbIsDemoCamList = bIsDemoCamList;
+	}
+	
 	@Override
 	protected View inflateItem(int iPosition, View convertView, ViewGroup parent) {
 		if(null == convertView){
@@ -57,6 +62,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				holder.mSbCamOnOff = (BeseyeSwitchBtn)convertView.findViewById(R.id.sb_camera_switch);
 				if(null != holder.mSbCamOnOff){
 					holder.mSbCamOnOff.setOnSwitchBtnStateChangedListener(mOnSwitchBtnStateChangedListener);
+					holder.mSbCamOnOff.setVisibility((BeseyeConfig.COMPUTEX_DEMO  || !mbIsDemoCamList)?View.VISIBLE:View.INVISIBLE);
 				}
 				
 				holder.mImgThumbnail = (RemoteImageView)convertView.findViewById(R.id.iv_cameralist_thumbnail);

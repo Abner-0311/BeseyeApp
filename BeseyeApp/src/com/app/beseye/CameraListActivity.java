@@ -149,6 +149,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
         	mCameraListAdapter = new CameraListAdapter(this, null, R.layout.layout_camera_list_itm, this, this);
         	if(null != mCameraListAdapter){
         		mMainListView.getRefreshableView().setAdapter(mCameraListAdapter);
+        		mCameraListAdapter.setIsDemoCamList(mbIsDemoCamMode);
         	}
 		}
 		
