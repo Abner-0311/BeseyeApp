@@ -31,7 +31,8 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 			OnClickListener itemOnClickListener, OnSwitchBtnStateChangedListener onSwitchBtnStateChangedListener) {
 		super(context, list, iLayoutId, itemOnClickListener);
 		mOnSwitchBtnStateChangedListener = onSwitchBtnStateChangedListener;
-		//Log.i(TAG, "context.getResources().getDimension(R.dimen.cameralist_videoblock_margin):"+context.getResources().getDimension(R.dimen.cameralist_videoblock_margin));
+		Log.i(TAG, "context.getResources().getDimension(R.dimen.cameralist_videoblock_margin):"+context.getResources().getDimension(R.dimen.cameralist_videoblock_margin));
+		Log.i(TAG, "context.getResources().getDimension(cameralist_videoblock_thunmbnail_padding):"+context.getResources().getDimension(R.dimen.cameralist_videoblock_thunmbnail_padding));
 		miThumbnailWidth = (int) (BeseyeUtils.getDeviceWidth((Activity)context) - (context.getResources().getDimension(R.dimen.cameralist_videoblock_margin)+context.getResources().getDimension(R.dimen.cameralist_videoblock_thunmbnail_padding))*2); 
 		Log.i(TAG, "miThumbnailWidth:"+miThumbnailWidth);
 	}

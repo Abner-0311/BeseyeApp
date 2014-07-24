@@ -16,6 +16,7 @@
     
     <dimen name="cameralist_videoblock_inner">5dp</dimen>
     
-    
+    <dimen name="cameralist_videoblock_thunmbnail_padding">4.5dp</dimen>
+    <dimen name="cameralist_videoblock_padding_bottom">5dp</dimen>
 
 </resources>

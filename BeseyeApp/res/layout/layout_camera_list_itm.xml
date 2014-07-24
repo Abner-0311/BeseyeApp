@@ -12,8 +12,10 @@
 	    android:layout_height="wrap_content"
 	    android:layout_marginTop="@dimen/cameralist_videoblock_margin"
 	    android:layout_marginLeft="@dimen/cameralist_videoblock_margin"
-	    android:layout_marginRight="@dimen/cameralist_videoblock_margin"		    
-	    android:padding="@dimen/cameralist_videoblock_inner"
+	    android:layout_marginRight="@dimen/cameralist_videoblock_margin"
+	    android:paddingBottom="@dimen/cameralist_videoblock_padding_bottom"		
+	    android:paddingLeft="@dimen/cameralist_videoblock_thunmbnail_padding"		
+	    android:paddingRight="@dimen/cameralist_videoblock_thunmbnail_padding"		    
 	    android:background="@drawable/sl_cam_list_itm_bg" >
 
 	    <RelativeLayout
@@ -49,12 +51,12 @@
 	        android:layout_height="wrap_content"
 	        android:layout_below="@+id/rl_cameralist_title"
 	        android:layout_centerHorizontal="true"
-	        android:background="@color/camera_list_video_bg"  >
+	        android:background="@color/camera_list_video_bg" >
 
 		    <com.app.beseye.widget.RemoteImageView
 		        android:id="@+id/iv_cameralist_thumbnail"
-		        android:layout_width="336dp"
-		        android:layout_height="189dp"
+		        android:layout_width="330dp"
+		        android:layout_height="180dp"
 		        android:background="@color/camera_list_video_bg"
 		        android:visibility="visible" />
 		    

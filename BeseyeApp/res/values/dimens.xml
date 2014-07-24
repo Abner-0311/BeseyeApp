@@ -116,8 +116,11 @@
     <dimen name="cameralist_nav_margin_hori">10dp</dimen>
     
     <dimen name="cameralist_videoblock_margin">6dp</dimen>
-    <dimen name="cameralist_videoblock_thunmbnail_padding">6dp</dimen>
     <dimen name="cameralist_videoblock_marginTop">8dp</dimen>
+    
+    <dimen name="cameralist_videoblock_thunmbnail_padding">2dp</dimen>
+    <dimen name="cameralist_videoblock_padding_bottom">3.3dp</dimen>
+    
     <dimen name="cameralist_videoblock_innerTop">4dp</dimen>
     <dimen name="cameralist_videoblock_inner">7dp</dimen>
     <dimen name="cameralist_videoTitle_marginTop">4dp</dimen>
