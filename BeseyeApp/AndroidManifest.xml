@@ -48,7 +48,7 @@
         <!--change the android:name=".test.TestActivity" below for UI test-->
         
         <!-- TestActivity  -->
-        <!--
+        
         <activity
             android:name=".test.TestActivity" 
         	android:screenOrientation="portrait"
@@ -60,8 +60,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        --> 
-          
+         
+        <!--  
         <activity
             android:name=".OpeningPage"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" 
@@ -74,7 +74,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-       
+       -->
         
         <activity
             android:name=".CameraViewActivity"
