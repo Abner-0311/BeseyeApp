@@ -23,10 +23,10 @@ import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.CameraSettingActivity;
-import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
+import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
@@ -527,8 +527,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					if(null != obj){
 						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
 						if(null != dataObj){
-							int iCamStatus = getJSONInt(dataObj, CAM_STATUS, 0);
-							BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.toCamConnStatus(iCamStatus).getValue());
+							//int iCamStatus = getJSONInt(dataObj, CAM_STATUS, 0);
+							//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(iCamStatus).getValue());
 							BeseyeJSONUtil.setJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(obj, BeseyeJSONUtil.OBJ_TIMESTAMP));
 							BeseyeJSONUtil.setJSONObject(mCam_obj, ACC_DATA, dataObj);
 							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);

@@ -172,15 +172,15 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	}
 	
 	private void updateSheduleState(){
-		CAM_CONN_STATUS iCamState =  CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
-		if(null != mScheduleSwitchBtn){
-			if(CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
-				mScheduleSwitchBtn.setEnabled(false);
-			}else{
-				mScheduleSwitchBtn.setEnabled(true);
-				mScheduleSwitchBtn.setSwitchState((CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-			}
-		}
+//		BeseyeJSONUtil.CAM_CONN_STATUS iCamState =  BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
+//		if(null != mScheduleSwitchBtn){
+//			if(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
+//				mScheduleSwitchBtn.setEnabled(false);
+//			}else{
+//				mScheduleSwitchBtn.setEnabled(true);
+//				mScheduleSwitchBtn.setSwitchState((BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+//			}
+//		}
 	}
 
 	@Override

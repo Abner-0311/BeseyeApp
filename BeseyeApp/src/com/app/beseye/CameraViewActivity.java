@@ -27,9 +27,9 @@ import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask.GetAudioWSServerTask;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CameraSettingActivity;
-import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
@@ -871,17 +871,17 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	private boolean isCamPowerOn(){
-		return !mbIsLiveMode || (BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1) == CAM_CONN_STATUS.CAM_ON.getValue());
+		return !mbIsLiveMode || (BeseyeJSONUtil.getVCamConnStatus(mCam_obj) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON);
 		//return (CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID) == CAM_CONN_STATUS.CAM_ON) ;
 	}
 	
 	private boolean isCamPowerOff(){
-		return mbIsLiveMode && (BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1) == CAM_CONN_STATUS.CAM_OFF.getValue());
+		return mbIsLiveMode && (BeseyeJSONUtil.getVCamConnStatus(mCam_obj) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_OFF);
 		//return (CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID) == CAM_CONN_STATUS.CAM_OFF) ;
 	}
 	
 	private boolean isCamPowerDisconnected(){
-		return mbIsLiveMode && (BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1) == CAM_CONN_STATUS.CAM_DISCONNECTED.getValue());
+		return mbIsLiveMode && (BeseyeJSONUtil.getVCamConnStatus(mCam_obj) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED);
 		//return (CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID) == CAM_CONN_STATUS.CAM_DISCONNECTED) ;
 	}
 	
@@ -1022,7 +1022,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 				if(0 == iRetCode){
-					BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+					//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON.getValue());
 					Intent resultIntent = new Intent();
 					resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
 					setResult(RESULT_OK, resultIntent);

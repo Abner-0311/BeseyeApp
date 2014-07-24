@@ -213,19 +213,19 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 	
 	private void updateSettingState(){
-		CAM_CONN_STATUS iCamState =  CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
+		BeseyeJSONUtil.CAM_CONN_STATUS iCamState = BeseyeJSONUtil.getVCamConnStatus(mCam_obj);// BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
 		if(null != mCamSwitchBtn){
-			if(CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
+			if(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
 				mCamSwitchBtn.setEnabled(false);
 				mTxtPowerTitle.setEnabled(false);
 			}else{
 				mCamSwitchBtn.setEnabled(true);
 				mTxtPowerTitle.setEnabled(true);
-				mCamSwitchBtn.setSwitchState((CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+				mCamSwitchBtn.setSwitchState((BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
 			}
 		}
 		if(null != mIvViewUpDownCheck){
-			if(CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
+			if(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
 				mTxtViewUpDownTitle.setEnabled(false);
 				mIvViewUpDownCheckBg.setEnabled(false);
 				mIvViewUpDownCheck.setVisibility(View.INVISIBLE);
@@ -485,7 +485,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_get_cam_info));
 					showMyDialog(DIALOG_ID_WARNING, b);
 					
-					BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_DISCONNECTED.getValue());
+					BeseyeJSONUtil.setVCamConnStatus(mCam_obj, CAM_CONN_STATUS.CAM_DISCONNECTED);
+					
+					//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED.getValue());
 					updatePowerDesc(SwitchState.SWITCH_OFF);
 					updateSettingState();
 				}}, 0);
@@ -511,7 +513,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					super.onPostExecute(task, result, iRetCode);
-					updatePowerDesc(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE) > 0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+					updatePowerDesc((BeseyeJSONUtil.getVCamConnStatus(mCam_obj).equals(CAM_CONN_STATUS.CAM_ON))?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
 					updateSettingState();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask){
@@ -532,18 +534,15 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					JSONObject obj = result.get(0);
 					if(null != obj){
-						BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.CAM_STATUS));
-						try {
-							mCam_obj.put(BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
-							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
-							//CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.toCamConnStatus((SwitchState.SWITCH_ON.equals(state))?1:0));
-							Intent resultIntent = new Intent();
-							resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-							setResult(RESULT_OK, resultIntent);	
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						BeseyeJSONUtil.setVCamConnStatus(mCam_obj, (BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.CAM_STATUS)==1)?CAM_CONN_STATUS.CAM_ON:CAM_CONN_STATUS.CAM_OFF);
+						//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.CAM_STATUS));
+						BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
+						//mCam_obj.put(BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
+						BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
+						//CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.toCamConnStatus((SwitchState.SWITCH_ON.equals(state))?1:0));
+						Intent resultIntent = new Intent();
+						resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+						setResult(RESULT_OK, resultIntent);	
 					}
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetLEDStatusTask){
@@ -551,19 +550,19 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					monitorAsyncTask(new BeseyeCamBEHttpTask.GetLEDStatusTask(this), true, mStrVCamID);
 				}
-			}else if(task instanceof BeseyeCamBEHttpTask.GetLEDStatusTask){
+			}/*else if(task instanceof BeseyeCamBEHttpTask.GetLEDStatusTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						int iState = getJSONInt(obj, LED_STATUS, 0);
-						BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.toCamConnStatus(iState).getValue());
+						BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(iState).getValue());
 						//CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.toCamConnStatus(iState));
 						updatePowerDesc(iState > 0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
 						updateSettingState();
 					}
 				}
-			}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
+			}*/else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					onToastShow(task, "Notify SW Update Successfully.");

@@ -65,7 +65,7 @@ string SoundPair_Config::getNDigits(string strCode, int iNumDigits){
 
 void SoundPair_Config::resolveFreqRangeConflict(){
 	int iSize = sFreqRangeTable.size();
-	if(AUBIO_FFT){
+	/*if(AUBIO_FFT){
 		for(int i =0; i < iSize - 1; i++){
 			Ref<FreqRange> fr = sFreqRangeTable[i];
 			std::vector<Ref<FreqRangeData> > lstFRD = fr->getLstFreqRangeData();
@@ -89,13 +89,15 @@ void SoundPair_Config::resolveFreqRangeConflict(){
 				}
 			}
 		}
-	}else{
+	}else*/{
 		for(int i =iSize - 1; i >= 0 ; i--){
 			Ref<FreqRange> fr = sFreqRangeTable[i];
 			std::vector<Ref<FreqRangeData> > lstFRD = fr->getLstFreqRangeData();
 			int iSizeFRD = lstFRD.size();
+			LOGE("resolveFreqRangeConflict(), i = %d, lstFRD[idx]:%s",i, lstFRD[0]->toString().c_str());
 			for(int idx = iSizeFRD -1; idx > 0; idx--){
 				Ref<FreqRangeData> frd = lstFRD[idx];
+				LOGE("resolveFreqRangeConflict(), frd = %s",frd->toString().c_str());
 				if(NULL != frd){
 					bool bConflict = false;
 					if(i == 0){
@@ -119,7 +121,7 @@ void SoundPair_Config::resolveFreqRangeConflict(){
 					}
 
 					if(bConflict){
-						//LOGE("resolveFreqRangeConflict(), remove frd = %d",frd);
+						LOGE("resolveFreqRangeConflict(), remove idx = %d",idx);
 						lstFRD.erase(lstFRD.begin()+idx);
 					}
 				}
@@ -160,7 +162,7 @@ void SoundPair_Config::init(){
 					1375.75,
 					2281.25,
 					3218.75,
-					3375.00
+					3031.25
 			  };
 
 	int iDx = 0;
@@ -181,6 +183,7 @@ void SoundPair_Config::init(){
 		sCodeTable.push_back(strCode);
 		sAlphabetTable.insert(std::pair<string, double>(strCode, freqs[iDx]));
 		sFreqRangeTable.push_back(Ref<FreqRange>(new FreqRange(freqs[iDx], (AUBIO_FFT?BIN_SIZE/*0.5*(freqs[iDx]/600.0f)*/:BIN_SIZE), strCode)));
+		//LOGE("init(), strCode=%s, freqs[iDx]:%f", strCode.c_str(), freqs[iDx]);
 	}
 
 	int iCodeTblSIze = sCodeTable.size();
@@ -197,12 +200,12 @@ void SoundPair_Config::init(){
 	CONSECUTIVE_MARK = sCodeTable[iCodeTblSIze-4];
 	//AubioTestConfig.DIVIDER			 = sCodeTable.get(iCodeTblSIze-5);
 
-	BT_MSG_DIVIDER = sCodeTable[iCodeTblSIze-3]+sCodeTable[iCodeTblSIze-2];
 	BT_MSG_FORMAT = "%s"+BT_MSG_DIVIDER+"%s";
 	BT_MSG_FORMAT_SENDER = "%s"+BT_MSG_DIVIDER+"%s"+BT_MSG_DIVIDER+"%s";
 
 	resolveFreqRangeConflict();
 	normalizeRatio();
+
 }
 
 void SoundPair_Config::uninit(){

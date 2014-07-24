@@ -92,6 +92,8 @@ public class BeseyeJSONUtil {
 	public static final String CAM_MAC_ADDR 			= "MACAddr";
 	public static final String CAM_SOFTWARE 			= "Firmware";
 	
+	public static final String CAM_WS_STATUS 			= "wsStatus";//1 => on-line, 0=> off-line
+	
 	public static final String SCHED_FROM 				= "from";
 	public static final String SCHED_TO 				= "to";
 	public static final String SCHED_DAYS 				= "days";
@@ -189,6 +191,34 @@ public class BeseyeJSONUtil {
 		}
 	}
 	
+	public static enum CAM_CONN_STATUS{
+		CAM_DISCONNECTED(-1),
+		CAM_OFF(0),
+		CAM_ON(1);
+		
+		private int iValue;
+		CAM_CONN_STATUS(int iVal){
+			iValue = iVal;
+		}
+		
+		public int getValue(){
+			return iValue;
+		}
+		
+		public static CAM_CONN_STATUS toCamConnStatus(int iVal){
+			switch(iVal){
+				case 0:{
+					return CAM_CONN_STATUS.CAM_OFF;
+				}
+				case 1:{
+					return CAM_CONN_STATUS.CAM_ON;
+				}
+				default:
+					return CAM_CONN_STATUS.CAM_DISCONNECTED;
+			}
+		}
+	}
+
 	static public FACE_LIST findFacebyId(int id){
 		if(0 <= id && id<faceList.length)
 			return faceList[id];
@@ -639,42 +669,38 @@ public class BeseyeJSONUtil {
 		return bRet;
 	}
 	
-//	static public JSONObject getMsgReceiver(JSONArray members){
-//		JSONObject rec = null;
-//		if(null != members){
-//			String ownerId = SessionMgr.getInstance().getMdid();
-//			int iCount = members.length();
-//			for(int iIndex = 0; iIndex < iCount;iIndex++){
-//				JSONObject member = members.optJSONObject(iIndex);
-//				if(null != member && !ownerId.equals(BeseyeJSONUtil.getJSONString(member, USER_ID))){
-//					rec = member;
-//					break;
-//				}
-//			}
-//		}
-//		return rec;
-//	}
-//	
-//	static public String parseOwnerInfo(JSONObject obj){
-//		JSONObject ret = new JSONObject();
-//		if(null != obj){
-//			try {
-//				ret.put(USER_MDID, getJSONString(obj, USER_MDID));
-//				ret.put(USER_ACCOUNT, getJSONString(obj, USER_ACCOUNT));
-//				ret.put(USER_VIP_LVL, getJSONString(obj, USER_VIP_LVL));
-//				ret.put(USER_IS_VIP, getJSONString(obj, USER_IS_VIP));
-//				ret.put(USER_EXPIRE, getJSONString(obj, USER_EXPIRE));
-//				ret.put(USER_OPENACCOUNT, getJSONString(obj, USER_OPENACCOUNT));
-//				ret.put(USER_AGREE, getJSONString(obj, USER_AGREE));
-//				ret.put(USER_OPEN_ID, getJSONString(obj, USER_OPEN_ID));
-//				ret.put(USER_S_TOT, getJSONString(obj, USER_S_TOT));
-//				ret.put(USER_S_REC, getJSONString(obj, USER_S_REC));
-//				ret.put(USER_S_ALBM, getJSONString(obj, USER_S_ALBM));
-//				ret.put(PAY_AUTO_MONTH, getJSONString(obj, PAY_AUTO_MONTH));
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return ret.toString();
-//	}
+	static public CAM_CONN_STATUS getVCamConnStatus(JSONObject objCam){
+		CAM_CONN_STATUS cRet = CAM_CONN_STATUS.CAM_DISCONNECTED;
+		if(null != objCam){
+			JSONObject dataObj = getJSONObject(objCam, ACC_DATA);
+			if(null != dataObj){
+				int iWsStatus = getJSONInt(dataObj, CAM_WS_STATUS);
+				if(1 == iWsStatus){
+					int iCamStatus = getJSONInt(dataObj, BeseyeJSONUtil.CAM_STATUS, -1);
+					if(1==iCamStatus){
+						cRet = CAM_CONN_STATUS.CAM_ON;
+					}else if(0==iCamStatus){
+						cRet = CAM_CONN_STATUS.CAM_OFF;
+					}
+				}
+			}
+		}
+		return cRet;
+	}
+	
+	static public void setVCamConnStatus(JSONObject objCam, CAM_CONN_STATUS status){
+		if(null != objCam){
+			JSONObject dataObj = getJSONObject(objCam, ACC_DATA);
+			if(null != dataObj){
+				if(status == CAM_CONN_STATUS.CAM_DISCONNECTED){
+					setJSONInt(dataObj, CAM_WS_STATUS, 0);
+				}else{
+					setJSONInt(dataObj, CAM_WS_STATUS, 1);
+					setJSONInt(dataObj, CAM_STATUS, (status.equals(CAM_CONN_STATUS.CAM_ON))?1:0);
+				}
+			}else{
+				Log.e(TAG, "setVCamConnStatus(), can't find dataObj");
+			}
+		}
+	}
 }

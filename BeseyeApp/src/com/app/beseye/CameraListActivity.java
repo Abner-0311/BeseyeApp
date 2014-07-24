@@ -37,9 +37,9 @@ import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.setting.CameraSettingActivity;
-import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
@@ -310,7 +310,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
 					}*/
 				}
-			}else if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
+			}/*else if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
 				if(0 == iRetCode){
 					String strVcamId = ((BeseyeMMBEHttpTask.GetLiveStreamTask)task).getVcamId();
 					//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> VCAMID = "+strVcamId+", result.get(0)="+result.get(0).toString());
@@ -321,7 +321,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 							JSONObject camObj = arrCamList.getJSONObject(i);
 							//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> camObj = "+camObj.toString());
 							if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
-								camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
+								camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON.getValue());
 								refreshList();
 								monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this, ((BeseyeMMBEHttpTask.GetLiveStreamTask)task).getTaskSeed()).setDialogId(-1), true, strVcamId);
 								break;
@@ -333,7 +333,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 				
 				updateCamItm(((BeseyeMMBEHttpTask.GetLiveStreamTask)task).getTaskSeed());
-			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+			}*/else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_DATA);
 					String strVcamId = ((BeseyeCamBEHttpTask.GetCamSetupTask)task).getVcamId();
@@ -346,7 +346,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 							JSONObject camObj = arrCamList.getJSONObject(i);
 							//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> camObj = "+camObj.toString());
 							if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
-								camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(dataObj, BeseyeJSONUtil.CAM_STATUS));
+								//camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(dataObj, BeseyeJSONUtil.CAM_STATUS));
 								camObj.put(BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 								camObj.put(BeseyeJSONUtil.ACC_DATA, dataObj);
 								//Need broadcast????
@@ -402,7 +402,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 							JSONObject camObj = arrCamList.getJSONObject(i);
 							//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> camObj = "+camObj.toString());
 							if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
-								camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.CAM_STATUS));
+								JSONObject dataObj = BeseyeJSONUtil.getJSONObject(camObj, BeseyeJSONUtil.ACC_DATA);
+								if(null != dataObj){
+									dataObj.put(BeseyeJSONUtil.CAM_STATUS, BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.CAM_STATUS));
+								}
+								//camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.CAM_STATUS));
 								camObj.put(BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 								BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(strVcamId, camObj);
 								monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, strVcamId);
@@ -563,8 +567,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						for(int i = 0;i<iCount;i++){
 							JSONObject obj = camArr.getJSONObject(i);
 							if(null != obj && BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID).equals(strVcamId)){
-								BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.ACC_NAME, BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_NAME));
-								BeseyeJSONUtil.setJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(Cam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE));
+								camArr.put(i, Cam_obj);
+								//BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.ACC_NAME, BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_NAME));
+								//BeseyeJSONUtil.setJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(Cam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE));
 								refreshList();
 								break;
 							}
