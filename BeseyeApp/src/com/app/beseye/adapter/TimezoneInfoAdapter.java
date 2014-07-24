@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.app.beseye.R;
+import com.app.beseye.util.BeseyeConfig;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -113,6 +115,7 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 			if(null != holder){
 				TimeZone sRet = (TimeZone)getItem(iPosition);
 				if(null != sRet){
+					//Log.i(BeseyeConfig.TAG, "sRet:"+sRet);
 					if(null != holder.mtxtName)
 						holder.mtxtName.setText(sRet.getDisplayName());
 					

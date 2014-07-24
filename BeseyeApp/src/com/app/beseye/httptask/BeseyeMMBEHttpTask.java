@@ -117,6 +117,10 @@ public class BeseyeMMBEHttpTask  {
 		private String strVcamId = null;
 		private int iTaskSeed = 0;
 		
+		public GetLatestThumbnailTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
 		public GetLatestThumbnailTask(OnHttpTaskCallback cb, int seed) {
 			super(cb);
 			iTaskSeed = seed;

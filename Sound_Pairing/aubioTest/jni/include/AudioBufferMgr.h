@@ -43,6 +43,9 @@ public:
 	ArrayRef<short> getBufByIndex(int iBufIndexInput, int iOffset, ArrayRef<short> bufReturn);
 	ArrayRef<short> getAvailableBuf();
 	void addToDataBuf(msec_t lTs, ArrayRef<short> buf, int iSampleRead);
+
+	int getLastDataBufIndex();
+
 	Ref<BufRecord> getDataBuf();
 	Ref<BufRecord> getDataBuf(int iNumToRest);
 	void addToAvailableBuf(Ref<BufRecord> buf);

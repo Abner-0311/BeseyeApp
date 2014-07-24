@@ -129,6 +129,7 @@
 		   		android:layout_toLeftOf="@+id/iv_location_aware_inf"
 		   		android:layout_centerVertical="true">
 		        <TextView 
+		            android:id="@+id/txt_loc_aware"
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"

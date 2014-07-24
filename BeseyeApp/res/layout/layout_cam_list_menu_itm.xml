@@ -1,0 +1,36 @@
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vg_day"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/wifi_list_item_height"
+    android:background="@drawable/cl_cam_menu_item_bg">
+    
+    <ImageView 
+        android:id="@+id/iv_menu_icon"
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_centerVertical="true"
+    	android:src="@drawable/sl_menu_news_icon"
+    	android:layout_marginLeft="@dimen/cam_list_item_horizontal_padding"/>
+        
+   <TextView 
+       	android:id="@+id/txt_menu_title"
+    	android:layout_width="wrap_content"
+   		android:layout_height="wrap_content" 
+   		android:layout_marginLeft="@dimen/cam_list_item_horizontal_padding"
+   		android:layout_centerVertical="true"
+   		android:layout_toRightOf="@+id/iv_menu_icon"
+   		android:textSize="@dimen/cam_list_item_main_font_size"
+   		android:textColor="@color/cl_wifi_list_main_font_color"
+   		android:text="Monday"/>
+   <View 
+        android:layout_width="match_parent"
+   		android:layout_height="1dp" 
+   		android:background="@color/cam_menu_background_gray"
+   		android:layout_alignParentBottom="true"/>
+</RelativeLayout>
+	
+ 
+
+

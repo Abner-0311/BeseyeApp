@@ -1,6 +1,11 @@
 package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
+import static com.app.beseye.util.BeseyeJSONUtil.CAM_STATUS;
+import static com.app.beseye.util.BeseyeJSONUtil.getJSONInt;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -11,12 +16,19 @@ import org.json.JSONObject;
 
 import com.app.beseye.BeseyeApplication.BeseyeAppStateChangeListener;
 import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.service.BeseyeNotificationService;
+import com.app.beseye.setting.CameraSettingActivity;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
+import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -46,13 +58,18 @@ import android.widget.Toast;
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, 
 																			  OnHttpTaskCallback, 
 																			  ISessionUpdateCallback,
-																			  BeseyeAppStateChangeListener{
+																			  BeseyeAppStateChangeListener,
+																			  OnCamInfoChangedListener{
 	static public final String KEY_FROM_ACTIVITY					= "KEY_FROM_ACTIVITY";
 	
 	protected boolean mbFirstResume = true;
 	protected boolean mActivityDestroy = false;
 	protected boolean mActivityResume = false;
 	protected boolean mbIgnoreSessionCheck = false;
+	
+	protected String mStrVCamID = null;
+	protected String mStrVCamName = null;
+	protected JSONObject mCam_obj;
 	
 	private Handler mHandler = new Handler();
 	
@@ -63,6 +80,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		BeseyeApplication.registerAppStateChangeListener(this);
 		SessionMgr.getInstance().registerSessionUpdateCallback(this);
 		doBindService();
+		
+		BeseyeCamInfoSyncMgr.getInstance().registerOnCamInfoChangedListener(this);
 	}
 	
 	@Override
@@ -81,7 +100,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	    if( mbIgnoreSessionCheck || checkSession())
 			invokeSessionComplete();
 	    
-	    checkOnResumeRunnable();
+	    checkOnResumeUpdateCamInfoRunnable();
 		mActivityResume = true;
 	}
 	
@@ -99,6 +118,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	@Override
 	protected void onDestroy() {
+		BeseyeCamInfoSyncMgr.getInstance().unregisterOnCamInfoChangedListener(this);
 		clearLastAsyncTask();
 		cancelRunningTasks();
 		doUnbindService();
@@ -144,7 +164,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	protected void onSessionComplete(){
-		checkOnResumeRunnable();
+		checkOnResumeUpdateCamInfoRunnable();
 	}
 	
 	private void checkForCrashes() {
@@ -162,7 +182,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final String KEY_WARNING_CLOSE = "KEY_WARNING_CLOSE";
 	
 	static public final int DIALOG_ID_LOADING = 1; 
-	static public final int DIALOG_ID_WARNING = 2; 
+	static public final int DIALOG_ID_WARNING = 2;
+	static public final int DIALOG_ID_SYNCING = 3; 
 	
 	static public final int DIALOG_ID_WIFI_BASE 			= 0x1000; 
 	static public final int DIALOG_ID_TURN_ON_WIFI 			= DIALOG_ID_WIFI_BASE+1; 
@@ -244,6 +265,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}
 			case DIALOG_ID_WIFI_SETTING:{
 				dialog = ProgressDialog.show(this, "", getString(R.string.dialog_wifi_setting), true, true);
+				dialog.setCancelable(false);
+				//TODO: avoid this dialog infinite showing
+				break;
+			}
+			case DIALOG_ID_SYNCING:{
+				dialog = ProgressDialog.show(this, "", getString(R.string.dialog_syncing), true, true);
 				dialog.setCancelable(false);
 				//TODO: avoid this dialog infinite showing
 				break;
@@ -492,6 +519,23 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				if(0 == iRetCode){
 					//Log.i(TAG, "onPostExecute(), "+result.toString());
 					onSessionInvalid();
+				}
+			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+				if(0 == iRetCode){
+					Log.i(TAG, "onPostExecute(), "+result.toString());
+					JSONObject obj = result.get(0);
+					if(null != obj){
+						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
+						if(null != dataObj){
+							//int iCamStatus = getJSONInt(dataObj, CAM_STATUS, 0);
+							//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(iCamStatus).getValue());
+							BeseyeJSONUtil.setJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(obj, BeseyeJSONUtil.OBJ_TIMESTAMP));
+							BeseyeJSONUtil.setJSONObject(mCam_obj, ACC_DATA, dataObj);
+							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
+						}
+					}
+					
+					mOnResumeUpdateCamInfoRunnable = null;
 				}
 			}
 		}
@@ -761,21 +805,71 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
             mIsBound = false;
         }
     }
-    
-    protected void onCamSettingChangedCallback(JSONObject DataObj){}
-    
-    private Runnable mOnResumeRunnable = null;
-    protected void setOnResumeRunnable(Runnable run){
-    	Log.i(TAG, "setOnResumeRunnable()");
-    	mOnResumeRunnable = run;
+   
+    public class OnResumeUpdateCamInfoRunnable implements Runnable{
+    	String mStrVCamId;
+    	OnResumeUpdateCamInfoRunnable(String strVCamId){
+    		mStrVCamId = strVCamId;
+    	}
+    	
+    	boolean isSameVCamId(String strVCamId){
+    		return null != mStrVCamId && mStrVCamId.equals(strVCamId);
+    	}
+    	
+		@Override
+		public void run() {
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(BeseyeBaseActivity.this).setDialogId(DIALOG_ID_SYNCING), true, mStrVCamID);
+		}
+    	
     }
     
-    private void checkOnResumeRunnable(){
-    	if(null != mOnResumeRunnable){
-    		Log.i(TAG, "checkOnResumeRunnable(), trigger...");
-    		BeseyeUtils.postRunnable(mOnResumeRunnable, 0);
-    		mOnResumeRunnable = null;
+    protected OnResumeUpdateCamInfoRunnable mOnResumeUpdateCamInfoRunnable = null;
+    protected void setOnResumeUpdateCamInfoRunnable(OnResumeUpdateCamInfoRunnable run){
+    	Log.i(TAG, "setOnResumeUpdateCamInfoRunnable()");
+    	mOnResumeUpdateCamInfoRunnable = run;
+    }
+    
+    protected boolean isSameIdOnResumeUpdateCamInfoRunnable(String strVCamId){
+    	return (null != mOnResumeUpdateCamInfoRunnable && mOnResumeUpdateCamInfoRunnable.isSameVCamId(strVCamId));
+    }
+    
+    private void checkOnResumeUpdateCamInfoRunnable(){
+    	if(null != mOnResumeUpdateCamInfoRunnable){
+    		Log.i(TAG, "checkOnResumeUpdateCamInfoRunnable(), trigger...");
+    		BeseyeUtils.postRunnable(mOnResumeUpdateCamInfoRunnable, 0);
+    		mOnResumeUpdateCamInfoRunnable = null;
     	}
+    }
+    
+    protected void onCamSettingChangedCallback(JSONObject DataObj){
+    	if(null != mStrVCamID){
+    		if(null != DataObj){
+    			String strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
+    			long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
+    			if(mStrVCamID.equals(strCamUID)){
+    				if(!mActivityDestroy){
+    		    		if(!mActivityResume){
+    		    			setOnResumeUpdateCamInfoRunnable(new OnResumeUpdateCamInfoRunnable(mStrVCamID));
+    		    		}else{
+    		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(DIALOG_ID_SYNCING), true, mStrVCamID);
+    		    		}
+    		    	}
+    			}
+    		}
+    	}
+    }
+    
+    protected long mlCamSetupObjUpdateTs = -1;
+    
+    public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
+		if(strVcamId.equals(this.mStrVCamID)){
+			long lTsOldTs = BeseyeJSONUtil.getJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP);
+			Log.i(TAG, getClass().getSimpleName()+"::onCamSetupChanged(),  lTs = "+lTs+", lTsOldTs="+lTsOldTs);
+			if(lTs > lTsOldTs){
+				mCam_obj = objCamSetup;
+				mOnResumeUpdateCamInfoRunnable = null;
+			}
+		}
     }
 
 	protected abstract int getLayoutId();

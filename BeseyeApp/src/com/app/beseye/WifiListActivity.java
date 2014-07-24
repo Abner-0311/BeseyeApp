@@ -25,8 +25,8 @@ import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_STATE;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.setting.CamSettingMgr;
-import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
@@ -74,9 +74,6 @@ public class WifiListActivity extends WifiControlBaseActivity
 	private BeseyeSwitchBtn mWifiSwitchBtn;
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
-	
-	private String mStrVCamID = "";
-	private JSONObject mCam_obj;
 	
 	static private final String KEY_MAYBE_WRONG_PW = "KEY_MAYBE_WRONG_PW";
 	

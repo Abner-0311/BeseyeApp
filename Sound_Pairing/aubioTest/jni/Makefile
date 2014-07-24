@@ -1,3 +1,5 @@
+#AUTO_TEST_FLAG=0
+
 TOOLCHAIN=/opt/buildroot-gcc342
 TOOLCHAIN_BIN=$(TOOLCHAIN)/bin/
 CROSS_COMP=mipsel-linux-
@@ -20,8 +22,6 @@ $(ZXING_PATH)/common/IllegalArgumentException.cpp \
 $(ZXING_PATH)/common/reedsolomon/GenericGF.cpp \
 $(ZXING_PATH)/common/reedsolomon/GenericGFPoly.cpp \
 $(ZXING_PATH)/common/reedsolomon/ReedSolomonDecoder.cpp \
-$(SRC_PATH)/../common/src/utils.cpp \
-$(SRC_PATH)/../common/src/json_utils.cpp \
 $(SRC_PATH)/sp_config.cpp \
 $(SRC_PATH)/AudioBufferMgr.cpp \
 $(SRC_PATH)/FreqAnalyzer.cpp \
@@ -33,22 +33,27 @@ CXXOBJECTS=$(CXXSOURCES:.cpp=.o)
 SOURCES=$(SRC_PATH)/preprocess/kiss_fft.c \
 $(SRC_PATH)/preprocess/kiss_fftr.c \
 $(SRC_PATH)/preprocess/mdf.c \
-$(SRC_PATH)/preprocess/smallft.c \
 $(SRC_PATH)/preprocess/fftwrap.c \
 $(SRC_PATH)/preprocess/filterbank.c \
-$(SRC_PATH)/preprocess/preprocess.c \
-$(SRC_PATH)/../http_cgi_lib/src/http_cgi.c \
-$(SRC_PATH)/../libwebsockets/src/simple_websocket_mgr.c
+$(SRC_PATH)/preprocess/preprocess.c
+
+ifdef AUTO_TEST_FLAG
+SOURCES+= $(SRC_PATH)/../libwebsockets/src/simple_websocket_mgr.c
+endif
 
 OBJECTS=$(SOURCES:.c=.o)
 
 EXECUTABLE=soundpairing
 
 CFLAGS=-c -Wall -O3 -ffast-math -fforce-addr -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -Iws-client/inc -Ilibwebsockets/inc -I$(TOOLCHAIN)/include -DCAM_ENV
-LDFLAGS=-L$(TOOLCHAIN)/lib -lcurl -ljson-c -lwebsockets -lpthread -L$(TOOLCHAIN)/lib/libstdc++.a
+LDFLAGS=-L$(TOOLCHAIN)/lib -lcurl -ljson-c -lbeseye-common -lhttp-cgi -lwebsockets -lpthread -L$(TOOLCHAIN)/lib/libstdc++.a
 #-lspeexdsp
 CXXFLAGS= -Wall -ansi -fPIC -O3 -ffast-math -fforce-addr -I$(INC_PATH) -I$(TOOLCHAIN)/include/speex -I./ -Isrc -Isrc/preprocess -Icommon/inc -Icam-handler/inc -Ihttp_cgi_lib/inc -Iws-client/inc -Ilibwebsockets/inc -I$(TOOLCHAIN)/include -DCAM_ENV
 
+ifdef AUTO_TEST_FLAG
+CFLAGS+= -DAUTO_TEST
+CXXFLAGS+= -DAUTO_TEST
+endif
 all:$(CXXSOURCES) $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE):$(OBJECTS) $(CXXOBJECTS)

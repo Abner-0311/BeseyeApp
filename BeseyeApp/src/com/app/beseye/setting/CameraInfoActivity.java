@@ -19,9 +19,9 @@ import com.app.beseye.WifiSetupGuideActivity;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
-import com.app.beseye.setting.CamSettingMgr.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
@@ -51,11 +51,9 @@ import android.widget.TextView;
 public class CameraInfoActivity extends BeseyeBaseActivity{
 
 	private TextView mTxtCamName, mTxtSwVersion, mTxtSerialNum, mTxtMacAddr;
-	private String mStrVCamID = "Bes0001";
-	private String mStrVCamName, mStrNameCandidate, mStrVCamSN = null;
+	private String mStrNameCandidate, mStrVCamSN = null;
 	private String mStrVCamMacAddr = null;
 	private String mStrSwVer = null;
-	private JSONObject mCam_obj;
 	
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
@@ -261,25 +259,4 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 		}
 		return viewRet;
 	}
-	
-	protected void onCamSettingChangedCallback(JSONObject DataObj){
-    	super.onCamSettingChangedCallback(DataObj);
-    	if(null != DataObj){
-			String strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
-			long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
-			if(mStrVCamID.equals(strCamUID)){
-				if(!mActivityDestroy){
-		    		if(!mActivityResume){
-		    			setOnResumeRunnable(new Runnable(){
-							@Override
-							public void run() {
-								monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(CameraInfoActivity.this), true, mStrVCamID);
-							}});
-		    		}else{
-		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
-		    		}
-		    	}
-			}
-		}
-    }
 }

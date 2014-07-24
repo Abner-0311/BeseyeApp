@@ -126,6 +126,7 @@ static char msgStatistics[256]={0};
 static char msgSent[2048]={0};
 
 void Delegate_FeedbackMatchResult(string strCode, string strECCode, string strEncodeMark, string strDecode, string strDecodeUnmark, string strDecodeMark, int iMatchDesc, bool bFromAutoCorrection){
+#ifdef AUTO_TEST
 	if(!sbPairingMode){
 		if(fp){
 			string ret = strCode+"\t"+strECCode+"\t"+strEncodeMark+"\t"+strDecode+"\t"+strDecodeUnmark+"\t"+strDecodeMark+"\t"+MATCH_RESULTStoString((MATCH_RESULTS)iMatchDesc)+(bFromAutoCorrection?"_AC":"")+"\n";
@@ -147,6 +148,7 @@ void Delegate_FeedbackMatchResult(string strCode, string strECCode, string strEn
 			LOGE("Delegate_FeedbackMatchResult(), send_msg_to_client, iRet:[%d]\n", iRet);
 		}
 	}
+#endif
 	return;
 }
 

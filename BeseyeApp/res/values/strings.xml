@@ -97,6 +97,8 @@
 	<string name="cam_setting_title_power_on">on</string>
 	<string name="cam_setting_title_power_off">off</string>
 	<string name="cam_setting_title_power_disconnected">disconnected</string>
+	
+	<string name="cam_setting_fail_to_update_cam_status">Fail to update camera status. Please try again later.</string>
 	<string name="cam_setting_fail_to_get_cam_info">Fail to get camera info. Please try again later.</string>
 	<string name="cam_setting_fail_to_get_wifi_list">Fail to get WiFi list from camera. Please try again later.</string>
 	
@@ -207,6 +209,13 @@
 	<string name="no_camera">No camera attached</string>
 	<string name="cam_list_tilte">My Cameras</string>
 	<string name="liveview_hold_to_talk">Hold to talk</string>
+	
+	<string name="cam_menu_my_cam">@string/cam_list_tilte</string>
+	<string name="cam_menu_demo_cam">Demo Cameras</string>
+	<string name="cam_menu_news">News</string>
+	<string name="cam_menu_about">About</string>
+	<string name="cam_menu_support">Support</string>
+	<string name="cam_menu_logout">Logout</string>
 	
 	<string name="news_release_date">2014.7.13</string>
 	<string name="news_title">BesEye camera firmware 6.7 update</string>

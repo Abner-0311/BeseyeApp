@@ -49,9 +49,8 @@ public class EventListActivity extends BeseyeBaseActivity{
 	private View mVwNavBar;
 	private ImageView mIvCancel, mIvFilter, mIvCalendar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
-	private JSONObject mCam_obj;
-	private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
-	private String mStrVCamName;
+
+	//private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -252,7 +251,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS)+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS*3)+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS*3 +"");
 	}
 	
 	private int miTaskSeedNum = 0;

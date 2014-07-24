@@ -62,9 +62,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	private BeseyeSwitchBtn mScheduleSwitchBtn;
 	private ViewGroup mVgAddPowerSchedule, mVgPowerScheduleContainer;
 	private List<ViewGroup> mArrVgSchedules;
-	private String mStrVCamID = "Bes0001";
-	private JSONObject mCam_obj;
-	
+
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
@@ -174,15 +172,15 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	}
 	
 	private void updateSheduleState(){
-		CAM_CONN_STATUS iCamState =  CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
-		if(null != mScheduleSwitchBtn){
-			if(CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
-				mScheduleSwitchBtn.setEnabled(false);
-			}else{
-				mScheduleSwitchBtn.setEnabled(true);
-				mScheduleSwitchBtn.setSwitchState((CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-			}
-		}
+//		BeseyeJSONUtil.CAM_CONN_STATUS iCamState =  BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
+//		if(null != mScheduleSwitchBtn){
+//			if(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
+//				mScheduleSwitchBtn.setEnabled(false);
+//			}else{
+//				mScheduleSwitchBtn.setEnabled(true);
+//				mScheduleSwitchBtn.setSwitchState((BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+//			}
+//		}
 	}
 
 	@Override
@@ -258,27 +256,6 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 			}
 		}
 	}
-	
-	protected void onCamSettingChangedCallback(JSONObject DataObj){
-    	super.onCamSettingChangedCallback(DataObj);
-    	if(null != DataObj){
-			String strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
-			long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
-			if(mStrVCamID.equals(strCamUID)){
-				if(!mActivityDestroy){
-		    		if(!mActivityResume){
-		    			setOnResumeRunnable(new Runnable(){
-							@Override
-							public void run() {
-								monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(PowerScheduleActivity.this), true, mStrVCamID);
-							}});
-		    		}else{
-		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
-		    		}
-		    	}
-			}
-		}
-    }
 	
 	static public final int REQUEST_SCHEDULE_CHANGED = 101;
 	static public final int REQUEST_SCHEDULE_ADD 	 = 102;

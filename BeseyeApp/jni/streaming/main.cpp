@@ -143,6 +143,8 @@ static jmethodID midAudioWriteShortBuffer= NULL;
 static jmethodID midAudioWriteByteBuffer= NULL;
 static jmethodID midAudioQuit= NULL;
 
+static pthread_mutex_t mutexlock;
+
 JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_nativeClassInit(JNIEnv *env, jclass clss)
 {
 	LOGE("nativeClassInit()+");
@@ -241,6 +243,10 @@ JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_nativeClassIni
 //	}
 
 	//LOGE("nativeClassInit()-, playMethod:%d",playMethod);
+
+	pthread_mutex_init(&mutexlock, 0);
+	//pthread_mutex_destroy(&mutexlock); //where to place it?????
+
 	LOGE("nativeClassInit()-");
 
 	av_log_set_level(AV_LOG_DEBUG);
@@ -356,6 +362,7 @@ jstring str2jstring(const char * msg) {
 
 void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_Callback cbType, const char * msg, int iMajorType, int iMinorType){
 	DECLARE_JNIENV_WITHOUT_RETURN()
+	pthread_mutex_lock(&mutexlock);
 	if(obj == player[0] || obj == player[1]){
     	//LOGI("rtmpStreamStatusCb(), %s cbType:%d, msg:%s, iMajorType:%d",(obj == player[0] ?"player1":"player2"),cbType, (msg?msg:""),iMajorType);
     	if(jni_host){
@@ -377,7 +384,7 @@ void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_C
     }/*else if(obj == &CBeseyeAudioStreamer::getInstance()){
     	LOGI("rtmpStreamStatusCb(), audio Streamer cbType:%d, msg:%s, iStatusType:%d",cbType, (msg?msg:""),iMajorType);
     }*/
-
+	pthread_mutex_unlock(&mutexlock);
 	//jvm->DetachCurrentThread();
 }
 
@@ -400,6 +407,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 	int iRet = -1;
 
 	if(0 <= iStreamIdx && iStreamIdx < MAX_STREAM_COUNT){
+		pthread_mutex_lock(&mutexlock);
 		if(NULL == player[iStreamIdx]){
 			jni_host = jni_env->NewGlobalRef(obj);
 			char *nativeString = NULL;
@@ -416,6 +424,9 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 			LOGE("openStreaming(), iIdx:[%d]", iStreamIdx);
 			//player[iStreamIdx] = new CBeseyePlayer(/*anw*/g_bitmap, PIX_FMT_RGB565LE, surface_width, surface_height);
 			player[iStreamIdx] = new CBeseyePlayer(NULL, PIX_FMT_RGB565LE, 0, 0);
+
+			pthread_mutex_unlock(&mutexlock);
+
 			player[iStreamIdx]->setWindowHolder(jni_host, getWindowByHolder);
 			player[iStreamIdx]->registerVideoCallback(videoCallback, videoDeinitCallback);
 			player[iStreamIdx]->registerCallback(rtmpStreamStatusCb);
@@ -439,7 +450,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 //			if(g_bitmap)
 //				jni_env->DeleteGlobalRef(g_bitmap);
 //			g_bitmap = NULL;
-
+			pthread_mutex_lock(&mutexlock);
 			delete player[iStreamIdx];
 			player[iStreamIdx] = NULL;
 			jni_env->DeleteGlobalRef(jni_host);
@@ -447,6 +458,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 			LOGE("openStreaming(), stream[%d] is playing", iStreamIdx);
 			iRet = -2;
 		}
+		pthread_mutex_unlock(&mutexlock);
 	}
 	LOGE("openStreaming(), end");
 $ERR:
@@ -461,6 +473,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreamingList(J
 	int iRet = -1;
 
 	if(0 <= iStreamIdx && iStreamIdx < MAX_STREAM_COUNT){
+		pthread_mutex_lock(&mutexlock);
 		if(NULL == player[iStreamIdx]){
 			jni_host = jni_env->NewGlobalRef(obj);
 
@@ -472,6 +485,8 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreamingList(J
 			iRet = iStreamIdx;
 			LOGE("openStreaming(), iIdx:[%d]", iStreamIdx);
 			player[iStreamIdx] = new CBeseyePlayer(NULL, PIX_FMT_RGB565LE, 0, 0);
+
+			pthread_mutex_unlock(&mutexlock);
 			player[iStreamIdx]->setWindowHolder(jni_host, getWindowByHolder);
 			player[iStreamIdx]->registerVideoCallback(videoCallback, videoDeinitCallback);
 			player[iStreamIdx]->registerCallback(rtmpStreamStatusCb);
@@ -506,7 +521,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreamingList(J
 //			if(g_bitmap)
 //				jni_env->DeleteGlobalRef(g_bitmap);
 //			g_bitmap = NULL;
-
+			pthread_mutex_lock(&mutexlock);
 			delete player[iStreamIdx];
 			player[iStreamIdx] = NULL;
 			jni_env->DeleteGlobalRef(jni_host);
@@ -514,6 +529,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreamingList(J
 			LOGE("openStreaming(), stream[%d] is playing", iStreamIdx);
 			player[iStreamIdx]->closeStreaming();
 		}
+		pthread_mutex_unlock(&mutexlock);
 	}
 	LOGE("openStreaming(), end");
 $ERR:
@@ -524,6 +540,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_addStreamingPath(JN
 {
 	DECLARE_JNIENV_WITH_RETURN()
 	int iRet = -1;
+	pthread_mutex_lock(&mutexlock);
 	if(0 <= iStreamIdx && iStreamIdx < MAX_STREAM_COUNT && player[iStreamIdx]){
 		char *nativeString = (char *)jni_env->GetStringUTFChars( path, 0);
 		iRet = player[iStreamIdx]->addStreamingPath(nativeString);
@@ -531,6 +548,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_addStreamingPath(JN
 	}else{
 		LOGE("addStreamingPath(), stream[%d] is null", iStreamIdx);
 	}
+	pthread_mutex_unlock(&mutexlock);
 	return iRet;
 }
 
@@ -538,11 +556,13 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_pauseStreaming(JNIE
 {
 	DECLARE_JNIENV_WITH_RETURN()
 	int iRet = 0;
+	pthread_mutex_lock(&mutexlock);
 	if(0 <= iStreamIdx && iStreamIdx < MAX_STREAM_COUNT && NULL != player[iStreamIdx]){
 		iRet = player[iStreamIdx]->pauseStreaming();
 	}else{
 		LOGE("pauseStreaming(), stream[%d] is null", iStreamIdx);
 	}
+	pthread_mutex_unlock(&mutexlock);
 
 	return iRet;
 }
@@ -551,11 +571,13 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_resumeStreaming(JNI
 {
 	DECLARE_JNIENV_WITH_RETURN()
 	int iRet = 0;
+	pthread_mutex_lock(&mutexlock);
 	if(0 <= iStreamIdx && iStreamIdx < MAX_STREAM_COUNT && NULL != player[iStreamIdx]){
 		iRet = player[iStreamIdx]->resumeStreaming();
 	}else{
 		LOGE("resumeStreaming(), stream[%d] is null", iStreamIdx);
 	}
+	pthread_mutex_unlock(&mutexlock);
 
 	return iRet;
 }
@@ -564,6 +586,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_updateSurface(JNIEn
 {
 	DECLARE_JNIENV_WITH_RETURN()
 	int iRet = 0;
+	pthread_mutex_lock(&mutexlock);
 	if(0 <= iStreamIdx && iStreamIdx < MAX_STREAM_COUNT && NULL != player[iStreamIdx]){
 		ANativeWindow* anw = ANativeWindow_fromSurface(env, surface);
 		int surface_width = NULL != anw ?ANativeWindow_getWidth(anw):0;
@@ -573,6 +596,8 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_updateSurface(JNIEn
 		LOGE("updateSurface(), stream[%d] is invalid", iStreamIdx);
 	}
 
+	pthread_mutex_unlock(&mutexlock);
+
 	return iRet;
 }
 
@@ -581,11 +606,13 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_closeStreaming(JNIE
 	DECLARE_JNIENV_WITH_RETURN()
 	int iRet = 1;
 	LOGE("closeStreaming()++, iStreamIdx:%d", iStreamIdx);
+	pthread_mutex_lock(&mutexlock);
 	if((0 <= iStreamIdx && iStreamIdx < MAX_STREAM_COUNT && NULL != player[iStreamIdx])){
 		player[iStreamIdx]->closeStreaming();
 	}else{
 		LOGE("closeStreaming()++, player[iStreamIdx] is null");
 	}
+	pthread_mutex_unlock(&mutexlock);
 	return iRet;
 }
 

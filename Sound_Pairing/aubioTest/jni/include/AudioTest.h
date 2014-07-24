@@ -71,6 +71,10 @@ public :
 	void setStopAnalysisBufIdx(int idx){ miStopAnalysisBufIdx = idx;}
 	int getStopAnalysisBufIdx(){return miStopAnalysisBufIdx;}
 
+	void setDetectStartFlag(bool flag);
+	bool getDetectStartFlag();
+
+
 	//for debug
 	void acquireSyncObj();
 	void releaseSyncObj();
@@ -96,6 +100,9 @@ private:
 	bool mbStopControlThreadFlag;
 	bool mbStopBufRecordFlag;
 	bool mbStopAnalysisThreadFlag;
+
+	bool mbDetectStartFlag;
+
 	pthread_t mControlThread;
 	pthread_t mBufRecordThread;
 	pthread_t mAnalysisThread;

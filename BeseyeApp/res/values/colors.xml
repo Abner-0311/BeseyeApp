@@ -12,8 +12,11 @@
     <color name="beseye_opening_color">#ffffff</color>
     <color name="background_white">#ffffff</color>
     
+    <color name="cam_menu_itm_background">#ECECED</color>
+    <color name="cam_menu_background_gray">#88000000</color>
+    
     <color name="liveview_font_normal_color">#727171</color>
-    <color name="liveview_font_disabled_color">#88727171</color>
+    <color name="liveview_font_disabled_color">#B3727171</color>
     <color name="liveview_background">#e5e5e5</color>
     
     <color name="liveview_power_state_font_color">#787777</color>
@@ -65,6 +68,7 @@
     <color name="eventlist_gray_line">#dcdcdd</color>
     
     <color name="newslist_unread_bg">#ebfaf9</color>
+    <color name="newslist_highlight_bg">#def1f0</color>
     <color name="news_timeline_unread">#00bbb3</color>
     <color name="news_content_font">#666666</color>
     

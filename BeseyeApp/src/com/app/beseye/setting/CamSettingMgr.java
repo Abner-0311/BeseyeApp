@@ -6,6 +6,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeSharedPreferenceUtil;
 
 import android.content.Context;
@@ -27,34 +28,6 @@ public class CamSettingMgr {
 	private Map<String, CamSettingData> mSettingDataMap;
 	private Map<String, WeakReference<ISettingDataUpdateCallback>> mSettingDataUpdateCallbackMap;
 	
-	public static enum CAM_CONN_STATUS{
-		CAM_DISCONNECTED(-1),
-		CAM_OFF(0),
-		CAM_ON(1);
-		
-		private int iValue;
-		CAM_CONN_STATUS(int iVal){
-			iValue = iVal;
-		}
-		
-		public int getValue(){
-			return iValue;
-		}
-		
-		public static CAM_CONN_STATUS toCamConnStatus(int iVal){
-			switch(iVal){
-				case 0:{
-					return CAM_CONN_STATUS.CAM_OFF;
-				}
-				case 1:{
-					return CAM_CONN_STATUS.CAM_ON;
-				}
-				default:
-					return CAM_CONN_STATUS.CAM_DISCONNECTED;
-			}
-		}
-	}
-
 	static public void createInstance(Context context){
 		if(null == sCamSettingMgr)
 			sCamSettingMgr = new CamSettingMgr(context);
@@ -84,7 +57,7 @@ public class CamSettingMgr {
 				CamSettingData settingData = new CamSettingData();
 				if(null != settingData){
 					settingData.setCamID(id);
-					settingData.setCamPowerState(BeseyeSharedPreferenceUtil.getPrefIntValue(pref, CAM_POWER, CAM_CONN_STATUS.CAM_ON.getValue()));
+					settingData.setCamPowerState(BeseyeSharedPreferenceUtil.getPrefIntValue(pref, CAM_POWER, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON.getValue()));
 					settingData.setVideoUpsideDown(BeseyeSharedPreferenceUtil.getPrefIntValue(pref, CAM_UPSIDE_DOWN, 0));
 					settingData.setCamName(BeseyeSharedPreferenceUtil.getPrefStringValue(pref, CAM_NAME, ASSIGN_ST_PATH?TMP_CAM_NAME_S:TMP_CAM_NAME));
 					settingData.setCamSN(BeseyeSharedPreferenceUtil.getPrefStringValue(pref, CAM_SN, TMP_CAM_SN));
@@ -95,12 +68,12 @@ public class CamSettingMgr {
 		}
 	}
 	
-	public CAM_CONN_STATUS getCamPowerState(String id){
+	public BeseyeJSONUtil.CAM_CONN_STATUS getCamPowerState(String id){
 		CamSettingData data = mSettingDataMap.get(id);
-		return CAM_CONN_STATUS.toCamConnStatus(null != data?data.miCamPowerState:-1);
+		return BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(null != data?data.miCamPowerState:-1);
 	}
 	
-	public void setCamPowerState(String id, CAM_CONN_STATUS iCamPowerState){
+	public void setCamPowerState(String id, BeseyeJSONUtil.CAM_CONN_STATUS iCamPowerState){
 		CamSettingData data = mSettingDataMap.get(id);
 		if(null != data){
 			data.setCamPowerState(iCamPowerState.getValue());
