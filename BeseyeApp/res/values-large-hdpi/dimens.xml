@@ -15,8 +15,11 @@
     <dimen name="news_timeline_dot_left">20dp</dimen>
     
     <dimen name="cameralist_videoblock_inner">5dp</dimen>
-    
+
     <dimen name="cameralist_videoblock_thunmbnail_padding">4.5dp</dimen>
     <dimen name="cameralist_videoblock_padding_bottom">5dp</dimen>
+    <dimen name="eventlist_gray_line_left">66dp</dimen>
+    <dimen name="eventlist_gray_line_right">20dp</dimen>
+    <dimen name="eventlist_timeline_dot_left">52dp</dimen>
 
 </resources>
