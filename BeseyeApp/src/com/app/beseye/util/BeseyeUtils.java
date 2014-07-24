@@ -22,12 +22,16 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 public class BeseyeUtils {
 	static private Handler sHandler = new Handler();
+	
+	static public final float BESEYE_THUMBNAIL_RATIO_9_16 = 9.0f/16.0f;
 	
 	static public int getDeviceWidth(Activity act){
 		if(null != act){
@@ -273,5 +277,26 @@ public class BeseyeUtils {
 		calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY+iDay); //Sunday ~ Saturday => 0 ~ 6, Calendar.SUNDAY~Calendar.SATURDAY => 1~7
 		strRet = dayFormat.format(calendar.getTime());
 		return strRet;
+	}
+	
+	public static int setThumbnailRatio(View view, int iWidth, float fRatio){
+		if(null == view || 0 > iWidth ||  0.0f > fRatio){
+			Log.e(TAG, "setThumbnailRatio(), invalid params");
+			return 0;
+		}
+			
+		LayoutParams lp = view.getLayoutParams();
+		if(null == lp){
+			lp = new AbsListView.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		}
+		else{
+			lp =view.getLayoutParams();
+		}
+		
+		lp.width = iWidth;
+		lp.height = (int)(Math.ceil(((float)lp.width)*fRatio));
+		view.setLayoutParams(lp);
+		
+		return lp.height;
 	}
 }

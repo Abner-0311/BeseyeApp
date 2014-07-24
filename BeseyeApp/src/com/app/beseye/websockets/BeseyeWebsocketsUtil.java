@@ -45,6 +45,7 @@ public class BeseyeWebsocketsUtil {
     static public final String WS_FUNC_BIN_TRANSFER 	= "wsc_binary_transfer";
     
     static public final String WS_FUNC_RAILS_PING 		= "websocket_rails.ping";
+    static public final String WS_FUNC_RAILS_PONG 		= "websocket_rails.pong";
 
     static public final String WSA_WS_ID 				= "ws_id";
     static public final String WS_ATTR_DATA 			= "data";

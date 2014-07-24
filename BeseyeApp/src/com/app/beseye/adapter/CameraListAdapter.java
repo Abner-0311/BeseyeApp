@@ -15,6 +15,7 @@ import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.RemoteImageView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -24,11 +25,15 @@ import android.widget.TextView;
 
 public class CameraListAdapter extends BeseyeJSONAdapter {
 	private OnSwitchBtnStateChangedListener mOnSwitchBtnStateChangedListener;
+	private int miThumbnailWidth;
 	
 	public CameraListAdapter(Context context, JSONArray list, int iLayoutId,
 			OnClickListener itemOnClickListener, OnSwitchBtnStateChangedListener onSwitchBtnStateChangedListener) {
 		super(context, list, iLayoutId, itemOnClickListener);
 		mOnSwitchBtnStateChangedListener = onSwitchBtnStateChangedListener;
+		//Log.i(TAG, "context.getResources().getDimension(R.dimen.cameralist_videoblock_margin):"+context.getResources().getDimension(R.dimen.cameralist_videoblock_margin));
+		miThumbnailWidth = (int) (BeseyeUtils.getDeviceWidth((Activity)context) - (context.getResources().getDimension(R.dimen.cameralist_videoblock_margin)+context.getResources().getDimension(R.dimen.cameralist_videoblock_thunmbnail_padding))*2); 
+		Log.i(TAG, "miThumbnailWidth:"+miThumbnailWidth);
 	}
 
 	static public class CameraListItmHolder{
@@ -54,8 +59,15 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				}
 				
 				holder.mImgThumbnail = (RemoteImageView)convertView.findViewById(R.id.iv_cameralist_thumbnail);
+				if(null != holder.mImgThumbnail){
+					BeseyeUtils.setThumbnailRatio(holder.mImgThumbnail, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
+				}
 				
 				holder.mVgCamOff = (ViewGroup)convertView.findViewById(R.id.rl_cameralist_no_video);
+				if(null != holder.mVgCamOff){
+					BeseyeUtils.setThumbnailRatio(holder.mVgCamOff, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
+				}
+				
 				holder.mVgCamDisconnected = (ViewGroup)convertView.findViewById(R.id.rl_camera_disconnected_solid);
 				
 				convertView.setOnClickListener(mItemOnClickListener);
@@ -86,8 +98,9 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					holder.mSbCamOnOff.setEnabled(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED)?false:true);
 				}
 				
-				if(null != holder.mImgThumbnail){
-					//Log.i(TAG, "setupItem(), name"+BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_NAME)+", path="+BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB));
+				//Log.i(TAG, "setupItem(), holder.mImgThumbnail:"+holder.mImgThumbnail.getWidth());
+				if(!connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED) && null != holder.mImgThumbnail){
+					
 					holder.mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB), R.drawable.cameralist_thumbnail);
 					holder.mImgThumbnail.loadImage();
 				}

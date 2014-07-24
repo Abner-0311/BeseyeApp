@@ -683,8 +683,11 @@ public class BeseyeJSONUtil {
 						cRet = CAM_CONN_STATUS.CAM_OFF;
 					}
 				}
+			}else{
+				Log.e(TAG, "getVCamConnStatus(), can't find dataObj");
 			}
 		}
+		//Log.e(TAG, "getVCamConnStatus(), cRet:"+cRet.toString());
 		return cRet;
 	}
 	

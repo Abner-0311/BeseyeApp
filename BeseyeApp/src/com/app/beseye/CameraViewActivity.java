@@ -887,7 +887,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private void updatePowerState(){
 		if(null != mVgPowerState){
-			if(isCamPowerOff()){
+			if(isCamPowerDisconnected()){
+				showInvalidStateMask();
+			}else if(isCamPowerOff()){
 				mVgPowerState.setVisibility(View.VISIBLE);
 			}else{
 				mVgPowerState.setVisibility(View.GONE);
@@ -1022,6 +1024,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 				if(0 == iRetCode){
+					BeseyeJSONUtil.setVCamConnStatus(mCam_obj, (BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.CAM_STATUS)==1)?CAM_CONN_STATUS.CAM_ON:CAM_CONN_STATUS.CAM_OFF);
+
 					//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON.getValue());
 					Intent resultIntent = new Intent();
 					resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());

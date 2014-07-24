@@ -176,13 +176,19 @@ public class WebsocketsMgr {
         @Override
         public void onCompleted(Exception ex, final WebSocket webSocket) {
         	Log.i(TAG, "onCompleted()...");
+        	
+        	if(null == webSocket){
+        		Log.e(TAG, "onCompleted(), webSocket is null...");
+        		return;
+			}
+
 //        	webSocket.send("Welcone");
 //        	webSocket.send("Welcone".getBytes());
         	OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 			if(null != listener){
 				listener.onChannelConnected();
 			}
-
+			
             webSocket.setStringCallback(new StringCallback() {
                 @Override
                 public void onStringAvailable(String s) {
@@ -199,12 +205,15 @@ public class WebsocketsMgr {
 								JSONObject authObj = BeseyeWebsocketsUtil.genAuthMsg();
 								if(null != authObj){
 									webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_AUTH, authObj.toString()));
-									//Log.i(TAG, "onStringAvailable(), authObj="+authObj.toString());
+									Log.i(TAG, "onStringAvailable(), authObj="+authObj.toString());
 									mStrAuthJobId = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(authObj, WS_ATTR_DATA),WS_ATTR_JOB_ID); 
 									Log.i(TAG, "onStringAvailable(), strAuthJobId="+mStrAuthJobId);
 								}
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_KEEP_ALIVE, wrapWSBaseMsg().toString()));
 								mlLastTimeToGetKeepAlive = System.currentTimeMillis();
+							}else if(WS_FUNC_RAILS_PING.equals(strCmd)){
+								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_RAILS_PONG, wrapWSBaseMsg().toString()));
+								//mlLastTimeToGetKeepAlive = System.currentTimeMillis();
 							}else if(WS_CB_KEEP_ALIVE.equals(strCmd)){
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_KEEP_ALIVE, wrapWSBaseMsg().toString()));
 								mlLastTimeToGetKeepAlive = System.currentTimeMillis();
