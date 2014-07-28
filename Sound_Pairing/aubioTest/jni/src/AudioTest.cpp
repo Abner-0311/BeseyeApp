@@ -622,7 +622,8 @@ void* AudioTest::runAutoTestControl(void* userdata){
 		//			FreqGenerator.getInstance().playCode3(/*lstTestData.get(i)*/curCode, true);
 		//		else
 	#ifndef CAM_ENV
-					FreqGenerator::getInstance()->playCode2(tester->curCode, true);
+					FreqGenerator::getInstance()->playCode3(tester->curCode, false);
+					//FreqGenerator::getInstance()->playCode2(tester->curCode, true);
 	#endif
 			}else{
 	#ifndef CAM_ENV
@@ -653,10 +654,13 @@ void* AudioTest::runAutoTestControl(void* userdata){
 				FreqGenerator::getInstance()->stopPlay2();
 	#endif
 				break;
-			}else if(!tester->mbAutoTestBeginOnReceiver){
+			}
+	#ifdef CAM_ENV
+			else if(!tester->mbAutoTestBeginOnReceiver){
 				LOGE("runAutoTestControl(), continue to rewait---\n");
 				continue;
 			}
+    #endif
 
 			LOGI("runAutoTestControl(), enter lock\n");
 			tester->acquireSyncObj();

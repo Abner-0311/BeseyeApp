@@ -973,7 +973,7 @@ int FreqAnalyzer::segmentCheckOnFirst(bool bForcePerform){
 //				LOGE("segmentCheckOnFirst(), iBufIdxTOCheck:"+iBufIdxTOCheck+\n", iRet:"+iRet+\n", bCapture:"+bCapture);
 //			}
 
-		LOGD("segmentCheckOnFirst(), takes %lld ms at %d\n", (time_ms() - lTsBegin), mSessionBeginBufIdx);
+//		LOGD("segmentCheckOnFirst(), takes %lld ms at %d\n", (time_ms() - lTsBegin), mSessionBeginBufIdx);
 	}
 	return iRet;
 }
@@ -1024,7 +1024,7 @@ int FreqAnalyzer::segmentCheck(bool bForcePerform){
 					}
 				}
 			}
-			LOGD("segmentCheck(), takes %lld ms at %d\n", (time_ms() - lTsBegin), mSessionBeginBufIdx);
+//			LOGD("segmentCheck(), takes %lld ms at %d\n", (time_ms() - lTsBegin), mSessionBeginBufIdx);
 		}else{
 			LOGE("segmentCheck(), empty mCodeRecordList\n");
 		}

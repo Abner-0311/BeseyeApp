@@ -26,7 +26,10 @@ LOCAL_CPPFLAGS 		   += -fexceptions
 LOCAL_CFLAGS    := -DLWS_BUILTIN_GETIFADDRS -DCMAKE_BUILD
 LWS_LIB_PATH	:= $(TOP_LOCAL_PATH)/libwebsockets/lib
 
-LOCAL_SRC_FILES        := $(TOP_LOCAL_PATH)/src/preprocess/kiss_fft.c \
+
+LOCAL_SRC_FILES        := $(TOP_LOCAL_PATH)/common/src/utils.cpp \
+						  $(TOP_LOCAL_PATH)/common/src/json_utils.cpp \
+						  $(TOP_LOCAL_PATH)/src/preprocess/kiss_fft.c \
 						  $(TOP_LOCAL_PATH)/src/preprocess/kiss_fftr.c \
 						  $(TOP_LOCAL_PATH)/src/preprocess/mdf.c \
 						  $(TOP_LOCAL_PATH)/src/preprocess/smallft.c \
@@ -36,10 +39,10 @@ LOCAL_SRC_FILES        := $(TOP_LOCAL_PATH)/src/preprocess/kiss_fft.c \
 						  $(TOP_LOCAL_PATH)/http_cgi_lib/src/http_cgi.c \
 						  $(TOP_LOCAL_PATH)/cam-handler/src/network/event.c \
 						  $(TOP_LOCAL_PATH)/cam-handler/src/network/network.c \
-						  $(TOP_LOCAL_PATH)/common/src/utils.cpp \
-						  $(TOP_LOCAL_PATH)/common/src/json_utils.c \
+						  $(TOP_LOCAL_PATH)/cam-handler/src/network/network_observer.cpp \
 						  $(TOP_LOCAL_PATH)/cam-handler/src/main.c \
 						  $(TOP_LOCAL_PATH)/cam-handler/src/delegate/cam_controller.cpp \
+						  $(TOP_LOCAL_PATH)/cam-handler/src/delegate/led_controller.cpp \
 						  $(TOP_LOCAL_PATH)/cam-handler/src/event_queue/event_queue_handler.cpp \
 						  $(TOP_LOCAL_PATH)/cam-handler/src/event_queue/event_queue.cpp \
 						  $(TOP_LOCAL_PATH)/cam-handler/src/cam_event_mgr.c \
