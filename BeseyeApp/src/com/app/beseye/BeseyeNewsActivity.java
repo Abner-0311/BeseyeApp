@@ -88,6 +88,7 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 		if(view.getTag() instanceof NewsListItmHolder){
 			NewsListItmHolder info = (NewsListItmHolder)view.getTag();
 			if(null != info){
+				launchActivityByClassName(CameraUpdateActivity.class.getName(),getIntent().getExtras());
 				//Toast.makeText(this, info.mTimeZone.toString(), Toast.LENGTH_SHORT).show();
 //				Intent intent = new Intent();
 //				intent.putExtra(HWSettingsActivity.TIME_ZONE_INFO, info.mtxtZoneInfo.getText());

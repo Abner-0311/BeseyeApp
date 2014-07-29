@@ -29,6 +29,9 @@ public class SessionMgr {
 	static private final String SESSION_ACC_CERTIFICATED	= "beseye_certificated";
 	static private final String SESSION_OWNER_INFO			= "beseye_owner_data";
 	
+	static private final String SESSION_UPDATE_TS			= "beseye_cam_update_ts";
+	static private final String SESSION_UPDATE_CAMS			= "beseye_cam_update_list";
+	
 	static private final String SESSION_PRODUCTION_MODE	    = "beseye_server_mode";
 	
 	static private SessionMgr sSessionMgr;
@@ -60,6 +63,9 @@ public class SessionMgr {
 				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
 				mSessionData.setIsProductionMode(0 <getPrefIntValue(mPref, SESSION_PRODUCTION_MODE, 1));
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
+				
+				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
+				mSessionData.setCamUpdateList(getPrefStringValue(mPref, SESSION_UPDATE_CAMS));
 			}
 		}
 	}
@@ -205,6 +211,26 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
+	public long getCamUpdateTimestamp(){
+		return mSessionData.getCamUpdateTimestamp();
+	}
+	
+	synchronized public void setCamUpdateTimestamp(long lCamUpdateTs){
+		setPrefLongValue(mPref, SESSION_UPDATE_TS, lCamUpdateTs);
+		mSessionData.setCamUpdateTimestamp(lCamUpdateTs);
+		notifySessionUpdate();
+	}
+	
+	public String getCamUpdateList(){
+		return mSessionData.getCamUpdateList();
+	}
+	
+	synchronized public void setCamUpdateList(String strCamUpdateList){
+		setPrefStringValue(mPref, SESSION_UPDATE_CAMS, strCamUpdateList);
+		mSessionData.setCamUpdateList(strCamUpdateList);
+		notifySessionUpdate();
+	}
+	
 	public SessionData getSessionData(){
 		return mSessionData;
 	}
@@ -234,6 +260,9 @@ public class SessionMgr {
 		private String mStrHostUrl, mStrStorageHostUrl, mStrUploadHostUrl, mStrArtistsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo;
 		private boolean mbIsCertificated, mbProductionMode;
 		
+		private long mlCamUpdateTs;
+		private String mStrCamUpdateList;
+		
 		public SessionData() {
 			mStrHostUrl = "";
 			mStrStorageHostUrl = "";
@@ -246,6 +275,9 @@ public class SessionMgr {
 			mStrOwnerInfo = "";
 			mbIsCertificated = false;
 			mbProductionMode = true;
+			
+			mlCamUpdateTs = 0;
+			mStrCamUpdateList = "";
 		}
 		
 		public String getHostUrl(){
@@ -350,6 +382,22 @@ public class SessionMgr {
 		synchronized public void setOwnerInfo(String strOwnerInfo){
 			mStrOwnerInfo = strOwnerInfo;
 		}
+		
+		public long getCamUpdateTimestamp(){
+			return mlCamUpdateTs;
+		}
+		
+		synchronized public void setCamUpdateTimestamp(long lCamUpdateTs){
+			mlCamUpdateTs = lCamUpdateTs;
+		}
+		
+		public String getCamUpdateList(){
+			return mStrCamUpdateList;
+		}
+		
+		synchronized public void setCamUpdateList(String strCamUpdateList){
+			mStrCamUpdateList = strCamUpdateList;
+		}
 	
 		@Override
 		public void writeToParcel(Parcel dest, int flags) {
@@ -369,6 +417,9 @@ public class SessionMgr {
 			
 			dest.writeInt(mbIsCertificated?1:0);
 			dest.writeInt(mbProductionMode?1:0);
+			
+			dest.writeLong(mlCamUpdateTs);
+			dest.writeString(mStrCamUpdateList);
 		}
 		
 		private SessionData(Parcel in) {
@@ -399,6 +450,9 @@ public class SessionMgr {
 			
 			mbIsCertificated = in.readInt()>0?true:false;
 			mbProductionMode = in.readInt()>0?true:false;
+			
+			mlCamUpdateTs = in.readLong();
+			mStrCamUpdateList = in.readString();
 		}
 		
 		public static final Parcelable.Creator<SessionData> CREATOR = new Parcelable.Creator<SessionData>() {

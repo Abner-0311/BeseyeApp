@@ -62,7 +62,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	private String mStrVCamSN = null;
 	private String mStrVCamMacAddr = null;
-	private String mStrOldVCamName = null;
 	
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;

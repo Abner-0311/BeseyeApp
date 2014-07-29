@@ -67,6 +67,8 @@
     <dimen name="caminfo_dialog_attr_value_font_size">19sp</dimen>
     <dimen name="caminfo_dialog_attr_padding_vertical">6sp</dimen>
     
+    <dimen name="cam_update_progress_horin_margin">40dp</dimen>
+    
     <dimen name="caminfo_cam_name_padding_hori">8dp</dimen>
     
     <dimen name="caminfo_dialog_item_height">70dp</dimen>
@@ -181,6 +183,9 @@
     <dimen name="firmware_update_margin_medium">4dp</dimen>
     <dimen name="firmware_update_btn_inner">10dp</dimen>
     <dimen name="firmware_update_btn_margin">10dp</dimen>
+    <dimen name="firmware_update_desc_margin_bottom">4dp</dimen>
+    <dimen name="firmware_update_font_size">13sp</dimen>
+
     
     <dimen name="forget_pw_instruction_ill_bottom">52dp</dimen>
     <dimen name="forget_pw_instruction_txt_marginTop">32dp</dimen>

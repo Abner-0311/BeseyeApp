@@ -98,6 +98,11 @@ public class BeseyeJSONUtil {
 	public static final String SCHED_TO 				= "to";
 	public static final String SCHED_DAYS 				= "days";
 	
+	public static final String UPDATE_PROGRESS 			= "progress";
+	public static final String UPDATE_FINAL_STAUS 		= "finalStatus";
+	public static final String UPDATE_DETAIL_STAUS 		= "detailStatus";
+	
+	
 	//WS BE service
 	public static final String CAM_UUID 				= "camUuid";
 	public static final String DEV_ID 					= "deviceId";

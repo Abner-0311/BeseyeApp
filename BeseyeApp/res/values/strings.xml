@@ -51,6 +51,7 @@
     <string name="zone_list_menu_sort_by_timezone">Sort by timezone</string>
     
     <string name="dialog_title_warning">Warning</string>
+    <string name="dialog_title_info">Info</string>
     <string name="dialog_no_connectivity">Please check out your network connection.</string>
     <string name="dialog_loading">Loading&#8230;</string>
     <string name="dialog_syncing">Syncing&#8230;</string>
@@ -220,6 +221,16 @@
 	<string name="news_release_date">2014.7.13</string>
 	<string name="news_title">BesEye camera firmware 6.7 update</string>
 	<string name="news_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue augue id...</string>
+	
+	<string name="update_title">Camera update</string>
+	<string name="update_now">Update now</string>
+	<string name="cam_update_progress">Cameras updating&#8230; %s</string>
+	
+	<string name="cam_update_success">Update cameras successfully.</string>
+	<string name="cam_update_result">Cameras update result: \n %1$s done, \n %2$s failed.</string>
+	<string name="cam_update_timeout">Update cameras timeout. Please try again later.</string>
+	<string name="cam_update_failed">Fail to update cameras. Please try again later.</string>
+	<string name="cam_update_no_valid_cam">There is no online camera to update.</string>
 	
 	<string name="firmware_update_error_title">Update incomplete</string>
 	<string name="firmware_update_error_summary">This might cause by temporary\nnetwork problem.</string>

@@ -117,69 +117,6 @@ bool FreqGenerator::playCode2(const string strCodeInputASCII, const bool bNeedEn
 	return bRet;
 }
 
-bool FreqGenerator::playCode2(const string strMacAddr, const string strWifiKey, const string strToken, const bool bNeedEncode){
-	LOGE("playCode2(), [%s, %s, %s], %d\n", strMacAddr.c_str(), strWifiKey.c_str(), strToken.c_str(), bNeedEncode);
-	bool bRet = false;
-//#ifdef GEN_TONE_ONLY
-//	LOGE("playCode2(), strCodeInputASCII:%s, %d\n", strCodeInputASCII.c_str(), bNeedEncode);
-//
-//	stringstream sstrCodeInput;
-//	int iPower = SoundPair_Config::getPowerByFFTYPE();
-//	int iLen = strCodeInputASCII.length();
-//
-//	for(int i = 0; i< iLen;i++){
-//		char ch = strCodeInputASCII.at(i);
-//		sstrCodeInput << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
-//		sstrCodeInput << SoundPair_Config::sCodeTable.at(ch & 0x0f);
-//
-//		//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
-//	}
-//	string strCodeInput = sstrCodeInput.str();
-//#else
-	string strCodeInput = strMacAddr+strWifiKey+strToken;
-//#endif
-	LOGE("playCode2(), strCodeInput:%s\n", strCodeInput.c_str());
-
-	string strEncode = bNeedEncode?encode(strCodeInput):strCodeInput;
-	const string strECCode = strEncode.substr(strCodeInput.length());
-
-	string strEncodeMark = strEncode;//SoundPair_Config::encodeConsecutiveDigits(strEncode);
-	string strCode = bNeedEncode?
-							("123"+
-							  SoundPair_Config::PREFIX_DECODE+
-							  (SoundPair_Config::PRE_EMPTY?"X":"")+
-							  strMacAddr+
-							  SoundPair_Config::PAIRING_DIVIDER+
-							  strWifiKey+
-							  SoundPair_Config::PAIRING_DIVIDER+
-							  strToken+
-							  strECCode+
-							  SoundPair_Config::POSTFIX_DECODE+
-							  "789"):
-							strEncode;
-
-	pthread_mutex_lock(&mSyncObj);
-	mlstEncodeList.push_back(Ref<EncodeItm>(new EncodeItm(strCodeInput, strCodeInput, strECCode, strEncodeMark, strCode)));
-	pthread_cond_signal(&mSyncObjCond);
-	pthread_mutex_unlock(&mSyncObj);
-
-	if(0 == mThreadPlayTone){
-		int errno = 0;
-		LOGE("playCode2(), pthread_create\n");
-
-		if (0 != (errno = pthread_create(&mThreadPlayTone, NULL, FreqGenerator::runPlayCode2, this))) {
-			LOGE("playCode2(),error when create pthread,%d\n", errno);
-		}else{
-			LOGE("playCode2(),pthread_create mThreadPlayTone success\n");
-			bRet = true;
-		}
-	}else{
-		LOGE("playCode2(), mThreadPlayTone has been created\n");
-		bRet = true;
-	}
-	return bRet;
-}
-
 void* FreqGenerator::runPlayCode2(void* userdata){
 	((FreqGenerator*)userdata)->invokePlayCode2();
 	return 0;
@@ -735,11 +672,9 @@ void FreqGenerator::writeTone(double sample[], byte generatedSnd[], int iLen){
 
 unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken){
 	unsigned int iRet = R_OK;
-	//char tokenToPlay[1024]={0};
-	//tokenToPlay[1023] = '/0';
-	//static const char sep = 0x1B;
-	stringstream sstrWifiKey;
-	stringstream sstrToken;
+	char codeToPlay[1024]={0};
+	codeToPlay[1023] = '/0';
+	static const char sep = 0x1B;
 
 	if(!macAddr){
 		iRet = E_FE_MOD_SP_INVALID_MACADDR;
@@ -796,60 +731,36 @@ unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wif
 		int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
 		int iPower = SoundPair_Config::getPowerByFFTYPE();
 
-//		const int iLen = LEN_OF_MAC_ADDR/iMultiply;
-//		char* macAddrZip = (char*)malloc((iLen+1)*sizeof(char));
-//		macAddrZip[iLen] = '\0';
-//		for(int i =0;i < iLen;i++){
-//			macAddrZip[i] = 0;
-//			for(int j = 0;j < iMultiply;j++){
-//				macAddrZip[i] <<= iPower;
-//				string code(1, macAddr[i*iMultiply+j]);
-//				int idx = SoundPair_Config::findIdxFromCodeTable(code);
-//				//LOGE("code= [%s],idx:%d\n", code.c_str(), idx);
-//				macAddrZip[i] += idx;
-//			}
-//			//LOGD("encode(), toEncode[%d]= %d\n",i,toEncode[i] );
-//		}
-
-
-		string strWifiKey(wifiKey);
-		int iLen = strWifiKey.length();
-
-		for(int i = 0; i< iLen;i++){
-			char ch = strWifiKey.at(i);
-			sstrWifiKey << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
-			sstrWifiKey << SoundPair_Config::sCodeTable.at(ch & 0x0f);
-
-			//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
+		const int iLen = LEN_OF_MAC_ADDR/iMultiply;
+		char* macAddrZip = (char*)malloc((iLen+1)*sizeof(char));
+		macAddrZip[iLen] = '\0';
+		for(int i =0;i < iLen;i++){
+			macAddrZip[i] = 0;
+			for(int j = 0;j < iMultiply;j++){
+				macAddrZip[i] <<= iPower;
+				string code(1, macAddr[i*iMultiply+j]);
+				int idx = SoundPair_Config::findIdxFromCodeTable(code);
+				//LOGE("code= [%s],idx:%d\n", code.c_str(), idx);
+				macAddrZip[i] += idx;
+			}
+			//LOGD("encode(), toEncode[%d]= %d\n",i,toEncode[i] );
 		}
 
 		//tmpUserToken = 0xff;
 
 		//LOGE("macAddrZip= [%s]\n", macAddrZip);
-		//LOGE("tokenToPlay= [%c%c%c%c]\n", SoundPair_Config::sCodeTable.at((tmpUserToken&0xf000)>>12),  (tmpUserToken&0xf00)>>8,  (tmpUserToken&0xf0)>>4, (tmpUserToken&0xf));
-//		sprintf(tokenToPlay, "%s%s%s%s", SoundPair_Config::sCodeTable.at((tmpUserToken & 0xf000)>>12),
-//										 SoundPair_Config::sCodeTable.at((tmpUserToken & 0x0f00)>>8),
-//										 SoundPair_Config::sCodeTable.at((tmpUserToken & 0x00f0)>>4),
-//										 SoundPair_Config::sCodeTable.at((tmpUserToken & 0x000f)));
+		if(tmpUserToken > 0xff){
+			sprintf(codeToPlay, "%s%c%s%c%c%c", macAddrZip, sep, wifiKey?wifiKey:"", sep, (tmpUserToken&0xff00)>>8, (tmpUserToken&0xff));
+		}else{
+			sprintf(codeToPlay, "%s%c%s%c%c", macAddrZip, sep, wifiKey?wifiKey:"", sep, (tmpUserToken&0xff));
+		}
 
-		sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0xf000)>>12);
-		sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x0f00)>>8);
-		sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x00f0)>>4);
-		sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x000f));
-
-//		if(tmpUserToken > 0xff){
-//			sprintf(tokenToPlay, "%s%c%s%c%c%c", macAddrZip, sep, wifiKey?wifiKey:"", sep, (tmpUserToken&0xff00)>>8, (tmpUserToken&0xff));
-//		}else{
-//			sprintf(tokenToPlay, "%s%c%s%c%c", macAddrZip, sep, wifiKey?wifiKey:"", sep, (tmpUserToken&0xff));
-//		}
-
-//		if(macAddrZip){
-//			free(macAddrZip);
-//		}
+		if(macAddrZip){
+			free(macAddrZip);
+		}
 	}
 	//LOGE("codeToPlay= [%s]\n", codeToPlay);
-	//if(!FreqGenerator::getInstance()->playCode2(codeToPlay, true)){
-	if(!FreqGenerator::getInstance()->playCode2(macAddr, sstrWifiKey.str(), sstrToken.str(), true)){
+	if(!FreqGenerator::getInstance()->playCode2(codeToPlay, true)){
 		iRet = E_FE_MOD_SP_PLAY_CODE_ERR;
 		goto ERR;
 	}

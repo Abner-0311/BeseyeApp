@@ -56,6 +56,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	static public final String KEY_DEMO_CAM_MODE 	= "KEY_DEMO_CAM_MODE";
 	static public final String KEY_DEMO_CAM_INFO 	= "KEY_DEMO_CAM_INFO";
+	static public final String KEY_VALID_CAM_INFO 	= "KEY_VALID_CAM_INFO";
 	
 	private PullToRefreshListView mMainListView;
 	private CameraListAdapter mCameraListAdapter;
@@ -263,6 +264,12 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 				
 				mBundleDemo.putString(KEY_DEMO_CAM_INFO, objVCamList.toString());
+				
+				if(checkCamUpdateFlag()){
+					resumeCamUpdate(arrCamList);
+				}
+			}else{
+				mVCamListInfoObj = objVCamList;
 			}
 			
 			miOriginalVcamCnt = arrCamList.length();
@@ -531,8 +538,31 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				toggleMenu();
 			}
 		}else if(R.id.vg_news == view.getId()){
-			launchActivityByClassName(BeseyeNewsActivity.class.getName(), null);
-			toggleMenu();
+			Bundle bundle = new Bundle();
+			JSONArray arrCamLst = new JSONArray();;
+			if(mbIsDemoCamMode){
+				int iVcamCnt = BeseyeJSONUtil.getJSONInt(mVCamListInfoObj, BeseyeJSONUtil.ACC_VCAM_CNT);
+				if(0 < iVcamCnt){
+					JSONArray VcamList = BeseyeJSONUtil.getJSONArray(mVCamListInfoObj, BeseyeJSONUtil.ACC_VCAM_LST);
+					for(int i = 0;i< iVcamCnt;i++){
+						try {
+							JSONObject camObj = VcamList.getJSONObject(i);
+							if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+								arrCamLst.put(camObj);
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+
+			}else{
+				arrCamLst = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
+			}
+			bundle.putString(KEY_VALID_CAM_INFO, (null != arrCamLst)?arrCamLst.toString():"");
+			
+			launchActivityByClassName(BeseyeNewsActivity.class.getName(), bundle);
+	
 		}else if(R.id.vg_demo_cam == view.getId()){
 			if(!mbIsDemoCamMode){
 				launchActivityByClassName(CameraListActivity.class.getName(), mBundleDemo);

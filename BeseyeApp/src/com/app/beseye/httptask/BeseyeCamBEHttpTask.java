@@ -37,6 +37,7 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_DATETIME_NTP_CONFIG = "cam/%s/datetime/ntpconfig";
 	
 	static private final String URL_CAM_SW_UPDATE 		= "cam/%s/software/update";
+	static private final String URL_CAM_SW_UPDATE_STATUS= "cam/%s/software/update_status";
 	
 	public static class GetCamSetupTask extends BeseyeHttpTask{
 		private String strVcamId = null;
@@ -461,13 +462,36 @@ public class BeseyeCamBEHttpTask  {
 	}
 	
 	public static class UpdateCamSWTask extends BeseyeHttpTask{
+		private String strVcamId = null;
 		public UpdateCamSWTask(OnHttpTaskCallback cb) {
 			super(cb);
 		}
 		
+		public String getVcamId(){
+			return strVcamId;
+		}
+		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			strVcamId = strParams[0];
 			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_SW_UPDATE, strParams[0]));
+		}
+	}
+	
+	public static class GetCamUpdateStatusTask extends BeseyeHttpTask{
+		private String strVcamId = null;
+		public GetCamUpdateStatusTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		public String getVcamId(){
+			return strVcamId;
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			strVcamId = strParams[0];
+			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_SW_UPDATE_STATUS, strParams[0]));
 		}
 	}
 }

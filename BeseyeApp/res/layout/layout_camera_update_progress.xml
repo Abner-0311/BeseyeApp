@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent">
+    
+    <RelativeLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <TextView
+		    android:id="@+id/txt_update_progress"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_centerHorizontal="true"
+		    android:gravity="center_horizontal"
+		    android:text="@string/cam_update_progress"
+		    android:textColor="@color/word_white"
+		    android:textSize="@dimen/firmware_update_font_size" 
+		    android:layout_marginBottom="@dimen/firmware_update_desc_margin_bottom"/>
+	
+	    <ProgressBar
+		    android:id="@+id/sb_update_progress"
+		    android:layout_width="match_parent"
+		    android:layout_height="7dp"
+		    android:layout_centerVertical="true" 
+		    android:layout_marginLeft="@dimen/cam_update_progress_horin_margin"
+		    android:layout_marginRight="@dimen/cam_update_progress_horin_margin"
+			style="@android:style/Widget.ProgressBar.Horizontal"
+		    android:progressDrawable="@drawable/seekbar_progress"
+		    android:max="100"
+	      	android:progress="20"
+	      	android:secondaryProgress="0"
+	      	android:layout_below="@+id/txt_update_progress"/>
+    </RelativeLayout>
+ 
+</RelativeLayout>
