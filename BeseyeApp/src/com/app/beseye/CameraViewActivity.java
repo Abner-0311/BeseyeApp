@@ -1756,7 +1756,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
         	if(3 >= mstrDVRStreamPathList.size()){
         		long startTime = findLastTimeFromList();
         		if(0 < startTime){
-					monitorAsyncTask(mDVRStreamTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(-1), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, mlDVRStartTs+"", DVR_REQ_TIME);
+					monitorAsyncTask(mDVRStreamTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(-1), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, startTime+"", DVR_REQ_TIME);
         		}else{
         			Log.e(TAG, "updateStreamList(), failed to get start time ");
         		}
@@ -1778,8 +1778,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		if(null != target){
     			long lStartTime = BeseyeJSONUtil.getJSONLong(target, BeseyeJSONUtil.MM_START_TIME);
     			long lDuration = BeseyeJSONUtil.getJSONLong(target, BeseyeJSONUtil.MM_DURATION);
-    			Log.i(TAG, "findLastTimeFromList(), lStartTime: "+lStartTime+", lDuration:"+lDuration+", traget:"+target.toString());
     			lRet = lStartTime + lDuration;
+    			Log.i(TAG, "findLastTimeFromList(), lStartTime: "+lStartTime+", lDuration:"+lDuration+", traget:"+target.toString()+", time:"+(new Date(lRet).toString()));
     		}else{
     			Log.e(TAG, "findLastTimeFromList(), can not find target");
     		}

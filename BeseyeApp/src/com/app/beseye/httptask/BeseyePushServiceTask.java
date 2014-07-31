@@ -13,18 +13,18 @@ public class BeseyePushServiceTask {
 	}
 	
 	static public void checkHostAddr(){
-//		if(iKalaHttpTask.LINK_PRODUCTION_SERVER  && SessionMgr.getInstance().getIsProductionMode()){
-//			PUSH_SERVER_URL = "http://ap.mobile.sbf.ikala.tv/";
-//		}else{
-//			PUSH_SERVER_URL = "http://192.168.0.61:7000/";
-//		}
+		if(SessionMgr.getInstance().getIsProductionMode()){
+			PUSH_SERVER_URL = "";
+		}else{
+			PUSH_SERVER_URL = BeseyeHttpTask.HOST_ADDR;
+		}
 	}
 	
-	public static final String FORMAT_GET_PROJ_ID 		= "ps/android/get_project_id";
-	public static final String FORMAT_GET_REG_ID 	  	= "ps/android/get_reg_ids/%s";
-	public static final String FORMAT_ADD_REG_ID	   	= "ps/android/reg_id_add";
-	public static final String FORMAT_DEL_REG_ID	   	= "ps/android/reg_id_delete";
-	public static final String FORMAT_UPDATE_REG_ID	   	= "ps/android/reg_id_update";
+	public static final String FORMAT_GET_PROJ_ID 		= "notify/android/get_project_info";
+	public static final String FORMAT_GET_REG_ID 	  	= "notify/android/get_reg_ids";
+	public static final String FORMAT_ADD_REG_ID	   	= "notify/android/add_reg_id";
+	public static final String FORMAT_DEL_REG_ID	   	= "notify/android/del_reg_ids";
+	public static final String FORMAT_UPDATE_REG_ID	   	= "notify/android/update_reg_id";
 	
 	static public class GetProjectIDTask extends BeseyeHttpTask{
 		public GetProjectIDTask(OnHttpTaskCallback cb) {

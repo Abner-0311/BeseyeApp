@@ -16,7 +16,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +32,6 @@ import org.json.JSONObject;
 
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.CameraViewActivity;
-import com.app.beseye.EventListActivity;
 import com.app.beseye.GCMIntentService;
 import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
@@ -36,7 +40,6 @@ import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyePushServiceTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SessionData;
-import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeSharedPreferenceUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -57,25 +60,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.PowerManager;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -108,31 +107,35 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
      */
     public static final int MSG_UNREGISTER_CLIENT 			= 2;
     public static final int MSG_CHECK_NOTIFY_NUM 			= 3;
-    public static final int MSG_SET_NOTIFY_NUM 				= 4;
-    public static final int MSG_QUERY_NOTIFY_NUM 			= 5;
+    public static final int MSG_SET_NEWS_NUM 				= 4;
+    public static final int MSG_QUERY_NEWS_NUM 				= 5;
     public static final int MSG_SHOW_NOTIFICATION 			= 6;
     public static final int MSG_CHECK_CACHE_STATE 			= 7;
-    public static final int MSG_CHECK_UNREAD_MSG_NUM		= 8;
-    public static final int MSG_SET_UNREAD_MSG_NUM 			= 9;
+    public static final int MSG_CHECK_UNREAD_NEWS_NUM		= 8;
+    public static final int MSG_SET_UNREAD_NEWS_NUM 		= 9;
     public static final int MSG_APP_TO_FOREGROUND 			= 10;
     public static final int MSG_APP_TO_BACKGROUND 			= 11;
     
-    public static final int MSG_POST_CHECK_NOTIFY_NUM 		= 14;
-    public static final int MSG_POST_CHECK_UNREAD_MSG_NUM 	= 15;
+    public static final int MSG_UPDATE_SESSION_DATA 		= 12;
+    public static final int MSG_UPDATE_PREF_DATA 			= 13;
     
-    public static final int MSG_BEGIN_TO_PULL_MSG 			= 16;
-    public static final int MSG_STOP_TO_PULL_MSG 			= 17;
+    public static final int MSG_GSM_REGISTER 				= 14;
+    public static final int MSG_GSM_UNREGISTER 				= 15;
+    public static final int MSG_GSM_MSG 					= 16;
+    public static final int MSG_GSM_ERR 					= 17;
+    public static final int MSG_CHECK_DIALOG 			    = 18;
     
-    public static final int MSG_UPDATE_SESSION_DATA 		= 18;
-    public static final int MSG_UPDATE_PREF_DATA 			= 19;
+    public static final int MSG_CAM_SETTING_UPDATED 		= 19;
+    public static final int MSG_CAM_WIFI_CONFIG_CHANGED 	= 20;
     
-    public static final int MSG_GSM_REGISTER 				= 20;
-    public static final int MSG_GSM_UNREGISTER 				= 21;
-    public static final int MSG_GSM_MSG 					= 22;
-    public static final int MSG_GSM_ERR 					= 23;
-    public static final int MSG_CHECK_DIALOG 			    = 24;
+    public static final int MSG_CAM_ATTACH 					= 21;
+    public static final int MSG_CAM_DETACH 					= 22;
+    public static final int MSG_CAM_PLAN_CHANGED 			= 23;
     
-    public static final int MSG_CAM_SEETING_UPDATED 		= 25;
+    public static final int MSG_ACCOUNT_TOKEN_EXPIRED 		= 24;
+    public static final int MSG_ACCOUNT_PW_CHANGED 			= 25;
+    
+    public static final int MSG_EVENT_DETECTION 			= 26;
     
     /**
      * Handler of incoming messages from clients.
@@ -150,12 +153,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_UNREGISTER_CLIENT:
                     mClients.remove(msg.replyTo);
                     break;
-                case MSG_CAM_SEETING_UPDATED:{
+                case MSG_CAM_SETTING_UPDATED:{
                 	for (int i=mClients.size()-1; i>=0; i--) {
                 		try {
                 			Bundle b = new Bundle();
                 			b.putString(MSG_REF_JSON_OBJ, (String)msg.obj);
-                			Message msgToSend = Message.obtain(null, MSG_CAM_SEETING_UPDATED);
+                			Message msgToSend = Message.obtain(null, MSG_CAM_SETTING_UPDATED);
                 			msgToSend.setData(b);
                 			mClients.get(i).send(msgToSend);
                 		} catch (RemoteException e) {
@@ -275,36 +278,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	checkUserLoginState();
                 	break;
                 }
-                case MSG_POST_CHECK_NOTIFY_NUM:{
-//                	sendMessageDelayed(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0), 30*1000L);
-                	break;
-                }
-                
-                case MSG_POST_CHECK_UNREAD_MSG_NUM:{
-//                	if(shouldPullMsg())
-//                		sendMessageDelayed(Message.obtain(null,MSG_CHECK_UNREAD_MSG_NUM,0,0), 1*1000L);
-                	break;
-                }
-                case MSG_BEGIN_TO_PULL_MSG:{
-                	if(!mbNeedToPullMsg){
-                		//Log.i(TAG, "BG service detects MSG_BEGIN_TO_PULL_MSG()");
-                		mbNeedToPullMsg = true;
-//                		if(shouldPullMsg())
-//                			sendMessageDelayed(Message.obtain(null,MSG_CHECK_UNREAD_MSG_NUM,0,0), 1*1000L);
-                	}
-                	mbNeedToPullMsg = true;
-                	break;
-                }
-                case MSG_STOP_TO_PULL_MSG:{
-                	/*if(mbNeedToPullMsg)*/{
-                		//Log.i(TAG, "BG service detects MSG_STOP_TO_PULL_MSG()");
-//                		if(null != mMsgInfoTask){
-//                			mMsgInfoTask.cancel(true);
-//                		}
-                	}
-                	mbNeedToPullMsg = false;
-                	break;
-                }
                 case MSG_UPDATE_SESSION_DATA:{
                 	final Bundle bundle = msg.getData();
                 	bundle.setClassLoader(getClassLoader());
@@ -318,11 +291,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			Log.i(TAG, "BG service detects MSG_UPDATE_SESSION_DATA() and reset");
                 			mNotifyInfo = null;
                 			mMsgInfo = null;
-                			sendMessage(Message.obtain(null,MSG_SET_NOTIFY_NUM,0,0));
-                			sendMessage(Message.obtain(null,MSG_SET_UNREAD_MSG_NUM,0,0));
+                			sendMessage(Message.obtain(null,MSG_SET_NEWS_NUM,0,0));
+                			sendMessage(Message.obtain(null,MSG_SET_UNREAD_NEWS_NUM,0,0));
                 			
                 			if(!SessionMgr.getInstance().isUseridValid())
                 				unregisterGCMServer();
+                			
+                			unregisterPushServer();
+                			
                 			cancelNotification();
                 			setLastEventItem(null);
                 			BeseyeUtils.removeRunnable(mCheckEventRunnable);
@@ -577,7 +553,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 
 	private void registerGCMServer(){
-    	if(/*null != SessionMgr.getInstance() && SessionMgr.getInstance().isUseridValid() &&*/ false == mbRegisterGCM){
+    	if(null != SessionMgr.getInstance() && SessionMgr.getInstance().isUseridValid() && false == mbRegisterGCM){
     		registerReceiver(mHandleMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
     		mbRegisterReceiver = true;
             // Make sure the device has the proper dependencies.
@@ -585,7 +561,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
             // Make sure the manifest was properly set - comment out this line
             // while developing the app, then uncomment it when it's ready.
             GCMRegistrar.checkManifest(getApplicationContext());
-            
             
     		if(null != mPref){
     			String sSenderID = GCMIntentService.SENDER_ID;//BeseyeSharedPreferenceUtil.getPrefStringValue(mPref, PUSH_SERVICE_SENDER_ID);
@@ -658,15 +633,16 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 // It's also necessary to cancel the thread onDestroy(),
                 // hence the use of AsyncTask instead of a raw thread.
             	JSONObject obj = new JSONObject();
-//            	try {
-//					obj.put(USER_ID, userId);
-//					obj.put(PS_REG_ID, regId);
-//				} catch (JSONException e) {
-//					e.printStackTrace();
-//				}
-            	//mRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.AddRegisterIDTask(this).execute(obj.toString());
+            	try {
+					obj.put(PS_REG_DEV_UUID, BeseyeUtils.getAndroidUUid());
+					obj.put(PS_REG_DEV_NAME, Build.MODEL);
+					obj.put(PS_REG_ID, regId);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+            	mRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.AddRegisterIDTask(this).execute(obj.toString());
             	//showRegIdNotification();
-            	Log.e(TAG, "registerPushServer(), regId: "+regId);
+            	Log.e(TAG, "registerPushServer(), regId: "+regId+", obj:"+obj.toString());
             }else{
             	mbRegisterGCM = true;
             }
@@ -677,12 +653,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     
     private void unregisterPushServer(){
     	final String regId = BeseyeSharedPreferenceUtil.getPrefStringValue(mPref, PUSH_SERVICE_REG_ID);
-    	final String userId = BeseyeSharedPreferenceUtil.getPrefStringValue(mPref, USER_ID);
-    	if(null != regId && 0 < regId.length() && null != userId && 0 < userId.length()){
+    	if(null != regId && 0 < regId.length()){
     		JSONObject obj = new JSONObject();
         	try {
-				obj.put(USER_ID, userId);
-				obj.put(PS_REG_ID, regId);
+        		JSONArray arrRegIds = new JSONArray();
+        		arrRegIds.put(regId);
+				obj.put(PS_REG_IDS, arrRegIds);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -691,7 +667,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         	BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_REG_ID, "");
         	BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, USER_ID, "");
     	}else{
-    		Log.e(TAG, "unregisterPushServer(), invalid regId or userId "+userId);
+    		Log.e(TAG, "unregisterPushServer(), invalid regId "+regId);
     	}
     }
     
@@ -906,6 +882,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				notification);
 			 }
 			 
+			 
+			 
 //			 Notification myNotification =  new NotificationCompat.Builder(this)
 //		        .setSmallIcon(R.drawable.ic_launcher)
 //		        .setAutoCancel(true)
@@ -965,27 +943,108 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // this will make such that when user returns to your app, your app is displayed, instead of the email app.
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		/*if(null != contentIntent)*/{
-			 final Notification notification = new Notification(
-				        				R.drawable.common_app_icon,       // the icon for the status bar
-				        				"RegId got",                        // the text to display in the ticker
-				        				/*System.currentTimeMillis()*/mLastNotifyUpdateTime); // the timestamp for the notification
+//			 final Notification notification = new Notification(
+//				        				R.drawable.common_app_icon,       // the icon for the status bar
+//				        				"RegId got",                        // the text to display in the ticker
+//				        				/*System.currentTimeMillis()*/mLastNotifyUpdateTime); // the timestamp for the notification
+//
+//			 if(null != notification){
+//				notification.setLatestEventInfo(
+//						 this,                        // the context to use
+//						 "Beseye User RegId",
+//						                              // the title for the notification
+//						 GCMRegistrar.getRegistrationId(getApplicationContext()),                        // the details to display in the notification
+//						 contentIntent);              // the contentIntent (see above)
+//
+//				notification.defaults = Notification.DEFAULT_LIGHTS;
+//				notification.flags = Notification.FLAG_AUTO_CANCEL;
+//				
+//				mNotificationManager.notify(
+//				999, // we use a string id because it is a unique
+//				// number.  we use it later to cancel the notification
+//				notification);
+//			 }
+			
+			final String path = "https://beseye-thumbnail.s3-ap-northeast-1.amazonaws.com/clothing-store.jpg?AWSAccessKeyId=AKIAI4TMTBQZA45VAMUQ&Expires=1406781831&Signature=iJ4SFLbXK7NhNuEF3r3VH3KwHAE%3D";
+//			Bitmap bitmap = null;
+//			try {
+//				bitmap = BitmapFactory.decodeStream(
+//			                (InputStream) new URL(path).getContent());
+//			} catch (IOException e) {
+//			        e.printStackTrace();
+//			}			
+			
+			
+			
+			new AsyncTask<String, Integer, Bitmap>(){
+				@Override
+				protected Bitmap doInBackground(String... arg0) {
+					Bitmap bitmap = null;
+					try {
+						URL url;
+						url = new URL(path);
+						URLConnection conn;
+						conn = url.openConnection();
 
-			 if(null != notification){
-				notification.setLatestEventInfo(
-						 this,                        // the context to use
-						 "Beseye User RegId",
-						                              // the title for the notification
-						 GCMRegistrar.getRegistrationId(getApplicationContext()),                        // the details to display in the notification
-						 contentIntent);              // the contentIntent (see above)
+						HttpURLConnection httpConn = (HttpURLConnection) conn;
+						httpConn.setRequestMethod("GET");
+						httpConn.connect();
+						if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+							InputStream inputStream = httpConn.getInputStream();
+							if (inputStream != null) {
+								BitmapFactory.Options options = new BitmapFactory.Options();
+								options.inSampleSize = 2;
+								bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+							}else{
+								Log.w(TAG, "inputStream is null");
+							}
+						}
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return bitmap;
+				}
 
-				notification.defaults = Notification.DEFAULT_LIGHTS;
-				notification.flags = Notification.FLAG_AUTO_CANCEL;
+				@Override
+				protected void onPostExecute(Bitmap bitmap) {
+					super.onPostExecute(bitmap);
+					NotificationCompat.BigPictureStyle style = new NotificationCompat.BigPictureStyle();
+					
+					style.bigPicture(bitmap);
+					style.setBigContentTitle("Event Detected (Expand)");
+					style.setSummaryText("Description (Expand)");
+					style.bigLargeIcon(bitmap);
+					
+			         
+					NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(  
+							BeseyeNotificationService.this).setSmallIcon(R.drawable.common_app_icon)  
+					        .setContentTitle("Event Detected (Normal)")  
+					        .setContentText("Description (Normal)")
+					        .setStyle(style)
+					        .setWhen(new Date().getTime())  	
+							.setSmallIcon(R.drawable.common_app_icon)
+							.setLargeIcon(bitmap);
+					         mNotificationManager.notify(
+										888, // we use a string id because it is a unique
+										// number.  we use it later to cancel the notification
+										mBuilder.build());
+					
 				
-				mNotificationManager.notify(
-				999, // we use a string id because it is a unique
-				// number.  we use it later to cancel the notification
-				notification);
-			 }
+				}}.execute();
+			
+			
+			
+			
+			//NotificationCompat.BigPictureStyle picStyle = new NotificationCompat.BigPictureStyle();  
+			//Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cameralist_thumbnail);  
+			//picStyle.bigPicture(bitmap);  
+			//mBuilder.setStyle(picStyle); 
+			
+			
 		}
 		testMsgGot();
 	}
@@ -1098,13 +1157,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //		wl.release();
 	}
 	
-	private void checkKeyGuard(){
-		if(null != mKeyLock){
-			mKeyLock.reenableKeyguard();
-			Log.i(TAG, "----------------------checkKeyGuard(), reenableKeyguard");
-		}
-		mKeyLock = null;
-	}
+//	private void checkKeyGuard(){
+//		if(null != mKeyLock){
+//			mKeyLock.reenableKeyguard();
+//			Log.i(TAG, "----------------------checkKeyGuard(), reenableKeyguard");
+//		}
+//		mKeyLock = null;
+//	}
 	
 	private void checkAndCloseDialog(){
 		if(null != mPushDialog && mPushDialog.isShowing()){
@@ -1156,7 +1215,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		if(false == task.isCancelled()){
 			if(task instanceof BeseyePushServiceTask.GetProjectIDTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
-					String senderId = BeseyeJSONUtil.getJSONString(result.get(0), PS_PORJ_ID);
+					String senderId = BeseyeJSONUtil.getJSONString(result.get(0), PS_PORJ_NUM);
 					Log.i(TAG, "onPostExecute(), senderId "+senderId);
 					if(0 < senderId.length()){
 						BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_SENDER_ID, senderId);
@@ -1309,7 +1368,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		checkUserLoginState();
 	}
 	
-	 private void handleWSEvent(JSONObject dataObj){
+	private void handleWSEvent(JSONObject dataObj){
     	if(null != dataObj){
 			int iCmd = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_COMM);
 			String strCamUID = null;
@@ -1323,7 +1382,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			int iMsgType = -1;
 			switch(iCmd){
 				case WS_ATTR_COMM_CAM_SETTING_CHANGED:{
-					iMsgType = MSG_CAM_SEETING_UPDATED;
+					iMsgType = MSG_CAM_SETTING_UPDATED;
 					break;
 				}
 				case WS_ATTR_COMM_DETECTION_NOTIFY:{

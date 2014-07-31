@@ -139,6 +139,9 @@ public class WifiListActivity extends WifiControlBaseActivity
 			mWifiInfoAdapter = new WifiInfoAdapter(this, mlstScanResult, R.layout.wifi_list_item, this);
 			if(null != mlvWifiList){
 				mlvWifiList.setAdapter(mWifiInfoAdapter);
+				if(mbChangeWifi){
+					mWifiInfoAdapter.setIsCamWifiList(true);
+				}
 			}
 		}
 
@@ -471,11 +474,12 @@ public class WifiListActivity extends WifiControlBaseActivity
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					JSONObject obj = result.get(0);
 					if(null != obj){
-						JSONArray dataObj = BeseyeJSONUtil.getJSONArray(obj, ACC_DATA);
+						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
 						if(null != dataObj){
 							Log.i(TAG, "onPostExecute(), "+dataObj.toString());
 							//JSONArray iLEDStatus = getJSONInt(dataObj, LED_STATUS, 0);
-							NetworkMgr.getInstance().filterWifiAPInfo(mlstScanResult, dataObj);
+							JSONArray ssidList = BeseyeJSONUtil.getJSONArray(dataObj, BeseyeJSONUtil.WIFI_SSIDLST);
+							NetworkMgr.getInstance().filterWifiAPInfo(mlstScanResult, ssidList, BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.WIFI_SSIDLST_USED));
 							onWiFiScanComplete();
 						}
 					}

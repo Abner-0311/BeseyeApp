@@ -740,11 +740,11 @@ public class NetworkMgr {
 		}
 	}
 	
-	public void filterWifiAPInfo(List<WifiAPInfo> dest, JSONArray src){
+	public void filterWifiAPInfo(List<WifiAPInfo> dest, JSONArray src, String strAciveSSID){
 		if(null != dest){
 			dest.clear();
-			String strAciveBSSID = NetworkMgr.getInstance().getActiveWifiBSSID();
-			Log.i(TAG, "filterWifiAPInfo(), strAciveBSSID = "+strAciveBSSID);
+			//String strAciveBSSID = NetworkMgr.getInstance().getActiveWifiBSSID();
+			Log.i(TAG, "filterWifiAPInfo(), strAciveSSID = "+strAciveSSID);
 			if(null != src){
 				int iCount = src.length();
 				for(int idx = 0;idx< iCount;idx++){
@@ -752,7 +752,7 @@ public class NetworkMgr {
 					try {
 						ret = src.getJSONObject(idx);
 						if(null != ret){
-							WifiAPInfo info = transformFromScanResult(ret, strAciveBSSID);
+							WifiAPInfo info = transformFromScanResult(ret, strAciveSSID);
 							dest.add(info);
 						}
 					} catch (JSONException e) {
@@ -831,7 +831,8 @@ public class NetworkMgr {
 			retInfo = new WifiAPInfo();
 			retInfo.SSID = BeseyeJSONUtil.getJSONString(ret, BeseyeJSONUtil.WIFI_SSIDLST_ID);
 			retInfo.BSSID = BeseyeJSONUtil.getJSONString(ret, BeseyeJSONUtil.WIFI_SSIDLST_BSSID);
-			retInfo.bActiveConn = retInfo.BSSID.equals(activeSSID);
+			retInfo.bActiveConn = retInfo.SSID.equals(activeSSID);
+			
 			//retInfo.frequency = ret.frequency;
 			retInfo.signalLevel = WifiManager.calculateSignalLevel(BeseyeJSONUtil.getJSONInt(ret, BeseyeJSONUtil.WIFI_SSIDLST_SGL), WifiAPInfo.MAX_SIGNAL_LEVEL);
 			

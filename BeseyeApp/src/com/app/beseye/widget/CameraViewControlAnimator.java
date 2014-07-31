@@ -197,6 +197,8 @@ public class CameraViewControlAnimator {
 							if(null != mRectTalkBtn && !mRectTalkBtn.contains(view.getLeft() + (int) event.getX(), view.getTop() + (int) event.getY())){
 					            // User moved outside bounds
 								onTalkBtnReleased();
+					        }else{
+					        	extendHideControl();
 					        }
 			            }else if (event.getAction() == MotionEvent.ACTION_UP){
 			            	onTalkBtnReleased();

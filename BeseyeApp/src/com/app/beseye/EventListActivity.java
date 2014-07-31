@@ -274,7 +274,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 					}
 					
 					int iOldCount = (null != OldEntList)?OldEntList.length():0;
-					if(0 < iOldCount){
+					if(1 < iOldCount){
 						try {
 							JSONObject oldFirstobj = OldEntList.getJSONObject(1);
 							long lStartTs = BeseyeJSONUtil.getJSONLong(oldFirstobj, BeseyeJSONUtil.MM_START_TIME);
@@ -298,8 +298,17 @@ public class EventListActivity extends BeseyeBaseActivity{
 				if(null != EntList){
 					JSONObject liveObj = new JSONObject();
 					try {
+						JSONObject fakeObj = new JSONObject();
+						Calendar cal = Calendar.getInstance();
+						cal.add(Calendar.MINUTE, -5);
+						fakeObj.put(BeseyeJSONUtil.MM_START_TIME, cal.getTime().getTime());
+						fakeObj.put(BeseyeJSONUtil.MM_IS_LIVE, false);
+						
+						BeseyeJSONUtil.appendObjToArrayBegin(EntList, fakeObj);
+						
 						liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
 						liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
+						
 						BeseyeJSONUtil.appendObjToArrayBegin(EntList, liveObj);
 					} catch (JSONException e) {
 						e.printStackTrace();

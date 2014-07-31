@@ -811,7 +811,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
         public void handleMessage(Message msg) {
             switch (msg.what) {
             	  
-                case BeseyeNotificationService.MSG_CAM_SEETING_UPDATED:{
+                case BeseyeNotificationService.MSG_CAM_SETTING_UPDATED:{
                 	BeseyeBaseActivity act = mActivity.get();
                 	if(null != act){
                 		JSONObject dataObj;

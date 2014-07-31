@@ -421,20 +421,20 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				}
 				
 				mtxtKeyIndex = (TextView)vgApInfo.findViewById(R.id.txt_keyindex_value);
-				if(null != mtxtKeyIndex){
-					WifiConfiguration config = NetworkMgr.getInstance().getWifiConfigurationBySSID(mChosenWifiAPInfo.SSID);
-					if(null != config){
-						mChosenWifiAPInfo.wepkeyIdx = config.wepTxKeyIndex;
-					}else{
-						
-					}
-					mtxtKeyIndex.setText(String.valueOf(mChosenWifiAPInfo.wepkeyIdx+1));
-					mtxtKeyIndex.setOnClickListener(new OnClickListener(){
-						@Override
-						public void onClick(View arg0) {
-							showMyDialog(DIALOG_ID_WIFI_AP_KEYINDEX);
-						}});
-				}
+//				if(null != mtxtKeyIndex){
+//					WifiConfiguration config = NetworkMgr.getInstance().getWifiConfigurationBySSID(mChosenWifiAPInfo.SSID);
+//					if(null != config){
+//						mChosenWifiAPInfo.wepkeyIdx = config.wepTxKeyIndex;
+//					}else{
+//						
+//					}
+//					mtxtKeyIndex.setText(String.valueOf(mChosenWifiAPInfo.wepkeyIdx+1));
+//					mtxtKeyIndex.setOnClickListener(new OnClickListener(){
+//						@Override
+//						public void onClick(View arg0) {
+//							showMyDialog(DIALOG_ID_WIFI_AP_KEYINDEX);
+//						}});
+//				}
 				
 				ImageView ivSpinner = (ImageView)vgApInfo.findViewById(R.id.iv_spinner);
 				if(null != ivSpinner){

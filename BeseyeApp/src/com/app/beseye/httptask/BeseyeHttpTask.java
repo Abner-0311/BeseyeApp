@@ -61,6 +61,7 @@ import org.json.JSONObject;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -350,8 +351,11 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    		if(this instanceof BeseyeAccountTask.CamValidateTask || this instanceof BeseyeAccountTask.CamBeeValidateTask){
 	    			httpRequest.setHeader("Bes-Dev-Session", strParams[2]);
 	    		}
-	    	}else
+	    	}else{
 	    		httpRequest.setHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+	    		httpRequest.setHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
+	    		httpRequest.setHeader("Bes-Client-User-Agent", BeseyeUtils.getUserAgent());
+	    	}
 	    	
 	    	if(httpRequest instanceof HttpEntityEnclosingRequestBase && 1 < strParams.length){
 	    		HttpEntityEnclosingRequestBase request = (HttpEntityEnclosingRequestBase)httpRequest;

@@ -23,6 +23,7 @@ public class WifiInfoAdapter extends BaseAdapter {
 	protected OnClickListener mItemOnClickListener = null;
 	protected int miLayoutId;
 	protected String strSecure;
+	private boolean mbCamWifiList = false;
 	
 	private List<WifiAPInfo> mlstScanResult;
 	
@@ -36,6 +37,10 @@ public class WifiInfoAdapter extends BaseAdapter {
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			strSecure = context.getResources().getString(R.string.network_secure_with);
 		}
+	}
+	
+	public void setIsCamWifiList(boolean bValue){
+		mbCamWifiList = bValue;
 	}
 	
 	@Override
@@ -101,7 +106,7 @@ public class WifiInfoAdapter extends BaseAdapter {
 					if(null != holder.mtxtSecure){
 						if(sRet.bActiveConn){
 							holder.mtxtSecure.setVisibility(View.VISIBLE);
-							holder.mtxtSecure.setText(NetworkMgr.getInstance().getActiveConnStateId());
+							holder.mtxtSecure.setText(mbCamWifiList?R.string.network_connected:NetworkMgr.getInstance().getActiveConnStateId());
 						}else{
 							if(WifiAPInfo.AUTHNICATION_NONE.equals(sRet.cipher)){
 								holder.mtxtSecure.setVisibility(View.GONE);

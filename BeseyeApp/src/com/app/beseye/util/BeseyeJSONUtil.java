@@ -310,11 +310,17 @@ public class BeseyeJSONUtil {
 	
 	
 	//For Push service
-	public static final String PS_PORJ_ID 				= "GCMProjectID";
-	public static final String PS_REG_ID 				= "RegisterID";
-	public static final String PS_REG_IDS 				= "RegIDs";
-	public static final String PS_REG_ID_OLD 			= "OrigRegisterID";
-	public static final String PS_REG_ID_NEW 			= "NewRegisterID";
+	public static final String PS_PORJ_ID 				= "projectId";
+	public static final String PS_PORJ_NUM 				= "projectNumber";
+	
+	public static final String PS_REG_ID 				= "regId";
+	public static final String PS_REG_DEV_UUID 			= "devUuid";
+	public static final String PS_REG_DEV_NAME 			= "devName";
+	
+	public static final String PS_REG_IDS 				= "regIds";
+	public static final String PS_REG_ID_OLD 			= "from";
+	public static final String PS_REG_ID_NEW 			= "to";
+	
 	public static final String PS_NOTIFY_TYPE 			= "notify_type";
 	public static final String PS_WORK_TYPE 			= "work_type";
 	public static final String PS_NOTIFY_INFO 			= "Info";

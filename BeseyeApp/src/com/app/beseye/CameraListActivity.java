@@ -390,7 +390,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 							//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> camObj = "+camObj.toString());
 							if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
 								camObj.put(BeseyeJSONUtil.ACC_VCAM_THUMB, BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.MM_THUMBNAIL), "url"));
-								//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> camObj = "+camObj.toString());
+								Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> camObj = "+camObj.toString());
 								refreshList();
 								break;
 							}
@@ -562,18 +562,19 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			bundle.putString(KEY_VALID_CAM_INFO, (null != arrCamLst)?arrCamLst.toString():"");
 			
 			launchActivityByClassName(BeseyeNewsActivity.class.getName(), bundle);
-	
+			toggleMenu();
 		}else if(R.id.vg_demo_cam == view.getId()){
 			if(!mbIsDemoCamMode){
 				launchActivityByClassName(CameraListActivity.class.getName(), mBundleDemo);
 			}
 			toggleMenu();
 		}else if(R.id.vg_about == view.getId()){
-			
+			toggleMenu();
 		}else if(R.id.vg_support == view.getId()){
-			
+			toggleMenu();
 		}else if(R.id.vg_logout == view.getId()){
 			invokeLogout();
+			toggleMenu();
 		}else
 			super.onClick(view);
 	}
