@@ -12,7 +12,7 @@
 	
 	<include 
 	    android:id="@+id/vg_cam_menu"
-	    android:visibility="gone"
+	    android:visibility="invisible"
 	    layout="@layout/layout_cam_list_menu"></include>
 </RelativeLayout>
 

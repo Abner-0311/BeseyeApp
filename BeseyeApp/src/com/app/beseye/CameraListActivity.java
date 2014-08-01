@@ -43,6 +43,7 @@ import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
+import com.app.beseye.widget.CameraListMenuAnimator;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
@@ -60,7 +61,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	private PullToRefreshListView mMainListView;
 	private CameraListAdapter mCameraListAdapter;
-	private ViewGroup mVgEmptyView, mVgMenu;
+	private ViewGroup mVgEmptyView;
 	private View mVwNavBar;
 	private ImageView mIvMenu, mIvAddCam;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
@@ -68,7 +69,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	private boolean mbIsDemoCamMode = false;
 	private JSONObject mVCamListInfoObj = null;
 	private Bundle mBundleDemo;
-	
+	private CameraListMenuAnimator mCameraListMenuAnimator;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -154,55 +155,16 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
         	}
 		}
 		
-		mVgMenu = (ViewGroup)findViewById(R.id.vg_cam_menu);
+		ViewGroup mVgMenu = (ViewGroup)findViewById(R.id.vg_cam_menu);
 		if(null != mVgMenu){
-			final View vHolder = mVgMenu.findViewById(R.id.vg_cam_menu_container);
-			if(null != vHolder){
-				vHolder.setOnClickListener(this);
-			}
-			
-			mVgMenu.setOnTouchListener(new OnTouchListener(){
-				Rect rect = new Rect();
-				@Override
-				public boolean onTouch(View view, MotionEvent event) {
-					vHolder.getHitRect(rect);
-					if(event.getAction() == MotionEvent.ACTION_DOWN && false == rect.contains((int)event.getX(), (int)event.getY())){
-						toggleMenu();
-						return true;
-					}
-					return false;
-				}});
+			mCameraListMenuAnimator = new CameraListMenuAnimator(this, mVgMenu);
 		}
-		setupMenu(R.id.vg_my_cam, R.drawable.sl_menu_my_cam_icon, R.string.cam_menu_my_cam);
-		setupMenu(R.id.vg_demo_cam, R.drawable.sl_menu_demo_cam_icon, R.string.cam_menu_demo_cam);
-		setupMenu(R.id.vg_news, R.drawable.sl_menu_news_icon, R.string.cam_menu_news);
-		setupMenu(R.id.vg_about, R.drawable.sl_menu_about_icon, R.string.cam_menu_about);
-		setupMenu(R.id.vg_support, R.drawable.sl_menu_support_icon, R.string.cam_menu_support);
-		setupMenu(R.id.vg_logout, R.drawable.sl_menu_logout_icon, R.string.cam_menu_logout);
 		
 		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false)){
 			Log.i(TAG, "handle pairing done case");	
 			Bundle b = new Bundle(getIntent().getExtras());
 			launchActivityByClassName(CameraViewActivity.class.getName(), b);
 			getIntent().putExtra(CameraViewActivity.KEY_PAIRING_DONE, false);
-		}
-	}
-	
-	private void setupMenu(int iVgMenuId, int iIconId, int iMenuTopic){
-		if(null != mVgMenu){
-			View vMyCam = mVgMenu.findViewById(iVgMenuId);
-			if(null != vMyCam){
-				ImageView imgMyCam = (ImageView)vMyCam.findViewById(R.id.iv_menu_icon);
-				if(null != imgMyCam){
-					imgMyCam.setImageResource(iIconId);
-				}
-				
-				TextView txtTopic = (TextView)vMyCam.findViewById(R.id.txt_menu_title);
-				if(null != txtTopic){
-					txtTopic.setText(iMenuTopic);
-				}
-				vMyCam.setOnClickListener(this);
-			}
 		}
 	}
 	
@@ -535,7 +497,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			if(mbIsDemoCamMode){
 				finish();
 			}else{
-				toggleMenu();
+				showMenu();
 			}
 		}else if(R.id.vg_news == view.getId()){
 			Bundle bundle = new Bundle();
@@ -562,25 +524,43 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			bundle.putString(KEY_VALID_CAM_INFO, (null != arrCamLst)?arrCamLst.toString():"");
 			
 			launchActivityByClassName(BeseyeNewsActivity.class.getName(), bundle);
-			toggleMenu();
+			showMenu();
 		}else if(R.id.vg_demo_cam == view.getId()){
 			if(!mbIsDemoCamMode){
 				launchActivityByClassName(CameraListActivity.class.getName(), mBundleDemo);
 			}
-			toggleMenu();
+			showMenu();
 		}else if(R.id.vg_about == view.getId()){
-			toggleMenu();
+			showMenu();
 		}else if(R.id.vg_support == view.getId()){
-			toggleMenu();
+			showMenu();
 		}else if(R.id.vg_logout == view.getId()){
 			invokeLogout();
-			toggleMenu();
+			showMenu();
 		}else
 			super.onClick(view);
 	}
 	
 	private void toggleMenu(){
-		mVgMenu.setVisibility((View.VISIBLE == mVgMenu.getVisibility())?View.GONE:View.VISIBLE);
+		if(null != mCameraListMenuAnimator && !mCameraListMenuAnimator.isInAnimation()){
+			if(View.VISIBLE == mCameraListMenuAnimator.getVisibility()){
+				hideMenu();
+			}else{
+				showMenu();
+			}
+		}
+	}
+	
+	private void hideMenu(){
+		if(null != mCameraListMenuAnimator && !mCameraListMenuAnimator.isInAnimation()){
+			mCameraListMenuAnimator.performMenuAnimation();
+		}
+	}
+	
+	private void showMenu(){
+		if(null != mCameraListMenuAnimator && !mCameraListMenuAnimator.isInAnimation()){
+			mCameraListMenuAnimator.performMenuAnimation();
+		}
 	}
 	
 	static public final int REQUEST_CAM_VIEW_CHANGE = 1;
@@ -693,8 +673,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if(keyCode == KeyEvent.KEYCODE_BACK){
-			if(View.VISIBLE == mVgMenu.getVisibility()){
-				mVgMenu.setVisibility(View.GONE);
+			if(View.VISIBLE == mCameraListMenuAnimator.getVisibility()){
+				hideMenu();
 				return true;
 			}
 		}

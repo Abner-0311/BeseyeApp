@@ -1,10 +1,14 @@
-<LinearLayout 
+<RelativeLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/cam_menu_background_gray">
+    android:orientation="vertical">
+    <View 
+        android:id="@+id/vg_cam_menu_container_bg"
+        android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="@color/cam_menu_background_gray"/>
     <ScrollView 
 	    android:id="@+id/vg_cam_menu_container"
 	    android:layout_width="match_parent"
@@ -35,7 +39,7 @@
 			    layout="@layout/layout_cam_list_menu_itm"></include>
 	    </LinearLayout>
 	</ScrollView>
-</LinearLayout>
+</RelativeLayout>
 
 
 

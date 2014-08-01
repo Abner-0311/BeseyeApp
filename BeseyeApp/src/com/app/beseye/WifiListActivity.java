@@ -83,14 +83,17 @@ public class WifiListActivity extends WifiControlBaseActivity
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		
-		try {
-			mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
-			if(null != mCam_obj){
-				mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+		if(mbChangeWifi){
+			try {
+				mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+				if(null != mCam_obj){
+					mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+				}
+			} catch (JSONException e1) {
+				Log.e(TAG, "WifiListActivity::onCreate(), failed to parse, e1:"+e1.toString());
 			}
-		} catch (JSONException e1) {
-			Log.e(TAG, "WifiListActivity::onCreate(), failed to parse, e1:"+e1.toString());
 		}
+		
 		
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);

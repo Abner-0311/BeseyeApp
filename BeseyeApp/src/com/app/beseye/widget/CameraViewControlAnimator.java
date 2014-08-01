@@ -37,14 +37,14 @@ public class CameraViewControlAnimator {
 	
 	static private final long TIME_TO_HIDE_HEADER  = 7000L;
 	
-	static private Animation s_aniHeaderFadeIn = null;
-	static private Animation s_aniHeaderFadeOut = null;
+	private Animation m_aniHeaderFadeIn = null;
+	private Animation m_aniHeaderFadeOut = null;
 	
-	static private Animation s_aniToolbarFadeIn = null;
-	static private Animation s_aniToolbarFadeOut = null;
+	private Animation m_aniToolbarFadeIn = null;
+	private Animation m_aniToolbarFadeOut = null;
 	
-	static private Animation s_aniHoldToTalkFadeIn = null;
-	static private Animation s_aniHoldToTalkFadeOut = null;
+	private Animation m_aniHoldToTalkFadeIn = null;
+	private Animation m_aniHoldToTalkFadeOut = null;
 	
 	private RelativeLayout m_vgHeaderLayout = null;
 	private RelativeLayout m_vgToolbarLayout = null;
@@ -344,28 +344,28 @@ public class CameraViewControlAnimator {
 	}
 
 	private void initAnimations(Context context){
-		if(null == s_aniHeaderFadeIn){
-			s_aniHeaderFadeIn = AnimationUtils.loadAnimation(context, R.anim.header_enter);
+		if(null == m_aniHeaderFadeIn){
+			m_aniHeaderFadeIn = AnimationUtils.loadAnimation(context, R.anim.header_enter);
 		}
 		
-		if(null == s_aniHeaderFadeOut){
-			s_aniHeaderFadeOut = AnimationUtils.loadAnimation(context, R.anim.header_exit);
+		if(null == m_aniHeaderFadeOut){
+			m_aniHeaderFadeOut = AnimationUtils.loadAnimation(context, R.anim.header_exit);
 		}
 		
-		if(null == s_aniToolbarFadeIn){
-			s_aniToolbarFadeIn = AnimationUtils.loadAnimation(context, R.anim.footer_enter);
+		if(null == m_aniToolbarFadeIn){
+			m_aniToolbarFadeIn = AnimationUtils.loadAnimation(context, R.anim.footer_enter);
 		}
 		
-		if(null == s_aniToolbarFadeOut){
-			s_aniToolbarFadeOut = AnimationUtils.loadAnimation(context, R.anim.footer_exit);
+		if(null == m_aniToolbarFadeOut){
+			m_aniToolbarFadeOut = AnimationUtils.loadAnimation(context, R.anim.footer_exit);
 		}
 		
-		if(null == s_aniHoldToTalkFadeIn){
-			s_aniHoldToTalkFadeIn = AnimationUtils.loadAnimation(context, R.anim.hold_to_talk_enter);
+		if(null == m_aniHoldToTalkFadeIn){
+			m_aniHoldToTalkFadeIn = AnimationUtils.loadAnimation(context, R.anim.hold_to_talk_enter);
 		}
 		
-		if(null == s_aniHoldToTalkFadeOut){
-			s_aniHoldToTalkFadeOut = AnimationUtils.loadAnimation(context, R.anim.hold_to_talk_exit);
+		if(null == m_aniHoldToTalkFadeOut){
+			m_aniHoldToTalkFadeOut = AnimationUtils.loadAnimation(context, R.anim.hold_to_talk_exit);
 		}
 		
 		registerAnimationListeners();
@@ -373,23 +373,23 @@ public class CameraViewControlAnimator {
 	
 	
 	private void registerAnimationListeners(){
-		if(null != s_aniHeaderFadeIn)
-			s_aniHeaderFadeIn.setAnimationListener(mHeaderFadeInListener);
+		if(null != m_aniHeaderFadeIn)
+			m_aniHeaderFadeIn.setAnimationListener(mHeaderFadeInListener);
 		
-		if(null != s_aniHeaderFadeOut)
-			s_aniHeaderFadeOut.setAnimationListener(mHeaderFadeOutListener);
+		if(null != m_aniHeaderFadeOut)
+			m_aniHeaderFadeOut.setAnimationListener(mHeaderFadeOutListener);
 		
-		if(null != s_aniToolbarFadeIn)
-			s_aniToolbarFadeIn.setAnimationListener(mToolbarFadeInListener);
+		if(null != m_aniToolbarFadeIn)
+			m_aniToolbarFadeIn.setAnimationListener(mToolbarFadeInListener);
 		
-		if(null != s_aniToolbarFadeOut)
-			s_aniToolbarFadeOut.setAnimationListener(mToolbarFadeOutListener);
+		if(null != m_aniToolbarFadeOut)
+			m_aniToolbarFadeOut.setAnimationListener(mToolbarFadeOutListener);
 		
-		if(null != s_aniHoldToTalkFadeIn)
-			s_aniHoldToTalkFadeIn.setAnimationListener(mHoldToTalkFadeInListener);
+		if(null != m_aniHoldToTalkFadeIn)
+			m_aniHoldToTalkFadeIn.setAnimationListener(mHoldToTalkFadeInListener);
 		
-		if(null != s_aniHoldToTalkFadeOut)
-			s_aniHoldToTalkFadeOut.setAnimationListener(mHoldToTalkFadeOutListener);
+		if(null != m_aniHoldToTalkFadeOut)
+			m_aniHoldToTalkFadeOut.setAnimationListener(mHoldToTalkFadeOutListener);
 	}
 	
 	public int getVisibility(){
@@ -424,7 +424,7 @@ public class CameraViewControlAnimator {
 				CameraViewActivity act = mCameraViewActivity.get();
 				if(View.VISIBLE == m_vgHeaderLayout.getVisibility()){
 					
-					animation = s_aniHeaderFadeOut;
+					animation = m_aniHeaderFadeOut;
 					m_vgHeaderLayout.startAnimation(animation);
 					
 					if(null != act){
@@ -433,7 +433,7 @@ public class CameraViewControlAnimator {
 					}
 					cancelHideControl();
 				}else{
-					//animation = s_aniHeaderFadeIn;
+					//animation = m_aniHeaderFadeIn;
 					m_vgHeaderLayout.bringToFront();
 					m_vgHeaderLayout.setVisibility(View.VISIBLE);
 					startHideControlRunnable();
@@ -453,11 +453,11 @@ public class CameraViewControlAnimator {
 			if(null != m_vgToolbarLayout){
 				Animation animation = null;
 				if(View.VISIBLE == m_vgToolbarLayout.getVisibility()){
-					animation = s_aniToolbarFadeOut;
+					animation = m_aniToolbarFadeOut;
 					m_vgToolbarLayout.startAnimation(animation);
 					cancelHideControl();
 				}else if(!mbP2PMode){
-					//animation = s_aniToolbarFadeIn;
+					//animation = m_aniToolbarFadeIn;
 					m_vgToolbarLayout.bringToFront();
 					m_vgToolbarLayout.setVisibility(View.VISIBLE);
 				}
@@ -471,10 +471,10 @@ public class CameraViewControlAnimator {
 				Animation animation = null;
 				CameraViewActivity act = mCameraViewActivity.get();
 				if(View.VISIBLE == mVgHoldToTalk.getVisibility()){					
-					animation = s_aniHoldToTalkFadeOut;
+					animation = m_aniHoldToTalkFadeOut;
 					mVgHoldToTalk.startAnimation(animation);
 				}else{
-					//animation = s_aniHeaderFadeIn;
+					//animation = m_aniHeaderFadeIn;
 					mVgHoldToTalk.bringToFront();
 					mVgHoldToTalk.setVisibility(View.VISIBLE);
 				}
