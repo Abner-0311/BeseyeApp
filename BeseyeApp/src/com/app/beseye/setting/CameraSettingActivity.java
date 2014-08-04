@@ -58,7 +58,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerDesc,  mTxtPowerTitle, mTxtViewUpDownTitle;
 	private ImageView mIvViewUpDownCheck, mIvViewUpDownCheckBg;
-	private ViewGroup mVgWifiSetting, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren;
+	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren;
 	
 	private String mStrVCamSN = null;
 	private String mStrVCamMacAddr = null;
@@ -112,20 +112,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		
 		mTxtPowerDesc = (TextView)findViewById(R.id.txt_power_desc);
 		
-		mTxtViewUpDownTitle = (TextView)findViewById(R.id.txt_video_upside_down_title);
-		
-		mIvViewUpDownCheck = (ImageView)findViewById(R.id.iv_video_upside_down_check);
-		
-		mIvViewUpDownCheckBg = (ImageView)findViewById(R.id.iv_video_upside_down_check_bg);
-		if(null != mIvViewUpDownCheckBg){
-			mIvViewUpDownCheckBg.setOnClickListener(this);
-		}
-		
-		mVgWifiSetting = (ViewGroup)findViewById(R.id.vg_wifi_setting);
-		if(null != mVgWifiSetting){
-			mVgWifiSetting.setOnClickListener(this);
-		}
-		
 		mVgCamInfo = (ViewGroup)findViewById(R.id.vg_cam_info);
 		if(null != mVgCamInfo){
 			mVgCamInfo.setOnClickListener(this);
@@ -158,6 +144,17 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		TextView txtSiren = (TextView)findViewById(R.id.txt_setting_emergency_siren);
 		if(null != txtSiren){
 			txtSiren.setText("Detach cam !!!(Dev)");
+		}
+		
+		mVgNotificationType = (ViewGroup)findViewById(R.id.vg_notification_type);
+		if(null != mVgNotificationType){
+			mVgNotificationType.setOnClickListener(this);
+		}
+		
+		mVgFamilyRecognition = (ViewGroup)findViewById(R.id.vg_family_recognition);
+		if(null != mVgFamilyRecognition){
+			mVgFamilyRecognition.setOnClickListener(this);
+			mVgFamilyRecognition.setVisibility(View.GONE);
 		}
 	}
 	
@@ -314,6 +311,12 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			}
 			case R.id.vg_siren:{
 				showMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
+				break;
+			}
+			case R.id.vg_notification_type:{
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				launchActivityByClassName(NotificationEventsSettingActivity.class.getName(),b);
 				break;
 			}
 			default:

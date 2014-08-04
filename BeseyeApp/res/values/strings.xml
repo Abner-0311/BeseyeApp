@@ -99,6 +99,13 @@
 	<string name="cam_setting_title_power_off">off</string>
 	<string name="cam_setting_title_power_disconnected">disconnected</string>
 	
+	<string name="cam_setting_title_notification_event_notify_me">Notify me</string>
+	<string name="cam_setting_title_notification_event_motion_detect">Motion detected</string>
+	<string name="cam_setting_title_notification_event_fire_detect">Fire detected</string>
+	<string name="cam_setting_title_notification_event_sound_detect">Sound detected</string>
+	<string name="cam_setting_title_notification_event_offline_detect">Offline</string>
+	
+	
 	<string name="cam_setting_fail_to_update_cam_status">Fail to update camera status. Please try again later.</string>
 	<string name="cam_setting_fail_to_get_cam_info">Fail to get camera info. Please try again later.</string>
 	<string name="cam_setting_fail_to_get_wifi_list">Fail to get WiFi list from camera. Please try again later.</string>
