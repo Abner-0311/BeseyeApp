@@ -3,6 +3,7 @@ package com.app.beseye.setting;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -38,49 +39,23 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
-	protected List<TimeZone> mlstTimeZone;
+	protected List<BeseyeTimeZone> mlstTimeZone;
 	
-	static final String[] sTimezoneList = {"ROC", 
-										   "PRC", 
-										   "Japan", 
-										   "Hongkong", 
-										   "ROK", 
-										   "Singapore", 
-										   "US/Eastern",
-										   "US/Central",
-										   "US/Pacific",
-										   "US/Mountain",
-										   "US/Alaska",
-										   "US/Hawaii",
-										   "US/Arizona",
-										   "Canada/Atlantic",
-										   "Canada/Newfoundland",
-										   "Canada/Eastern",
-										   "Canada/Central",
-										   "Canada/Mountain",
-										   "Canada/Pacific",
-										   "NZ",
-										   "Australia/ACT",
-										   "Australia/West",
-										   "Australia/Adelaide",
-										   "Europe/Copenhagen",
-										   "Atlantic/Reykjavik",
-										   "Europe/Athens",
-										   "Europe/Warsaw",
-										   "Europe/Paris",
-										   "Europe/Helsinki",
-										   "Europe/Londo",
-										   "Europe/Oslo",
-										   "Europe/Prague",
-										   "Europe/Amsterdam",
-										   "Europe/Zurich",
-										   "Europe/Stockholm",
-										   "Europe/Berlin",
-										   "Europe/Brussels",
-										   "Europe/Budapest",
-										   "Europe/Madrid",
-										   "Europe/Vienna",
-										   "Europe/Rome"};
+	public static class BeseyeTimeZone{
+		public TimeZone tz;
+		public String strDisplayName;
+		
+		BeseyeTimeZone(String strId, String strDisplayName){
+			tz = TimeZone.getTimeZone(strId);
+			this.strDisplayName = strDisplayName;
+		}
+		
+		public String getDisplayName(){
+			return strDisplayName;
+		}
+	}
+	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "WifiListActivity::onCreate()");
@@ -123,23 +98,62 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		
 		if(null != mlvTimezoneList){
 			mlvTimezoneList.setMode(LvExtendedMode.NONE);
-			mlstTimeZone = new ArrayList<TimeZone>();
-//			String[] ids=TimeZone.getAvailableIDs();
-//			for(int i=0;i<ids.length;i++){	   
-//			   TimeZone d= TimeZone.getTimeZone(ids[i]);
-//			   mlstTimeZone.add(d);
-//			}
-			
-			for(int i=0;i<sTimezoneList.length;i++){	   
-			   TimeZone d= TimeZone.getTimeZone(sTimezoneList[i]);
-			   mlstTimeZone.add(d);
-			}
+			generateTimeZoneList();
 			
 			mTimezoneInfoAdapter = new TimezoneInfoAdapter(this, mlstTimeZone, R.layout.timezone_list_item, this);
 			if(null != mlvTimezoneList){
 				mlvTimezoneList.setAdapter(mTimezoneInfoAdapter);
 			}
 		}
+	}
+	
+	private void generateTimeZoneList(){
+		mlstTimeZone = new ArrayList<BeseyeTimeZone>();
+		mlstTimeZone.add(new BeseyeTimeZone("ROC", getString(R.string.tz_asia_taiwan)));
+		mlstTimeZone.add(new BeseyeTimeZone("PRC", getString(R.string.tz_asia_china)));
+		mlstTimeZone.add(new BeseyeTimeZone("Japan",  getString(R.string.tz_asia_japan)));
+		mlstTimeZone.add(new BeseyeTimeZone("Hongkong",  getString(R.string.tz_asia_hk)));
+		mlstTimeZone.add(new BeseyeTimeZone("ROK",  getString(R.string.tz_asia_korea)));
+		mlstTimeZone.add(new BeseyeTimeZone("Singapore",  getString(R.string.tz_asia_singpore)));
+		
+		mlstTimeZone.add(new BeseyeTimeZone("US/Eastern",  getString(R.string.tz_us_eastern)));
+		mlstTimeZone.add(new BeseyeTimeZone("US/Central",  getString(R.string.tz_us_central)));
+		mlstTimeZone.add(new BeseyeTimeZone("US/Pacific",  getString(R.string.tz_us_pacific)));
+		mlstTimeZone.add(new BeseyeTimeZone("US/Mountain",  getString(R.string.tz_us_mountain)));
+		mlstTimeZone.add(new BeseyeTimeZone("US/Alaska",  getString(R.string.tz_us_alaska)));
+		mlstTimeZone.add(new BeseyeTimeZone("US/Hawaii",  getString(R.string.tz_us_hawaii)));
+		mlstTimeZone.add(new BeseyeTimeZone("US/Arizona",  getString(R.string.tz_us_arizona)));
+		
+		mlstTimeZone.add(new BeseyeTimeZone("Canada/Atlantic",  getString(R.string.tz_can_atlantic)));
+		mlstTimeZone.add(new BeseyeTimeZone("Canada/Newfoundland",  getString(R.string.tz_can_newfoundland)));
+		mlstTimeZone.add(new BeseyeTimeZone("Canada/Eastern",  getString(R.string.tz_can_eastern)));
+		mlstTimeZone.add(new BeseyeTimeZone("Canada/Central",  getString(R.string.tz_can_central)));
+		mlstTimeZone.add(new BeseyeTimeZone("Canada/Mountain",  getString(R.string.tz_can_mountain)));
+		mlstTimeZone.add(new BeseyeTimeZone("Canada/Pacific",  getString(R.string.tz_can_pacific)));
+		
+		mlstTimeZone.add(new BeseyeTimeZone("NZ",  getString(R.string.tz_new_zealand)));
+		mlstTimeZone.add(new BeseyeTimeZone("Canada/Eastern",  getString(R.string.tz_aus_eastern)));
+		mlstTimeZone.add(new BeseyeTimeZone("Canada/Eastern",  getString(R.string.tz_aus_western)));
+		mlstTimeZone.add(new BeseyeTimeZone("Canada/Eastern",  getString(R.string.tz_aus_central)));
+		
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Copenhagen",  getString(R.string.tz_euro_denmark)));
+		mlstTimeZone.add(new BeseyeTimeZone("Atlantic/Reykjavik",  getString(R.string.tz_euro_iceland)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Athens",  getString(R.string.tz_euro_greece)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Warsaw",  getString(R.string.tz_euro_poland)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Paris",  getString(R.string.tz_euro_france)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Helsinki",  getString(R.string.tz_euro_finland)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/London",  getString(R.string.tz_euro_uk)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Oslo",  getString(R.string.tz_euro_norway)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Prague",  getString(R.string.tz_euro_czech)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Amsterdam",  getString(R.string.tz_euro_holland)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Zurich",  getString(R.string.tz_euro_swiss)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Stockholm",  getString(R.string.tz_euro_sweden)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Berlin",  getString(R.string.tz_euro_germany)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Brussels",  getString(R.string.tz_euro_belgium)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Budapest",  getString(R.string.tz_euro_hungary)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Madrid",  getString(R.string.tz_euro_spain)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Vienna",  getString(R.string.tz_euro_austria)));
+		mlstTimeZone.add(new BeseyeTimeZone("Europe/Rome",  getString(R.string.tz_euro_italy)));
 	}
 
 	@Override
@@ -154,7 +168,7 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 			if(null != info){
 				//Toast.makeText(this, info.mTimeZone.toString(), Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent();
-				intent.putExtra(HWSettingsActivity.TIME_ZONE_INFO, info.mTimeZone.getID());
+				intent.putExtra(HWSettingsActivity.TIME_ZONE_INFO, info.mTimeZone.tz.getID());
 				setResult(RESULT_OK, intent);
 				finish();
 			}

@@ -27,10 +27,17 @@ import android.widget.TextView;
 
 public class EventListAdapter extends BeseyeJSONAdapter {
 	private int miSelectedImt = 0;
+	private String mStrFamilyDetectFormat, mStrPeopleDetect, mStrSoundDetect, mStrFireDetect, mStrMotionDetect, mStrEventDetect;
 	
 	public EventListAdapter(Context context, JSONArray list, int iLayoutId,
 			OnClickListener itemOnClickListener) {
 		super(context, list, iLayoutId, itemOnClickListener);
+		mStrFamilyDetectFormat = context.getResources().getString(R.string.event_list_family_detected);
+		mStrPeopleDetect = context.getResources().getString(R.string.event_list_people_detected);
+		mStrSoundDetect = context.getResources().getString(R.string.event_list_sound_detected);
+		mStrFireDetect = context.getResources().getString(R.string.event_list_fire_detected);
+		mStrMotionDetect = context.getResources().getString(R.string.event_list_motion_detected);
+		mStrEventDetect = context.getResources().getString(R.string.event_list_unknown_detected);
 	}
 
 	static public class EventListItmHolder{
@@ -167,74 +174,32 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 					}
 					face = BeseyeJSONUtil.findFacebyId(iFaceId-1);
 					if(null != face){
-						strType = String.format("%s recognized", face.mstrName);
+						strType = String.format(mStrFamilyDetectFormat, face.mstrName);
 					}else{
-						strType = "Stranger identified";
+						strType = mStrPeopleDetect;
 					}
 				} catch (JSONException e) {
 					Log.e(TAG, "genDetectionType(), e:"+e.toString());	
 				}
 				
 			}else{
-				strType = "Stranger identified";
+				strType = mStrPeopleDetect;
 			}
 			BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
 		}
 		
 		if(0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArr)){
-			strType = ((null != strType)?(strType+" & "):"" )+"Motion dectected";
+			strType = ((null != strType)?(strType):mStrMotionDetect );
 			BeseyeUtils.setVisibility(holder.mImgMotion, View.VISIBLE);
 		}
 		
 		if(null == strType){
-			strType ="Unknown Dectection";
+			strType =mStrEventDetect;
 		}
 		
 		if(null != holder.mTxtEventType){
 			holder.mTxtEventType.setText(strType);
 		}
-		
-//		else if(4 == iType){
-//			strType = "Sound Dectection";
-//			BeseyeUtils.setVisibility(holder.mImgSound, View.VISIBLE);
-//		}else if(1 == iType){
-//			strType = "Motion Dectection";
-//			BeseyeUtils.setVisibility(holder.mImgMotion, View.VISIBLE);
-//		}
-//		
-//		strRet += (null == strType)?strType:(" & "+strType);
-//		if(null != typeArr){
-//			int iCount = typeArr.length();
-//			for(int i = 0;i< iCount;i++){
-//				int iType;
-//				try {
-//					String strType = null;
-//					iType = typeArr.getInt(i);
-//					if(2 == iType){
-//						strType = "Family Dectection";
-//						BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
-//					}else if(8 == iType){
-//						strType = "Fire Dectection";
-//						BeseyeUtils.setVisibility(holder.mImgFire, View.VISIBLE);
-//					}else if(4 == iType){
-//						strType = "Sound Dectection";
-//						BeseyeUtils.setVisibility(holder.mImgSound, View.VISIBLE);
-//					}else if(1 == iType){
-//						strType = "Motion Dectection";
-//						BeseyeUtils.setVisibility(holder.mImgMotion, View.VISIBLE);
-//					}
-//					
-//					strRet += (null == strType)?strType:(" & "+strType);
-//				} catch (JSONException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//			
-//			if(null != holder.mTxtEventType){
-//				holder.mTxtEventType.setText(strRet);
-//			}
-//		}
-		
 		return strRet;
 	}
 }

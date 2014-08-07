@@ -214,20 +214,7 @@
 	<string name="datetime_hour">Hour</string>
 	<string name="datetime_min">Minute</string>
 	<string name="event_list_now">Now</string>
-	<string name="event_list_family_detected">Family recognized</string>
-	<string name="event_list_people_detected">People dectected</string>
-	<string name="event_list_sound_detected">Sound dectected</string>
-	<string name="event_list_fire_detected">Fire dectected</string>
-	<string name="event_list_motion_detected">Motion dectected</string>
-	<string name="event_list_unknown_detected">event detected</string>
-	
-	<string name="event_list_family_detected_notify">%1$s was recognized by %2$s at %3$s</string>
-	<string name="event_list_people_detected_notify">People were detected by %1$s at %2$s</string>
-	<string name="event_list_sound_detected_notify">Sound was detected by %1$s at %2$s</string>
-	<string name="event_list_fire_detected_notify">Fire was detected by %1$s at %2$s</string>
-	<string name="event_list_motion_detected_notify">Motion was detected by %1$s at %2$s</string>
-	<string name="event_list_unknown_detected_notify">Event was detected by %1$s at %2$s</string>
-	
+
 	<string name="camera_list_off">This camera is off</string>
 	<string name="camera_list_disconected">This camera is disconnected</string>
 	<string name="camera_list_more">Click for more</string>
@@ -289,7 +276,7 @@
 	<string name="tz_can_mountain">Canada – Mountain</string>
 	<string name="tz_can_pacific">Canada – Pacific</string>
 	
-	<string name="tz_asia_taiwan">Taiwan</string>
+	<string name="tz_asia_taiwan">台灣</string>
 	<string name="tz_asia_china">China</string>
 	<string name="tz_asia_japan">Japan</string>
 	<string name="tz_asia_hk">Hong Kong</string>

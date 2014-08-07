@@ -1277,15 +1277,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 												FACE_LIST face = BeseyeJSONUtil.findFacebyId(iFaceId-1);
 												//BeseyeJSONUtil.FACE_LIST face = BeseyeJSONUtil.findFacebyId(faceList.getInt(faceList.length()-1)-1);
 												if(null != face){
-													strMsg = String.format("%s was recognized by %s at %s", face.mstrName, sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
+													strMsg = String.format(getString(R.string.event_list_family_detected_notify), face.mstrName, sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 												}else{
-													strMsg = String.format("Stranger was identified by %s at %s", sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
+													strMsg = String.format(getString(R.string.event_list_people_detected_notify), sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 												}
 											}else{
-												strMsg = String.format("Stranger was identified by %s at %s", sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
+												strMsg = String.format(getString(R.string.event_list_people_detected_notify), sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 											}
 										}else{
-											strMsg = String.format("Motion activity was detected by %s at %s", sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
+											strMsg = String.format(getString(R.string.event_list_motion_detected_notify), sStrVcamName, new Date(lNewEventStartTime).toLocaleString());
 										}
 										
 										showNotification(NOTIFICATION_TYPE_INFO, intent, strMsg, obj);

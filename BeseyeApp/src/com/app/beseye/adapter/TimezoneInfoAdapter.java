@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.app.beseye.R;
+import com.app.beseye.setting.TimezoneListActivity.BeseyeTimeZone;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeUtils;
 
@@ -25,9 +26,9 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 	protected OnClickListener mItemOnClickListener = null;
 	protected int miLayoutId;
 	
-	private List<TimeZone> mlstTimezoneResult;
+	private List<BeseyeTimeZone> mlstTimezoneResult;
 	
-	public TimezoneInfoAdapter(Context context, List<TimeZone> lstScanResult, int iLayoutId, OnClickListener itemOnClickListener){
+	public TimezoneInfoAdapter(Context context, List<BeseyeTimeZone> lstScanResult, int iLayoutId, OnClickListener itemOnClickListener){
 		mContext = new WeakReference<Context>(context);
 		mlstTimezoneResult = lstScanResult;
 		miLayoutId = iLayoutId;
@@ -35,23 +36,6 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 		
 		final TimeZoneComparator comparator = new TimeZoneComparator(true);
         Collections.sort(mlstTimezoneResult, comparator);
-        
-//        for(int idx = 0; idx < mlstTimezoneResult.size();){
-//        	TimeZone tzCur = mlstTimezoneResult.get(idx);
-//        	if(tzCur.getID().toLowerCase().startsWith("etc/") || tzCur.getDisplayName().toLowerCase().startsWith("gmt") || tzCur.getDisplayName().toLowerCase().startsWith("utc")){
-//        		mlstTimezoneResult.remove(idx);
-//        		continue;
-//        	}
-//        	
-//        	if(idx > 0){
-//        		TimeZone tzPre = mlstTimezoneResult.get(idx-1);
-//            	if(tzCur.getDisplayName().equals(tzPre.getDisplayName())){
-//            		mlstTimezoneResult.remove(idx);
-//            		continue;
-//            	}
-//        	}
-//        	idx++;
-//        }
         
 		if(null != mContext){
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -81,7 +65,7 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 	static public class TimezoneInfoHolder{
 		TextView mtxtName;
 		public TextView mtxtZoneInfo;
-		public TimeZone mTimeZone;
+		public BeseyeTimeZone mTimeZone;
 	}
 
 	@Override
@@ -114,16 +98,16 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 		if(null != convertView){
 			TimezoneInfoHolder holder = (TimezoneInfoHolder)convertView.getTag();
 			if(null != holder){
-				TimeZone sRet = (TimeZone)getItem(iPosition);
+				BeseyeTimeZone sRet = (BeseyeTimeZone)getItem(iPosition);
 				if(null != sRet){
 					
 					if(null != holder.mtxtName)
-						holder.mtxtName.setText(sRet.getID());
+						holder.mtxtName.setText(sRet.getDisplayName());
 					
-					Log.i(BeseyeConfig.TAG, "Name:"+sRet.getDisplayName()+", sRet:"+sRet);
+					Log.i(BeseyeConfig.TAG, "Name:"+sRet.getDisplayName()+", sRet:"+sRet.tz);
 					
 					if(null != holder.mtxtZoneInfo){
-						holder.mtxtZoneInfo.setText(BeseyeUtils.getGMTString(sRet));
+						holder.mtxtZoneInfo.setText(BeseyeUtils.getGMTString(sRet.tz));
 					}
 					
 					holder.mTimeZone = sRet;
@@ -134,18 +118,18 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 		}
 	}
 	
-	private static class TimeZoneComparator implements Comparator<TimeZone> {
+	private static class TimeZoneComparator implements Comparator<BeseyeTimeZone> {
 		private boolean mbSortByTimezone = true;
 		
 		public TimeZoneComparator(boolean bSortByTimezone){
 			mbSortByTimezone = bSortByTimezone;
 		}
 		
-        public int compare(TimeZone zone1, TimeZone zone2) {
+        public int compare(BeseyeTimeZone zone1, BeseyeTimeZone zone2) {
         	if(mbSortByTimezone){
-        		if(zone1.getRawOffset() == zone2.getRawOffset()){
+        		if(zone1.tz.getRawOffset() == zone2.tz.getRawOffset()){
             		return zone1.getDisplayName().compareTo(zone2.getDisplayName());
-            	}else if(zone1.getRawOffset() < zone2.getRawOffset()){
+            	}else if(zone1.tz.getRawOffset() < zone2.tz.getRawOffset()){
             		return -1;
             	}else{
             		return 1;

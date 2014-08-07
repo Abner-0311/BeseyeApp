@@ -404,6 +404,8 @@ public class BeseyeJSONUtil {
 				Log.d(TAG, "getJSONString(), can't get value by "+strKey);
 				strRet = strDefault;
 			}
+		}else{
+			strRet = strDefault;
 		}
 		return strRet;
 	}
