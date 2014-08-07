@@ -113,6 +113,8 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity{
 				mVgNotifyType[idx].setOnClickListener(this);
 			}
 		}
+		//Disable fire detection
+		mVgNotifyType[1].setVisibility(View.GONE);
 		
 //		JSONArray arrDays = BeseyeJSONUtil.getJSONArray(mSched_obj, SCHED_DAYS);
 //		int iSize = (null != arrDays)?arrDays.length():0;

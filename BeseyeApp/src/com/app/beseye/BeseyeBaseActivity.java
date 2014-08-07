@@ -217,7 +217,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_WIFI_AP_SECU_PICKER	= DIALOG_ID_WIFI_BASE+18; 
 	
 	@Override
-	protected Dialog onCreateDialog(int id, Bundle bundle) {
+	protected Dialog onCreateDialog(int id, final Bundle bundle) {
 		Dialog dialog;
 		switch(id){
 			case DIALOG_ID_WARNING:{
@@ -233,6 +233,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					@Override
 					public void onCancel(DialogInterface dialog) {
 						removeMyDialog(DIALOG_ID_WARNING);
+						if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
+							finish();
+						}
 					}});
 				
 				dialog = builder.create();
