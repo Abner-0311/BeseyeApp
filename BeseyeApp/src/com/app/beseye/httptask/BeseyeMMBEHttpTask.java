@@ -11,8 +11,6 @@ import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.List;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,10 +18,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.widget.BeseyeStorageAgent;
+import com.app.beseye.util.BeseyeStorageAgent;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 public class BeseyeMMBEHttpTask  {
 	static private final String MM_HOST 				= "http://54.178.141.19/";

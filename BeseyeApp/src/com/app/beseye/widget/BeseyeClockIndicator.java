@@ -2,7 +2,9 @@ package com.app.beseye.widget;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import com.app.beseye.R;
 import com.app.beseye.util.BeseyeUtils;
@@ -46,6 +48,10 @@ public class BeseyeClockIndicator extends LinearLayout {
 	private ImageView m_imgHand;
 	private ImageView m_imgMinHand;
 	
+	static private final SimpleDateFormat sDateFormat = new SimpleDateFormat("MM/dd");
+	static private final SimpleDateFormat sTimeFormat = new SimpleDateFormat("kk:mm");
+	private TimeZone mTimeZone;
+	
 	private TextView m_txtTime;
 	private TextView m_txtDate;
 	
@@ -73,6 +79,12 @@ public class BeseyeClockIndicator extends LinearLayout {
 				addView(m_vgClockIndHolder, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			}
 		}
+	}
+	
+	public void updateTimeZone(TimeZone tz){
+		mTimeZone = tz;
+		sDateFormat.setTimeZone(mTimeZone);
+		sTimeFormat.setTimeZone(mTimeZone);
 	}
 	
 	public void calculateTotalLvHeight(int iItmCount, int iItmHeight, int iHolderHeight){
@@ -119,11 +131,11 @@ public class BeseyeClockIndicator extends LinearLayout {
 			}
 		}else{
 			if(null != m_txtDate){
-				m_txtDate.setText(String.format("%02d/%02d", date.getMonth()+1, date.getDate()));
+				m_txtDate.setText(sDateFormat.format(date));
 			}
 			
 			if(null != m_txtTime){
-				m_txtTime.setText(String.format("%02d:%02d", miNextHour, miNextMin));
+				m_txtTime.setText(sTimeFormat.format(date));
 			}
 		}	
 		

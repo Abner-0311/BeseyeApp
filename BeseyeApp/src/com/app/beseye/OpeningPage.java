@@ -32,7 +32,8 @@ import android.util.Log;
 import android.view.WindowManager;
 
 public class OpeningPage extends Activity implements OnHttpTaskCallback{
-	public static final String ACTION_BRING_FRONT 		= "BringFront";
+	public static final String ACTION_BRING_FRONT 		= "ACTION_BRING_FRONT";
+	public static final String KEY_HAVE_HANDLED 		= "KEY_HAVE_HANDLED";
 	public static final String KEY_DELEGATE_INTENT 		= "KEY_DELEGATE_INTENT";
 	public static final String KEY_IGNORE_ACTIVATED_FLAG= "KEY_IGNORE_ACTIVATED_FLAG";
 	public static final String FIRST_PAGE 				= CameraListActivity.class.getName();
@@ -47,6 +48,12 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		super.onCreate(savedInstanceState);
 		
 		//if(sbFirstLaunch)
+		if(getIntent().getBooleanExtra(KEY_HAVE_HANDLED, false)){
+			Log.i(TAG, "OpeningPage::onCreate(), KEY_HAVE_HANDLED is true ");
+			finish();
+			return;
+		}
+		
 		setContentView(R.layout.layout_opening);
 		
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -149,10 +156,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			}
 		}
 		
-		File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
-		COMPUTEX_PAIRING = (null != pairingFile)&&pairingFile.exists();
-		
-		Log.i(TAG, "OpeningPage::launchActivityByIntent(), COMPUTEX_PAIRING :"+COMPUTEX_PAIRING);
+		BeseyeApplication.checkPairingMode();
 		
 		Intent intentLanuch = null;
 		if(null == (intentLanuch = intent.getParcelableExtra(KEY_DELEGATE_INTENT))){
@@ -206,6 +210,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		}
 
 		m_bLaunchForDelegate = true;
+		
+		getIntent().putExtra(KEY_HAVE_HANDLED, true);
 	}
 	
 	@Override

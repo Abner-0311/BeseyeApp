@@ -38,6 +38,7 @@ import android.util.Log;
 
 public class NetworkMgr {
 	public static final int NUM_WEP_KEY_IDX = 4;
+	public static final int NUM_WIFI_SECU_TYPE = 4;
 	
 	static public interface OnNetworkChangeCallback{
 		public void onConnectivityChanged(boolean bNetworkConnected);
@@ -644,16 +645,29 @@ public class NetworkMgr {
 		static final public String AUTHNICATION_WPA = "WPA";
 		static final public String AUTHNICATION_WPA2 = "WPA2";
 		static final public String AUTHNICATION_SUB_PSK = "PSK";
-		public String SSID;
-		public String BSSID;
-		public String cipher;
-		public String password;
+		
+		static final public int AUTHNICATION_KEY_NONE = 0;
+		static final public int AUTHNICATION_KEY_WEP = 1;
+		static final public int AUTHNICATION_KEY_WPA = 2;
+		static final public int AUTHNICATION_KEY_WPA2 = 3;
+		
+		public String SSID ="";
+		public String BSSID ="";
+		private String cipher ="";
+		public String password ="";
+		public int iCipherIdx = 0;//0:None, 1:WEP, 2:WPA, 3:WPA2
 		public int wepkeyIdx;
 		public int signalLevel;
 		public int frequency;
 		public boolean bActiveConn;
+		public boolean bIsOther = false;
 		
 		public WifiAPInfo() {
+			bIsOther = false;
+		}
+		
+		public WifiAPInfo(boolean bIsOther) {
+			this.bIsOther = bIsOther;
 		}
 		
 		public WifiAPInfo(Parcel in) {
@@ -671,11 +685,15 @@ public class NetworkMgr {
 			cipher = in.readString();
 			password = in.readString();
 			
+			iCipherIdx = in.readInt();
 			wepkeyIdx = in.readInt();
 			signalLevel = in.readInt();
 			frequency = in.readInt();
 			bActiveConn = in.readInt()>0?true:false;
+			bIsOther = in.readInt()>0?true:false; 
 		}
+		
+		public String getCipher(){ return cipher;}
 		
 		@Override
 		public void writeToParcel(Parcel dest, int flags) {
@@ -688,10 +706,12 @@ public class NetworkMgr {
 			dest.writeString(cipher);
 			dest.writeString(password);
 			
+			dest.writeInt(iCipherIdx);
 			dest.writeInt(wepkeyIdx);
 			dest.writeInt(signalLevel);
 			dest.writeInt(frequency);
 			dest.writeInt(bActiveConn?1:0);
+			dest.writeInt(bIsOther?1:0);
 		}
 		
 		public static final Parcelable.Creator<WifiAPInfo> CREATOR = new Parcelable.Creator<WifiAPInfo>() {
@@ -705,21 +725,33 @@ public class NetworkMgr {
 	    };
 	}
 	
-	public static int translateCipherToType(String cipher){
-		int iRet = -1;
-		if(null != cipher && 0< cipher.length()){
-			if(cipher.contains(WifiAPInfo.AUTHNICATION_NONE)){
-				iRet = 0;
-			}else if(cipher.contains(WifiAPInfo.AUTHNICATION_WEP)){
-				iRet = 1;
-			}else if(cipher.contains(WifiAPInfo.AUTHNICATION_WPA2)){
-				iRet = 3;
-			}else if(cipher.contains(WifiAPInfo.AUTHNICATION_WPA)){
-				iRet = 2;
-			}
-		}
-		
-		return iRet;
+//	public static int translateCipherToType(String cipher){
+//		int iRet = -1;
+//		if(null != cipher && 0< cipher.length()){
+//			if(cipher.contains(WifiAPInfo.AUTHNICATION_NONE)){
+//				iRet = 0;
+//			}else if(cipher.contains(WifiAPInfo.AUTHNICATION_WEP)){
+//				iRet = 1;
+//			}else if(cipher.contains(WifiAPInfo.AUTHNICATION_WPA2)){
+//				iRet = 3;
+//			}else if(cipher.contains(WifiAPInfo.AUTHNICATION_WPA)){
+//				iRet = 2;
+//			}
+//		}
+//		
+//		return iRet;
+//	}
+	
+	public static String translateCipherTypeToDesc(Context context, int iType){
+		String  strRet = context.getString(R.string.dialog_wifi_ap_security_none);
+		if(1 == iType){
+			strRet = WifiAPInfo.AUTHNICATION_WEP;
+		}else if(2 == iType){
+			strRet = WifiAPInfo.AUTHNICATION_WPA;
+		}else if(3 == iType){
+			strRet = WifiAPInfo.AUTHNICATION_WPA2;
+		}		
+		return strRet;
 	}
 	
 	public void filterWifiAPInfo(List<WifiAPInfo> dest, List<ScanResult> src){
@@ -735,6 +767,11 @@ public class NetworkMgr {
 							dest.add(info);
 						}
 					}
+				}
+				
+				if(null != dest && 0 < dest.size()){
+					WifiAPInfo infoOther = new WifiAPInfo(true);
+					dest.add(infoOther);
 				}
 			}
 		}
@@ -759,6 +796,11 @@ public class NetworkMgr {
 						Log.i(TAG, "filterWifiAPInfo(), e = "+e.toString());
 						
 					}
+				}
+				
+				if(null != dest && 0 < dest.size()){
+					WifiAPInfo infoOther = new WifiAPInfo(true);
+					dest.add(infoOther);
 				}
 			}
 		}
@@ -802,20 +844,24 @@ public class NetworkMgr {
 			retInfo.frequency = ret.frequency;
 			retInfo.signalLevel = WifiManager.calculateSignalLevel(ret.level, WifiAPInfo.MAX_SIGNAL_LEVEL);
 			
+			retInfo.iCipherIdx = 0;
 			String strCipher = WifiAPInfo.AUTHNICATION_NONE;
 			if(null != ret.capabilities){
 				int iWPAIdx = -1;
 				int iWPA2Idx = -1;
 				if(ret.capabilities.contains(WifiAPInfo.AUTHNICATION_WEP)){
 					strCipher = WifiAPInfo.AUTHNICATION_WEP;
+					retInfo.iCipherIdx = 1;
 				}else if(-1 < (iWPAIdx = ret.capabilities.indexOf(WifiAPInfo.AUTHNICATION_WPA))){
 					if(-1 < (iWPA2Idx = ret.capabilities.indexOf(WifiAPInfo.AUTHNICATION_WPA2))){
 						if(iWPA2Idx != iWPAIdx)
 							strCipher = WifiAPInfo.AUTHNICATION_WPA+"/"+WifiAPInfo.AUTHNICATION_WPA2+" "+WifiAPInfo.AUTHNICATION_SUB_PSK;
 						else
 							strCipher = WifiAPInfo.AUTHNICATION_WPA2+" "+WifiAPInfo.AUTHNICATION_SUB_PSK;
+						retInfo.iCipherIdx = 3;
 					}else{
 						strCipher = WifiAPInfo.AUTHNICATION_WPA+" "+WifiAPInfo.AUTHNICATION_SUB_PSK;
+						retInfo.iCipherIdx = 2;
 					}
 				}
 			}
@@ -835,9 +881,8 @@ public class NetworkMgr {
 			
 			//retInfo.frequency = ret.frequency;
 			retInfo.signalLevel = WifiManager.calculateSignalLevel(BeseyeJSONUtil.getJSONInt(ret, BeseyeJSONUtil.WIFI_SSIDLST_SGL), WifiAPInfo.MAX_SIGNAL_LEVEL);
-			
 			String strCipher = WifiAPInfo.AUTHNICATION_NONE;
-			int iSecType = BeseyeJSONUtil.getJSONInt(ret, BeseyeJSONUtil.WIFI_SSIDLST_SEC);
+			int iSecType = retInfo.iCipherIdx =BeseyeJSONUtil.getJSONInt(ret, BeseyeJSONUtil.WIFI_SSIDLST_SEC);
 			if(1 == iSecType){
 				strCipher = WifiAPInfo.AUTHNICATION_WEP;
 			}else if(2 == iSecType){

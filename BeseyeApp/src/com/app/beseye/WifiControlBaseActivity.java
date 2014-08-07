@@ -50,6 +50,13 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	protected WIFI_SETTING_STATE mWifiSettingState = WIFI_SETTING_STATE.STATE_UNINIT; 
 	protected List<WifiAPInfo> mlstScanResult;
 	protected TextView mtxtKeyIndex;
+	
+	protected TextView mtxtSecurityVal;
+	protected RelativeLayout mVgPassordHolder;
+	protected RelativeLayout mVgKeyIndexHolder;
+	protected Button mbtnConnect;
+	protected EditText mEtSSID;
+	
 	protected String mWifiApPassword = null;
 	protected WifiAPInfo mChosenWifiAPInfo;
 	protected boolean mbChangeWifi = false;
@@ -122,6 +129,27 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 						}});
 				}
 		    	break;
+			}
+			case DIALOG_ID_WIFI_AP_INFO_ADD:{
+				dialog = new Dialog(this);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+				dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+				dialog.setContentView(createWifiAPInfoAddView(false, 0));
+				
+				if(null != dialog){
+					dialog.setCanceledOnTouchOutside(true);
+					dialog.setOnCancelListener(new OnCancelListener(){
+						@Override
+						public void onCancel(DialogInterface arg0) {
+							removeMyDialog(DIALOG_ID_WIFI_AP_INFO);
+						}});
+					dialog.setOnDismissListener(new OnDismissListener(){
+						@Override
+						public void onDismiss(DialogInterface arg0) {
+							mWifiApPassword = null;
+						}});
+				}
+				break;
 			}
 			case DIALOG_ID_WIFI_TURN_ON_FAILED:{
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -403,7 +431,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 					
 					TextView txtSecurity = (TextView)vgAPBasicInfo.findViewById(R.id.txt_security_value);
 					if(null != txtSecurity){
-						txtSecurity.setText((WifiAPInfo.AUTHNICATION_NONE.equals(mChosenWifiAPInfo.cipher))?getResources().getString(R.string.dialog_wifi_ap_security_none):mChosenWifiAPInfo.cipher);
+						txtSecurity.setText((mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_NONE)?getResources().getString(R.string.dialog_wifi_ap_security_none):mChosenWifiAPInfo.getCipher());
 					}
 				}
 				
@@ -421,21 +449,6 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				}
 				
 				mtxtKeyIndex = (TextView)vgApInfo.findViewById(R.id.txt_keyindex_value);
-//				if(null != mtxtKeyIndex){
-//					WifiConfiguration config = NetworkMgr.getInstance().getWifiConfigurationBySSID(mChosenWifiAPInfo.SSID);
-//					if(null != config){
-//						mChosenWifiAPInfo.wepkeyIdx = config.wepTxKeyIndex;
-//					}else{
-//						
-//					}
-//					mtxtKeyIndex.setText(String.valueOf(mChosenWifiAPInfo.wepkeyIdx+1));
-//					mtxtKeyIndex.setOnClickListener(new OnClickListener(){
-//						@Override
-//						public void onClick(View arg0) {
-//							showMyDialog(DIALOG_ID_WIFI_AP_KEYINDEX);
-//						}});
-//				}
-				
 				ImageView ivSpinner = (ImageView)vgApInfo.findViewById(R.id.iv_spinner);
 				if(null != ivSpinner){
 					ivSpinner.setOnClickListener(new OnClickListener(){
@@ -489,15 +502,15 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				
 				RelativeLayout vgPassord = (RelativeLayout)vgApInfo.findViewById(R.id.vg_password_holder);
 				if(null != vgPassord){
-					if(WifiAPInfo.AUTHNICATION_NONE.equals(mChosenWifiAPInfo.cipher)){
+					if(mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_NONE){
 						mWifiApPassword = "";
 						vgPassord.setVisibility(View.GONE);
 					}else{
-						final int iMinPasswordLength = mChosenWifiAPInfo.cipher.contains(WifiAPInfo.AUTHNICATION_WPA)?8:13;
+						final int iMinPasswordLength = (mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP)?8:13;
 						final EditText etPassword = (EditText)vgPassord.findViewById(R.id.et_password_value);
 						if(null != etPassword){
 							if(DEBUG){
-								etPassword.setText(mChosenWifiAPInfo.cipher.contains(WifiAPInfo.AUTHNICATION_WPA)?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
+								etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
 							}
 							mWifiApPassword = etPassword.getText().toString();
 							etPassword.addTextChangedListener(new TextWatcher(){
@@ -532,10 +545,220 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				
 				RelativeLayout vgKeyIndex = (RelativeLayout)vgApInfo.findViewById(R.id.vg_keyindex_holder);
 				if(null != vgKeyIndex){
-					vgKeyIndex.setVisibility(mChosenWifiAPInfo.cipher.contains(WifiAPInfo.AUTHNICATION_WEP)?View.VISIBLE:View.GONE);
+					vgKeyIndex.setVisibility(mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_WEP?View.VISIBLE:View.GONE);
 				}
 			}
 		}
 		return vgApInfo;
+	}
+	
+	protected View createWifiAPInfoAddView(final boolean bPasswordOnly, int iWrongPWId){
+		View vgApInfo = null;
+		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		if(null != inflater){
+			vgApInfo = (View)inflater.inflate(R.layout.wifi_ap_add_dialog, null);
+			if(null != vgApInfo){
+				final int iMinPasswordLength = (mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP)?8:(mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_WEP)?13:0;
+				Button btnCancel= (Button)vgApInfo.findViewById(R.id.btn_cancel);
+				if(null != btnCancel){
+					btnCancel.setOnClickListener(new OnClickListener(){
+						@Override
+						public void onClick(View arg0) {
+							if(bPasswordOnly){
+								removeMyDialog(DIALOG_ID_WIFI_AP_INCORRECT_PW);
+							}else{
+								removeMyDialog(DIALOG_ID_WIFI_AP_INFO_ADD);
+							}
+						}});
+				}
+
+				mbtnConnect = (Button)vgApInfo.findViewById(R.id.btn_connect);
+				if(null != mbtnConnect){
+					if(getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false)){
+						mbtnConnect.setText(R.string.select);
+					}
+					
+					mbtnConnect.setEnabled(false);
+					
+					mbtnConnect.setOnClickListener(new OnClickListener(){
+						@Override
+						public void onClick(View arg0) {
+							if(bPasswordOnly){
+								removeMyDialog(DIALOG_ID_WIFI_AP_INCORRECT_PW);
+							}else{
+								removeMyDialog(DIALOG_ID_WIFI_AP_INFO);
+							}
+							mChosenWifiAPInfo.SSID = mEtSSID.getText().toString();
+							mChosenWifiAPInfo.password = mWifiApPassword;
+					    	mChosenWifiAPInfo.wepkeyIdx = Integer.parseInt(String.valueOf(mtxtKeyIndex.getText())) -1;
+					    	
+							Intent intent = new Intent();
+							
+							intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
+							if(getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false)){
+								setResult(RESULT_OK, intent);
+								finish();
+							}else{
+								intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
+								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+								startActivity(intent);
+								setResult(RESULT_OK);
+							}
+							
+							Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
+						}});
+				}
+				
+				mEtSSID = (EditText)vgApInfo.findViewById(R.id.et_ssid_value);
+				if(null != mEtSSID){
+					mEtSSID.setText(mChosenWifiAPInfo.SSID);
+					mEtSSID.addTextChangedListener(new TextWatcher(){
+						@Override
+						public void afterTextChanged(Editable editable) {
+							mbtnConnect.setEnabled(mEtSSID.length() > 0 && (null != mWifiApPassword && mWifiApPassword.length() >= iMinPasswordLength));
+						}
+
+						@Override
+						public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
+
+						@Override
+						public void onTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {
+							
+						}});
+				}
+				
+				ViewGroup vgAPBasicInfo = (ViewGroup)vgApInfo.findViewById(R.id.vg_ap_basic_info_holder);
+				if(bPasswordOnly){
+					vgAPBasicInfo.setVisibility(View.GONE);
+					RelativeLayout vgWrongPW = (RelativeLayout)vgApInfo.findViewById(R.id.vg_incorrect_password_holder);
+					if(null != vgWrongPW){
+						vgWrongPW.setVisibility(View.VISIBLE);
+						TextView txtWrongPW = (TextView)vgWrongPW.findViewById(R.id.txt_incorrect_password);
+						if(null != txtWrongPW){
+							txtWrongPW.setText(iWrongPWId);
+						}
+					}
+				}else{
+					TextView txtSignal = (TextView)vgAPBasicInfo.findViewById(R.id.txt_signal_value);
+					if(null != txtSignal){
+						txtSignal.setText(NetworkMgr.getInstance().getSignalStrengthTermId(mChosenWifiAPInfo.signalLevel));
+					}
+					
+					TextView txtSecurity = (TextView)vgAPBasicInfo.findViewById(R.id.txt_security_value);
+					if(null != txtSecurity){
+						txtSecurity.setText(mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_NONE?getResources().getString(R.string.dialog_wifi_ap_security_none):mChosenWifiAPInfo.getCipher());
+					}
+				}
+
+				mtxtKeyIndex = (TextView)vgApInfo.findViewById(R.id.txt_keyindex_value);				
+				ImageView ivSpinner = (ImageView)vgApInfo.findViewById(R.id.iv_spinner);
+				if(null != ivSpinner){
+					ivSpinner.setOnClickListener(new OnClickListener(){
+						@Override
+						public void onClick(View arg0) {
+							showMyDialog(DIALOG_ID_WIFI_AP_KEYINDEX);
+						}});
+				}
+				
+				mtxtSecurityVal = (TextView)vgApInfo.findViewById(R.id.txt_security_value);
+				ImageView ivSecuSpinner = (ImageView)vgApInfo.findViewById(R.id.iv_secu_spinner);
+				if(null != ivSecuSpinner){
+					ivSecuSpinner.setOnClickListener(new OnClickListener(){
+						@Override
+						public void onClick(View arg0) {
+							showMyDialog(DIALOG_ID_WIFI_AP_SECU_PICKER);
+						}});
+				}
+				
+				mVgPassordHolder = (RelativeLayout)vgApInfo.findViewById(R.id.vg_password_holder);
+				if(null != mVgPassordHolder){
+					final EditText etPassword = (EditText)mVgPassordHolder.findViewById(R.id.et_password_value);
+					if(null != etPassword){
+						if(DEBUG){
+							etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
+						}
+						mWifiApPassword = etPassword.getText().toString();
+						etPassword.addTextChangedListener(new TextWatcher(){
+							@Override
+							public void afterTextChanged(Editable editable) {
+								mbtnConnect.setEnabled(mEtSSID.length() > 0 && editable.length() >= iMinPasswordLength);
+								mWifiApPassword = etPassword.getText().toString();
+								//password.matches("[0-9A-Fa-f]*")
+							}
+
+							@Override
+							public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
+
+							@Override
+							public void onTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {
+								
+							}});
+					}
+					
+					CheckBox cbShowPW = (CheckBox)mVgPassordHolder.findViewById(R.id.cb_show_password);
+					if(null != cbShowPW){
+						cbShowPW.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+							@Override
+							public void onCheckedChanged(CompoundButton view,boolean bChecked) {
+								if(null != etPassword){
+									etPassword.setInputType(InputType.TYPE_CLASS_TEXT|(bChecked?InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD:InputType.TYPE_TEXT_VARIATION_PASSWORD));
+								}
+							}});
+					}
+					
+					if(mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_NONE){
+						mWifiApPassword = "";
+						mVgPassordHolder.setVisibility(View.GONE);
+					}
+				}
+				
+				mVgKeyIndexHolder = (RelativeLayout)vgApInfo.findViewById(R.id.vg_keyindex_holder);
+				if(null != mVgKeyIndexHolder){
+					mVgKeyIndexHolder.setVisibility(mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_WEP?View.VISIBLE:View.GONE);
+				}
+			}
+		}
+		return vgApInfo;
+	}
+	
+	protected void updateDialogByWifiInfo(){
+		if(null != mVgPassordHolder){
+			mVgPassordHolder.setVisibility(mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_NONE?View.GONE:View.VISIBLE);
+			
+			final int iMinPasswordLength = (mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP)?8:(mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_WEP)?13:0;
+			
+			final EditText etPassword = (EditText)mVgPassordHolder.findViewById(R.id.et_password_value);
+			if(null != etPassword){
+				
+				if(null != mbtnConnect){
+					mbtnConnect.setEnabled(mEtSSID.length() > 0 && etPassword.length() >= iMinPasswordLength);
+				}
+				
+				if(DEBUG){
+					etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
+				}
+				
+				mWifiApPassword = etPassword.getText().toString();
+				etPassword.addTextChangedListener(new TextWatcher(){
+					@Override
+					public void afterTextChanged(Editable editable) {
+						mbtnConnect.setEnabled(editable.length() >= iMinPasswordLength);
+						mWifiApPassword = etPassword.getText().toString();
+						//password.matches("[0-9A-Fa-f]*")
+					}
+
+					@Override
+					public void beforeTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {}
+
+					@Override
+					public void onTextChanged(CharSequence arg0, int arg1,int arg2, int arg3) {
+						
+					}});
+			}
+		}
+		
+		if(null != mVgKeyIndexHolder){
+			mVgKeyIndexHolder.setVisibility(mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_WEP?View.VISIBLE:View.GONE);
+		}
 	}
 }

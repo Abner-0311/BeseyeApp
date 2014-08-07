@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
@@ -27,6 +28,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class BeseyeUtils {
 	static private Handler sHandler = new Handler();
@@ -72,6 +74,17 @@ public class BeseyeUtils {
 		}
 		
 	  return statusBar;
+	}
+	
+	static public void setText(final TextView view, final String strVal){
+		if(null != view){
+			view.post(new Runnable(){
+				@Override
+				public void run() {
+					view.setText(strVal);
+				}});
+			
+		}
 	}
 	
 	static public void setEnabled(final View view, final boolean bEnabled){
@@ -276,6 +289,24 @@ public class BeseyeUtils {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY+iDay); //Sunday ~ Saturday => 0 ~ 6, Calendar.SUNDAY~Calendar.SATURDAY => 1~7
 		strRet = dayFormat.format(calendar.getTime());
+		return strRet;
+	}
+	
+	static public String getGMTString(TimeZone tz){
+
+		return getGMTString(tz, new Date());
+	}
+	
+	static public String getGMTString(TimeZone tz, Date date){
+		String strRet = "";
+		if(null != tz){
+			int iOffsetInMs = tz.getRawOffset() + ((tz.useDaylightTime() && tz.inDaylightTime(date))?tz.getDSTSavings():0);
+			int hours = Math.abs(iOffsetInMs) / 3600000;
+			int minutes = Math.abs(iOffsetInMs / 60000) % 60;
+			String sign = iOffsetInMs >= 0 ? "+" : "-";
+			
+			strRet =  String.format("GMT %s%02d:%02d", sign, hours, minutes);
+		}
 		return strRet;
 	}
 	

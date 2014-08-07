@@ -183,6 +183,27 @@ public class WifiListActivity extends WifiControlBaseActivity
 				}
             	break;
 			}
+			case DIALOG_ID_WIFI_AP_SECU_PICKER:{
+				dialog = new Dialog(this);
+				dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+				dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+				dialog.setContentView(createSecuValDialog());
+				
+				if(null != dialog){
+					dialog.setCanceledOnTouchOutside(true);
+					dialog.setOnCancelListener(new OnCancelListener(){
+						@Override
+						public void onCancel(DialogInterface arg0) {
+							removeMyDialog(DIALOG_ID_WIFI_AP_SECU_PICKER);
+						}});
+					dialog.setOnDismissListener(new OnDismissListener(){
+						@Override
+						public void onDismiss(DialogInterface arg0) {
+							
+						}});
+				}
+            	break;
+			}
 
 			default:
 				dialog = super.onCreateDialog(id);
@@ -231,8 +252,6 @@ public class WifiListActivity extends WifiControlBaseActivity
 		return dialog;
 	}
 
-	
-	
 	private View createKeyIdxDialog(){
 		View viewRet = null;
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -255,7 +274,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 					vgKeyIdx[3] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_4_holder);
 				}
 				
-				OnClickListener keyIdxClick = new OnClickListener(){
+				OnClickListener SecuValClick = new OnClickListener(){
 					@Override
 					public void onClick(View view) {
 						removeMyDialog(DIALOG_ID_WIFI_AP_KEYINDEX);
@@ -272,7 +291,66 @@ public class WifiListActivity extends WifiControlBaseActivity
 				
 				for(int idx = 0; idx < NetworkMgr.NUM_WEP_KEY_IDX;idx++){
 					ivKeyIdx[idx].setVisibility((idx == (mChosenWifiAPInfo.wepkeyIdx))?View.VISIBLE:View.INVISIBLE);
-					vgKeyIdx[idx].setOnClickListener(keyIdxClick);
+					vgKeyIdx[idx].setOnClickListener(SecuValClick);
+				}
+			}
+		}
+		return viewRet;
+	}
+	
+	private View createSecuValDialog(){
+		View viewRet = null;
+		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		if(null != inflater){
+			viewRet = (View)inflater.inflate(R.layout.wifi_ap_key_index_dialog, null);
+			if(null != viewRet){
+				ImageView[] ivSecuIdx = new ImageView[NetworkMgr.NUM_WIFI_SECU_TYPE]; 
+				if(null != ivSecuIdx){
+					ivSecuIdx[0] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_1_check);
+					ivSecuIdx[1] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_2_check);
+					ivSecuIdx[2] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_3_check);
+					ivSecuIdx[3] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_4_check);
+				}
+				
+				final ViewGroup[] vgSecuIdx = new ViewGroup[NetworkMgr.NUM_WIFI_SECU_TYPE];  
+				if(null != vgSecuIdx){
+					vgSecuIdx[0] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_1_holder);
+					vgSecuIdx[1] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_2_holder);
+					vgSecuIdx[2] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_3_holder);
+					vgSecuIdx[3] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_4_holder);
+				}
+				
+				final TextView[] txtSecuIdx = new TextView[NetworkMgr.NUM_WIFI_SECU_TYPE];  
+				if(null != txtSecuIdx){
+					txtSecuIdx[0] = (TextView)viewRet.findViewById(R.id.txt_key_idx_1);
+					BeseyeUtils.setText(txtSecuIdx[0] , NetworkMgr.translateCipherTypeToDesc(WifiListActivity.this, 0));
+					txtSecuIdx[1] = (TextView)viewRet.findViewById(R.id.txt_key_idx_2);
+					BeseyeUtils.setText(txtSecuIdx[1] , NetworkMgr.translateCipherTypeToDesc(WifiListActivity.this, 1));
+					txtSecuIdx[2] = (TextView)viewRet.findViewById(R.id.txt_key_idx_3);
+					BeseyeUtils.setText(txtSecuIdx[2] , NetworkMgr.translateCipherTypeToDesc(WifiListActivity.this, 2));
+					txtSecuIdx[3] = (TextView)viewRet.findViewById(R.id.txt_key_idx_4);
+					BeseyeUtils.setText(txtSecuIdx[3] , NetworkMgr.translateCipherTypeToDesc(WifiListActivity.this, 3));
+				}
+				
+				OnClickListener SecuValClick = new OnClickListener(){
+					@Override
+					public void onClick(View view) {
+						removeMyDialog(DIALOG_ID_WIFI_AP_SECU_PICKER);
+						for(int idx = 0; idx < NetworkMgr.NUM_WIFI_SECU_TYPE;idx++){
+							if(vgSecuIdx[idx] == view){
+								mChosenWifiAPInfo.iCipherIdx = idx;
+								if(null != mtxtSecurityVal){
+									mtxtSecurityVal.setText(NetworkMgr.translateCipherTypeToDesc(WifiListActivity.this, idx));
+								}
+								updateDialogByWifiInfo();
+								break;
+							}
+						}
+					}};
+				
+				for(int idx = 0; idx < NetworkMgr.NUM_WEP_KEY_IDX;idx++){
+					ivSecuIdx[idx].setVisibility((idx == mChosenWifiAPInfo.iCipherIdx)?View.VISIBLE:View.INVISIBLE);
+					vgSecuIdx[idx].setOnClickListener(SecuValClick);
 				}
 			}
 		}
@@ -291,11 +369,10 @@ public class WifiListActivity extends WifiControlBaseActivity
 			if(null != info){
 				mChosenWifiAPInfo = (WifiAPInfo)info.mUserData;
 				
-//				if(mChosenWifiAPInfo.SSID.equals("Tenda1")){
-//					BeseyeHttpTask task = new BeseyeHttpTask();
-//					task.execute();
-//				}else
+				if(false ==mChosenWifiAPInfo.bIsOther)
 					showMyDialog(DIALOG_ID_WIFI_AP_INFO);
+				else
+					showMyDialog(DIALOG_ID_WIFI_AP_INFO_ADD);
 			}
 		}else{
 			super.onClick(view);

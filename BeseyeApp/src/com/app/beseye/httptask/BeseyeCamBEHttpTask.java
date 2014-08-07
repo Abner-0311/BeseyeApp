@@ -32,6 +32,8 @@ public class BeseyeCamBEHttpTask  {
 	
 	static private final String URL_CAM_SYS_INFO 		= "cam/%s/sysinfo";
 	static private final String URL_CAM_DATETIME 		= "cam/%s/datetime";
+	static private final String URL_CAM_TIMEZONE 		= "cam/%s/time_zone";
+	
 	
 	static private final String URL_CAM_DATETIME_CONFIG = "cam/%s/datetime/config";
 	static private final String URL_CAM_DATETIME_NTP_CONFIG = "cam/%s/datetime/ntpconfig";
@@ -492,6 +494,36 @@ public class BeseyeCamBEHttpTask  {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			strVcamId = strParams[0];
 			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_SW_UPDATE_STATUS, strParams[0]));
+		}
+	}
+	
+	public static class GetCamTimezoneTask extends BeseyeHttpTask{
+		public GetCamTimezoneTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(HOST_ADDR+String.format(URL_CAM_TIMEZONE, strParams[0]));
+		}
+	}
+	
+	public static class SetCamTimezoneTask extends BeseyeHttpTask{
+		public SetCamTimezoneTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPut.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(CAM_TZ, strParams[1]);
+				return super.doInBackground(HOST_ADDR+String.format(URL_CAM_TIMEZONE, strParams[0]), obj.toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
 		}
 	}
 }

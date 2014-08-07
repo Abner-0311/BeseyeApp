@@ -1,6 +1,4 @@
-package com.app.beseye.widget;
-
-import static com.app.beseye.util.BeseyeConfig.*;
+package com.app.beseye.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +20,7 @@ import android.os.StatFs;
 import android.util.Log;
 
 public class BeseyeStorageAgent {
+	private static final String LOG_TAG = BeseyeConfig.TAG;
 	static private boolean sExternalStorageAvailable = false;
 	static private boolean sExternalStorageWriteable = false;
 	
@@ -41,11 +40,11 @@ public class BeseyeStorageAgent {
 	static public class MediaBroadcastReceiver extends BroadcastReceiver {
 	    @Override
 	    public void onReceive(Context context, Intent intent) {
-	        Log.d(TAG, "MediaBroadcastReceiver.onReceive() = " + intent);
+	        Log.d(LOG_TAG, "MediaBroadcastReceiver.onReceive() = " + intent);
 	    	Uri uriData = null;
 	        if (null == intent)
 	        {
-		        Log.e(TAG, "mSDReceiver.onReceive, invalid intent");
+		        Log.e(LOG_TAG, "mSDReceiver.onReceive, invalid intent");
 		        return;
 	        }
 	        
@@ -53,7 +52,7 @@ public class BeseyeStorageAgent {
 	        
 			if (null == (uriData = intent.getData()))
 		    {
-			    Log.e(TAG, "mSDReceiver.onReceive, invalid intent data");
+			    Log.e(LOG_TAG, "mSDReceiver.onReceive, invalid intent data");
 			    return;
 		    }
 			
@@ -77,7 +76,7 @@ public class BeseyeStorageAgent {
 			
 			sEventListener = new MediaBroadcastReceiver();
 			if (sEventListener != null) {
-				Log.d(TAG, "install an intent filter to receive SD card related events.");
+				Log.d(LOG_TAG, "install an intent filter to receive SD card related events.");
 				IntentFilter intentFilter = new IntentFilter(Intent.ACTION_MEDIA_EJECT);
 				if(null != intentFilter){
 					intentFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
@@ -87,7 +86,7 @@ public class BeseyeStorageAgent {
 					context.registerReceiver(sEventListener, intentFilter);
 				}
 			}else
-				Log.e(TAG, "onResume(), failed to new MediaBroadcastReceiver");
+				Log.e(LOG_TAG, "onResume(), failed to new MediaBroadcastReceiver");
 		}
 	}
 	
@@ -175,16 +174,16 @@ public class BeseyeStorageAgent {
 	public static boolean isLowMemorry(String path, int iRequiredByte){
 		boolean bRes = false;
 		if(null == path || path.isEmpty()){
-			Log.e(TAG, "isLowMemorry(), invalid path");
+			Log.e(LOG_TAG, "isLowMemorry(), invalid path");
 			return bRes;
 		}
 		
-		Log.d(TAG, "isLowMemorry() +");
+		Log.d(LOG_TAG, "isLowMemorry() +");
 		StatFs stat = new StatFs(path);
 		long block = stat.getAvailableBlocks();
 		int blockSize = stat.getBlockSize();
 		double AvailableSize = block*blockSize;		
-		Log.d(TAG, "isLowMemorry(), stat AvailableBlocks : "+block+ " / Block : "+blockSize);
+		Log.d(LOG_TAG, "isLowMemorry(), stat AvailableBlocks : "+block+ " / Block : "+blockSize);
 		
 		if(AvailableSize <= iRequiredByte){	// in byte{
 			bRes = true;
@@ -199,7 +198,7 @@ public class BeseyeStorageAgent {
 				return false;
 			}
 		}catch(RejectedExecutionException ex){
-			Log.e(TAG, "doCheckCacheSize(), "+ex.toString());
+			Log.e(LOG_TAG, "doCheckCacheSize(), "+ex.toString());
 		}
 		return true;
 	}
@@ -229,12 +228,12 @@ public class BeseyeStorageAgent {
 	}
 	
 	public static void checkCacheSize(Context context){
-		Log.d(TAG, "checkCacheSize() +");
+		Log.d(LOG_TAG, "checkCacheSize() +");
 		checkInternalCache(context);
 		if(canUseExternalStorage()){
 			checkExternalCache(context);
 		}
-		Log.d(TAG, "checkCacheSize() -");
+		Log.d(LOG_TAG, "checkCacheSize() -");
 	}
 	
 	private static void checkInternalCache(Context context){
@@ -247,7 +246,7 @@ public class BeseyeStorageAgent {
 				
 				if(canUseExternalStorage()){
 					//try to migrate the internal data to external 
-					Log.d(TAG, "checkInternalCache(), try to migrate the internal data to external");
+					Log.d(LOG_TAG, "checkInternalCache(), try to migrate the internal data to external");
 					File cacheExtenalFolder = new File(context.getExternalCacheDir().getPath()+ File.separator + CACHE_FOLDER);
 					if(null != cacheExtenalFolder){
 						cacheExtenalFolder.mkdir();
@@ -263,7 +262,7 @@ public class BeseyeStorageAgent {
 						}
 					}
 				}else{
-					Log.d(TAG, "checkInternalCache(), Check if exceed the max cache size");
+					Log.d(LOG_TAG, "checkInternalCache(), Check if exceed the max cache size");
 					//Check if exceed the max cache size
 					Arrays.sort(files, fileLastModifiedComparator);
 					
@@ -289,7 +288,7 @@ public class BeseyeStorageAgent {
 			if(0 ==  files.length)
 				return;
 			
-			Log.d(TAG, "checkExternalCache(), Check if exceed the max cache size");
+			Log.d(LOG_TAG, "checkExternalCache(), Check if exceed the max cache size");
 			//Check if exceed the max cache size
 			Arrays.sort(files, fileLastModifiedComparator);
 			

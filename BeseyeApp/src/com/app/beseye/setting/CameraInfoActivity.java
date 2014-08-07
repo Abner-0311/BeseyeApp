@@ -180,9 +180,7 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 					}
 					
 					BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, mStrNameCandidate);
-					Intent resultIntent = new Intent();
-					resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-					setResult(RESULT_OK, resultIntent);
+					setActivityResultWithCamObj();
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);

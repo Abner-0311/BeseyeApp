@@ -8,6 +8,7 @@ import java.util.TimeZone;
 
 import com.app.beseye.R;
 import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeUtils;
 
 import android.content.Context;
 import android.util.Log;
@@ -35,22 +36,22 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 		final TimeZoneComparator comparator = new TimeZoneComparator(true);
         Collections.sort(mlstTimezoneResult, comparator);
         
-        for(int idx = 0; idx < mlstTimezoneResult.size();){
-        	TimeZone tzCur = mlstTimezoneResult.get(idx);
-        	if(tzCur.getID().toLowerCase().startsWith("etc/") || tzCur.getDisplayName().toLowerCase().startsWith("gmt") || tzCur.getDisplayName().toLowerCase().startsWith("utc")){
-        		mlstTimezoneResult.remove(idx);
-        		continue;
-        	}
-        	
-        	if(idx > 0){
-        		TimeZone tzPre = mlstTimezoneResult.get(idx-1);
-            	if(tzCur.getDisplayName().equals(tzPre.getDisplayName())){
-            		mlstTimezoneResult.remove(idx);
-            		continue;
-            	}
-        	}
-        	idx++;
-        }
+//        for(int idx = 0; idx < mlstTimezoneResult.size();){
+//        	TimeZone tzCur = mlstTimezoneResult.get(idx);
+//        	if(tzCur.getID().toLowerCase().startsWith("etc/") || tzCur.getDisplayName().toLowerCase().startsWith("gmt") || tzCur.getDisplayName().toLowerCase().startsWith("utc")){
+//        		mlstTimezoneResult.remove(idx);
+//        		continue;
+//        	}
+//        	
+//        	if(idx > 0){
+//        		TimeZone tzPre = mlstTimezoneResult.get(idx-1);
+//            	if(tzCur.getDisplayName().equals(tzPre.getDisplayName())){
+//            		mlstTimezoneResult.remove(idx);
+//            		continue;
+//            	}
+//        	}
+//        	idx++;
+//        }
         
 		if(null != mContext){
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -115,18 +116,14 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 			if(null != holder){
 				TimeZone sRet = (TimeZone)getItem(iPosition);
 				if(null != sRet){
-					//Log.i(BeseyeConfig.TAG, "sRet:"+sRet);
+					
 					if(null != holder.mtxtName)
-						holder.mtxtName.setText(sRet.getDisplayName());
+						holder.mtxtName.setText(sRet.getID());
+					
+					Log.i(BeseyeConfig.TAG, "Name:"+sRet.getDisplayName()+", sRet:"+sRet);
 					
 					if(null != holder.mtxtZoneInfo){
-						  //String region = ids[i].replaceAll(".*/", "").replaceAll("_", " ");
-						int hours = Math.abs(sRet.getRawOffset()) / 3600000;
-						int minutes = Math.abs(sRet.getRawOffset() / 60000) % 60;
-						String sign = sRet.getRawOffset() >= 0 ? "+" : "-";
-						
-						String timeZonePretty = String.format("GMT %s%02d:%02d", sign, hours, minutes);
-						holder.mtxtZoneInfo.setText(timeZonePretty);
+						holder.mtxtZoneInfo.setText(BeseyeUtils.getGMTString(sRet));
 					}
 					
 					holder.mTimeZone = sRet;

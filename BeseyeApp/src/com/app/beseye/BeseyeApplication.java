@@ -2,6 +2,7 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +27,7 @@ import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 
@@ -68,6 +70,8 @@ public class BeseyeApplication extends Application {
 		DeviceUuidFactory.getInstance(getApplicationContext());
 		startService(new Intent(this,BeseyeNotificationService.class));
 		BeseyeMemCache.init(this);
+		
+		BeseyeApplication.checkPairingMode();
 		
 		sApplication = this;
 	}
@@ -248,6 +252,14 @@ public class BeseyeApplication extends Application {
 //				}
 			}  
 		}
+	}
+	
+	static public boolean checkPairingMode(){
+		File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
+		COMPUTEX_PAIRING = (null != pairingFile)&&pairingFile.exists();
+		
+		Log.i(TAG, "checkPairingMode(), COMPUTEX_PAIRING :"+COMPUTEX_PAIRING);
+		return COMPUTEX_PAIRING;
 	}
 }
 

@@ -5,6 +5,7 @@ import static com.app.beseye.util.BeseyeConfig.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +50,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	private View mVwNavBar;
 	private ImageView mIvCancel, mIvFilter, mIvCalendar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
+	private TimeZone mTimeZone;
 
 	//private String mStrVCamID = "928d102eab1643eb9f001e0ede19c848";
 	
@@ -59,15 +61,11 @@ public class EventListActivity extends BeseyeBaseActivity{
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
 		
+		mVgIndicator = (BeseyeClockIndicator)findViewById(R.id.vg_event_indicator);
+		
 		try {
 			mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
-			if(null != mCam_obj){
-				//workaround
-				//BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
-				
-				mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
-				mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
-			}
+			updateAttrByCamObj();
 		} catch (JSONException e1) {
 			Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 		}
@@ -103,8 +101,6 @@ public class EventListActivity extends BeseyeBaseActivity{
 		if(null != mIvCalendar){
 			mIvCalendar.setOnClickListener(this);
 		}
-		
-		mVgIndicator = (BeseyeClockIndicator)findViewById(R.id.vg_event_indicator);
 		
 		mMainListView = (PullToRefreshListView) findViewById(R.id.lv_camera_lst);
 		
@@ -298,13 +294,13 @@ public class EventListActivity extends BeseyeBaseActivity{
 				if(null != EntList){
 					JSONObject liveObj = new JSONObject();
 					try {
-						JSONObject fakeObj = new JSONObject();
-						Calendar cal = Calendar.getInstance();
-						cal.add(Calendar.MINUTE, -5);
-						fakeObj.put(BeseyeJSONUtil.MM_START_TIME, cal.getTime().getTime());
-						fakeObj.put(BeseyeJSONUtil.MM_IS_LIVE, false);
-						
-						BeseyeJSONUtil.appendObjToArrayBegin(EntList, fakeObj);
+//						JSONObject fakeObj = new JSONObject();
+//						Calendar cal = Calendar.getInstance();
+//						cal.add(Calendar.MINUTE, -5);
+//						fakeObj.put(BeseyeJSONUtil.MM_START_TIME, cal.getTime().getTime());
+//						fakeObj.put(BeseyeJSONUtil.MM_IS_LIVE, false);
+//						
+//						BeseyeJSONUtil.appendObjToArrayBegin(EntList, fakeObj);
 						
 						liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
 						liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
@@ -636,5 +632,24 @@ public class EventListActivity extends BeseyeBaseActivity{
 	@Override
 	protected int getLayoutId() {
 		return R.layout.layout_event_list;
+	}
+	
+	public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
+		super.onCamSetupChanged(strVcamId, lTs, objCamSetup);
+		if(strVcamId.equals(mStrVCamID)){
+			updateAttrByCamObj();
+		}
+    }
+	
+	private void updateAttrByCamObj(){
+		if(null != mCam_obj){
+			Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mCam_obj:"+mCam_obj.toString());
+			mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+			mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
+			mTimeZone = TimeZone.getTimeZone(BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA), BeseyeJSONUtil.CAM_TZ, TimeZone.getDefault().getID()));
+			if(null != mVgIndicator){
+				mVgIndicator.updateTimeZone(mTimeZone);
+			}
+		}
 	}
 }

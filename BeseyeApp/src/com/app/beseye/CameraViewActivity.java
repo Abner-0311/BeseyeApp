@@ -8,8 +8,10 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,9 +88,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private TouchSurfaceView mStreamingView;
 	private TextView mTxtPowerState;
-//	
-//	//private ImageView mIvStreamType;
-//	private ImageButton mIbTalk, mIbRewind, mIbPlayPause, mIbFastForward;//, mIbSetting;
 	
 	private RelativeLayout mVgHeader, mVgToolbar;
 	private CameraViewControlAnimator mCameraViewControlAnimator;
@@ -107,6 +106,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private long mlDVRStartTs;
 	private long mlDVRFirstSegmentStartTs = -1;
 	private long mlPairingDoneBeginTs = -1;
+	private TimeZone mTimeZone;
 	
 	private boolean mbIsFirstLaunch = true;
 	private boolean mbIsRetryAtNextResume = false;
@@ -427,6 +427,19 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		return null != mstrLiveP2P && 0 < mstrLiveP2P.length();
 	}
 	
+	private void updateAttrByCamObj(){
+		if(null != mCam_obj){
+			Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mCam_obj:"+mCam_obj.toString());
+			mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+			mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
+			mTimeZone = TimeZone.getTimeZone(BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA), BeseyeJSONUtil.CAM_TZ, TimeZone.getDefault().getID()));
+			if(null != mUpdateDateTimeRunnable){
+				mUpdateDateTimeRunnable.updateTimeZone(mTimeZone);
+			}
+			mbVCamAdmin = BeseyeJSONUtil.getJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN, true);
+		}
+	}
+	
 	private void updateAttrByIntent(Intent intent){
 		if(null != intent){
 			mstrLiveP2P = intent.getStringExtra(KEY_P2P_STREAM);
@@ -438,6 +451,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					if(null != mCam_obj){
 						mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
 						mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
+						mTimeZone = TimeZone.getTimeZone(BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA), BeseyeJSONUtil.CAM_TZ, TimeZone.getDefault().getID()));
+						if(null != mUpdateDateTimeRunnable){
+							mUpdateDateTimeRunnable.updateTimeZone(mTimeZone);
+						}
 						//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
 					}
 				} catch (JSONException e1) {
@@ -448,18 +465,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}else{
 				try {
 					mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
-					if(null != mCam_obj){
-						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mCam_obj:"+mCam_obj.toString());
-						mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
-//						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mStrVCamID:"+mStrVCamID);
-//						if(null == mStrVCamID || 0 == mStrVCamID.length()){
-//							//workaround, unknown issue
-//							mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ID);
-//							Log.i(TAG, "CameraViewActivity::updateAttrByIntent(),2 mStrVCamID:"+mStrVCamID);
-//						}
-						mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
-						mbVCamAdmin = BeseyeJSONUtil.getJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN, true);
-					}
+					updateAttrByCamObj();
 				} catch (JSONException e1) {
 					Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 				}
@@ -697,7 +703,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(null != mUpdateDateTimeRunnable)
 				mUpdateDateTimeRunnable.updateDateTimeView(mCameraViewControlAnimator.getDateView(), mCameraViewControlAnimator.getTimeView());
 			else
-				mUpdateDateTimeRunnable = new UpdateDateTimeRunnable(mCameraViewControlAnimator.getDateView(), mCameraViewControlAnimator.getTimeView());
+				mUpdateDateTimeRunnable = new UpdateDateTimeRunnable(mCameraViewControlAnimator.getDateView(), mCameraViewControlAnimator.getTimeView(), mTimeZone);
 		}
 	}
 	
@@ -872,17 +878,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private boolean isCamPowerOn(){
 		return !mbIsLiveMode || (BeseyeJSONUtil.getVCamConnStatus(mCam_obj) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON);
-		//return (CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID) == CAM_CONN_STATUS.CAM_ON) ;
 	}
 	
 	private boolean isCamPowerOff(){
 		return mbIsLiveMode && (BeseyeJSONUtil.getVCamConnStatus(mCam_obj) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_OFF);
-		//return (CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID) == CAM_CONN_STATUS.CAM_OFF) ;
 	}
 	
 	private boolean isCamPowerDisconnected(){
 		return mbIsLiveMode && (BeseyeJSONUtil.getVCamConnStatus(mCam_obj) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED);
-		//return (CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID) == CAM_CONN_STATUS.CAM_DISCONNECTED) ;
 	}
 	
 	private void updatePowerState(){
@@ -1027,9 +1030,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					BeseyeJSONUtil.setVCamConnStatus(mCam_obj, (BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.CAM_STATUS)==1)?CAM_CONN_STATUS.CAM_ON:CAM_CONN_STATUS.CAM_OFF);
 
 					//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON.getValue());
-					Intent resultIntent = new Intent();
-					resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-					setResult(RESULT_OK, resultIntent);
+					setActivityResultWithCamObj();
 					mbIsCamSettingChanged = true;
 					checkPlayState();
 				}
@@ -1499,7 +1500,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	static class UpdateDateTimeRunnable implements Runnable{
 		private WeakReference<TextView> mTxtDate, mTxtTime;
-		static private final SimpleDateFormat sDateFormat = new SimpleDateFormat("MMM.dd.yyyy");
+		private TimeZone mTimeZone = TimeZone.getDefault();
+		
+		static private final SimpleDateFormat sDateFormat = new SimpleDateFormat("MM.dd.yyyy");
 		static private final SimpleDateFormat sTimeFormat = new SimpleDateFormat("hh:mm:ss a");
 		
 		public UpdateDateTimeRunnable(TextView txtDate, TextView txtTime){
@@ -1507,14 +1510,28 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mTxtTime = new WeakReference<TextView>(txtTime);
 		}
 		
+		public UpdateDateTimeRunnable(TextView txtDate, TextView txtTime, TimeZone tz){
+			mTxtDate = new WeakReference<TextView>(txtDate);
+			mTxtTime = new WeakReference<TextView>(txtTime);
+			updateTimeZone(tz);
+			//Log.e(TAG, "UpdateDateTimeRunnable(), mTimeZone:"+mTimeZone.toString());
+		}
+		
 		public void updateDateTimeView(TextView txtDate, TextView txtTime){
 			mTxtDate = new WeakReference<TextView>(txtDate);
 			mTxtTime = new WeakReference<TextView>(txtTime);
 		}
 		
+		public void updateTimeZone(TimeZone tz){
+			 mTimeZone = tz;
+			 sDateFormat.setTimeZone(mTimeZone);
+			 sTimeFormat.setTimeZone(mTimeZone);
+			 Log.e(TAG, "UpdateDateTimeRunnable(), mTimeZone:"+mTimeZone.toString());
+		}
+		
 		@Override
 		public void run() {
-			Date now = new Date();
+			Date now = Calendar.getInstance(mTimeZone).getTime();
 			updateDateTime(now);
 			sHandler.postDelayed(this, 1000L);
 		}
@@ -2110,4 +2127,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public boolean isCameraStatusOn() {
 		return isCamPowerOn();
 	}
+	
+	public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
+		super.onCamSetupChanged(strVcamId, lTs, objCamSetup);
+		if(strVcamId.equals(mStrVCamID)){
+			updateAttrByCamObj();
+		}
+    }
 }

@@ -394,7 +394,7 @@ public class WifiAPSetupDelegator implements OnSupplicantStatusChangeCallback, O
 				mRelayAPSetupTask.cancel(true);
 			}
 			mRelayAPSetupTask = new BeseyeHttpWifiTask(this);
-			mRelayAPSetupTask.execute(mTargetWifiAPInfo.SSID, mTargetWifiAPInfo.BSSID, String.valueOf(NetworkMgr.getChannelFromFrequency(mTargetWifiAPInfo.frequency)), mTargetWifiAPInfo.password, mTargetWifiAPInfo.cipher, String.valueOf(mTargetWifiAPInfo.wepkeyIdx+1));
+			mRelayAPSetupTask.execute(mTargetWifiAPInfo.SSID, mTargetWifiAPInfo.BSSID, String.valueOf(NetworkMgr.getChannelFromFrequency(mTargetWifiAPInfo.frequency)), mTargetWifiAPInfo.password, mTargetWifiAPInfo.getCipher(), String.valueOf(mTargetWifiAPInfo.wepkeyIdx+1));
 			
 		}else{
 			Log.e(TAG, "setupTargetAp(), invalid mTargetWifiAPInfo");
@@ -455,13 +455,13 @@ public class WifiAPSetupDelegator implements OnSupplicantStatusChangeCallback, O
 	@Override
 	public void onSupplicantStateChanged(SupplicantState iWifiState, SupplicantState iPrevWifiState) {
 		if(inWifiApSetupState(WIFI_AP_SETUP_STATE.TARGET_AP_CONNECTING)){
-			if(mTargetWifiAPInfo.cipher.contains(WifiAPInfo.AUTHNICATION_WEP)){
+			if(mTargetWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_WEP){
 				if(iPrevWifiState.equals(SupplicantState.ASSOCIATED) && iWifiState.equals(SupplicantState.DISCONNECTED)){
 					mbMaybeAuthenticationError = true;
 					miRetryCount++;
 					Log.i(TAG, "onSupplicantStateChanged(), set mbMaybeAuthenticationError as true for WEP, miRetryCount="+miRetryCount);
 				}
-			}else if(mTargetWifiAPInfo.cipher.contains(WifiAPInfo.AUTHNICATION_WPA)){
+			}else if(mTargetWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP){
 				if(iPrevWifiState.equals(SupplicantState.FOUR_WAY_HANDSHAKE) && iWifiState.equals(SupplicantState.DISCONNECTED)){
 					mbMaybeAuthenticationError = true;
 					miRetryCount++;

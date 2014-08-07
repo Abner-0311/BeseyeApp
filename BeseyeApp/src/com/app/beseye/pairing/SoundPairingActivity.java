@@ -247,12 +247,12 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		if(null != mChosenWifiAPInfo){
 			Log.w(TAG, "beginToPlayPairingTone(), mChosenWifiAPInfo:"+mChosenWifiAPInfo.toString());
 			siOriginalVolume = sAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-			sAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (sAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)), AudioManager.FLAG_PLAY_SOUND); 
+			sAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (int)(sAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)*0.6), AudioManager.FLAG_PLAY_SOUND); 
 			
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					int iRet = playPairingCode(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,NetworkMgr.translateCipherToType(mChosenWifiAPInfo.cipher),(short) sUserTmpId);
+					int iRet = playPairingCode(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId);
 					if(iRet != 0)
 						Toast.makeText(SoundPairingActivity.this, "ret:"+iRet, Toast.LENGTH_SHORT).show();
 					else{

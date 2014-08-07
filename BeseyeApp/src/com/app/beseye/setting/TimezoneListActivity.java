@@ -1,4 +1,4 @@
-package com.app.beseye;
+package com.app.beseye.setting;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
@@ -18,9 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.R;
+import com.app.beseye.R.drawable;
+import com.app.beseye.R.id;
+import com.app.beseye.R.layout;
+import com.app.beseye.R.string;
 import com.app.beseye.adapter.TimezoneInfoAdapter;
 import com.app.beseye.adapter.TimezoneInfoAdapter.TimezoneInfoHolder;
-import com.app.beseye.setting.HWSettingsActivity;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.PullToRefreshListView;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
@@ -35,6 +40,47 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 	
 	protected List<TimeZone> mlstTimeZone;
 	
+	static final String[] sTimezoneList = {"ROC", 
+										   "PRC", 
+										   "Japan", 
+										   "Hongkong", 
+										   "ROK", 
+										   "Singapore", 
+										   "US/Eastern",
+										   "US/Central",
+										   "US/Pacific",
+										   "US/Mountain",
+										   "US/Alaska",
+										   "US/Hawaii",
+										   "US/Arizona",
+										   "Canada/Atlantic",
+										   "Canada/Newfoundland",
+										   "Canada/Eastern",
+										   "Canada/Central",
+										   "Canada/Mountain",
+										   "Canada/Pacific",
+										   "NZ",
+										   "Australia/ACT",
+										   "Australia/West",
+										   "Australia/Adelaide",
+										   "Europe/Copenhagen",
+										   "Atlantic/Reykjavik",
+										   "Europe/Athens",
+										   "Europe/Warsaw",
+										   "Europe/Paris",
+										   "Europe/Helsinki",
+										   "Europe/Londo",
+										   "Europe/Oslo",
+										   "Europe/Prague",
+										   "Europe/Amsterdam",
+										   "Europe/Zurich",
+										   "Europe/Stockholm",
+										   "Europe/Berlin",
+										   "Europe/Brussels",
+										   "Europe/Budapest",
+										   "Europe/Madrid",
+										   "Europe/Vienna",
+										   "Europe/Rome"};
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "WifiListActivity::onCreate()");
@@ -78,9 +124,14 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		if(null != mlvTimezoneList){
 			mlvTimezoneList.setMode(LvExtendedMode.NONE);
 			mlstTimeZone = new ArrayList<TimeZone>();
-			String[] ids=TimeZone.getAvailableIDs();
-			for(int i=0;i<ids.length;i++){	   
-			   TimeZone d= TimeZone.getTimeZone(ids[i]);
+//			String[] ids=TimeZone.getAvailableIDs();
+//			for(int i=0;i<ids.length;i++){	   
+//			   TimeZone d= TimeZone.getTimeZone(ids[i]);
+//			   mlstTimeZone.add(d);
+//			}
+			
+			for(int i=0;i<sTimezoneList.length;i++){	   
+			   TimeZone d= TimeZone.getTimeZone(sTimezoneList[i]);
 			   mlstTimeZone.add(d);
 			}
 			
@@ -103,7 +154,7 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 			if(null != info){
 				//Toast.makeText(this, info.mTimeZone.toString(), Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent();
-				intent.putExtra(HWSettingsActivity.TIME_ZONE_INFO, info.mtxtZoneInfo.getText());
+				intent.putExtra(HWSettingsActivity.TIME_ZONE_INFO, info.mTimeZone.getID());
 				setResult(RESULT_OK, intent);
 				finish();
 			}

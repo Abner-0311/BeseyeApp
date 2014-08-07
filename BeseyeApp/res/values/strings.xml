@@ -30,6 +30,7 @@
     <string name="can_power_state_off">The cam is off</string>
     <string name="can_power_state_disconnect">This cam is not connected</string>
 
+    <string name="network_ssid">Network SSID</string>
     <string name="menu_scan">Scan</string>
     <string name="network_avoid_poor_network">Avoid poor internet connection&#8230;</string>
     <string name="network_authenticating">Authenticating&#8230;</string>
@@ -46,6 +47,7 @@
     <string name="network_secure_with">Secured with %s </string>
     
     <string name="title_wifi">Wifi</string>
+    <string name="title_add_network">Add network</string>
     <string name="title_timezone">Select Time Zone</string>
     <string name="zone_list_menu_sort_alphabetically">Sort alphabetically</string>
     <string name="zone_list_menu_sort_by_timezone">Sort by timezone</string>
@@ -107,6 +109,14 @@
 	
 	
 	<string name="cam_setting_fail_to_update_cam_status">Fail to update camera status. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_hd_quality">Fail to update video upload quality. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_led_status">Fail to update status light. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_mic_status">Fail to update microphone status. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_mic_sensitivity">Fail to update microphone sensitivity. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_wifi_setting">Fail to update WiFi setting. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_timezone">Fail to update timezone. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_night_vision">Fail to update night vision. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_video_upside_down">Fail to update video upside-down. Please try again later.</string>
 	<string name="cam_setting_fail_to_get_cam_info">Fail to get camera info. Please try again later.</string>
 	<string name="cam_setting_fail_to_get_wifi_list">Fail to get WiFi list from camera. Please try again later.</string>
 	

@@ -23,6 +23,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.app.beseye.R;
+import com.app.beseye.util.BeseyeStorageAgent;
 
 import android.content.Context;
 import android.graphics.Bitmap;

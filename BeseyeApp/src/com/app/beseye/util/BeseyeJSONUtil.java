@@ -91,6 +91,8 @@ public class BeseyeJSONUtil {
 	public static final String CAM_SN 					= "SerialNumber";
 	public static final String CAM_MAC_ADDR 			= "MACAddr";
 	public static final String CAM_SOFTWARE 			= "Firmware";
+	public static final String CAM_TZ 					= "TimeZone";
+	
 	
 	public static final String CAM_WS_STATUS 			= "wsStatus";//1 => on-line, 0=> off-line
 	
@@ -321,9 +323,13 @@ public class BeseyeJSONUtil {
 	public static final String PS_REG_ID_OLD 			= "from";
 	public static final String PS_REG_ID_NEW 			= "to";
 	
-	public static final String PS_NOTIFY_TYPE 			= "notify_type";
-	public static final String PS_WORK_TYPE 			= "work_type";
-	public static final String PS_NOTIFY_INFO 			= "Info";
+	public static final String PS_REGULAR_DATA 			= "RegularData";
+	public static final String PS_MSG 					= "Message";
+	public static final String PS_CAM_UID 				= "CamUID";
+	public static final String PS_NCODE 				= "NCODE";
+	public static final String PS_TS 					= "Timestamp";
+	
+	public static final String PS_CUSTOM_DATA 			= "CustomData";
 	
 	//Helper functions
 	static public JSONObject newJSONObject(String json){

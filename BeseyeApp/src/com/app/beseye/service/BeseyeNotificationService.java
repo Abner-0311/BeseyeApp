@@ -42,6 +42,7 @@ import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeSharedPreferenceUtil;
+import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
@@ -244,16 +245,16 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //                		showFirstUnreadNotification();
 //                	break;
 //                }
-//                case MSG_CHECK_CACHE_STATE:{
-//                	if(-1 != msg.arg1){
-//                		if(iKalaStorageAgent.doCheckCacheSize(BeseyeNotificationService.this.getApplicationContext())){
-//                			sendMessageDelayed(Message.obtain(null,MSG_CHECK_CACHE_STATE,0,0), getTimeToCheck());
-//                		}else{
-//                			sendMessageDelayed(Message.obtain(null,MSG_CHECK_CACHE_STATE,0,0), 1000*60*60);//if false, check it 1 hr later
-//                		}
-//                	}
-//                	break;
-//                }
+                case MSG_CHECK_CACHE_STATE:{
+                	if(-1 != msg.arg1){
+                		if(BeseyeStorageAgent.doCheckCacheSize(BeseyeNotificationService.this.getApplicationContext())){
+                			sendMessageDelayed(Message.obtain(null,MSG_CHECK_CACHE_STATE,0,0), getTimeToCheck());
+                		}else{
+                			sendMessageDelayed(Message.obtain(null,MSG_CHECK_CACHE_STATE,0,0), 1000*60*60);//if false, check it 1 hr later
+                		}
+                	}
+                	break;
+                }
                 case MSG_APP_TO_FOREGROUND:{
                 	if(mbAppInBackground){
                 		Log.i(TAG, "BG service detects MSG_APP_TO_FOREGROUND()");
@@ -341,15 +342,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 }
                 case MSG_GSM_MSG:{
                 	final Bundle bundle = msg.getData();
-                	String type = bundle.getString(PS_WORK_TYPE.toLowerCase());
-//                	if(WORK_CONVERSATION.equals(type)){
-//                		sendMessage(Message.obtain(null,MSG_CHECK_UNREAD_MSG_NUM,0,0));
-//                	}
-//                	sendMessage(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0));
-//                	
-                	String info = bundle.getString("info");
-                	Log.d(TAG, "MSG_GSM_MSG, info : "+info+", type : "+type);
-                	Toast.makeText(getApplicationContext(), "Got message from Beseye server, info = "+info, Toast.LENGTH_LONG ).show();
+                	String data = bundle.getString(PS_REGULAR_DATA);
+                	String dataCus = bundle.getString(PS_CUSTOM_DATA);
+                	//Log.i(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
+                	Toast.makeText(getApplicationContext(), "Got message from Beseye server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
                 	break;
                 }
                 case MSG_GSM_ERR:{
@@ -432,12 +428,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public void onCreate() {
     	if(DEBUG)
     		Log.i(TAG, "###########################  BeseyeNotificationService::onCreate(), this:"+this);
-    	
-//    	if(null == iKalaSettingsMgr.getInstance())
-//    		iKalaSettingsMgr.createInstance(getApplicationContext());
-//    	
-//    	//mSettingData = iKalaSettingsMgr.getInstance().getSettingData();
-//    	
+ 	
     	if(null == SessionMgr.getInstance()){
     		SessionMgr.createInstance(getApplicationContext());
     	}
@@ -446,12 +437,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		
     	mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         
-//        try {
-//        	mMessenger.send(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0));
-//			mMessenger.send(Message.obtain(null,MSG_CHECK_CACHE_STATE,0,0));
-//		} catch (RemoteException e) {
-//			e.printStackTrace();
-//		}
+        try {
+			mMessenger.send(Message.obtain(null,MSG_CHECK_CACHE_STATE,0,0));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
         
         mPref = BeseyeSharedPreferenceUtil.getSharedPreferences(getApplicationContext(), PUSH_SERVICE_PREF);
         
@@ -676,7 +666,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         public void onReceive(Context context, Intent intent) {
             String action = intent.getExtras().getString(GCMIntentService.FORWARD_ACTION_TYPE);
             Message msg = null;
-            Log.i(TAG, "onReceive(), action "+action);
+            Log.i(TAG, "onReceive(), action "+action+", data:"+intent.getExtras().getString(BeseyeJSONUtil.PS_REGULAR_DATA));
             
             if(GCMIntentService.FORWARD_ACTION_TYPE_REG.equals(action)){	
             	msg = Message.obtain(null,MSG_GSM_REGISTER,0,0);

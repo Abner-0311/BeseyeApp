@@ -100,30 +100,36 @@ public class WifiInfoAdapter extends BaseAdapter {
 			if(null != holder){
 				WifiAPInfo sRet = (WifiAPInfo)getItem(iPosition);
 				if(null != sRet){
-					if(null != holder.mtxtSSID)
-						holder.mtxtSSID.setText(sRet.SSID/*+", "+sRet.BSSID+", "+sRet.frequency*/);
+					if(null != holder.mtxtSSID){
+						if(false == sRet.bIsOther){
+							holder.mtxtSSID.setText(sRet.SSID/*+", "+sRet.BSSID+", "+sRet.frequency*/);
+						}else{
+							holder.mtxtSSID.setText("Other...");
+						}
+					}
 					
 					if(null != holder.mtxtSecure){
 						if(sRet.bActiveConn){
 							holder.mtxtSecure.setVisibility(View.VISIBLE);
 							holder.mtxtSecure.setText(mbCamWifiList?R.string.network_connected:NetworkMgr.getInstance().getActiveConnStateId());
 						}else{
-							if(WifiAPInfo.AUTHNICATION_NONE.equals(sRet.cipher)){
+							if(sRet.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_NONE || sRet.bIsOther){
 								holder.mtxtSecure.setVisibility(View.GONE);
 							}else{
 								holder.mtxtSecure.setVisibility(View.VISIBLE);
-								holder.mtxtSecure.setText(String.format(strSecure, sRet.cipher));
+								holder.mtxtSecure.setText(String.format(strSecure, sRet.getCipher()));
 							}
 						}
 					}
 					
 					if(null != holder.mivSignalLevel){
-						holder.mivSignalLevel.setVisibility(View.VISIBLE);
+						
+						holder.mivSignalLevel.setVisibility(sRet.bIsOther?View.INVISIBLE:View.VISIBLE);
 						holder.mivSignalLevel.setImageResource(NetworkMgr.getInstance().getSignalLevelDrawableId(sRet.signalLevel));
 					}
 					
 					if(null != holder.mivSecure)
-						holder.mivSecure.setVisibility((WifiAPInfo.AUTHNICATION_NONE.equals(sRet.cipher))?View.INVISIBLE:View.VISIBLE);
+						holder.mivSecure.setVisibility((sRet.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_NONE  || sRet.bIsOther)?View.INVISIBLE:View.VISIBLE);
 					
 					holder.mUserData = sRet;
 					convertView.setOnClickListener(mItemOnClickListener);

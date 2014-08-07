@@ -24,8 +24,7 @@
     	<RelativeLayout 
 	   	    android:id="@+id/vg_key_idx_1_holder"
 	   	    android:layout_width="match_parent"
-	   		android:layout_height="0dp" 
-	   		android:layout_weight="1"
+	   		android:layout_height="@dimen/wifi_list_item_height" 
 	   		android:background="@drawable/sl_mid_keyindex_bg">
 	   		<TextView 
 	   		    android:id="@+id/txt_key_idx_1"
@@ -56,8 +55,7 @@
 	   	<RelativeLayout 
 	   	    android:id="@+id/vg_key_idx_2_holder"
 	   	    android:layout_width="wrap_content"
-	   		android:layout_height="0dp" 
-	   		android:layout_weight="1"
+	   		android:layout_height="@dimen/wifi_list_item_height" 
 	   		android:background="@drawable/sl_mid_keyindex_bg" >
 	   		<TextView 
 	   		    android:id="@+id/txt_key_idx_2"
@@ -89,8 +87,7 @@
 	   	<RelativeLayout 
 	   	    android:id="@+id/vg_key_idx_3_holder"
 	   	    android:layout_width="wrap_content"
-	   		android:layout_height="0dp" 
-	   		android:layout_weight="1"
+	   		android:layout_height="@dimen/wifi_list_item_height" 
 	   		android:background="@drawable/sl_mid_keyindex_bg" >
 	   		<TextView 
 	   		    android:id="@+id/txt_key_idx_3"
@@ -122,8 +119,7 @@
 	   	<RelativeLayout 
 	   	    android:id="@+id/vg_key_idx_4_holder"
 	   	    android:layout_width="wrap_content"
-	   		android:layout_height="0dp" 
-	   		android:layout_weight="1"
+	   		android:layout_height="@dimen/wifi_list_item_height" 
 	   		android:background="@drawable/sl_last_keyindex_bg" >
 	   		<TextView 
 	   		    android:id="@+id/txt_key_idx_4"

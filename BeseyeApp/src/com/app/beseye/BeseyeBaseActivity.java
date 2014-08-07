@@ -213,6 +213,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_CAM_SCHED_DELETE		= DIALOG_ID_WIFI_BASE+14; 
 	static public final int DIALOG_ID_CAM_SCHED_ABORT		= DIALOG_ID_WIFI_BASE+15; 
 	static public final int DIALOG_ID_CAM_UPDATE			= DIALOG_ID_WIFI_BASE+16; 
+	static public final int DIALOG_ID_WIFI_AP_INFO_ADD 		= DIALOG_ID_WIFI_BASE+17;
+	static public final int DIALOG_ID_WIFI_AP_SECU_PICKER	= DIALOG_ID_WIFI_BASE+18; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {
@@ -1003,7 +1005,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     protected long mlCamSetupObjUpdateTs = -1;
     
     public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
-		if(strVcamId.equals(this.mStrVCamID)){
+		if(strVcamId.equals(mStrVCamID)){
 			long lTsOldTs = BeseyeJSONUtil.getJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP);
 			Log.i(TAG, getClass().getSimpleName()+"::onCamSetupChanged(),  lTs = "+lTs+", lTsOldTs="+lTsOldTs);
 			if(lTs > lTsOldTs){
@@ -1196,6 +1198,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}
 		Log.i(TAG, "checkCamUpdateFlag(), lDelta:"+lDelta+", bRet:"+bRet);
 		return bRet;
+	}
+	
+	protected void setActivityResultWithCamObj(){
+		Intent resultIntent = new Intent();
+		resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+		setResult(RESULT_OK, resultIntent);	
 	}
 	
 	protected String arrayToString(List<String> lstUpdateCandidate){

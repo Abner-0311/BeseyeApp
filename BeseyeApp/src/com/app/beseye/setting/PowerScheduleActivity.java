@@ -19,7 +19,6 @@ import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
-import com.app.beseye.TimezoneListActivity;
 import com.app.beseye.WifiListActivity;
 import com.app.beseye.WifiSetupGuideActivity;
 import com.app.beseye.httptask.BeseyeAccountTask;
