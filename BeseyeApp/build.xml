@@ -233,7 +233,7 @@
         <mergemanifest
                 appManifest="${manifest.abs.file}"
                 outManifest="${out.manifest.abs.file}"
-                enabled="${manifestmerger.enabled}">
+                enabled="true">
             <library refid="project.library.manifest.file.path" />
         </mergemanifest>	    
 	</target>
