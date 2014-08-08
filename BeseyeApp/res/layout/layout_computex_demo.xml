@@ -4,83 +4,6 @@
     android:layout_height="match_parent"
     android:background="@color/background_white"
     tools:context=".MainActivity" >
-	<RadioGroup  
-        android:id="@+id/radiogroup1"  
-        android:layout_width="wrap_content"  
-        android:layout_height="wrap_content"  
-        android:orientation="vertical"  
-		android:layout_centerHorizontal="true"
-		android:layout_above="@+id/editText_ip">  
-        <RadioButton  
-            android:id="@+id/rbDemo"  
-            android:layout_width="wrap_content"  
-            android:layout_height="wrap_content"  
-            android:text="Demo mode"  
-        />  
-        <RadioButton  
-            android:id="@+id/rbPairing"  
-            android:layout_width="wrap_content"  
-            android:layout_height="wrap_content"  
-            android:text="Pairing Mode"  
-        />  
-        <RadioButton  
-            android:id="@+id/rbP2P"  
-            android:layout_width="wrap_content"  
-            android:layout_height="wrap_content"  
-            android:text="P2P mode"  
-        />   
-    </RadioGroup> 
-    <EditText
-        android:id="@+id/editText_ip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/login_marginXLarge"
-        android:background="@drawable/sl_account_input_bg"
-        android:ems="10"
-        android:text="192.168.2.180"
-        android:inputType="textEmailAddress"
-        android:paddingLeft="@dimen/login_marginMedium"
-        android:paddingRight="@dimen/login_marginMedium"
-        android:textSize="@dimen/login_fontRegular" 
-        android:singleLine="true"/>
-    
-    <EditText
-        android:id="@+id/editText_cam_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText_ip"
-        android:layout_alignRight="@+id/editText_ip"
-        android:layout_below="@+id/editText_ip"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/login_marginMedium"
-        android:background="@drawable/sl_account_input_bg"
-        android:ems="10"
-        android:text="Live View-1"
-  		android:singleLine="true"
-        android:paddingLeft="@dimen/login_marginMedium"
-        android:paddingRight="@dimen/login_marginMedium"
-        android:textSize="@dimen/login_fontRegular"/>
-    
-    <EditText
-        android:id="@+id/editText_notify_period"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText_ip"
-        android:layout_alignRight="@+id/editText_ip"
-        android:layout_below="@+id/editText_cam_name"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/login_marginMedium"
-        android:background="@drawable/sl_account_input_bg"
-        android:ems="10"
-        android:hint="Notify period in sec"
-        android:textColorHint="#ffaaaaaa"
-  		android:singleLine="true"
-  		android:inputType="number"
-        android:paddingLeft="@dimen/login_marginMedium"
-        android:paddingRight="@dimen/login_marginMedium"
-        android:textSize="@dimen/login_fontRegular"/>
-
     <Button
         android:id="@+id/button_confirm"
         android:layout_width="fill_parent"
@@ -94,5 +17,98 @@
         android:textColor="@color/word_white"
         android:textColorLink="@color/word_white"
         android:textSize="@dimen/login_fontMedium" />
+    <ScrollView 
+        android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:layout_alignParentTop="true"
+    	android:layout_above="@+id/button_confirm">
+        <RelativeLayout 
+            android:layout_width="match_parent"
+		    android:layout_height="wrap_content">
+		    <Spinner 
+		        android:id="@+id/sp_server_type" 
+		        android:layout_width="wrap_content"  
+		        android:layout_height="wrap_content"  
+		        android:layout_marginTop="30dp"
+		        android:layout_centerHorizontal="true"/>
+            <RadioGroup  
+		        android:id="@+id/radiogroup1"  
+		        android:layout_width="wrap_content"  
+		        android:layout_height="wrap_content"  
+		        android:orientation="vertical"  
+				android:layout_centerHorizontal="true"
+				android:layout_below="@+id/sp_server_type">  
+		        <RadioButton  
+		            android:id="@+id/rbDemo"  
+		            android:layout_width="wrap_content"  
+		            android:layout_height="wrap_content"  
+		            android:text="Demo mode"  
+		        />  
+		        <RadioButton  
+		            android:id="@+id/rbPairing"  
+		            android:layout_width="wrap_content"  
+		            android:layout_height="wrap_content"  
+		            android:text="Pairing Mode"  
+		        />  
+		        <RadioButton  
+		            android:id="@+id/rbP2P"  
+		            android:layout_width="wrap_content"  
+		            android:layout_height="wrap_content"  
+		            android:text="P2P mode"  
+		        />   
+		    </RadioGroup> 
+		    <EditText
+		        android:id="@+id/editText_ip"
+		        android:layout_below="@+id/radiogroup1"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:layout_marginTop="@dimen/login_marginXLarge"
+		        android:background="@drawable/sl_account_input_bg"
+		        android:ems="10"
+		        android:text="192.168.2.180"
+		        android:inputType="textEmailAddress"
+		        android:paddingLeft="@dimen/login_marginMedium"
+		        android:paddingRight="@dimen/login_marginMedium"
+		        android:textSize="@dimen/login_fontRegular" 
+		        android:singleLine="true"/>
+		    
+		    <EditText
+		        android:id="@+id/editText_cam_name"
+		        android:layout_below="@+id/editText_ip"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/editText_ip"
+		        android:layout_alignRight="@+id/editText_ip"
+		        android:layout_centerHorizontal="true"
+		        android:layout_marginTop="@dimen/login_marginMedium"
+		        android:background="@drawable/sl_account_input_bg"
+		        android:ems="10"
+		        android:text="Live View-1"
+		  		android:singleLine="true"
+		        android:paddingLeft="@dimen/login_marginMedium"
+		        android:paddingRight="@dimen/login_marginMedium"
+		        android:textSize="@dimen/login_fontRegular"/>
+		    
+		    <EditText
+		        android:id="@+id/editText_notify_period"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/editText_ip"
+		        android:layout_alignRight="@+id/editText_ip"
+		        android:layout_below="@+id/editText_cam_name"
+		        android:layout_centerHorizontal="true"
+		        android:layout_marginTop="@dimen/login_marginMedium"
+		        android:background="@drawable/sl_account_input_bg"
+		        android:ems="10"
+		        android:hint="Notify period in sec"
+		        android:textColorHint="#ffaaaaaa"
+		  		android:singleLine="true"
+		  		android:inputType="number"
+		        android:paddingLeft="@dimen/login_marginMedium"
+		        android:paddingRight="@dimen/login_marginMedium"
+		        android:textSize="@dimen/login_fontRegular"/>
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

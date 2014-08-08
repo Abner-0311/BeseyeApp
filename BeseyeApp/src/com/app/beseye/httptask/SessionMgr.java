@@ -21,6 +21,53 @@ import static com.app.beseye.util.BeseyeSharedPreferenceUtil.*;
 
 //SessionMgr is responsible for storing back-end URL, token, user Userid in storage/memory
 public class SessionMgr {
+	static public enum SERVER_MODE{
+		MODE_DEV,
+		MODE_COMPUTEX,
+		MODE_STAGING,
+		MODE_PRODUCTION,
+		MODE_TYPES_CNT;
+		
+		static public SERVER_MODE translateToMode(int iMode){
+			SERVER_MODE mode = MODE_DEV;
+			switch(iMode){
+				case 1:{
+					mode = MODE_COMPUTEX;
+					break;
+				} 
+				case 2:{
+					mode = MODE_STAGING;
+					break;
+				} 
+				case 3:{
+					mode = MODE_PRODUCTION;
+					break;
+				} 
+			}
+			return mode;
+		}
+	}
+	
+	static private final String ACCOUNT_URL_FORMAT = "http://%s/be_acc/v1/";
+	static private final String[] ACCOUNT_BE_URL = {"acc01-dev.beseye.com",
+													"acc01.beseye.com", 
+													"acc01-stage.beseye.com",
+													"acc01-stage.beseye.com"}; 
+	
+	static private final String MM_URL_FORMAT = "http://%s/";
+	static private final String[] MM_BE_URL = { "mm01-forext-dev.beseye.com",
+												"mm01-forext-comp.beseye.com", 
+												"mm01-forext-stage.beseye.com",
+												"mm01-forext-stage.beseye.com"}; 
+	
+	static private final String NS_URL_FORMAT = "http://%s/";
+	static private final String[] NS_BE_URL = { "ns01-dev.beseye.com",
+												"ns01.beseye.com", 
+												"ns01-stage.beseye.com",
+												"ns01-stage.beseye.com"}; 
+	
+	
+	
 	static private final String SESSION_PREF 				= "beseye_ses";
 	static private final String SESSION_TOKEN 				= "beseye_token";
 	static private final String SESSION_DOMAIN 				= "beseye_domain";
@@ -85,36 +132,54 @@ public class SessionMgr {
 	}
 	
 	public void cleanHostUrls(){
-		setHostUrl("");
-		setStorageHostUrl("");
-		setUploadHostUrl("");
+		setAccountBEHostUrl("");
+		setMMBEHostUrl("");
+		setNSBEHostUrl("");
 		setArtistsHostUrl("");
 	}
 	
-	public String getHostUrl(){
-		return mSessionData.getHostUrl();
+	public void setBEHostUrl(SERVER_MODE mode){
+		setAccountBEHostUrl(mode);
+		setMMBEHostUrl(mode);
+		setNSBEHostUrl(mode);
 	}
 	
-	synchronized public void setHostUrl(String strURL){
-		mSessionData.setHostUrl(strURL);
+	public String getAccountBEHostUrl(){
+		return mSessionData.getAccountBEHostUrl();
+	}
+	
+	public void setAccountBEHostUrl(SERVER_MODE mode){
+		setAccountBEHostUrl(String.format(ACCOUNT_URL_FORMAT, ACCOUNT_BE_URL[mode.ordinal()]));
+	}
+	
+	synchronized public void setAccountBEHostUrl(String strURL){
+		mSessionData.setAccountBEHostUrl(strURL);
 		notifySessionUpdate();
 	}
 	
-	public String getStorageHostUrl(){
-		return mSessionData.getStorageHostUrl();
+	public String getMMBEHostUrl(){
+		return mSessionData.getMMBEHostUrl();
 	}
 	
-	synchronized public void setStorageHostUrl(String strURL){
-		mSessionData.setStorageHostUrl(strURL);
+	public void setMMBEHostUrl(SERVER_MODE mode){
+		setMMBEHostUrl(String.format(MM_URL_FORMAT, MM_BE_URL[mode.ordinal()]));
+	}
+	
+	synchronized public void setMMBEHostUrl(String strURL){
+		mSessionData.setMMBEHostUrl(strURL);
 		notifySessionUpdate();
 	}
 	
-	public String getUploadHostUrl(){
-		return mSessionData.getUploadHostUrl();
+	public String getNSBEHostUrl(){
+		return mSessionData.getNSBEHostUrl();
 	}
 	
-	synchronized public void setUploadHostUrl(String strURL){
-		mSessionData.setUploadHostUrl(strURL);
+	public void setNSBEHostUrl(SERVER_MODE mode){
+		setNSBEHostUrl(String.format(NS_URL_FORMAT, NS_BE_URL[mode.ordinal()]));
+	}
+	
+	synchronized public void setNSBEHostUrl(String strURL){
+		mSessionData.setNSBEHostUrl(strURL);
 		notifySessionUpdate();
 	}
 	
@@ -280,27 +345,27 @@ public class SessionMgr {
 			mStrCamUpdateList = "";
 		}
 		
-		public String getHostUrl(){
+		public String getAccountBEHostUrl(){
 			return mStrHostUrl;
 		}
 		
-		synchronized public void setHostUrl(String strURL){
+		synchronized public void setAccountBEHostUrl(String strURL){
 			mStrHostUrl = strURL;
 		}
 		
-		public String getStorageHostUrl(){
+		public String getMMBEHostUrl(){
 			return mStrStorageHostUrl;
 		}
 		
-		synchronized public void setStorageHostUrl(String strURL){
+		synchronized public void setMMBEHostUrl(String strURL){
 			mStrStorageHostUrl = strURL;
 		}
 		
-		public String getUploadHostUrl(){
+		public String getNSBEHostUrl(){
 			return mStrUploadHostUrl;
 		}
 		
-		synchronized public void setUploadHostUrl(String strURL){
+		synchronized public void setNSBEHostUrl(String strURL){
 			mStrUploadHostUrl = strURL;
 		}
 

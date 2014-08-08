@@ -2,7 +2,12 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +18,7 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.receiver.UBTEventBroadcastReciever;
 import com.app.beseye.service.BeseyeNotificationService;
@@ -60,12 +66,10 @@ public class BeseyeApplication extends Application {
 		
 		NetworkMgr.createInstance(getApplicationContext());
 		CamSettingMgr.createInstance(getApplicationContext());
-		CamSettingMgr.getInstance().addCamID(getApplicationContext(), TMP_CAM_ID);
+		//CamSettingMgr.getInstance().addCamID(getApplicationContext(), TMP_CAM_ID);
 		
 		SessionMgr.createInstance(getApplicationContext());
-		SessionMgr.getInstance().setHostUrl("http://54.178.199.114/be_acc/v1/");
-		//SessionMgr.getInstance().setMdid("1");
-		//SessionMgr.getInstance().setAuthToken("1");
+		checkServerMode();
 		
 		DeviceUuidFactory.getInstance(getApplicationContext());
 		startService(new Intent(this,BeseyeNotificationService.class));
@@ -260,6 +264,27 @@ public class BeseyeApplication extends Application {
 		
 		Log.i(TAG, "checkPairingMode(), COMPUTEX_PAIRING :"+COMPUTEX_PAIRING);
 		return COMPUTEX_PAIRING;
+	}
+	
+	static public void checkServerMode(){
+		File modeFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_mode");
+		SERVER_MODE mode = SERVER_MODE.MODE_COMPUTEX;
+		if(null != modeFile && modeFile.exists()){
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(modeFile)));
+				try {
+					String strMode = (null != reader)?reader.readLine():null;
+					if(null != strMode && 0 < strMode.length())
+						mode = SERVER_MODE.translateToMode(Integer.parseInt(strMode));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		SessionMgr.getInstance().setBEHostUrl(mode);
+		Log.i(TAG, "checkServerMode(), mode :"+mode);
 	}
 }
 

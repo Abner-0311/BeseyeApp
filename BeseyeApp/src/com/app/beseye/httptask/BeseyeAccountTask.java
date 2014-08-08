@@ -67,7 +67,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_PASSWORD, strParams[1]);
 				obj.put(ACC_REMEM_ME, true);
 				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_LOGIN, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_LOGIN, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -90,7 +90,7 @@ public class BeseyeAccountTask {
 			JSONObject obj = new JSONObject();
 			try {
 				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_LOGOUT, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_LOGOUT, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} 
@@ -110,7 +110,7 @@ public class BeseyeAccountTask {
 			JSONObject obj = new JSONObject();
 			try {
 				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_ACCOUNT_CHECK, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_ACCOUNT_CHECK, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			}
@@ -133,7 +133,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_EMAIL, strParams[0]);
 				obj.put(ACC_PASSWORD, strParams[1]);
 				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_REGISTER, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_REGISTER, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -158,7 +158,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_PAIRING_COUNT, 1);
 				obj.put(ACC_PAIRING_AP_MAC, strParams[1].replaceAll(":", ""));
 				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_PAIRING, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_PAIRING, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -185,7 +185,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_VCAM_ATTR, attrObj);
 				
 				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_SET_ATTR, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_SET_ATTR, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -206,7 +206,7 @@ public class BeseyeAccountTask {
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(ACC_EMAIL, strParams[0]);				
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_FORGET_PW, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_FORGET_PW, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -228,7 +228,7 @@ public class BeseyeAccountTask {
 			JSONObject obj = new JSONObject();
 			try {				
 				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_GET_INFO, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_GET_INFO, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			}
@@ -251,7 +251,7 @@ public class BeseyeAccountTask {
 					obj.put(ACC_VCAM_ID, strParams[0]);
 				}
 				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_GET_VCAM_LST, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_GET_VCAM_LST, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -276,7 +276,7 @@ public class BeseyeAccountTask {
 					obj.put(ACC_VCAM_ID, strParams[0]);
 				}
 				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_QUERY_VCAM, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_QUERY_VCAM, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -299,7 +299,7 @@ public class BeseyeAccountTask {
 			try {		
 				obj.put(ACC_VCAM_ID, strParams[0]);
 				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_GET_VCAM_INFO, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_GET_VCAM_INFO, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -322,7 +322,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_VCAM_ID, strParams[0]);
 				appendDevInfo(obj);
 				Log.e(TAG, "obj:"+obj.toString());
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_CAM_DEATTACH, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_DEATTACH, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -352,7 +352,7 @@ public class BeseyeAccountTask {
 				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
 				obj.put(ACC_VCAM_CLIENT, objClient);
 				Log.e(TAG, "obj:"+obj.toString());
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_CAM_ATTACH, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_ATTACH, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -382,7 +382,7 @@ public class BeseyeAccountTask {
 				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
 				obj.put(ACC_VCAM_CLIENT, objClient);
 				Log.e(TAG, "obj:"+obj.toString());
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_CAM_VALIDATE_BEE, obj.toString(), strParams[3]);
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_VALIDATE_BEE, obj.toString(), strParams[3]);
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -410,7 +410,7 @@ public class BeseyeAccountTask {
 				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
 				obj.put(ACC_VCAM_CLIENT, objClient);
 				Log.e(TAG, "obj:"+obj.toString());
-				return super.doInBackground(SessionMgr.getInstance().getHostUrl()+URL_CAM_VALIDATE, obj.toString(), strParams[1]);
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_VALIDATE, obj.toString(), strParams[1]);
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {

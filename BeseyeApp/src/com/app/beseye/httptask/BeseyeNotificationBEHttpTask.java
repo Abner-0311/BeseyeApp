@@ -23,7 +23,7 @@ public class BeseyeNotificationBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(HOST_ADDR+URL_AUDIO_WS_SERVER);
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+URL_AUDIO_WS_SERVER);
 		}
 	}
 	
@@ -40,7 +40,7 @@ public class BeseyeNotificationBEHttpTask  {
 				obj.put(CAM_UUID, strParams[0]);
 				obj.put(DEV_ID, BeseyeUtils.getAndroidUUid());
 				obj.put(SES_TOKEN, SessionMgr.getInstance().getAuthToken());
-				return super.doInBackground(HOST_ADDR+URL_REQUEST_CAM_CONN, obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+URL_REQUEST_CAM_CONN, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {

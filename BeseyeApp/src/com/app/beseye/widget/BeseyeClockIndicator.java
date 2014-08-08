@@ -3,6 +3,7 @@ package com.app.beseye.widget;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -118,10 +119,12 @@ public class BeseyeClockIndicator extends LinearLayout {
 	
 	public void updateDateTime(long lts){
 		Date date = new Date(lts);
+		Calendar cal = Calendar.getInstance(mTimeZone);
+		cal.setTime(date);
 		
 		//Log.i(TAG, "updateDateTime(), [ "+date.getMonth()+"/"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+"]");	
-		miNextHour = date.getHours(); 
-		miNextMin = date.getMinutes();
+		miNextHour = cal.get(Calendar.HOUR_OF_DAY);
+		miNextMin = cal.get(Calendar.MINUTE);
 		
 		BeseyeUtils.setVisibility(m_txtTime, mbNow?View.GONE:View.VISIBLE);
 		

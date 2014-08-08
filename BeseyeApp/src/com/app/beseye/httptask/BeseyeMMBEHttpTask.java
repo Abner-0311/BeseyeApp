@@ -23,9 +23,9 @@ import com.app.beseye.util.BeseyeStorageAgent;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 public class BeseyeMMBEHttpTask  {
-	static private final String MM_HOST 				= "http://54.178.141.19/";
-	static private final String MM_HOST_PRODCTION 	    = "http://54.178.141.19/";
-	static private final String MM_HOST_EVENT 	    	= "http://ec2-54-178-141-19.ap-northeast-1.compute.amazonaws.com/";
+//	static private final String MM_HOST 				= "http://mm01-forext-dev.beseye.com/";
+//	static private final String MM_HOST_PRODCTION 	    = "http://54.178.141.19/";
+//	static private final String MM_HOST_EVENT 	    	= "http://ec2-54-178-141-19.ap-northeast-1.compute.amazonaws.com/";
 
 	//static private final String MM_HOST_EVENT 	    	= "http://beseye-mm00-forext-stage.no-ip.org/";
 	
@@ -62,7 +62,7 @@ public class BeseyeMMBEHttpTask  {
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			strVcamId = strParams[0];
-			return super.doInBackground(MM_HOST+String.format(URL_LIVE_STREAM_INFO, strParams[0], strParams[1]));
+			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_LIVE_STREAM_INFO, strParams[0], strParams[1]));
 		}
 	}
 	
@@ -73,7 +73,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(MM_HOST+String.format(URL_DVR_STREAM_INFO, strParams[0], strParams[1], strParams[2]));
+			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_DVR_STREAM_INFO, strParams[0], strParams[1], strParams[2]));
 		}
 	}
 	
@@ -84,7 +84,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(MM_HOST_EVENT+String.format(URL_GET_EVENT_LIST, strParams[0], strParams[1], strParams[2]));
+			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST, strParams[0], strParams[1], strParams[2]));
 		}
 	}
 	
@@ -95,7 +95,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(MM_HOST_EVENT+String.format(URL_GET_IMP_EVENT_LIST, strParams[0], strParams[1], strParams[2]));
+			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_IMP_EVENT_LIST, strParams[0], strParams[1], strParams[2]));
 		}
 	}
 	
@@ -106,7 +106,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(MM_HOST_EVENT+String.format(URL_GET_EVENT_LIST_CNT, strParams[0], strParams[1], strParams[2]));
+			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST_CNT, strParams[0], strParams[1], strParams[2]));
 		}
 	}
 	
@@ -134,7 +134,7 @@ public class BeseyeMMBEHttpTask  {
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			strVcamId = strParams[0];
-			return super.doInBackground(MM_HOST_PRODCTION+String.format(URL_GET_LATEST_THUMB, strParams[0]));
+			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_LATEST_THUMB, strParams[0]));
 		}
 	}
 	
@@ -240,7 +240,7 @@ public class BeseyeMMBEHttpTask  {
 				Log.e(TAG, "doInBackground(),find cache for key "+mstrThbKey);
 				miRetCode = 0;
 			}else{
-				ret = super.doInBackground(MM_HOST_PRODCTION+URL_GET_THUMB_BY_EVENT, strParams[1]);
+				ret = super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+URL_GET_THUMB_BY_EVENT, strParams[1]);
 //				if(getRetCode() == 0){
 //					JSONArray thumbnailList = BeseyeJSONUtil.getJSONArray(ret.get(0), BeseyeJSONUtil.MM_THUMBNAILS);
 //					if(null != thumbnailList){

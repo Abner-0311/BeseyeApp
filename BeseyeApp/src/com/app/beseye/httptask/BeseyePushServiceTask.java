@@ -6,19 +6,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.json.JSONObject;
 
 public class BeseyePushServiceTask {
-	private static String PUSH_SERVER_URL;
-	
-	static{
-		checkHostAddr();
-	}
-	
-	static public void checkHostAddr(){
-		if(SessionMgr.getInstance().getIsProductionMode()){
-			PUSH_SERVER_URL = "";
-		}else{
-			PUSH_SERVER_URL = BeseyeHttpTask.HOST_ADDR;
-		}
-	}
 	
 	public static final String FORMAT_GET_PROJ_ID 		= "notify/android/get_project_info";
 	public static final String FORMAT_GET_REG_ID 	  	= "notify/android/get_reg_ids";
@@ -33,7 +20,7 @@ public class BeseyePushServiceTask {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {			
-			return super.doInBackground(PUSH_SERVER_URL+FORMAT_GET_PROJ_ID);
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+FORMAT_GET_PROJ_ID);
 		}
 	}
 	
@@ -44,7 +31,7 @@ public class BeseyePushServiceTask {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {			
-			return super.doInBackground(PUSH_SERVER_URL+String.format(FORMAT_GET_REG_ID, strParams[0]));
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(FORMAT_GET_REG_ID, strParams[0]));
 		}
 	}
 	
@@ -56,7 +43,7 @@ public class BeseyePushServiceTask {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {			
-			return super.doInBackground(PUSH_SERVER_URL+FORMAT_ADD_REG_ID, strParams[0]);
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+FORMAT_ADD_REG_ID, strParams[0]);
 		}
 	}
 	
@@ -68,7 +55,7 @@ public class BeseyePushServiceTask {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {			
-			return super.doInBackground(PUSH_SERVER_URL+FORMAT_DEL_REG_ID, strParams[0]);
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+FORMAT_DEL_REG_ID, strParams[0]);
 		}
 	}
 	
@@ -80,7 +67,7 @@ public class BeseyePushServiceTask {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {			
-			return super.doInBackground(PUSH_SERVER_URL+FORMAT_UPDATE_REG_ID, strParams[0]);
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+FORMAT_UPDATE_REG_ID, strParams[0]);
 		}
 	}
 }

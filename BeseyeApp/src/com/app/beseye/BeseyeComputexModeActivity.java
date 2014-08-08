@@ -16,6 +16,7 @@ import java.io.Writer;
 import org.json.JSONObject;
 
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeJSONUtil;
 
 import android.content.Intent;
@@ -23,9 +24,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +41,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 	private EditText mTxtCamName;
 	private EditText mTxtPeriod;
 	private Button mBtnApply;
+	private Spinner mSpServerType;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,13 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		if(null != mBtnApply){
 			mBtnApply.setOnClickListener(this);
 		}
+		
+		mSpServerType = (Spinner)findViewById(R.id.sp_server_type);
+		if(null != mSpServerType){
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Computex Server","Staging Server"/*, "Production Server"*/});
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			mSpServerType.setAdapter(adapter);
+		}
 		checkMode();
 	}
 
@@ -62,9 +74,11 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		switch(view.getId()){
 			case R.id.button_confirm:{
 				applyMode();
+				break;
 			}
+			default:
+				super.onClick(view);
 		}
-		super.onClick(view);
 	}
 	
 	private void checkMode(){
@@ -97,6 +111,27 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			}
 		}
 		mTxtPeriod.setText(iPeriod+"");
+		
+		File modeFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_mode");
+		SERVER_MODE mode = SERVER_MODE.MODE_COMPUTEX;
+		if(null != modeFile && modeFile.exists()){
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(modeFile)));
+				try {
+					String strMode = (null != reader)?reader.readLine():null;
+					if(null != strMode && 0 < strMode.length())
+						mode = SERVER_MODE.translateToMode(Integer.parseInt(strMode));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(null != mSpServerType){
+			mSpServerType.setSelection(mode.ordinal());
+		}
 	}
 	
 	private void applyMode(){
@@ -179,6 +214,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 				writer = new BufferedWriter(new FileWriter(notifyFile));
 				if(null != writer){
 					writer.write(iPeriod+"");
+					writer.flush();
 					writer.close();
 				}
 			} catch (IOException e) {
@@ -187,6 +223,33 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			
 			Toast.makeText(this, "Notify period is "+iPeriod+" seconds", Toast.LENGTH_LONG).show();
 		}
+		
+		if(null != mSpServerType){
+			SERVER_MODE mode = SERVER_MODE.translateToMode(mSpServerType.getSelectedItemPosition());
+			
+			File modeFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_mode");
+			if(null != modeFile){
+				if(modeFile.exists()){
+					modeFile.delete();
+				}
+				
+				Writer writerMode = null;
+				try {
+					writerMode = new BufferedWriter(new FileWriter(modeFile));
+					if(null != writerMode){
+						writerMode.write(mode.ordinal()+"");
+						writerMode.flush();
+						writerMode.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			SessionMgr.getInstance().setBEHostUrl(mode);
+			Toast.makeText(this, "Server mode is "+mode, Toast.LENGTH_LONG).show();
+		}
+		
 		launchDelegateActivity(BeseyeEntryActivity.class.getName());
 	}
 

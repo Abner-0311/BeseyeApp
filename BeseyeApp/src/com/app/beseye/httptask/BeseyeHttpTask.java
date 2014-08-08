@@ -73,9 +73,7 @@ public class BeseyeHttpTask extends AsyncTask<String, Double, List<JSONObject>> 
 	
 public static final boolean LINK_PRODUCTION_SERVER = true;
 	
-	public static final String FAKE_HOST_ADDR  = "http://swf01.nh.ikala.tv/";
-	public static final String HINET_HOST_ADDR = "http://ap.hinet.sbf.ikala.tv/";
-	public static String HOST_ADDR = "http://54.199.158.71:80/"; //= /*"http://210.64.138.164:5080/";*/"http://song81.corp.ikala.tv:5080/"; /*"http://192.168.0.61:3000/";//*///Internal;
+	//public static String HOST_ADDR = "http://54.199.158.71:80/"; //= /*"http://210.64.138.164:5080/";*/"http://song81.corp.ikala.tv:5080/"; /*"http://192.168.0.61:3000/";//*///Internal;
 	
 	static{
 		checkHostAddr();
