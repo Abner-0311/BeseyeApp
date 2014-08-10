@@ -546,6 +546,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(null != mCameraViewControlAnimator){
 			mCameraViewControlAnimator.showControl();
+			Configuration config = getResources().getConfiguration();		
+			setMarginByOrientation(config.orientation);
 		}
 		
 		checkAndExtendHideHeader();
@@ -1336,7 +1338,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	   	         				
 	   	         				if(0 > iRetCreateStreaming){
 		   	         				if(-2 ==iRetCreateStreaming){
-	   	         						closeStreaming(0);
+	   	         						closeStreaming();
 	   	         					}
 	   	         					iTrial++;
 	   	         					try {
@@ -1638,9 +1640,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     private void closeStreaming(){
     	Log.e(TAG, "closeStreaming() ++");
     	cancelCheckVideoBlock();
-    	if(0 <= miStreamIdx)
-    		closeStreaming(miStreamIdx);
-    	
+//    	new Thread(){
+//    		public void run(){ 
+    			if(0 <= miStreamIdx)
+    	    		closeStreaming(miStreamIdx);
+//    		}}.start();
     	mCurCheckCount = 0;
     	Log.e(TAG, "closeStreaming() --");
     }

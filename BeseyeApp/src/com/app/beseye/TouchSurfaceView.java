@@ -163,7 +163,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         mfPaddingBottom = this.getContext().getResources().getDimension(R.dimen.liveview_toolbar_height_landscape);
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
-        TouchSurfaceView.mIsSurfaceReady = true;
+        synchronized(TouchSurfaceView.class){
+        	TouchSurfaceView.mIsSurfaceReady = true;
+        }
         //SDLActivity.onNativeSurfaceChanged();
         drawDefaultBackground();
         
@@ -185,7 +187,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		TouchSurfaceView.mIsSurfaceReady = false;
+		synchronized(TouchSurfaceView.class){
+	        TouchSurfaceView.mIsSurfaceReady = false;
+	    }
 		Log.i(TAG, "surfaceDestroyed()......");
 	}
 	
@@ -1066,24 +1070,26 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     public void drawStreamBitmap(Bitmap bmp){
-    	if(isCameraStatusOn() && TouchSurfaceView.mIsSurfaceReady){
-    		Canvas canvas = getHolder().lockCanvas();
-        	if(null != canvas){
-        		try{
-    				canvas.drawColor(miBackgroundColor/*, PorterDuff.Mode.CLEAR*/);
-    		        //Log.d(TAG, "drawStreamBitmap(), redundantXSpace:"+redundantXSpace+", redundantYSpace:"+redundantYSpace+", scale:"+scale);
-    		        //updateMatrix();
-    				//printMatrixInfo();
-    		        
-    				if(null != bmp && false == bmp.isRecycled())
-    					canvas.drawBitmap(bmp, matrix, null);
-    				if(TouchSurfaceView.mIsSurfaceReady)
-    					getHolder().unlockCanvasAndPost(canvas);
-        		}catch(java.lang.IllegalStateException e){
-        			Log.e(TAG, "drawStreamBitmap(), e"+e.toString());
-        		}
+    	synchronized(TouchSurfaceView.class){
+    		if(isCameraStatusOn() && TouchSurfaceView.mIsSurfaceReady){
+        		Canvas canvas = getHolder().lockCanvas();
+            	if(null != canvas){
+            		try{
+        				canvas.drawColor(miBackgroundColor/*, PorterDuff.Mode.CLEAR*/);
+        		        //Log.d(TAG, "drawStreamBitmap(), redundantXSpace:"+redundantXSpace+", redundantYSpace:"+redundantYSpace+", scale:"+scale);
+        		        //updateMatrix();
+        				//printMatrixInfo();
+        		        
+        				if(null != bmp && false == bmp.isRecycled())
+        					canvas.drawBitmap(bmp, matrix, null);
+        				if(TouchSurfaceView.mIsSurfaceReady)
+        					getHolder().unlockCanvasAndPost(canvas);
+            		}catch(java.lang.IllegalStateException e){
+            			Log.e(TAG, "drawStreamBitmap(), e"+e.toString());
+            		}
+            	}
         	}
-    	}
+	    }	
     }
     
     public void drawDefaultBackground(){
