@@ -262,7 +262,7 @@
 	<string name="cam_update_no_valid_cam">There is no online camera to update.</string>
 	
 	<string name="firmware_update_error_title">Update incomplete</string>
-	<string name="firmware_update_error_summary">This might cause by temporary\nnetwork problem.</string>
+	<string name="firmware_update_error_summary">This might cause by temporary\network problem.</string>
 	<string name="firmware_update_btn_later">Update later</string>
 	<string name="firmware_update_btn_again">Try again</string>
 	
@@ -272,6 +272,12 @@
 	<string name="forget_password_check_mail_summary">We’ve sent you password reset instructions to the following address:</string>
 	<string name="forget_password_check_mail_address">k******g@beseye.com</string>
 	<string name="forget_password_check_mail_note">Note: The email will be coming from reset-password@beseye.com. If you don’t get the email within a few minutes, please check your spam filter.</string>
+	
+	<string name="toast_cam_on_by_other">Camera is turned on by other user</string>
+	<string name="toast_cam_off_by_other">Camera is turned off by other user</string>
+	<string name="toast_cam_off_by_schedule">Camera is turned off according to power schedule</string>
+	<string name="toast_cam_off_by_location">Camera is turned off accordIng to location setting</string>
+	
 	
 	<!-- Timezone definition begin -->
 	<string name="tz_us_eastern">US	– Eastern</string>

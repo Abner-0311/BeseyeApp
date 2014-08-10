@@ -400,8 +400,6 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			String strMsg) {
 		if(task instanceof BeseyeAccountTask.GetVCamListTask){
 			postToLvRreshComplete();
-		}else if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
-			//Log.e(TAG, "onPostExecute(), GetLiveStreamTask failed");
 		}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
@@ -651,14 +649,14 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	    				setOnResumeUpdateCamListRunnable(new Runnable(){
 							@Override
 							public void run() {
-								monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this).setDialogId(DIALOG_ID_SYNCING), true);
+								monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true);
 		
 							}});
 	    				mOnResumeUpdateCamInfoRunnable = null;
 	    			}
 	    			
 	    		}else{
-	    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(DIALOG_ID_SYNCING), true, strCamUID);
+	    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, strCamUID);
 	    		}
 	    	}
 		}

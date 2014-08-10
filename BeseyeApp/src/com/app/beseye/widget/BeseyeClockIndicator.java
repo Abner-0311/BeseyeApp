@@ -86,6 +86,7 @@ public class BeseyeClockIndicator extends LinearLayout {
 		mTimeZone = tz;
 		sDateFormat.setTimeZone(mTimeZone);
 		sTimeFormat.setTimeZone(mTimeZone);
+		updateDateTime(mlLastTime);
 	}
 	
 	public void calculateTotalLvHeight(int iItmCount, int iItmHeight, int iHolderHeight){
@@ -118,12 +119,13 @@ public class BeseyeClockIndicator extends LinearLayout {
 	}
 	
 	public void updateDateTime(long lts){
+		mlLastTime = lts;
 		Date date = new Date(lts);
 		Calendar cal = Calendar.getInstance(mTimeZone);
 		cal.setTime(date);
 		
 		//Log.i(TAG, "updateDateTime(), [ "+date.getMonth()+"/"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+"]");	
-		miNextHour = cal.get(Calendar.HOUR_OF_DAY);
+		miNextHour = cal.get(Calendar.HOUR_OF_DAY)%24;
 		miNextMin = cal.get(Calendar.MINUTE);
 		
 		BeseyeUtils.setVisibility(m_txtTime, mbNow?View.GONE:View.VISIBLE);
@@ -138,7 +140,7 @@ public class BeseyeClockIndicator extends LinearLayout {
 			}
 			
 			if(null != m_txtTime){
-				m_txtTime.setText(sTimeFormat.format(date));
+				m_txtTime.setText(/*sTimeFormat.format(date)*/String.format("%02d:%02d", miNextHour, miNextMin));
 			}
 		}	
 		
@@ -262,6 +264,7 @@ public class BeseyeClockIndicator extends LinearLayout {
 	private int miNextMin= 0;
 	private int miPendingHour= -1;
 	private int miPeningMin= -1;
+	private long mlLastTime = -1;
 	
 	RotateAnimation mHourRotateAnimation;
 	RotateAnimation mMinRotateAnimation;
@@ -272,16 +275,4 @@ public class BeseyeClockIndicator extends LinearLayout {
 	private boolean inAnimation(){
 		return mbInHourAnimation || mbInMinAnimation;
 	}
-	
-	private void initAnimation(){
-		
-	}
-
-//	@Override
-//	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-//		Log.i(TAG, "onLayout(), [ "+changed+", "+l+","+t+","+r+","+b+"]"+"mTop="+miTop);	
-//		super.onLayout(changed, getLeft(), miTop, getLeft()+getWidth(), miTop+miIndHeight);
-//	}
-	
-	
 }

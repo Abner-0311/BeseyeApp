@@ -964,7 +964,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	
 		@Override
 		public void run() {
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(BeseyeBaseActivity.this).setDialogId(DIALOG_ID_SYNCING), true, mStrVCamID);
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(BeseyeBaseActivity.this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, mStrVCamID);
 		}
     	
     }
@@ -997,7 +997,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     		    		if(!mActivityResume){
     		    			setOnResumeUpdateCamInfoRunnable(new OnResumeUpdateCamInfoRunnable(mStrVCamID));
     		    		}else{
-    		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(DIALOG_ID_SYNCING), true, mStrVCamID);
+    		    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, mStrVCamID);
     		    		}
     		    	}
     			}
@@ -1017,13 +1017,18 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}
 		}
     }
+    
+    protected void setActivityResultWithCamObj(){
+		Intent resultIntent = new Intent();
+		resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+		setResult(RESULT_OK, resultIntent);	
+	}
 
 	protected abstract int getLayoutId();
 	
+	//Camera update begin
 	private ProgressBar mProgressBarCamUpdate;
 	private TextView mTxtCamUpdateStatus;
-	
-	
 	private int miCheckUpdateCamIdx = 0;
 	private List<String> mLstUpdateCandidate;
 	private JSONObject mUpdateVcamList;
@@ -1203,12 +1208,6 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return bRet;
 	}
 	
-	protected void setActivityResultWithCamObj(){
-		Intent resultIntent = new Intent();
-		resultIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-		setResult(RESULT_OK, resultIntent);	
-	}
-	
 	protected String arrayToString(List<String> lstUpdateCandidate){
 		String strRet = "";
 		int iNum = (null != lstUpdateCandidate)?lstUpdateCandidate.size():0;
@@ -1218,4 +1217,6 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		Log.i(TAG, "arrayToString(), strRet:"+strRet);
 		return strRet;
 	}
+	
+	//Camera update end
 }
