@@ -27,6 +27,7 @@ import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.CameraSettingActivity;
+import com.app.beseye.setting.HWSettingsActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
@@ -215,6 +216,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_CAM_UPDATE			= DIALOG_ID_WIFI_BASE+16; 
 	static public final int DIALOG_ID_WIFI_AP_INFO_ADD 		= DIALOG_ID_WIFI_BASE+17;
 	static public final int DIALOG_ID_WIFI_AP_SECU_PICKER	= DIALOG_ID_WIFI_BASE+18; 
+	static public final int DIALOG_ID_WIFI_AP_APPLY			= DIALOG_ID_WIFI_BASE+19; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
@@ -830,6 +832,20 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
                 	}
                     break;
                 }
+                case BeseyeNotificationService.MSG_CAM_WIFI_CONFIG_CHANGED:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onWifiSettingChangedCallback(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                    break;
+                }
 //                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{
 //                	BeseyeBaseActivity act = mActivity.get();
 //                	if(null != act)
@@ -1003,6 +1019,27 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     			}
     		}
     	}
+    }
+    
+    protected Runnable mCountDownWiFiChangeRunnable;
+    protected boolean onWifiSettingChangedCallback(JSONObject msgObj){
+    	if(this instanceof HWSettingsActivity){
+    		if(null != mCountDownWiFiChangeRunnable){
+        		BeseyeUtils.removeRunnable(mCountDownWiFiChangeRunnable);
+        		mCountDownWiFiChangeRunnable = null;
+        	}
+        	
+        	Log.i(TAG, getClass().getSimpleName()+"::onWifiSettingChangedCallback(),  msgObj = "+msgObj);
+        	if(null != msgObj){
+        		JSONObject objReg = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA);
+        		if(null != objReg){
+        			//String strCamUID = BeseyeJSONUtil.getJSONString(objReg, WS_ATTR_CAM_UID);
+        			removeMyDialog(DIALOG_ID_WIFI_AP_APPLY);
+        			return true;
+        		}
+    		}
+    	}
+    	return false;
     }
     
     protected long mlCamSetupObjUpdateTs = -1;

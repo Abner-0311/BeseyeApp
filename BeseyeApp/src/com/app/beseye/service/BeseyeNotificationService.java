@@ -154,12 +154,26 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_UNREGISTER_CLIENT:
                     mClients.remove(msg.replyTo);
                     break;
+                case MSG_CAM_WIFI_CONFIG_CHANGED:{
+                	JSONObject msgObj;
+					try {
+						msgObj = new JSONObject((String)msg.obj);
+						JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+	            		if(null != objCus){
+	            			Log.i(TAG, "MSG_CAM_SETTING_UPDATED,  objCus = "+objCus.toString());
+	            			int iConfigReport = BeseyeJSONUtil.getJSONInt(objCus, BeseyeJSONUtil.PS_WIFI_CONFIG_REPORT);
+	            			Toast.makeText(BeseyeNotificationService.this, getString(0 == iConfigReport?R.string.cam_setting_succeed_to_apply_wifi_setting:R.string.cam_setting_fail_to_apply_wifi_setting), Toast.LENGTH_LONG).show();
+	            		}	
+					} catch (JSONException e) {
+						Log.i(TAG, "MSG_CAM_SETTING_UPDATED,  e = "+e.toString());
+					}
+                }
                 case MSG_CAM_SETTING_UPDATED:{
                 	for (int i=mClients.size()-1; i>=0; i--) {
                 		try {
                 			Bundle b = new Bundle();
                 			b.putString(MSG_REF_JSON_OBJ, (String)msg.obj);
-                			Message msgToSend = Message.obtain(null, MSG_CAM_SETTING_UPDATED);
+                			Message msgToSend = Message.obtain(null, msg.what);
                 			msgToSend.setData(b);
                 			mClients.get(i).send(msgToSend);
                 		} catch (RemoteException e) {
@@ -344,8 +358,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	final Bundle bundle = msg.getData();
                 	String data = bundle.getString(PS_REGULAR_DATA);
                 	String dataCus = bundle.getString(PS_CUSTOM_DATA);
-                	//Log.i(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
-                	Toast.makeText(getApplicationContext(), "Got message from Beseye server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
+                	Log.i(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
+                	//Toast.makeText(getApplicationContext(), "Got message from Beseye server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
+                	handleGCMEvents(data, dataCus);
                 	break;
                 }
                 case MSG_GSM_ERR:{
@@ -1393,7 +1408,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			}
 			
 			try {
-				if(null != mMessenger)
+				if(0 <= iMsgType && null != mMessenger)
 					mMessenger.send(Message.obtain(null, iMsgType, DataObj.toString()));
 			} catch (RemoteException e) {
 				Log.e(TAG, "handleWSEvent(), RemoteException, e="+e.toString());	
@@ -1402,4 +1417,48 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			Log.e(TAG, "handleWSEvent(), dataObj is null");	
 		}
     }
+	
+	private void handleGCMEvents(String strRegularData, String strCusData){
+		if(null != strRegularData){
+			try {
+				JSONObject obgReg = new JSONObject(strRegularData);
+				if(null != obgReg){
+					int iNCode = BeseyeJSONUtil.getJSONInt(obgReg, BeseyeJSONUtil.PS_NCODE);
+					int iMsgType = -1;
+					switch(iNCode){
+						case NS_WIFI_CHANGED:{
+							iMsgType = MSG_CAM_WIFI_CONFIG_CHANGED;
+							break;
+						}
+						default:{
+							Log.i(TAG, "handleGCMEvents(), not handled type "+Integer.toHexString(iNCode));	
+						}
+					}
+					
+					try {
+						if(0 <= iMsgType && null != mMessenger){
+							JSONObject msgObj = new JSONObject();
+							BeseyeJSONUtil.setJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA, obgReg);
+							try {
+								if(null != strCusData){
+									BeseyeJSONUtil.setJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA, new JSONObject(strCusData));
+								}
+							} catch (JSONException e) {
+								Log.e(TAG, "handleGCMEvents(), e:"+e.toString());	
+							}
+							mMessenger.send(Message.obtain(null, iMsgType, msgObj.toString()));
+						}
+					} catch (RemoteException e) {
+						Log.e(TAG, "handleWSEvent(), RemoteException, e="+e.toString());	
+					}
+				}
+			} catch (JSONException e) {
+				Log.e(TAG, "handleGCMEvents(), e:"+e.toString());	
+			}
+		}else{
+			Log.e(TAG, "handleGCMEvents(), strRegularData is null");	
+		}
+	}
+	
+	private static final int NS_WIFI_CHANGED = 0x010E; 
 }

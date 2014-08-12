@@ -326,10 +326,12 @@ public class BeseyeJSONUtil {
 	public static final String PS_REGULAR_DATA 			= "RegularData";
 	public static final String PS_MSG 					= "Message";
 	public static final String PS_CAM_UID 				= "CamUID";
-	public static final String PS_NCODE 				= "NCODE";
+	public static final String PS_NCODE 				= "NCode";
 	public static final String PS_TS 					= "Timestamp";
 	
 	public static final String PS_CUSTOM_DATA 			= "CustomData";
+	
+	public static final String PS_WIFI_CONFIG_REPORT 	= "configReport";
 	
 	//Helper functions
 	static public JSONObject newJSONObject(String json){

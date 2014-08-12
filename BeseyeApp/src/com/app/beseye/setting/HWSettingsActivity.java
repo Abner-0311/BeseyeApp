@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
@@ -262,8 +264,17 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 						}});
 				}
             	break;
+			}case DIALOG_ID_WIFI_AP_APPLY:{
+				dialog = ProgressDialog.show(this, "", getString(R.string.cam_setting_wifi_setting_apply), true, true);
+				dialog.setCancelable(false);
+				BeseyeUtils.postRunnable(mCountDownWiFiChangeRunnable = new Runnable(){
+					@Override
+					public void run() {
+						removeMyDialog(DIALOG_ID_WIFI_AP_APPLY);
+						Toast.makeText(HWSettingsActivity.this, getString(R.string.cam_setting_fail_to_apply_wifi_setting), Toast.LENGTH_LONG).show();
+					}}, 60*1000);
+				break;
 			}
-
 			default:
 				dialog = super.onCreateDialog(id);
 		}
@@ -527,8 +538,10 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 			}else if(task instanceof BeseyeCamBEHttpTask.SetWiFiConfigTask){
-				if(0 == iRetCode)
+				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
+					showMyDialog(DIALOG_ID_WIFI_AP_APPLY);
+				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);
 			}

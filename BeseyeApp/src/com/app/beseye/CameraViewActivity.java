@@ -470,6 +470,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 				}
 				
+				if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
+					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+				}
+				
 				mbIsLiveMode = !intent.getBooleanExtra(KEY_DVR_STREAM_MODE, false);
 				mstrDVRStreamPathList = new ArrayList<JSONObject>();
 				mstrPendingStreamPathList = new ArrayList<JSONObject>();

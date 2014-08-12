@@ -254,6 +254,11 @@ void * Delegate_GetAudioBuffer(){
     return audioBufferPinned;
 }
 
+//#define WRITE_AUDIO_TO_FILE
+#ifdef WRITE_AUDIO_TO_FILE
+static FILE *fp = NULL;
+#endif
+
 int Delegate_GetAudioBufferSize(int sampleRate){
 	DECLARE_JNIENV_WITH_RETURN()
     int iRet = jni_env->CallStaticIntMethod(mActivityClass, midAudioGetBufSize, sampleRate);
@@ -272,6 +277,10 @@ void Delegate_WriteAudioBuffer(int iLen){
 		jni_env->CallStaticVoidMethod(mActivityClass, midAudioWriteByteBuffer, (jbyteArray)audioBuffer);
 	}
 
+#ifdef WRITE_AUDIO_TO_FILE
+	if(fp)
+		fwrite((short*)audioBufferPinned, sizeof(short), iLen, fp);
+#endif
 	//LOGW("Delegate_WriteAudioBuffer(), audioBuffer[100]=%d", audioBuffer[100]);
     /* JNI_COMMIT means the changes are committed to the VM but the buffer remains pinned */
 	//jvm->DetachCurrentThread();
@@ -296,6 +305,7 @@ jstring str2jstring(const string pat) {
 	jni_env->DeleteLocalRef(ret);
     return ret;
 }
+
 #ifdef GEN_TONE_ONLY
 class OnPlayToneCallbackReceiver : public IOnPlayToneCallback{
 public:
@@ -308,7 +318,15 @@ public:
 		jstring code = (jstring)jni_env->NewStringUTF(strCode.c_str());
 		jni_env->CallStaticVoidMethod(mActivityClass, midOnStartGen, code);
 		jni_env->DeleteLocalRef(code);
-
+#ifdef WRITE_AUDIO_TO_FILE
+		char* filePath = "/mnt/sdcard/beseye_audio_16k_0.pcm";
+		fp=fopen(filePath, "wb");
+		if(!fp){
+			 LOGE("failed to %s", filePath);
+		}else{
+			LOGE("Succeed to %s", filePath);
+		}
+#endif
 		//LOGW("onStartGen()-");
 		//jvm->DetachCurrentThread();
 	}
@@ -318,6 +336,12 @@ public:
 		jstring code = (jstring)jni_env->NewStringUTF(strCode.c_str());
 		jni_env->CallStaticVoidMethod(mActivityClass, midOnStopGen, code);
 		jni_env->DeleteLocalRef(code);
+#ifdef WRITE_AUDIO_TO_FILE
+		 if(fp){
+		    fclose(fp);
+		    fp = NULL;
+		 }
+#endif
 	}
 
 	virtual void onCurFreqChanged(double dFreq){

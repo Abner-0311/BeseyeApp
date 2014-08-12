@@ -61,12 +61,12 @@
     <string name="dialog_wifi_turning_on">Turning on Wifi&#8230;</string>
     <string name="dialog_wifi_scanning">Wifi scanning&#8230;</string>
     <string name="dialog_wifi_setting">Wifi setting&#8230;</string>
-    <string name="dialog_wifi_fail_on">Can not turn on wifi, please check wifi status on your device.</string>
-    <string name="dialog_wifi_fail_scan">Can not scan wifi, please check wifi status on your device.</string>
+    <string name="dialog_wifi_fail_on">Cannot turn on wifi, please check wifi status on your device.</string>
+    <string name="dialog_wifi_fail_scan">Cannot scan wifi, please check wifi status on your device.</string>
     <string name="dialog_wifi_incorrect_password">The network password you typed is incorrect. Please try again.</string>
     <string name="dialog_wifi_incorrect_password_wep">Unable to connect due to an incorrect password or network issues.\nWould you like to try again?</string>
     
-    <string name="dialog_wifi_fail_to_connect">Can not connect to Wifi AP [%s].\nPlease check if it is available.</string>
+    <string name="dialog_wifi_fail_to_connect">Cannot connect to Wifi AP [%s].\nPlease check if it is available.</string>
     <string name="dialog_wifi_invalid_connectivity">Wifi AP %s has connectivity issue. Please choose another Wifi AP or try again.</string>
     
     <string name="dialog_wifi_ap_signal">Signal strength</string>
@@ -113,6 +113,11 @@
 	<string name="cam_setting_fail_to_update_mic_status">Fail to update microphone status. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_mic_sensitivity">Fail to update microphone sensitivity. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_wifi_setting">Fail to update WiFi setting. Please try again later.</string>
+	
+	<string name="cam_setting_wifi_setting_apply">WiFi config is applying. Please wait for a while.</string>
+	<string name="cam_setting_fail_to_apply_wifi_setting">Cannot apply to new WiFi.</string>
+	<string name="cam_setting_succeed_to_apply_wifi_setting">Apply to new WiFi.</string>
+	
 	<string name="cam_setting_fail_to_update_timezone">Fail to update timezone. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_night_vision">Fail to update night vision. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_video_upside_down">Fail to update video upside-down. Please try again later.</string>

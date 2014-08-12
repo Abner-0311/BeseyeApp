@@ -92,7 +92,8 @@ bool FreqGenerator::playCode2(const string strCodeInputASCII, const bool bNeedEn
 
 	string strEncodeMark = strEncode;//SoundPair_Config::encodeConsecutiveDigits(strEncode);
 	string strCode = bNeedEncode?
-							("123X"+SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4)))+"789":
+							//("123X"+SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4)))+"789":
+							(SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4)))+"789":
 							strEncode;
 
 	pthread_mutex_lock(&mSyncObj);
@@ -138,6 +139,7 @@ bool FreqGenerator::playCode2(const string strMacAddr, const string strWifiKey, 
 //#else
 	string strCodeInput = strMacAddr+strWifiKey+strToken;
 //#endif
+
 	LOGE("playCode2(), strCodeInput:%s\n", strCodeInput.c_str());
 
 	string strEncode = bNeedEncode?encode(strCodeInput):strCodeInput;
@@ -347,19 +349,23 @@ void FreqGenerator::invokePlayCode2(){
 }
 
 void FreqGenerator::playCode3(const string strCodeInput, const bool bNeedEncode){
+	LOGE("playCode3(), strCodeInput= [%s]\n", strCodeInput.c_str());
 	string strEncode = bNeedEncode?encode(strCodeInput):strCodeInput;
+	LOGE("playCode3(), strEncode= [%s]\n", strEncode.c_str());
 	const string strECCode = strEncode.substr(strCodeInput.length());
 
 	string strEncodeMark = strEncode;//SoundPair_Config::encodeConsecutiveDigits(strEncode);
-	string strCode = bNeedEncode?("X"+SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4)))+"XXXXXX":strEncode;
+	string strCode = bNeedEncode?("X"+SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4)))+"XXXXXX":SoundPair_Config::PREFIX_DECODE+strEncode;
 //	string strCode = bNeedEncode?
 //							(SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4))):
 //							strEncode;
-
+	LOGE("playCode3(), strCode= [%s]\n", strCode.c_str());
 	pthread_mutex_lock(&mSyncObj);
-	mlstEncodeList.push_back(Ref<EncodeItm>(new EncodeItm(NULL, strCodeInput, strECCode, strEncodeMark, strCode)));
+	mlstEncodeList.push_back(Ref<EncodeItm>(new EncodeItm(strCodeInput, strCodeInput, strECCode, strEncodeMark, strCode)));
 	pthread_cond_signal(&mSyncObjCond);
 	pthread_mutex_unlock(&mSyncObj);
+
+	LOGE("playCode3(), 1\n");
 
 	if(0 == mThreadPlayTone){
 		int errno = 0;
@@ -367,6 +373,7 @@ void FreqGenerator::playCode3(const string strCodeInput, const bool bNeedEncode)
 			LOGE("error when create pthread,%d\n", errno);
 		}
 	}
+	LOGE("playCode3(), ----\n");
 }
 
 void* FreqGenerator::runPlayCode3(void* userdata){
@@ -424,12 +431,24 @@ void FreqGenerator::invokePlayCode3(){
 		if(NULL != mOnPlayToneCallback)
 			mOnPlayToneCallback->onErrCorrectionCode(itmCode->strCodeInput, itmCode->strECCode, itmCode->strEncodeMark);
 
+//		char path[1024] = {0}
+//		sprintf();
+//		char* filePath = "/mnt/sdcard/beseye.pcm";
+//		FILE *fp = NULL;
+//		fp=fopen(filePath, "wb");
+//		if(!fp){
+//			 LOGE("failed to %s", filePath);
+//		}else{
+//			LOGE("Succeed to %s", filePath);
+//		}
+
 		int iCodeLen = itmCode->strEncode.length();
 		int iTotalSamples = numSamples*iCodeLen;
 		int i, iCurCodeIndex = 0;
 		double dFreq = 0.0;
 		int iDelta = (int)(((iShiftIdx%10)/10.0f)*SoundPair_Config::FRAME_SIZE_REC);
 		LOGE("invokePlayCode3(), iDelta:%d",iDelta );
+
 		string iIndex = itmCode->strEncode.substr(iCurCodeIndex, 1);
 		std::map<string,double>::iterator it = SoundPair_Config::sAlphabetTable.find(iIndex);
 		if(SoundPair_Config::sAlphabetTable.end() != it){
@@ -438,6 +457,8 @@ void FreqGenerator::invokePlayCode3(){
 			dFreq = 0.0;
 		}
 		float fBaseAmpRatio = 1.0f;
+
+		LOGE("invokePlayCode3(),1");
 
 		for (i = 0; i < iTotalSamples; ++i) {
 			if(mbStopPlayCodeThread){
@@ -492,6 +513,8 @@ void FreqGenerator::invokePlayCode3(){
 			//Log.i(TAG, "run(), sample["+i+"] = "+sample[i] );
 		}
 
+		//LOGE("invokePlayCode3(),9");
+
 		if(0 < (iTotalSamples+iDelta)%iBufLen){
 			writeToneToBuf(sample, iTotalSamples%iBufLen);
 			memset(sample, 0, iBufLen*sizeof(double));
@@ -536,6 +559,7 @@ void FreqGenerator::notifySelfTestCond(){
 }
 
 void FreqGenerator::writeToneToBuf(double* sample, int iLen){
+	//LOGE("writeToneToBuf(), iLen:%d,++", iLen);
 #ifndef GEN_TONE_ONLY
 	// convert to 16 bit pcm sound array
 	// assumes the sample buffer is normalised.
@@ -545,14 +569,16 @@ void FreqGenerator::writeToneToBuf(double* sample, int iLen){
 		sleepValue.tv_nsec = 10000000;//10 ms
 		nanosleep(&sleepValue, NULL);
 	}
-	int iLenRec = AudioBufferMgr::getInstance()->getBufferSize();
+	//LOGE("writeToneToBuf(),1");
+	int iLenRec = SoundPair_Config::FRAME_SIZE_REC;//AudioBufferMgr::getInstance()->getBufferSize();
 	int idx = 0, i =0;
 
 	struct timespec outtime;
 	long lDelayms = 20;
 	long lDelay2ms = 100;
-
+	//LOGE("writeToneToBuf(),1-1, iLenRec:%d", iLenRec);
 	for (i =0; i< iLen;i++) {
+		//LOGE("writeToneToBuf(),1-2");
 		if(NULL == shortsRec){
 			while(NULL == (shortsRec = AudioBufferMgr::getInstance()->getAvailableBuf())){
 				timespec sleepValue = {0};
@@ -560,28 +586,35 @@ void FreqGenerator::writeToneToBuf(double* sample, int iLen){
 				nanosleep(&sleepValue, NULL);
 			}
 		}
-
+		//LOGE("writeToneToBuf(),1-3");
 		// scale to maximum amplitude
 		shortsRec[i%iLenRec] = (short) ((sample[i] * 32767));
 
 		if(0 == (i+1)%iLenRec){
 			sTs+=SoundPair_Config::FRAME_TS;
+			//LOGE("writeToneToBuf(),1-4");
 			AudioBufferMgr::getInstance()->addToDataBuf(sTs, shortsRec, iLenRec);
 			getTimeSpecByDelay(outtime, lDelayms);
-
+			//LOGE("writeToneToBuf(),2");
 			pthread_cond_timedwait(&mSyncObjCondSelfTest, &mSyncObj, &outtime);
+			//LOGE("writeToneToBuf(),3");
 			shortsRec = NULL;
 		}
 	}
 
+	//LOGE("writeToneToBuf(),4");
 	if(NULL != shortsRec){
 		sTs+=SoundPair_Config::FRAME_TS;
+		//LOGE("writeToneToBuf(),5");
 		AudioBufferMgr::getInstance()->addToDataBuf(sTs, shortsRec, i%iLenRec);
 
 		getTimeSpecByDelay(outtime, lDelay2ms);
+		//LOGE("writeToneToBuf(),6");
 		pthread_cond_timedwait(&mSyncObjCondSelfTest, &mSyncObj, &outtime);
+		//LOGE("writeToneToBuf(),7");
 	}
 #endif
+	//LOGE("writeToneToBuf(),--");
 }
 
 int FreqGenerator::getNumOfEcBytes(int numDataBytes){

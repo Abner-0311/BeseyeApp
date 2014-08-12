@@ -217,8 +217,10 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 					dialog.setOnDismissListener(new OnDismissListener(){
 						@Override
 						public void onDismiss(DialogInterface arg0) {
-							clearScanResult();
-							setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+							if(false == mbChangeWifi){
+								clearScanResult();
+								setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+							}
 						}});
 				}
 				

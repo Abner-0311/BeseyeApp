@@ -160,7 +160,21 @@ public class EventListActivity extends BeseyeBaseActivity{
         	
         	mEventListAdapter = new EventListAdapter(this, null, R.layout.layout_event_list_itm, this);
         	if(null != mEventListAdapter){
-        		mMainListView.getRefreshableView().setAdapter(mEventListAdapter);
+        		JSONArray EntList = new JSONArray();
+        		JSONObject liveObj = new JSONObject();
+				try {					
+					liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
+					liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
+					
+					BeseyeJSONUtil.appendObjToArrayBegin(EntList, liveObj);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+				mEventListAdapter.updateResultList(EntList);
+				mMainListView.getRefreshableView().setAdapter(mEventListAdapter);
+				mVgIndicator.updateToNow(true);
+				mVgIndicator.updateDateTime(new Date().getTime());
         	}
 		}
 	}
@@ -328,6 +342,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 					mMainListView.updateLatestTimestamp();
 				}
 				checkClockByTime();
+				mbNeedToCalcu = true;
 			}else if(task instanceof BeseyeMMBEHttpTask.GetThumbnailByEventListTask){
 				if(0 == iRetCode){
 					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());

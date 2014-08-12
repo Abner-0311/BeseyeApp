@@ -100,7 +100,7 @@ public:
 	constexpr static const float SILENCE_CRITERIA = 0.002f;
 	static const int SILENCE_DETECTION_SAMPLE = 256;
 
-	static const int SAMPLE_RATE_PLAY = 44100;
+	static const int SAMPLE_RATE_PLAY = 16000;//44100;
 	static const int SAMPLE_RATE_REC  = 16000;
 	static const int FRAME_SIZE_REC   = 512;
 	static const float BIN_SIZE       ;//= 16000.0/512.0;
