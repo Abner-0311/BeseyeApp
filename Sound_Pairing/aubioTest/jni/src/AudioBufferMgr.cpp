@@ -32,6 +32,7 @@ AudioBufferMgr::AudioBufferMgr():
 miBufSize(0),
 miPivotRecording(0),
 miPivotAnalysis(0){
+	LOGE("AudioBufferMgr(), AudioBufferMgr::MAX_QUEUE_SIZE:%d\n", AudioBufferMgr::MAX_QUEUE_SIZE);
 	for(unsigned int i =0; i < AudioBufferMgr::MAX_QUEUE_SIZE ;i++){
 		mAvailalbeBufList.push_back(ArrayRef<short>(new Array<short>(SoundPair_Config::FRAME_SIZE_REC)));
 	}
@@ -104,6 +105,8 @@ ArrayRef<short> AudioBufferMgr::getBufByIndex(int iBufIndexInput, int iOffset, A
 	}else{
 		if(0 == iOffset){
 			memcpy(&bufReturn[0], &curBuf[0], iLenBuf);
+
+			LOGE("getBufByIndex(), curBuf[0]:%d, bufReturn[0]:%d, curBuf[99]:%d, bufReturn[99]:%d\n", curBuf[0], bufReturn[0], curBuf[99], bufReturn[99]);
 		}else{
 			int iDelta = std::abs(iOffset);
 			if(iDelta > SoundPair_Config::FRAME_SIZE_REC){
@@ -279,8 +282,8 @@ void AudioBufferMgr::waitForDataBuf(long lWaitTime){
 static volatile int siSrcBufMuxCount = 0;
 void AudioBufferMgr::acquireSrcBufMux(){
 	siSrcBufMuxCount++;
-	if(1 < siSrcBufMuxCount)
-		LOGE("Error, siSrcBufMuxCount:%d\n", siSrcBufMuxCount);
+//	if(1 < siSrcBufMuxCount)
+//		LOGE("Error, siSrcBufMuxCount:%d\n", siSrcBufMuxCount);
 	pthread_mutex_lock(&mSrcBufMux);
 }
 
@@ -292,9 +295,9 @@ void AudioBufferMgr::releaseSrcBufMux(){
 
 static volatile int siDataBufMuxCount = 0;
 void AudioBufferMgr::acquireDataBufMux(){
-	siDataBufMuxCount++;
-	if(1 < siDataBufMuxCount)
-		LOGE("Error, siDataBufMuxCount:%d\n", siDataBufMuxCount);
+//	siDataBufMuxCount++;
+//	if(1 < siDataBufMuxCount)
+//		LOGE("Error, siDataBufMuxCount:%d\n", siDataBufMuxCount);
 	pthread_mutex_lock(&mDataBufMux);
 }
 

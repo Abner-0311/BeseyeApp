@@ -65,6 +65,7 @@ private:
 
 	ArrayRef<short> bufSegment;
 	int mSessionOffset;
+	int mSessionOffsetForAmp;
 	msec_t mSessionBeginTs;
 	int mSessionBeginBufIdx;
 
@@ -150,6 +151,7 @@ private:
 	static void runSpeexPreprocess(SpeexPreprocessState* sps, short *bytes);
 	static void performSpeexPreprocess(short * array, bool bReset, SpeexPreprocessState** speexPrep);
 //Audacity FFT analysis
+	static pthread_mutex_t sSyncFFTObj;
 	static float *inBuffer;
 	static float *outBuffer;
 	static float *win;
@@ -196,6 +198,7 @@ public:
 	float analyzeAudioViaAudacity(ArrayRef<short> array, int iBufSize, bool bReset ,int iLastDetect, int* iFFTValues);
 	float analyzeAudioViaAudacityAC(ArrayRef<short> array, int iBufSize, bool bReset ,int iLastDetect, int* iFFTValues);
 
+	void setSessionOffsetForAmp(int iOffset);
 };
 
 #endif

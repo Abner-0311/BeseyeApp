@@ -92,7 +92,8 @@ bool FreqGenerator::playCode2(const string strCodeInputASCII, const bool bNeedEn
 
 	string strEncodeMark = strEncode;//SoundPair_Config::encodeConsecutiveDigits(strEncode);
 	string strCode = bNeedEncode?
-							("123X"+SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4)))+"789":
+							//("123X"+SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4)))+"789":
+							(SoundPair_Config::PREFIX_DECODE+(SoundPair_Config::PRE_EMPTY?"X":"")+strEncodeMark+SoundPair_Config::POSTFIX_DECODE+(SoundPair_Config::sCodeTable.at(SoundPair_Config::sCodeTable.size()-4)))+"789":
 							strEncode;
 
 	pthread_mutex_lock(&mSyncObj);
@@ -138,6 +139,7 @@ bool FreqGenerator::playCode2(const string strMacAddr, const string strWifiKey, 
 //#else
 	string strCodeInput = strMacAddr+strWifiKey+strToken;
 //#endif
+
 	LOGE("playCode2(), strCodeInput:%s\n", strCodeInput.c_str());
 
 	string strEncode = bNeedEncode?encode(strCodeInput):strCodeInput;
@@ -429,16 +431,16 @@ void FreqGenerator::invokePlayCode3(){
 		if(NULL != mOnPlayToneCallback)
 			mOnPlayToneCallback->onErrCorrectionCode(itmCode->strCodeInput, itmCode->strECCode, itmCode->strEncodeMark);
 
-		char path[1024] = {0}
-		sprintf();
-		char* filePath = "/mnt/sdcard/beseye.pcm";
-		FILE *fp = NULL;
-		fp=fopen(filePath, "wb");
-		if(!fp){
-			 LOGE("failed to %s", filePath);
-		}else{
-			LOGE("Succeed to %s", filePath);
-		}
+//		char path[1024] = {0}
+//		sprintf();
+//		char* filePath = "/mnt/sdcard/beseye.pcm";
+//		FILE *fp = NULL;
+//		fp=fopen(filePath, "wb");
+//		if(!fp){
+//			 LOGE("failed to %s", filePath);
+//		}else{
+//			LOGE("Succeed to %s", filePath);
+//		}
 
 		int iCodeLen = itmCode->strEncode.length();
 		int iTotalSamples = numSamples*iCodeLen;

@@ -7,9 +7,9 @@
 #endif
 
 //Check Network and token
-static const long TIME_TO_CHECK_TOKEN = 30000;//30 seconds
+static const msec_t TIME_TO_CHECK_TOKEN = 30000;//30 seconds
 static const long TIME_TO_CHECK_LED = 1;//1 seconds
-static long slLastTimeCheckToken = -1;
+static msec_t slLastTimeCheckToken = -1;
 
 AudioTest* AudioTest::sAudioTest=NULL;
 
@@ -811,7 +811,7 @@ void* AudioTest::verifyToken(void* userdata){
 	LOGE("+\n");
 	AudioTest* tester = (AudioTest*)userdata;
 	while(!tester->mbStopAnalysisThreadFlag){
-		long lDelta = time_ms() - slLastTimeCheckToken;
+		msec_t lDelta = time_ms() - slLastTimeCheckToken;
 		if(lDelta > TIME_TO_CHECK_TOKEN){
 			if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
 				if(0 == (system("/beseye/cam_main/beseye_token_check") >> 8)){
@@ -858,7 +858,83 @@ void* AudioTest::verifyToken(void* userdata){
 	return 0;
 }
 
+static int siOffset = 0;
+
+void AudioTest::setOffset(int iOffset){
+	LOGE("setOffset(), iOffset:%d\n", iOffset);
+	siOffset=iOffset;
+}
+
+//#define SEG_PROFILE
+
+#ifdef SEG_PROFILE
+static int iHaveTest = 0;
+static msec_t lTsToTest = 0;
+static FILE *fp = NULL;
+static unsigned char* charBufTmp = NULL;
+#endif
+
+//static int iOldLen = 0;
 void writeBuf(unsigned char* charBuf, int iLen){
+
+#ifdef SEG_PROFILE
+	if(0 == lTsToTest){
+		lTsToTest = time_ms();
+		LOGE("writeBuf, lTsToTest:%lld\n", lTsToTest);
+	}
+
+
+	if(NULL == fp && 0 == iHaveTest && (time_ms() - lTsToTest) > 1000){
+		LOGE("writeBuf, (%lld - %lld)\n", time_ms(), lTsToTest);
+
+		iHaveTest = 1;
+		char* filePath = "/beseye//beseye_audio_16k.pcm";
+		fp=fopen(filePath, "r");
+		if(!fp){
+			LOGE("failed to %s\n", filePath);
+		}else{
+			LOGE("Succeed to %s\n", filePath);
+		}
+
+		shortsRecBuf = AudioBufferMgr::getInstance()->getAvailableBuf();
+
+//		int iIdx = AudioBufferMgr::getInstance()->getBufIndex(shortsRecBuf);
+//		LOGE("writeBuf, start idx = %d\n", iIdx);
+		iCurIdx = siOffset;
+	}
+
+	if(fp){
+		if(charBufTmp){
+			free(charBufTmp);
+			charBufTmp = NULL;
+		}
+		int iLenTmp = iLen/2;
+
+		charBufTmp = (unsigned char*) malloc(iLenTmp*sizeof(char));
+		memset(charBufTmp, 0, iLenTmp);
+
+		fread(charBufTmp, sizeof(char), iLenTmp, fp);
+		//LOGE("writeBuf, iLen:%d, iLenTmp:%d\n", iLen, iLenTmp);
+
+		int iCountFrame = iLen/iAudioFrameSize;
+		for(int i = 0 ; i < iCountFrame; i++){
+			charBuf[iAudioFrameSize*i+3] = charBufTmp[2*i+1];
+			charBuf[iAudioFrameSize*i+2] = charBufTmp[2*i];
+//			charBufTmp[iAudioFrameSize*i+3] = charBuf[2*i+1];
+//			charBufTmp[iAudioFrameSize*i+2] = charBuf[2*i];
+		}
+
+		//charBuf = charBufTmp;
+		//iLen = iLen*2;
+
+		if(feof(fp)){
+			fclose(fp);
+			fp = NULL;
+			LOGE("Close due to eof\n");
+		}
+	 }
+#endif
+
 	if(!AudioTest::getInstance()->isPairingAnalysisMode() && !AudioTest::getInstance()->isAutoTestBeginAnalyzeOnReceiver()){
 		return;
 	}
@@ -948,6 +1024,10 @@ void writeBuf(unsigned char* charBuf, int iLen){
 
 						if(ANALYSIS_START_THRESHHOLD < sMaxValue){
 							LOGW("--------------------------------------------------------------------------->sMaxValue:%d, iAboveThreshHoldCount:%d, iUnderThreshHoldCount:%d\n", sMaxValue, iAboveThreshHoldCount, iUnderThreshHoldCount);
+							if(0 == iAboveThreshHoldCount){
+								FreqAnalyzer::getInstance()->setSessionOffsetForAmp(-iCurIdx);
+							}
+
 							iAboveThreshHoldCount++;
 							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && iAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
 								LOGE("trigger analysis-----\n");
@@ -1077,32 +1157,37 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 	Delegate_CloseAudioRecordDevice();
 #else
 
-	//char* session = "0e4bba41bef24f009337727ce44008cd";//[SESSION_SIZE];
-	char session[SESSION_SIZE];
-	memset(session, 0, sizeof(session));
-
-	int iTrial = 0;
-	int iRet = 0;
-	do{
-		if(0 < iTrial++){
-			LOGE("Get session failed, iTrial:%d", iTrial);
-			sleep(iTrial);
-		}
-		iRet = GetSession(HOST_NAME, session);
-	}while(0 != iRet && iTrial < 5);
-
-	if(iRet != 0){
-		LOGE("Get session failed.");
+	int iRet = system("/beseye/cam_main/cam-handler -setspenv 25") >> 8;
+	LOGE("runAudioBufRecord(), check sp env, iRet:%d\n", iRet);
+	if(CMD_RET_CODE_NEED_REBOOT == iRet){
+		LOGE("runAudioBufRecord(), need to reboot due to change config\n");
+		system("reboot");
 	}else{
-		LOGE("runAudioBufRecord(), begin to GetAudioBufCGI\n");
-		changePairingMode(PAIRING_INIT);
+		//char* session = "0e4bba41bef24f009337727ce44008cd";//[SESSION_SIZE];
+		char session[SESSION_SIZE];
+		memset(session, 0, sizeof(session));
 
-		int res = GetAudioBufCGI(HOST_NAME_AUDIO, "receiveRaw", session, writeBuf);
-		LOGE("GetAudioBufCGI:res(%d)\n",res);
-		//Delegate_CloseAudioDevice2();
+		int iTrial = 0;
+		int iRet = 0;
+		do{
+			if(0 < iTrial++){
+				LOGE("Get session failed, iTrial:%d", iTrial);
+				sleep(iTrial);
+			}
+			iRet = GetSession(HOST_NAME, session);
+		}while(0 != iRet && iTrial < 5);
+
+		if(iRet != 0){
+			LOGE("Get session failed.");
+		}else{
+			LOGE("runAudioBufRecord(), begin to GetAudioBufCGI\n");
+			changePairingMode(PAIRING_INIT);
+
+			int res = GetAudioBufCGI(HOST_NAME_AUDIO, "receiveRaw", session, writeBuf);
+			LOGE("GetAudioBufCGI:res(%d)\n",res);
+			//Delegate_CloseAudioDevice2();
+		}
 	}
-
-
 #endif
 	LOGE("runAudioBufRecord()-\n");
 	tester->mBufRecordThread = 0;
@@ -1168,6 +1253,8 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 				if(0 != iSessionOffset){
 					bufShort = AudioBufferMgr::getInstance()->getBufByIndex(buf->miIndex, iSessionOffset, tester->bufSegment);
 				}
+
+				//LOGE("runAudioBufAnalysis(), idx:%d, bufShort[0]:%d, bufShort[99]:%d\n", buf->miIndex, bufShort[0], bufShort[99]);
 
 				float ret = FreqAnalyzer::getInstance()->analyzeAudioViaAudacity(bufShort,
 																				 buf->miSampleRead,

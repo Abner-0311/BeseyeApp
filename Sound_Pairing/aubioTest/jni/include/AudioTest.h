@@ -87,6 +87,8 @@ public :
 
 	static void* verifyToken(void* userdata);
 
+	void setOffset(int iOffset);
+
 #ifdef ANDROID
 	virtual void setCamCamWSServerInfo(string strHost, int iPort);
 	virtual int connectCamCamWSServer();

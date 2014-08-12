@@ -26,6 +26,9 @@ int main(int argc, char** argv) {
 		AudioTest::getInstance()->setReceiverMode(true);
 		AudioTest::getInstance()->startAutoTest("", iDigitalToTest);
 	}else{
+		if(1 < argc)
+			AudioTest::getInstance()->setOffset(atoi(argv[1]));
+
 		sbPairingMode = true;
 		AudioTest::getInstance()->setReceiverMode();
 		AudioTest::getInstance()->startPairingAnalysis();
