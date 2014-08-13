@@ -1691,6 +1691,27 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		BeseyeUtils.removeRunnable(mCheckVideoConnectionRunnable);
     }
     
+    //refer to beseye_rtmp_observer.h => iMajorType of ERROR_CB
+    enum Player_Major_Error {
+		INTERNAL_STREAM_ERR,
+		NO_NETWORK_ERR,
+		NOMEM_CB,
+		UNKNOWN_ERR //retry
+	}
+    
+    //refer to Stream_Error in rtmp.h => iMinorType, if iMajorType == INTERNAL_STREAM_ERR, 
+  	enum Stream_Error{
+  		INVALID_APP_ERROR,
+  		INVALID_PATH_ERROR,
+  		INVALID_STREAM_ERROR,
+  		OPEN_STREAM_ERROR,
+  		STREAM_PLAY_ERROR,
+  		STREAM_CONNECTION_ERROR,
+  		SERVER_REQUEST_CLOSE_ERROR,
+  		NETWORK_CONNECTION_ERROR,
+  		UNKOWN_NETWORK_ERROR,
+  		UNKOWN_ERROR
+  	};
  
     //Sync with rtmp.h
 	enum Stream_Status{
@@ -1706,26 +1727,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		STREAM_INTERNAL_CLOSE,
 		STREAM_CLOSE
 	};
-	
-	enum Player_Major_Error {
-		INTERNAL_STREAM_ERR,//refer to Stream_Error in rtmp.h
-		NO_NETWORK_ERR,
-		NOMEM_CB,
-		UNKNOWN_ERR
-	}
 
-	enum Stream_Error{
-		INVALID_APP_ERROR,
-		INVALID_PATH_ERROR,
-		INVALID_STREAM_ERROR,
-		OPEN_STREAM_ERROR,
-		STREAM_PLAY_ERROR,
-		STREAM_CONNECTION_ERROR,
-		SERVER_REQUEST_CLOSE_ERROR,
-		NETWORK_CONNECTION_ERROR,
-		UNKOWN_NETWORK_ERROR,
-		UNKOWN_ERROR
-	};
+	
     
     public void updateRTMPStatus(int iType, final String msg){
     	Log.w(TAG, "updateRTMPStatus(), iType:"+iType);
