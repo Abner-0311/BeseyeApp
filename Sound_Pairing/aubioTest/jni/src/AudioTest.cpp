@@ -727,8 +727,6 @@ static msec_t lTsRec = 0;
 static int iAudioFrameSize = 4;
 static const int MAX_TRIAL = 10;
 
-
-
 //Check audio activity
 static long  ANALYSIS_THRESHHOLD_MONITOR			=0;
 static int 	 ANALYSIS_THRESHHOLD_MONITOR_CNT		=0;
@@ -741,7 +739,7 @@ static long  ANALYSIS_THRESHHOLD_MONITOR_DETECT			= 0;
 static int 	 ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT		= 0;
 static short ANALYSIS_END_THRESHHOLD_DETECT	   			= -1;//audio value
 
-static const short ANALYSIS_START_THRESHHOLD_MIN 			= 15000;//audio value
+static const short ANALYSIS_START_THRESHHOLD_MIN 			= 1000;//audio value
 static const short ANALYSIS_START_THRESHHOLD_MAX 			= 28000;//audio value
 
 static const int   ANALYSIS_THRESHHOLD_CK_LEN 		= 1600;//sample size , about 0.1 sec
@@ -988,7 +986,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 			shortsRecBuf[iCurIdx] = (((short)charBuf[iAudioFrameSize*i+3])<<8 | (charBuf[iAudioFrameSize*i+2]));
 
 			/*if(AudioTest::getInstance()->isPairingAnalysisMode())*/
-			if(0 == iRefCount%8){
+			if(0 == iRefCount%4){
 				short val = abs(shortsRecBuf[iCurIdx]);
 				if(val > sMaxValue){
 					sMaxValue = val;
@@ -997,7 +995,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 				if(0 == iRefCount%ANALYSIS_THRESHHOLD_CK_LEN){
 					if(PAIRING_INIT == sPairingMode){
 						ANALYSIS_THRESHHOLD_MONITOR = ((ANALYSIS_THRESHHOLD_MONITOR*(ANALYSIS_THRESHHOLD_MONITOR_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_CNT);
-						//LOGW("--------------------------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR:%d, ANALYSIS_THRESHHOLD_MONITOR_CNT:%d\n", ANALYSIS_THRESHHOLD_MONITOR, ANALYSIS_THRESHHOLD_MONITOR_CNT);
+						LOGW("--------------------------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR:%d, ANALYSIS_THRESHHOLD_MONITOR_CNT:%d\n", ANALYSIS_THRESHHOLD_MONITOR, ANALYSIS_THRESHHOLD_MONITOR_CNT);
 						if(ANALYSIS_THRESHHOLD_MONITOR_CNT >= 25){
 							if(ANALYSIS_THRESHHOLD_MONITOR < ANALYSIS_START_THRESHHOLD_MIN){
 								ANALYSIS_START_THRESHHOLD = ANALYSIS_START_THRESHHOLD_MIN;
