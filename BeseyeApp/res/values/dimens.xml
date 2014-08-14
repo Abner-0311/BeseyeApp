@@ -206,4 +206,5 @@
     <dimen name="about_desc_margin_hor">28dp</dimen>
     <dimen name="about_link_margin_top">10dp</dimen>
     <dimen name="about_ver_font_size">16sp</dimen>
+    <dimen name="about_font_size">18sp</dimen>
 </resources>
