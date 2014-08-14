@@ -529,6 +529,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 			showMenu();
 		}else if(R.id.vg_about == view.getId()){
+			launchActivityByClassName(BeseyeAboutActivity.class.getName(), null);
 			showMenu();
 		}else if(R.id.vg_support == view.getId()){
 			showMenu();

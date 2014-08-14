@@ -283,6 +283,12 @@
 	<string name="toast_cam_off_by_schedule">Camera is turned off according to power schedule</string>
 	<string name="toast_cam_off_by_location">Camera is turned off accordIng to location setting</string>
 	
+	<string name="about_title">About Beseye</string>
+	<string name="about_desc">Beseye and the Beseye logo are registered trademarks of Beseye, Inc. iPhone, iPad, iPood Touch, and App Store are registered trademarks of Apple, Inc. Chrome and Android are registered trademarks of Google, Inc. Internet Explorer is a registered trademark of Microsoft Corporation. Firefox is a registered trademark of Mozilla Corporation. Wi-Fi and Wi-Fi Certified logo are registered trademarks of the Wi-Fi Alliance. Certain other product names, brand names, and company names may be trademarks or designations of their respective owners.</string>
+	<string name="about_ver">Beseye Version %s</string>
+	
+	<!-- No need to translate -->
+	<string name="about_link">www.beseye.com</string>
 	
 	<!-- Timezone definition begin -->
 	<string name="tz_us_eastern">US	– Eastern</string>
