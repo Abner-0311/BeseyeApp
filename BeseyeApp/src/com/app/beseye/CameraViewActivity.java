@@ -406,6 +406,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(null != txtGoLive){
 				txtGoLive.setEnabled(!mbIsLiveMode);
 			}
+			
+			TextView txtCamName = mCameraViewControlAnimator.getCamNameView();
+			if(null != txtCamName){
+				txtCamName.setText(mStrVCamName);
+			}
 		}
 		
 		mSingleton = this;
@@ -437,6 +442,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				mUpdateDateTimeRunnable.updateTimeZone(mTimeZone);
 			}
 			mbVCamAdmin = BeseyeJSONUtil.getJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN, true);
+			
+			if(null != mCameraViewControlAnimator){
+				TextView txtCamName = mCameraViewControlAnimator.getCamNameView();
+				if(null != txtCamName){
+					txtCamName.setText(mStrVCamName);
+				}
+			}
 		}
 	}
 	
@@ -468,10 +480,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					updateAttrByCamObj();
 				} catch (JSONException e1) {
 					Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
-				}
-				
-				if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
-					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
 				}
 				
 				mbIsLiveMode = !intent.getBooleanExtra(KEY_DVR_STREAM_MODE, false);
@@ -563,20 +571,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
+		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		}
 		triggerPlay();
 	}
 	
 	private void triggerPlay(){
 		Log.i(TAG, "CameraViewActivity::triggerPlay(), mbIsFirstLaunch:"+mbIsFirstLaunch+", mbIsPauseWhenPlaying:"+mbIsPauseWhenPlaying+", mbIsCamSettingChanged:"+mbIsCamSettingChanged+", mbIsWifiSettingChanged:"+mbIsWifiSettingChanged);
 		//if(false == handleReddotNetwork(false)){
-		
-			if(null != mCameraViewControlAnimator){
-				TextView txtCamName = mCameraViewControlAnimator.getCamNameView();
-				if(null != txtCamName){
-					txtCamName.setText(mStrVCamName);
-				}
-			}
-			
 			if(null != mStreamingView)
 				mStreamingView.setUpsideDown(BeseyeJSONUtil.getJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, 0) == 1);
 		//}
@@ -883,15 +886,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	private boolean isCamPowerOn(){
-		return !mbIsLiveMode || (BeseyeJSONUtil.getVCamConnStatus(mCam_obj) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON);
+		return !mbIsLiveMode || BeseyeJSONUtil.isCamPowerOn(mCam_obj);
 	}
 	
 	private boolean isCamPowerOff(){
-		return mbIsLiveMode && (BeseyeJSONUtil.getVCamConnStatus(mCam_obj) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_OFF);
+		return mbIsLiveMode && BeseyeJSONUtil.isCamPowerOff(mCam_obj);
 	}
 	
 	private boolean isCamPowerDisconnected(){
-		return mbIsLiveMode && (BeseyeJSONUtil.getVCamConnStatus(mCam_obj) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED);
+		return mbIsLiveMode && BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj);
 	}
 	
 	private void updatePowerState(){

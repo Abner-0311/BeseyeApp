@@ -56,7 +56,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	private BeseyeSwitchBtn mHDQualitySwitchBtn, mMicSenSwitchBtn, mStatusLightSwitchBtn;
 	private TextView mTxtTimezoneDesc, mTxtNightVision;
 	private ImageView mIvViewUpDownCheck, mIvViewUpDownCheckBg, mIvMicNoVol, mIvMicMaxVol;
-	private ViewGroup mVgWifiSetting, mVgTimezone, mVgNightVision;
+	private ViewGroup mVgHDQuality, mVgMicSen, mVgStatusLight, mVgWifiSetting, mVgTimezone, mVgNightVision, mVgViewUpDown;
 	private SeekBar mSbMicSensitivity;
 	
 	private int miIRCutStatus = 0;//0:auto, 1:on, 2:off
@@ -127,16 +127,22 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}});
 		}
 		
+		mVgHDQuality = (ViewGroup)findViewById(R.id.vg_hd_quality);
+		
 		mHDQualitySwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_hd_switch);
 		if(null != mHDQualitySwitchBtn){
 			mHDQualitySwitchBtn.setOnSwitchBtnStateChangedListener(this);
 			//mHDQualitySwitchBtn.setSwitchState(SwitchState.SWITCH_ON);
 		}
 		
+		mVgMicSen = (ViewGroup)findViewById(R.id.vg_mic_sensitivity);
+		
 		mMicSenSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_mic_sensitivity_switch);
 		if(null != mMicSenSwitchBtn){
 			mMicSenSwitchBtn.setOnSwitchBtnStateChangedListener(this);
 		}
+		
+		mVgStatusLight = (ViewGroup)findViewById(R.id.vg_status_light);
 		
 		mStatusLightSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_status_light_switch);
 		if(null != mStatusLightSwitchBtn){
@@ -149,6 +155,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		if(null != mTxtTimezoneDesc){
 			mTxtTimezoneDesc.setText(BeseyeUtils.getGMTString(mTimeZone));
 		}
+		
+		mVgViewUpDown = (ViewGroup)findViewById(R.id.vg_video_upside_down);
 		
 		mIvViewUpDownCheck = (ImageView)findViewById(R.id.iv_video_upside_down_check);
 		if(null != mIvViewUpDownCheck){
@@ -183,7 +191,11 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		}else{
+			updateHWSettingState();
+		}
 	}
 	
 	@Override
@@ -356,17 +368,17 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	private void updateMicSenItmStatus(){
 		SwitchState state = null != mMicSenSwitchBtn?mMicSenSwitchBtn.getSwitchState():SwitchState.SWITCH_DISABLED;
-		
+		boolean bIsCamDisconnected = BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj);
 		if(null != mIvMicNoVol){
-			mIvMicNoVol.setEnabled(SwitchState.SWITCH_ON.equals(state));
+			mIvMicNoVol.setEnabled(!bIsCamDisconnected && SwitchState.SWITCH_ON.equals(state));
 		}
 		
 		if(null != mIvMicMaxVol){
-			mIvMicMaxVol.setEnabled(SwitchState.SWITCH_ON.equals(state));
+			mIvMicMaxVol.setEnabled(!bIsCamDisconnected && SwitchState.SWITCH_ON.equals(state));
 		}
 		
 		if(null != mSbMicSensitivity){
-			mSbMicSensitivity.setEnabled(SwitchState.SWITCH_ON.equals(state));
+			mSbMicSensitivity.setEnabled(!bIsCamDisconnected && SwitchState.SWITCH_ON.equals(state));
 		}
 	}
 	
@@ -440,6 +452,75 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
+	
+	private void updateHWSettingState(){
+		if(null != mCam_obj){
+			JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
+			if(null != dataObj){
+				boolean bIsCamDisconnected = BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj);
+				
+				if(null != mVgStatusLight){
+					mVgStatusLight.setEnabled(!bIsCamDisconnected);
+				}
+				
+				int iLEDStatus = getJSONInt(dataObj, LED_STATUS, 0);
+				if(null != mStatusLightSwitchBtn){
+					mStatusLightSwitchBtn.setEnabled(!bIsCamDisconnected);
+					mStatusLightSwitchBtn.setSwitchState((!bIsCamDisconnected && iLEDStatus>0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF));
+				}
+				
+				if(null != mVgMicSen){
+					mVgMicSen.setEnabled(!bIsCamDisconnected);
+				}
+				
+				int iMicGain = getJSONInt(dataObj, MIC_GAIN, 0);
+				if(null != mSbMicSensitivity){
+					mSbMicSensitivity.setProgress(iMicGain);
+					mSbMicSensitivity.setEnabled(!bIsCamDisconnected);
+				}
+				
+				int iMicStatus = getJSONInt(dataObj, MIC_STATUS, 0);
+				if(null != mMicSenSwitchBtn){
+					mMicSenSwitchBtn.setEnabled(!bIsCamDisconnected);
+					mMicSenSwitchBtn.setSwitchState((!bIsCamDisconnected && iMicStatus>0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF));
+				}
+				
+				if(null != mVgHDQuality){
+					mVgHDQuality.setEnabled(!bIsCamDisconnected);
+				}
+				
+				int iVIdeoRes = getJSONInt(dataObj, VIDEO_RES, 0);
+				if(null != mHDQualitySwitchBtn){
+					mHDQualitySwitchBtn.setEnabled(!bIsCamDisconnected);
+					mHDQualitySwitchBtn.setSwitchState((!bIsCamDisconnected && iVIdeoRes>0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF));
+				}
+				
+				updateMicSenItmStatus();
+				
+				miIRCutStatus = getJSONInt(dataObj, IRCUT_STATUS, 0);
+				if(null != this.mTxtNightVision){
+					mTxtNightVision.setText(sStridNightVisionMode[miIRCutStatus]);
+					mTxtNightVision.setEnabled(!bIsCamDisconnected);
+				}
+				
+				if(null != mVgWifiSetting){
+					mVgWifiSetting.setEnabled(!bIsCamDisconnected);
+				}
+				
+				if(null != mVgNightVision){
+					mVgNightVision.setEnabled(!bIsCamDisconnected);
+				}
+				
+				if(null != mVgViewUpDown){
+					mVgViewUpDown.setEnabled(!bIsCamDisconnected);
+				}
+				
+				if(null != mIvViewUpDownCheckBg){
+					mIvViewUpDownCheckBg.setEnabled(!bIsCamDisconnected);
+				}
+			}
+		}
+	}
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
@@ -448,37 +529,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				if(0 == iRetCode){
 					//Special handling
 					super.onPostExecute(task, result, iRetCode);
-					if(null != mCam_obj){
-						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
-						if(null != dataObj){
-							int iLEDStatus = getJSONInt(dataObj, LED_STATUS, 0);
-							if(null != mStatusLightSwitchBtn){
-								mStatusLightSwitchBtn.setSwitchState(iLEDStatus>0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-							}
-							
-							int iMicGain = getJSONInt(dataObj, MIC_GAIN, 0);
-							if(null != mSbMicSensitivity){
-								mSbMicSensitivity.setProgress(iMicGain);
-							}
-							
-							int iMicStatus = getJSONInt(dataObj, MIC_STATUS, 0);
-							if(null != mMicSenSwitchBtn){
-								mMicSenSwitchBtn.setSwitchState(iMicStatus>0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-							}
-							
-							int iVIdeoRes = getJSONInt(dataObj, VIDEO_RES, 0);
-							if(null != mHDQualitySwitchBtn){
-								mHDQualitySwitchBtn.setSwitchState(iVIdeoRes>0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-							}
-							
-							updateMicSenItmStatus();
-							
-							miIRCutStatus = getJSONInt(dataObj, IRCUT_STATUS, 0);
-							if(null != this.mTxtNightVision){
-								mTxtNightVision.setText(sStridNightVisionMode[miIRCutStatus]);
-							}
-						}
-					}
+					updateHWSettingState();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetLEDStatusTask){
 				if(0 == iRetCode){

@@ -727,4 +727,16 @@ public class BeseyeJSONUtil {
 			}
 		}
 	}
+	
+	static public boolean isCamPowerOn(JSONObject objCam){
+		return (BeseyeJSONUtil.getVCamConnStatus(objCam) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON);
+	}
+	
+	static public boolean isCamPowerOff(JSONObject objCam){
+		return (BeseyeJSONUtil.getVCamConnStatus(objCam) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_OFF);
+	}
+	
+	static public boolean isCamPowerDisconnected(JSONObject objCam){
+		return (BeseyeJSONUtil.getVCamConnStatus(objCam) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED);
+	}
 }

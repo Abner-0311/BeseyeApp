@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.BeseyeApplication.BeseyeAppStateChangeListener;
+import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
@@ -561,7 +562,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeAccountTask.CheckAccountTask){
-			onSessionInvalid();
+			//onSessionInvalid();
 		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 			SessionMgr.getInstance().cleanSession();
 			onSessionInvalid();
@@ -585,6 +586,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			if(task instanceof BeseyeAccountTask.CheckAccountTask){
 				if(0 == iRetCode){
 					invokeSessionComplete();
+				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_EXIST == iRetCode  || BeseyeError.E_BE_ACC_SESSION_EXPIRED == iRetCode){
+					onSessionInvalid();
 				}
 			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 				if(0 == iRetCode){
