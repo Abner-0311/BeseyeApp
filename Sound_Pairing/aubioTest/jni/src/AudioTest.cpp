@@ -8,6 +8,7 @@
 
 //Check Network and token
 static const msec_t TIME_TO_CHECK_TOKEN = 30000;//30 seconds
+static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 300000;//300 seconds
 static const long TIME_TO_CHECK_LED = 1;//1 seconds
 static msec_t slLastTimeCheckToken = -1;
 
@@ -693,31 +694,6 @@ bool AudioTest::getDetectStartFlag(){
 	return mbDetectStartFlag;
 }
 
-//const int TABLE_SIZE = 8;
-//const int BIAS = 0x84;		/* Bias for linear code. */
-//const int CLIP = 8159;
-//const int SIGN_BIT = 0x80;	/* Sign bit for a A-law byte. */
-//const int QUANT_MASK = 0xf;  /* Quantization field mask. */
-//const int NSEGS = 8;         /* Number of A-law segments. */
-//const int SEG_SHIFT = 4;     /* Left shift for segment number. */
-//const int SEG_MASK = 0x70;   /* Segment field mask. */
-//
-//short ulaw2linear(unsigned char u_val)
-//{
-//   short t;
-//
-//   /* Complement to obtain normal u-law value. */
-//   u_val = ~u_val;
-//
-//   /*
-//    * Extract and bias the quantization bits. Then
-//    * shift up by the segment number and subtract out the bias.
-//    */
-//   t = ((u_val & QUANT_MASK) << 3) + BIAS;
-//   t <<= ((unsigned)u_val & SEG_MASK) >> SEG_SHIFT;
-//
-//   return ((u_val & SIGN_BIT) ? (BIAS - t) : (t - BIAS));
-//}
 
 static ArrayRef<short> shortsRecBuf=NULL;
 static int iCurIdx = 0;
@@ -731,27 +707,27 @@ static const int MAX_TRIAL = 10;
 static long  ANALYSIS_THRESHHOLD_MONITOR			=0;
 static int 	 ANALYSIS_THRESHHOLD_MONITOR_CNT		=0;
 
+static const short ANALYSIS_MAX_AUDIO_VALUE 		= 2000;//audio max value for gain =25
+static const short ANALYSIS_START_THRESHHOLD_MIN 	= 400;//audio value
+static const short ANALYSIS_START_THRESHHOLD_MAX 	= 1400;//audio value
+
 static short ANALYSIS_START_THRESHHOLD 				= 15000;//audio value
 static short ANALYSIS_END_THRESHHOLD   				= 15000;//audio value
 
 //after detect prefix
-static long  ANALYSIS_THRESHHOLD_MONITOR_DETECT			= 0;
-static int 	 ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT		= 0;
-static short ANALYSIS_END_THRESHHOLD_DETECT	   			= -1;//audio value
+static long  ANALYSIS_THRESHHOLD_MONITOR_DETECT		= 0;
+static int 	 ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT	= 0;
+static short ANALYSIS_END_THRESHHOLD_DETECT	   		= -1;//audio value
 
-static const short ANALYSIS_START_THRESHHOLD_MIN 			= 400;//audio value
-static const short ANALYSIS_START_THRESHHOLD_MAX 			= 28000;//audio value
-
-static const short ANALYSIS_MAX_AUDIO_VALUE 			= 2000;//audio max value for gain =25
 
 static const int   ANALYSIS_THRESHHOLD_CK_LEN 		= 1600;//sample size , about 0.1 sec
 static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT 	= 10;
 static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 	= 5;
 
 static short sMaxValue = 0;
-static int iAboveThreshHoldCount = 0;
-static int iUnderThreshHoldCount = 0;
-static int iRefCount = 0;
+static int siAboveThreshHoldCount = 0;
+static int siUnderThreshHoldCount = 0;
+static int siRefCount = 0;
 
 static const int   ANALYSIS_LED_UPDATE_PERIOD = 8000;//sample size , about 0.5 sec
 static bool sbLEDOn = false;
@@ -770,6 +746,7 @@ typedef enum{
 static Pairing_Mode sPairingMode = PAIRING_INIT;
 static Pairing_Mode sPedningPairingMode = PAIRING_NONE;
 static const int ERROR_LED_PERIOD = 10;
+static bool sbNeedToInitBuf = false;
 static int sCurLEDCnt = 0;
 
 void changePairingMode(Pairing_Mode mode){
@@ -785,8 +762,10 @@ void changePairingMode(Pairing_Mode mode){
 		}
 
 		if(PAIRING_ERROR == sPairingMode){
-			sPairingMode = (PAIRING_NONE==sPedningPairingMode)?mode:sPedningPairingMode;
-			sPedningPairingMode = PAIRING_NONE;
+			sbNeedToInitBuf = true;
+			sPairingMode = PAIRING_INIT;
+//			sPairingMode = (PAIRING_NONE==sPedningPairingMode)?mode:sPedningPairingMode;
+//			sPedningPairingMode = PAIRING_NONE;
 		}else{
 			sPairingMode = mode;
 		}
@@ -807,23 +786,28 @@ void setLedLight(int bRedOn, int bGreenOn, int bBlueOn){
 	int iRet = system(cmd);
 	//LOGW("cmd:[%s], iRet:%d\n", cmd, iRet);
 }
-
+static const char* SES_TOKEN_PATH 			= "/beseye/config/ses_token";
 static pthread_t sThreadVerifyToken;
+
 void* AudioTest::verifyToken(void* userdata){
 	LOGE("+\n");
 	AudioTest* tester = (AudioTest*)userdata;
 	while(!tester->mbStopAnalysisThreadFlag){
+
 		msec_t lDelta = time_ms() - slLastTimeCheckToken;
-		if(lDelta > TIME_TO_CHECK_TOKEN){
-			if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
-				if(0 == (system("/beseye/cam_main/beseye_token_check") >> 8)){
-					AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
-					setLedLight(0,1,0);
-					AudioTest::getInstance()->stopAutoTest();
-				}
+		if((PAIRING_ANALYSIS != sPairingMode && lDelta > TIME_TO_CHECK_TOKEN) || (PAIRING_ANALYSIS == sPairingMode && lDelta >TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD)){
+			if(readFromFile(SES_TOKEN_PATH)){
+				//if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
+					if(0 == (system("/beseye/cam_main/beseye_token_check") >> 8)){
+						AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
+						setLedLight(0,1,0);
+						AudioTest::getInstance()->stopAutoTest();
+					}
+				//}
 			}
 			slLastTimeCheckToken = time_ms();
 		}
+
 
 		if(AudioTest::getInstance()->isPairingAnalysisMode()){
 			//LOGW("sPairingMode is %d-----\n", sPairingMode);
@@ -949,6 +933,19 @@ void writeBuf(unsigned char* charBuf, int iLen){
 		}
 	}
 
+	if(sbNeedToInitBuf){
+		LOGE("init buffer for entering \n");
+		shortsRecBuf = NULL;
+		iCurIdx = 0;
+		ANALYSIS_THRESHHOLD_MONITOR_CNT = 0;
+		ANALYSIS_THRESHHOLD_MONITOR = 0;
+		ANALYSIS_START_THRESHHOLD = 0;
+		ANALYSIS_END_THRESHHOLD = 0;
+		siAboveThreshHoldCount = 0;
+		siUnderThreshHoldCount = 0;
+		sbNeedToInitBuf = false;
+	}
+
 	int iIdxOffset = -iCurIdx;
 	msec_t lTs1 = lTsRec;
 	int iCountFrame = iLen/iAudioFrameSize;
@@ -992,22 +989,22 @@ void writeBuf(unsigned char* charBuf, int iLen){
 			shortsRecBuf[iCurIdx] = (((short)charBuf[iAudioFrameSize*i+3])<<8 | (charBuf[iAudioFrameSize*i+2]));
 
 			/*if(AudioTest::getInstance()->isPairingAnalysisMode())*/
-			if(0 == iRefCount%4){
+			if(0 == siRefCount%4){
 				short val = abs(shortsRecBuf[iCurIdx]);
 				if(val > sMaxValue){
 					sMaxValue = val;
 				}
 
-				if(0 == iRefCount%ANALYSIS_THRESHHOLD_CK_LEN){
+				if(0 == siRefCount%ANALYSIS_THRESHHOLD_CK_LEN){
 					if(ANALYSIS_MAX_AUDIO_VALUE < sMaxValue){
-						LOGW("--------------------------------------------------------------------------->ANALYSIS_MAX_AUDIO_VALUE:%d < sMaxValue:%d, set mic gain\n", ANALYSIS_MAX_AUDIO_VALUE, sMaxValue);
+						LOGW("-------------------------------------------------------->ANALYSIS_MAX_AUDIO_VALUE:%d < sMaxValue:%d, set mic gain\n", ANALYSIS_MAX_AUDIO_VALUE, sMaxValue);
 						system("/beseye/cam_main/cam-handler -setgain 25") >> 8;
 						saveLogFile("/beseye/sp-gain-set");
 					}
 
 					if(PAIRING_INIT == sPairingMode){
 						ANALYSIS_THRESHHOLD_MONITOR = ((ANALYSIS_THRESHHOLD_MONITOR*(ANALYSIS_THRESHHOLD_MONITOR_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_CNT);
-						LOGW("--------------------------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR:%d, ANALYSIS_THRESHHOLD_MONITOR_CNT:%d\n", ANALYSIS_THRESHHOLD_MONITOR, ANALYSIS_THRESHHOLD_MONITOR_CNT);
+						LOGW("-------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR:%d, ANALYSIS_THRESHHOLD_MONITOR_CNT:%d\n", ANALYSIS_THRESHHOLD_MONITOR, ANALYSIS_THRESHHOLD_MONITOR_CNT);
 						if(ANALYSIS_THRESHHOLD_MONITOR_CNT >= 25){
 							if(ANALYSIS_THRESHHOLD_MONITOR < ANALYSIS_START_THRESHHOLD_MIN){
 								ANALYSIS_START_THRESHHOLD = ANALYSIS_START_THRESHHOLD_MIN;
@@ -1015,7 +1012,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 								ANALYSIS_START_THRESHHOLD = ((ANALYSIS_THRESHHOLD_MONITOR+10000) < ANALYSIS_START_THRESHHOLD_MAX)?(ANALYSIS_THRESHHOLD_MONITOR+10000):ANALYSIS_START_THRESHHOLD_MAX;
 							}
 							ANALYSIS_END_THRESHHOLD = (ANALYSIS_THRESHHOLD_MONITOR + ANALYSIS_START_THRESHHOLD)/2;
-							LOGW("--------------------------------------------------------------------------->ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD);
+							LOGW("-------------------------------------------------------->ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD);
 							sPairingMode = PAIRING_WAITING;
 							ANALYSIS_END_THRESHHOLD_DETECT = -1;
 						}
@@ -1028,18 +1025,18 @@ void writeBuf(unsigned char* charBuf, int iLen){
 								}else{
 									ANALYSIS_END_THRESHHOLD_DETECT = 0;
 								}
-								LOGW("--------------------------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR_DETECT:%d, ANALYSIS_END_THRESHHOLD_DETECT:%d\n", ANALYSIS_THRESHHOLD_MONITOR_DETECT, ANALYSIS_END_THRESHHOLD_DETECT);
+								LOGW("-------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR_DETECT:%d, ANALYSIS_END_THRESHHOLD_DETECT:%d\n", ANALYSIS_THRESHHOLD_MONITOR_DETECT, ANALYSIS_END_THRESHHOLD_DETECT);
 							}
 						}
 
 						if(ANALYSIS_START_THRESHHOLD < sMaxValue){
-							LOGW("--------------------------------------------------------------------------->sMaxValue:%d, iAboveThreshHoldCount:%d, iUnderThreshHoldCount:%d\n", sMaxValue, iAboveThreshHoldCount, iUnderThreshHoldCount);
-							if(0 == iAboveThreshHoldCount){
+							LOGW("-------------------------------------------------------->sMaxValue:%d, siAboveThreshHoldCount:%d, siUnderThreshHoldCount:%d\n", sMaxValue, siAboveThreshHoldCount, siUnderThreshHoldCount);
+							if(0 == siAboveThreshHoldCount){
 								FreqAnalyzer::getInstance()->setSessionOffsetForAmp(-iCurIdx);
 							}
 
-							iAboveThreshHoldCount++;
-							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && iAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
+							siAboveThreshHoldCount++;
+							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
 								LOGE("trigger analysis-----\n");
 								//trigger analysis
 								if(AudioTest::getInstance()->isPairingAnalysisMode()){
@@ -1050,12 +1047,12 @@ void writeBuf(unsigned char* charBuf, int iLen){
 									AudioBufferMgr::getInstance()->setRecordMode(false);
 								}
 								AudioTest::getInstance()->setAboveThresholdFlag(true);
-								iAboveThreshHoldCount = 0;
+								siAboveThreshHoldCount = 0;
 							}
-							iUnderThreshHoldCount = 0;
+							siUnderThreshHoldCount = 0;
 						}else if(ANALYSIS_END_THRESHHOLD > sMaxValue || (0 < ANALYSIS_END_THRESHHOLD_DETECT && ANALYSIS_END_THRESHHOLD_DETECT > sMaxValue)){
-							iUnderThreshHoldCount++;
-							if(AudioTest::getInstance()->getAboveThresholdFlag() && iUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
+							siUnderThreshHoldCount++;
+							if(AudioTest::getInstance()->getAboveThresholdFlag() && siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
 								LOGE("trigger stop analysis-----\n");
 								//stop analysis
 								if(AudioTest::getInstance()->isPairingAnalysisMode()){
@@ -1073,20 +1070,20 @@ void writeBuf(unsigned char* charBuf, int iLen){
 	//							AudioTest::getInstance()->setAboveThresholdFlag(false);
 	//							changePairingMode(PAIRING_WAITING);
 								//AudioTest::getInstance()->resetBuffer();
-								iUnderThreshHoldCount = 0;
+								siUnderThreshHoldCount = 0;
 							}
-							iAboveThreshHoldCount = 0;
+							siAboveThreshHoldCount = 0;
 						}else{
-							iUnderThreshHoldCount = 0;
-							iAboveThreshHoldCount = 0;
+							siUnderThreshHoldCount = 0;
+							siAboveThreshHoldCount = 0;
 						}
 					}
 
-					//iRefCount = 0;
+					//siRefCount = 0;
 					sMaxValue = 0;
 				}
 			}
-			iRefCount++;
+			siRefCount++;
 
 			//if(PAIRING_INIT != sPairingMode){
 				if(iCurIdx == shortsRecBuf->size()-1){
@@ -1379,7 +1376,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 	if(0 == strCode.find("error")){
 		LOGE("Error, trying to get pairing code\n");
-		int idx = strDecodeUnmark.find("j", 20);
+		int idx = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER, 13);//13 = mac(12)+first div(1)
 		if(0 < idx){
 			string strToken = strDecodeUnmark.substr(idx+1, 4);
 			LOGE("Possible pairing code [%s]\n",strToken.c_str());
@@ -1417,70 +1414,105 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			}
 		}
 	}else{
-		int toDecodeSize = strCode.length()/iMultiply;
-		LOGE("toDecodeSize:%d\n", toDecodeSize);
-		stringstream retS;
-		for(int i =0;i < toDecodeSize;i++){
+//		int toDecodeSize = strCode.length()/iMultiply;
+//		LOGE("toDecodeSize:%d\n", toDecodeSize);
+//		stringstream retS;
+//		for(int i =0;i < toDecodeSize;i++){
+//			unsigned char c = 0;
+//			for(int j = 0;j < iMultiply;j++){
+//				c <<= iPower;
+//				string strTmp = strCode.substr(i*iMultiply+j, 1);
+//				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+//				c += (unsigned char) iVal;
+//				//LOGI("iVal:[%d]\n",iVal);
+//			}
+//			//LOGI("c:[%u]\n",c);
+//			retS << c;
+//		}
+//
+//		LOGE("retS:[%s]\n",retS.str().c_str());
+
+		//std::vector<std::string> ret = split(retS.str(), SoundPair_Config::PAIRING_DIVIDER);
+
+		const int MAC_LEN = 12;
+		const int TOKEN_LEN = 4;
+		const int PURPOSE_LEN = 2;
+		const int MIN_PW_LEN = 0;
+
+		int iRetLen = strCode.length();
+		if(iRetLen < (MAC_LEN + TOKEN_LEN + PURPOSE_LEN /*+ MIN_PW_LEN +2*/)){
+			LOGE("iRetLen:[%d] < min len\n",iRetLen, (MAC_LEN + TOKEN_LEN + PURPOSE_LEN/*+ MIN_PW_LEN +2*/));
+			return;
+		}
+
+		string mac = strCode.substr(0, MAC_LEN);
+		string strUserNum = strCode.substr(iRetLen - (TOKEN_LEN+PURPOSE_LEN), TOKEN_LEN);
+		string strPurpose = strCode.substr(iRetLen - (PURPOSE_LEN));
+		string strPW = strCode.substr(MAC_LEN, ( iRetLen - (MAC_LEN+TOKEN_LEN+PURPOSE_LEN)));
+
+		LOGE("[%s, %s, %s, %s]\n",mac.c_str(),strPW.c_str(),strUserNum.c_str(),strPurpose.c_str());
+
+		stringstream retPW;
+		int iLenPW = strPW.length()/iMultiply;
+		for(int i =0;i < iLenPW;i++){
 			unsigned char c = 0;
 			for(int j = 0;j < iMultiply;j++){
 				c <<= iPower;
-				string strTmp = strCode.substr(i*iMultiply+j, 1);
+				string strTmp = strPW.substr(i*iMultiply+j, 1);
 				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
 				c += (unsigned char) iVal;
 				//LOGI("iVal:[%d]\n",iVal);
 			}
 			//LOGI("c:[%u]\n",c);
-			retS << c;
+			retPW << c;
 		}
 
-		LOGE("retS:[%s]\n",retS.str().c_str());
-
-		//std::vector<std::string> ret = split(retS.str(), SoundPair_Config::PAIRING_DIVIDER);
-
-		const int MAC_LEN = 6;
-		const int TOKEN_LEN = 2;
-		const int MIN_PW_LEN = 5;
-
-		int iRetLen = retS.str().length();
-		if(iRetLen < (MAC_LEN + TOKEN_LEN + MIN_PW_LEN +2)){
-			LOGE("iRetLen:[%d] < min len\n",iRetLen, (MAC_LEN + TOKEN_LEN + MIN_PW_LEN +2));
-			return;
-		}
-
-		string mac = retS.str().substr(0, MAC_LEN);
-		string strUserNum = retS.str().substr(iRetLen - TOKEN_LEN);
-		string strPW = retS.str().substr(MAC_LEN, ( iRetLen - (TOKEN_LEN) - (MAC_LEN)));
+		LOGE("retPW:[%s]\n",retPW.str().c_str());
 
 		/*if(ret.size() == 3)*/{
 			//string mac = ret[0];
-			stringstream retMacAddr;
-			int iLenMacAddr = mac.length();
-
-			for(int idx = 0;idx < iLenMacAddr;idx++){
-				string tmp("");
-				char cDecode = mac.at(idx);
-				for(int j = 0;j < iMultiply;j++){
-					tmp = SoundPair_Config::sFreqRangeTable.at(cDecode & ((0x1<<iPower) -1))->getCode() + tmp;
-					cDecode >>= iPower;
-				}
-				retMacAddr << tmp;
-			}
+//			stringstream retMacAddr;
+//			int iLenMacAddr = mac.length();
+//
+//			for(int idx = 0;idx < iLenMacAddr;idx++){
+//				string tmp("");
+//				char cDecode = mac.at(idx);
+//				for(int j = 0;j < iMultiply;j++){
+//					tmp = SoundPair_Config::sFreqRangeTable.at(cDecode & ((0x1<<iPower) -1))->getCode() + tmp;
+//					cDecode >>= iPower;
+//				}
+//				retMacAddr << tmp;
+//			}
 
 			//string strUserNum = ret[2];
-			stringstream retUserToken;
-			int iLenUserNum = strUserNum.length();
-			for(int idx = 0; idx < iLenUserNum;idx++){
-				string tmp("");
-				char cDecode = strUserNum.at(idx);
+//			stringstream retUserToken;
+//			int iLenUserNum = strUserNum.length();
+//			for(int idx = 0; idx < iLenUserNum;idx++){
+//				string tmp("");
+//				char cDecode = strUserNum.at(idx);
+//				for(int j = 0;j < iMultiply;j++){
+//					tmp = SoundPair_Config::sFreqRangeTable.at(cDecode & ((0x1<<iPower) -1))->getCode() + tmp;
+//					cDecode >>= iPower;
+//				}
+//				retUserToken << tmp;
+//			}
+
+			unsigned char cPurpose = 0;
+
+			int iLenPurpose = strPurpose.length()/iMultiply;
+			for(int i =0;i < iLenPurpose;i++){
 				for(int j = 0;j < iMultiply;j++){
-					tmp = SoundPair_Config::sFreqRangeTable.at(cDecode & ((0x1<<iPower) -1))->getCode() + tmp;
-					cDecode >>= iPower;
+					string strTmp = strPurpose.substr(i*iMultiply+j, 1);
+					int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+					cPurpose += (unsigned char) iVal;
+					//LOGI("iVal:[%d]\n",iVal);
 				}
-				retUserToken << tmp;
 			}
 
+			LOGE("cPurpose:%u, strPurpose:[%s]\n", cPurpose, strPurpose.c_str());
+
 			char cmd[BUF_SIZE]={0};
-			sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", retMacAddr.str().c_str(), strPW.c_str());
+			sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", mac.c_str(), retPW.str().c_str());
 			LOGE("wifi set cmd:[%s]\n", cmd);
 			int iRet = system(cmd) >> 8;
 			if(0 == iRet){
@@ -1505,33 +1537,44 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
 					if(0 == iRet){
 						LOGE("Token is already existed, check tmp token\n");
-						sprintf(cmd, "/beseye/cam_main/cam-handler -verToken %s %s", retMacAddr.str().c_str(), retUserToken.str().c_str());
-						LOGE("verToken cmd:[%s]\n", cmd);
-						iRet = system(cmd) >> 8;
-						if(0 == iRet){
-							LOGE("Tmp User Token verification OK\n");
-							AudioTest::getInstance()->setPairingReturnCode(0);
+						if(1 == cPurpose){
+							sprintf(cmd, "/beseye/cam_main/cam-handler -verToken %s %s", mac.c_str(), strUserNum.c_str());
+							LOGE("verToken cmd:[%s]\n", cmd);
+							iRet = system(cmd) >> 8;
+							if(0 == iRet){
+								LOGE("Tmp User Token verification OK\n");
+								AudioTest::getInstance()->setPairingReturnCode(0);
+							}else{
+								LOGE("Tmp User Token verification failed\n");
+								//roll back wifi settings
+								iRet = system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
+							}
 						}else{
-							LOGE("Tmp User Token verification failed\n");
+							LOGE("Wrong cPurpose\n");
 							//roll back wifi settings
 							iRet = system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
 						}
+
 					}else{
-						LOGE("Token is invalid, try to attach\n");
-						sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", retMacAddr.str().c_str(), retUserToken.str().c_str());
-						LOGE("attach cmd:[%s]\n", cmd);
-						iRet = system(cmd) >> 8;
-						if(0 == iRet){
-							LOGE("Cam attach OK\n");
-							iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
+						if(0 == cPurpose){
+							LOGE("Token is invalid, try to attach\n");
+							sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", mac.c_str(), strUserNum.c_str());
+							LOGE("attach cmd:[%s]\n", cmd);
+							iRet = system(cmd) >> 8;
 							if(0 == iRet){
-								LOGE("Token verification OK\n");
-								AudioTest::getInstance()->setPairingReturnCode(0);
+								LOGE("Cam attach OK\n");
+								iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
+								if(0 == iRet){
+									LOGE("Token verification OK\n");
+									AudioTest::getInstance()->setPairingReturnCode(0);
+								}else{
+									LOGE("Token verification failed\n");
+								}
 							}else{
-								LOGE("Token verification failed\n");
+								LOGE("Cam attach failed\n");
 							}
 						}else{
-							LOGE("Cam attach failed\n");
+							LOGE("Wrong cPurpose for attach\n");
 						}
 					}
 				}else{

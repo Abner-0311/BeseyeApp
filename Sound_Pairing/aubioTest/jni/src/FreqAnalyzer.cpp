@@ -740,7 +740,7 @@ string FreqAnalyzer::optimizeDecodeString(int iIndex){
 
 				//LOGE("optimizeDecodeString(), strRet %s, iFound:%d\n",strRet.c_str(), iFound);
 				if(0 > iFound){
-					strDecode = strCheck;
+					strDecodeUnmark = strCheck;
 					LOGE("optimizeDecodeString(), add dummy char at %d because index is %d\n",i, iIndex);
 					break;
 				}
@@ -754,7 +754,7 @@ string FreqAnalyzer::optimizeDecodeString(int iIndex){
 			LOGE("optimizeDecodeString(), can not optimize, index is %d\n", iIndex);
 		}
 	}
-	return strDecode;
+	return strDecodeUnmark;
 }
 
 int FreqAnalyzer::checkPostfix(){
@@ -1279,7 +1279,7 @@ void FreqAnalyzer::checkResult(string strDecode){
 
 	//sIFreqAnalyzeResultCBListener.onSetResult();
 
-	string strDecodeUnmark = replaceInvalidChar(strDecode);
+	string strDecodeUnmark = strDecode;//replaceInvalidChar(strDecode);
 	msbDecode.str("");
 	msbDecode.clear();
 	if(CAM_TIME_TRACE && mCodeRecordList.size() > 0){
