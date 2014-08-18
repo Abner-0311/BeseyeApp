@@ -477,13 +477,16 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if(keyCode == KeyEvent.KEYCODE_BACK){
-			if(null != mVgCamNameHolder && View.VISIBLE == mVgCamNameHolder.getVisibility()){
-				Toast.makeText(this, R.string.toast_pairing_enter_cam_name, Toast.LENGTH_SHORT).show();
-				BeseyeUtils.showSoftKeyboard(SoundPairingActivity.this, mEtCamName);
-			}else{
-				Toast.makeText(this, R.string.toast_pairing_wait, Toast.LENGTH_SHORT).show();
-			} 
-			return true;
+			if(null != mPairingCounter && !mPairingCounter.isFinished()){
+				if(null != mVgCamNameHolder && View.VISIBLE == mVgCamNameHolder.getVisibility()){
+					Toast.makeText(this, R.string.toast_pairing_enter_cam_name, Toast.LENGTH_SHORT).show();
+					BeseyeUtils.showSoftKeyboard(SoundPairingActivity.this, mEtCamName);
+				}else{
+					Toast.makeText(this, R.string.toast_pairing_wait, Toast.LENGTH_SHORT).show();
+				} 
+				return true;
+			}
+			return false;
 		}else
 			return super.onKeyUp(keyCode, event);
 	}

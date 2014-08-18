@@ -1356,7 +1356,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	   								}
 	   	         				}
 	   	         				Log.i(TAG, "open stream for idx:"+miStreamIdx);
-	   	         				iRetCreateStreaming = openStreaming(miStreamIdx, getNativeSurface(), streamFullPath, 0);
+	   	         				iRetCreateStreaming = openStreaming(miStreamIdx, getNativeSurface(), streamFullPath.replace("rtmp", "rtmps").replace(":1935", ""), 0);
 	   	         			}while(iRetCreateStreaming < 0 && iTrial < 8);
 	   	         			
 	   	         			if(miStreamIdx >= 10){
@@ -1442,7 +1442,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	       									}
 	       		         				}
 	       		         				Log.i(TAG, "open stream for idx"+miStreamIdx);
-	       		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost, streamList, /*(int)lOffset8*/0);
+	       		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost.replace("rtmp", "rtmps").replace(":1935", ""), streamList, /*(int)lOffset8*/0);
 	       		         			}while(iRetCreateStreaming < 0 && iTrial < 8);
 	       		         			
 	       		         			if(miStreamIdx >= 10){
@@ -2144,7 +2144,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
 		super.onCamSetupChanged(strVcamId, lTs, objCamSetup);
-		if(strVcamId.equals(mStrVCamID)){
+		if(null != strVcamId && strVcamId.equals(mStrVCamID)){
 			updateAttrByCamObj();
 		}
     }

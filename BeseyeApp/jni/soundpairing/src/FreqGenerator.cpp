@@ -767,12 +767,14 @@ void FreqGenerator::writeTone(double sample[], byte generatedSnd[], int iLen){
 #define LEN_OF_MAC_ADDR 12
 
 unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken){
+	return playPairingCodeWithPurpose(macAddr, wifiKey, tmpUserToken, (unsigned char) 0);
+}
+
+unsigned int FreqGenerator::playPairingCodeWithPurpose(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken, unsigned char cPurpose){//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
 	unsigned int iRet = R_OK;
-	//char tokenToPlay[1024]={0};
-	//tokenToPlay[1023] = '/0';
-	//static const char sep = 0x1B;
 	stringstream sstrWifiKey;
 	stringstream sstrToken;
+
 
 	if(!macAddr){
 		iRet = E_FE_MOD_SP_INVALID_MACADDR;
@@ -793,57 +795,9 @@ unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wif
 		}
 	}
 
-//	if(!(0 <= secType && secType <=3)){
-//		iRet = E_FE_MOD_SP_INVALID_SEC_TYPE;
-//		goto ERR;
-//	}
-//
-//	if(0 < secType){
-//		if(!wifiKey){
-//			iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
-//			goto ERR;
-//		}else{
-//			int iKeyLen = strlen(wifiKey);
-//			if(1 == secType && (5 != iKeyLen || 13 != iKeyLen || 29 != iKeyLen)){//WEP http://compnetworking.about.com/od/wirelessfaqs/f/wep_keys.htm
-//				iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
-//				goto ERR;
-//			}else if(2 <= secType && secType <=3 && (8 > iKeyLen || iKeyLen > 64)){//WPA/WPA2
-//				iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
-//				goto ERR;
-//			}
-//		}
-//	}
-
-//	if(!wifiKey){
-//		iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
-//		goto ERR;
-//	}else{
-//		int iKeyLen = strlen(wifiKey);
-//		if(5 > iKeyLen){
-//			iRet = E_FE_MOD_SP_INVALID_WIFI_KEY;
-//			goto ERR;
-//		}
-//	}
-
 	{
 		int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
 		int iPower = SoundPair_Config::getPowerByFFTYPE();
-
-//		const int iLen = LEN_OF_MAC_ADDR/iMultiply;
-//		char* macAddrZip = (char*)malloc((iLen+1)*sizeof(char));
-//		macAddrZip[iLen] = '\0';
-//		for(int i =0;i < iLen;i++){
-//			macAddrZip[i] = 0;
-//			for(int j = 0;j < iMultiply;j++){
-//				macAddrZip[i] <<= iPower;
-//				string code(1, macAddr[i*iMultiply+j]);
-//				int idx = SoundPair_Config::findIdxFromCodeTable(code);
-//				//LOGE("code= [%s],idx:%d\n", code.c_str(), idx);
-//				macAddrZip[i] += idx;
-//			}
-//			//LOGD("encode(), toEncode[%d]= %d\n",i,toEncode[i] );
-//		}
-
 
 		string strWifiKey(wifiKey);
 		int iLen = strWifiKey.length();
@@ -870,18 +824,10 @@ unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wif
 		sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x00f0)>>4);
 		sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x000f));
 
-//		if(tmpUserToken > 0xff){
-//			sprintf(tokenToPlay, "%s%c%s%c%c%c", macAddrZip, sep, wifiKey?wifiKey:"", sep, (tmpUserToken&0xff00)>>8, (tmpUserToken&0xff));
-//		}else{
-//			sprintf(tokenToPlay, "%s%c%s%c%c", macAddrZip, sep, wifiKey?wifiKey:"", sep, (tmpUserToken&0xff));
-//		}
-
-//		if(macAddrZip){
-//			free(macAddrZip);
-//		}
+		sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0xf0)>>4);
+		sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0x0f));
 	}
-	//LOGE("codeToPlay= [%s]\n", codeToPlay);
-	//if(!FreqGenerator::getInstance()->playCode2(codeToPlay, true)){
+
 	if(!FreqGenerator::getInstance()->playCode2(macAddr, sstrWifiKey.str(), sstrToken.str(), true)){
 		iRet = E_FE_MOD_SP_PLAY_CODE_ERR;
 		goto ERR;
@@ -891,9 +837,10 @@ ERR:
 	return iRet;
 }
 
-unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken){
-	return playPairingCode(macAddr, wifiKey, tmpUserToken);
-}
+//unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken){
+//	return playPairingCode(macAddr, wifiKey, tmpUserToken);
+//}
+
 
 EncodeItm::EncodeItm(string strCodeInputASCII, string strCodeInput, string strECCode, string strEncodeMark, string strEncode) {
 	//LOGE("EncodeItm(), strCodeInput:%s,\n %s,\n %s,\n %s\n", strCodeInput.c_str(), strECCode.c_str(), strEncodeMark.c_str(), strEncode.c_str());

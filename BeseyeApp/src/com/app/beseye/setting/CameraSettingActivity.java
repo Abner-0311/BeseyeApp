@@ -162,7 +162,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
 		
-		
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true, mStrVCamID,"1");
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamStatusTask(this), true, mStrVCamID);
 		

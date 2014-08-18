@@ -160,7 +160,7 @@ public class LoginActivity extends BeseyeBaseActivity {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.LoginHttpTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					//Log.i(TAG, "onPostExecute(), "+result.toString());
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						JSONObject objSes = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_SES);
@@ -185,7 +185,6 @@ public class LoginActivity extends BeseyeBaseActivity {
 						setResult(RESULT_OK);
 						finish();
 					}
-					//monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(this), true, SessionMgr.getInstance().getAuthToken());
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);

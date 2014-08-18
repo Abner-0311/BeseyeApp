@@ -382,7 +382,7 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playPair
 	//jni_env->ReleaseStringUTFChars( strCode, code);
 	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
 	LOGW("mac:%s, key:%s", mac, key);
-	int iRet = FreqGenerator::getInstance()->playPairingCode(mac, key, iSecType, userToken);
+	int iRet = FreqGenerator::getInstance()->playPairingCode(mac, key, userToken);
 	LOGW("iRet:%x", iRet);
 	return iRet;
 }
