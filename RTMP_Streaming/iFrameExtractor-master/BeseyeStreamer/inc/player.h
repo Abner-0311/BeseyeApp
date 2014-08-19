@@ -72,6 +72,8 @@ static int sws_flags = SWS_BICUBIC;
 #define FF_REFRESH_EVENT 		  (SDL_USEREVENT + 1)
 #define FF_QUIT_EVENT    		  (SDL_USEREVENT + 2)
 #define FF_UPDATE_SCREEN_EVENT    (SDL_USEREVENT + 3)
+#define FF_PAUSE_EVENT    		  (SDL_USEREVENT + 4)
+#define FF_RESUME_EVENT    		  (SDL_USEREVENT + 5)
 
 typedef struct VideoPicture {
     double pts;                                  ///< presentation time stamp for this picture

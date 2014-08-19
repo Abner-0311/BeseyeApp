@@ -1451,7 +1451,7 @@ void FreqAnalyzer::autoCorrection(MatchRetSet* prevMatchRet){
 								//Workaround
 								if(mIFreqAnalyzeResultCBListener)
 									mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, true, NULL);
-								//bFirstTime = false;
+								bFirstTime = false;
 							}
 
 							if(mIFreqAnalyzeResultCBListener){

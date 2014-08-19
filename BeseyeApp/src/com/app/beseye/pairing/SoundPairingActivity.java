@@ -287,9 +287,10 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				int iNumWords = mChosenWifiAPInfo.BSSID.replace(":", "").length()+
 						mChosenWifiAPInfo.password.length()*2+
 						4+//user temp id
-						8;//prefix+postfix+divider
+						2+//purpose
+						6;//prefix+postfix+divider
 		
-				mPairingCounter = new PairingCounter(iNumWords*6*100 + 15*1000, SoundPairingActivity.this);
+				mPairingCounter = new PairingCounter(iNumWords*6*100 + 24*1000, SoundPairingActivity.this);
 				if(null != mPairingCounter){
 					mPairingCounter.start();
 				}				

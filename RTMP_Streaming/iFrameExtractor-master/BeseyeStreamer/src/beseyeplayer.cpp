@@ -222,9 +222,10 @@ void CBeseyePlayer::stream_close(VideoState *is)
         sws_freeContext(is->img_convert_ctx);
 #endif
     av_log(NULL, AV_LOG_INFO, "stream_close()--, is:%d\n", is);
+
+    triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CLOSE, 0);
     av_free(is);
     is = NULL;
-    triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CLOSE, 0);
 }
 
 void CBeseyePlayer::do_exit(VideoState *is)
@@ -246,8 +247,9 @@ void CBeseyePlayer::do_exit(VideoState *is)
     //SDL_Quit();
 
     freePendingStreamPaths();
-    av_log(NULL, AV_LOG_QUIET, "%s", "");
     //exit(0);
+
+    av_log(NULL, AV_LOG_INFO, "do_exit()------, is:%d\n", is);
 }
 
 void CBeseyePlayer::sigterm_handler(int sig)
@@ -2295,6 +2297,23 @@ void CBeseyePlayer::event_loop(VideoState *cur_stream)
 					//SDL_PushEvent(&event);
 				}
 				break;
+			case FF_PAUSE_EVENT:{
+				av_log(NULL, AV_LOG_INFO, "event_loop(), FF_PAUSE_EVENT, mStream_Status:%d", mStream_Status);
+				if(NULL != cur_stream && !isStreamPaused() && mStream_Status >= STREAM_CONNECTED && mStream_Status < STREAM_CLOSE){
+					toggle_pause(cur_stream);
+					//Abner: DVR abnormal behaviors
+					//triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSING, 0);
+					triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSED, 0);
+				}
+				break;
+			}
+			case FF_RESUME_EVENT:{
+				av_log(NULL, AV_LOG_INFO, "event_loop(), FF_RESUME_EVENT, mStream_Status:%d", mStream_Status);
+				if(NULL != is && isStreamPaused() && mStream_Status == STREAM_PAUSED){
+					toggle_pause(cur_stream);
+				}
+				break;
+			}
 			case FF_ALLOC_EVENT:{
 //				if(NULL != cur_stream && cur_stream != ((AllocEventProps*)event.user.data1)->is){
 //				     continue;
@@ -2598,10 +2617,14 @@ int CBeseyePlayer::pauseStreaming(){
 	int iRet = 0;
 	av_log(NULL, AV_LOG_INFO, "pauseStreaming()++, mStream_Status:%d", mStream_Status);
 	if(NULL != is && !isStreamPaused() && mStream_Status >= STREAM_CONNECTED && mStream_Status < STREAM_CLOSE){
-		toggle_pause(is);
-		//Abner: DVR abnormal behaviors
-		//triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSING, 0);
-		triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSED, 0);
+//		toggle_pause(is);
+//		//Abner: DVR abnormal behaviors
+//		//triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSING, 0);
+//		triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSED, 0);
+		SDL_Event event;
+		event.type = FF_PAUSE_EVENT;
+		event.user.data1 = is;
+		SDL_PushEvent(&event);
 		iRet = 1;
 	}
 	return iRet;
@@ -2611,7 +2634,11 @@ int CBeseyePlayer::resumeStreaming(){
 	int iRet = 0;
 	av_log(NULL, AV_LOG_INFO, "resumeStreaming()++, mStream_Status:%d", mStream_Status);
 	if(NULL != is && isStreamPaused() && mStream_Status == STREAM_PAUSED){
-		toggle_pause(is);
+		SDL_Event event;
+		event.type = FF_RESUME_EVENT;
+		event.user.data1 = is;
+		SDL_PushEvent(&event);
+		//toggle_pause(is);
 		iRet = 1;
 	}
 	return iRet;
@@ -2620,7 +2647,7 @@ int CBeseyePlayer::resumeStreaming(){
 int CBeseyePlayer::closeStreaming(){
 	av_log(NULL, AV_LOG_INFO, "closeStreaming()++, is:%d", is);
 	int iRet = 0;
-	if(NULL != is && mStream_Status > STREAM_UNINIT && mStream_Status <= STREAM_CLOSE){
+	if(NULL != is && mStream_Status > STREAM_UNINIT && mStream_Status < STREAM_CLOSE){
 		is->abort_request = 1;
 		SDL_Event event;
 		event.type = FF_QUIT_EVENT;

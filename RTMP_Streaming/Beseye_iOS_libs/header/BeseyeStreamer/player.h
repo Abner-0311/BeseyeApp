@@ -19,8 +19,12 @@
 //#include "libavdevice/avdevice.h"
 #include "libswscale/swscale.h"
 #include "libavutil/opt.h"
+#include "libavutil/mem.h"
 #include "libavcodec/avfft.h"
 #include "libswresample/swresample.h"
+
+#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
+
 
 //#if CONFIG_AVFILTER
 //# include "libavfilter/avcodec.h"
@@ -68,6 +72,8 @@ static int sws_flags = SWS_BICUBIC;
 #define FF_REFRESH_EVENT 		  (SDL_USEREVENT + 1)
 #define FF_QUIT_EVENT    		  (SDL_USEREVENT + 2)
 #define FF_UPDATE_SCREEN_EVENT    (SDL_USEREVENT + 3)
+#define FF_PAUSE_EVENT    		  (SDL_USEREVENT + 4)
+#define FF_RESUME_EVENT    		  (SDL_USEREVENT + 5)
 
 typedef struct VideoPicture {
     double pts;                                  ///< presentation time stamp for this picture
@@ -133,7 +139,7 @@ typedef struct VideoState {
     AVStream *audio_st;
     PacketQueue audioq;
     int audio_hw_buf_size;
-    //DECLARE_ALIGNED(16,uint8_t,audio_buf2)[AVCODEC_MAX_AUDIO_FRAME_SIZE * 4];
+    DECLARE_ALIGNED(16,uint8_t,audio_buf2)[AVCODEC_MAX_AUDIO_FRAME_SIZE * 4];
     uint8_t silence_buf[SDL_AUDIO_BUFFER_SIZE];
     uint8_t *audio_buf;
     uint8_t *audio_buf1;

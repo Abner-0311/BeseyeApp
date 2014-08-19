@@ -91,6 +91,7 @@ public:
 	//void playCode(const string strCodeInput, const bool bNeedEncode);
 	//void stopPlay();
 	bool playCode2(const string strCodeInput, const bool bNeedEncode);
+	bool playCode2(const string strMacAddr, const string strWifiKey, const string strToken, const bool bNeedEncode);
 	static void* runPlayCode2(void* userdata);
 	void invokePlayCode2();
 	void stopPlay2();
@@ -106,8 +107,9 @@ public:
 	void setOnPlayToneCallback(void(* playToneCB)(void* userdata, Play_Tone_Status status, const char *msg, unsigned int type) , void* userData);
 
 	unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken);
-	unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken);
-	//macAddr => Hex values w/o ':' in lower case (ex. ef01cd45ab89)
+	unsigned int playPairingCodeWithPurpose(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken, unsigned char cPurpose);//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+	//unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken);
+	//macAddr => Hex values without ':' in lower case (ex. ef01cd45ab89)
 	//wifiKey => ASCII values (for WEP: 5 or 13 digits; WPA/WPA2: more than 8 digits)
 	//secType => 0:none; 1:WEP; 2:WPA; 3:WPA2
 	//tmpUserToken => temp user token from Account BE

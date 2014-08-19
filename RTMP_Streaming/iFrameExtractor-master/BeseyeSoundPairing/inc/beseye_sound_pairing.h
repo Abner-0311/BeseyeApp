@@ -22,21 +22,11 @@ void Delegate_CloseAudioRecordDevice();
 
 void Delegate_UpdateFreq(msec_t lts, float freq);
 void Delegate_ResetData();
-
-void Delegate_TestRoundBegin();
-void Delegate_TestRoundEnd(string strMatchRet, string strStatistics);
-void Delegate_BeginToSaveResult();
-void Delegate_EndToSaveResult();
 void Delegate_FeedbackMatchResult(string strCode, string strECCode, string strEncodeMark, string strDecode, string strDecodeUnmark, string strDecodeMark, int iMatchDesc, bool bFromAutoCorrection);
 
 void Delegate_SendMsgByBT(string strCode);
 
 void Delegate_detachCurrentThread();
-
-//For ws client callback
-void Delegate_WSConnecting(string strHost);
-void Delegate_WSConnected(string strHost);
-void Delegate_WSClosed(string strHost);
 }
 #endif
 

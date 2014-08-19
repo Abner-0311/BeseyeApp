@@ -11,6 +11,10 @@
 #include "utils.h"
 #include <zxing/common/reedsolomon/GenericGF.h>
 
+//#if not __has_feature(cxx_constexpr)
+#define constexpr
+//#endif
+
 using zxing::Ref;
 using zxing::Counted;
 using zxing::GenericGF;
@@ -36,8 +40,8 @@ public:
 
 class FreqRange : public Counted{
 public:
-	static const double MIN_FREQ = 200.0f;
-	static const double MAX_FREQ = 8000.0f;
+	constexpr static const double MIN_FREQ = 200.0f;
+	constexpr static const double MAX_FREQ = 8000.0f;
 
 	FreqRange(double dFreq, string strCode);
 	FreqRange(double dFreq, double dDelta, string strCode);
@@ -81,41 +85,43 @@ public:
 
 	static const string BT_MSG_ACK;
 	static const string BT_MSG_PURE;
-	static const float SILENCE_RATIO = 1.0f;
+	constexpr static const float SILENCE_RATIO = 1.0f;
 
 	//for speex noise suppress
-	static const int NOISE_SUPPRESS_INDEX = 0;
+	constexpr static const int NOISE_SUPPRESS_INDEX = 0;
 	//for speex AGC
-	static const float AGC_LEVEL = 0.0f;
+	constexpr static const float AGC_LEVEL = 0.0f;
 	//for de-reverberation
 	static const bool ENABLE_DEVERB = true;
-	static const float DEVERB_DECAY = 0.3f;
-	static const float DEVERB_LEVEL = 0.4f;
+	constexpr static const float DEVERB_DECAY = 0.3f;
+	constexpr static const float DEVERB_LEVEL = 0.4f;
 
 	//for phase I segmentation solution
-	static const float SILENCE_CRITERIA = 0.002f;
+	constexpr static const float SILENCE_CRITERIA = 0.002f;
 	static const int SILENCE_DETECTION_SAMPLE = 256;
 
-	static const int SAMPLE_RATE_PLAY = 44100;
+	static const int SAMPLE_RATE_PLAY = 16000;//44100;
 	static const int SAMPLE_RATE_REC  = 16000;
 	static const int FRAME_SIZE_REC   = 512;
 	static const float BIN_SIZE       ;//= 16000.0/512.0;
 	static const int TONE_SIZE_REC    = 1536;
 	static const int TONE_FRAME_COUNT = TONE_SIZE_REC/FRAME_SIZE_REC;
 	static const long FRAME_TS        = (FRAME_SIZE_REC*1000)/SAMPLE_RATE_REC;
-	static const float TONE_DURATION  = TONE_SIZE_REC/16000.0f;//4096.0f/44100.0f;
+	constexpr static const float TONE_DURATION  = TONE_SIZE_REC/16000.0f;//4096.0f/44100.0f;
 	static const long TONE_PERIOD     ;//:= (long)(TONE_DURATION*1000);//SELF_TEST?(long)((4096.0f/44100.0f)*1000):100L;
-	static const float RANDUDANT_RATIO = 1.0f;
+	constexpr static const float RANDUDANT_RATIO = 1.0f;
 	static const int FFT_ANALYSIS_COUNT= 5;
 	static const int TONE_TYPE = 19;
 
 	static const string BT_BINDING_MAC;
 	static const string BT_BINDING_MAC_SENDER;
-	static const double dStartValue = 2500.0;
-	static const double dEndValue = 4000.0;//10500.0;
+	constexpr static const double dStartValue = 2500.0;
+	constexpr static const double dEndValue = 4000.0;//10500.0;
 	static const int iDigitalToTest = 3;
 	static const int MAX_ENCODE_DATA_LEN = 4;//16;//127;
-	static const double EC_RATIO = 0.25f;
+	constexpr static const double EC_RATIO = 0.25f;
+
+	static const int MIN_PAIRING_MSG_LEN = (((12+2+10+2+4)*3)/2)-2;//-2 due to drop audio issue
 
 	static string PREFIX_DECODE;
 	static string POSTFIX_DECODE;
@@ -133,7 +139,7 @@ public:
 	static string MSG_AUTO_TEST_END;
 	static string MSG_TEST_ROUND_RESULT;
 	static string MISSING_CHAR;
-	static char PAIRING_DIVIDER;
+	static string PAIRING_DIVIDER;
 
 	//For recording buffer
 	static const long MAX_RECORDING_TIME = 60L; //60 seconds

@@ -42,6 +42,15 @@ enum CAM_HANDL{
 
 S8* sbGetCurSession(void);
 
+#ifndef CAM_HOST
+#define CAM_HOST
+#ifdef ANDROID
+static char* host = "http://192.168.2.145/sray";
+#else
+static char* host = "http://localhost/sray";
+#endif
+#endif
+
 #ifdef DEBUG
 #define DEBUG_TEST 1
 #else
@@ -52,10 +61,6 @@ S8* sbGetCurSession(void);
 #define BUF_SIZE 10*1024
 #define SESSION_SIZE 64
 
-#ifdef __APPLE__
-#define GEN_TONE_ONLY //for client side
-#endif
-
 #define DEBUG_PRINT(fmt, args...) \
         do { if (DEBUG_TEST) fprintf(stderr, "%s:%d:%s(): " fmt, __FILE__, \
                                 __LINE__, __FUNCTION__, ##args); } while (0)
@@ -64,28 +69,45 @@ S8* sbGetCurSession(void);
 #define  LOG_TAG    "BesEye"
 #include <jni.h>
 #include <android/log.h>
-#define CAM_URL "192.168.2.85"
+#define CAM_URL "192.168.2.101"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGW(...)  __android_log_print(ANDROID_LOG_WARN,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 #else
+
+#ifdef __APPLE__
+#define GEN_TONE_ONLY //for client side
+#endif
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "error.h"
 #define CAM_URL "127.0.0.1"
+
+void showTime();
+
 #define  LOGD(fmt, args...)  //printf(__VA_ARGS__)
-#define  LOGI(fmt, args...)  printf("[%s][%d][%s()], " fmt, __FILE__, \
+#define  LOGI(fmt, args...)  showTime(); \
+							 printf("[%s][%d][%s()], " fmt, __FILE__, \
         					 __LINE__, __FUNCTION__, ##args);
-#define  LOGW(fmt, args...)  printf("[%s][%d][%s()], " fmt, __FILE__, \
+
+#define  LOGW(fmt, args...)  showTime(); \
+							 printf("[%s][%d][%s()], " fmt, __FILE__, \
         					 __LINE__, __FUNCTION__, ##args);
-#define  LOGE(fmt, args...)  fprintf(stderr, "[%s][%d][%s()], " fmt, __FILE__, \
-							 __LINE__, __FUNCTION__, ##args);
+
+#define  LOGE(fmt, args...)  showTime(); \
+						     printf("[%s][%d][%s()], " fmt, __FILE__, \
+		 	 	 	 	 	 __LINE__, __FUNCTION__, ##args);
+//#define  LOGE(fmt, args...)  fprintf(stderr, "[%s][%d][%s()], " fmt, __FILE__, \
+//							 __LINE__, __FUNCTION__, ##args);
 #endif
 
-
+#ifndef __APPLE__
 typedef BOOLEAN BOOL;
+#endif
+
 #ifndef FALSE
 #define FALSE 0
 #define TRUE 1
@@ -95,11 +117,11 @@ typedef BOOLEAN BOOL;
 #define DEF_UA "Beseye_Cam_Sw"
 
 #define CAM_WS_PORT 5432
-#define CAM_BE_HOST "http://54.199.158.71:80"
-#define NETWORK_CHECK_HOST "www.google.com"
+#define CAM_BE_HOST "http://ns01-stage.beseye.com"
+#define NETWORK_CHECK_HOST "http://www.google.com"
 
 #define CAM_TIME_TRACE 0
-#define CAM_CORRECTION_TRACE 0
+#define CAM_CORRECTION_TRACE 1
 
 #define FREE(obj) \
 	if(obj){ \

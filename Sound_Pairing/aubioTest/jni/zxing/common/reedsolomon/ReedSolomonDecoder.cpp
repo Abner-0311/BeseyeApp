@@ -70,7 +70,7 @@ RS_DECODE_ERROR ReedSolomonDecoder::decode(ArrayRef<int> received, int twoS) {
 					int position = received->size() - 1 - field->log(errorLocations[i]);
 					if (position < 0) {
 					  //throw ReedSolomonException("Bad error location");
-						LOGE("decode(), exception");
+						LOGE("decode(), exception\n");
 						mRSDecodeErr = DE_ERROR_INVALID_ERR_LOC;
 						break;
 					}
@@ -107,7 +107,7 @@ vector<Ref<GenericGFPoly> > ReedSolomonDecoder::runEuclideanAlgorithm(Ref<Generi
 
 		// Divide rLastLast by rLast, with quotient q and remainder r
 		if (rLast->isZero()) {
-			LOGE("runEuclideanAlgorithm(), error");
+			LOGE("runEuclideanAlgorithm(), error\n");
 			// Oops, Euclidean algorithm already terminated?
 			//throw ReedSolomonException("r_{i-1} was zero");
 			mRSDecodeErr = DE_ERROR_EUCLIDEAN_ERR;
@@ -127,7 +127,7 @@ vector<Ref<GenericGFPoly> > ReedSolomonDecoder::runEuclideanAlgorithm(Ref<Generi
 			t = q->multiply(tLast)->addOrSubtract(tLastLast);
 
 			if (r->getDegree() >= rLast->getDegree()) {
-				LOGE("runEuclideanAlgorithm(), error2");
+				LOGE("runEuclideanAlgorithm(), error2\n");
 			  //throw IllegalStateException("Division algorithm failed to reduce polynomial?");
 				mRSDecodeErr = DE_ERROR_DIVISION_FAIL;
 			}
@@ -135,7 +135,7 @@ vector<Ref<GenericGFPoly> > ReedSolomonDecoder::runEuclideanAlgorithm(Ref<Generi
 		if(mRSDecodeErr == DE_ERROR_NONE){
 			int sigmaTildeAtZero = t->getCoefficient(0);
 			if (sigmaTildeAtZero == 0) {
-			  LOGE("runEuclideanAlgorithm(), error3");
+			  LOGE("runEuclideanAlgorithm(), error3\n");
 			  //throw ReedSolomonException("sigmaTilde(0) was zero");
 			  mRSDecodeErr = DE_ERROR_ZERO_SIGMA;
 			}else{
@@ -168,7 +168,7 @@ ArrayRef<int> ReedSolomonDecoder::findErrorLocations(Ref<GenericGFPoly> errorLoc
     }
   }
   if (e != numErrors) {
-	  LOGE("findErrorLocations(), error");
+	  LOGE("findErrorLocations(), error\n");
       //throw ReedSolomonException("Error locator degree does not match number of roots");
 	  mRSDecodeErr = DE_ERROR_INVALID_ERR_NUM;
   }

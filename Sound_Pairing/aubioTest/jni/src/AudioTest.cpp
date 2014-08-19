@@ -934,7 +934,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 	}
 
 	if(sbNeedToInitBuf){
-		LOGE("init buffer for entering \n");
+		LOGE("init buffer for entering ¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I\n");
 		shortsRecBuf = NULL;
 		iCurIdx = 0;
 		ANALYSIS_THRESHHOLD_MONITOR_CNT = 0;
@@ -989,7 +989,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 			shortsRecBuf[iCurIdx] = (((short)charBuf[iAudioFrameSize*i+3])<<8 | (charBuf[iAudioFrameSize*i+2]));
 
 			/*if(AudioTest::getInstance()->isPairingAnalysisMode())*/
-			if(0 == siRefCount%4){
+			if(0 == siRefCount%8){
 				short val = abs(shortsRecBuf[iCurIdx]);
 				if(val > sMaxValue){
 					sMaxValue = val;
@@ -1036,7 +1036,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 							}
 
 							siAboveThreshHoldCount++;
-							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
+							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT && PAIRING_WAITING == sPairingMode){
 								LOGE("trigger analysis-----\n");
 								//trigger analysis
 								if(AudioTest::getInstance()->isPairingAnalysisMode()){
@@ -1067,9 +1067,6 @@ void writeBuf(unsigned char* charBuf, int iLen){
 								}
 
 								FreqAnalyzer::getInstance()->setDetectLowSound(true);
-	//							AudioTest::getInstance()->setAboveThresholdFlag(false);
-	//							changePairingMode(PAIRING_WAITING);
-								//AudioTest::getInstance()->resetBuffer();
 								siUnderThreshHoldCount = 0;
 							}
 							siAboveThreshHoldCount = 0;
@@ -1374,85 +1371,95 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
 	int iPower = SoundPair_Config::getPowerByFFTYPE();
 
+	const int MAC_LEN = 12;
+	const int TOKEN_LEN = 4;
+	const int PURPOSE_LEN = 2;
+	const int MIN_PW_LEN = 0;
+
+	string strMAC, strUserNum, strPurpose, strPW;
+
+	stringstream retPW;
+	unsigned char cPurpose = 0;
+	bool bGuess = false;
+
 	if(0 == strCode.find("error")){
 		LOGE("Error, trying to get pairing code\n");
-		int idx = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER, 13);//13 = mac(12)+first div(1)
-		if(0 < idx){
-			string strToken = strDecodeUnmark.substr(idx+1, 4);
-			LOGE("Possible pairing code [%s]\n",strToken.c_str());
-			int iRet = 0;
-			char cmd[BUF_SIZE]={0};
-			sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", "60a44c39fcf8", strToken.c_str());
-			LOGE("attach cmd:[%s]\n", cmd);
-			iRet = system(cmd) >> 8;
-			if(0 == iRet){
-				LOGE("Cam attach OK\n");
-				iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
-				if(0 == iRet){
-					LOGE("Token verification OK\n");
-					AudioTest::getInstance()->setPairingReturnCode(0);
-				}else{
-					LOGE("Token verification failed\n");
-				}
-			}else{
-				LOGE("Cam attach failed, try another\n");
-				sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", "107befd9322f", strToken.c_str());
-				LOGE("attach cmd:[%s]\n", cmd);
-				iRet = system(cmd) >> 8;
-				if(0 == iRet){
-					LOGE("Cam attach OK\n");
-					iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
-					if(0 == iRet){
-						LOGE("Token verification OK\n");
-						AudioTest::getInstance()->setPairingReturnCode(0);
-					}else{
-						LOGE("Token verification failed\n");
-					}
-				}else{
-					LOGE("Cam attach failed\n");
-				}
+
+		int iRetLen = strDecodeUnmark.length();
+		if(iRetLen < (MAC_LEN + TOKEN_LEN + PURPOSE_LEN +2 /*+ MIN_PW_LEN +2*/)){
+			LOGE("iRetLen:[%d] < min len\n",iRetLen, (MAC_LEN + TOKEN_LEN + PURPOSE_LEN +2/*+ MIN_PW_LEN +2*/));
+			return;
+		}
+
+		int iFirstDiv = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER);
+		LOGE("iFirstDiv:%d\n", iFirstDiv);
+		if(MAC_LEN <= iFirstDiv){
+			int iSecondDiv = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER, iFirstDiv+1);
+			LOGE("iSecondDiv:%d\n", iSecondDiv);
+			if(iSecondDiv > iFirstDiv){
+				strMAC = strCode.substr(iFirstDiv - MAC_LEN, MAC_LEN);
+				strUserNum = strCode.substr((iSecondDiv+1), TOKEN_LEN);
+				strPurpose = strCode.substr((iSecondDiv+TOKEN_LEN+1), PURPOSE_LEN);
+				strPW = strCode.substr(iFirstDiv+1, (iSecondDiv - (iFirstDiv+1)));
+
+				LOGE("possible bundle [%s, %s, %s, %s]\n",strMAC.c_str(),strPW.c_str(),strUserNum.c_str(),strPurpose.c_str());
+				bGuess = true;
 			}
 		}
-	}else{
-//		int toDecodeSize = strCode.length()/iMultiply;
-//		LOGE("toDecodeSize:%d\n", toDecodeSize);
-//		stringstream retS;
-//		for(int i =0;i < toDecodeSize;i++){
-//			unsigned char c = 0;
-//			for(int j = 0;j < iMultiply;j++){
-//				c <<= iPower;
-//				string strTmp = strCode.substr(i*iMultiply+j, 1);
-//				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
-//				c += (unsigned char) iVal;
-//				//LOGI("iVal:[%d]\n",iVal);
+
+//		int idx = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER, 13);//13 = strMAC(12)+first div(1)
+//		if(0 < idx){
+//			string strToken = strDecodeUnmark.substr(idx+1, 4);
+//			LOGE("Possible pairing code [%s]\n",strToken.c_str());
+//			int iRet = 0;
+//			char cmd[BUF_SIZE]={0};
+//			sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", "60a44c39fcf8", strToken.c_str());
+//			LOGE("attach cmd:[%s]\n", cmd);
+//			iRet = system(cmd) >> 8;
+//			if(0 == iRet){
+//				LOGE("Cam attach OK\n");
+//				iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
+//				if(0 == iRet){
+//					LOGE("Token verification OK\n");
+//					AudioTest::getInstance()->setPairingReturnCode(0);
+//				}else{
+//					LOGE("Token verification failed\n");
+//				}
+//			}else{
+//				LOGE("Cam attach failed, try another\n");
+//				sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", "107befd9322f", strToken.c_str());
+//				LOGE("attach cmd:[%s]\n", cmd);
+//				iRet = system(cmd) >> 8;
+//				if(0 == iRet){
+//					LOGE("Cam attach OK\n");
+//					iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
+//					if(0 == iRet){
+//						LOGE("Token verification OK\n");
+//						AudioTest::getInstance()->setPairingReturnCode(0);
+//					}else{
+//						LOGE("Token verification failed\n");
+//					}
+//				}else{
+//					LOGE("Cam attach failed\n");
+//				}
 //			}
-//			//LOGI("c:[%u]\n",c);
-//			retS << c;
 //		}
-//
-//		LOGE("retS:[%s]\n",retS.str().c_str());
-
-		//std::vector<std::string> ret = split(retS.str(), SoundPair_Config::PAIRING_DIVIDER);
-
-		const int MAC_LEN = 12;
-		const int TOKEN_LEN = 4;
-		const int PURPOSE_LEN = 2;
-		const int MIN_PW_LEN = 0;
-
+	}else{
 		int iRetLen = strCode.length();
 		if(iRetLen < (MAC_LEN + TOKEN_LEN + PURPOSE_LEN /*+ MIN_PW_LEN +2*/)){
 			LOGE("iRetLen:[%d] < min len\n",iRetLen, (MAC_LEN + TOKEN_LEN + PURPOSE_LEN/*+ MIN_PW_LEN +2*/));
 			return;
 		}
 
-		string mac = strCode.substr(0, MAC_LEN);
-		string strUserNum = strCode.substr(iRetLen - (TOKEN_LEN+PURPOSE_LEN), TOKEN_LEN);
-		string strPurpose = strCode.substr(iRetLen - (PURPOSE_LEN));
-		string strPW = strCode.substr(MAC_LEN, ( iRetLen - (MAC_LEN+TOKEN_LEN+PURPOSE_LEN)));
+		strMAC = strCode.substr(0, MAC_LEN);
+		strUserNum = strCode.substr(iRetLen - (TOKEN_LEN+PURPOSE_LEN), TOKEN_LEN);
+		strPurpose = strCode.substr(iRetLen - (PURPOSE_LEN));
+		strPW = strCode.substr(MAC_LEN, ( iRetLen - (MAC_LEN+TOKEN_LEN+PURPOSE_LEN)));
 
-		LOGE("[%s, %s, %s, %s]\n",mac.c_str(),strPW.c_str(),strUserNum.c_str(),strPurpose.c_str());
+		LOGE("[%s, %s, %s, %s]\n",strMAC.c_str(),strPW.c_str(),strUserNum.c_str(),strPurpose.c_str());
+	}
 
-		stringstream retPW;
+	if(0 < strMAC.length() && 0 < strPW.length() && 0 < strUserNum.length() && 0 < strPurpose.length()){
 		int iLenPW = strPW.length()/iMultiply;
 		for(int i =0;i < iLenPW;i++){
 			unsigned char c = 0;
@@ -1469,124 +1476,93 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 		LOGE("retPW:[%s]\n",retPW.str().c_str());
 
-		/*if(ret.size() == 3)*/{
-			//string mac = ret[0];
-//			stringstream retMacAddr;
-//			int iLenMacAddr = mac.length();
-//
-//			for(int idx = 0;idx < iLenMacAddr;idx++){
-//				string tmp("");
-//				char cDecode = mac.at(idx);
-//				for(int j = 0;j < iMultiply;j++){
-//					tmp = SoundPair_Config::sFreqRangeTable.at(cDecode & ((0x1<<iPower) -1))->getCode() + tmp;
-//					cDecode >>= iPower;
-//				}
-//				retMacAddr << tmp;
-//			}
-
-			//string strUserNum = ret[2];
-//			stringstream retUserToken;
-//			int iLenUserNum = strUserNum.length();
-//			for(int idx = 0; idx < iLenUserNum;idx++){
-//				string tmp("");
-//				char cDecode = strUserNum.at(idx);
-//				for(int j = 0;j < iMultiply;j++){
-//					tmp = SoundPair_Config::sFreqRangeTable.at(cDecode & ((0x1<<iPower) -1))->getCode() + tmp;
-//					cDecode >>= iPower;
-//				}
-//				retUserToken << tmp;
-//			}
-
-			unsigned char cPurpose = 0;
-
-			int iLenPurpose = strPurpose.length()/iMultiply;
-			for(int i =0;i < iLenPurpose;i++){
-				for(int j = 0;j < iMultiply;j++){
-					string strTmp = strPurpose.substr(i*iMultiply+j, 1);
-					int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
-					cPurpose += (unsigned char) iVal;
-					//LOGI("iVal:[%d]\n",iVal);
-				}
+		int iLenPurpose = strPurpose.length()/iMultiply;
+		for(int i =0;i < iLenPurpose;i++){
+			for(int j = 0;j < iMultiply;j++){
+				string strTmp = strPurpose.substr(i*iMultiply+j, 1);
+				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+				cPurpose += (unsigned char) iVal;
+				//LOGI("iVal:[%d]\n",iVal);
 			}
+		}
 
-			LOGE("cPurpose:%u, strPurpose:[%s]\n", cPurpose, strPurpose.c_str());
+		LOGE("cPurpose:%u, strPurpose:[%s]\n", cPurpose, strPurpose.c_str());
 
-			char cmd[BUF_SIZE]={0};
-			sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", mac.c_str(), retPW.str().c_str());
-			LOGE("wifi set cmd:[%s]\n", cmd);
-			int iRet = system(cmd) >> 8;
-			if(0 == iRet){
-				LOGE("wifi set OK\n");
-				//long lCheckTime = time_ms();
-				//long lDelta;
-				int iNetworkRet = 0;
-				int iTrials = 0;
-				do{
-					if(0 < iTrials)
-						sleep(1);
+		char cmd[BUF_SIZE]={0};
+		sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", strMAC.c_str(), retPW.str().c_str());
+		LOGE("wifi set cmd:[%s]\n", cmd);
+		int iRet = system(cmd) >> 8;
+		if(0 == iRet){
+			LOGE("wifi set OK\n");
+			//long lCheckTime = time_ms();
+			//long lDelta;
+			int iNetworkRet = 0;
+			int iTrials = 0;
+			do{
+				if(0 < iTrials)
+					sleep(1);
 
-					iNetworkRet = system("/beseye/cam_main/beseye_network_check") >> 8;
-					//lDelta = (time_ms() - lCheckTime);
-					LOGE("wifi check ret:%d, ts:%ld, flag:%d, time:%lld \n", iNetworkRet, iTrials, ((iNetworkRet != 0) && (15 > ++iTrials)), time_ms());
-				}while((iNetworkRet != 0) && (15 > ++iTrials));
+				iNetworkRet = system("/beseye/cam_main/beseye_network_check") >> 8;
+				//lDelta = (time_ms() - lCheckTime);
+				LOGE("wifi check ret:%d, ts:%ld, flag:%d, time:%lld \n", iNetworkRet, iTrials, ((iNetworkRet != 0) && (15 > ++iTrials)), time_ms());
+			}while((iNetworkRet != 0) && (15 > ++iTrials));
 
-				LOGE("network checking complete, iNetworkRet:%d, iTrials:%ld\n", iNetworkRet, iTrials);
+			LOGE("network checking complete, iNetworkRet:%d, iTrials:%ld\n", iNetworkRet, iTrials);
 
-				if(0 == iNetworkRet){
-					LOGE("network connected\n");
-					iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
-					if(0 == iRet){
-						LOGE("Token is already existed, check tmp token\n");
-						if(1 == cPurpose){
-							sprintf(cmd, "/beseye/cam_main/cam-handler -verToken %s %s", mac.c_str(), strUserNum.c_str());
-							LOGE("verToken cmd:[%s]\n", cmd);
-							iRet = system(cmd) >> 8;
-							if(0 == iRet){
-								LOGE("Tmp User Token verification OK\n");
-								AudioTest::getInstance()->setPairingReturnCode(0);
-							}else{
-								LOGE("Tmp User Token verification failed\n");
-								//roll back wifi settings
-								iRet = system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
-							}
+			if(0 == iNetworkRet){
+				LOGE("network connected\n");
+				iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
+				if(0 == iRet){
+					LOGE("Token is already existed, check tmp token\n");
+					if(1 == cPurpose){
+						sprintf(cmd, "/beseye/cam_main/cam-handler -verToken %s %s", strMAC.c_str(), strUserNum.c_str());
+						LOGE("verToken cmd:[%s]\n", cmd);
+						iRet = system(cmd) >> 8;
+						if(0 == iRet){
+							LOGE("Tmp User Token verification OK\n");
+							AudioTest::getInstance()->setPairingReturnCode(0);
 						}else{
-							LOGE("Wrong cPurpose\n");
+							LOGE("Tmp User Token verification failed\n");
 							//roll back wifi settings
 							iRet = system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
 						}
-
 					}else{
-						if(0 == cPurpose){
-							LOGE("Token is invalid, try to attach\n");
-							sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", mac.c_str(), strUserNum.c_str());
-							LOGE("attach cmd:[%s]\n", cmd);
-							iRet = system(cmd) >> 8;
+						LOGE("Wrong cPurpose\n");
+						//roll back wifi settings
+						iRet = system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
+					}
+
+				}else{
+					if(0 == cPurpose){
+						LOGE("Token is invalid, try to attach\n");
+						sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", strMAC.c_str(), strUserNum.c_str());
+						LOGE("attach cmd:[%s]\n", cmd);
+						iRet = system(cmd) >> 8;
+						if(0 == iRet){
+							LOGE("Cam attach OK\n");
+							iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
 							if(0 == iRet){
-								LOGE("Cam attach OK\n");
-								iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
-								if(0 == iRet){
-									LOGE("Token verification OK\n");
-									AudioTest::getInstance()->setPairingReturnCode(0);
-								}else{
-									LOGE("Token verification failed\n");
-								}
+								LOGE("Token verification OK\n");
+								AudioTest::getInstance()->setPairingReturnCode(0);
 							}else{
-								LOGE("Cam attach failed\n");
+								LOGE("Token verification failed\n");
 							}
 						}else{
-							LOGE("Wrong cPurpose for attach\n");
+							LOGE("Cam attach failed\n");
 						}
+					}else{
+						LOGE("Wrong cPurpose for attach\n");
 					}
-				}else{
-					LOGE("network disconnected\n");
 				}
 			}else{
-				LOGE("wifi set failed\n");
+				LOGE("network disconnected\n");
+				if(bGuess){
+					iRet = system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
+				}
 			}
+		}else{
+			LOGE("wifi set failed\n");
 		}
-//		else{
-//			LOGE("failed to parse result, ret.size():[%d]\n",ret.size());
-//		}
 	}
 #endif
 }
