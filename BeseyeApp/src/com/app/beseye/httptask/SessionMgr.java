@@ -48,23 +48,21 @@ public class SessionMgr {
 		}
 	}
 	
-	static private final String ACCOUNT_URL_FORMAT = "http://%s/be_acc/v1/";
-	static private final String[] ACCOUNT_BE_URL = {"acc01-dev.beseye.com",
-													"acc01.beseye.com", 
-													"acc01-stage.beseye.com",
-													"acc01-stage.beseye.com"}; 
+	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
+	static private final String[] ACCOUNT_BE_URL = {"https://acc01-dev.beseye.com",
+													"http://acc01.beseye.com", 
+													"https://acc01-stage.beseye.com",
+													"https://acc01-stage.beseye.com"}; 
 	
-	static private final String MM_URL_FORMAT = "http://%s/";
-	static private final String[] MM_BE_URL = { "mm01-forext-dev.beseye.com",
-												"mm01-forext-comp.beseye.com", 
-												"mm01-forext-stage.beseye.com",
-												"mm01-forext-stage.beseye.com"}; 
+	static private final String[] MM_BE_URL = { "https://mm01-forext-dev.beseye.com/",
+												"http://mm01-forext-comp.beseye.com/", 
+												"https://mm01-forext-stage.beseye.com/",
+												"https://mm01-forext-stage.beseye.com/"}; 
 	
-	static private final String NS_URL_FORMAT = "http://%s/";
-	static private final String[] NS_BE_URL = { "ns01-dev.beseye.com",
-												"ns01.beseye.com", 
-												"ns01-stage.beseye.com",
-												"ns01-stage.beseye.com"}; 
+	static private final String[] NS_BE_URL = { "http://ns01-dev.beseye.com/",
+												"http://ns01.beseye.com/", 
+												"http://ns01-stage.beseye.com/",
+												"http://ns01-stage.beseye.com/"}; 
 	
 	
 	
@@ -162,7 +160,7 @@ public class SessionMgr {
 	}
 	
 	public void setMMBEHostUrl(SERVER_MODE mode){
-		setMMBEHostUrl(String.format(MM_URL_FORMAT, MM_BE_URL[mode.ordinal()]));
+		setMMBEHostUrl(MM_BE_URL[mode.ordinal()]);
 	}
 	
 	synchronized public void setMMBEHostUrl(String strURL){
@@ -175,7 +173,7 @@ public class SessionMgr {
 	}
 	
 	public void setNSBEHostUrl(SERVER_MODE mode){
-		setNSBEHostUrl(String.format(NS_URL_FORMAT, NS_BE_URL[mode.ordinal()]));
+		setNSBEHostUrl(NS_BE_URL[mode.ordinal()]);
 	}
 	
 	synchronized public void setNSBEHostUrl(String strURL){

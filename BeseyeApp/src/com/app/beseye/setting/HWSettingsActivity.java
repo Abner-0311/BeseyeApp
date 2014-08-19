@@ -122,7 +122,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 					int iEndPos = view.getProgress();
 					if(iEndPos != iStartPos){
 						miBeginPosOfMicGain = iStartPos;
-						monitorAsyncTask(new BeseyeCamBEHttpTask.SetMicGainTask(HWSettingsActivity.this), true, mStrVCamID,""+(1+iEndPos));
+						monitorAsyncTask(new BeseyeCamBEHttpTask.SetMicGainTask(HWSettingsActivity.this), true, mStrVCamID,""+(iEndPos));
 					}
 				}});
 		}

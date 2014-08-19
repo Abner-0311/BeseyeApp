@@ -63,6 +63,9 @@
     <dimen name="hw_setting_mic_seekbar_horin_margin">6dp</dimen>
     <dimen name="hw_setting_night_vision_horin_margin">10dp</dimen>
     
+    <dimen name="hw_setting_mic_margin_vertical">18dp</dimen>
+    <dimen name="hw_setting_mic_mid_dist">14dp</dimen>
+    
     <dimen name="caminfo_dialog_attr_main_font_size">15sp</dimen>
     <dimen name="caminfo_dialog_attr_value_font_size">19sp</dimen>
     <dimen name="caminfo_dialog_attr_padding_vertical">6sp</dimen>

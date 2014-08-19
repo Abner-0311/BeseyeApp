@@ -110,8 +110,8 @@
 	<string name="cam_setting_fail_to_update_cam_status">Fail to update camera status. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_hd_quality">Fail to update video upload quality. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_led_status">Fail to update status light. Please try again later.</string>
-	<string name="cam_setting_fail_to_update_mic_status">Fail to update microphone status. Please try again later.</string>
-	<string name="cam_setting_fail_to_update_mic_sensitivity">Fail to update microphone sensitivity. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_mic_status">Fail to update Camera microphone. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_mic_sensitivity">Fail to update microphone status. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_wifi_setting">Fail to update WiFi setting. Please try again later.</string>
 	
 	<string name="cam_setting_wifi_setting_apply">WiFi config is applying. Please wait for a while.</string>
@@ -127,7 +127,7 @@
 	<string name="cam_setting_hw_hd_quality_title">HD quality</string>
 	<string name="cam_setting_hw_hd_quality_desc">60GB data usage for non-stop 30 days uploading</string>
 	
-	<string name="cam_setting_hw_mic_sensitivity_title">Microphone sensitivity</string>
+	<string name="cam_setting_hw_mic_sensitivity_title">Camera microphone</string>
 	<string name="cam_setting_hw_status_light_title">Status light</string>
 	
 	<string name="cam_setting_hw_night_vision_title">Night vision</string>
