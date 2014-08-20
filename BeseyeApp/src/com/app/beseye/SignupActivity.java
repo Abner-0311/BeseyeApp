@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeAccountFilter;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -55,7 +56,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 		mEtUserName = (EditText)findViewById(R.id.editText_username);
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
-			if(DEBUG){
+			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 				//if(BeseyeConfig.COMPUTEX_PAIRING){
 					File snFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_sn");
 					mstrSN = "0000";
@@ -84,7 +85,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 		if(null != mEtPassword){
 			mEtPassword.addTextChangedListener(mTextWatcher);
 			mEtPassword.setOnEditorActionListener(mOnEditorActionListener);
-			if(DEBUG)
+			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal())
 				mEtPassword.setText("123456");
 		}
 		

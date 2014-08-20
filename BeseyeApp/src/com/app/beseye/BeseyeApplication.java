@@ -260,29 +260,15 @@ public class BeseyeApplication extends Application {
 	
 	static public boolean checkPairingMode(){
 		File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
-		COMPUTEX_PAIRING = (null != pairingFile)&&pairingFile.exists();
+		SERVER_MODE mode = SessionMgr.getInstance().getServerMode();
+		COMPUTEX_PAIRING = ((null != pairingFile)&&pairingFile.exists()) || (mode.ordinal() >= SERVER_MODE.MODE_STAGING.ordinal());
 		
 		Log.i(TAG, "checkPairingMode(), COMPUTEX_PAIRING :"+COMPUTEX_PAIRING);
 		return COMPUTEX_PAIRING;
 	}
 	
 	static public void checkServerMode(){
-		File modeFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_mode");
-		SERVER_MODE mode = SERVER_MODE.MODE_COMPUTEX;
-		if(null != modeFile && modeFile.exists()){
-			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(modeFile)));
-				try {
-					String strMode = (null != reader)?reader.readLine():null;
-					if(null != strMode && 0 < strMode.length())
-						mode = SERVER_MODE.translateToMode(Integer.parseInt(strMode));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
+		SERVER_MODE mode = SessionMgr.getInstance().getServerMode();
 		SessionMgr.getInstance().setBEHostUrl(mode);
 		Log.i(TAG, "checkServerMode(), mode :"+mode);
 	}

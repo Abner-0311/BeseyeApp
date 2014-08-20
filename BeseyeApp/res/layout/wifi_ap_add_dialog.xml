@@ -214,6 +214,7 @@
 			   		android:layout_below="@+id/et_password_value"
 			   		android:text="@string/show_password"/>
 		    </RelativeLayout>
+		    <!--  
 		    <RelativeLayout 
 		        android:id="@+id/vg_keyindex_holder"
 		        android:layout_width="match_parent"
@@ -260,6 +261,7 @@
 		   			android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding" 		   	
 			   		android:layout_below="@+id/txt_keyindex"/>
 		    </RelativeLayout>
+		    -->
     	</LinearLayout> 
 	</ScrollView>
    	

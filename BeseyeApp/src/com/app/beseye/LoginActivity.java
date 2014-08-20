@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeAccountFilter;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -39,7 +40,7 @@ public class LoginActivity extends BeseyeBaseActivity {
 		mEtUserName = (EditText)findViewById(R.id.editText_username);
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
-			if(DEBUG)
+			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal())
 				mEtUserName.setText(TEST_ACC);
 		}
 		
@@ -47,7 +48,7 @@ public class LoginActivity extends BeseyeBaseActivity {
 		if(null != mEtPassword){
 			mEtPassword.addTextChangedListener(mTextWatcher);
 			mEtPassword.setOnEditorActionListener(mOnEditorActionListener);
-			if(DEBUG)
+			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal())
 				mEtPassword.setText("123456");
 		}
 		

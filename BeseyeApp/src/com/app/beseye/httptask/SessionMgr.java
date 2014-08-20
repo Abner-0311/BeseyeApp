@@ -48,6 +48,8 @@ public class SessionMgr {
 		}
 	}
 	
+	static public final SERVER_MODE DEFAULT_SERVER_MODE = SERVER_MODE.MODE_STAGING;
+	
 	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
 	static private final String[] ACCOUNT_BE_URL = {"https://acc01-dev.beseye.com",
 													"http://acc01.beseye.com", 
@@ -77,7 +79,7 @@ public class SessionMgr {
 	static private final String SESSION_UPDATE_TS			= "beseye_cam_update_ts";
 	static private final String SESSION_UPDATE_CAMS			= "beseye_cam_update_list";
 	
-	static private final String SESSION_PRODUCTION_MODE	    = "beseye_server_mode";
+	static private final String SESSION_SERVER_MODE	    = "beseye_server_mode";
 	
 	static private SessionMgr sSessionMgr;
 	
@@ -106,7 +108,7 @@ public class SessionMgr {
 				mSessionData.setDomain(getPrefStringValue(mPref, SESSION_DOMAIN));
 				mSessionData.setAuthToken(getPrefStringValue(mPref, SESSION_TOKEN));
 				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
-				mSessionData.setIsProductionMode(0 <getPrefIntValue(mPref, SESSION_PRODUCTION_MODE, 0));
+				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, 0)));
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
 				
 				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
@@ -253,13 +255,13 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
-	public boolean getIsProductionMode(){
-		return mSessionData.getIsProductionMode();
+	public SERVER_MODE getServerMode(){
+		return mSessionData.getServerMode();
 	}
 	
-	public void setIsProductionMode(boolean bIsProductionMode){
-		setPrefIntValue(mPref, SESSION_PRODUCTION_MODE, bIsProductionMode?1:0);
-		mSessionData.setIsProductionMode(bIsProductionMode);
+	public void setServerMode(SERVER_MODE serverMode){
+		setPrefIntValue(mPref, SESSION_SERVER_MODE, serverMode.ordinal());
+		mSessionData.setServerMode(serverMode);
 		notifySessionUpdate();
 		//BeseyeHttpTask.checkHostAddr();
 	}
@@ -321,8 +323,8 @@ public class SessionMgr {
 	
 	public static class SessionData implements Parcelable{
 		private String mStrHostUrl, mStrStorageHostUrl, mStrUploadHostUrl, mStrArtistsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo;
-		private boolean mbIsCertificated, mbProductionMode;
-		
+		private boolean mbIsCertificated;
+		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
 		private String mStrCamUpdateList;
 		
@@ -337,7 +339,7 @@ public class SessionMgr {
 			mStrToken = "";
 			mStrOwnerInfo = "";
 			mbIsCertificated = false;
-			mbProductionMode = true;
+			mServerMode = DEFAULT_SERVER_MODE;
 			
 			mlCamUpdateTs = 0;
 			mStrCamUpdateList = "";
@@ -425,12 +427,12 @@ public class SessionMgr {
 			mbIsCertificated = bIsCertificated;
 		}
 		
-		public boolean getIsProductionMode(){
-			return mbProductionMode;
+		public SERVER_MODE getServerMode(){
+			return mServerMode;
 		}
 		
-		public void setIsProductionMode(boolean bIsProductionMode){
-			mbProductionMode = bIsProductionMode;
+		public void setServerMode(SERVER_MODE mode){
+			mServerMode = mode;
 		}
 
 		@Override
@@ -479,7 +481,7 @@ public class SessionMgr {
 			dest.writeString(mStrOwnerInfo);
 			
 			dest.writeInt(mbIsCertificated?1:0);
-			dest.writeInt(mbProductionMode?1:0);
+			dest.writeInt(mServerMode.ordinal());
 			
 			dest.writeLong(mlCamUpdateTs);
 			dest.writeString(mStrCamUpdateList);
@@ -512,7 +514,7 @@ public class SessionMgr {
 			mStrOwnerInfo = in.readString();
 			
 			mbIsCertificated = in.readInt()>0?true:false;
-			mbProductionMode = in.readInt()>0?true:false;
+			mServerMode = SERVER_MODE.translateToMode(in.readInt());
 			
 			mlCamUpdateTs = in.readLong();
 			mStrCamUpdateList = in.readString();

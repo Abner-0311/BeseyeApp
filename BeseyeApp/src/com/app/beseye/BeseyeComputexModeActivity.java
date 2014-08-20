@@ -112,30 +112,22 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		}
 		mTxtPeriod.setText(iPeriod+"");
 		
-		File modeFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_mode");
-		SERVER_MODE mode = SERVER_MODE.MODE_COMPUTEX;
-		if(null != modeFile && modeFile.exists()){
-			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(modeFile)));
-				try {
-					String strMode = (null != reader)?reader.readLine():null;
-					if(null != strMode && 0 < strMode.length())
-						mode = SERVER_MODE.translateToMode(Integer.parseInt(strMode));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		
+		SERVER_MODE mode = SessionMgr.getInstance().getServerMode();
 		if(null != mSpServerType){
 			mSpServerType.setSelection(mode.ordinal());
 		}
 	}
 	
 	private void applyMode(){
-		if(mRbDemomode.isChecked()){
+		SERVER_MODE mode = SessionMgr.DEFAULT_SERVER_MODE;
+		if(null != mSpServerType){
+			mode = SERVER_MODE.translateToMode(mSpServerType.getSelectedItemPosition());
+			SessionMgr.getInstance().setServerMode(mode);
+			SessionMgr.getInstance().setBEHostUrl(mode);
+			Toast.makeText(this, "Server mode is "+mode, Toast.LENGTH_LONG).show();
+		}
+		
+		if(mRbDemomode.isChecked() && mode.ordinal() <= SERVER_MODE.MODE_COMPUTEX.ordinal()){
 			File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
 			if((null != pairingFile)&&pairingFile.exists()){
 				pairingFile.delete();
@@ -145,7 +137,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 				p2pFile.delete();
 			}
 			Toast.makeText(this, "Demo mode applied", Toast.LENGTH_LONG).show();
-		}else if(mRbPairingmode.isChecked()){
+		}else if(mRbPairingmode.isChecked() || mode.ordinal() > SERVER_MODE.MODE_COMPUTEX.ordinal()){
 			File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
 			if((null != pairingFile)){
 				Writer writer = null;
@@ -222,32 +214,6 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			}
 			
 			Toast.makeText(this, "Notify period is "+iPeriod+" seconds", Toast.LENGTH_LONG).show();
-		}
-		
-		if(null != mSpServerType){
-			SERVER_MODE mode = SERVER_MODE.translateToMode(mSpServerType.getSelectedItemPosition());
-			
-			File modeFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_mode");
-			if(null != modeFile){
-				if(modeFile.exists()){
-					modeFile.delete();
-				}
-				
-				Writer writerMode = null;
-				try {
-					writerMode = new BufferedWriter(new FileWriter(modeFile));
-					if(null != writerMode){
-						writerMode.write(mode.ordinal()+"");
-						writerMode.flush();
-						writerMode.close();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			SessionMgr.getInstance().setBEHostUrl(mode);
-			Toast.makeText(this, "Server mode is "+mode, Toast.LENGTH_LONG).show();
 		}
 		
 		launchDelegateActivity(BeseyeEntryActivity.class.getName());

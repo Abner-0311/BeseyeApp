@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeAccountFilter;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -46,7 +47,7 @@ public class ForgetPasswordActivity extends BeseyeAccountBaseActivity {
 		if(null != mEtUserEmail){
 			mEtUserEmail.setOnClickListener(this);
 			mEtUserEmail.setOnEditorActionListener(mOnEditorActionListener);
-			if(DEBUG)
+			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal())
 				mEtUserEmail.setText(TEST_ACC);
 		}
 	}

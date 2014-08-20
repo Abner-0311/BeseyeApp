@@ -2,6 +2,8 @@ package com.app.beseye;
 
 import java.util.Calendar;
 
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog.OnDatetimePickerClickListener;
@@ -60,7 +62,7 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 				break;
 			}
 			case R.id.iv_signup_top_logo:{
-				if(BeseyeConfig.DEBUG){
+				if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING.ordinal()){
 					miDemoCount++;
 					if(miDemoCount >=5){
 						launchActivityByClassName(BeseyeComputexModeActivity.class.getName());

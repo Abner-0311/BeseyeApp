@@ -6,5 +6,7 @@
           android:color="@color/word_white" /> <!-- focused -->
     <item android:state_selected="true"
           android:color="@color/word_white" /> <!-- selected -->
+    <item android:state_enabled="false"
+          android:color="@color/word_gray_disabled" /> <!-- disabled -->
     <item android:color="@color/wifi_info_dialog_btn_font_color" /> <!-- default -->
 </selector>

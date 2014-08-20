@@ -25,6 +25,7 @@ import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.CameraSettingActivity;
@@ -183,7 +184,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private void checkForUpdates() {
 	    // Remove this for store builds!
-		if(DEBUG)
+		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING.ordinal())
 			UpdateManager.register(this, HOCKEY_APP_ID);
 	}
 	
@@ -573,7 +574,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			//onToastShow(task, "failed to update status");
 		}
 		
-		if(DEBUG){
+		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 			onToastShow(task, strMsg);
 			Log.e(TAG, "onErrorReport(), task:["+task.getClass().getSimpleName()+"], iErrType:"+iErrType+", strTitle:"+strTitle+", strMsg:"+strMsg);
 		}
