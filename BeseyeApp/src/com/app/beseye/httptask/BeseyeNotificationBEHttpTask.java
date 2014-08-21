@@ -12,9 +12,21 @@ import com.app.beseye.util.BeseyeUtils;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 public class BeseyeNotificationBEHttpTask  {
-	static private final String URL_AUDIO_WS_SERVER  = "websocket_audio/get_avaliable_server";
-	static private final String URL_REQUEST_CAM_CONN  = "websocket_audio/request_cam_connect";
+	static private final String URL_WS_SERVER  			= "websocket/get_avaliable_server";
+	static private final String URL_AUDIO_WS_SERVER  	= "websocket_audio/get_avaliable_server";
+	static private final String URL_REQUEST_CAM_CONN  	= "websocket_audio/request_cam_connect";
 	
+	
+	public static class GetWSServerTask extends BeseyeHttpTask{
+		public GetWSServerTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+URL_WS_SERVER);
+		}
+	}
 	
 	public static class GetAudioWSServerTask extends BeseyeHttpTask{
 		public GetAudioWSServerTask(OnHttpTaskCallback cb) {

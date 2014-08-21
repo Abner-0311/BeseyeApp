@@ -943,7 +943,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					JSONArray arr = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.OBJ_DATA);
 					try {
 						AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
-						AudioWebSocketsMgr.getInstance().setAudioWSServerIP(arr.getString(0));
+						AudioWebSocketsMgr.getInstance().setAudioWSServerIP(arr.getString(arr.length()-1));
 						AudioWebSocketsMgr.getInstance().setSienceFlag(false);
 						AudioWebSocketsMgr.getInstance().constructWSChannel();
 					} catch (JSONException e) {
@@ -1050,6 +1050,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						closeStreaming();
 					}
 					mbIsCamSettingChanged = true;
+					updateAttrByCamObj();
 					checkPlayState();
 				}
 			}else{

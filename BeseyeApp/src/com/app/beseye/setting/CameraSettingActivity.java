@@ -19,6 +19,8 @@ import com.app.beseye.WifiListActivity;
 import com.app.beseye.WifiSetupGuideActivity;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -128,6 +130,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			if(null != txtLoc){
 				txtLoc.setText("Reboot cam !!!(Dev)");
 			}
+			
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
+				mVgLocationAware.setVisibility(View.GONE);
+			}
 		}
 		
 		mVgHWSettings = (ViewGroup)findViewById(R.id.vg_hw_settings);
@@ -138,6 +144,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgSiren = (ViewGroup)findViewById(R.id.vg_siren);
 		if(null != mVgSiren){
 			mVgSiren.setOnClickListener(this);
+//			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
+//				mVgSiren.setVisibility(View.GONE);
+//			}
 		}
 		
 		TextView txtSiren = (TextView)findViewById(R.id.txt_setting_emergency_siren);

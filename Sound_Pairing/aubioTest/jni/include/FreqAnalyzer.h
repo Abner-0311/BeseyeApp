@@ -109,7 +109,7 @@ private:
 	int segmentCheckOnFirst(bool bForcePerform);
 	int segmentCheck(bool bForcePerform);
 	string replaceInvalidChar(string strDecode);
-	void checkResult(string strDecode);
+	void checkResult(string strDecode, string strDecodeUnmark);
 	int checkFrameBySessionAndAutoCorrection();
 	void regenDecode();
 	static int getNumOfBias(vector<Ref<CodeRecord> > lstCodeRecord);

@@ -51,14 +51,14 @@ public class SessionMgr {
 	static public final SERVER_MODE DEFAULT_SERVER_MODE = SERVER_MODE.MODE_STAGING;
 	
 	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
-	static private final String[] ACCOUNT_BE_URL = {"https://acc01-dev.beseye.com",
+	static private final String[] ACCOUNT_BE_URL = {"http://acc01-dev.beseye.com",
 													"http://acc01.beseye.com", 
-													"https://acc01-stage.beseye.com",
+													"http://acc01-stage.beseye.com",
 													"https://acc01-stage.beseye.com"}; 
 	
-	static private final String[] MM_BE_URL = { "https://mm01-forext-dev.beseye.com/",
+	static private final String[] MM_BE_URL = { "http://mm01-forext-dev.beseye.com/",
 												"http://mm01-forext-comp.beseye.com/", 
-												"https://mm01-forext-stage.beseye.com/",
+												"http://mm01-forext-stage.beseye.com/",
 												"https://mm01-forext-stage.beseye.com/"}; 
 	
 	static private final String[] NS_BE_URL = { "http://ns01-dev.beseye.com/",
@@ -79,7 +79,7 @@ public class SessionMgr {
 	static private final String SESSION_UPDATE_TS			= "beseye_cam_update_ts";
 	static private final String SESSION_UPDATE_CAMS			= "beseye_cam_update_list";
 	
-	static private final String SESSION_SERVER_MODE	    = "beseye_server_mode";
+	static private final String SESSION_SERVER_MODE	    	= "beseye_server_mode";
 	
 	static private SessionMgr sSessionMgr;
 	

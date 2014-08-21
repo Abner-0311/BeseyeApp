@@ -1279,22 +1279,28 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 
 			}
 			AudioBufferMgr::getInstance()->addToAvailableBuf(buf);
+
 			//to avoid blocking buf record thread
-			msec_t lDleta = time_ms() - lLastTimeToBufRec;
-			if(lDleta >= 5000){
-				LOGI("runAudioBufAnalysis(), lDleta > 5000\n");
-				yieldtime.tv_nsec = 10000000;//10 ms
-				nanosleep(&yieldtime, NULL);
-			}else if(lDleta >= 3000){
-				LOGI("runAudioBufAnalysis(), lDleta > 3000\n");
-				yieldtime.tv_nsec = 5000000;//5 ms
-				nanosleep(&yieldtime, NULL);
-			}else if(lDleta >= 1000){
-				LOGI("runAudioBufAnalysis(), lDleta > 1000\n");
-				yieldtime.tv_nsec = 2000000;//2 ms
+			if(-1 != AudioTest::getInstance()->getStopAnalysisBufIdx()){
+				yieldtime.tv_nsec = 30000000;//30 ms
 				nanosleep(&yieldtime, NULL);
 			}else{
-				//yieldtime.tv_nsec = 1000000;//1 ms
+				msec_t lDleta = time_ms() - lLastTimeToBufRec;
+				if(lDleta >= 5000){
+					LOGI("runAudioBufAnalysis(), lDleta > 5000\n");
+					yieldtime.tv_nsec = 10000000;//10 ms
+					nanosleep(&yieldtime, NULL);
+				}else if(lDleta >= 3000){
+					LOGI("runAudioBufAnalysis(), lDleta > 3000\n");
+					yieldtime.tv_nsec = 5000000;//5 ms
+					nanosleep(&yieldtime, NULL);
+				}else if(lDleta >= 1000){
+					LOGI("runAudioBufAnalysis(), lDleta > 1000\n");
+					yieldtime.tv_nsec = 2000000;//2 ms
+					nanosleep(&yieldtime, NULL);
+				}else{
+					//yieldtime.tv_nsec = 1000000;//1 ms
+				}
 			}
 		}
 	}
@@ -1571,7 +1577,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 	LOGI("onSetResult(), strCode:%s, strDecodeMark = %s\n", strCode.c_str(), strDecodeMark.c_str());
 #ifdef CAM_ENV
 	if(mbPairingAnalysisMode && 0 < strCode.length()){
-		checkPairingResult(strCode, strDecodeUnmark);
+		checkPairingResult(strCode, strDecodeMark);
 		if(0 <= miPairingReturnCode){
 			LOGE("miPairingReturnCode:[%d], close sp\n",miPairingReturnCode);
 			changePairingMode(PAIRING_DONE);
@@ -1687,6 +1693,18 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 	/*if(NULL == getDecodeRet())*/{
 		if(false == freqAnalyzer->checkEndPoint()){
 			string strDecodeUnmark = SoundPair_Config::decodeConsecutiveDigits(tmpRet.str());
+#ifdef CAM_ENV
+			if(mbPairingAnalysisMode && 0 < strDecodeUnmark.length()){
+				checkPairingResult("error", strDecodeUnmark);
+				if(0 <= miPairingReturnCode){
+					LOGE("miPairingReturnCode:[%d], close sp\n",miPairingReturnCode);
+					changePairingMode(PAIRING_DONE);
+					setLedLight(0,1,0);
+					stopAutoTest();
+					return;
+				}
+			}
+#endif
 			if(0 == strDecodeUnmark.find(curCode)){
 				if(0 == strDecodeUnmark.find(curCode+curECCode)){
 					strLog << "!!!!!!!!!!!!!!!!!!!runAutoTest(), Case 7 ===>>> detection timeout but msg+errCode matched, bFromAutoCorrection:"<<bFromAutoCorrection<<"\n" <<

@@ -25,7 +25,7 @@ import com.koushikdutta.async.http.AsyncHttpClient.WebSocketConnectCallback;
 import com.koushikdutta.async.http.WebSocket.StringCallback;
 
 public class WebsocketsMgr {
-	static private final String NOTIFY_WS_ADDR = /*"ws://192.168.2.4:1314";*/"http://54.238.255.56:80/websocket";
+	static private String NOTIFY_WS_ADDR = null;/*"ws://192.168.2.4:1314";*///"http://54.238.255.56:80/websocket";
 	static private WebsocketsMgr sWebsocketsMgr = null;
 	
 	static public WebsocketsMgr getInstance(){
@@ -73,12 +73,21 @@ public class WebsocketsMgr {
 		}
 	}
 	
+	public String getWSServerIP(){
+		return NOTIFY_WS_ADDR;
+	}
+	
+	public void setWSServerIP(String ip){
+		Log.i(TAG, "setWSServerIP(), ip="+ip);
+		NOTIFY_WS_ADDR = String.format("http://%s:80/websocket", ip);//"54.238.255.56");
+	}
+	
 	public boolean constructWSChannel(){
 		Log.i(TAG, "constructWSChannel(), ++");
 		boolean bRet = false;
 		try {
 			//printNotifyWSChannelState();
-			if(isWSChannelAlive()){
+			if(isWSChannelAlive() || null == NOTIFY_WS_ADDR){
 				bRet = false;
 			}else{
 				synchronized(this){
@@ -91,7 +100,7 @@ public class WebsocketsMgr {
 				
 				//Log.i(TAG, "constructWSChannel()");
 				mFNotifyWSChannel = AsyncHttpClient.getDefaultInstance().websocket(getWSPath(), getWSProtocol(), getWebSocketConnectCallback());
-				
+				Log.i(TAG, "constructWSChannel(), path =>"+getWSPath());
 				WebSocket ws = mFNotifyWSChannel.get();
 				Log.i(TAG, "constructWSChannel(), ws is null =>"+(null == ws));
 				if(null == ws){

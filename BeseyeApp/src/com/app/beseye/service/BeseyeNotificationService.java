@@ -37,6 +37,7 @@ import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
+import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
 import com.app.beseye.httptask.BeseyePushServiceTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SessionData;
@@ -46,6 +47,7 @@ import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
+import com.app.beseye.websockets.AudioWebSocketsMgr;
 import com.app.beseye.websockets.WebsocketsMgr;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.google.android.gcm.GCMRegistrar;
@@ -515,7 +517,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
     	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated() && false == WebsocketsMgr.getInstance().isWSChannelAlive()){
     		if(NetworkMgr.getInstance().isNetworkConnected()){
-    			WebsocketsMgr.getInstance().constructWSChannel();
+    			if(null != WebsocketsMgr.getInstance().getWSServerIP())
+    				WebsocketsMgr.getInstance().constructWSChannel();
+    			else{
+    				new BeseyeNotificationBEHttpTask.GetWSServerTask(this).execute();
+    			}
     		}
     	}else{
     		WebsocketsMgr.getInstance().destroyWSChannel();
@@ -1236,6 +1242,16 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			}else if(task instanceof BeseyePushServiceTask.DelRegisterIDTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
 					Log.i(TAG, "onPostExecute(), DelRegisterIDTask OK");
+				}
+			}else if(task instanceof BeseyeNotificationBEHttpTask.GetWSServerTask){
+				if(0 == iRetCode && null != result && 0 < result.size()){
+					JSONArray arr = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.OBJ_DATA);
+					try {
+						WebsocketsMgr.getInstance().setWSServerIP(arr.getString(arr.length()-1));
+						WebsocketsMgr.getInstance().constructWSChannel();
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
 				}
 			}else if(task instanceof BeseyeMMBEHttpTask.GetIMPEventListTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){

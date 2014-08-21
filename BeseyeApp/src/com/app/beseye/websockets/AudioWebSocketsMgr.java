@@ -111,6 +111,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	
 	public void setAudioWSServerIP(String ip){
 		AUDIO_WS_ADDR = String.format("http://%s:80/websocket", ip);//"54.238.255.56");
+		Log.i(TAG, "AudioWebSocketsMgr::setAudioWSServerIP()...AUDIO_WS_ADDR:"+AUDIO_WS_ADDR);
 	}
 	
 	protected WebSocketConnectCallback getWebSocketConnectCallback(){

@@ -160,6 +160,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		
 		mIvViewUpDownCheck = (ImageView)findViewById(R.id.iv_video_upside_down_check);
 		if(null != mIvViewUpDownCheck){
+			mIvViewUpDownCheck.setVisibility(View.INVISIBLE);
 			//mIvViewUpDownCheck.setOnClickListener(this);
 		}
 		

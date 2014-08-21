@@ -56,8 +56,9 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 		mEtUserName = (EditText)findViewById(R.id.editText_username);
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
-			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-				//if(BeseyeConfig.COMPUTEX_PAIRING){
+			if(SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
+				if(DEBUG){
+					//if(BeseyeConfig.COMPUTEX_PAIRING){
 					File snFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_sn");
 					mstrSN = "0000";
 					if(null != snFile && snFile.exists()){
@@ -78,6 +79,8 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 				}else{
 					mEtUserName.setText(TEST_ACC);
 				}
+			}
+			
 			//}
 		}
 		
@@ -213,19 +216,21 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
 						}
 						
-						Writer writer = null;
-						try {
-							File snFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_sn");
-							snFile.delete();
-							if(null != snFile){
-								writer = new BufferedWriter(new FileWriter(snFile));
-								if(null != writer){
-									writer.write(mstrSN);
-									writer.close();
+						if(null != mstrSN){
+							Writer writer = null;
+							try {
+								File snFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_sn");
+								snFile.delete();
+								if(null != snFile){
+									writer = new BufferedWriter(new FileWriter(snFile));
+									if(null != writer){
+										writer.write(mstrSN);
+										writer.close();
+									}
 								}
+							} catch (IOException e) {
+								e.printStackTrace();
 							}
-						} catch (IOException e) {
-							e.printStackTrace();
 						}
 					}
 					Bundle b = new Bundle();

@@ -263,7 +263,7 @@ void FreqAnalyzer::triggerTimeout(){
 //						mCodeRecordList.erase(mCodeRecordList.begin());
 //					}
 					LOGE("triggerTimeout(), to check result+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-					checkResult(optimizeDecodeString((iPosPostfix - iPossiblePrefix)));
+					checkResult(msbDecode.str().substr(0, (iPosPostfix - iPossiblePrefix)), optimizeDecodeString((iPosPostfix - iPossiblePrefix)));
 					mFreqRecordList.clear();
 				}
 			}
@@ -708,8 +708,9 @@ void FreqAnalyzer::normalAnalysis(int iIndex){
 		LOGE("normalAnalysis(), change index from %d to %d\n", iIndex, iNewIndex);
 		iIndex = iNewIndex;
 	}
+	if(0 <= iIndex)
+		checkResult(msbDecode.str().substr(0, iIndex), optimizeDecodeString(iIndex));
 
-	checkResult(optimizeDecodeString(iIndex));
 	mFreqRecordList.clear();
 }
 
@@ -1263,7 +1264,7 @@ bool FreqAnalyzer::checkEndPoint(){
 			}
 
 			if(-1 < iIndex){
-				checkResult(optimizeDecodeString(iIndex));
+				checkResult(msbDecode.str().substr(0, iIndex), optimizeDecodeString(iIndex));
 				return true;
 			}
 		}else{
@@ -1273,13 +1274,13 @@ bool FreqAnalyzer::checkEndPoint(){
 	return false;
 }
 
-void FreqAnalyzer::checkResult(string strDecode){
+void FreqAnalyzer::checkResult(string strDecode, string strDecodeUnmark){
 //		strDecode = replaceInvalidChar(strDecode);
 //		string strDecodeUnmark = removeDividerAndUnmark(strDecode);
 
 	//sIFreqAnalyzeResultCBListener.onSetResult();
 
-	string strDecodeUnmark = strDecode;//replaceInvalidChar(strDecode);
+	//string strDecodeUnmark = strDecode;//replaceInvalidChar(strDecode);
 	msbDecode.str("");
 	msbDecode.clear();
 	if(CAM_TIME_TRACE && mCodeRecordList.size() > 0){
