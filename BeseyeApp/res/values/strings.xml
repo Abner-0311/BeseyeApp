@@ -8,6 +8,7 @@
     
     <string name="connect">Connect</string>
     <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
     <string name="ok">OK</string>
     <string name="yes">Yes</string>
     <string name="select">Select</string>
@@ -175,6 +176,7 @@
 	<string name="msg_signup_error">Signup failed. Please try again later.</string>
 	<string name="msg_login_error">Login failed. Please try again later.</string>
 	<string name="msg_pairing_error">Pairing failed. Please try again later.</string>
+	<string name="msg_set_cam_name_fail">Set camera name failed. Please try again later.</string>
 	<string name="msg_invalid_account_format">Invalid email format.</string>
 	<string name="msg_pw_length_error">Password length should be between 6 and 20.</string>
 	<string name="msg_pw_too_short">Your password is too short.</string>

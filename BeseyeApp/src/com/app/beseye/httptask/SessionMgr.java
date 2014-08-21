@@ -108,7 +108,7 @@ public class SessionMgr {
 				mSessionData.setDomain(getPrefStringValue(mPref, SESSION_DOMAIN));
 				mSessionData.setAuthToken(getPrefStringValue(mPref, SESSION_TOKEN));
 				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
-				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, 0)));
+				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, DEFAULT_SERVER_MODE.ordinal())));
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
 				
 				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));

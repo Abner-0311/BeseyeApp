@@ -96,8 +96,8 @@
     <dimen name="signup_paring_container">456dp</dimen>
     
     <dimen name="signup_learnMore_margin">4dp</dimen>
-    <dimen name="signup_firstPage_bottom_btn_marginBottom">16dp</dimen>
-    <dimen name="signup_firstPage_bottom_btn_marginSide">24dp</dimen>
+    <dimen name="signup_firstPage_bottom_btn_marginBottom">23dp</dimen>
+    <dimen name="signup_firstPage_bottom_btn_marginSide">40dp</dimen>
     <dimen name="signup_firstPage_marginTop">64dp</dimen>
     <dimen name="signup_firstPage_marginBottom">32dp</dimen>
     <dimen name="signup_beforeSetup_img_marginTop">56dp</dimen>
