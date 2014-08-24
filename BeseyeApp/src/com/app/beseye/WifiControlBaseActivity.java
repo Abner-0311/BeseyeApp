@@ -468,7 +468,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 						btnConnect.setText(R.string.select);
 					}
 					
-					btnConnect.setEnabled(false);
+					btnConnect.setEnabled((null != mChosenWifiAPInfo && WifiAPInfo.AUTHNICATION_KEY_NONE == mChosenWifiAPInfo.iCipherIdx));
 					
 					btnConnect.setOnClickListener(new OnClickListener(){
 						@Override
@@ -521,6 +521,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 						if(null != etPassword){
 							if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 								etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
+								btnConnect.setEnabled(true);
 							}
 							mWifiApPassword = etPassword.getText().toString();
 							etPassword.addTextChangedListener(new TextWatcher(){

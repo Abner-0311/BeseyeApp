@@ -123,6 +123,7 @@
 	<string name="cam_setting_fail_to_update_night_vision">Fail to update night vision. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_video_upside_down">Fail to update video upside-down. Please try again later.</string>
 	<string name="cam_setting_fail_to_get_cam_info">Fail to get camera info. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_schdule_status">Fail to update schedule. Please try again later.</string>
 	<string name="cam_setting_fail_to_get_wifi_list">Fail to get WiFi list from camera. Please try again later.</string>
 	
 	<string name="cam_setting_hw_hd_quality_title">HD quality</string>
@@ -284,6 +285,8 @@
 	<string name="toast_cam_off_by_other">Camera is turned off by other user</string>
 	<string name="toast_cam_off_by_schedule">Camera is turned off according to power schedule</string>
 	<string name="toast_cam_off_by_location">Camera is turned off accordIng to location setting</string>
+	
+	<string name="toast_new_cam_activated">New camera is online. Please refresh your camera list.</string>
 	
 	<string name="about_title">About Beseye</string>
 	<string name="about_desc">Beseye and the Beseye logo are registered trademarks of Beseye, Inc. iPhone, iPad, iPood Touch, and App Store are registered trademarks of Apple, Inc. Chrome and Android are registered trademarks of Google, Inc. Internet Explorer is a registered trademark of Microsoft Corporation. Firefox is a registered trademark of Mozilla Corporation. Wi-Fi and Wi-Fi Certified logo are registered trademarks of the Wi-Fi Alliance. Certain other product names, brand names, and company names may be trademarks or designations of their respective owners.</string>

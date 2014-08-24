@@ -96,9 +96,16 @@ public class BeseyeJSONUtil {
 	
 	public static final String CAM_WS_STATUS 			= "wsStatus";//1 => on-line, 0=> off-line
 	
-	public static final String SCHED_FROM 				= "from";
-	public static final String SCHED_TO 				= "to";
-	public static final String SCHED_DAYS 				= "days";
+	
+	public static final String SCHED_OBJ 				= "Schedule";
+	public static final String SCHED_STATUS 			= "Status";
+	public static final String SCHED_LIST 				= "List";
+	public static final String SCHEDULE_STATUS 			= "ScheduleStatus";
+	public static final String SCHED_FROM 				= "StartTime";
+	public static final String SCHED_TO 				= "EndTime";
+	public static final String SCHED_DAYS 				= "WorkDay";
+	public static final String SCHED_PERIOD 			= "Peroid";
+	public static final String SCHED_ENABLE 			= "Enable";
 	
 	public static final String UPDATE_PROGRESS 			= "progress";
 	public static final String UPDATE_FINAL_STAUS 		= "finalStatus";
@@ -323,15 +330,18 @@ public class BeseyeJSONUtil {
 	public static final String PS_REG_ID_OLD 			= "from";
 	public static final String PS_REG_ID_NEW 			= "to";
 	
-	public static final String PS_REGULAR_DATA 			= "RegularData";
+	public static final String PS_REGULAR_DATA 			= "regularData";
 	public static final String PS_MSG 					= "Message";
 	public static final String PS_CAM_UID 				= "CamUID";
-	public static final String PS_NCODE 				= "NCode";
-	public static final String PS_TS 					= "Timestamp";
+	public static final String PS_NCODE 				= "nCode";
+	public static final String PS_TS 					= "timestamp";
 	
-	public static final String PS_CUSTOM_DATA 			= "CustomData";
+	public static final String PS_CUSTOM_DATA 			= "customData";
 	
 	public static final String PS_WIFI_CONFIG_REPORT 	= "configReport";
+	public static final String PS_PAIR_TOKEN 			= "pairingToken";
+	public static final String PS_USER_UUID 			= "userUuid";
+	
 	
 	//Helper functions
 	static public JSONObject newJSONObject(String json){
@@ -656,6 +666,19 @@ public class BeseyeJSONUtil {
 		try {
 			if(null != obj && null != strKey){
 				obj.put(strKey, lVal);
+				bRet = true;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return bRet;
+	}
+	
+	static public boolean setJSONBoolean(JSONObject obj, String strKey, boolean bVal){
+		boolean bRet = false;
+		try {
+			if(null != obj && null != strKey){
+				obj.put(strKey, bVal);
 				bRet = true;
 			}
 		} catch (JSONException e) {

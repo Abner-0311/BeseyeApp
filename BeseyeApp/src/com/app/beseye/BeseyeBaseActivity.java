@@ -27,6 +27,8 @@ import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.httptask.SessionMgr.SessionData;
+import com.app.beseye.pairing.SoundPairingActivity;
+import com.app.beseye.pairing.SoundPairingNamingActivity;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.CameraSettingActivity;
 import com.app.beseye.setting.HWSettingsActivity;
@@ -589,6 +591,23 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					invokeSessionComplete();
 				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_EXIST == iRetCode  || BeseyeError.E_BE_ACC_SESSION_EXPIRED == iRetCode){
 					onSessionInvalid();
+				}else{
+					
+				}
+			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
+				if(task == mGetNewCamTask){
+					if(0 == iRetCode){
+						JSONObject cam_obj = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_VCAM);
+						if(null != cam_obj){
+							//workaround
+							SessionMgr.getInstance().setIsCertificated(true);						
+							Bundle b = new Bundle();
+							b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
+							launchDelegateActivity(SoundPairingNamingActivity.class.getName(), b);
+						}
+					}
+					
+					mGetNewCamTask = null;
 				}
 			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 				if(0 == iRetCode){
@@ -802,6 +821,21 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}
 	}
 	
+	//TO extend ws connection to avoid mssing cam activate event in bg
+	protected void extendWSConnection(long lTimeToExtend){
+		if(null != mNotifyService){
+			try {
+				Message msg = Message.obtain(null, BeseyeNotificationService.MSG_EXTEND_WS_CONN);
+				if(null != msg){
+					msg.getData().putLong(BeseyeNotificationService.MSG_WS_EXTEND, lTimeToExtend);
+					mNotifyService.send(msg);
+				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	private Messenger mMessenger = new Messenger(new NotificationHandler(this));
 	protected Messenger mNotifyService = null;
 	protected Messenger mUploadWorksService = null;
@@ -849,6 +883,20 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						}
                 	}
                     break;
+                }
+                case BeseyeNotificationService.MSG_CAM_ACTIVATE:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCameraActivated(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                	break;
                 }
 //                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{
 //                	BeseyeBaseActivity act = mActivity.get();
@@ -1039,6 +1087,29 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
         		if(null != objReg){
         			//String strCamUID = BeseyeJSONUtil.getJSONString(objReg, WS_ATTR_CAM_UID);
         			removeMyDialog(DIALOG_ID_WIFI_AP_APPLY);
+        			return true;
+        		}
+    		}
+    	}
+    	return false;
+    }
+    
+    protected AsyncTask mGetNewCamTask;
+    
+    protected boolean onCameraActivated(JSONObject msgObj){
+    	if(! (this instanceof SoundPairingActivity) && mActivityResume){
+    		Log.i(TAG, getClass().getSimpleName()+"::onCameraActivated(),  msgObj = "+msgObj);
+    		if(null != msgObj){
+        		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+        		if(null != objCus){
+        			String strPairToken = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_PAIR_TOKEN);
+        			if(null != strPairToken && strPairToken.equals(SessionMgr.getInstance().getPairToken())){
+        				Log.i(TAG, getClass().getSimpleName()+"::onCameraActivated(), find match strPairToken = "+strPairToken);
+        				String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.MM_VCAM_UUID);
+        				monitorAsyncTask(mGetNewCamTask = new BeseyeAccountTask.GetCamInfoTask(this), false, strCamUID);
+        				SessionMgr.getInstance().setPairToken("");
+        				Toast.makeText(this, getString(R.string.toast_new_cam_activated), Toast.LENGTH_SHORT).show();
+        			}
         			return true;
         		}
     		}

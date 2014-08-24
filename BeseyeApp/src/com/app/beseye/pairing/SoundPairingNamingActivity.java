@@ -108,8 +108,6 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity {
 		}
 	}
 	
-	
-
 	@Override
 	protected void onSessionComplete() {
 		super.onSessionComplete();

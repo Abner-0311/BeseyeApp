@@ -132,6 +132,8 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 				mSched_obj_edit.put(SCHED_DAYS, arrDays);
 				mSched_obj_edit.put(SCHED_FROM, BeseyeUtils.DEFAULT_FROM_TIME);
 				mSched_obj_edit.put(SCHED_TO, BeseyeUtils.DEFAULT_TO_TIME);
+				mSched_obj_edit.put(SCHED_PERIOD, true);
+				mSched_obj_edit.put(SCHED_ENABLE, true);
 			}
 		} catch (JSONException e1) {
 			Log.e(TAG, "PowerScheduleEditActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
@@ -170,7 +172,6 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 			mVgTurnOffAllDay.setOnClickListener(this);
 		}
 		
-		
 		mIvTurnoffAllDayCheck = (ImageView)findViewById(R.id.iv_turnoff_all_day_check);
 		if(null != mIvTurnoffAllDayCheck){
 			mIvTurnoffAllDayCheck.setVisibility(View.INVISIBLE);
@@ -198,7 +199,6 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
 	}
 	
 	@Override
@@ -295,16 +295,34 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
-			if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+			if(task instanceof BeseyeCamBEHttpTask.AddScheduleTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
-					JSONObject obj = result.get(0);
-					if(null != obj){
-						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
-						if(null != dataObj){
-							int iCamStatus = getJSONInt(dataObj, CAM_STATUS, 0);
-	
-						}
+
+					boolean bTurnOffAllDay = (null != mIvTurnoffAllDayCheck && View.VISIBLE == mIvTurnoffAllDayCheck.getVisibility());
+					int iFromTime = BeseyeJSONUtil.getJSONInt(mSched_obj_edit, SCHED_FROM);
+					int iToTime = BeseyeJSONUtil.getJSONInt(mSched_obj_edit, SCHED_TO);
+					
+					if(bTurnOffAllDay){
+						iFromTime = 0;
+						iToTime = BeseyeUtils.DAY_IN_SECONDS;
+					}
+					else if(iFromTime >= iToTime){
+						iToTime+=BeseyeUtils.DAY_IN_SECONDS;
+					}
+					
+					JSONObject toSave;
+					try {
+						toSave = new JSONObject(mSched_obj_edit.toString());
+						toSave.put(SCHED_FROM, iFromTime);
+						toSave.put(SCHED_TO, iToTime);
+						
+						Intent intent = new Intent();
+						intent.putExtra(KEY_SCHED_OBJ, toSave.toString());
+						setResult(RESULT_OK, intent);
+						finish();
+					} catch (JSONException e) {
+						e.printStackTrace();
 					}
 				}
 			}else{
@@ -314,7 +332,6 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	}
 	
 	private void showTimePicker(final TextView viewToModify, final String strFieldTUpdate, String strTitle){
-		
 		BeseyeTimePickerDialog d = new BeseyeTimePickerDialog(this, BeseyeUtils.getTimeObjBySeconds(BeseyeJSONUtil.getJSONInt(mSched_obj_edit, strFieldTUpdate)), strTitle); 
 		d.setOnDatetimePickerClickListener(new BeseyeTimePickerDialog.OnDatetimePickerClickListener(){
 			@Override
@@ -348,28 +365,31 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 			b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_schedule_error_same_time));
 			showMyDialog(DIALOG_ID_WARNING, b);
 		}else{
-			if(bTurnOffAllDay){
-				iFromTime = 0;
-				iToTime = BeseyeUtils.DAY_IN_SECONDS;
-			}
-			else if(iFromTime >= iToTime){
-				iToTime+=BeseyeUtils.DAY_IN_SECONDS;
-			}
-			Toast.makeText(PowerScheduleEditActivity.this, (mbEditMode?"Save":"Add")+" schedule from "+iFromTime+" to "+iToTime, Toast.LENGTH_SHORT).show();
-			JSONObject toSave;
+			
 			try {
-				toSave = new JSONObject(mSched_obj_edit.toString());
-				toSave.put(SCHED_FROM, iFromTime);
-				toSave.put(SCHED_TO, iToTime);
+				JSONObject sched_obj = new JSONObject(mSched_obj_edit.toString());
+				if(bTurnOffAllDay){
+					iFromTime = 0;
+					iToTime = BeseyeUtils.DAY_IN_SECONDS;
+					BeseyeJSONUtil.setJSONLong(sched_obj, SCHED_FROM, iFromTime);
+					BeseyeJSONUtil.setJSONLong(sched_obj, SCHED_TO, iToTime);
+				}else if(iFromTime >= iToTime){
+					iToTime+=BeseyeUtils.DAY_IN_SECONDS;
+					BeseyeJSONUtil.setJSONLong(sched_obj, SCHED_TO, iToTime);
+				}
 				
-				Intent intent = new Intent();
-				intent.putExtra(KEY_SCHED_OBJ, toSave.toString());
-				setResult(RESULT_OK, intent);
-				finish();
+				if(false == mbEditMode){
+					monitorAsyncTask(new BeseyeCamBEHttpTask.AddScheduleTask(this), true, mStrVCamID, sched_obj.toString());
+				}else{
+					
+				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			Toast.makeText(PowerScheduleEditActivity.this, (mbEditMode?"Save":"Add")+" schedule from "+iFromTime+" to "+iToTime, Toast.LENGTH_SHORT).show();
+			
 		}
 		return bRet;
 	}

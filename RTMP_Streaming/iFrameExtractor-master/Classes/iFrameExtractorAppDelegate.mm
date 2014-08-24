@@ -194,6 +194,8 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
     }else if(status == FreqGenerator::PLAY_TONE_END){
         [playToneButton setEnabled:YES];
         //[playToneButton. performSelectorOnMainThread:@selector(enableButton:) withObject:playToneButton waitUntilDone:NO];
+    }else if(status == FreqGenerator::PLAY_TONE_AUDIO_DEV_INIT){
+        NSLog(@"PLAY_TONE_AUDIO_DEV_INIT callback");
     }
 }
 

@@ -23,6 +23,7 @@ import com.app.beseye.WifiListActivity;
 import com.app.beseye.WifiSetupGuideActivity;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -112,12 +113,12 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 		}
 		
 		mVgPowerScheduleContainer = (ViewGroup)findViewById(R.id.vg_power_schedule_itm_container);
-		try {
-			addScheduleItm(new JSONObject("{\""+SCHED_FROM+"\":3600, \""+SCHED_TO+"\":36000, \""+SCHED_DAYS+"\":[0,1,3,5,6]}"));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			addScheduleItm(new JSONObject("{\""+SCHED_FROM+"\":3600, \""+SCHED_TO+"\":36000, \""+SCHED_DAYS+"\":[0,1,3,5,6]}"));
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	private void addScheduleItm(JSONObject objSchdl){
@@ -167,19 +168,11 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
-	}
-	
-	private void updateSheduleState(){
-//		BeseyeJSONUtil.CAM_CONN_STATUS iCamState =  BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
-//		if(null != mScheduleSwitchBtn){
-//			if(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
-//				mScheduleSwitchBtn.setEnabled(false);
-//			}else{
-//				mScheduleSwitchBtn.setEnabled(true);
-//				mScheduleSwitchBtn.setSwitchState((BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-//			}
-//		}
+		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		}else{
+			updateScheduleStatus();
+		}
 	}
 
 	@Override
@@ -189,8 +182,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 
 	@Override
 	public void onSwitchBtnStateChanged(SwitchState state, View view) {
-
-		//monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
+		monitorAsyncTask(new BeseyeCamBEHttpTask.SetScheduleStatusTask(this), true, mStrVCamID,(SwitchState.SWITCH_ON.equals(state)?Boolean.TRUE:Boolean.FALSE).toString());
 	}
 
 	@Override
@@ -229,8 +221,18 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 					Bundle b = new Bundle();
 					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_get_cam_info));
 					showMyDialog(DIALOG_ID_WARNING, b);
-					updateSheduleState();
+					updateScheduleStatus();
 				}}, 0);
+		}else if(task instanceof BeseyeCamBEHttpTask.SetScheduleStatusTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_update_schdule_status));
+					showMyDialog(DIALOG_ID_WARNING, b);
+					updateScheduleStatus();
+				}}, 0);
+			
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -240,18 +242,65 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-					JSONObject obj = result.get(0);
-					if(null != obj){
-						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
-						if(null != dataObj){
-							int iCamStatus = getJSONInt(dataObj, CAM_STATUS, 0);
-							updateSheduleState();
+					super.onPostExecute(task, result, iRetCode);
+					updateScheduleStatus();
+				}
+			}else if(task instanceof BeseyeCamBEHttpTask.SetScheduleStatusTask){
+				Log.e(TAG, "PowerScheduleActivity::onPostExecute(), result.get(0)="+result.get(0).toString());
+				if(0 == iRetCode){
+					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
+					if(null != dataObj){
+						JSONObject schedObj = BeseyeJSONUtil.getJSONObject(dataObj, SCHED_OBJ);
+						if(null != schedObj){
+							BeseyeJSONUtil.setJSONBoolean(schedObj, SCHED_STATUS, BeseyeJSONUtil.getJSONBoolean(result.get(0), SCHEDULE_STATUS));
+							BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), OBJ_TIMESTAMP));
+							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 						}
 					}
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);
+			}
+		}
+	}
+	
+	private void updateScheduleStatus(){
+		if(null != mCam_obj){
+			JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
+			if(null != dataObj){
+				JSONObject schedObj = BeseyeJSONUtil.getJSONObject(dataObj, SCHED_OBJ);
+				if(null != schedObj){
+					boolean bSchedStatus = getJSONBoolean(schedObj, SCHED_STATUS, false);
+					if(null != mScheduleSwitchBtn){
+						if(BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj)){
+							mScheduleSwitchBtn.setEnabled(false);
+						}else{
+							mScheduleSwitchBtn.setEnabled(true);
+							mScheduleSwitchBtn.setSwitchState(bSchedStatus?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+						}
+					}
+					
+					JSONObject schedListObj = BeseyeJSONUtil.getJSONObject(schedObj, SCHED_LIST);
+					if(null != schedListObj){
+						JSONArray arrScheduleIdx = schedListObj.names();
+						int iLenSchedule = (null != arrScheduleIdx)?arrScheduleIdx.length():0;
+						if(null != mVgPowerScheduleContainer){
+							mVgPowerScheduleContainer.removeAllViews();
+						}
+						if(null != mArrVgSchedules){
+							mArrVgSchedules.clear();
+						}
+						for(int idx = 0; idx < iLenSchedule;idx++){
+							try {
+								addScheduleItm(BeseyeJSONUtil.getJSONObject(schedListObj, arrScheduleIdx.getString(idx)));
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+					
+				}
 			}
 		}
 	}

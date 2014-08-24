@@ -500,7 +500,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             matrix.setValues(m);
         }
         fixTrans();
-        Log.i(TAG, "onMeasure(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale+", matchViewWidth="+matchViewWidth+", matchViewHeight="+matchViewHeight);
+        //Log.i(TAG, "onMeasure(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale+", matchViewWidth="+matchViewWidth+", matchViewHeight="+matchViewHeight);
         //setImageMatrix(matrix);
         drawStreamBitmap();
     }

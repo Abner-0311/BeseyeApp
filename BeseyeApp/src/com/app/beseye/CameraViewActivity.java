@@ -434,7 +434,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private void updateAttrByCamObj(){
 		if(null != mCam_obj){
-			Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mCam_obj:"+mCam_obj.toString());
+			Log.i(TAG, "CameraViewActivity::updateAttrByCamObj(), mCam_obj:"+mCam_obj.toString());
 			mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
 			mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
 			mTimeZone = TimeZone.getTimeZone(BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA), BeseyeJSONUtil.CAM_TZ, TimeZone.getDefault().getID()));
@@ -802,22 +802,21 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		sHandler.post(new Runnable(){
 			@Override
 			public void run() {
-				if(null != mVgCamInvalidState){
+				Log.i(TAG, "CameraViewActivity::showInvalidStateMask()");
+				if(null != mVgCamInvalidState && isCamPowerDisconnected()){
 					mVgCamInvalidState.setVisibility(View.VISIBLE);
-					//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_DISCONNECTED.getValue());
 				}
 			}});
 	}
 	
 	private void hideInvalidStateMask(){
 		//mbNeedToCheckReddotNetwork = false;
+		Log.i(TAG, "CameraViewActivity::hideInvalidStateMask()");
 		sHandler.post(new Runnable(){
 			@Override
 			public void run() {
-				if(null != mVgCamInvalidState){
+				if(null != mVgCamInvalidState && !isCamPowerDisconnected()){
 					mVgCamInvalidState.setVisibility(View.GONE);
-//					if(-1 == CamSettingMgr.getInstance().getCamPowerState(TMP_CAM_ID))
-//						CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, 1);
 				}
 			}});
 	}
@@ -901,10 +900,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(null != mVgPowerState){
 			if(isCamPowerDisconnected()){
 				showInvalidStateMask();
-			}else if(isCamPowerOff()){
-				mVgPowerState.setVisibility(View.VISIBLE);
 			}else{
-				mVgPowerState.setVisibility(View.GONE);
+				hideInvalidStateMask();
+				if(isCamPowerOff()){
+					mVgPowerState.setVisibility(View.VISIBLE);
+				}else{
+					mVgPowerState.setVisibility(View.GONE);
+				}
 			}			
 		}
 	}

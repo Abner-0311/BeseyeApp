@@ -94,6 +94,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	public static final String MSG_REF_JSON_OBJ 		= "MSG_REF_JSON_OBJ";
 	
+	public static final String MSG_WS_EXTEND 		= "MSG_WS_EXTEND";
+	
 	/** Keeps track of all current registered clients. */
     ArrayList<Messenger> mClients = new ArrayList<Messenger>();
     /**
@@ -139,6 +141,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public static final int MSG_ACCOUNT_PW_CHANGED 			= 25;
     
     public static final int MSG_EVENT_DETECTION 			= 26;
+    public static final int MSG_CAM_ACTIVATE 				= 27;
+    
+    public static final int MSG_EXTEND_WS_CONN 				= 28;//extend for receive cam activate ws event
     
     /**
      * Handler of incoming messages from clients.
@@ -170,7 +175,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						Log.i(TAG, "MSG_CAM_SETTING_UPDATED,  e = "+e.toString());
 					}
                 }
-                case MSG_CAM_SETTING_UPDATED:{
+                case MSG_CAM_SETTING_UPDATED:
+                case MSG_CAM_ACTIVATE:{
                 	for (int i=mClients.size()-1; i>=0; i--) {
                 		try {
                 			Bundle b = new Bundle();
@@ -337,6 +343,16 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	}
                 	break;
                 }
+                case MSG_EXTEND_WS_CONN:{
+                	final Bundle bundle = msg.getData();
+                	long lTimeToExtend = bundle.getLong(MSG_WS_EXTEND);
+                	if(lTimeToExtend > 0){
+                		Log.i(TAG, "MSG_EXTEND_WS_CONN, lTimeToExtend : "+lTimeToExtend);
+                		mlTimeToCloseWs = System.currentTimeMillis() + lTimeToExtend;
+                		postToCloseWs(lTimeToExtend);
+                	}
+                	break;
+                }
                 case MSG_UPDATE_PREF_DATA:{
                 	final Bundle bundle = msg.getData();
                 	bundle.setClassLoader(getClassLoader());
@@ -440,6 +456,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private SharedPreferences mPref;
 	private boolean mbRegisterGCM = false;
 	private boolean mbRegisterReceiver = false;
+	
+	private long mlTimeToCloseWs = -1;
+	private Runnable mCloseWsRunnable = null;
     
     @Override
     public void onCreate() {
@@ -515,20 +534,40 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     
     private void checkUserLoginState(){
     	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
-    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated() && false == WebsocketsMgr.getInstance().isWSChannelAlive()){
+    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated()){
     		if(NetworkMgr.getInstance().isNetworkConnected()){
-    			if(null != WebsocketsMgr.getInstance().getWSServerIP())
-    				WebsocketsMgr.getInstance().constructWSChannel();
-    			else{
-    				new BeseyeNotificationBEHttpTask.GetWSServerTask(this).execute();
+    			if(false == WebsocketsMgr.getInstance().isWSChannelAlive()){
+	    			if(null != WebsocketsMgr.getInstance().getWSServerIP())
+	    				WebsocketsMgr.getInstance().constructWSChannel();
+	    			else{
+	    				new BeseyeNotificationBEHttpTask.GetWSServerTask(this).execute();
+	    			}
     			}
     		}
     	}else{
-    		WebsocketsMgr.getInstance().destroyWSChannel();
+    		postToCloseWs((-1 != mlTimeToCloseWs && mlTimeToCloseWs >= System.currentTimeMillis())?(mlTimeToCloseWs - System.currentTimeMillis()):0);
     	}
     	
     	if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
     		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
+    }
+    
+    private void postToCloseWs(final long lTimeToClose){
+		Log.i(TAG, "postToCloseWs(), lTimeToClose= "+lTimeToClose);
+
+    	if(null != mCloseWsRunnable){
+    		BeseyeUtils.removeRunnable(mCloseWsRunnable);
+    		mCloseWsRunnable = null;
+    	}
+    	
+    	mCloseWsRunnable = new Runnable(){
+			@Override
+			public void run() {
+				WebsocketsMgr.getInstance().destroyWSChannel();
+				mCloseWsRunnable = null;
+				mlTimeToCloseWs = -1;
+			}};
+		BeseyeUtils.postRunnable(mCloseWsRunnable, (0 < lTimeToClose)?lTimeToClose:0);
     }
     
     static private long TIME_TO_CHECK_EVENT = 30*1000;
@@ -1389,16 +1428,51 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		checkUserLoginState();
 	}
 	
+	private boolean handleNotificationEvent(JSONObject msgObj){
+		Log.i(TAG, "handleNotificationEvent(),msgObj="+msgObj.toString());	
+		boolean bRet = true;
+		JSONObject obgReg = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA);
+		if(null != obgReg){
+			int iNCode = BeseyeJSONUtil.getJSONInt(obgReg, BeseyeJSONUtil.PS_NCODE);
+			Log.i(TAG, "handleNotificationEvent(),iNCode="+iNCode);	
+			int iMsgType = -1;
+			switch(iNCode){
+				case NCODE_CAM_ACTIVATE:{
+					iMsgType = MSG_CAM_ACTIVATE;
+					break;
+				}
+				case NCODE_WIFI_CHANGED:{
+					iMsgType = MSG_CAM_WIFI_CONFIG_CHANGED;
+					break;
+				}
+				default:{
+					bRet = false;
+					Log.i(TAG, "handleNotificationEvent(), not handled type "+Integer.toHexString(iNCode));	
+				}
+			}
+			
+			try {
+				if(0 <= iMsgType && null != mMessenger){
+					mMessenger.send(Message.obtain(null, iMsgType, msgObj.toString()));
+				}
+			} catch (RemoteException e) {
+				Log.e(TAG, "handleNotificationEvent(), RemoteException, e="+e.toString());	
+			}
+		}
+		return bRet;
+	}
+	
 	private void handleWSEvent(JSONObject dataObj){
     	if(null != dataObj){
 			int iCmd = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_COMM);
-			String strCamUID = null;
-			long lTs = -1;
+			Log.i(TAG, "handleWSEvent(),iCmd="+iCmd);	
+//			//String strCamUID = null;
+//			//long lTs = -1;
 			JSONObject DataObj = BeseyeJSONUtil.getJSONObject(dataObj, WS_ATTR_INTERNAL_DATA);
-			if(null != DataObj){
-				strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
-				lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
-			}
+//			if(null != DataObj){
+//				strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
+//				lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
+//			}
 			
 			int iMsgType = -1;
 			switch(iCmd){
@@ -1407,6 +1481,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					break;
 				}
 				case WS_ATTR_COMM_DETECTION_NOTIFY:{
+					handleNotificationEvent(DataObj);
 					break;
 				}
 				case WS_ATTR_COMM_SYS_INFO:{
@@ -1439,34 +1514,17 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			try {
 				JSONObject obgReg = new JSONObject(strRegularData);
 				if(null != obgReg){
-					int iNCode = BeseyeJSONUtil.getJSONInt(obgReg, BeseyeJSONUtil.PS_NCODE);
-					int iMsgType = -1;
-					switch(iNCode){
-						case NS_WIFI_CHANGED:{
-							iMsgType = MSG_CAM_WIFI_CONFIG_CHANGED;
-							break;
+					JSONObject msgObj = new JSONObject();
+					BeseyeJSONUtil.setJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA, obgReg);
+					try {
+						if(null != strCusData){
+							BeseyeJSONUtil.setJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA, new JSONObject(strCusData));
 						}
-						default:{
-							Log.i(TAG, "handleGCMEvents(), not handled type "+Integer.toHexString(iNCode));	
-						}
+					} catch (JSONException e) {
+						Log.e(TAG, "handleGCMEvents(), e:"+e.toString());	
 					}
 					
-					try {
-						if(0 <= iMsgType && null != mMessenger){
-							JSONObject msgObj = new JSONObject();
-							BeseyeJSONUtil.setJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA, obgReg);
-							try {
-								if(null != strCusData){
-									BeseyeJSONUtil.setJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA, new JSONObject(strCusData));
-								}
-							} catch (JSONException e) {
-								Log.e(TAG, "handleGCMEvents(), e:"+e.toString());	
-							}
-							mMessenger.send(Message.obtain(null, iMsgType, msgObj.toString()));
-						}
-					} catch (RemoteException e) {
-						Log.e(TAG, "handleWSEvent(), RemoteException, e="+e.toString());	
-					}
+					handleNotificationEvent(msgObj);
 				}
 			} catch (JSONException e) {
 				Log.e(TAG, "handleGCMEvents(), e:"+e.toString());	
@@ -1476,5 +1534,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}
 	}
 	
-	private static final int NS_WIFI_CHANGED = 0x010E; 
+	//Notification NCode definitions
+	private static final int NCODE_CAM_ACTIVATE 				= 0X0500;
+	private static final int NCODE_WIFI_CHANGED 				= 0x010E; 
 }

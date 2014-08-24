@@ -41,6 +41,10 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_SW_UPDATE 		= "cam/%s/software/update";
 	static private final String URL_CAM_SW_UPDATE_STATUS= "cam/%s/software/update_status";
 	
+	static private final String URL_CAM_SCHEDULE_STATUS = "cam/%s/schedule/onoff";
+	static private final String URL_CAM_SCHEDULE  		= "cam/%s/schedule";
+	static private final String URL_CAM_SCHEDULE_IDX  	= "cam/%s/schedule/%s";
+	
 	public static class GetCamSetupTask extends BeseyeHttpTask{
 		private String strVcamId = null;
 		private int iTaskSeed = 0;
@@ -524,6 +528,48 @@ public class BeseyeCamBEHttpTask  {
 				e.printStackTrace();
 			}
 			return null;
+		}
+	}
+	
+	public static class GetScheduleStatusTask extends BeseyeHttpTask{
+		public GetScheduleStatusTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE_STATUS, strParams[0]));
+		}
+	}
+	
+	public static class SetScheduleStatusTask extends BeseyeHttpTask{
+		public SetScheduleStatusTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPut.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(SCHEDULE_STATUS, Boolean.parseBoolean(strParams[1]));
+				return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE_STATUS, strParams[0]), obj.toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+	
+	public static class AddScheduleTask extends BeseyeHttpTask{
+		public AddScheduleTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE, strParams[0]), strParams[1]);
 		}
 	}
 }

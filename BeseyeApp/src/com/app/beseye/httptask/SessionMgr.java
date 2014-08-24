@@ -51,9 +51,9 @@ public class SessionMgr {
 	static public final SERVER_MODE DEFAULT_SERVER_MODE = SERVER_MODE.MODE_STAGING;
 	
 	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
-	static private final String[] ACCOUNT_BE_URL = {"http://acc01-dev.beseye.com",
-													"http://acc01.beseye.com", 
-													"http://acc01-stage.beseye.com",
+	static private final String[] ACCOUNT_BE_URL = {"https://acc01-dev.beseye.com",
+													"https://acc01.beseye.com", 
+													"https://acc01-stage.beseye.com",
 													"https://acc01-stage.beseye.com"}; 
 	
 	static private final String[] MM_BE_URL = { "http://mm01-forext-dev.beseye.com/",
@@ -80,6 +80,8 @@ public class SessionMgr {
 	static private final String SESSION_UPDATE_CAMS			= "beseye_cam_update_list";
 	
 	static private final String SESSION_SERVER_MODE	    	= "beseye_server_mode";
+	
+	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
 	
 	static private SessionMgr sSessionMgr;
 	
@@ -110,6 +112,7 @@ public class SessionMgr {
 				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
 				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, DEFAULT_SERVER_MODE.ordinal())));
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
+				mSessionData.setPairToken(getPrefStringValue(mPref, SESSION_PAIR_TOKEN));
 				
 				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
 				mSessionData.setCamUpdateList(getPrefStringValue(mPref, SESSION_UPDATE_CAMS));
@@ -245,6 +248,16 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
+	public String getPairToken(){
+		return mSessionData.getPairToken();
+	}
+	
+	synchronized public void setPairToken(String strToken){
+		setPrefStringValue(mPref, SESSION_PAIR_TOKEN, strToken);
+		mSessionData.setPairToken(strToken);
+		notifySessionUpdate();
+	}
+	
 	public boolean getIsCertificated(){
 		return mSessionData.getIsCertificated();
 	}
@@ -322,7 +335,7 @@ public class SessionMgr {
 	}
 	
 	public static class SessionData implements Parcelable{
-		private String mStrHostUrl, mStrStorageHostUrl, mStrUploadHostUrl, mStrArtistsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo;
+		private String mStrHostUrl, mStrStorageHostUrl, mStrUploadHostUrl, mStrArtistsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
 		private boolean mbIsCertificated;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
@@ -338,6 +351,7 @@ public class SessionMgr {
 			mStrDomain = "";
 			mStrToken = "";
 			mStrOwnerInfo = "";
+			mStrPairToken = "";
 			mbIsCertificated = false;
 			mServerMode = DEFAULT_SERVER_MODE;
 			
@@ -419,6 +433,14 @@ public class SessionMgr {
 			mStrToken = strToken;
 		}
 		
+		public String getPairToken(){
+			return mStrPairToken;
+		}
+		
+		synchronized public void setPairToken(String strToken){
+			mStrPairToken = strToken;
+		}
+		
 		public boolean getIsCertificated(){
 			return mbIsCertificated;
 		}
@@ -479,6 +501,7 @@ public class SessionMgr {
 			dest.writeString(mStrDomain);
 			dest.writeString(mStrToken);
 			dest.writeString(mStrOwnerInfo);
+			dest.writeString(mStrPairToken);
 			
 			dest.writeInt(mbIsCertificated?1:0);
 			dest.writeInt(mServerMode.ordinal());
@@ -512,6 +535,7 @@ public class SessionMgr {
 			mStrDomain = in.readString();
 			mStrToken = in.readString();
 			mStrOwnerInfo = in.readString();
+			mStrPairToken = in.readString();
 			
 			mbIsCertificated = in.readInt()>0?true:false;
 			mServerMode = SERVER_MODE.translateToMode(in.readInt());
