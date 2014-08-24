@@ -41,6 +41,7 @@ public:
 		PLAY_TONE_BEGIN,
 		PLAY_TONE_END,
 		PLAY_TONE_ERROR,
+		PLAY_TONE_AUDIO_DEV_INIT,
 		PLAY_TONE_TYPE_COUNT
     };
 private:
@@ -107,7 +108,8 @@ public:
 	void setOnPlayToneCallback(void(* playToneCB)(void* userdata, Play_Tone_Status status, const char *msg, unsigned int type) , void* userData);
 
 	unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken);
-	unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken);
+	unsigned int playPairingCodeWithPurpose(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken, unsigned char cPurpose);//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+	//unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken);
 	//macAddr => Hex values without ':' in lower case (ex. ef01cd45ab89)
 	//wifiKey => ASCII values (for WEP: 5 or 13 digits; WPA/WPA2: more than 8 digits)
 	//secType => 0:none; 1:WEP; 2:WPA; 3:WPA2

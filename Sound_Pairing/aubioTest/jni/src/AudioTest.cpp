@@ -14,52 +14,53 @@ static msec_t slLastTimeCheckToken = -1;
 
 AudioTest* AudioTest::sAudioTest=NULL;
 
-std::vector<std::string> &split(const std::string &str, const std::string &strdelim, std::vector<std::string> &elems) {
-	LOGI("strdelim:[%s]\n",(strdelim.c_str())?strdelim.c_str():"");
-	std::stringstream ss(str);
+//std::vector<std::string> &split(const std::string &str, const std::string &strdelim, std::vector<std::string> &elems) {
+//	LOGI("strdelim:[%s]\n",(strdelim.c_str())?strdelim.c_str():"");
+//	std::stringstream ss(str);
+//
+//    std::string item;
+//    std::string::size_type pos, lastPos = 0;
+//
+//    int iLenDelim = strdelim.length();
+//    while(true){
+//	  pos = str.find(strdelim, lastPos);
+//	  if(pos == std::string::npos){
+//		 pos = str.length();
+//
+//		 if(pos != lastPos){
+//			 item = str.substr(lastPos, (pos-lastPos));
+//			 elems.push_back(item);
+//			 LOGI("item:[%s]\n",item.c_str());
+//		 }
+//
+//		 break;
+//	  }else{
+//		 if(pos != lastPos){
+//			 item = str.substr(lastPos, (pos-lastPos));
+//			 elems.push_back(item);
+//			 LOGI("item:[%s]\n",item.c_str());
+//		 }
+//	  }
+//	  lastPos = pos + iLenDelim;
+//	}
+//    return elems;
+//}
+//
+//std::vector<std::string> split(const std::string &s, const std::string &strdelim) {
+//    std::vector<std::string> elems;
+//    split(s, strdelim, elems);
+//    return elems;
+//}
+//
+//std::vector<std::string> split(const std::string &s, char delim) {
+//	LOGI("delim:[0x%x]\n",delim);
+//    std::vector<std::string> elems;
+//    std::stringstream ssDelim;
+//    ssDelim<<delim;
+//    split(s, ssDelim.str(), elems);
+//    return elems;
+//}
 
-    std::string item;
-    std::string::size_type pos, lastPos = 0;
-
-    int iLenDelim = strdelim.length();
-    while(true){
-	  pos = str.find(strdelim, lastPos);
-	  if(pos == std::string::npos){
-		 pos = str.length();
-
-		 if(pos != lastPos){
-			 item = str.substr(lastPos, (pos-lastPos));
-			 elems.push_back(item);
-			 LOGI("item:[%s]\n",item.c_str());
-		 }
-
-		 break;
-	  }else{
-		 if(pos != lastPos){
-			 item = str.substr(lastPos, (pos-lastPos));
-			 elems.push_back(item);
-			 LOGI("item:[%s]\n",item.c_str());
-		 }
-	  }
-	  lastPos = pos + iLenDelim;
-	}
-    return elems;
-}
-
-std::vector<std::string> split(const std::string &s, const std::string &strdelim) {
-    std::vector<std::string> elems;
-    split(s, strdelim, elems);
-    return elems;
-}
-
-std::vector<std::string> split(const std::string &s, char delim) {
-	LOGI("delim:[0x%x]\n",delim);
-    std::vector<std::string> elems;
-    std::stringstream ssDelim;
-    ssDelim<<delim;
-    split(s, ssDelim.str(), elems);
-    return elems;
-}
 #ifdef ANDROID
 void soundpairSenderCb(const char* cb_type, void* data){
 	AudioTest::getInstance()->soundpairSenderCallback(cb_type, data);
@@ -703,12 +704,13 @@ static msec_t lTsRec = 0;
 static int iAudioFrameSize = 4;
 static const int MAX_TRIAL = 10;
 
+
 //Check audio activity
 static long  ANALYSIS_THRESHHOLD_MONITOR			=0;
 static int 	 ANALYSIS_THRESHHOLD_MONITOR_CNT		=0;
 
 static const short ANALYSIS_MAX_AUDIO_VALUE 		= 2000;//audio max value for gain =25
-static const short ANALYSIS_START_THRESHHOLD_MIN 	= 400;//audio value
+static const short ANALYSIS_START_THRESHHOLD_MIN 	= 450;//audio value
 static const short ANALYSIS_START_THRESHHOLD_MAX 	= 1400;//audio value
 
 static short ANALYSIS_START_THRESHHOLD 				= 15000;//audio value
@@ -718,6 +720,7 @@ static short ANALYSIS_END_THRESHHOLD   				= 15000;//audio value
 static long  ANALYSIS_THRESHHOLD_MONITOR_DETECT		= 0;
 static int 	 ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT	= 0;
 static short ANALYSIS_END_THRESHHOLD_DETECT	   		= -1;//audio value
+
 
 
 static const int   ANALYSIS_THRESHHOLD_CK_LEN 		= 1600;//sample size , about 0.1 sec
@@ -1292,7 +1295,7 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 					nanosleep(&yieldtime, NULL);
 				}else if(lDleta >= 3000){
 					LOGI("runAudioBufAnalysis(), lDleta > 3000\n");
-					yieldtime.tv_nsec = 5000000;//5 ms
+					yieldtime.tv_nsec = 5000000;//5 msO
 					nanosleep(&yieldtime, NULL);
 				}else if(lDleta >= 1000){
 					LOGI("runAudioBufAnalysis(), lDleta > 1000\n");
@@ -1389,7 +1392,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	bool bGuess = false;
 
 	if(0 == strCode.find("error")){
-		LOGE("Error, trying to get pairing code\n");
+		LOGE("Error, trying to get pairing code!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 
 		int iRetLen = strDecodeUnmark.length();
 		if(iRetLen < (MAC_LEN + TOKEN_LEN + PURPOSE_LEN +2 /*+ MIN_PW_LEN +2*/)){
@@ -1403,10 +1406,16 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			int iSecondDiv = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER, iFirstDiv+1);
 			LOGE("iSecondDiv:%d\n", iSecondDiv);
 			if(iSecondDiv > iFirstDiv){
-				strMAC = strCode.substr(iFirstDiv - MAC_LEN, MAC_LEN);
-				strUserNum = strCode.substr((iSecondDiv+1), TOKEN_LEN);
-				strPurpose = strCode.substr((iSecondDiv+TOKEN_LEN+1), PURPOSE_LEN);
-				strPW = strCode.substr(iFirstDiv+1, (iSecondDiv - (iFirstDiv+1)));
+				strMAC = strDecodeUnmark.substr(iFirstDiv - MAC_LEN, MAC_LEN);
+				strPW = strDecodeUnmark.substr(iFirstDiv+1, (iSecondDiv - (iFirstDiv+1)));
+
+				if(iRetLen >= (iSecondDiv+1+TOKEN_LEN)){
+					strUserNum = strDecodeUnmark.substr((iSecondDiv+1), TOKEN_LEN);
+				}
+
+				if(iRetLen >= (iSecondDiv+1+TOKEN_LEN +PURPOSE_LEN)){
+					strPurpose = strDecodeUnmark.substr((iSecondDiv+TOKEN_LEN+1), PURPOSE_LEN);
+				}
 
 				LOGE("possible bundle [%s, %s, %s, %s]\n",strMAC.c_str(),strPW.c_str(),strUserNum.c_str(),strPurpose.c_str());
 				bGuess = true;
@@ -1465,7 +1474,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		LOGE("[%s, %s, %s, %s]\n",strMAC.c_str(),strPW.c_str(),strUserNum.c_str(),strPurpose.c_str());
 	}
 
-	if(0 < strMAC.length() && 0 < strPW.length() && 0 < strUserNum.length() && 0 < strPurpose.length()){
+	if(0 < strMAC.length() && 0 < strUserNum.length() && 0 < strPurpose.length()){
 		int iLenPW = strPW.length()/iMultiply;
 		for(int i =0;i < iLenPW;i++){
 			unsigned char c = 0;
@@ -1846,9 +1855,11 @@ void AudioTest::deinitTestRound(){
 string AudioTest::findDifference(string strSrc, string strDecode){
 	stringstream strRet(strDecode);
 	unsigned int iLenSrc = strSrc.length();
+
 	for(unsigned int i =0; i < iLenSrc; i++){
 		if(i >= strDecode.length())
 			break;
+
 		if(0 != strSrc.substr(i, 1).compare(strDecode.substr(i, 1))){
 			strRet.str().replace(i, 1, "#");
 			//break;

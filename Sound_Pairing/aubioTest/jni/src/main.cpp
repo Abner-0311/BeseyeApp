@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <getopt.h>
 #include <signal.h>
+#include <exception>
 #include "simple_websocket_mgr.h"
 
 static int was_closed;
@@ -20,18 +21,30 @@ void sighandler(int sig){
 int main(int argc, char** argv) {
 	LOGE("+++++\n");
 	signal(SIGINT, sighandler);
-	SoundPair_Config::init();
-	if(1 < argc && 0 == strcmp(argv[1], "-test")){
-		int iDigitalToTest = 24;
-		AudioTest::getInstance()->setReceiverMode(true);
-		AudioTest::getInstance()->startAutoTest("", iDigitalToTest);
-	}else{
-		if(1 < argc)
-			AudioTest::getInstance()->setOffset(atoi(argv[1]));
+	try
+	{
+		SoundPair_Config::init();
+		if(1 < argc && 0 == strcmp(argv[1], "-test")){
+			int iDigitalToTest = 24;
+			AudioTest::getInstance()->setReceiverMode(true);
+			AudioTest::getInstance()->startAutoTest("", iDigitalToTest);
+		}else{
+			if(1 < argc)
+				AudioTest::getInstance()->setOffset(atoi(argv[1]));
 
-		sbPairingMode = true;
-		AudioTest::getInstance()->setReceiverMode();
-		AudioTest::getInstance()->startPairingAnalysis();
+			sbPairingMode = true;
+			AudioTest::getInstance()->setReceiverMode();
+			AudioTest::getInstance()->startPairingAnalysis();
+		}
+	}
+	catch (std::exception const &exc)
+	{
+		LOGE("--------, exc:%s\n", exc.what());
+		std::cerr << "Exception caught " << exc.what() << "\n";
+	}
+	catch (...)
+	{
+		std::cerr << "Unknown exception caught\n";
 	}
 
 	int iRetCode = AudioTest::getInstance()->getPairingReturnCode();

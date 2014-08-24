@@ -21,6 +21,8 @@ const long SoundPair_Config::TONE_PERIOD     = (long)(SoundPair_Config::TONE_DUR
 const float SoundPair_Config::BIN_SIZE       = (float)SoundPair_Config::SAMPLE_RATE_REC/(float)SoundPair_Config::FRAME_SIZE_REC;
 
 string SoundPair_Config::PREFIX_DECODE;
+string SoundPair_Config::PREFIX_DECODE_C1;
+string SoundPair_Config::PREFIX_DECODE_C2;
 string SoundPair_Config::POSTFIX_DECODE;
 string SoundPair_Config::POSTFIX_DECODE_C1;
 string SoundPair_Config::POSTFIX_DECODE_C2;
@@ -94,7 +96,7 @@ void SoundPair_Config::resolveFreqRangeConflict(){
 			Ref<FreqRange> fr = sFreqRangeTable[i];
 			std::vector<Ref<FreqRangeData> > lstFRD = fr->getLstFreqRangeData();
 			int iSizeFRD = lstFRD.size();
-			LOGE("resolveFreqRangeConflict(), i = %d, lstFRD[idx]:%s",i, lstFRD[0]->toString().c_str());
+			//LOGE("resolveFreqRangeConflict(), i = %d, lstFRD[idx]:%s",i, lstFRD[0]->toString().c_str());
 			for(int idx = iSizeFRD -1; idx > 0; idx--){
 				Ref<FreqRangeData> frd = lstFRD[idx];
 				LOGE("resolveFreqRangeConflict(), frd = %s",frd->toString().c_str());
@@ -189,6 +191,8 @@ void SoundPair_Config::init(){
 	int iCodeTblSIze = sCodeTable.size();
 
 	PREFIX_DECODE 	 = sCodeTable[iCodeTblSIze-4]+sCodeTable[iCodeTblSIze-2];//gi
+	PREFIX_DECODE_C1 = sCodeTable[iCodeTblSIze-4];
+	PREFIX_DECODE_C2 = sCodeTable[iCodeTblSIze-2];
 
 	POSTFIX_DECODE_C1= sCodeTable[iCodeTblSIze-3];
 	POSTFIX_DECODE_C2= sCodeTable[iCodeTblSIze-2];

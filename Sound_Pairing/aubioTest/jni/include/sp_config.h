@@ -124,6 +124,8 @@ public:
 	static const int MIN_PAIRING_MSG_LEN = (((12+1+1+4)*3)/2);//-2 due to drop audio issue
 
 	static string PREFIX_DECODE;
+	static string PREFIX_DECODE_C1;
+	static string PREFIX_DECODE_C2;
 	static string POSTFIX_DECODE;
 	static string POSTFIX_DECODE_C1;
 	static string POSTFIX_DECODE_C2;

@@ -230,18 +230,19 @@ void FreqAnalyzer::triggerTimeout(){
 			if(mbStartAppend){
 				normalAnalysis(iPosPostfix);
 			}else{
-				LOGW("detect postfix, try to find prefix in [%s] before %d\n", msbDecode.str().c_str(), iPosPostfix);
-//				string strPossibleDecode1 = msbDecode.str().substr(0, iPosPostfix+2);
+				string strDecodeCheck(msbDecode.str());
+				LOGW("detect postfix, try to find prefix in [%s] before %d\n", strDecodeCheck.c_str(), iPosPostfix);
+//				string strPossibleDecode1 = strDecodeCheck.substr(0, iPosPostfix+2);
 //				msbDecode.clear();
 //				msbDecode<<strPossibleDecode1;
 
 				int iPossiblePrefix = -1;
-				int iPossibleSndPrefix = msbDecode.str().rfind(SoundPair_Config::POSTFIX_DECODE_C2, iPosPostfix-1);
+				int iPossibleSndPrefix = strDecodeCheck.rfind(SoundPair_Config::POSTFIX_DECODE_C2, iPosPostfix-1);
 				if(0 < iPossibleSndPrefix){
 					LOGE("triggerTimeout(), detect [%s] at %d+++++++++++++++++++++++++++++++++++++++++++++++++++++\n", SoundPair_Config::POSTFIX_DECODE_C2.c_str(), iPossibleSndPrefix);
 					iPossiblePrefix = iPossibleSndPrefix - 1;
 				}else{
-					int iPossibleFstPrefix = msbDecode.str().rfind(SoundPair_Config::POSTFIX_DECODE_C1, iPosPostfix-1);
+					int iPossibleFstPrefix = strDecodeCheck.rfind(SoundPair_Config::POSTFIX_DECODE_C1, iPosPostfix-1);
 					if(0 <= iPossibleFstPrefix){
 						LOGE("triggerTimeout(), detect [%s] at %d+++++++++++++++++++++++++++++++++++++++++++++++++++++\n", SoundPair_Config::POSTFIX_DECODE_C1.c_str(), iPossibleFstPrefix);
 						iPossiblePrefix = iPossibleFstPrefix ;
@@ -252,7 +253,7 @@ void FreqAnalyzer::triggerTimeout(){
 				}
 
 				if(-1 < iPossiblePrefix){
-					string strPossibleDecode = msbDecode.str().substr(iPossiblePrefix+2, iPosPostfix+2);
+					string strPossibleDecode = strDecodeCheck.substr(iPossiblePrefix+2, iPosPostfix+2);
 					LOGE("triggerTimeout(), strPossibleDecode [%s] +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", strPossibleDecode.c_str());
 
 					msbDecode.clear();
@@ -263,8 +264,13 @@ void FreqAnalyzer::triggerTimeout(){
 //						mCodeRecordList.erase(mCodeRecordList.begin());
 //					}
 					LOGE("triggerTimeout(), to check result+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-					checkResult(msbDecode.str().substr(0, (iPosPostfix - iPossiblePrefix)), optimizeDecodeString((iPosPostfix - iPossiblePrefix)));
-					mFreqRecordList.clear();
+					int iIndex = (iPosPostfix - iPossiblePrefix);
+					if(0 <= iIndex && iIndex < strDecodeCheck.length()){
+						checkResult(strDecodeCheck.substr(0, iIndex), optimizeDecodeString(iIndex));
+						mFreqRecordList.clear();
+					}else{
+						LOGE("triggerTimeout(), invalid iIndex:%d, strDecodeCheck.length():%d \n", iIndex, strDecodeCheck.length());
+					}
 				}
 			}
 		}else{
@@ -360,8 +366,8 @@ void FreqAnalyzer::pickWithSeesion(){
 
 	if(CAM_CORRECTION_TRACE){
 		LOGI("pickWithSeesion()**, ====>>>> (lSesBeginTs, lSesEndTs): (%lld, %lld)\n", lSesBeginTs, lSesEndTs);
-
 	}
+
 	fillEmptyCodeRecord(lSesBeginTs);
 
 	//Find out all session items
@@ -552,7 +558,8 @@ void FreqAnalyzer::checkEmptySlot(){
 
 void FreqAnalyzer::appendRet(Ref<CodeRecord> rec){
 	msbDecode<<rec->strCdoe;
-	LOGE("appendRet(), msbDecode:%s, mbStartAppend:%d\n", msbDecode.str().c_str(), mbStartAppend);
+	string strDecodeCheck(msbDecode.str());
+	LOGE("appendRet(), msbDecode:%s, mbStartAppend:%d\n", strDecodeCheck.c_str(), mbStartAppend);
 	if(true == mbStartAppend){
 		Ref<CodeRecord> lastItm = (0 < mCodeRecordList.size())?mCodeRecordList.back():Ref<CodeRecord>(NULL);
 		if(NULL != lastItm && (0==lastItm->strCdoe.compare(rec->strCdoe)) && (SoundPair_Config::TONE_PERIOD >= (rec->lEndTs - lastItm->lStartTs))){
@@ -562,12 +569,12 @@ void FreqAnalyzer::appendRet(Ref<CodeRecord> rec){
 			mCodeRecordList.push_back(rec);
 		}
 	}else if(false == mbStartAppend){
-		int iPox = msbDecode.str().rfind(SoundPair_Config::PREFIX_DECODE);
+		int iPox = strDecodeCheck.rfind(SoundPair_Config::PREFIX_DECODE);
 		//LOGE("appendRet(), iPox:%d\n",iPox);
 		if(-1 < iPox){
 			//LOGE("appendRet(), rec:%s\n", rec->toString().c_str());
 			mCodeRecordList.push_back(rec);
-		}else if(SoundPair_Config::SEGMENT_FEATURE && (msbDecode.str().length()-1) == msbDecode.str().rfind(SoundPair_Config::PREFIX_DECODE.substr(0,1))){
+		}else if(SoundPair_Config::SEGMENT_FEATURE && (strDecodeCheck.length()-1) == strDecodeCheck.rfind(SoundPair_Config::PREFIX_DECODE_C1)){
 			LOGE("appendRet(), detect FIRST CHAR ------------------------------------------------------\n");
 
 			//if First Char is detected already
@@ -602,11 +609,10 @@ void FreqAnalyzer::appendRet(Ref<CodeRecord> rec){
 }
 
 void FreqAnalyzer::appendRet(string strCode){
-
+	string strDecodeCheck(msbDecode.str());
 	if(false == mbInSenderMode){
 		if(false == mbStartAppend){
-
-			int iPox = msbDecode.str().rfind(SoundPair_Config::PREFIX_DECODE);
+			int iPox = strDecodeCheck.rfind(SoundPair_Config::PREFIX_DECODE);
 			LOGE("appendRet(),SoundPair_Config::PREFIX_DECODE:%s , strCode:%s, mbInSenderMode:%d, iPox:%d\n", SoundPair_Config::PREFIX_DECODE.c_str(), strCode.c_str(), mbInSenderMode, iPox);
 			if(-1 < iPox){
 				LOGE("appendRet(), detect SoundPair_Config::PREFIX_DECODE ------------------------------------------------------\n");
@@ -655,7 +661,7 @@ void FreqAnalyzer::appendRet(string strCode){
 			}
 		}
 	}else{
-		if(-1 < msbDecode.str().rfind(SoundPair_Config::PEER_SIGNAL)){
+		if(-1 < strDecodeCheck.rfind(SoundPair_Config::PEER_SIGNAL)){
 			msbDecode.str("");
 			msbDecode.clear();
 			if(mIFreqAnalyzeResultCBListener)
@@ -667,100 +673,118 @@ void FreqAnalyzer::appendRet(string strCode){
 void FreqAnalyzer::normalAnalysis(int iIndex){
 	mbStartAppend = false;
 	int iShift = checkFrameBySessionAndAutoCorrection();
+	string strDecodeCheck(msbDecode.str());
+	if(0 != iShift){
+		int iNewIndex = checkPostfix();
+		LOGE("normalAnalysis(), redetect index, iShift = %d, iNewIndex=%d\n",iShift,iNewIndex);
 
-	int iNewIndex = checkPostfix();
-	LOGE("normalAnalysis(), redetect index, iShift = %d, iNewIndex=%d\n",iShift,iNewIndex);
+		int iDxFstC = -1;
+		do{
+			iDxFstC = strDecodeCheck.find(SoundPair_Config::POSTFIX_DECODE_C1, iDxFstC+1);
+		}while(0 <= iDxFstC && iDxFstC < SoundPair_Config::MIN_PAIRING_MSG_LEN);
 
-	int iDxFstC = -1;
-	do{
-		iDxFstC = msbDecode.str().find(SoundPair_Config::POSTFIX_DECODE_C1, iDxFstC+1);
-	}while(0 <= iDxFstC && iDxFstC < SoundPair_Config::MIN_PAIRING_MSG_LEN);
+		int iDxSndC = -1;
+		do{
+			iDxSndC = strDecodeCheck.find(SoundPair_Config::POSTFIX_DECODE_C2, iDxSndC+1);
+		}while(0 <= iDxSndC && iDxSndC < SoundPair_Config::MIN_PAIRING_MSG_LEN);
 
-	int iDxSndC = -1;
-	do{
-		iDxSndC = msbDecode.str().find(SoundPair_Config::POSTFIX_DECODE_C2, iDxSndC+1);
-	}while(0 <= iDxSndC && iDxSndC < SoundPair_Config::MIN_PAIRING_MSG_LEN);
-
-	if(0 <= iNewIndex){
-		if(0 < iDxFstC && iDxFstC < iNewIndex && 1 >= abs(iNewIndex-iIndex) && iDxFstC >= SoundPair_Config::MIN_PAIRING_MSG_LEN && (0 == iNewIndex%2)){//special case 1: ...H...HI
-			LOGE("normalAnalysis(), special case 1, iDxFstC=%d\n",iDxFstC);
-			iNewIndex = iDxFstC;
-		}else if(0 < iDxSndC && iDxSndC < iNewIndex+1 && 1 >= abs(iNewIndex-iIndex) && iDxSndC -1 >= SoundPair_Config::MIN_PAIRING_MSG_LEN && (0 == iNewIndex%2)){//special case 2: ...I...HI
-			LOGE("normalAnalysis(), special case 2, iDxSndC=%d\n",iDxSndC);
-			iNewIndex = iDxSndC - 1;
-		}
-	}else{
-		LOGE("normalAnalysis(), can not find postfix, redetect index at first char\n");
-		if(-1 == iDxFstC){
-			LOGE("normalAnalysis(), can not find first car of postfix, redetect index at second char\n");
-			if(-1 == iDxSndC){
-				LOGE("normalAnalysis(), can not find any char of postfix, redetect index by shift one\n");
-				//iNewIndex = (iIndex-iShift);
-			}else{
+		if(0 <= iNewIndex){
+			if(0 < iDxFstC && iDxFstC < iNewIndex && 1 >= abs(iNewIndex-iIndex) && iDxFstC >= SoundPair_Config::MIN_PAIRING_MSG_LEN && (0 == iNewIndex%2)){//special case 1: ...H...HI
+				LOGE("normalAnalysis(), special case 1, iDxFstC=%d\n",iDxFstC);
+				iNewIndex = iDxFstC;
+			}else if(0 < iDxSndC && iDxSndC < iNewIndex+1 && 1 >= abs(iNewIndex-iIndex) && iDxSndC -1 >= SoundPair_Config::MIN_PAIRING_MSG_LEN && (0 == iNewIndex%2)){//special case 2: ...I...HI
+				LOGE("normalAnalysis(), special case 2, iDxSndC=%d\n",iDxSndC);
 				iNewIndex = iDxSndC - 1;
 			}
 		}else{
-			iNewIndex = iDxFstC;
+			LOGE("normalAnalysis(), can not find postfix, redetect index at first char\n");
+			if(-1 == iDxFstC){
+				LOGE("normalAnalysis(), can not find first car of postfix, redetect index at second char\n");
+				if(-1 == iDxSndC){
+					LOGE("normalAnalysis(), can not find any char of postfix, redetect index by shift one\n");
+					//iNewIndex = (iIndex-iShift);
+				}else{
+					iNewIndex = iDxSndC - 1;
+				}
+			}else{
+				iNewIndex = iDxFstC;
+			}
+		}
+
+		if(-1 < iNewIndex && iNewIndex != iIndex){
+			LOGE("normalAnalysis(), change index from %d to %d\n", iIndex, iNewIndex);
+			iIndex = iNewIndex;
 		}
 	}
 
-	if(-1 < iNewIndex && iNewIndex != iIndex){
-		LOGE("normalAnalysis(), change index from %d to %d\n", iIndex, iNewIndex);
-		iIndex = iNewIndex;
+	LOGE("normalAnalysis(), iIndex = %d,  strDecodeCheck.length()=%d\n",iIndex, strDecodeCheck.length());
+
+	if(0 <= iIndex && iIndex < strDecodeCheck.length()){
+		checkResult(strDecodeCheck.substr(0, iIndex), optimizeDecodeString(iIndex));
+	}else{
+		LOGE("normalAnalysis(), invalid iIndex:%d, strDecodeCheck.length():%d \n", iIndex, strDecodeCheck.length());
 	}
-	if(0 <= iIndex)
-		checkResult(msbDecode.str().substr(0, iIndex), optimizeDecodeString(iIndex));
 
 	mFreqRecordList.clear();
 }
 
 string FreqAnalyzer::optimizeDecodeString(int iIndex){
 	//string strDecode = msbDecode.substr(0, msbDecode.length()-((-1 < msbDecode.rfind(POSTFIX_DECODE) )?POSTFIX_DECODE.length():1));
-	LOGE("optimizeDecodeString(), msbDecode:[%s], index is %d\n", msbDecode.str().c_str(), iIndex);
-	string strDecode = msbDecode.str().substr(0, iIndex);
-	string strDecodeUnmark = replaceInvalidChar(strDecode);
+	string strDecodeUnmark;
+	string strDecodeCheck(msbDecode.str());
+	LOGE("optimizeDecodeString(), strDecodeCheck:[%s], index is %d\n", strDecodeCheck.c_str(), iIndex);
+	if(0 <= iIndex && iIndex < strDecodeCheck.length()){
+		string strDecode = strDecodeCheck.substr(0, iIndex);
+		strDecodeUnmark = replaceInvalidChar(strDecode);
 
-	int iLen = strDecodeUnmark.length();
+		int iLen = strDecodeUnmark.length();
 
-	if(SoundPair_Config::getMultiplyByFFTYPE() > 1 && 0 != iLen%SoundPair_Config::getMultiplyByFFTYPE()){
-		if(0 < getMsgLength(iLen+1)){
-			//try to find correct missing char
+		if(0 < iLen){
+			if(SoundPair_Config::getMultiplyByFFTYPE() > 1 && 0 != iLen%SoundPair_Config::getMultiplyByFFTYPE()){
+				if(0 < getMsgLength(iLen+1)){
+					//try to find correct missing char
 
-			string strCheck;
-			for(int i = 0; i < iLen; i++){
-				if(i == 0){
-					strCheck = SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecodeUnmark;
-				}else if(i == (iLen-1)){
-					strCheck = strDecodeUnmark+SoundPair_Config::SoundPair_Config::sCodeTable.front();
+					string strCheck;
+					for(int i = 0; i < iLen; i++){
+						if(i == 0){
+							strCheck = SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecodeUnmark;
+						}else if(i == (iLen-1)){
+							strCheck = strDecodeUnmark+SoundPair_Config::SoundPair_Config::sCodeTable.front();
+						}else{
+							strCheck = strDecodeUnmark.substr(0, i)+SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecodeUnmark.substr(i, iLen-i);
+						}
+						string strRet = decodeRSEC(strCheck);
+
+						int iFound = strRet.find("error");
+						//LOGE("optimizeDecodeString(), strRet %s, iFound:%d\n",strRet.c_str(), iFound);
+						if(0 > iFound){
+							strDecodeUnmark = strCheck;
+							LOGE("optimizeDecodeString(), add dummy char at %d because index is %d\n",i, iIndex);
+							break;
+						}
+					}
+		//			strDecode = SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecode;
+		//			LOGE("optimizeDecodeString(), add dummy char at head because index is %d\n", iIndex);
+				}else if(0 < getMsgLength(iLen-1)){
+					strDecodeUnmark = strDecodeUnmark.substr(0, iLen -1);
+					LOGE("optimizeDecodeString(), remove dummy char at tail because index is %d\n", iIndex);
 				}else{
-					strCheck = strDecodeUnmark.substr(0, i)+SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecodeUnmark.substr(i, strDecodeUnmark.length()-i);
-				}
-				string strRet = decodeRSEC(strCheck);
-
-				int iFound = strRet.find("error");
-
-				//LOGE("optimizeDecodeString(), strRet %s, iFound:%d\n",strRet.c_str(), iFound);
-				if(0 > iFound){
-					strDecodeUnmark = strCheck;
-					LOGE("optimizeDecodeString(), add dummy char at %d because index is %d\n",i, iIndex);
-					break;
+					LOGE("optimizeDecodeString(), can not optimize, index is %d\n", iIndex);
 				}
 			}
-//			strDecode = SoundPair_Config::SoundPair_Config::sCodeTable.front()+strDecode;
-//			LOGE("optimizeDecodeString(), add dummy char at head because index is %d\n", iIndex);
-		}else if(0 < getMsgLength(iLen-1)){
-			strDecode = strDecode.substr(0, iLen -1);
-			LOGE("optimizeDecodeString(), remove dummy char at tail because index is %d\n", iIndex);
 		}else{
-			LOGE("optimizeDecodeString(), can not optimize, index is %d\n", iIndex);
+			LOGE("optimizeDecodeString(), invalid iLen:%d \n", iLen);
 		}
+	}else{
+		LOGE("optimizeDecodeString(), invalid iIndex:%d, strDecodeCheck.length():%d \n", iIndex, strDecodeCheck.length());
 	}
 	return strDecodeUnmark;
 }
 
 int FreqAnalyzer::checkPostfix(){
 	LOGD("checkPostfix()++\n");
-	int iRet = msbDecode.str().rfind(SoundPair_Config::POSTFIX_DECODE);
+	string strDecodeCheck(msbDecode.str());
+	int iRet = strDecodeCheck.rfind(SoundPair_Config::POSTFIX_DECODE);
 	if(-1 >= iRet){
 //			string strFstPostfix = SoundPair_Config::POSTFIX_DECODE.substr(0,1);
 //			string strSndPostfix = SoundPair_Config::POSTFIX_DECODE.substr(1,2);
@@ -804,7 +828,7 @@ void FreqAnalyzer::checkFirstCharOfPrefix(Ref<CodeRecord> rec){
 
 		//if only 2 consecutive digits and next is second tone
 		if((SoundPair_Config::TONE_FRAME_COUNT-1) == rec->mlstFreqRec.size() && (frEndOfFirstChar->mlTs + SoundPair_Config::FRAME_TS) == fr->mlTs){
-			if((0==SoundPair_Config::PREFIX_DECODE.substr(1,1).compare(fr->mstrCode))){
+			if((0==SoundPair_Config::PREFIX_DECODE_C2.compare(fr->mstrCode))){
 				LOGE("checkFirstCharOfPrefix(), need to shift one digit backward\n");
 				mSessionBeginTs -= SoundPair_Config::FRAME_TS;
 				rec->mlstFreqRec.insert(rec->mlstFreqRec.begin(), Ref<FreqRecord>(new FreqRecord(mSessionBeginTs, -1.0f, SoundPair_Config::MISSING_CHAR, -1, NULL)));
@@ -815,7 +839,7 @@ void FreqAnalyzer::checkFirstCharOfPrefix(Ref<CodeRecord> rec){
 				rec->lEndTs += SoundPair_Config::FRAME_TS;
 			}
 		}
-		else if((frEndOfFirstChar->mlTs + SoundPair_Config::FRAME_TS) == fr->mlTs && (0==SoundPair_Config::PREFIX_DECODE.substr(0,1).compare(fr->mstrCode))){
+		else if((frEndOfFirstChar->mlTs + SoundPair_Config::FRAME_TS) == fr->mlTs && (0==SoundPair_Config::PREFIX_DECODE_C1.compare(fr->mstrCode))){
 			LOGE("checkFirstCharOfPrefix(), shift one frame_ts\n");
 			if(rec->mlstFreqRec.size() == SoundPair_Config::TONE_FRAME_COUNT){
 				//LOGE("checkFirstCharOfPrefix(), shift one frame_ts 0\n");
@@ -863,7 +887,7 @@ int FreqAnalyzer::segmentCheckOnFirst(bool bForcePerform){
 	//LOGE("segmentCheckOnFirst(), bForcePerform:%d-------------------------------------\n", bForcePerform);
 	if((SoundPair_Config::SEGMENT_OFFSET_FEATURE && mbNeedToAutoCorrection) || bForcePerform){
 		//msec_t lTsBegin = time_ms();
-		Ref<FreqRange> fr = SoundPair_Config::findFreqRange(SoundPair_Config::PREFIX_DECODE.substr(0,1));
+		Ref<FreqRange> fr = SoundPair_Config::findFreqRange(SoundPair_Config::PREFIX_DECODE_C1);
 		int iBufIdxTOCheck = mSessionBeginBufIdx;
 
 		const int MAX_SILENCE_SMAPLE = 13;
@@ -991,11 +1015,12 @@ int FreqAnalyzer::segmentCheck(bool bForcePerform){
 	int iRet = 0;
 	if(SoundPair_Config::SEGMENT_OFFSET_FEATURE || bForcePerform){
 //		msec_t lTsBegin = time_ms();
-		Ref<FreqRange> firstFR = SoundPair_Config::findFreqRange(SoundPair_Config::PREFIX_DECODE.substr(0,1));
+		Ref<FreqRange> firstFR = SoundPair_Config::findFreqRange(SoundPair_Config::PREFIX_DECODE_C1);
 		LOGE("segmentCheck(), mCodeRecordList.size():%d\n", mCodeRecordList.size());
 		if(0 < mCodeRecordList.size()){
 			Ref<CodeRecord> rec = mCodeRecordList.front();
-			LOGE("segmentCheck(), rec:%s\n", (rec)?rec->toString().c_str():"null");
+
+			//LOGE("segmentCheck(), rec:%s\n", (rec)?rec->toString().c_str():"null");
 			vector<Ref<FreqRecord> > fRecLst = rec->mlstFreqRec;
 			int iBufIdxTOCheck = mSessionBeginBufIdx;
 			int iLen = fRecLst.size();
@@ -1088,8 +1113,9 @@ string FreqAnalyzer::replaceInvalidChar(string strDecode){
 	if(0 <= iPosFstDivider){
 		iPosSndDivider = strDecode.find(SoundPair_Config::PAIRING_DIVIDER, iPosFstDivider+1);
 		int iPosFstDividerDelta = iPosFstDivider-POS_FST_DIVIDER;
+
 		if( 2 >= abs(iPosFstDividerDelta)){
-			if(0 < iPosFstDividerDelta){
+			if(0 < iPosFstDividerDelta && iPosFstDividerDelta < iLen){
 				strDecode = strDecode.substr(iPosFstDividerDelta);
 			}else if(0 > iPosFstDividerDelta){
 				int iDumbToAdd=abs(iPosFstDividerDelta);
@@ -1106,27 +1132,39 @@ string FreqAnalyzer::replaceInvalidChar(string strDecode){
 
 			iPosSndDivider = strDecode.find(SoundPair_Config::PAIRING_DIVIDER, iPosFstDivider+1);
 			LOGE("replaceInvalidChar(), iPosSndDivider is at %d, strDecode = %s\n", iPosSndDivider, strDecode.c_str());
-			if(0 < iPosSndDivider){
+			if(0 < iPosSndDivider && iPosSndDivider+1 < iLen){
 				strDecode = strDecode.substr(0, iPosSndDivider)+strDecode.substr(iPosSndDivider+1);
-			}else{
+			}else if(0 < iPosSndDividerShouldBe && iPosSndDividerShouldBe+1 < iLen){
 				strDecode = strDecode.substr(0, iPosSndDividerShouldBe)+strDecode.substr(iPosSndDividerShouldBe+1);
 			}
 
-			strDecode = strDecode.substr(0, iPosFstDivider)+strDecode.substr(iPosFstDivider+1);
+			if(0 < iPosFstDivider && iPosFstDivider+1 < strDecode.length()){
+				strDecode = strDecode.substr(0, iPosFstDivider)+strDecode.substr(iPosFstDivider+1);
+			}else{
+				LOGE("replaceInvalidChar(), invalid iPosFstDivider %d\n", iPosFstDivider);
+			}
 		}else{
 			LOGE("replaceInvalidChar(), iPosFstDividerDelta is too large (%d)\n", iPosFstDividerDelta);
-			if(0 < iPosFstDividerDelta){
+			if(0 < iPosFstDividerDelta && iPosFstDividerDelta+1 < strDecode.length()){
 				strDecode = strDecode.substr(0, iPosFstDividerDelta)+strDecode.substr(iPosFstDividerDelta+1);
-				strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
-			}else{
+				if(0 < POS_FST_DIVIDER && POS_FST_DIVIDER+1 < strDecode.length()){
+					strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
+				}
+			}else if(0 < iPosSndDividerShouldBe && iPosSndDividerShouldBe+1 < strDecode.length()){
 				strDecode = strDecode.substr(0, iPosSndDividerShouldBe)+strDecode.substr(iPosSndDividerShouldBe+1);
-				strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
+				if(0 < POS_FST_DIVIDER && POS_FST_DIVIDER+1 < strDecode.length()){
+					strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
+				}
 			}
 		}
 	}else{
 		LOGE("replaceInvalidChar(), can not fnd divider\n");
-		strDecode = strDecode.substr(0, iPosSndDividerShouldBe)+strDecode.substr(iPosSndDividerShouldBe+1);
-		strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
+		if(0 < iPosSndDividerShouldBe && iPosSndDividerShouldBe+1 < strDecode.length()){
+			strDecode = strDecode.substr(0, iPosSndDividerShouldBe)+strDecode.substr(iPosSndDividerShouldBe+1);
+		}
+		if(0 < POS_FST_DIVIDER && POS_FST_DIVIDER+1 < strDecode.length()){
+			strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
+		}
 	}
 
 	iLen = strDecode.length();
@@ -1176,23 +1214,24 @@ bool FreqAnalyzer::checkEndPoint(){
 	//detect first char first
 	int iStartPos = 0;
 	int iIndex = -1;
+	string strDecodeCheck(msbDecode.str());
 	do{
 		if(0 <= iIndex){
 			iStartPos = iIndex+1;
 			LOGE("checkEndPoint(), retry iStartPos:%d\n", iStartPos);
 		}
-		iIndex = msbDecode.str().find(SoundPair_Config::POSTFIX_DECODE_C1, iStartPos);
+		iIndex = strDecodeCheck.find(SoundPair_Config::POSTFIX_DECODE_C1, iStartPos);
 		if(0 > iIndex){
 			LOGE("checkEndPoint(), can not detect first char of SoundPair_Config::POSTFIX_DECODE\n");
 			//detect second char first
-			iIndex = msbDecode.str().find(SoundPair_Config::POSTFIX_DECODE_C2, (0==iStartPos)?1:iStartPos+1);
+			iIndex = strDecodeCheck.find(SoundPair_Config::POSTFIX_DECODE_C2, (0==iStartPos)?1:iStartPos+1);
 			if(0 <= iIndex){
 				iIndex -=1;
 				LOGE("checkEndPoint(), detect second char of SoundPair_Config::POSTFIX_DECODE, iIndex:%d, +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", iIndex);
 			}
 		}else{
 			LOGE("checkEndPoint(), detect first char of SoundPair_Config::POSTFIX_DECODE, iIndex:%d, +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", iIndex);
-			int iDxSndC = msbDecode.str().find(SoundPair_Config::POSTFIX_DECODE_C2, (0==iStartPos)?1:iStartPos+1);
+			int iDxSndC = strDecodeCheck.find(SoundPair_Config::POSTFIX_DECODE_C2, (0==iStartPos)?1:iStartPos+1);
 			if(0 <= iDxSndC && iDxSndC < iIndex){
 				iIndex = iDxSndC - 1;
 				LOGE("checkEndPoint(), detect second char is prior to first char, iDxSndC:%d, +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", iDxSndC);
@@ -1215,19 +1254,19 @@ bool FreqAnalyzer::checkEndPoint(){
 				//We may get postfix after shift
 				int iNewIndex = -1;
 				do{
-					iNewIndex = msbDecode.str().find(SoundPair_Config::POSTFIX_DECODE, iNewIndex+1);
+					iNewIndex = strDecodeCheck.find(SoundPair_Config::POSTFIX_DECODE, iNewIndex+1);
 				}while(0 <= iNewIndex && iNewIndex < SoundPair_Config::MIN_PAIRING_MSG_LEN);
 
 				LOGE("checkEndPoint(), redetect index, iShift = %d, iNewIndex=%d\n", iShift, iNewIndex);
 
 				int iDxFstC = -1;
 				do{
-					iDxFstC = msbDecode.str().find(SoundPair_Config::POSTFIX_DECODE_C1, iDxFstC+1);
+					iDxFstC = strDecodeCheck.find(SoundPair_Config::POSTFIX_DECODE_C1, iDxFstC+1);
 				}while(0 <= iDxFstC && iDxFstC < SoundPair_Config::MIN_PAIRING_MSG_LEN);
 
 				int iDxSndC = -1;
 				do{
-					iDxSndC = msbDecode.str().find(SoundPair_Config::POSTFIX_DECODE_C2, iDxSndC+1);
+					iDxSndC = strDecodeCheck.find(SoundPair_Config::POSTFIX_DECODE_C2, iDxSndC+1);
 				}while(0 <= iDxSndC && iDxSndC < SoundPair_Config::MIN_PAIRING_MSG_LEN);
 
 				if(0 <= iNewIndex){
@@ -1263,9 +1302,11 @@ bool FreqAnalyzer::checkEndPoint(){
 				}
 			}
 
-			if(-1 < iIndex){
-				checkResult(msbDecode.str().substr(0, iIndex), optimizeDecodeString(iIndex));
+			if(0 <= iIndex && iIndex < strDecodeCheck.length()){
+				checkResult(strDecodeCheck.substr(0, iIndex), optimizeDecodeString(iIndex));
 				return true;
+			}else{
+				LOGE("checkEndPoint(), invalid iIndex:%d, strDecodeCheck.length():%d \n", iIndex, strDecodeCheck.length());
 			}
 		}else{
 			LOGE("checkEndPoint(), can not detect first char of POSTFIX_DECODE +++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
