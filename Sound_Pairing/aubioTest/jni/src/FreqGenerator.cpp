@@ -203,6 +203,9 @@ void FreqGenerator::invokePlayCode2(){
 #else
 	const int iMinBufSize = numSamples;
     Delegate_OpenAudioDevice(SoundPair_Config::SAMPLE_RATE_PLAY, 1, 1, iMinBufSize);
+
+    if(NULL != mPlayToneCB)
+        mPlayToneCB(mCbUserData, PLAY_TONE_AUDIO_DEV_INIT, NULL, 0);
 #endif
 	LOGI("invokePlayCode2(), numSamples:%d, iMinBufSize:%d, siSampleRatePlay = %d\n", numSamples, iMinBufSize, SoundPair_Config::SAMPLE_RATE_PLAY);
 

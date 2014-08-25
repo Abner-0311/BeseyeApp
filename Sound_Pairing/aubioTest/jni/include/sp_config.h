@@ -12,7 +12,9 @@
 #include <zxing/common/reedsolomon/GenericGF.h>
 
 //#if not __has_feature(cxx_constexpr)
+#ifndef __APPLE__
 #define constexpr
+#endif
 //#endif
 
 using zxing::Ref;

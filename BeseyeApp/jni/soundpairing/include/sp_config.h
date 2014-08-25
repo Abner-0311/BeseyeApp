@@ -83,7 +83,7 @@ public:
 	static const bool SEGMENT_OFFSET_FEATURE = true;
 	static const bool AUBIO_FFT = false;
 	static const bool ENABLE_LV_DISPLAY = false;
-	static const int SEG_SES_OFFSET = 5;
+	static const int SEG_SES_OFFSET = 2;
 
 	static const string BT_MSG_ACK;
 	static const string BT_MSG_PURE;
@@ -102,7 +102,7 @@ public:
 	constexpr static const float SILENCE_CRITERIA = 0.002f;
 	static const int SILENCE_DETECTION_SAMPLE = 256;
 
-	static const int SAMPLE_RATE_PLAY = 16000;//44100;
+	static const int SAMPLE_RATE_PLAY = 16000;
 	static const int SAMPLE_RATE_REC  = 16000;
 	static const int FRAME_SIZE_REC   = 512;
 	static const float BIN_SIZE       ;//= 16000.0/512.0;
@@ -123,9 +123,11 @@ public:
 	static const int MAX_ENCODE_DATA_LEN = 4;//16;//127;
 	constexpr static const double EC_RATIO = 0.25f;
 
-	static const int MIN_PAIRING_MSG_LEN = (((12+2+10+2+4)*3)/2)-2;//-2 due to drop audio issue
+	static const int MIN_PAIRING_MSG_LEN = (((12+1+1+4)*3)/2);//-2 due to drop audio issue
 
 	static string PREFIX_DECODE;
+	static string PREFIX_DECODE_C1;
+	static string PREFIX_DECODE_C2;
 	static string POSTFIX_DECODE;
 	static string POSTFIX_DECODE_C1;
 	static string POSTFIX_DECODE_C2;
@@ -144,7 +146,7 @@ public:
 	static string PAIRING_DIVIDER;
 
 	//For recording buffer
-	static const long MAX_RECORDING_TIME = 60L; //60 seconds
+	static const long MAX_RECORDING_TIME = 180L; //180 seconds
 	static float AMP_BASE_RATIO[];
 
 	static void init();

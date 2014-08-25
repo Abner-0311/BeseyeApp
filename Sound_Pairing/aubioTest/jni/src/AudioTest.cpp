@@ -785,8 +785,16 @@ void checkLEDByMode(){
 
 void setLedLight(int bRedOn, int bGreenOn, int bBlueOn){
 	static char cmd[BUF_SIZE]={0};
-	sprintf(cmd, "/beseye/cam_main/cam-handler -setled %d", ((bRedOn) | (bGreenOn<<1) | (bBlueOn<<2)));
-	int iRet = system(cmd);
+	//sprintf(cmd, "/beseye/cam_main/cam-handler -setled %d", ((bRedOn) | (bGreenOn<<1) | (bBlueOn<<2)));
+	sprintf(cmd, "{\"index\":0, \"status\":%d}", bRedOn);
+	postCGI("http://localhost/sray/setLEDSetting.cgi", cmd);
+
+	sprintf(cmd, "{\"index\":1, \"status\":%d}", bGreenOn);
+	postCGI("http://localhost/sray/setLEDSetting.cgi", cmd);
+
+	sprintf(cmd, "{\"index\":2, \"status\":%d}", bBlueOn);
+	postCGI("http://localhost/sray/setLEDSetting.cgi", cmd);
+	//int iRet = system(cmd);
 	//LOGW("cmd:[%s], iRet:%d\n", cmd, iRet);
 }
 static const char* SES_TOKEN_PATH 			= "/beseye/config/ses_token";
