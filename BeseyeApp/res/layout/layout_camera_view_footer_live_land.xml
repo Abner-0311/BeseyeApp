@@ -9,7 +9,7 @@
     	android:layout_width="wrap_content"
    		android:layout_height="wrap_content" 
    		android:layout_gravity="center"
-   		android:layout_marginLeft="40dp" 
+   		android:layout_marginLeft="@dimen/liveview_toolbar_margin_hori" 
    		android:textSize="@dimen/liveview_navbar_font_size"
    		android:textColor="@color/cl_reverse_font_color"
    		android:text="@string/event_cam_view"/>
@@ -30,44 +30,24 @@
    		android:layout_height="1dp" 
    		android:layout_weight="1"/>
     <ImageButton 
-       	android:id="@+id/ib_talk"
-    	android:layout_width="wrap_content"
-   		android:layout_height="wrap_content" 
-   		android:layout_gravity="center"
-   		android:src="@drawable/sl_liveview_talk_btn"
-   		android:background="@android:color/transparent"/>
-    <View 
-        android:layout_width="0dp"
-   		android:layout_height="1dp" 
-   		android:layout_weight="1"/>
-    <ImageButton 
-       	android:id="@+id/ib_rewind"
-    	android:layout_width="wrap_content"
-   		android:layout_height="wrap_content" 
-   		android:layout_gravity="center"
-   		android:src="@drawable/sl_liveview_rewind_btn"
-   		android:background="@android:color/transparent"/>
-    <View 
-        android:layout_width="0dp"
-   		android:layout_height="1dp" 
-   		android:layout_weight="1"/>
-    <ImageButton 
        	android:id="@+id/ib_play_pause"
     	android:layout_width="wrap_content"
    		android:layout_height="wrap_content" 
    		android:layout_gravity="center"
    		android:src="@drawable/sl_liveview_play_btn"
    		android:background="@android:color/transparent"/>
+
     <View 
-       	android:layout_width="0dp"
+        android:layout_width="0dp"
    		android:layout_height="1dp" 
    		android:layout_weight="1"/>
     <ImageButton 
-       	android:id="@+id/ib_fast_forward"
+       	android:id="@+id/ib_talk"
     	android:layout_width="wrap_content"
-   		android:layout_height="wrap_content"
-   		android:layout_marginRight="40dp" 
-   		android:layout_gravity="center" 
-   		android:src="@drawable/sl_liveview_fast_forward_btn"
-   		android:background="@android:color/transparent"/> 
+   		android:layout_height="wrap_content" 
+   		android:layout_gravity="center"
+   		android:src="@drawable/sl_liveview_talk_btn"
+   		android:background="@android:color/transparent"
+   		android:layout_marginRight="@dimen/liveview_toolbar_margin_hori"/>
+
 </LinearLayout>

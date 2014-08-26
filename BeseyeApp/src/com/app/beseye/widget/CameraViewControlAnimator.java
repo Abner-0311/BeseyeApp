@@ -58,7 +58,7 @@ public class CameraViewControlAnimator {
 	private AmplitudeImageView mAmplitudeImageView;
 	
 	private TextView mTxtDate, mTxtCamName, mTxtTime, mTxtEvent, mTxtGoLive;
-	private ImageView mIvStreamType;
+	private ImageView mIvStreamType, mIvBack;
 	private ImageButton mIbTalk, mIbRewind, mIbPlayPause, mIbFastForward, mIbSetting;	
 	
 	private WeakReference<CameraViewActivity> mCameraViewActivity;
@@ -144,6 +144,13 @@ public class CameraViewControlAnimator {
 				syncViewProprety(mIvStreamType, ivStreamType);
 				mIvStreamType = ivStreamType;
 				mIvStreamType.setOnClickListener(act);
+			}
+			
+			ImageView ivBack = (ImageView)vgReference.findViewById(R.id.iv_back);
+			if(null != ivBack){
+				syncViewProprety(mIvBack, ivBack);
+				mIvBack = ivBack;
+				mIvBack.setOnClickListener(act);
 			}
 			
 			ImageButton ibSetting = (ImageButton)vgReference.findViewById(R.id.ib_settings);
@@ -326,9 +333,7 @@ public class CameraViewControlAnimator {
 			}
 			
 			mVgToolbarPortrait = (ViewGroup)inflater.inflate(R.layout.layout_camera_view_footer_live, null);
-			
 			mVgNavbarLandscape = (ViewGroup)inflater.inflate(R.layout.layout_camera_view_navbar_land, null);
-			
 			mVgToolbarLandscape = (ViewGroup)inflater.inflate(R.layout.layout_camera_view_footer_live_land, null);
 		}
 		

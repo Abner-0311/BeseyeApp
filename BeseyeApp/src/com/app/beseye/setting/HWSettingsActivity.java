@@ -565,10 +565,10 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}else if(task instanceof BeseyeCamBEHttpTask.SetIRCutStatusTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
-					int iIRCutStatus = BeseyeJSONUtil.getJSONInt(result.get(0), IRCUT_STATUS);
-					BeseyeJSONUtil.setJSONInt(mCam_obj, IRCUT_STATUS, iIRCutStatus);
+					miIRCutStatus = BeseyeJSONUtil.getJSONInt(result.get(0), IRCUT_STATUS);
+					BeseyeJSONUtil.setJSONInt(mCam_obj, IRCUT_STATUS, miIRCutStatus);
 					if(null != mTxtNightVision){
-						mTxtNightVision.setText(sStridNightVisionMode[iIRCutStatus]);
+						mTxtNightVision.setText(sStridNightVisionMode[miIRCutStatus]);
 					}
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					setActivityResultWithCamObj();

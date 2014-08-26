@@ -6,50 +6,38 @@
   	<LinearLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_marginBottom="16dp"
+	    android:layout_marginBottom="40dp"
 	  	android:orientation="horizontal">
-  	    <ImageButton 
-	       	android:id="@+id/ib_talk"
-	    	android:layout_width="wrap_content"
-	   		android:layout_height="wrap_content"
-	   		android:layout_marginLeft="@dimen/liveview_protrait_btn_hori_margin"
-	   		android:layout_gravity="center"
-	   		android:src="@drawable/sl_liveview_talk_btn_round"
-	   		android:background="@android:color/transparent"/>
-	    <View 
+	  	<View 
 	        android:layout_width="0dp"
 	   		android:layout_height="1dp" 
 	   		android:layout_weight="1"/>
-	    <ImageButton 
-	       	android:id="@+id/ib_rewind"
-	    	android:layout_width="wrap_content"
-	   		android:layout_height="wrap_content" 
-	   		android:layout_gravity="center"
-	   		android:src="@drawable/sl_liveview_rewind_btn_round"
-	   		android:background="@android:color/transparent"/>
-	    <View 
-	        android:layout_width="0dp"
-	   		android:layout_height="1dp" 
-	   		android:layout_weight="1"/>
-	    <ImageButton 
+	  	<ImageButton 
 	       	android:id="@+id/ib_play_pause"
 	    	android:layout_width="wrap_content"
 	   		android:layout_height="wrap_content" 
 	   		android:layout_gravity="center"
 	   		android:src="@drawable/sl_liveview_play_btn_round"
+	   		android:background="@android:color/transparent"/> 	    
+	    <View 
+	        android:layout_width="0dp"
+	   		android:layout_height="1dp" 
+	   		android:layout_weight="1"/>
+	    <View 
+	        android:layout_width="0dp"
+	   		android:layout_height="1dp" 
+	   		android:layout_weight="1"/>
+	    <ImageButton 
+	       	android:id="@+id/ib_talk"
+	    	android:layout_width="wrap_content"
+	   		android:layout_height="wrap_content"
+	   		android:layout_gravity="center"
+	   		android:src="@drawable/sl_liveview_talk_btn_round"
 	   		android:background="@android:color/transparent"/>
 	    <View 
 	       	android:layout_width="0dp"
 	   		android:layout_height="1dp" 
 	   		android:layout_weight="1"/>
-	    <ImageButton 
-	       	android:id="@+id/ib_fast_forward"
-	    	android:layout_width="wrap_content"
-	   		android:layout_height="wrap_content"
-	   		android:layout_marginRight="@dimen/liveview_protrait_btn_hori_margin" 
-	   		android:layout_gravity="center" 
-	   		android:src="@drawable/sl_liveview_fast_forward_btn_round"
-	   		android:background="@android:color/transparent"/> 
   	</LinearLayout>
   	<View 
   	    android:layout_width="match_parent"

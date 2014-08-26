@@ -257,7 +257,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         setState(NONE);
         setOnTouchListener(new TouchImageViewListener());
         
-        miBackgroundColor = context.getResources().getColor(R.color.liveview_background);
+        miBackgroundColor = context.getResources().getColor(R.color.background_white);
     }
     
     @Override

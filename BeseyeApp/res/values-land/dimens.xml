@@ -5,6 +5,5 @@
     <dimen name="signup_paring_done_marginTop">56dp</dimen>
     <dimen name="signup_paring_done_marginSide">72dp</dimen>
     
-    <dimen name="liveview_navbar_margin_hori">20dp</dimen>
     
 </resources>

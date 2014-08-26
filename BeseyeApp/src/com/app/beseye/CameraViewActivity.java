@@ -395,11 +395,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			
 			ImageView ivStreamType =  mCameraViewControlAnimator.getStremTypeView();
 			if(null != ivStreamType){
-				if(config.orientation == Configuration.ORIENTATION_LANDSCAPE)
-					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_h_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
-				else
-					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_s_header_display_icon:R.drawable.liveview_s_header_display_icon_event);
-				//BeseyeUtils.setVisibility(mIvStreamType, mbIsLiveMode?View.VISIBLE:View.INVISIBLE);
+//				if(config.orientation == Configuration.ORIENTATION_LANDSCAPE)
+//					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_h_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
+//				else
+//					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_s_header_display_icon:R.drawable.liveview_s_header_display_icon_event);
+				ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_h_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
 			}
 			
 			TextView txtGoLive = mCameraViewControlAnimator.getGoLiveView();
@@ -1136,12 +1136,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			case R.id.txt_go_live:{
 				if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING))
 					closeStreaming();
-				
 				goToLiveMode();
 				break;
 			}
-			case R.id.ib_talk:{
-				
+			case R.id.iv_back:{
+				finish();
 				break;
 			}
 			case R.id.ib_rewind:{

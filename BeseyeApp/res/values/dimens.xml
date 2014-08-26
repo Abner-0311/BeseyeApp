@@ -19,8 +19,10 @@
     
     <dimen name="liveview_navbar_font_size">16sp</dimen>
     <dimen name="liveview_navbar_margin_hori">10dp</dimen>
+    <dimen name="liveview_navbar_margin_hori_land">20dp</dimen>
     
     <dimen name="liveview_toolbar_font_size">25sp</dimen>
+    <dimen name="liveview_toolbar_margin_hori">50dp</dimen>
     <dimen name="liveview_power_state_font_size">21sp</dimen>
     <dimen name="liveview_power_state_sub_font_size">18sp</dimen>
 

@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/liveview_xhdpi_s_time_bg_white"
     tools:context=".MainActivity" >
 
 	<com.app.beseye.TouchSurfaceView 

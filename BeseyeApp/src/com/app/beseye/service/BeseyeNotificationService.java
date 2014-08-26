@@ -1381,7 +1381,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		
 	}
 
-	static final int MAX_WS_RETRY_TIME = 20;
+	static final int MAX_WS_RETRY_TIME = 100;
 	private int miWSDisconnectRetry = 0;
 	
 	@Override
@@ -1412,7 +1412,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 
 	@Override
 	public void onChannelClosed() {
-		Log.i(TAG, "onChannelCloased()---");
+		Log.i(TAG, "onChannelCloased()---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		if(miWSDisconnectRetry < MAX_WS_RETRY_TIME && false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && NetworkMgr.getInstance().isNetworkConnected()){
 			Log.i(TAG, "onChannelCloased(), abnormal close, retry-----");
 			BeseyeUtils.postRunnable(new Runnable(){

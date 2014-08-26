@@ -15,12 +15,12 @@
         android:background="@color/signup_nav_bg_color"
         android:layout_below="@+id/vg_nav_bar_title_up">
         <ImageView 
-	       	android:id="@+id/iv_streaming_type"
+	       	android:id="@+id/iv_back"
 	       	android:layout_marginLeft="@dimen/liveview_navbar_margin_hori"
 	       	android:layout_centerVertical="true"
 	    	android:layout_width="wrap_content"
 	   		android:layout_height="wrap_content" 
-	   		android:src="@drawable/liveview_s_header_display_icon"/>
+	   		android:src="@drawable/sl_nav_back_btn"/>
 	    
 	    <ImageButton 
 	       	android:id="@+id/ib_settings"
@@ -40,20 +40,33 @@
 	   		android:layout_centerVertical="true"
 	   		android:textSize="@dimen/liveview_navbar_font_size_large"
 	   		android:textColor="@color/word_white"
-	   		android:text="@string/cam_info_cam_name"/>
+	   		android:text="@string/cam_info_cam_name"
+	   		android:layout_toRightOf="@+id/iv_back"
+	   		android:layout_toLeftOf="@+id/ib_settings"
+	   		android:gravity="center"/>
     </RelativeLayout>
    	
     <RelativeLayout 
         android:id="@+id/vg_nav_bar_time"
         android:layout_width="match_parent"
    		android:layout_height="wrap_content"
-   		android:layout_below="@+id/vg_nav_bar_title">
+   		android:layout_below="@+id/vg_nav_bar_title"
+   		android:background="@drawable/liveview_xhdpi_s_time_bg_white">
+	    
+        <ImageView 
+	       	android:id="@+id/iv_streaming_type"
+	       	android:layout_marginLeft="@dimen/liveview_navbar_margin_hori"
+	       	android:layout_centerVertical="true"
+	    	android:layout_width="wrap_content"
+	   		android:layout_height="wrap_content" 
+	   		android:src="@drawable/liveview_h_display_icon"
+	   		android:layout_marginTop="1dp"/>
         <ImageView 
 	       	android:id="@+id/iv_time_divider"
 	    	android:layout_width="1dp"
 	   		android:layout_height="@dimen/liveview_navbar_font_size" 
 	   		android:layout_marginTop="6dp"
-	   		android:layout_centerHorizontal="true"
+	   		android:layout_centerInParent="true"
 	   		android:src="@color/beseye_color"/>
 	    <TextView 
 	       	android:id="@+id/txt_streaming_date"
@@ -62,6 +75,7 @@
 	   		android:layout_marginRight="16dp" 
 	   		android:layout_toLeftOf="@+id/iv_time_divider"
 	   		android:layout_marginTop="2dp"
+	   		android:layout_centerVertical="true"
 	   		android:layout_alignBaseline="@+id/iv_time_divider"
 	   		android:textSize="@dimen/liveview_navbar_font_size"
 	   		android:textColor="@color/liveview_font_normal_color"
@@ -74,6 +88,7 @@
 	   		android:layout_marginLeft="16dp" 
 	   		android:layout_toRightOf="@+id/iv_time_divider"
 	   		android:layout_marginTop="2dp"
+	   		android:layout_centerVertical="true"
 	   		android:layout_alignBaseline="@+id/iv_time_divider"
 	   		android:textSize="@dimen/liveview_navbar_font_size"
 	   		android:textColor="@color/liveview_font_normal_color"

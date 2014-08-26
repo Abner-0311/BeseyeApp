@@ -279,6 +279,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 			Log.e(TAG, "beginToPlayPairingTone(), mChosenWifiAPInfo is null");
 		}			
 	}
+	
+	static private final long MIN_TIME_TO_WAIT_ATTACH = 60000; //1 min 
 		
 	private void estimatePairingTime(){
 		BeseyeUtils.postRunnable(new Runnable(){
@@ -291,6 +293,10 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 						6;//prefix+postfix+divider
 		
 				long lTimeToWait = iNumWords*6*100 + 24*1000;
+				if(MIN_TIME_TO_WAIT_ATTACH > lTimeToWait){
+					lTimeToWait = MIN_TIME_TO_WAIT_ATTACH;
+				}
+				
 				mPairingCounter = new PairingCounter(lTimeToWait, SoundPairingActivity.this);
 				if(null != mPairingCounter){
 					mPairingCounter.start();
