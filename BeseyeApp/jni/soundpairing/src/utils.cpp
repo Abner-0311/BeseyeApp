@@ -117,11 +117,25 @@ int saveToFile(const char* filePath, const char* content){
 }
 
 void showTime(){
-	char date[20];
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	strftime(date, sizeof(date) / sizeof(*date), "%Y-%m-%dT%H:%M:%S", gmtime(&tv.tv_sec));
-	printf("[%s.%03dZ] ", date, tv.tv_usec / 1000);
+//	char date[20];
+//	struct timeval tv;
+//	gettimeofday(&tv, NULL);
+//	strftime(date, sizeof(date) / sizeof(*date), "%Y-%m-%dT%H:%M:%S", gmtime(&tv.tv_sec));
+	struct timeval  tv;
+	struct timezone tz;
+	struct tm       tm;
+
+	char       buf[80];
+	// Get current time
+	//time(&now);
+	// Format time, "ddd yyyy-mm-dd hh:mm:ss zzz"
+	//ts = *localtime(&now);
+	gettimeofday(&tv, &tz);
+	tm = *localtime(&tv.tv_sec);
+
+	strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tm);
+	printf("[%s.%03dZ]", buf, tv.tv_usec / 1000);
+	//printf("[%s.%03dZ] ", date, tv.tv_usec / 1000);
 }
 
 int saveLogFile(const char* filePath){
