@@ -706,6 +706,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	private void setMarginByOrientation(int iOrient){
+		if(null != mStreamingView){
+			mStreamingView.drawDefaultBackground();
+		}
+		
 		if(null != mCameraViewControlAnimator){
 			mCameraViewControlAnimator.setOrientation(iOrient);
 			updatePlayPauseBtnByStatus(mCamViewStatus);
