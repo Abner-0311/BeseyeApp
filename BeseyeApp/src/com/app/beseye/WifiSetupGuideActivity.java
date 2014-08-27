@@ -74,8 +74,6 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 		updateBtnByScanResult();
 	}
 	
-	
-
 	@Override
 	protected void onSessionComplete() {
 		super.onSessionComplete();

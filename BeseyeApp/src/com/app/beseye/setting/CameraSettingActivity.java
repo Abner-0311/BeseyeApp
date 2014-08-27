@@ -566,7 +566,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 					}else{
 						Bundle b = new Bundle();
 						b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-						launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+						launchDelegateActivity(WifiListActivity.class.getName(), b);
 					}
 				}
 			}else if(task instanceof BeseyeAccountTask.SetCamAttrTask){

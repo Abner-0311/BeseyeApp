@@ -42,6 +42,7 @@ import com.app.beseye.widget.GifMovieView;
 public class SoundPairingActivity extends BeseyeBaseActivity {	
 	static public final String KEY_WIFI_INFO = "KEY_WIFI_INFO";
 	static public final String KEY_ORIGINAL_VCAM_CNT = "KEY_ORIGINAL_VCAM_CNT";
+	static public final String KEY_ORIGINAL_VCAM_ARR = "KEY_ORIGINAL_VCAM_ARR";
 	
 	static private AudioManager sAudioManager;
 	static private int siOriginalVolume;
@@ -55,6 +56,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private static boolean sbFinishToPlay = false;
 	
 	private int miOriginalVCamCnt = -1;
+	private JSONArray mArrOriginalVCam = null;
+	
+	private boolean mbFindNewCam = false;
 	
 	static private String sStrCamNameCandidate = null;
 	
@@ -76,7 +80,16 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		miOriginalVCamCnt = getIntent().getIntExtra(KEY_ORIGINAL_VCAM_CNT, -1);
+		//miOriginalVCamCnt = getIntent().getIntExtra(KEY_ORIGINAL_VCAM_CNT, -1);
+		try {
+			String strVCamList = getIntent().getStringExtra(KEY_ORIGINAL_VCAM_ARR);
+			mArrOriginalVCam = new JSONArray(null!=strVCamList?strVCamList:"");
+			miOriginalVCamCnt = mArrOriginalVCam.length();
+		} catch (JSONException e) {
+			Log.e(TAG, "onCreate(), fail to create mArrOriginalVCam");
+			e.printStackTrace();
+			miOriginalVCamCnt = 0;
+		}
 		Log.e(TAG, "onCreate(), miOriginalVCamCnt is "+miOriginalVCamCnt);
 		
 		if(null == sAudioManager){
@@ -314,7 +327,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	
 	private void onPairingTimeout(){
 		checkPairingStatus();
-		launchActivityByClassName(PairingFailActivity.class.getName());
+		//launchActivityByClassName(PairingFailActivity.class.getName());
 	}
 	
 	private void checkPairingStatus(){
@@ -326,7 +339,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		//if(null != mStrCamName){
 		if(null != mPairingCounter && mPairingCounter.isFinished() && sbFinishToPlay){
 			//sStrCamNameCandidate = mStrCamName = mEtCamName.getText().toString();
-			//monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
+			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 		}
 		//}
 	}
@@ -422,67 +435,88 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				}
 			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
-					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
-					int iNetVcamCnt = 0;
-					JSONArray arrCamList = new JSONArray();
-					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
-					//miOriginalVcamCnt = iVcamCnt;
-					if(0 < iVcamCnt){
-						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
-						for(int i = 0;i< iVcamCnt;i++){
-							try {
-								JSONObject camObj = VcamList.getJSONObject(i);
-								if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
-									arrCamList.put(camObj);
+					if(false == mbFindNewCam){
+						//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+						int iNetVcamCnt = 0;
+						JSONArray arrCamList = new JSONArray();
+						int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
+						//miOriginalVcamCnt = iVcamCnt;
+						if(0 < iVcamCnt){
+							JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
+							for(int i = 0;i< iVcamCnt;i++){
+								try {
+									JSONObject camObj = VcamList.getJSONObject(i);
+									if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+										arrCamList.put(camObj);
+									}
+								} catch (JSONException e) {
+									e.printStackTrace();
 								}
-							} catch (JSONException e) {
-								e.printStackTrace();
 							}
+							iNetVcamCnt = arrCamList.length();
 						}
-						iNetVcamCnt = arrCamList.length();
-					}
-					
-					Log.i(TAG, "miOriginalVCamCnt:"+miOriginalVCamCnt+", iNetVcamCnt = "+iNetVcamCnt);
-					if(miOriginalVCamCnt < iNetVcamCnt){
-						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
-						if(null != VcamList){
-							JSONObject cam_obj;
-							try {
-								cam_obj = VcamList.getJSONObject(iNetVcamCnt-1);
-								if(null != cam_obj){
-//									String strVcamId = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID);
-//									String strCamName = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME);
-									
-//									if(BeseyeConfig.COMPUTEX_DEMO)
-//										mStrCamName = "New Camera";
-									
-//									if(null != mStrCamName && 0 < mStrCamName.length()){
-//										strCamName = mStrCamName;
-//										BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME, strCamName);
-//										Log.i(TAG, "update cam name, cam_obj:"+cam_obj.toString());
-//										monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(this).setDialogId(-1), false, strVcamId, strCamName);
-//									}
-									
-									//workaround
-									SessionMgr.getInstance().setIsCertificated(true);
-//									Bundle b = new Bundle();
-//									b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
-//									b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
-//									launchDelegateActivity(CameraListActivity.class.getName(), b);
-									
-									Bundle b = new Bundle();
-									b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
-									launchDelegateActivity(SoundPairingNamingActivity.class.getName(), b);
+						
+						Log.i(TAG, "miOriginalVCamCnt:"+miOriginalVCamCnt+", iNetVcamCnt = "+iNetVcamCnt);
+						if(miOriginalVCamCnt < iNetVcamCnt){
+							//JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
+							if(null != arrCamList){
+								JSONObject cam_obj = null;
+								try {
+									for(int idx = iNetVcamCnt - 1; idx >= 0; idx--){
+										cam_obj = arrCamList.getJSONObject(idx);
+										if(null != cam_obj){
+											String strVcamId = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID, "");
+											boolean bFound = false;
+											for(int idxOld = miOriginalVCamCnt - 1; idxOld >= 0; idxOld--){
+												if(null != strVcamId && 0 < strVcamId.length() && strVcamId.equals(BeseyeJSONUtil.getJSONString(mArrOriginalVCam.getJSONObject(idxOld), BeseyeJSONUtil.ACC_ID, ""))){
+													bFound = true;
+													break;
+												}
+											}
+											
+											if(false == bFound){
+												Log.i(TAG, "find new cam = "+cam_obj);
+												mbFindNewCam = true;
+												break;
+											}
+										}
+									}
+									//cam_obj = arrCamList.getJSONObject(iNetVcamCnt-1);
+									if(null != cam_obj){
+//										String strVcamId = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID);
+//										String strCamName = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME);
+										
+//										if(BeseyeConfig.COMPUTEX_DEMO)
+//											mStrCamName = "New Camera";
+										
+//										if(null != mStrCamName && 0 < mStrCamName.length()){
+//											strCamName = mStrCamName;
+//											BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME, strCamName);
+//											Log.i(TAG, "update cam name, cam_obj:"+cam_obj.toString());
+//											monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(this).setDialogId(-1), false, strVcamId, strCamName);
+//										}
+										
+										//workaround
+										SessionMgr.getInstance().setIsCertificated(true);
+//										Bundle b = new Bundle();
+//										b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
+//										b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
+//										launchDelegateActivity(CameraListActivity.class.getName(), b);
+										
+										Bundle b = new Bundle();
+										b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
+										launchDelegateActivity(SoundPairingNamingActivity.class.getName(), b);
+									}
+								} catch (JSONException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
-							} catch (JSONException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
 							}
+							sStrCamNameCandidate = null;
+						}else{
+							// if pairing failed
+							launchActivityByClassName(PairingFailActivity.class.getName());
 						}
-						sStrCamNameCandidate = null;
-					}else{
-						// if pairing failed
-						launchActivityByClassName(PairingFailActivity.class.getName());
 					}
 				}
 			}else{
@@ -502,8 +536,11 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
     			String strPairToken = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_PAIR_TOKEN);
     			if(null != strPairToken && strPairToken.equals(SessionMgr.getInstance().getPairToken())){
     				Log.i(TAG, getClass().getSimpleName()+"::onCameraActivated(), find match strPairToken = "+strPairToken);
-    				String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.MM_VCAM_UUID);
-    				monitorAsyncTask(mGetNewCamTask = new BeseyeAccountTask.GetCamInfoTask(this), false, strCamUID);
+    				if(false == mbFindNewCam){
+	    				String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.MM_VCAM_UUID);
+	    				monitorAsyncTask(mGetNewCamTask = new BeseyeAccountTask.GetCamInfoTask(this), false, strCamUID);
+	    				mbFindNewCam = true;
+    				}
     				SessionMgr.getInstance().setPairToken("");
     				if(null != mPairingCounter){
     					mPairingCounter.cancel();

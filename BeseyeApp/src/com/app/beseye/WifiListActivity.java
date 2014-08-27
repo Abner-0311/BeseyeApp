@@ -94,7 +94,6 @@ public class WifiListActivity extends WifiControlBaseActivity
 			}
 		}
 		
-		
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
 		
@@ -155,6 +154,13 @@ public class WifiListActivity extends WifiControlBaseActivity
     	Log.d(TAG, "WifiListActivity::onResume()");
 		super.onResume();
 		updateUIByWifiStatus(NetworkMgr.getInstance().getWifiStatus());
+	}
+    
+    @Override
+	protected void onSessionComplete() {
+		super.onSessionComplete();
+		if(false == mbChangeWifi)
+			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 	}
 	
 	@Override
@@ -563,6 +569,29 @@ public class WifiListActivity extends WifiControlBaseActivity
 							onWiFiScanComplete();
 						}
 					}
+				}
+			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
+				if(0 == iRetCode){
+					JSONArray arrCamList = new JSONArray();
+					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
+					//miOriginalVcamCnt = iVcamCnt;
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
+					if(0 < iVcamCnt){
+						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
+						for(int i = 0;i< iVcamCnt;i++){
+							try {
+								JSONObject camObj = VcamList.getJSONObject(i);
+								if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+									arrCamList.put(camObj);
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+						miOriginalVcamArr = arrCamList.toString();
+						miOriginalVcamCnt = arrCamList.length();
+					}
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);

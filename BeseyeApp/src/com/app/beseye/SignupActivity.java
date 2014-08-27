@@ -73,8 +73,11 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 							e.printStackTrace();
 						}
 					}
-					
-					mstrSN = String.format("%04d", Integer.parseInt(mstrSN)+1);	    
+					try{
+						mstrSN = String.format("%04d", Integer.parseInt(mstrSN)+1);	 
+					}catch(java.lang.NumberFormatException ex){
+						mstrSN = "0000";
+					}
 					mEtUserName.setText("beseye"+DeviceUuidFactory.getDeviceUuid().toString().substring(1,4)+mstrSN+"@beseye.com");
 				}else{
 					mEtUserName.setText(TEST_ACC);
@@ -172,7 +175,8 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 			}
 			
 			String strPw 		= (null != mEtPassword)?mEtPassword.getText().toString():null;
-			if(null == strPw || 6 > strPw.length() || 20 < strPw.length()){
+			//if(null == strPw || 6 > strPw.length() || 20 < strPw.length()){
+			if(!BeseyeUtils.validPassword(strPw)){
 				onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_pw_length_error));
 				return;
 			}
@@ -235,7 +239,8 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 					}
 					Bundle b = new Bundle();
 					b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-					launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+					launchDelegateActivity(WifiListActivity.class.getName(), b);
+					//launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
 					setResult(RESULT_OK);
 					finish();
 				}

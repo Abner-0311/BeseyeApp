@@ -131,7 +131,8 @@ public class LoginActivity extends BeseyeBaseActivity {
 			}
 			
 			String strPw 		= (null != mEtPassword)?mEtPassword.getText().toString():null;
-			if(null == strPw || 6 > strPw.length() || 20 < strPw.length()){
+			//if(null == strPw || 6 > strPw.length() || 20 < strPw.length()){
+			if(!BeseyeUtils.validPassword(strPw)){
 				onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_pw_length_error));
 				return;
 			}
@@ -179,7 +180,7 @@ public class LoginActivity extends BeseyeBaseActivity {
 						if(false == SessionMgr.getInstance().getIsCertificated()){
 							Bundle b = new Bundle();
 							b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-							launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
+							launchDelegateActivity(WifiListActivity.class.getName(), b);
 						}else{
 							launchDelegateActivity(CameraListActivity.class.getName());
 						}

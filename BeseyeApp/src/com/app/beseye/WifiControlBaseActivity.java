@@ -65,6 +65,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	
 	//workaround
 	protected int miOriginalVcamCnt = -1;
+	protected String miOriginalVcamArr = null;
 	static public final String KEY_CHANGE_WIFI_ONLY = "KEY_CHANGE_WIFI_ONLY";
 	
 	@Override
@@ -495,6 +496,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 							}else{
 								intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
 								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
+								
 								startActivity(intent);
 								setResult(RESULT_OK);
 							}
@@ -612,6 +615,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 							}else{
 								intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
 								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
 								startActivity(intent);
 								setResult(RESULT_OK);
 							}

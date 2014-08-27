@@ -149,16 +149,30 @@ public class BeseyeUtils {
 	//Format validation
 	static public boolean validEmail(String email) {
 		if(null == email || 0 == email.length())
-			return true;
+			return false;
 	    Pattern pattern = Patterns.EMAIL_ADDRESS;
 	    return pattern.matcher(email).matches();
 	}
 	
 	static public boolean validPhone(String phone) {
 		if(null == phone || 0 == phone.length())
-			return true;
+			return false;
 	    Pattern pattern = Patterns.PHONE;
 	    return pattern.matcher(phone).matches() && 10 <= phone.length() && phone.startsWith("09");
+	}
+	
+	static private Pattern patternPw = null;
+
+	private static final String PASSWORD_PATTERN = 
+            "((?=.*\\d)(?=.*[a-zA-Z]).{6,20})";
+	  
+	static public boolean validPassword(String pw) {
+		if(null == patternPw){
+			patternPw = Pattern.compile(PASSWORD_PATTERN);
+		}
+		if(null == pw || 0 == pw.length())
+			return false;
+	    return patternPw.matcher(pw).matches();
 	}
 	
 	//IME related 

@@ -219,6 +219,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 	}
 	
 	private int miBackgroundColor;
+	private int miBackgroundColorLand;
     
 	public TouchSurfaceView(Context context) {
 		super(context);
@@ -257,6 +258,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         setState(NONE);
         setOnTouchListener(new TouchImageViewListener());
         
+        miBackgroundColorLand = context.getResources().getColor(R.color.liveview_background);
         miBackgroundColor = context.getResources().getColor(R.color.background_white);
     }
     
@@ -1095,7 +1097,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     public void drawDefaultBackground(){
     	Canvas canvas = getHolder().lockCanvas();
     	if(null != canvas){    		
-    		canvas.drawColor(miBackgroundColor/*, PorterDuff.Mode.CLEAR*/);
+    		canvas.drawColor((mSurfaceWidth<mSurfaceHeight)?miBackgroundColor:miBackgroundColorLand/*, PorterDuff.Mode.CLEAR*/);
     		getHolder().unlockCanvasAndPost(canvas);
     	}
     }

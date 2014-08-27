@@ -200,7 +200,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 				@Override
 				public void run() {
 					if(SessionMgr.getInstance().isTokenValid() && !SessionMgr.getInstance().getIsCertificated()){
-						intentLanuchRunnable.setClassName(OpeningPage.this, WifiSetupGuideActivity.class.getName());
+						intentLanuchRunnable.setClassName(OpeningPage.this, WifiListActivity.class.getName());
 					}
 					startActivity(intentLanuchRunnable);
 				}

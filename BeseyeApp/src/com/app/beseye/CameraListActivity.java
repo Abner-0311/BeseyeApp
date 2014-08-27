@@ -490,7 +490,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
 			Bundle b = new Bundle();
 			b.putInt(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
-			launchActivityByClassName(WifiSetupGuideActivity.class.getName(), b);
+			launchActivityByClassName(WifiListActivity.class.getName(), b);
 		}else if(R.id.vg_my_cam == view.getId()){
 			if(mbIsDemoCamMode){
 				finish();

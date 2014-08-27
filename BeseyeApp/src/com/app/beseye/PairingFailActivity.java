@@ -58,7 +58,7 @@ public class PairingFailActivity extends BeseyeAccountBaseActivity {
 	
 	private void backToWifiSetupGuidePage(){
 		Intent intent = new Intent();
-		intent.setClassName(this, WifiSetupGuideActivity.class.getName());
+		intent.setClassName(this, WifiListActivity.class.getName());
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.putExtra(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
 		launchActivityByIntent(intent);
