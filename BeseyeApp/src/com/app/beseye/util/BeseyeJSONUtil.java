@@ -98,6 +98,7 @@ public class BeseyeJSONUtil {
 	
 	
 	public static final String SCHED_OBJ 				= "Schedule";
+	public static final String SCHED_OBJ_IDX 			= "ScheduleIdx";
 	public static final String SCHED_STATUS 			= "Status";
 	public static final String SCHED_LIST 				= "List";
 	public static final String SCHEDULE_STATUS 			= "ScheduleStatus";

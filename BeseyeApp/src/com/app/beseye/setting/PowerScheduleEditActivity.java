@@ -61,13 +61,16 @@ import android.widget.Toast;
 
 public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	
+	public static final String KEY_SCHED_IDX = "KEY_SCHED_IDX";
 	public static final String KEY_SCHED_OBJ = "KEY_SCHED_OBJ";
+	public static final String KEY_SCHED_OBJ_DEL = "KEY_SCHED_OBJ_DEL";
 	public static final String KEY_SCHED_EDIT_MODE = "KEY_SCHED_EDIT_MODE";
 	
 	private ImageView mIvTurnoffAllDayCheck, mIvTurnoffAllDayCheckBg;
 	private ViewGroup mVgPickDays, mVgFromTime, mVgToTime, mVgTurnOffAllDay;
 	private Button mBtnRemove;
 	private TextView mTxtTimeFrom, mTxtTimeTo, mTxtSchedDays;
+	private String mStrSchedIdx = null;
 	private JSONObject mSched_obj, mSched_obj_edit;
 	private boolean mbEditMode = false;
 	
@@ -123,6 +126,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 			}
 			
 			if(mbEditMode){
+				mStrSchedIdx = getIntent().getStringExtra(KEY_SCHED_IDX);
 				mSched_obj = new JSONObject(getIntent().getStringExtra(KEY_SCHED_OBJ)); 
 				mSched_obj_edit = new JSONObject(getIntent().getStringExtra(KEY_SCHED_OBJ)); 
 			}else{
@@ -248,7 +252,9 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 				break;
 			}
 			case R.id.iv_nav_menu_btn:{
-				showMyDialog(DIALOG_ID_CAM_SCHED_ABORT);
+				if(!checkDIfference()){
+					finish();
+				}
 				break;
 			}
 			case R.id.iv_nav_add_cam_btn:{
@@ -288,6 +294,30 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_get_cam_info));
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
+		}else if(task instanceof BeseyeCamBEHttpTask.AddScheduleTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_add_schdule));
+					showMyDialog(DIALOG_ID_WARNING, b);
+				}}, 0);
+		}else if(task instanceof BeseyeCamBEHttpTask.UpdateScheduleTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_update_schdule));
+					showMyDialog(DIALOG_ID_WARNING, b);
+				}}, 0);
+		}else if(task instanceof BeseyeCamBEHttpTask.DeleteScheduleTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_del_schdule));
+					showMyDialog(DIALOG_ID_WARNING, b);
+				}}, 0);
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -295,7 +325,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
-			if(task instanceof BeseyeCamBEHttpTask.AddScheduleTask){
+			if(task instanceof BeseyeCamBEHttpTask.AddScheduleTask || task instanceof BeseyeCamBEHttpTask.UpdateScheduleTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 
@@ -319,11 +349,20 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 						
 						Intent intent = new Intent();
 						intent.putExtra(KEY_SCHED_OBJ, toSave.toString());
+						intent.putExtra(KEY_SCHED_IDX, String.valueOf(BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.SCHED_OBJ_IDX)));
 						setResult(RESULT_OK, intent);
 						finish();
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
+				}
+			}else if(task instanceof BeseyeCamBEHttpTask.DeleteScheduleTask){
+				if(0 == iRetCode){
+					Intent intent = new Intent();
+					intent.putExtra(KEY_SCHED_OBJ_DEL, true);
+					intent.putExtra(KEY_SCHED_IDX, mStrSchedIdx);
+					setResult(RESULT_OK, intent);
+					finish();
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);
@@ -381,15 +420,13 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 				if(false == mbEditMode){
 					monitorAsyncTask(new BeseyeCamBEHttpTask.AddScheduleTask(this), true, mStrVCamID, sched_obj.toString());
 				}else{
-					
+					monitorAsyncTask(new BeseyeCamBEHttpTask.UpdateScheduleTask(this), true, mStrVCamID, mStrSchedIdx, sched_obj.toString());
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			Toast.makeText(PowerScheduleEditActivity.this, (mbEditMode?"Save":"Add")+" schedule from "+iFromTime+" to "+iToTime, Toast.LENGTH_SHORT).show();
-			
+			//Toast.makeText(PowerScheduleEditActivity.this, (mbEditMode?"Save":"Add")+" schedule from "+iFromTime+" to "+iToTime, Toast.LENGTH_SHORT).show();
 		}
 		return bRet;
 	}
@@ -397,11 +434,40 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if(keyCode == KeyEvent.KEYCODE_BACK){
-			showMyDialog(DIALOG_ID_CAM_SCHED_ABORT);
-			return true;
+			return checkDIfference();
 		}
 		
 		return super.onKeyUp(keyCode, event);
+	}
+	
+	private boolean checkDIfference(){
+		boolean bRet = true;
+		if(mbEditMode){
+			if(null != mSched_obj){
+				boolean bTurnOffAllDay = (null != mIvTurnoffAllDayCheck && View.VISIBLE == mIvTurnoffAllDayCheck.getVisibility());
+
+				int iFromTime = BeseyeJSONUtil.getJSONInt(mSched_obj_edit, SCHED_FROM);
+				int iToTime = BeseyeJSONUtil.getJSONInt(mSched_obj_edit, SCHED_TO);
+				if(bTurnOffAllDay){
+					iFromTime = 0;
+					iToTime = BeseyeUtils.DAY_IN_SECONDS;
+
+				}else if(iFromTime >= iToTime){
+					iToTime+=BeseyeUtils.DAY_IN_SECONDS;
+				}
+				
+				if((BeseyeJSONUtil.getJSONInt(mSched_obj, SCHED_FROM) == iFromTime) && 
+				   (BeseyeJSONUtil.getJSONInt(mSched_obj, SCHED_TO) == iToTime) && 
+				   (BeseyeJSONUtil.getJSONArray(mSched_obj, SCHED_DAYS).equals(BeseyeJSONUtil.getJSONArray(mSched_obj_edit, SCHED_DAYS)))){
+					bRet = false;
+				}
+			}
+		}
+		
+		if(bRet)
+			showMyDialog(DIALOG_ID_CAM_SCHED_ABORT);
+		
+		return bRet;
 	}
 	
 	@Override
@@ -416,6 +482,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 				    public void onClick(DialogInterface dialog, int item) {
 				    	removeMyDialog(DIALOG_ID_CAM_SCHED_DELETE);
 				    	//do delete
+				    	monitorAsyncTask(new BeseyeCamBEHttpTask.DeleteScheduleTask(PowerScheduleEditActivity.this), true, mStrVCamID, mStrSchedIdx);
 				    }
 				});
 				builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

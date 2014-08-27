@@ -124,6 +124,10 @@
 	<string name="cam_setting_fail_to_update_video_upside_down">Fail to update video upside-down. Please try again later.</string>
 	<string name="cam_setting_fail_to_get_cam_info">Fail to get camera info. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_schdule_status">Fail to update schedule. Please try again later.</string>
+	<string name="cam_setting_fail_to_add_schdule">Fail to add schedule. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_schdule">Fail to update schedule. Please try again later.</string>
+	<string name="cam_setting_fail_to_del_schdule">Fail to delete schedule. Please try again later.</string>
+	
 	<string name="cam_setting_fail_to_get_wifi_list">Fail to get WiFi list from camera. Please try again later.</string>
 	
 	<string name="cam_setting_hw_hd_quality_title">HD quality</string>
@@ -179,7 +183,7 @@
 	<string name="msg_pairing_error">Pairing failed. Please try again later.</string>
 	<string name="msg_set_cam_name_fail">Set camera name failed. Please try again later.</string>
 	<string name="msg_invalid_account_format">Invalid email format.</string>
-	<string name="msg_pw_length_error">Invalid password format. Must contain one number and one word. And password length should be between 6 and 20. </string>
+	<string name="msg_pw_length_error">Invalid password format. Must contain one number and one word. And password length should be between 6 and 32. </string>
 	<string name="msg_pw_too_short">Your password is too short.</string>
 	<string name="msg_signup_err_email_used">Email was used. Please specify another one.</string>
 	<string name="msg_login_wrong_password">Wrong password. Please check it again.</string>

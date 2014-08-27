@@ -121,13 +121,14 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 //		}
 	}
 	
-	private void addScheduleItm(JSONObject objSchdl){
+	private void addScheduleItm(String strIdx, JSONObject objSchdl){
 		if(null != objSchdl){
 			if(null != mVgPowerScheduleContainer){
 				if(null != mArrVgSchedules){
 					ViewGroup vgScheduleItm = (ViewGroup) getLayoutInflater().inflate(R.layout.layout_power_schdule_itm, null);
 					if(null != vgScheduleItm){
 						ScheduleItmHolder holder = new ScheduleItmHolder();
+						holder.strSchdIdx = strIdx;
 						holder.objSchdl = objSchdl;
 						holder.txtSchdlDays = (TextView)vgScheduleItm.findViewById(R.id.txt_schedule_days);
 						if(null != holder.txtSchdlDays){
@@ -163,6 +164,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	static class ScheduleItmHolder{
 		TextView txtSchdlDays;
 		TextView txtSchdlPeriod;
+		String strSchdIdx;
 		JSONObject objSchdl;
 	} 
 	
@@ -200,6 +202,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 					if(null != holder){
 						Bundle b = new Bundle();
 						b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+						b.putString(PowerScheduleEditActivity.KEY_SCHED_IDX, holder.strSchdIdx);
 						b.putString(PowerScheduleEditActivity.KEY_SCHED_OBJ, holder.objSchdl.toString());
 						b.putBoolean(PowerScheduleEditActivity.KEY_SCHED_EDIT_MODE, true);
 						launchActivityForResultByClassName(PowerScheduleEditActivity.class.getName(),b, REQUEST_SCHEDULE_CHANGED);
@@ -292,7 +295,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 						}
 						for(int idx = 0; idx < iLenSchedule;idx++){
 							try {
-								addScheduleItm(BeseyeJSONUtil.getJSONObject(schedListObj, arrScheduleIdx.getString(idx)));
+								addScheduleItm(arrScheduleIdx.getString(idx), BeseyeJSONUtil.getJSONObject(schedListObj, arrScheduleIdx.getString(idx)));
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -305,6 +308,46 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 		}
 	}
 	
+	private void updateSchedueItm(String strIdx, JSONObject schedItmObj){
+		if(null != strIdx && null != schedItmObj){
+			if(null != mCam_obj){
+				JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
+				if(null != dataObj){
+					JSONObject schedObj = BeseyeJSONUtil.getJSONObject(dataObj, SCHED_OBJ);
+					if(null != schedObj){
+						JSONObject schedListObj = BeseyeJSONUtil.getJSONObject(schedObj, SCHED_LIST);
+						if(null != schedListObj){
+							BeseyeJSONUtil.setJSONObject(schedListObj, strIdx, schedItmObj);
+							updateScheduleStatus();
+						}
+					}
+				}
+			}
+		}else{
+			Log.e(TAG, "PowerScheduleActivity::updateSchedueItm(), invalid strIdx or schedItmObj");
+		}
+	}
+	
+	private void deleteSchedueItm(String strIdx){
+		if(null != strIdx ){
+			if(null != mCam_obj){
+				JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
+				if(null != dataObj){
+					JSONObject schedObj = BeseyeJSONUtil.getJSONObject(dataObj, SCHED_OBJ);
+					if(null != schedObj){
+						JSONObject schedListObj = BeseyeJSONUtil.getJSONObject(schedObj, SCHED_LIST);
+						if(null != schedListObj){
+							schedListObj.remove(strIdx);
+							updateScheduleStatus();
+						}
+					}
+				}
+			}
+		}else{
+			Log.e(TAG, "PowerScheduleActivity::deleteSchedueItm(), invalid strIdx = "+strIdx);
+		}
+	}
+	
 	static public final int REQUEST_SCHEDULE_CHANGED = 101;
 	static public final int REQUEST_SCHEDULE_ADD 	 = 102;
 
@@ -312,7 +355,14 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if(REQUEST_SCHEDULE_CHANGED == requestCode && resultCode == RESULT_OK){
 			try {
-				JSONObject sched_obj_edit = new JSONObject(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_OBJ));
+				boolean bDeleteCase =intent.getBooleanExtra(PowerScheduleEditActivity.KEY_SCHED_OBJ_DEL, false);
+				if(bDeleteCase){
+					deleteSchedueItm(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_IDX));
+				}else{
+					JSONObject sched_obj_edit = new JSONObject(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_OBJ));
+					updateSchedueItm(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_IDX), sched_obj_edit);
+				}
+				
 				//setScheduleDays();
 			} catch (JSONException e) {
 				Log.e(TAG, "onActivityResult(), e:"+e.toString());
@@ -321,7 +371,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 			JSONObject sched_obj_edit;
 			try {
 				sched_obj_edit = new JSONObject(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_OBJ));
-				addScheduleItm(sched_obj_edit);
+				addScheduleItm(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_IDX), sched_obj_edit);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

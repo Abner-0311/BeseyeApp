@@ -164,7 +164,7 @@ public class BeseyeUtils {
 	static private Pattern patternPw = null;
 
 	private static final String PASSWORD_PATTERN = 
-            "((?=.*\\d)(?=.*[a-zA-Z]).{6,20})";
+            "((?=.*\\d)(?=.*[a-zA-Z])(\\S*).{6,32})";
 	  
 	static public boolean validPassword(String pw) {
 		if(null == patternPw){

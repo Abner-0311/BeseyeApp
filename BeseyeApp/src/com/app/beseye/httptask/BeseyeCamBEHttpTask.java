@@ -1,6 +1,8 @@
 package com.app.beseye.httptask;
 
 import java.util.List;
+
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.json.JSONException;
@@ -570,6 +572,30 @@ public class BeseyeCamBEHttpTask  {
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE, strParams[0]), strParams[1]);
+		}
+	}
+	
+	public static class UpdateScheduleTask extends BeseyeHttpTask{
+		public UpdateScheduleTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPut.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE_IDX, strParams[0], strParams[1]), strParams[2]);
+		}
+	}
+	
+	public static class DeleteScheduleTask extends BeseyeHttpTask{
+		public DeleteScheduleTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpDelete.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE_IDX, strParams[0], strParams[1]));
 		}
 	}
 }
