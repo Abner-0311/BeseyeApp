@@ -179,7 +179,7 @@
 	<string name="msg_pairing_error">Pairing failed. Please try again later.</string>
 	<string name="msg_set_cam_name_fail">Set camera name failed. Please try again later.</string>
 	<string name="msg_invalid_account_format">Invalid email format.</string>
-	<string name="msg_pw_length_error">Password length should be between 6 and 20.</string>
+	<string name="msg_pw_length_error">Invalid password format. Must contain one number and one word. And password length should be between 6 and 20. </string>
 	<string name="msg_pw_too_short">Your password is too short.</string>
 	<string name="msg_signup_err_email_used">Email was used. Please specify another one.</string>
 	<string name="msg_login_wrong_password">Wrong password. Please check it again.</string>
