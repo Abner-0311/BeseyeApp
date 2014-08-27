@@ -152,8 +152,8 @@ ArrayRef<short> AudioBufferMgr::getAvailableBuf(){
 	static bool bShowWarning = false;
 //#ifdef ANDROID
 	if(-1 == miPivotRecording){
-		if(!bShowWarning)
-			LOGE("getAvailableBuf(), buffer is out, need to wait for reset\n");
+//		if(!bShowWarning)
+//			LOGE("getAvailableBuf(), buffer is out, need to wait for reset\n");
 		bShowWarning = true;
 	}else{
 		bShowWarning = false;

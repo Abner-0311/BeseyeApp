@@ -73,7 +73,7 @@ public :
 
 	void setDetectStartFlag(bool flag);
 	bool getDetectStartFlag();
-
+	void deinitTestRound();
 
 	//for debug
 	void acquireSyncObj();
@@ -88,6 +88,7 @@ public :
 	static void* verifyToken(void* userdata);
 
 	void setOffset(int iOffset);
+
 
 #ifdef ANDROID
 	virtual void setCamCamWSServerInfo(string strHost, int iPort);
@@ -165,8 +166,8 @@ private:
 	int miPairingReturnCode;
 
 	static string findDifference(string strSrc, string strDecode);
+
 	void adaptPrevMatchRet(MatchRetSet* prevMatchRet);
-	void deinitTestRound();
 
 	bool mIsSenderMode;
 	bool mIsReceiverMode;

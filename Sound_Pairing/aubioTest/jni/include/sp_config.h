@@ -146,7 +146,7 @@ public:
 	static string PAIRING_DIVIDER;
 
 	//For recording buffer
-	static const long MAX_RECORDING_TIME = 180L; //180 seconds
+	static const long MAX_RECORDING_TIME = 60L; //60 seconds
 	static float AMP_BASE_RATIO[];
 
 	static void init();

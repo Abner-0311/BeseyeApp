@@ -1532,6 +1532,11 @@ void FreqAnalyzer::autoCorrection(MatchRetSet* prevMatchRet){
 		selfFreqAnalyzer->setIFreqAnalyzeResultCB(NULL);
 		selfFreqAnalyzer->reset();
 		selfFreqAnalyzer->endToTrace();
+	}else{
+		LOGE("autoCorrection(), iSize= 0\n");
+		if(mIFreqAnalyzeResultCBListener){
+			mIFreqAnalyzeResultCBListener->onTimeout(this, true, mprevMatchRet);
+		}
 	}
 	LOGE("autoCorrection(),------------------------------------------------------------------------------------------------------\n");
 }
