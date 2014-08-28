@@ -63,6 +63,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	
 	public static final String KEY_SCHED_IDX = "KEY_SCHED_IDX";
 	public static final String KEY_SCHED_OBJ = "KEY_SCHED_OBJ";
+	public static final String KEY_SCHED_TS = "KEY_SCHED_TS";
 	public static final String KEY_SCHED_OBJ_DEL = "KEY_SCHED_OBJ_DEL";
 	public static final String KEY_SCHED_EDIT_MODE = "KEY_SCHED_EDIT_MODE";
 	
@@ -350,6 +351,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 						Intent intent = new Intent();
 						intent.putExtra(KEY_SCHED_OBJ, toSave.toString());
 						intent.putExtra(KEY_SCHED_IDX, String.valueOf(BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.SCHED_OBJ_IDX)));
+						intent.putExtra(KEY_SCHED_TS, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 						setResult(RESULT_OK, intent);
 						finish();
 					} catch (JSONException e) {
@@ -361,6 +363,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 					Intent intent = new Intent();
 					intent.putExtra(KEY_SCHED_OBJ_DEL, true);
 					intent.putExtra(KEY_SCHED_IDX, mStrSchedIdx);
+					intent.putExtra(KEY_SCHED_TS, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					setResult(RESULT_OK, intent);
 					finish();
 				}

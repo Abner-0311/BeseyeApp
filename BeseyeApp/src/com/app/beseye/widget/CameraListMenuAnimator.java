@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
+import com.app.beseye.util.BeseyeUtils;
 
 public class CameraListMenuAnimator {	
 	private Animation m_aniMenuFadeIn = null;
@@ -73,6 +74,9 @@ public class CameraListMenuAnimator {
 		setupMenu(R.id.vg_about, R.drawable.sl_menu_about_icon, R.string.cam_menu_about);
 		setupMenu(R.id.vg_support, R.drawable.sl_menu_support_icon, R.string.cam_menu_support);
 		setupMenu(R.id.vg_logout, R.drawable.sl_menu_logout_icon, R.string.cam_menu_logout);
+		
+		View vSupport = m_vgMenuHolderLayout.findViewById(R.id.vg_support);
+		BeseyeUtils.setVisibility(vSupport, View.GONE);
 		
 		initAnimations(context);
 	}

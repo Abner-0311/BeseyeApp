@@ -53,7 +53,8 @@
 	<RelativeLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="@dimen/wifi_list_item_height"
-	    android:background="@drawable/setting_wifi_title_bg"> 
+	    android:background="@drawable/setting_wifi_title_bg"
+	    android:visibility="gone"> 
 	    <TextView 
 	    	android:layout_width="wrap_content"
 	   		android:layout_height="wrap_content" 
@@ -69,7 +70,8 @@
 	    android:id="@+id/vg_sw_ver" 
 	    android:layout_width="match_parent"
 	    android:layout_height="@dimen/wifi_list_item_height"
-	    android:background="@drawable/cl_setting_item_bg">
+	    android:background="@drawable/cl_setting_item_bg"
+	    android:visibility="gone">
 		<TextView
 		    android:id="@+id/txt_sw_ver" 
 	    	android:layout_width="wrap_content"

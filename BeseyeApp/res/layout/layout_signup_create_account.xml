@@ -46,6 +46,17 @@
         android:paddingLeft="@dimen/login_marginMedium"
         android:paddingRight="@dimen/login_marginMedium"
         android:textSize="@dimen/login_fontRegular" />
+    
+    <TextView 
+        android:id="@+id/txt_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText_password"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/signup_font_description_color"
+        android:textSize="@dimen/login_fontSmall"
+        android:text="@string/password_hint"
+        android:layout_marginTop="4dp"/>
 
     <RelativeLayout
         android:id="@+id/rl_bottom_description"
@@ -107,7 +118,7 @@
         android:background="@drawable/sl_account_bottom_btn"
         android:paddingBottom="@dimen/login_marginMedium"
         android:paddingTop="@dimen/login_marginMedium"
-        android:text="@string/signup_before_setup_start"
+        android:text="@string/cont"
         android:textColor="@color/word_white"
         android:textColorLink="@color/word_white"
         android:textSize="@dimen/login_fontMedium" />

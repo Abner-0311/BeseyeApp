@@ -128,6 +128,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 		
 		mVgHDQuality = (ViewGroup)findViewById(R.id.vg_hd_quality);
+		BeseyeUtils.setVisibility(mVgHDQuality, View.GONE);
 		
 		mHDQualitySwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_hd_switch);
 		if(null != mHDQualitySwitchBtn){
@@ -157,6 +158,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 		
 		mVgViewUpDown = (ViewGroup)findViewById(R.id.vg_video_upside_down);
+		BeseyeUtils.setVisibility(mVgViewUpDown, View.GONE);
 		
 		mIvViewUpDownCheck = (ImageView)findViewById(R.id.iv_video_upside_down_check);
 		if(null != mIvViewUpDownCheck){

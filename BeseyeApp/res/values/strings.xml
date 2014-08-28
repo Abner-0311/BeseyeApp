@@ -15,11 +15,14 @@
     <string name="password">Password</string>
     <string name="show_password">Show password</string>
     <string name="forget_password">Forget password</string>
-    <string name="username">Email</string>
+    <string name="username">E-mail</string>
     <string name="account_new">Don\'t have an account?</string>
     <string name="account_create">Create account</string>
     <string name="login">Login</string>  
-    <string name="remove">Remove</string>    
+    <string name="remove">Remove</string>  
+	<string name="cont">Continue</string> 
+    <string name="watch_out_sound">Watch out sound</string> 
+    <string name="password_hint">6 characters with letter and number</string> 
     
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
@@ -94,7 +97,7 @@
 	<string name="cam_setting_title_family_recognition">Family recognition</string>
 	<string name="cam_setting_title_hardware_setting">Hardware settings</string>
 	<string name="cam_setting_title_hardware_setting_inf">Hardware settings</string>
-	<string name="cam_setting_title_special_functions">Special function</string>
+	<string name="cam_setting_title_special_functions">Misc function</string>
 	<string name="cam_setting_title_emergency_siren">Emergency siren</string>
 	<string name="cam_setting_title_camera_inf">Camera information</string>
 	<string name="cam_setting_title_power_desc">Beseye is %s</string>
@@ -183,7 +186,7 @@
 	<string name="msg_pairing_error">Pairing failed. Please try again later.</string>
 	<string name="msg_set_cam_name_fail">Set camera name failed. Please try again later.</string>
 	<string name="msg_invalid_account_format">Invalid email format.</string>
-	<string name="msg_pw_length_error">Invalid password format. Must contain one number and one word. And password length should be between 6 and 32. </string>
+	<string name="msg_pw_length_error">Invalid password format. Must contain one number and one letter. And password length should be between 6 and 32. </string>
 	<string name="msg_pw_too_short">Your password is too short.</string>
 	<string name="msg_signup_err_email_used">Email was used. Please specify another one.</string>
 	<string name="msg_login_wrong_password">Wrong password. Please check it again.</string>

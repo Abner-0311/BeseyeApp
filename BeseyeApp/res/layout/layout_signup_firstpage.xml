@@ -4,14 +4,46 @@
     android:layout_height="match_parent"
     android:background="@color/signup_bg_color" >
 
-    <ImageView
-        android:id="@+id/iv_signup_top_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/signup_firstPage_marginTop"
-        android:src="@drawable/signup_homepage_logo" />
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout 
+            android:layout_width="match_parent"
+       		android:layout_height="0dp"
+       		android:layout_weight="35">
+            <ImageView
+		        android:id="@+id/iv_signup_top_logo"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentTop="true"
+		        android:layout_centerHorizontal="true"
+		        android:layout_marginTop="@dimen/signup_firstPage_marginTop"
+		        android:src="@drawable/signup_homepage_logo" />
+            
+            <ImageView
+		        android:id="@+id/iv_signup_sun"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentBottom="true"
+		        android:src="@drawable/signup_firstpage_sun_pic" 
+		        android:layout_marginBottom="6dp"
+		        android:layout_marginLeft="30dp"/>
+        </RelativeLayout>
+        <LinearLayout 
+            android:layout_width="match_parent"
+       		android:layout_height="0dp"
+       		android:layout_weight="65">
+            <ImageView
+		        android:id="@+id/iv_signup_home"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:scaleType="fitXY"
+		        android:src="@drawable/signup_firstpage_home_pic" />
+        </LinearLayout>
+        
+    </LinearLayout>
+    
 
 	<Button
 	    android:id="@+id/button_signup"
@@ -21,8 +53,8 @@
 	    android:layout_centerHorizontal="true"
 	    android:layout_centerInParent="true"
 	    android:layout_marginBottom="@dimen/signup_firstPage_bottom_btn_marginBottom"
-	    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
-	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginLeft="@dimen/signup_firstPage_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_btn_marginSide"
 	    android:background="@drawable/sl_signup_round_btn"
 	    android:paddingBottom="@dimen/login_marginSmall"
 	    android:paddingTop="@dimen/login_marginSmall"
@@ -39,8 +71,8 @@
 	    android:layout_centerHorizontal="true"
 	    android:layout_centerInParent="true"
 	    android:layout_marginBottom="@dimen/signup_firstPage_bottom_btn_marginBottom"
-	    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
-	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginLeft="@dimen/signup_firstPage_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_btn_marginSide"
 	    android:background="@drawable/sl_signup_round_btn"
 	    android:paddingBottom="@dimen/login_marginSmall"
 	    android:paddingTop="@dimen/login_marginSmall"

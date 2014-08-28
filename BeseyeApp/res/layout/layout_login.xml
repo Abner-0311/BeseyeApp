@@ -9,31 +9,21 @@
         android:id="@+id/iv_loginBg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/tv_no_account"
+        android:layout_above="@+id/vg_no_account"
         android:layout_centerInParent="true"
         android:layout_marginBottom="@dimen/login_marginMedium"
         android:layout_marginLeft="@dimen/login_marginLarge"
         android:layout_marginRight="@dimen/login_marginLarge"
         android:src="@drawable/login_bg" />
-    
-    <ImageView
-        android:id="@+id/iv_beseyeLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/login_logo_marginTop"
-        android:src="@drawable/login_logo" />
 
     <EditText
         android:id="@+id/editText_username"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/iv_beseyeLogo"
-        android:layout_alignRight="@+id/iv_beseyeLogo"
-        android:layout_below="@+id/iv_beseyeLogo"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/login_marginXLarge"
+        android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/login_logo_marginTop"
         android:background="@drawable/sl_signup_create_account_input"
         android:ems="10"
         android:hint="@string/username"
@@ -44,10 +34,10 @@
     
     <EditText
         android:id="@+id/editText_password"
-        android:layout_width="wrap_content"
+       	android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText_username"
-        android:layout_alignRight="@+id/editText_username"
+        android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
         android:layout_below="@+id/editText_username"
         android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/login_marginMedium"
@@ -71,30 +61,30 @@
         android:textColor="@color/beseye_color"
         android:textSize="@dimen/wifi_list_item_sub_font_size" />
     
-    <TextView
-        android:id="@+id/tv_no_account"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText_username"
-        android:layout_above="@+id/button_login"
-        android:layout_marginLeft="@dimen/login_marginMedium"
-        android:layout_marginBottom="@dimen/login_marginMedium"
-        android:text="@string/account_new"
-        android:textColor="@color/word_gray"
-        android:textSize="@dimen/login_fontSmall" />
-    
-    <TextView
-        android:id="@+id/tv_create_account"
+    <RelativeLayout 
+        android:id="@+id/vg_no_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/button_login"
-        android:layout_marginLeft="@dimen/wifi_list_item_padding_top"
-        android:layout_marginBottom="@dimen/login_marginMedium"
-        android:layout_toRightOf="@+id/tv_no_account"
-        android:text="@string/account_create"
-        android:textColor="@color/beseye_color"
-        android:textSize="@dimen/login_fontSmall" />
-
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/login_marginMedium">
+        <TextView
+	        android:id="@+id/tv_no_account"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/account_new"
+	        android:textColor="@color/word_gray"
+	        android:textSize="@dimen/login_fontSmall" />
+        <TextView
+	        android:id="@+id/tv_create_account"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="@dimen/wifi_list_item_padding_top"
+	        android:layout_toRightOf="@+id/tv_no_account"
+	        android:text="@string/account_create"
+	        android:textColor="@color/beseye_color"
+	        android:textSize="@dimen/login_fontSmall" />
+    </RelativeLayout>
     <Button
         android:id="@+id/button_login"
         android:layout_width="fill_parent"

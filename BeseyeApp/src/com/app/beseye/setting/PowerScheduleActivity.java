@@ -302,7 +302,6 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 							}
 						}
 					}
-					
 				}
 			}
 		}
@@ -363,6 +362,9 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 					updateSchedueItm(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_IDX), sched_obj_edit);
 				}
 				
+				BeseyeJSONUtil.setJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP, intent.getLongExtra(PowerScheduleEditActivity.KEY_SCHED_TS, System.currentTimeMillis()));
+				BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
+				
 				//setScheduleDays();
 			} catch (JSONException e) {
 				Log.e(TAG, "onActivityResult(), e:"+e.toString());
@@ -371,7 +373,32 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 			JSONObject sched_obj_edit;
 			try {
 				sched_obj_edit = new JSONObject(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_OBJ));
-				addScheduleItm(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_IDX), sched_obj_edit);
+				if(null != mCam_obj){
+					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
+					if(null != dataObj){
+						JSONObject schedObj = BeseyeJSONUtil.getJSONObject(dataObj, SCHED_OBJ);
+						if(null != schedObj){
+							boolean bSchedStatus = getJSONBoolean(schedObj, SCHED_STATUS, false);
+							if(null != mScheduleSwitchBtn){
+								if(BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj)){
+									mScheduleSwitchBtn.setEnabled(false);
+								}else{
+									mScheduleSwitchBtn.setEnabled(true);
+									mScheduleSwitchBtn.setSwitchState(bSchedStatus?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+								}
+							}
+							
+							JSONObject schedListObj = BeseyeJSONUtil.getJSONObject(schedObj, SCHED_LIST);
+							if(null != schedListObj){
+								schedListObj.put(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_IDX), sched_obj_edit);
+								updateScheduleStatus();
+								BeseyeJSONUtil.setJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP, intent.getLongExtra(PowerScheduleEditActivity.KEY_SCHED_TS, System.currentTimeMillis()));
+								BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
+							}
+						}
+					}
+				}
+				
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

@@ -7,16 +7,11 @@
         android:layout_width="match_parent"
     	android:layout_height="wrap_content"
     	android:orientation="vertical">
-    	
         <include layout="@layout/layout_setting_power"></include>		    
         <include layout="@layout/layout_setting_notification"></include>    
-        <include layout="@layout/layout_setting_hardware"></include>
         <include layout="@layout/layout_setting_special"></include>
-          
-		    
+        <include layout="@layout/layout_setting_hardware"></include>
     </LinearLayout>
-    
-    
 </ScrollView>
 
 

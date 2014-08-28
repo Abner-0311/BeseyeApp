@@ -27,15 +27,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class LoginActivity extends BeseyeBaseActivity {
+public class LoginActivity extends BeseyeAccountBaseActivity {
 	private EditText mEtUserName, mEtPassword;
 	private TextView mTvForgetPassword, mTvCreateAcc, mTvLogin;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getSupportActionBar().hide();
 		mbIgnoreSessionCheck = true;
+		
+		if(null != mTxtNavTitle){
+			mTxtNavTitle.setText(R.string.signup_bottom_login);
+		}
 		
 		mEtUserName = (EditText)findViewById(R.id.editText_username);
 		if(null != mEtUserName){
@@ -49,7 +52,7 @@ public class LoginActivity extends BeseyeBaseActivity {
 			mEtPassword.addTextChangedListener(mTextWatcher);
 			mEtPassword.setOnEditorActionListener(mOnEditorActionListener);
 			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal())
-				mEtPassword.setText("123456");
+				mEtPassword.setText("beseye1234");
 		}
 		
 		mTvForgetPassword = (TextView)findViewById(R.id.tv_forgetpw);
@@ -131,8 +134,8 @@ public class LoginActivity extends BeseyeBaseActivity {
 			}
 			
 			String strPw 		= (null != mEtPassword)?mEtPassword.getText().toString():null;
-			//if(null == strPw || 6 > strPw.length() || 20 < strPw.length()){
-			if(!BeseyeUtils.validPassword(strPw)){
+			if(null == strPw || 6 > strPw.length() || 32 < strPw.length()){
+			//if(!BeseyeUtils.validPassword(strPw)){
 				onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_pw_length_error));
 				return;
 			}
@@ -178,14 +181,18 @@ public class LoginActivity extends BeseyeBaseActivity {
 						}
 						
 						if(false == SessionMgr.getInstance().getIsCertificated()){
-							Bundle b = new Bundle();
-							b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-							launchDelegateActivity(WifiListActivity.class.getName(), b);
+							//Bundle b = new Bundle();
+							//b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
+							//launchActivityByClassName(PairingRemindActivity.class.getName(), b);
+							//setResult(RESULT_OK);
+							SessionMgr.getInstance().cleanSession();
+							onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_account_not_found));
 						}else{
 							launchDelegateActivity(CameraListActivity.class.getName());
+							setResult(RESULT_OK);
+							finish();
 						}
-						setResult(RESULT_OK);
-						finish();
+						
 					}
 				}
 			}else{

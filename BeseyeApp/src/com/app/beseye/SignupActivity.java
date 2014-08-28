@@ -92,7 +92,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 			mEtPassword.addTextChangedListener(mTextWatcher);
 			mEtPassword.setOnEditorActionListener(mOnEditorActionListener);
 			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal())
-				mEtPassword.setText("123456");
+				mEtPassword.setText("beseye1234");
 		}
 		
 		mTvTermOfService = (TextView)findViewById(R.id.tv_bottom_description_terms);
@@ -238,11 +238,15 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 						}
 					}
 					Bundle b = new Bundle();
-					b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-					launchDelegateActivity(WifiListActivity.class.getName(), b);
+					//b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
+					launchActivityByClassName(PairingWatchOutActivity.class.getName(), b);
 					//launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
-					setResult(RESULT_OK);
-					finish();
+					//setResult(RESULT_OK);
+					//finish();
+					
+					if(null != mEtPassword){
+						mEtPassword.setText("");
+					}
 				}
 			}else if(task instanceof BeseyeAccountTask.CamAttchTask){
 				if(0 == iRetCode){

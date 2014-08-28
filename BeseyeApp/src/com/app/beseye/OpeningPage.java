@@ -232,6 +232,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.GetUserInfoTask){
+				Intent intentLanuch = new Intent();
+				intentLanuch.setClassName(this, BeseyeEntryActivity.class.getName());
 				if(0 == iRetCode){
 					JSONObject obj = result.get(0);
 					if(null != obj){
@@ -239,16 +241,15 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 						JSONObject objUser = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_USER);
 						if(null != objUser){
 							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
-							//Computex workaround
 							if(SessionMgr.getInstance().getIsCertificated()){
-								mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(this);
-								if(mGetVCamListTask != null){
-									mGetVCamListTask.execute();
-								}
+								intentLanuch.setClassName(this, FIRST_PAGE);
+							}else{
+								SessionMgr.getInstance().cleanSession();
 							}
 						}
 					}
 				}
+				startActivity(intentLanuch);
 			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
