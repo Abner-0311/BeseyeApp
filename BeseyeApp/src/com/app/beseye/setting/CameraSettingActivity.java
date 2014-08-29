@@ -549,6 +549,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 						BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 						BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 						setActivityResultWithCamObj();	
+						setResult(RESULT_OK);
 					}
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
@@ -577,18 +578,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 					BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, mstrNameCandidate);
 					setActivityResultWithCamObj();
 				}
-			}else if(task instanceof BeseyeCamBEHttpTask.SetSpeakerStatusTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-			}else if(task instanceof BeseyeCamBEHttpTask.GetSpeakerStatusTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-			}else if(task instanceof BeseyeCamBEHttpTask.SetSpeakerVolumeTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-			}else if(task instanceof BeseyeCamBEHttpTask.GetSpeakerVolumeTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
 			}else if(task instanceof BeseyeCamBEHttpTask.SetImageSettingTask){
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());
@@ -609,12 +598,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}
 				
 			}else if(task instanceof BeseyeCamBEHttpTask.ReconnectMMTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-			}else if(task instanceof BeseyeCamBEHttpTask.GetWiFiConfigTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-			}else if(task instanceof BeseyeCamBEHttpTask.SetWiFiConfigTask){
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 			}else{
@@ -645,6 +628,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			try {
 				mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 				setActivityResultWithCamObj();
+				setResult(RESULT_OK);
 			} catch (JSONException e) {
 				Log.e(TAG, "onActivityResult(), e:"+e.toString());
 			}

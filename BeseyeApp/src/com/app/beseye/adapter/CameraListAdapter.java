@@ -76,6 +76,9 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				}
 				
 				holder.mVgCamDisconnected = (ViewGroup)convertView.findViewById(R.id.rl_camera_disconnected_solid);
+				if(null != holder.mVgCamDisconnected){
+					BeseyeUtils.setThumbnailRatio(holder.mVgCamDisconnected, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
+				}
 				
 				convertView.setOnClickListener(mItemOnClickListener);
 				convertView.setTag(holder);
@@ -95,7 +98,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				
 				BeseyeJSONUtil.CAM_CONN_STATUS connState = BeseyeJSONUtil.getVCamConnStatus(obj);//CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
 				
-				BeseyeUtils.setVisibility(holder.mImgThumbnail, connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED)?View.INVISIBLE:View.VISIBLE);
+				//BeseyeUtils.setVisibility(holder.mImgThumbnail, connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED)?View.INVISIBLE:View.VISIBLE);
 				BeseyeUtils.setVisibility(holder.mVgCamOff, connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_OFF)?View.VISIBLE:View.GONE);
 				BeseyeUtils.setVisibility(holder.mVgCamDisconnected, connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED)?View.VISIBLE:View.GONE);
 				
@@ -106,7 +109,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				}
 				
 				//Log.i(TAG, "setupItem(), holder.mImgThumbnail:"+holder.mImgThumbnail.getWidth());
-				if(!connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED) && null != holder.mImgThumbnail){
+				if(/*!connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED) &&*/ null != holder.mImgThumbnail){
 					
 					holder.mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB), R.drawable.cameralist_thumbnail);
 					holder.mImgThumbnail.loadImage();

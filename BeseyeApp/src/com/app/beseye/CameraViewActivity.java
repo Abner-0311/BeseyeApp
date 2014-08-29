@@ -105,12 +105,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private List<JSONObject> mstrPendingStreamPathList;
 	private long mlDVRStartTs;
 	private long mlDVRFirstSegmentStartTs = -1;
-	private long mlPairingDoneBeginTs = -1;
+	private long mlRetryConnectBeginTs = -1;
 	private TimeZone mTimeZone;
 	
 	private boolean mbIsFirstLaunch = true;
 	private boolean mbIsRetryAtNextResume = false;
 	private boolean mbIsPauseWhenPlaying = false;
+	private boolean mbIsCamStatusChanged = false;
 	private boolean mbIsCamSettingChanged = false;
 	private boolean mbIsWifiSettingChanged = false;
 	
@@ -160,9 +161,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			if(null != mCameraViewControlAnimator){
 				    			setEnabled(mCameraViewControlAnimator.getTalkView(), false);
 				    			setEnabled(mCameraViewControlAnimator.getRewindView(), false);
-				    			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), isCamPowerOn() && NetworkMgr.getInstance().isNetworkConnected());
 				    			setEnabled(mCameraViewControlAnimator.getFastForwardView(), false);
 				    			
+				    			updatePlayPauseBtnEnabledStatus();
 				    			updatePlayPauseBtnByStatus(status);
 			    			}
 			    			setVisibility(mPbLoadingCursor, View.GONE);
@@ -502,7 +503,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}
 				
 				if(intent.getBooleanExtra(KEY_PAIRING_DONE, false)){
-					mlPairingDoneBeginTs = System.currentTimeMillis();
+					mlRetryConnectBeginTs = System.currentTimeMillis();
 					mVgPairingDone = (ViewGroup)findViewById(R.id.vg_pairing_done);
 					if(null != mVgPairingDone){
 						BeseyeUtils.setVisibility(mVgPairingDone, View.VISIBLE);
@@ -838,16 +839,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		}*/
 		
-		if(null != mCameraViewControlAnimator){
-			BeseyeUtils.setEnabled(mCameraViewControlAnimator.getPlayPauseView(), bPowerOn && bNetworkConnected);
-		}
+		updatePlayPauseBtnEnabledStatus();
 		
 		if(!bNetworkConnected){
 			showNoNetworkDialog();
 		}
 		
 		updatePowerState();
-		mbIsFirstLaunch = mbIsPauseWhenPlaying = mbIsCamSettingChanged = false;
+		mbIsFirstLaunch = mbIsPauseWhenPlaying = false;
 		
 		if(null != mStreamingView){
 			mStreamingView.drawDefaultBackground();
@@ -869,22 +868,32 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private BeseyeHttpTask mLiveStreamTask = null;
 	private BeseyeHttpTask mDVRStreamTask = null;
+	private BeseyeHttpTask mDVRStreamAppendTask = null;
 	
 	private void getStreamingInfo(){
 		if(false == isInP2PMode()){
 			if(mbIsLiveMode){
-				if(null == mLiveStreamTask)
+				if(null == mLiveStreamTask){
 					monitorAsyncTask(mLiveStreamTask = new BeseyeMMBEHttpTask.GetLiveStreamTask(this, -1), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, "false");
+					setVisibility(mPbLoadingCursor, View.VISIBLE);
+				}
 			}else{
 				if(null == mDVRStreamTask){
 					monitorAsyncTask(mDVRStreamTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(DIALOG_ID_LOADING), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, mlDVRStartTs+"", DVR_REQ_TIME);
 					mlDVRFirstSegmentStartTs = -1;
+					setVisibility(mPbLoadingCursor, View.VISIBLE);
 				}
 			}
 		}else{
 			Log.d(TAG, "CameraViewActivity::getStreamingInfo(), play p2p stream:"+mstrLiveP2P);
 			updateUIByMode();
 			beginLiveView();
+		}
+	}
+	
+	private void updatePlayPauseBtnEnabledStatus(){
+		if(null != mCameraViewControlAnimator){
+			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), (null == mLiveStreamTask && null == mDVRStreamTask) && isCamPowerOn() && NetworkMgr.getInstance().isNetworkConnected());
 		}
 	}
 	
@@ -969,25 +978,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}else if(ASSIGN_ST_PATH){
 					//Workaround
 					beginLiveView();
-				}else{
-					if(null != mVgPairingDone){
-						if(System.currentTimeMillis() - mlPairingDoneBeginTs < 30*1000){
-							BeseyeUtils.postRunnable(new Runnable(){
-								@Override
-								public void run() {
-									getStreamingInfo();
-								}}, 300);
-						}	
-					}else{
-						mbIsRetryAtNextResume = true;
-					}
-				
-//					//Workaround
-//					mstrLiveStreamServer = "rtmp://54.238.191.39:1935/live-edge/_definst_";
-//					mstrLiveStreamPath = "{o}54.250.149.50/live-origin-record/_definst_/"+mStrVCamID;
-////					mstrLiveStreamServer = "rtmp://54.250.149.50/vods3/_definst_";//rtmp://54.238.191.39:1935/live-edge/_definst_";
-////					mstrLiveStreamPath = "mp4:amazons3/wowza2.s3.tokyo/liveorigin/sample.mp4";//{o}54.250.149.50/live-origin-record/_definst_/1001_aac";
-//					beginLiveView();
 				}
 			}else if(task instanceof BeseyeMMBEHttpTask.GetDVRStreamTask){
 				if(0 == iRetCode){
@@ -1047,6 +1037,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON.getValue());
 					setActivityResultWithCamObj();
 					mbIsCamSettingChanged = true;
+					mbIsCamStatusChanged = true;
+					mlRetryConnectBeginTs = System.currentTimeMillis();
 					checkPlayState();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
@@ -1069,6 +1061,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mLiveStreamTask = null;
 		}else if(task == mDVRStreamTask){
 			mDVRStreamTask = null;
+		}else if(task == mDVRStreamAppendTask){
+			mDVRStreamAppendTask = null;
 		}else if(task == mGetAudioWSServerTask){
 			mGetAudioWSServerTask = null;
 		}
@@ -1077,7 +1071,16 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
-			if(null == mVgPairingDone){
+			if((null != mVgPairingDone || mbIsCamStatusChanged || mbIsCamSettingChanged) && (System.currentTimeMillis() - mlRetryConnectBeginTs < 60*1000)){
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						getStreamingInfo();
+					}}, 300);
+			}else{
+				mbIsRetryAtNextResume = true;
+				mbIsCamStatusChanged = false;
+				mbIsCamSettingChanged = false;
 				BeseyeUtils.postRunnable(new Runnable(){
 					@Override
 					public void run() {
@@ -1086,12 +1089,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_playing_error));
 							b.putBoolean(KEY_WARNING_CLOSE, true);
 							showMyDialog(DIALOG_ID_WARNING, b);
+							updatePlayPauseBtnEnabledStatus();
+							setVisibility(mPbLoadingCursor, View.GONE);
 						}
-						
 					}}, 0);
-			}else{
-				return;
 			}
+			return;
 		}else if(task instanceof BeseyeMMBEHttpTask.GetDVRStreamTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
@@ -1100,6 +1103,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
 					b.putBoolean(KEY_WARNING_CLOSE, true);
 					showMyDialog(DIALOG_ID_WARNING, b);
+					updatePlayPauseBtnEnabledStatus();
+					setVisibility(mPbLoadingCursor, View.GONE);
 				}}, 0);
 		}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 			BeseyeUtils.postRunnable(new Runnable(){
@@ -1362,7 +1367,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	   								}
 	   	         				}
 	   	         				Log.i(TAG, "open stream for idx:"+miStreamIdx);
-	   	         				iRetCreateStreaming = openStreaming(miStreamIdx, getNativeSurface(), streamFullPath.replace("rtmp", "rtmps").replace(":1935", ""), 0);
+	   	         				iRetCreateStreaming = openStreaming(miStreamIdx, getNativeSurface(), streamFullPath, 0);
 	   	         			}while(iRetCreateStreaming < 0 && iTrial < 8);
 	   	         			
 	   	         			if(miStreamIdx >= 10){
@@ -1448,7 +1453,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	       									}
 	       		         				}
 	       		         				Log.i(TAG, "open stream for idx"+miStreamIdx);
-	       		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost.replace("rtmp", "rtmps").replace(":1935", ""), streamList, /*(int)lOffset8*/0);
+	       		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost, streamList, /*(int)lOffset8*/0);
 	       		         			}while(iRetCreateStreaming < 0 && iTrial < 8);
 	       		         			
 	       		         			if(miStreamIdx >= 10){
@@ -1793,7 +1798,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
         	if(3 >= mstrDVRStreamPathList.size()){
         		long startTime = findLastTimeFromList();
         		if(0 < startTime){
-					monitorAsyncTask(mDVRStreamTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(-1), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, startTime+"", DVR_REQ_TIME);
+					monitorAsyncTask(mDVRStreamAppendTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(-1), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, startTime+"", DVR_REQ_TIME);
         		}else{
         			Log.e(TAG, "updateStreamList(), failed to get start time ");
         		}

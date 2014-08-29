@@ -569,27 +569,27 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		if(REQUEST_CAM_VIEW_CHANGE == requestCode){
 			if(resultCode == RESULT_OK){
 				//monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this), true);
-				try {
-					JSONObject Cam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
-					if(null != Cam_obj){
-						JSONArray camArr = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
-						int iCount = (null != camArr)?camArr.length():0;
-						String strVcamId = BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_ID);
-						for(int i = 0;i<iCount;i++){
-							JSONObject obj = camArr.getJSONObject(i);
-							if(null != obj && BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID).equals(strVcamId)){
-								camArr.put(i, Cam_obj);
-								//BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.ACC_NAME, BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_NAME));
-								//BeseyeJSONUtil.setJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(Cam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE));
-								refreshList();
-								break;
-							}
-						}
-					}
-					
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+//				try {
+//					JSONObject Cam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+//					if(null != Cam_obj){
+//						JSONArray camArr = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
+//						int iCount = (null != camArr)?camArr.length():0;
+//						String strVcamId = BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_ID);
+//						for(int i = 0;i<iCount;i++){
+//							JSONObject obj = camArr.getJSONObject(i);
+//							if(null != obj && BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID).equals(strVcamId)){
+//								camArr.put(i, Cam_obj);
+//								//BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.ACC_NAME, BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_NAME));
+//								//BeseyeJSONUtil.setJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(Cam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE));
+//								refreshList();
+//								break;
+//							}
+//						}
+//					}
+//					
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
 			}
 		}else
 			super.onActivityResult(requestCode, resultCode, intent);

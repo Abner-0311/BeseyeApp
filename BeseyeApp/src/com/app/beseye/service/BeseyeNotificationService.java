@@ -377,7 +377,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	String data = bundle.getString(PS_REGULAR_DATA);
                 	String dataCus = bundle.getString(PS_CUSTOM_DATA);
                 	Log.i(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
-                	//Toast.makeText(getApplicationContext(), "Got message from Beseye server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
+                	//Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
                 	handleGCMEvents(data, dataCus);
                 	break;
                 }
@@ -1474,6 +1474,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //				lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
 //			}
 			
+			//Toast.makeText(getApplicationContext(), "Got message from websocket, Command="+iCmd+", DataObj = "+DataObj.toString(), Toast.LENGTH_LONG ).show();
 			int iMsgType = -1;
 			switch(iCmd){
 				case WS_ATTR_COMM_CAM_SETTING_CHANGED:{
