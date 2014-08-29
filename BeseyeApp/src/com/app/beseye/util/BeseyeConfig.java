@@ -20,7 +20,7 @@ public class BeseyeConfig {
 	
 	static public final boolean REDDOT_DEMO = false;//deprecated
 	
-	static public final boolean COMPUTEX_DEMO = true;
+	static public final boolean COMPUTEX_DEMO = false;
 	static public boolean COMPUTEX_PAIRING = false;
 	static public boolean COMPUTEX_P2P = false;
 	

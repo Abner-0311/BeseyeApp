@@ -29,6 +29,7 @@ import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask.GetAudioWSServerTask;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CameraSettingActivity;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
@@ -1033,9 +1034,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 				if(0 == iRetCode){
 					BeseyeJSONUtil.setVCamConnStatus(mCam_obj, (BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.CAM_STATUS)==1)?CAM_CONN_STATUS.CAM_ON:CAM_CONN_STATUS.CAM_OFF);
-
+					BeseyeJSONUtil.setJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
+					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON.getValue());
-					setActivityResultWithCamObj();
+					//setActivityResultWithCamObj();
 					mbIsCamSettingChanged = true;
 					mbIsCamStatusChanged = true;
 					mlRetryConnectBeginTs = System.currentTimeMillis();
