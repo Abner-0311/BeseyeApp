@@ -1492,8 +1492,9 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 				iNetworkRet = system("/beseye/cam_main/beseye_network_check") >> 8;
 				//lDelta = (time_ms() - lCheckTime);
-				LOGE("wifi check ret:%d, ts:%ld, flag:%d, time:%lld \n", iNetworkRet, iTrials, ((iNetworkRet != 0) && (15 > ++iTrials)), time_ms());
+				LOGE("wifi check ret:%d, ts:%ld, flag:%d, time:%lld \n", iNetworkRet, iTrials, ((iNetworkRet != 0) && (15 > iTrials)), time_ms());
 			}while((iNetworkRet != 0) && (15 > ++iTrials));
+
 
 			LOGE("network checking complete, iNetworkRet:%d, iTrials:%ld\n", iNetworkRet, iTrials);
 
