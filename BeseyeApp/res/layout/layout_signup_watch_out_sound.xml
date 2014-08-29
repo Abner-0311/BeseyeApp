@@ -10,20 +10,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/signup_beforeSetup_img_marginTop"
-        android:src="@drawable/signup_b_setup_ill" />
+        android:src="@drawable/signup_sound_reminder_page_android" />
 
 	<TextView
 	    android:id="@+id/tv_before_setup_description"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/iv_before_setup_top_img"
+	    android:layout_marginTop="@dimen/signup_beforeSetup_img_marginTop"
 	    android:layout_centerHorizontal="true"
 	    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
 	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
 	    android:layout_marginTop="@dimen/signup_beforeSetup_img_marginBottom"
 	    android:gravity="center_horizontal"
-	    android:text="@string/signup_before_setup_description"
+	    android:text="@string/signup_sound_reminder_description"
 	    android:textColor="@color/signup_font_description_color"
 	    android:textSize="@dimen/login_fontNormal" />
 
