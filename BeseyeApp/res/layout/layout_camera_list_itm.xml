@@ -65,7 +65,7 @@
 		        android:layout_width="336dp"
 		        android:layout_height="189dp"
 		        android:background="@color/camera_list_video_mask"
-		        android:visibility="invisible" >
+		         >
 				<RelativeLayout
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"

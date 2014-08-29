@@ -12,10 +12,6 @@ public class PairingRemindActivity extends BeseyeAccountBaseActivity {
 		//Log.d(TAG, "PairingRemindActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		
-		if(null != mIvBack){
-			mIvBack.setImageResource(R.drawable.sl_event_list_cancel);
-		}
-		
 		mBtnStart = (Button)findViewById(R.id.button_start);
 		if(null != mBtnStart){
 			mBtnStart.setOnClickListener(this);

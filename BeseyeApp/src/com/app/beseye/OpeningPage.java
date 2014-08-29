@@ -96,10 +96,9 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(false == m_bLaunchForDelegate)
+		if(false == m_bLaunchForDelegate && null == mGetUserInfoTask)
 			finish();
 		m_bLaunchForDelegate = false;
-		
 		sbFirstLaunch = false;
 	}
 	
@@ -177,6 +176,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 				if(null != mGetUserInfoTask){
 					mGetUserInfoTask.execute();
 				}
+				return;
 			}
 			
 			if(null != intent.getExtras())
@@ -200,7 +200,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 				@Override
 				public void run() {
 					if(SessionMgr.getInstance().isTokenValid() && !SessionMgr.getInstance().getIsCertificated()){
-						intentLanuchRunnable.setClassName(OpeningPage.this, WifiListActivity.class.getName());
+						intentLanuchRunnable.setClassName(OpeningPage.this, BeseyeEntryActivity.class.getName());
 					}
 					startActivity(intentLanuchRunnable);
 				}
@@ -248,8 +248,11 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 							}
 						}
 					}
+				}else{
+					SessionMgr.getInstance().cleanSession();
 				}
 				startActivity(intentLanuch);
+				finish();
 			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
 					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
