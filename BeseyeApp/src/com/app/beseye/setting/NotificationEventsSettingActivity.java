@@ -16,6 +16,8 @@ import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.widget.BeseyeSwitchBtn;
+import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import android.widget.TextView;
 
 public class NotificationEventsSettingActivity extends BeseyeBaseActivity{
 	static private enum NOTIFY_TYPE{
+		NOTIFY_PEOPLE,
 		NOTIFY_MOTION,
 		NOTIFY_FIRE,
 		NOTIFY_SOUND,
@@ -39,6 +42,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity{
 	
 	static private final int s_NotifyTypeNum = NOTIFY_TYPE.NOTIFY_TYPE_COUNT.ordinal();
 	
+	private BeseyeSwitchBtn mNotifyMeSwitchBtn;
 	private ViewGroup mVgNotifyType[];
 	private ImageView mIvNotifyTypeCheck[], mIvNotifyTypeCheckBg[];
 	private TextView mTxtSchedDays[];
@@ -84,13 +88,19 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity{
 			Log.e(TAG, "PowerScheduleDayPickerActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 		}
 		
+		mNotifyMeSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_notify_me_switch);
+		if(null != mNotifyMeSwitchBtn){
+			mNotifyMeSwitchBtn.setSwitchState(SwitchState.SWITCH_ON);
+		}
+		
 		mVgNotifyType = new ViewGroup[s_NotifyTypeNum];
 		mIvNotifyTypeCheck = new ImageView[s_NotifyTypeNum];
 		mIvNotifyTypeCheckBg = new ImageView[s_NotifyTypeNum];
 		mTxtSchedDays = new TextView[s_NotifyTypeNum];
 		
-		int iVgIds[] = {R.id.vg_motion_detect, R.id.vg_fire_detect, R.id.vg_sound_detect, R.id.vg_offline_detect};
-		int iStrIds[] = {R.string.cam_setting_title_notification_event_motion_detect, 
+		int iVgIds[] = {R.id.vg_people_detect, R.id.vg_motion_detect, R.id.vg_fire_detect, R.id.vg_sound_detect, R.id.vg_offline_detect};
+		int iStrIds[] = {R.string.cam_setting_title_notification_event_people_detect,
+						 R.string.cam_setting_title_notification_event_motion_detect, 
 						 R.string.cam_setting_title_notification_event_fire_detect, 
 						 R.string.cam_setting_title_notification_event_sound_detect,  
 						 R.string.cam_setting_title_notification_event_offline_detect};
@@ -98,7 +108,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity{
 			mVgNotifyType[idx] = (ViewGroup)findViewById(iVgIds[idx]);
 			if(null != mVgNotifyType[idx]){
 				mIvNotifyTypeCheck[idx] = (ImageView)mVgNotifyType[idx].findViewById(R.id.iv_day_check);
-				BeseyeUtils.setVisibility(mIvNotifyTypeCheck[idx], View.INVISIBLE);
+				BeseyeUtils.setVisibility(mIvNotifyTypeCheck[idx], View.VISIBLE);
 				
 				mIvNotifyTypeCheckBg[idx] = (ImageView)mVgNotifyType[idx].findViewById(R.id.iv_day_check_bg);
 				if(null != mIvNotifyTypeCheckBg[idx]){
@@ -113,8 +123,9 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity{
 				mVgNotifyType[idx].setOnClickListener(this);
 			}
 		}
-		//Disable fire detection
-		mVgNotifyType[1].setVisibility(View.GONE);
+		//Disable fire and sound detection
+		mVgNotifyType[2].setVisibility(View.GONE);
+		mVgNotifyType[3].setVisibility(View.GONE);
 		
 //		JSONArray arrDays = BeseyeJSONUtil.getJSONArray(mSched_obj, SCHED_DAYS);
 //		int iSize = (null != arrDays)?arrDays.length():0;
