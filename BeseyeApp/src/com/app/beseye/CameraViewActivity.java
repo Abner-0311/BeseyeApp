@@ -1276,6 +1276,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mCameraViewControlAnimator.hideControl();
 	}
 	
+	@Override
+	public void onZoomBeginConfirm(){
+		if(null != mCameraViewControlAnimator)
+			mCameraViewControlAnimator.hideControl();
+	}
+	
 	private void checkAndExtendHideHeader(){
 		if(null != mCameraViewControlAnimator && View.VISIBLE == mCameraViewControlAnimator.getVisibility())
 			mCameraViewControlAnimator.extendHideControl();

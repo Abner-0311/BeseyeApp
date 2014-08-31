@@ -698,6 +698,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
         	Log.i(TAG, "onScaleBegin()");
+        	triggermZoomBeginCallback();
             setState(ZOOM);
             return true;
         }
@@ -990,6 +991,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     static public interface OnTouchSurfaceCallback{
     	public void onSingleTapConfirm();
     	public void onDoubleTapConfirm();
+    	public void onZoomBeginConfirm();
     	public void onTouch();
     }
     
@@ -1010,6 +1012,12 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     private void triggermDoubleTapCallback(){
     	if(null != mOnTouchSurfaceCallback){
     		mOnTouchSurfaceCallback.onDoubleTapConfirm();
+    	}
+    }
+    
+    private void triggermZoomBeginCallback(){
+    	if(null != mOnTouchSurfaceCallback){
+    		mOnTouchSurfaceCallback.onZoomBeginConfirm();
     	}
     }
     

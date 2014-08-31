@@ -537,21 +537,24 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}else if(task instanceof BeseyeCamBEHttpTask.SetLEDStatusTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
-					BeseyeJSONUtil.setJSONInt(mCam_obj, LED_STATUS, BeseyeJSONUtil.getJSONInt(result.get(0), LED_STATUS));
+					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), LED_STATUS, BeseyeJSONUtil.getJSONInt(result.get(0), LED_STATUS));
+					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					setActivityResultWithCamObj();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetVideoResTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());				
-					BeseyeJSONUtil.setJSONInt(mCam_obj, VIDEO_RES, BeseyeJSONUtil.getJSONInt(result.get(0), VIDEO_RES));
+					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), VIDEO_RES, BeseyeJSONUtil.getJSONInt(result.get(0), VIDEO_RES));
+					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					setActivityResultWithCamObj();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetMicStatusTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
-					BeseyeJSONUtil.setJSONInt(mCam_obj, MIC_STATUS, BeseyeJSONUtil.getJSONInt(result.get(0), MIC_STATUS));
+					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), MIC_STATUS, BeseyeJSONUtil.getJSONInt(result.get(0), MIC_STATUS));
+					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					setActivityResultWithCamObj();
 					updateMicSenItmStatus();
@@ -559,7 +562,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}else if(task instanceof BeseyeCamBEHttpTask.SetMicGainTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
-					BeseyeJSONUtil.setJSONInt(mCam_obj, MIC_GAIN, BeseyeJSONUtil.getJSONInt(result.get(0), MIC_GAIN));
+					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), MIC_GAIN, BeseyeJSONUtil.getJSONInt(result.get(0), MIC_GAIN));
+					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					setActivityResultWithCamObj();	
 					miBeginPosOfMicGain = -1;
@@ -568,10 +572,11 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					miIRCutStatus = BeseyeJSONUtil.getJSONInt(result.get(0), IRCUT_STATUS);
-					BeseyeJSONUtil.setJSONInt(mCam_obj, IRCUT_STATUS, miIRCutStatus);
+					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), IRCUT_STATUS, miIRCutStatus);
 					if(null != mTxtNightVision){
 						mTxtNightVision.setText(sStridNightVisionMode[miIRCutStatus]);
 					}
+					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					setActivityResultWithCamObj();
 				}
@@ -580,7 +585,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 					if(null != mTxtTimezoneDesc){
 						mTxtTimezoneDesc.setText(BeseyeUtils.getGMTString(mTimeZoneCandidate));
 					}
-					BeseyeJSONUtil.setJSONString(mCam_obj, CAM_TZ, mTimeZoneCandidate.getID());
+					BeseyeJSONUtil.setJSONString(getJSONObject(mCam_obj, ACC_DATA), CAM_TZ, mTimeZoneCandidate.getID());
+					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					
 					setActivityResultWithCamObj();
