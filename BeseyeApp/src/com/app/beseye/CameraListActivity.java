@@ -180,8 +180,16 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			updateCamItm(miLastTaskSeedNum);
 			miLastTaskSeedNum = -1;
 		}
+		
+		if(-1 == miLastTaskSeedNum && false == this.mbFirstResume && (null != mCameraListAdapter && 0 < mCameraListAdapter.getCount())){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					miCurUpdateIdx = 0;
+					updateCamItm(++miTaskSeedNum);
+				}}, 0);
+		}
 	}
-
 
 	private void refreshList(){
 		BeseyeUtils.postRunnable(new Runnable(){
@@ -272,38 +280,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				if(0 == iRetCode){
 					JSONObject objVCamList = result.get(0);
 					fillVCamList(objVCamList);
-						
-					/*else{
-						onToastShow(task, "no Vcam attached.");
-						Bundle b = new Bundle();
-						b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-						launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
-					}*/
 				}
-			}/*else if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
-				if(0 == iRetCode){
-					String strVcamId = ((BeseyeMMBEHttpTask.GetLiveStreamTask)task).getVcamId();
-					//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> VCAMID = "+strVcamId+", result.get(0)="+result.get(0).toString());
-					JSONArray arrCamList = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
-					int iCount = (null != arrCamList)?arrCamList.length():0;
-					for(int i = 0;i < iCount;i++){
-						try {
-							JSONObject camObj = arrCamList.getJSONObject(i);
-							//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> camObj = "+camObj.toString());
-							if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
-								camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON.getValue());
-								refreshList();
-								monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this, ((BeseyeMMBEHttpTask.GetLiveStreamTask)task).getTaskSeed()).setDialogId(-1), true, strVcamId);
-								break;
-							}
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				
-				updateCamItm(((BeseyeMMBEHttpTask.GetLiveStreamTask)task).getTaskSeed());
-			}*/else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_DATA);
 					String strVcamId = ((BeseyeCamBEHttpTask.GetCamSetupTask)task).getVcamId();
@@ -490,7 +468,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
 			Bundle b = new Bundle();
 			b.putInt(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
-			launchActivityByClassName(WifiListActivity.class.getName(), b);
+			launchActivityByClassName(PairingWatchOutActivity.class.getName(), b);
 		}else if(R.id.vg_my_cam == view.getId()){
 			if(mbIsDemoCamMode){
 				finish();
