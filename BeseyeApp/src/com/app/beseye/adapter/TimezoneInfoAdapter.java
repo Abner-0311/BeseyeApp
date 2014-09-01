@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class TimezoneInfoAdapter extends BaseAdapter {
@@ -25,6 +26,8 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 	protected LayoutInflater mInflater;
 	protected OnClickListener mItemOnClickListener = null;
 	protected int miLayoutId;
+	
+	private String mStrCurTZ;
 	
 	private List<BeseyeTimeZone> mlstTimezoneResult;
 	
@@ -40,6 +43,10 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 		if(null != mContext){
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
+	}
+	
+	public void setCurrentTZ(String strTZ){
+		mStrCurTZ = strTZ;
 	}
 	
 	public void setSortByTimezone(boolean bSortByTimezone){
@@ -65,6 +72,7 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 	static public class TimezoneInfoHolder{
 		TextView mtxtName;
 		public TextView mtxtZoneInfo;
+		public ImageView mivSelected;
 		public BeseyeTimeZone mTimeZone;
 	}
 
@@ -86,6 +94,7 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 					if(null != holder){						
 						holder.mtxtName = (TextView) convertView.findViewById(R.id.txt_zone_name);
 						holder.mtxtZoneInfo = (TextView) convertView.findViewById(R.id.txt_zone_time);
+						holder.mivSelected = (ImageView) convertView.findViewById(R.id.iv_check);
 						convertView.setTag(holder);
 					}
 				}
@@ -104,10 +113,14 @@ public class TimezoneInfoAdapter extends BaseAdapter {
 					if(null != holder.mtxtName)
 						holder.mtxtName.setText(sRet.getDisplayName());
 					
-					Log.i(BeseyeConfig.TAG, "Name:"+sRet.getDisplayName()+", sRet:"+sRet.tz);
+					//Log.i(BeseyeConfig.TAG, "Name:"+sRet.getDisplayName()+", sRet:"+sRet.tz);
 					
 					if(null != holder.mtxtZoneInfo){
 						holder.mtxtZoneInfo.setText(BeseyeUtils.getGMTString(sRet.tz));
+					}
+					
+					if(null != holder.mivSelected){
+						holder.mivSelected.setVisibility((null != mStrCurTZ && mStrCurTZ.equals(sRet.tz.getID()))?View.VISIBLE:View.GONE);
 					}
 					
 					holder.mTimeZone = sRet;

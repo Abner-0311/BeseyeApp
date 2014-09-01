@@ -220,27 +220,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 	
 	private void updateSettingState(){
+		boolean bIsCamDisconnected = BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj);
+		
 		BeseyeJSONUtil.CAM_CONN_STATUS iCamState = BeseyeJSONUtil.getVCamConnStatus(mCam_obj);// BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
+		
 		if(null != mCamSwitchBtn){
-			if(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
-				mCamSwitchBtn.setEnabled(false);
-				mTxtPowerTitle.setEnabled(false);
-			}else{
-				mCamSwitchBtn.setEnabled(true);
-				mTxtPowerTitle.setEnabled(true);
-				mCamSwitchBtn.setSwitchState((BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-			}
-		}
-		if(null != mIvViewUpDownCheck){
-			if(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
-				mTxtViewUpDownTitle.setEnabled(false);
-				mIvViewUpDownCheckBg.setEnabled(false);
-				mIvViewUpDownCheck.setVisibility(View.INVISIBLE);
-			}else{
-				mTxtViewUpDownTitle.setEnabled(true);
-				mIvViewUpDownCheckBg.setEnabled(true);
-				mIvViewUpDownCheck.setVisibility((0 == BeseyeJSONUtil.getJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, 0))?View.INVISIBLE:View.VISIBLE);
-			}
+			mCamSwitchBtn.setEnabled(!bIsCamDisconnected);
+			mCamSwitchBtn.setSwitchState(((!bIsCamDisconnected && BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:(bIsCamDisconnected?SwitchState.SWITCH_DISABLED:SwitchState.SWITCH_OFF)));
+			BeseyeUtils.setEnabled(mTxtPowerTitle, !bIsCamDisconnected);
 		}
 		
 		updatePowerDesc(mCamSwitchBtn.getSwitchState());
@@ -468,10 +455,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 
 	private void updatePowerDesc(SwitchState state){
-		if(null != mTxtPowerDesc){
-			mTxtPowerDesc.setText(String.format(getResources().getString(R.string.cam_setting_title_power_desc), 
-												getResources().getString((SwitchState.SWITCH_ON.equals(state))?R.string.cam_setting_title_power_on:R.string.cam_setting_title_power_off)));
-		}
+//		if(null != mTxtPowerDesc){
+//			mTxtPowerDesc.setText(String.format(getResources().getString(R.string.cam_setting_title_power_desc), 
+//												getResources().getString((SwitchState.SWITCH_ON.equals(state))?R.string.cam_setting_title_power_on:R.string.cam_setting_title_power_off)));
+//		}
 	}
 
 	@Override

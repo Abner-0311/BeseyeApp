@@ -61,12 +61,24 @@ public class BeseyeJSONUtil {
 	//Cam BE service
 	public static final String CAM_STATUS 				= "CamStatus";
 	public static final String LED_STATUS 				= "LEDStatus";
+	public static final String STATUS 					= "Status";
+	public static final String TYPE 					= "Type";
+	
 	public static final String SPEAKER_STATUS 			= "SpeakerStatus";
 	public static final String SPEAKER_VOLUME 			= "SpeakerVolume";
 	public static final String MIC_STATUS 				= "MicStatus";
 	public static final String MIC_GAIN 				= "MicGain";
 	public static final String IRCUT_STATUS 			= "IRStatus";
 	public static final String VIDEO_RES 				= "VideoResolution";
+	public static final String MAC_ADDR 				= "CamMacAddr";
+	
+	
+	public static final String NOTIFY_OBJ 				= "Notify";
+	public static final String NOTIFY_PEOPLE 			= "People";
+	public static final String NOTIFY_MOTION 			= "Motion";
+	public static final String NOTIFY_FIRE 				= "Fire";
+	public static final String NOTIFY_SOUND 			= "Sound";
+	public static final String NOTIFY_OFFLINE 			= "Offline";
 	
 	public static final String IMG_FLIP 				= "Flip";
 	public static final String IMG_MIRROR 				= "Mirror";
@@ -93,7 +105,7 @@ public class BeseyeJSONUtil {
 	public static final String CAM_SOFTWARE 			= "Firmware";
 	public static final String CAM_TZ 					= "TimeZone";
 	
-	
+	public static final String CAM_STATUS_LST 			= "StatusList";
 	public static final String CAM_WS_STATUS 			= "wsStatus";//1 => on-line, 0=> off-line
 	
 	
@@ -719,15 +731,19 @@ public class BeseyeJSONUtil {
 		if(null != objCam){
 			JSONObject dataObj = getJSONObject(objCam, ACC_DATA);
 			if(null != dataObj){
-				int iWsStatus = getJSONInt(dataObj, CAM_WS_STATUS);
-				if(1 == iWsStatus){
-					int iCamStatus = getJSONInt(dataObj, BeseyeJSONUtil.CAM_STATUS, -1);
-					if(1==iCamStatus){
-						cRet = CAM_CONN_STATUS.CAM_ON;
-					}else if(0==iCamStatus){
-						cRet = CAM_CONN_STATUS.CAM_OFF;
+				JSONObject statusLstObj = getJSONObject(dataObj, CAM_STATUS_LST);
+				if(null != statusLstObj){
+					int iWsStatus = getJSONInt(statusLstObj, CAM_WS_STATUS);
+					if(1 == iWsStatus){
+						int iCamStatus = getJSONInt(dataObj, BeseyeJSONUtil.CAM_STATUS, -1);
+						if(1==iCamStatus){
+							cRet = CAM_CONN_STATUS.CAM_ON;
+						}else if(0==iCamStatus){
+							cRet = CAM_CONN_STATUS.CAM_OFF;
+						}
 					}
 				}
+				
 			}else{
 				Log.e(TAG, "getVCamConnStatus(), can't find dataObj");
 			}
@@ -740,10 +756,11 @@ public class BeseyeJSONUtil {
 		if(null != objCam){
 			JSONObject dataObj = getJSONObject(objCam, ACC_DATA);
 			if(null != dataObj){
+				JSONObject statusLstObj = getJSONObject(dataObj, CAM_STATUS_LST);
 				if(status == CAM_CONN_STATUS.CAM_DISCONNECTED){
-					setJSONInt(dataObj, CAM_WS_STATUS, 0);
+					setJSONInt(statusLstObj, CAM_WS_STATUS, 0);
 				}else{
-					setJSONInt(dataObj, CAM_WS_STATUS, 1);
+					setJSONInt(statusLstObj, CAM_WS_STATUS, 1);
 					setJSONInt(dataObj, CAM_STATUS, (status.equals(CAM_CONN_STATUS.CAM_ON))?1:0);
 				}
 			}else{

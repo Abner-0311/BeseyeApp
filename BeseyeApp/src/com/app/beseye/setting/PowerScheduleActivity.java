@@ -249,8 +249,8 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 					updateScheduleStatus();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetScheduleStatusTask){
-				Log.e(TAG, "PowerScheduleActivity::onPostExecute(), result.get(0)="+result.get(0).toString());
 				if(0 == iRetCode){
+					Log.e(TAG, "PowerScheduleActivity::onPostExecute(), result.get(0)="+result.get(0).toString());
 					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
 					if(null != dataObj){
 						JSONObject schedObj = BeseyeJSONUtil.getJSONObject(dataObj, SCHED_OBJ);

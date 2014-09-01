@@ -47,6 +47,8 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_SCHEDULE  		= "cam/%s/schedule";
 	static private final String URL_CAM_SCHEDULE_IDX  	= "cam/%s/schedule/%s";
 	
+	static private final String URL_NOTIFY_SETTING  	= "cam/%s/notify_setting";
+	
 	public static class GetCamSetupTask extends BeseyeHttpTask{
 		private String strVcamId = null;
 		private int iTaskSeed = 0;
@@ -596,6 +598,29 @@ public class BeseyeCamBEHttpTask  {
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE_IDX, strParams[0], strParams[1]));
+		}
+	}
+	
+	public static class GetNotifySettingTask extends BeseyeHttpTask{
+		public GetNotifySettingTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_NOTIFY_SETTING, strParams[0]));
+		}
+	}
+	
+	public static class SetNotifySettingTask extends BeseyeHttpTask{
+		public SetNotifySettingTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPut.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_NOTIFY_SETTING, strParams[0]), strParams[1]);
 		}
 	}
 }

@@ -32,12 +32,13 @@ import com.app.beseye.widget.PullToRefreshListView;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 
 public class TimezoneListActivity extends BeseyeBaseActivity {
-
+	public final static String KEY_TZ = "KEY_TZ";
 	private PullToRefreshListView mlvTimezoneList;
 	private TimezoneInfoAdapter mTimezoneInfoAdapter;
 	
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
+	private String mStrCurTZ = null;
 	
 	protected List<BeseyeTimeZone> mlstTimeZone;
 	
@@ -55,10 +56,9 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		}
 	}
 	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "WifiListActivity::onCreate()");
+		Log.d(TAG, "TimezoneListActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		
@@ -68,6 +68,8 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		mStrCurTZ = getIntent().getStringExtra(KEY_TZ);
 		
 		//workaround to make icon clickable
 		BeseyeUtils.postRunnable(new Runnable(){
@@ -101,7 +103,8 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 			generateTimeZoneList();
 			
 			mTimezoneInfoAdapter = new TimezoneInfoAdapter(this, mlstTimeZone, R.layout.timezone_list_item, this);
-			if(null != mlvTimezoneList){
+			if(null != mTimezoneInfoAdapter){
+				mTimezoneInfoAdapter.setCurrentTZ(mStrCurTZ);
 				mlvTimezoneList.setAdapter(mTimezoneInfoAdapter);
 			}
 		}

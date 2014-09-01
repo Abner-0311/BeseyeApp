@@ -101,13 +101,21 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 		
 		mTxtSwVersion = (TextView)findViewById(R.id.txt_sw_ver);
 		mTxtSerialNum = (TextView)findViewById(R.id.txt_sn);
+		if(null != mTxtSerialNum){
+			mTxtSerialNum.setText(BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_HW_ID));
+		}
+
+		
 		mTxtMacAddr = (TextView)findViewById(R.id.txt_mac_addr);
+		if(null != mTxtMacAddr){
+			mTxtMacAddr.setText(BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA), BeseyeJSONUtil.MAC_ADDR));
+		}
 
 	}
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
+		//monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
 	}
 	
 	@Override

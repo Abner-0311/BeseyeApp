@@ -64,8 +64,7 @@
 		        android:id="@+id/rl_camera_disconnected_solid"
 		        android:layout_width="336dp"
 		        android:layout_height="189dp"
-		        android:background="@color/camera_list_video_mask"
-		         >
+		        android:background="@color/camera_list_video_mask">
 				<RelativeLayout
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
@@ -88,7 +87,8 @@
 			            android:layout_centerHorizontal="true"
 			            android:text="@string/camera_list_more"
 			            android:textColor="@color/cl_link_font_color"
-	           			android:textSize="@dimen/login_fontSmall" />
+	           			android:textSize="@dimen/login_fontSmall" 
+	           			android:visibility="gone"/>
 		        </RelativeLayout>
 			</RelativeLayout>
 			

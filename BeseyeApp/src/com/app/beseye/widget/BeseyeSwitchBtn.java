@@ -32,7 +32,7 @@ public class BeseyeSwitchBtn extends LinearLayout implements View.OnClickListene
 	private ImageView m_imgSwitchIcon;
 	private ImageView m_imgSwitchIconBg;
 	
-	private int mBgDrawable[] = {R.drawable.wifisetup_wifi_btn_bg_bluegreen, R.drawable.wifisetup_wifi_btn_bg_white, R.drawable.wifisetup_wifi_btn_bg_white};
+	private int mBgDrawable[] = {R.drawable.wifisetup_wifi_btn_bg_bluegreen, R.drawable.wifisetup_wifi_btn_bg_white, R.drawable.wifisetup_wifi_btn_bg_disable};
 		
 	public BeseyeSwitchBtn(Context context) {
 		super(context);

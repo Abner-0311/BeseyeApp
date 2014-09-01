@@ -2,8 +2,6 @@ package com.app.beseye.setting;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
 
 import java.util.List;
 import java.util.TimeZone;
@@ -220,7 +218,9 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				break;
 			}
 			case R.id.vg_timezone:{
-				launchActivityForResultByClassName(TimezoneListActivity.class.getName(), null, REQUEST_TIMEZONE_CHANGED);
+				Bundle bundle = new Bundle();
+				bundle.putString(TimezoneListActivity.KEY_TZ, mTimeZone.getID());
+				launchActivityForResultByClassName(TimezoneListActivity.class.getName(), bundle, REQUEST_TIMEZONE_CHANGED);
 				break;
 			}
 			case R.id.vg_night_vision:{
@@ -385,18 +385,6 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 	}
 	
-	private void showErrorDialog(final int iMsgId, final boolean bCloseSelf){
-		BeseyeUtils.postRunnable(new Runnable(){
-			@Override
-			public void run() {
-				Bundle b = new Bundle();
-				b.putString(KEY_WARNING_TEXT, getResources().getString(iMsgId));
-				if(bCloseSelf)
-					b.putBoolean(KEY_WARNING_CLOSE, true);
-				showMyDialog(DIALOG_ID_WARNING, b);
-			}}, 0);
-	}
-	
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
 			String strMsg) {
@@ -469,7 +457,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				int iLEDStatus = getJSONInt(dataObj, LED_STATUS, 0);
 				if(null != mStatusLightSwitchBtn){
 					mStatusLightSwitchBtn.setEnabled(!bIsCamDisconnected);
-					mStatusLightSwitchBtn.setSwitchState((!bIsCamDisconnected && iLEDStatus>0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF));
+					mStatusLightSwitchBtn.setSwitchState((!bIsCamDisconnected && iLEDStatus>0?SwitchState.SWITCH_ON:(bIsCamDisconnected?SwitchState.SWITCH_DISABLED:SwitchState.SWITCH_OFF)));
 				}
 				
 				if(null != mVgMicSen){
@@ -485,7 +473,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				int iMicStatus = getJSONInt(dataObj, MIC_STATUS, 0);
 				if(null != mMicSenSwitchBtn){
 					mMicSenSwitchBtn.setEnabled(!bIsCamDisconnected);
-					mMicSenSwitchBtn.setSwitchState((!bIsCamDisconnected && iMicStatus>0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF));
+					mMicSenSwitchBtn.setSwitchState((!bIsCamDisconnected && iMicStatus>0?SwitchState.SWITCH_ON:(bIsCamDisconnected?SwitchState.SWITCH_DISABLED:SwitchState.SWITCH_OFF)));
 				}
 				
 				if(null != mVgHDQuality){
@@ -495,7 +483,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				int iVIdeoRes = getJSONInt(dataObj, VIDEO_RES, 0);
 				if(null != mHDQualitySwitchBtn){
 					mHDQualitySwitchBtn.setEnabled(!bIsCamDisconnected);
-					mHDQualitySwitchBtn.setSwitchState((!bIsCamDisconnected && iVIdeoRes>0?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF));
+					mHDQualitySwitchBtn.setSwitchState((!bIsCamDisconnected && iVIdeoRes>0?SwitchState.SWITCH_ON:(bIsCamDisconnected?SwitchState.SWITCH_DISABLED:SwitchState.SWITCH_OFF)));
 				}
 				
 				updateMicSenItmStatus();
@@ -520,6 +508,10 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				
 				if(null != mIvViewUpDownCheckBg){
 					mIvViewUpDownCheckBg.setEnabled(!bIsCamDisconnected);
+				}
+				
+				if(null != mVgTimezone){
+					mVgTimezone.setEnabled(!bIsCamDisconnected);
 				}
 			}
 		}
@@ -582,13 +574,14 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetCamTimezoneTask){
 				if(0 == iRetCode){
+					mTimeZone = mTimeZoneCandidate;
+					mTimeZoneCandidate = null;
 					if(null != mTxtTimezoneDesc){
-						mTxtTimezoneDesc.setText(BeseyeUtils.getGMTString(mTimeZoneCandidate));
+						mTxtTimezoneDesc.setText(BeseyeUtils.getGMTString(mTimeZone));
 					}
-					BeseyeJSONUtil.setJSONString(getJSONObject(mCam_obj, ACC_DATA), CAM_TZ, mTimeZoneCandidate.getID());
+					BeseyeJSONUtil.setJSONString(getJSONObject(mCam_obj, ACC_DATA), CAM_TZ, mTimeZone.getID());
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
-					
 					setActivityResultWithCamObj();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetImageSettingTask){

@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/signup_bg_color" >
-
-	<Button
+    
+    <Button
         android:id="@+id/button_update"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -17,5 +17,49 @@
         android:textColor="@color/word_white"
         android:textColorLink="@color/word_white"
         android:textSize="@dimen/login_fontMedium" />
+    
+    <ScrollView 
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/button_update"
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content">
+        <RelativeLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content">
+            <ImageView 
+		        android:id="@+id/iv_update_icon"
+			    android:layout_width="wrap_content"
+		  		android:layout_height="wrap_content"
+		  		android:layout_marginTop="@dimen/update_logo_margin_top"
+		  		android:layout_marginRight="@dimen/update_logo_margin_right"
+		  		android:layout_marginLeft="@dimen/update_margin_hor"
+		  		android:src="@drawable/firmware_update_pic"/>
+		
+		    <TextView 
+			    android:id="@+id/txt_update_title"
+			    android:layout_width="wrap_content"
+		  		android:layout_height="wrap_content"
+		  		android:text="@string/cam_update_title"
+			    android:textSize="@dimen/update_title_font_size"
+			    android:textColor="@color/beseye_color_normal"
+		  		android:layout_marginTop="@dimen/update_logo_margin_top"
+		  		android:layout_marginRight="@dimen/update_margin_hor"
+		  		android:layout_toRightOf="@+id/iv_update_icon"
+		  		android:maxLines="2"/>
+		     
+		    <TextView 
+			    android:id="@+id/txt_update_desc"
+			    android:layout_width="wrap_content"
+		  		android:layout_height="wrap_content"
+		  		android:textSize="@dimen/update_desc_font_size"
+		  		android:text="@string/about_desc"
+		  		android:layout_below="@+id/iv_update_icon"
+		  		android:layout_marginTop="@dimen/update_logo_margin_top"
+		  		android:layout_marginLeft="@dimen/update_margin_hor"
+		  		android:layout_marginRight="@dimen/update_margin_hor"/>
+        </RelativeLayout>
+    </ScrollView>
+    
+	
 	
 </RelativeLayout>

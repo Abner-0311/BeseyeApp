@@ -1464,17 +1464,21 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	private void handleWSEvent(JSONObject dataObj){
     	if(null != dataObj){
-			int iCmd = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_COMM);
+			final int iCmd = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_COMM);
 			Log.i(TAG, "handleWSEvent(),iCmd="+iCmd);	
 //			//String strCamUID = null;
 //			//long lTs = -1;
-			JSONObject DataObj = BeseyeJSONUtil.getJSONObject(dataObj, WS_ATTR_INTERNAL_DATA);
+			final JSONObject DataObj = BeseyeJSONUtil.getJSONObject(dataObj, WS_ATTR_INTERNAL_DATA);
 //			if(null != DataObj){
 //				strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
 //				lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
 //			}
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Toast.makeText(getApplicationContext(), "Got message from websocket, Command="+iCmd+", DataObj = "+DataObj.toString(), Toast.LENGTH_LONG ).show();
+				}}, 0);
 			
-			Toast.makeText(getApplicationContext(), "Got message from websocket, Command="+iCmd+", DataObj = "+DataObj.toString(), Toast.LENGTH_LONG ).show();
 			int iMsgType = -1;
 			switch(iCmd){
 				case WS_ATTR_COMM_CAM_SETTING_CHANGED:{

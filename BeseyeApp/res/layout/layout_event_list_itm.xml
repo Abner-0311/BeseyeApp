@@ -52,24 +52,34 @@
 		        android:id="@+id/iv_timeline_video_thumbnail"
 		        android:layout_width="225dp"
 		        android:layout_height="128dp"
-		        android:src="@drawable/eventlist_video_fake" />
+		        android:src="@drawable/eventlist_s_eventview_noview_bg" />
 	    </RelativeLayout>
 	    
-	    <TextView 
-	        android:id="@+id/btn_go_live"
+	    <RelativeLayout 
+	        android:id="@+id/vg_timeline_go_live"
 	        android:layout_width="225dp"
-	        android:layout_height="wrap_content"
-	        android:paddingTop="10dp"
-	        android:paddingBottom="10dp"
-	        android:text="@string/event_go_live"
-	        android:textSize="24sp"
-	        android:textColor="@color/word_white"
-	        android:gravity="center"
-	     	android:background="@drawable/sl_event_list_live_btn_bg"
-	     	android:layout_centerInParent="true"
-	     	android:duplicateParentState="true"
-	     	android:layout_toRightOf="@id/iv_timeline_grayline"
-	     	android:visibility="gone"/>
+		    android:layout_height="128dp"
+	        android:layout_toRightOf="@id/iv_timeline_grayline"
+		    android:layout_below="@+id/tv_eventlist_event_name"
+		    android:layout_marginTop="@dimen/eventlist_thumbnail_top"
+	        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
+	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
+	        android:background="@color/liveview_background"
+	        android:visibility="visible">
+	        <TextView 
+		        android:id="@+id/btn_go_live"
+		        android:layout_width="135dp"
+		        android:layout_height="45dp"
+		        android:paddingTop="10dp"
+		        android:paddingBottom="10dp"
+		        android:text="@string/event_go_live"
+		        android:textSize="20sp"
+		        android:textColor="@color/word_white"
+		        android:gravity="center"
+		     	android:background="@drawable/sl_event_list_live_btn_bg"
+		     	android:layout_centerInParent="true"
+		     	android:duplicateParentState="true"/>
+	    </RelativeLayout>
 	    
 	    <ImageView
 	        android:id="@+id/iv_timeline_icon_face"

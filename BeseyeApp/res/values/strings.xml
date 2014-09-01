@@ -114,6 +114,7 @@
 	
 	<string name="cam_setting_fail_to_update_cam_status">Fail to update camera status. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_hd_quality">Fail to update video upload quality. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_notify_setting">Fail to update notification settings. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_led_status">Fail to update status light. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_mic_status">Fail to update Camera microphone. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_mic_sensitivity">Fail to update microphone status. Please try again later.</string>
@@ -271,6 +272,7 @@
 	<string name="update_title">Camera update</string>
 	<string name="update_now">Update now</string>
 	<string name="cam_update_progress">Cameras updating&#8230; %s</string>
+	<string name="cam_update_title">Beseye camera firmware %s is available now</string>
 	
 	<string name="cam_update_success">Update cameras successfully.</string>
 	<string name="cam_update_result">Cameras update result: \n %1$s done, \n %2$s failed.</string>

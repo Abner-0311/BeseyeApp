@@ -30,5 +30,23 @@
 	   		android:textColor="@color/cl_wifi_list_sub_font_color"
 	   		android:layout_below="@+id/txt_zone_name"
 	   		android:text="@string/network_connected" />
+		
+		<ImageView 
+   		    android:layout_width="wrap_content"
+   			android:layout_height="wrap_content"
+   			android:layout_centerVertical="true"
+   			android:layout_alignParentRight="true"
+   			android:src="@drawable/setting_radio_box_default"
+   			android:paddingRight="@dimen/wifi_list_item_horizontal_padding"/>
+		
+	   	<ImageView 
+   		    android:id="@+id/iv_check"
+   		    android:layout_width="wrap_content"
+   			android:layout_height="wrap_content"
+   			android:layout_centerVertical="true"
+   			android:layout_alignParentRight="true"
+   			android:src="@drawable/setting_radio_box_highlight"
+   			android:paddingRight="@dimen/wifi_list_item_horizontal_padding"
+   			android:visibility="gone"/>
     </RelativeLayout>
 </RelativeLayout>

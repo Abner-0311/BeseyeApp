@@ -25,6 +25,8 @@ public class CameraUpdateActivity extends BeseyeBaseActivity {
 	protected TextView mTxtNavTitle;
 	private JSONArray mArrCamList;
 	
+	private TextView mTxtUpdateTitle, mTxtUpdateDesc;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		//Log.d(TAG, "PairingRemindActivity::onCreate()");
@@ -55,6 +57,13 @@ public class CameraUpdateActivity extends BeseyeBaseActivity {
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
+		
+		mTxtUpdateTitle = (TextView)findViewById(R.id.txt_update_title);
+		if(null != mTxtUpdateTitle){
+			mTxtUpdateTitle.setText(String.format(getString(R.string.cam_update_title), "ver 0.0.1"));
+		}
+		
+		mTxtUpdateDesc = (TextView)findViewById(R.id.txt_update_desc);
 		
 		mBtnUpdate = (Button)this.findViewById(R.id.button_update);
 		if(null != mBtnUpdate){

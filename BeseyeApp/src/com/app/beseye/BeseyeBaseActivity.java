@@ -1331,4 +1331,16 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	//Camera update end
+	
+	protected void showErrorDialog(final int iMsgId, final boolean bCloseSelf){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				Bundle b = new Bundle();
+				b.putString(KEY_WARNING_TEXT, getResources().getString(iMsgId));
+				if(bCloseSelf)
+					b.putBoolean(KEY_WARNING_CLOSE, true);
+				showMyDialog(DIALOG_ID_WARNING, b);
+			}}, 0);
+	}
 }
