@@ -377,7 +377,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	String data = bundle.getString(PS_REGULAR_DATA);
                 	String dataCus = bundle.getString(PS_CUSTOM_DATA);
                 	Log.i(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
-                	Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
+                	if(SessionMgr.getInstance().getServerMode().ordinal() < SessionMgr.SERVER_MODE.MODE_STAGING.ordinal())
+                		Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
                 	handleGCMEvents(data, dataCus);
                 	break;
                 }
@@ -1476,7 +1477,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					Toast.makeText(getApplicationContext(), "Got message from websocket, Command="+iCmd+", DataObj = "+DataObj.toString(), Toast.LENGTH_LONG ).show();
+					if(SessionMgr.getInstance().getServerMode().ordinal() < SessionMgr.SERVER_MODE.MODE_STAGING.ordinal())
+						Toast.makeText(getApplicationContext(), "Got message from websocket, Command="+iCmd+", DataObj = "+DataObj.toString(), Toast.LENGTH_LONG ).show();
 				}}, 0);
 			
 			int iMsgType = -1;
