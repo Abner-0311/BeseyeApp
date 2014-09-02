@@ -109,6 +109,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private long mlRetryConnectBeginTs = -1;
 	private TimeZone mTimeZone;
 	
+	
+	private boolean mbIsDemoCam = false;
 	private boolean mbIsFirstLaunch = true;
 	private boolean mbIsRetryAtNextResume = false;
 	private boolean mbIsPauseWhenPlaying = false;
@@ -189,7 +191,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			//setVisibility(mPbLoadingCursor, View.GONE);
 			    			cancelCheckVideoConn();
 			    			if(null != mCameraViewControlAnimator){
-				    			setEnabled(mCameraViewControlAnimator.getTalkView(), mbIsLiveMode && !isInP2PMode());
+				    			setEnabled(mCameraViewControlAnimator.getTalkView(), mbIsLiveMode && !isInP2PMode() && !mbIsDemoCam);
 				    			//setEnabled(mIbRewind, true);
 				    			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
 				    			//setEnabled(mIbFastForward, !mbIsLiveMode);
@@ -397,10 +399,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			
 			ImageView ivStreamType =  mCameraViewControlAnimator.getStremTypeView();
 			if(null != ivStreamType){
-//				if(config.orientation == Configuration.ORIENTATION_LANDSCAPE)
-//					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_h_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
-//				else
-//					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_s_header_display_icon:R.drawable.liveview_s_header_display_icon_event);
 				ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_h_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
 			}
 			
@@ -408,12 +406,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(null != txtGoLive){
 				txtGoLive.setEnabled(!mbIsLiveMode);
 			}
-			
-			TextView txtCamName = mCameraViewControlAnimator.getCamNameView();
-			if(null != txtCamName){
-				txtCamName.setText(mStrVCamName);
-			}
 		}
+		
+		applyCamAttr();
 		
 		mSingleton = this;
 		
@@ -477,6 +472,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				
 				Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), enter p2p mode");
 			}else{
+				
 				try {
 					mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 					updateAttrByCamObj();
@@ -484,9 +480,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 				}
 				
+				mbIsDemoCam = intent.getBooleanExtra(CameraListActivity.KEY_DEMO_CAM_MODE, false);
 				mbIsLiveMode = !intent.getBooleanExtra(KEY_DVR_STREAM_MODE, false);
 				mstrDVRStreamPathList = new ArrayList<JSONObject>();
 				mstrPendingStreamPathList = new ArrayList<JSONObject>();
+				
+				Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), mbIsDemoCam:"+mbIsDemoCam);
 				
 				String strTsInfo = intent.getStringExtra(KEY_TIMELINE_INFO);
 				if(null != strTsInfo && 0 < strTsInfo.length()){
@@ -543,7 +542,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(null != mCameraViewControlAnimator){
 			BeseyeUtils.setEnabled(mCameraViewControlAnimator.getGoLiveView(), !mbIsLiveMode);
 			BeseyeUtils.setEnabled(mCameraViewControlAnimator.getEventsView(), !isInP2PMode());
-			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), ((!COMPUTEX_DEMO || BeseyeConfig.COMPUTEX_PAIRING) && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
+			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), ((!COMPUTEX_DEMO || BeseyeConfig.COMPUTEX_PAIRING) && !isInP2PMode() && mbVCamAdmin && !mbIsDemoCam)?View.VISIBLE:View.INVISIBLE);
 		}
 	}
 
@@ -580,7 +579,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	private void triggerPlay(){
+		//Workaround for can not get down stream after switching ss
 		Log.i(TAG, "CameraViewActivity::triggerPlay(), mbIsFirstLaunch:"+mbIsFirstLaunch+", mbIsPauseWhenPlaying:"+mbIsPauseWhenPlaying+", mbIsCamSettingChanged:"+mbIsCamSettingChanged+", mbIsWifiSettingChanged:"+mbIsWifiSettingChanged);
+		mlRetryConnectBeginTs = System.currentTimeMillis();
+		
 		//if(false == handleReddotNetwork(false)){
 			if(null != mStreamingView)
 				mStreamingView.setUpsideDown(BeseyeJSONUtil.getJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, 0) == 1);
@@ -858,7 +860,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(null != mCameraViewControlAnimator){
 			ImageButton ibSetting = mCameraViewControlAnimator.getSettingView();
 			if(null != ibSetting)
-				ibSetting.setVisibility(((!COMPUTEX_DEMO || BeseyeConfig.COMPUTEX_PAIRING) && !isInP2PMode() && mbVCamAdmin)?View.VISIBLE:View.INVISIBLE);
+				ibSetting.setVisibility(((!COMPUTEX_DEMO || BeseyeConfig.COMPUTEX_PAIRING) && !isInP2PMode() && mbVCamAdmin && !mbIsDemoCam)?View.VISIBLE:View.INVISIBLE);
 			
 			TextView txtCamName = mCameraViewControlAnimator.getCamNameView();
 			if(null != txtCamName){
@@ -975,6 +977,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						mstrLiveStreamServer = BeseyeJSONUtil.getJSONString(streamInfo, BeseyeJSONUtil.MM_SERVER);
 						mstrLiveStreamPath = BeseyeJSONUtil.getJSONString(streamInfo, BeseyeJSONUtil.MM_STREAM);
 						beginLiveView();
+						mbIsCamStatusChanged = false;
+						mbIsCamSettingChanged = false;
 					}
 				}else if(ASSIGN_ST_PATH){
 					//Workaround
@@ -1009,6 +1013,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			            				}else
 				            				beginLiveView();
 									}}).start();
+								
 	            			}else{
 	            				if(isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
 		            				Bundle b = new Bundle();
@@ -1019,6 +1024,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	            			}
 						}
 					}
+					mbIsCamStatusChanged = false;
+					mbIsCamSettingChanged = false;
 				}
 			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
 				if(0 == iRetCode){
@@ -1073,7 +1080,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
-			if((null != mVgPairingDone || mbIsCamStatusChanged || mbIsCamSettingChanged) && (System.currentTimeMillis() - mlRetryConnectBeginTs < 60*1000)){
+			if(/*(null != mVgPairingDone || mbIsCamStatusChanged || mbIsCamSettingChanged) &&*/ (System.currentTimeMillis() - mlRetryConnectBeginTs < 60*1000)){
 				BeseyeUtils.postRunnable(new Runnable(){
 					@Override
 					public void run() {
@@ -2164,6 +2171,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
 		super.onCamSetupChanged(strVcamId, lTs, objCamSetup);
 		if(null != strVcamId && strVcamId.equals(mStrVCamID)){
+			mbIsCamSettingChanged = true;
 			updateAttrByCamObj();
 		}
     }

@@ -455,10 +455,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			if(null != cam_obj){
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
-				
-//				b.putString(CameraListActivity.KEY_VCAM_ID, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
-//				b.putString(CameraListActivity.KEY_VCAM_NAME, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME));
-//				b.putBoolean(CameraListActivity.KEY_VCAM_ADMIN, BeseyeJSONUtil.getJSONBoolean(cam_obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN, true));
+				b.putBoolean(KEY_DEMO_CAM_MODE, mbIsDemoCamMode);
 				launchActivityForResultByClassName(CameraViewActivity.class.getName(), b, REQUEST_CAM_VIEW_CHANGE);
 				//Log.e(TAG, "onClick(), "+cam_obj.toString());
 				return;

@@ -84,7 +84,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 			if(null != mIvFilter){
 				mIvFilter.setOnClickListener(this);
 				mIvFilter.setImageResource(R.drawable.sl_event_list_filter);
-				mIvFilter.setVisibility(COMPUTEX_DEMO?View.INVISIBLE:View.VISIBLE);
+				mIvFilter.setVisibility(View.INVISIBLE);
 			}
 			
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
@@ -112,7 +112,7 @@ public class EventListActivity extends BeseyeBaseActivity{
     				Log.i(TAG, "onRefresh()");	
     				mbNeedToCalcu = false;
 
-    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS )+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS +"");
+    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
     				if(null != mGetThumbnailByEventListTask){
     					mGetThumbnailByEventListTask.cancel(true);
     					mGetThumbnailByEventListTask = null;
@@ -262,7 +262,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS +"");
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS)+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
 	}
 	
 	private int miTaskSeedNum = 0;

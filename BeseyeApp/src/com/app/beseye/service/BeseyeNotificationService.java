@@ -579,19 +579,19 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}};
     
     private void checkEvents(){
-    	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
-    		if(NetworkMgr.getInstance().isNetworkConnected()){
-    			if(null == mGetIMPEventListTask && 0 < TIME_TO_CHECK_EVENT){
-    				mGetIMPEventListTask = new BeseyeMMBEHttpTask.GetIMPEventListTask(this);
-    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT*3)+"", TIME_TO_CHECK_EVENT*3+"");
-        			//mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS+"");
-    			}
-    		}
-    		BeseyeUtils.removeRunnable(mCheckEventRunnable);
-    		
-    		if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
-    			BeseyeUtils.postRunnable(mCheckEventRunnable, TIME_TO_CHECK_EVENT);
-    	}
+//    	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
+//    		if(NetworkMgr.getInstance().isNetworkConnected()){
+//    			if(null == mGetIMPEventListTask && 0 < TIME_TO_CHECK_EVENT){
+//    				mGetIMPEventListTask = new BeseyeMMBEHttpTask.GetIMPEventListTask(this);
+//    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT*3)+"", TIME_TO_CHECK_EVENT*3+"");
+//        			//mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS+"");
+//    			}
+//    		}
+//    		BeseyeUtils.removeRunnable(mCheckEventRunnable);
+//    		
+//    		if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
+//    			BeseyeUtils.postRunnable(mCheckEventRunnable, TIME_TO_CHECK_EVENT);
+//    	}
     }
     
     @Override
