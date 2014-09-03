@@ -516,6 +516,11 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 		}
 	}
+	
+	@Override
+	protected void updateUICallback(){
+		updateHWSettingState();
+	}
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {

@@ -144,9 +144,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgSiren = (ViewGroup)findViewById(R.id.vg_siren);
 		if(null != mVgSiren){
 			mVgSiren.setOnClickListener(this);
-//			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
-//				mVgSiren.setVisibility(View.GONE);
-//			}
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
+				mVgSiren.setVisibility(View.GONE);
+			}
 		}
 		
 		TextView txtSiren = (TextView)findViewById(R.id.txt_setting_emergency_siren);
@@ -503,6 +503,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}}, 0);
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
+	}
+	
+	@Override
+	protected void updateUICallback(){
+		updateSettingState();
 	}
 
 	@Override

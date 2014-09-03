@@ -65,7 +65,7 @@
 	        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
 	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
 	        android:background="@color/liveview_background"
-	        android:visibility="visible">
+	        android:visibility="gone">
 	        <TextView 
 		        android:id="@+id/btn_go_live"
 		        android:layout_width="135dp"

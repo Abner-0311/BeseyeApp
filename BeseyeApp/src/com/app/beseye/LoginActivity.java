@@ -90,7 +90,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 				break;
 			}
 			case R.id.tv_create_account:{
-				launchActivityByClassName(SignupActivity.class.getName());
+				launchActivityByClassName(PairingRemindActivity.class.getName());
 				break;
 			}
 			case R.id.button_login:{

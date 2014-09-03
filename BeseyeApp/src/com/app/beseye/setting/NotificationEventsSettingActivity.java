@@ -60,6 +60,9 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 								   BeseyeJSONUtil.NOTIFY_SOUND,
 								   BeseyeJSONUtil.NOTIFY_OFFLINE};
 	
+	
+	private boolean[] mbEnabledLst = {true, true, false, false, true};
+	
 	private View mVwNavBar, mVNotifyMe;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
@@ -125,7 +128,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 			mVgNotifyType[idx] = (ViewGroup)findViewById(iVgIds[idx]);
 			if(null != mVgNotifyType[idx]){
 				mIvNotifyTypeCheck[idx] = (ImageView)mVgNotifyType[idx].findViewById(R.id.iv_day_check);
-				//BeseyeUtils.setVisibility(mIvNotifyTypeCheck[idx], View.VISIBLE);
+				BeseyeUtils.setVisibility(mIvNotifyTypeCheck[idx], View.INVISIBLE);
 				
 				mIvNotifyTypeCheckBg[idx] = (ImageView)mVgNotifyType[idx].findViewById(R.id.iv_day_check_bg);
 				if(null != mIvNotifyTypeCheckBg[idx]){
@@ -138,11 +141,15 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 					mTxtSchedDays[idx].setText(iStrIds[idx]);
 				}
 				mVgNotifyType[idx].setOnClickListener(this);
+				
+				//Disable fire and sound detection
+				if(false == mbEnabledLst[idx]){
+					mVgNotifyType[idx].setVisibility(View.GONE);
+				}
 			}
 		}
-		//Disable fire and sound detection
-		mVgNotifyType[2].setVisibility(View.GONE);
-		mVgNotifyType[3].setVisibility(View.GONE);
+		
+
 		
 //		JSONArray arrDays = BeseyeJSONUtil.getJSONArray(mSched_obj, SCHED_DAYS);
 //		int iSize = (null != arrDays)?arrDays.length():0;
@@ -167,12 +174,12 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	private void updateNotificationTypeState(){
 		boolean bIsCamDisconnected = BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj);
 		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
+		boolean bMotifyMe = false;
+		if(null != notify_obj){
+			bMotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
+		}
+		
 		if(null != mNotifyMeSwitchBtn){
-			boolean bMotifyMe = false;
-			if(null != notify_obj){
-				bMotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
-			}
-			
 			mNotifyMeSwitchBtn.setEnabled(!bIsCamDisconnected);
 			mNotifyMeSwitchBtn.setSwitchState(((!bIsCamDisconnected && bMotifyMe)?SwitchState.SWITCH_ON:(bIsCamDisconnected?SwitchState.SWITCH_DISABLED:SwitchState.SWITCH_OFF)));
 			BeseyeUtils.setEnabled(mVNotifyMe, !bIsCamDisconnected);
@@ -180,8 +187,8 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 		
 		JSONObject type_obj =  BeseyeJSONUtil.getJSONObject(notify_obj, TYPE);
 		for(int idx = 0; idx < s_NotifyTypeNum;idx++){
-			BeseyeUtils.setEnabled(mVgNotifyType[idx], !bIsCamDisconnected);
-			BeseyeUtils.setVisibility(mIvNotifyTypeCheck[idx], BeseyeJSONUtil.getJSONBoolean(type_obj, mStrObjKey[idx])?View.VISIBLE:View.INVISIBLE);
+			BeseyeUtils.setEnabled(mVgNotifyType[idx], !bIsCamDisconnected && bMotifyMe);
+			BeseyeUtils.setVisibility(mIvNotifyTypeCheck[idx], (mbEnabledLst[idx] && BeseyeJSONUtil.getJSONBoolean(type_obj, mStrObjKey[idx]))?View.VISIBLE:View.INVISIBLE);
 		}
 	}
 	
@@ -200,13 +207,17 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 		int idx = findIdxByView(view);
 		if(0 <= idx){
 			if(null != mIvNotifyTypeCheck[idx]){
+				boolean bNeedToUpdate = true;
 				if(View.VISIBLE != mIvNotifyTypeCheck[idx].getVisibility()){
 					mIvNotifyTypeCheck[idx].setVisibility(View.VISIBLE);
-				}else{
+				}else if(1 < getNumOfChecked()){
 					mIvNotifyTypeCheck[idx].setVisibility(View.INVISIBLE);
-				}	
+				}else{
+					bNeedToUpdate = false;
+				}
 				
-				setNotifySetting();
+				if(bNeedToUpdate)
+					setNotifySetting();
 			}
 		}else if(R.id.iv_nav_left_btn == view.getId()){
 			finish();
@@ -224,6 +235,17 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 			}
 		}
 		
+		return iRet;
+	}
+	
+	private int getNumOfChecked(){
+		int iRet = 0;
+		for(int idx = 0; idx < s_NotifyTypeNum;idx++){
+			if(View.VISIBLE == mIvNotifyTypeCheck[idx].getVisibility()){
+				iRet++;
+			}
+		}
+		Log.i(TAG, "getNumOfChecked(), iRet:"+iRet);
 		return iRet;
 	}
 	

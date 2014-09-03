@@ -563,6 +563,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 				Bundle b = new Bundle();
 				b.putString(CameraViewActivity.KEY_TIMELINE_INFO, event_obj.toString());
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				b.putBoolean(CameraListActivity.KEY_DEMO_CAM_MODE, getIntent().getBooleanExtra(CameraListActivity.KEY_DEMO_CAM_MODE, false));
 				Intent intent = new Intent();
 				intent.setClassName(this, CameraViewActivity.class.getName());
 				intent.putExtras(b);

@@ -537,7 +537,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
     			if(null != strPairToken && strPairToken.equals(SessionMgr.getInstance().getPairToken())){
     				Log.i(TAG, getClass().getSimpleName()+"::onCameraActivated(), find match strPairToken = "+strPairToken);
     				if(false == mbFindNewCam){
-	    				String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.MM_VCAM_UUID);
+	    				String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
 	    				monitorAsyncTask(mGetNewCamTask = new BeseyeAccountTask.GetCamInfoTask(this), false, strCamUID);
 	    				mbFindNewCam = true;
     				}

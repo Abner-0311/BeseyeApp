@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 import com.koushikdutta.async.ByteBufferList;
 import com.koushikdutta.async.DataEmitter;
 import com.koushikdutta.async.callback.CompletedCallback;
@@ -79,7 +80,7 @@ public class WebsocketsMgr {
 	
 	public void setWSServerIP(String ip){
 		Log.i(TAG, "setWSServerIP(), ip="+ip);
-		NOTIFY_WS_ADDR = String.format("http://%s:80/websocket", ip);//"54.238.255.56");
+		NOTIFY_WS_ADDR = String.format("%s/websocket", ip);//"54.238.255.56");
 	}
 	
 	public boolean constructWSChannel(){
@@ -87,7 +88,7 @@ public class WebsocketsMgr {
 		boolean bRet = false;
 		try {
 			//printNotifyWSChannelState();
-			if(isWSChannelAlive() || null == NOTIFY_WS_ADDR){
+			if(isWSChannelAlive() || null == getWSPath()){
 				bRet = false;
 			}else{
 				synchronized(this){
@@ -144,6 +145,7 @@ public class WebsocketsMgr {
 		
 		synchronized(this){
 			try {
+				Log.i(TAG, "destroyWSChannel(), check");
 				WebSocket ws = null;
 				if(null != mFNotifyWSChannel){
 					if(mBConstructingNotifyWSChannel){
@@ -180,6 +182,24 @@ public class WebsocketsMgr {
 	protected String getWSProtocol(){
 		return null;
 	}
+	
+	private void updateLastTimeToGetKeepAlive(){
+		mlLastTimeToGetKeepAlive = System.currentTimeMillis();
+		BeseyeUtils.removeRunnable(mCheckConnectionRunnable);
+		BeseyeUtils.postRunnable(mCheckConnectionRunnable, 15*1000);
+	}
+	
+	protected Runnable mCheckConnectionRunnable = new Runnable(){
+		@Override
+		public void run() {
+			if(-1 != mlLastTimeToGetKeepAlive){
+				Log.i(TAG, "Need to reconnect webSocket !!!!!!!!!!!!!!!!!!!!!");
+				if(WebsocketsMgr.getInstance().isWSChannelAlive()){
+					WebsocketsMgr.getInstance().destroyWSChannel();
+					mlLastTimeToGetKeepAlive = -1;
+				}
+			}
+		}};
 	
 	private WebSocketConnectCallback mWebSocketConnectCallback = new WebSocketConnectCallback() {
         @Override
@@ -219,13 +239,13 @@ public class WebsocketsMgr {
 									Log.i(TAG, "onStringAvailable(), strAuthJobId="+mStrAuthJobId);
 								}
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_KEEP_ALIVE, wrapWSBaseMsg().toString()));
-								mlLastTimeToGetKeepAlive = System.currentTimeMillis();
+								updateLastTimeToGetKeepAlive();
 							}else if(WS_FUNC_RAILS_PING.equals(strCmd)){
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_RAILS_PONG, wrapWSBaseMsg().toString()));
 								//mlLastTimeToGetKeepAlive = System.currentTimeMillis();
 							}else if(WS_CB_KEEP_ALIVE.equals(strCmd)){
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_KEEP_ALIVE, wrapWSBaseMsg().toString()));
-								mlLastTimeToGetKeepAlive = System.currentTimeMillis();
+								updateLastTimeToGetKeepAlive();
 							}else if(WS_CB_ACK.equals(strCmd)){
 								//Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
 								JSONObject dataObj = BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.newJSONObject(strBody),WS_ATTR_DATA);
@@ -281,6 +301,7 @@ public class WebsocketsMgr {
 					if(null != listener){
 						listener.onChannelClosed();
 					}
+					mlLastTimeToGetKeepAlive = -1;
 				}});
             
             webSocket.setEndCallback(new CompletedCallback(){
@@ -295,6 +316,7 @@ public class WebsocketsMgr {
 					if(null != listener){
 						listener.onChannelClosed();
 					}
+					mlLastTimeToGetKeepAlive = -1;
 				}});
             
             webSocket.setWriteableCallback(new WritableCallback(){

@@ -201,14 +201,14 @@
 	<string name="dialog_msg_login">Login&#8230;</string>
 	<string name="dialog_msg_logiout">Logout&#8230;</string>
 	
-	<string name="signup_title_before_setup">Before Setup</string>
-	<string name="signup_title_create_account">Create Account</string>
+	<string name="signup_title_before_setup">Before aetup</string>
+	<string name="signup_title_create_account">Create account</string>
 	<string name="signup_title_cam_wifi_settings">Camera WiFi Settings</string>
 	<string name="signup_title_cam_pair_fail">Please try again</string>
 	<string name="signup_title_wifi_list">WiFi List</string>
 	<string name="signup_learn_more">Learn more about</string>
 	<string name="signup_beseye">Beseye</string>
-	<string name="signup_bottom_login">Log In</string>
+	<string name="signup_bottom_login">Log in</string>
 	<string name="signup_bottom_signup">Setup camera and Sign up</string>
 	<string name="signup_before_setup_start">Start</string>
 	<string name="signup_before_setup_description">Please plug in your camera and place it to within 30 centimeters distance of you</string>
@@ -259,7 +259,7 @@
 	<string name="liveview_hold_to_talk">Hold to talk</string>
 	
 	<string name="cam_menu_my_cam">@string/cam_list_tilte</string>
-	<string name="cam_menu_demo_cam">Demo Cameras</string>
+	<string name="cam_menu_demo_cam">Demo cameras</string>
 	<string name="cam_menu_news">News</string>
 	<string name="cam_menu_about">About</string>
 	<string name="cam_menu_support">Support</string>
@@ -298,6 +298,7 @@
 	<string name="toast_cam_off_by_location">Camera is turned off accordIng to location setting</string>
 	
 	<string name="toast_new_cam_activated">New camera is online. Please refresh your camera list.</string>
+	<string name="toast_cam_deactivated">%s is deactivated. Please refresh your camera list.</string>
 	
 	<string name="about_title">About Beseye</string>
 	<string name="about_desc">Beseye and the Beseye logo are registered trademarks of Beseye, Inc. iPhone, iPad, iPood Touch, and App Store are registered trademarks of Apple, Inc. Chrome and Android are registered trademarks of Google, Inc. Internet Explorer is a registered trademark of Microsoft Corporation. Firefox is a registered trademark of Mozilla Corporation. Wi-Fi and Wi-Fi Certified logo are registered trademarks of the Wi-Fi Alliance. Certain other product names, brand names, and company names may be trademarks or designations of their respective owners.</string>

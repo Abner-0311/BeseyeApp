@@ -343,16 +343,16 @@ public class BeseyeJSONUtil {
 	public static final String PS_REG_ID_OLD 			= "from";
 	public static final String PS_REG_ID_NEW 			= "to";
 	
-	public static final String PS_REGULAR_DATA 			= "regularData";
-	public static final String PS_MSG 					= "Message";
-	public static final String PS_CAM_UID 				= "CamUID";
+	public static final String PS_REGULAR_DATA 			= "rData";
+	public static final String PS_MSG 					= "msg";
+	public static final String PS_CAM_UID 				= "vcUuid";
 	public static final String PS_NCODE 				= "nCode";
-	public static final String PS_TS 					= "timestamp";
+	public static final String PS_TS 					= "ts";
 	
-	public static final String PS_CUSTOM_DATA 			= "customData";
+	public static final String PS_CUSTOM_DATA 			= "cData";
 	
 	public static final String PS_WIFI_CONFIG_REPORT 	= "configReport";
-	public static final String PS_PAIR_TOKEN 			= "pairingToken";
+	public static final String PS_PAIR_TOKEN 			= "pairToken";
 	public static final String PS_USER_UUID 			= "userUuid";
 	
 	

@@ -110,7 +110,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	}
 	
 	public void setAudioWSServerIP(String ip){
-		AUDIO_WS_ADDR = String.format("http://%s:80/websocket", ip);//"54.238.255.56");
+		AUDIO_WS_ADDR = String.format("%s/websocket", ip);//"54.238.255.56");
 		Log.i(TAG, "AudioWebSocketsMgr::setAudioWSServerIP()...AUDIO_WS_ADDR:"+AUDIO_WS_ADDR);
 	}
 	
@@ -175,7 +175,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 								JSONObject authObj = BeseyeWebsocketsUtil.genAuthMsg();
 								if(null != authObj){
 									webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_AUTH, authObj.toString()));
-									//Log.i(TAG, "onStringAvailable(), authObj="+authObj.toString());
+									Log.i(TAG, "onStringAvailable(), authObj="+authObj.toString());
 									mStrAuthJobId = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(authObj, WS_ATTR_DATA),WS_ATTR_JOB_ID); 
 									Log.i(TAG, "onStringAvailable(), strAuthJobId="+mStrAuthJobId);
 								}

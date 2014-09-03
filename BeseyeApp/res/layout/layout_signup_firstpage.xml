@@ -19,7 +19,7 @@
 		        android:layout_alignParentTop="true"
 		        android:layout_centerHorizontal="true"
 		        android:layout_marginTop="@dimen/signup_firstPage_marginTop"
-		        android:src="@drawable/signup_homepage_logo" />
+		        android:src="@drawable/signup_logo" />
             
             <ImageView
 		        android:id="@+id/iv_signup_sun"

@@ -26,6 +26,7 @@ import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask.GetAudioWSServerTask;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.setting.CameraSettingActivity;
@@ -525,17 +526,22 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	private void goToLiveMode(){
-		Intent intent = getIntent();
-		if(null != intent){
-			intent.putExtra(KEY_TIMELINE_INFO, "");
-		}
+//		Intent intent = getIntent();
+//		if(null != intent){
+//			intent.putExtra(KEY_TIMELINE_INFO, "");
+//		}
+//		
+//		mbIsLiveMode = true;
+//		mlDVRStartTs = 0;
+//		
+//		updateUIByMode();
+//		
+//		getStreamingInfo(true);
 		
-		mbIsLiveMode = true;
-		mlDVRStartTs = 0;
-		
-		updateUIByMode();
-		
-		getStreamingInfo();
+		Bundle b = new Bundle();
+		b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+		b.putBoolean(CameraListActivity.KEY_DEMO_CAM_MODE, mbIsDemoCam);
+		launchActivityByClassName(CameraViewActivity.class.getName(), b);
 	}
 	
 	private void updateUIByMode(){		
@@ -837,7 +843,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(bNetworkConnected && bPowerOn && (mbIsFirstLaunch || mbIsPauseWhenPlaying || mbIsCamSettingChanged || mbIsWifiSettingChanged || mbIsRetryAtNextResume)){
 			mbIsRetryAtNextResume = false;
-			getStreamingInfo();
+			getStreamingInfo(true);
 		}/*else{
 			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		}*/
@@ -873,11 +879,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private BeseyeHttpTask mDVRStreamTask = null;
 	private BeseyeHttpTask mDVRStreamAppendTask = null;
 	
-	private void getStreamingInfo(){
+	private void getStreamingInfo(boolean bShowDialog){
 		if(false == isInP2PMode()){
 			if(mbIsLiveMode){
 				if(null == mLiveStreamTask){
-					monitorAsyncTask(mLiveStreamTask = new BeseyeMMBEHttpTask.GetLiveStreamTask(this, -1), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, "false");
+					monitorAsyncTask(mLiveStreamTask = new BeseyeMMBEHttpTask.GetLiveStreamTask(this, -1).setDialogId(bShowDialog?DIALOG_ID_LOADING:-1), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, "false");
 					setVisibility(mPbLoadingCursor, View.VISIBLE);
 				}
 			}else{
@@ -897,6 +903,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private void updatePlayPauseBtnEnabledStatus(){
 		if(null != mCameraViewControlAnimator){
 			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), (null == mLiveStreamTask && null == mDVRStreamTask) && isCamPowerOn() && NetworkMgr.getInstance().isNetworkConnected());
+		}
+		
+		if(null != mCameraViewControlAnimator){
+			setEnabled(mCameraViewControlAnimator.getTalkView(), isCamPowerOn() && NetworkMgr.getInstance().isNetworkConnected() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTED, CameraView_Internal_Status.CV_STREAM_PAUSED));
 		}
 	}
 	
@@ -961,7 +971,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					JSONArray arr = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.OBJ_DATA);
 					try {
 						AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
-						AudioWebSocketsMgr.getInstance().setAudioWSServerIP(arr.getString(arr.length()-1));
+						AudioWebSocketsMgr.getInstance().setAudioWSServerIP("http://"+arr.getString(arr.length()-1));
 						AudioWebSocketsMgr.getInstance().setSienceFlag(false);
 						AudioWebSocketsMgr.getInstance().constructWSChannel();
 					} catch (JSONException e) {
@@ -1045,6 +1055,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON.getValue());
 					//setActivityResultWithCamObj();
+					
 					mbIsCamSettingChanged = true;
 					mbIsCamStatusChanged = true;
 					mlRetryConnectBeginTs = System.currentTimeMillis();
@@ -1080,12 +1091,21 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
-			if(/*(null != mVgPairingDone || mbIsCamStatusChanged || mbIsCamSettingChanged) &&*/ (System.currentTimeMillis() - mlRetryConnectBeginTs < 60*1000)){
+			if(mActivityDestroy){
+				return;
+			}
+			
+			if(!mActivityResume){
+				mbIsRetryAtNextResume = true;
+				return;
+			}
+			
+			if(/*(null != mVgPairingDone || mbIsCamStatusChanged || mbIsCamSettingChanged) &&*/ (System.currentTimeMillis() - mlRetryConnectBeginTs < 60*1000) && mActivityResume){
 				BeseyeUtils.postRunnable(new Runnable(){
 					@Override
 					public void run() {
-						getStreamingInfo();
-					}}, 300);
+						getStreamingInfo(false);
+					}}, 1000);
 			}else{
 				mbIsRetryAtNextResume = true;
 				mbIsCamStatusChanged = false;
@@ -1148,6 +1168,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			case R.id.txt_events:{
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				b.putBoolean(CameraListActivity.KEY_DEMO_CAM_MODE, mbIsDemoCam);
 				launchActivityByClassName(EventListActivity.class.getName(), b);
 				break;
 			}
@@ -1177,7 +1198,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						closeStreaming();
 					}else{
 						//beginLiveView();
-						getStreamingInfo();
+						getStreamingInfo(true);
 					}
 				}else{
 					if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING) || isCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTED)){
@@ -1191,7 +1212,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						}
 					}else{
 						//beginLiveView();
-						getStreamingInfo();
+						getStreamingInfo(true);
 					}
 				}
 				
@@ -2061,7 +2082,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
     	if(!AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
     		if(null == mGetAudioWSServerTask)
-    			monitorAsyncTask(mGetAudioWSServerTask = (GetAudioWSServerTask) new BeseyeNotificationBEHttpTask.GetAudioWSServerTask(this).setDialogId(DIALOG_ID_CAM_TALK_INIT), true);
+    			if("".equals(SessionMgr.getInstance().getWSAHostUrl())){
+    				monitorAsyncTask(mGetAudioWSServerTask = (GetAudioWSServerTask) new BeseyeNotificationBEHttpTask.GetAudioWSServerTask(this).setDialogId(-1), true);
+    			}else{
+    				AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
+					AudioWebSocketsMgr.getInstance().setAudioWSServerIP(SessionMgr.getInstance().getWSAHostUrl());
+					AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+					AudioWebSocketsMgr.getInstance().constructWSChannel();
+    			}
+    			
     		else
     			Log.i(TAG, "openAudioChannel(), mGetAudioWSServerTask isn't null");
 		}else{

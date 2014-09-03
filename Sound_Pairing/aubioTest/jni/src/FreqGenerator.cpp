@@ -540,7 +540,7 @@ void FreqGenerator::invokePlayCode3(){
 
 void FreqGenerator::stopPlay2(){
 	LOGE("stopPlay2()+++");
-	//deinitAudioDev();
+	deinitAudioDev();
 	mbStopPlayCodeThread = true;
 	pthread_mutex_lock(&mSyncObj);
 	pthread_cond_broadcast(&mSyncObjCond);
@@ -736,7 +736,6 @@ bool FreqGenerator::initAudioDev(){
 }
 
 bool FreqGenerator::deinitAudioDev(){
-
 	Delegate_CloseAudioDevice();
 	return true;
 }
