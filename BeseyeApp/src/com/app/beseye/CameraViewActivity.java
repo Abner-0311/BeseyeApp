@@ -1948,6 +1948,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						iErrStrId = R.string.streaming_error_unknown;
 					}
 					
+					if(iMinorType == Stream_Error.SERVER_REQUEST_CLOSE_ERROR.ordinal() && !isCamPowerOn()){
+						Log.w(TAG, "updateRTMPErrorCallback(), unPublish case");
+						return;
+					}
 					//workaround
 					if(!ASSIGN_ST_PATH && !isInP2PMode()){
 						if(iErrStrId == R.string.streaming_error_unknown){
