@@ -336,14 +336,14 @@ void FreqGenerator::invokePlayCode2(){
 
 //                        	if(NULL != mOnPlayToneCallback)
 //                        		mOnPlayToneCallback->onCurFreqChanged(dFreq);
-
-		if(NULL != mOnPlayToneCallback)
-			mOnPlayToneCallback->onStopGen(itmCode->strCodeInputAscii);
+        
+		pthread_mutex_unlock(&mSyncObj);
+        
+        if(NULL != mOnPlayToneCallback)
+            mOnPlayToneCallback->onStopGen(itmCode->strCodeInputAscii);
         
         if(NULL != mPlayToneCB)
             mPlayToneCB(mCbUserData, PLAY_TONE_END, itmCode->strCodeInputAscii.c_str(), 0);
-        
-		pthread_mutex_unlock(&mSyncObj);
 	}
 	LOGE("invokePlayCode2()------, thread end");
 	mThreadPlayTone = 0;
@@ -540,10 +540,13 @@ void FreqGenerator::invokePlayCode3(){
 
 void FreqGenerator::stopPlay2(){
 	LOGE("stopPlay2()+++");
-	//deinitAudioDev();
-	mbStopPlayCodeThread = true;
+    mbStopPlayCodeThread = true;
+	deinitAudioDev();
+    LOGE("stopPlay2()+++1");
 	pthread_mutex_lock(&mSyncObj);
+    LOGE("stopPlay2()+++2");
 	pthread_cond_broadcast(&mSyncObjCond);
+    LOGE("stopPlay2()+++3");
 	pthread_mutex_unlock(&mSyncObj);
 	LOGE("stopPlay2()---");
 }
@@ -749,6 +752,9 @@ void FreqGenerator::writeTone(double sample[], byte generatedSnd[], int iLen){
 #ifndef ANDROID
 	    generatedSnd = (byte*)Delegate_GetAudioBuffer();
 #endif
+    if(mbStopPlayCodeThread){
+        return;
+    }
 		int idx = 0;
 		for (int i =0; i< iLen;i++) {
 			// scale to maximum amplitude

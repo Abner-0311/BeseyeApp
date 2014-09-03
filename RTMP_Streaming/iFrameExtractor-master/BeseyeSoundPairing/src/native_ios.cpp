@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "beseye_sound_pairing.h"
 
+static int iInited = 0;
 static Uint8 * s_stream = NULL;
 static int s_stream_len = 0;
 static int s_stream_len_used = 0;
@@ -24,7 +25,7 @@ void sdl_audio_callback(void *opaque, Uint8 *stream, int len){
     	pthread_mutex_unlock(&mSyncObj);
     }
 
-    while(s_stream_len_used < len){
+    while( iInited && s_stream_len_used < len){
     	pthread_mutex_lock(&mSyncObjBufUsed);
     	LOGD("sdl_audio_callback(), mSyncObjBufUsed wait begin\n" );
     	pthread_cond_wait(&mSyncObjCondBufUsed, &mSyncObjBufUsed);
@@ -96,12 +97,12 @@ int Delegate_OpenAudioDevice(int wanted_sample_rate, int is16Bit, int wanted_nb_
     
     /* Start playing */
     SDL_PauseAudio(0);
-    
+    iInited = 1;
 	return spec.size;
 }
 
 void * Delegate_GetAudioBuffer(){
-	while(NULL == s_stream){
+	while(iInited && NULL == s_stream){
 		pthread_mutex_lock(&mSyncObj);
 		LOGD("Delegate_GetAudioBuffer(), mSyncObj wait begin\n" );
 		pthread_cond_wait(&mSyncObjCond, &mSyncObj);
@@ -132,21 +133,26 @@ void Delegate_WriteAudioBuffer(int iLen){
 }
 
 void Delegate_CloseAudioDevice(){
-	LOGD("Delegate_CloseAudioDevice()\n" );
-	pthread_mutex_lock(&mSyncObjBufUsed);
-	pthread_cond_signal(&mSyncObjCondBufUsed);
-	pthread_mutex_unlock(&mSyncObjBufUsed);
+	LOGE("Delegate_CloseAudioDevice(), iInited:%d\n", iInited );
+	if(iInited){
+        iInited = 0;
+		pthread_mutex_lock(&mSyncObjBufUsed);
+		pthread_cond_signal(&mSyncObjCondBufUsed);
+		pthread_mutex_unlock(&mSyncObjBufUsed);
 
-	pthread_cond_destroy(&mSyncObjCondBufUsed);
-	pthread_mutex_destroy(&mSyncObjBufUsed);
+		pthread_cond_destroy(&mSyncObjCondBufUsed);
+		pthread_mutex_destroy(&mSyncObjBufUsed);
 
-	pthread_mutex_lock(&mSyncObj);
-	pthread_cond_signal(&mSyncObjCond);
-	pthread_mutex_unlock(&mSyncObj);
+		pthread_mutex_lock(&mSyncObj);
+		pthread_cond_signal(&mSyncObjCond);
+		pthread_mutex_unlock(&mSyncObj);
 
-	pthread_cond_destroy(&mSyncObjCond);
-	pthread_mutex_destroy(&mSyncObj);
-	SDL_CloseAudio();
+		pthread_cond_destroy(&mSyncObjCond);
+		pthread_mutex_destroy(&mSyncObj);
+		SDL_CloseAudio();
+		
+	}
+    LOGE("Delegate_CloseAudioDevice()---, iInited:%d\n", iInited );
 }
 
 void Delegate_detachCurrentThread(){
