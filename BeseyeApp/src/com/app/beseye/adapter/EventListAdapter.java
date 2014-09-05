@@ -164,30 +164,31 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		
 		String strType = null;
 		if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr)){
-			JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
-			if(null != faceList && 0 < faceList.length()){
-				BeseyeJSONUtil.FACE_LIST face;
-				try {
-					int iFaceId = -1;
-					for(int i = faceList.length()-1;i >=0;i--){
-						if(0 < faceList.getInt(i)){
-							iFaceId = faceList.getInt(i);
-							break;
-						}
-					}
-					face = BeseyeJSONUtil.findFacebyId(iFaceId-1);
-					if(null != face){
-						strType = String.format(mStrFamilyDetectFormat, face.mstrName);
-					}else{
-						strType = mStrPeopleDetect;
-					}
-				} catch (JSONException e) {
-					Log.e(TAG, "genDetectionType(), e:"+e.toString());	
-				}
-				
-			}else{
-				strType = mStrPeopleDetect;
-			}
+//			JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
+//			if(null != faceList && 0 < faceList.length()){
+//				BeseyeJSONUtil.FACE_LIST face;
+//				try {
+//					int iFaceId = -1;
+//					for(int i = faceList.length()-1;i >=0;i--){
+//						if(0 < faceList.getInt(i)){
+//							iFaceId = faceList.getInt(i);
+//							break;
+//						}
+//					}
+//					face = BeseyeJSONUtil.findFacebyId(iFaceId-1);
+//					if(null != face){
+//						strType = String.format(mStrFamilyDetectFormat, face.mstrName);
+//					}else{
+//						strType = mStrPeopleDetect;
+//					}
+//				} catch (JSONException e) {
+//					Log.e(TAG, "genDetectionType(), e:"+e.toString());	
+//				}
+//				
+//			}else{
+//				strType = mStrPeopleDetect;
+//			}
+			strType = mStrPeopleDetect;
 			BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
 		}
 		

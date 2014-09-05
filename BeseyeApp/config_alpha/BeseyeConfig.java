@@ -24,6 +24,9 @@ public class BeseyeConfig {
 	static public boolean COMPUTEX_PAIRING = false;
 	static public boolean COMPUTEX_P2P = false;
 	
+	static public boolean ALPHA_VER = true;
+	static public boolean PRODUCTION_VER = false;
+	
 	static public final String RELAY_AP_SSID = "raylios WiFi";
 	static public final String RELAY_AP_PW = "whoisyourdaddy";
 	

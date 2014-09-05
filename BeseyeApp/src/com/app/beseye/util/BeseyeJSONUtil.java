@@ -354,6 +354,8 @@ public class BeseyeJSONUtil {
 	public static final String PS_WIFI_CONFIG_REPORT 	= "configReport";
 	public static final String PS_PAIR_TOKEN 			= "pairToken";
 	public static final String PS_USER_UUID 			= "userUuid";
+	public static final String PS_CAM_NAME 				= "camName";
+	public static final String PS_EVT_TS 				= "evt_ts";
 	
 	
 	//Helper functions

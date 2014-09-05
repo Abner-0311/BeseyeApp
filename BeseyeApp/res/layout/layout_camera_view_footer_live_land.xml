@@ -47,6 +47,8 @@
    		android:layout_height="wrap_content" 
    		android:layout_gravity="center"
    		android:src="@drawable/sl_liveview_talk_btn"
+   		android:paddingLeft="10dp"
+   		android:paddingRight="10dp"
    		android:background="@android:color/transparent"
    		android:layout_marginRight="@dimen/liveview_toolbar_margin_hori"/>
 

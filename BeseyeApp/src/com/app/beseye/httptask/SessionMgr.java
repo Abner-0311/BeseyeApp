@@ -53,28 +53,28 @@ public class SessionMgr {
 	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
 	static private final String[] ACCOUNT_BE_URL = {"https://acc-dev.beseye.com",
 													"https://acc01.beseye.com", 
-													"https://acc01-stage.beseye.com",
-													"https://acc01-stage.beseye.com"}; 
+													"https://acc-stage.beseye.com",
+													"https://acc-stage.beseye.com"}; 
 	
 	static private final String[] MM_BE_URL = { "https://mm-dev.beseye.com/",
 												"http://mm01-forext-comp.beseye.com/", 
-												"http://mm01-forext-stage.beseye.com/",
-												"https://mm01-forext-stage.beseye.com/"}; 
+												"https://mm-stage.beseye.com/",
+												"https://mm-stage.beseye.com/"}; 
 	
 	static private final String[] NS_BE_URL = { "https://ns-dev.beseye.com/",
 												"http://ns01.beseye.com/", 
-												"http://ns01-stage.beseye.com/",
-												"http://ns01-stage.beseye.com/"}; 
+												"https://ns-stage.beseye.com/",
+												"https://ns-stage.beseye.com/"}; 
 	
 	static private final String[] WS_BE_URL = { "https://ws-dev.beseye.com/",
 												"https://ws-dev.beseye.com/", 
-												"",
-												""}; 
+												"https://ws-stage.beseye.com/",
+												"https://ws-stage.beseye.com/"}; 
 	
 	static private final String[] WSA_BE_URL = { "https://wsa-dev.beseye.com/",
 												 "https://wsa-dev.beseye.com/", 
-												 "",
-												 ""}; 
+												 "https://wsa-stage.beseye.com/",
+												 "https://wsa-stage.beseye.com/"}; 
 	
 	
 	

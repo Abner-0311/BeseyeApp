@@ -722,4 +722,16 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 		return super.onKeyUp(keyCode, event);
 	}
+	
+	@Override
+	protected void onServerError(){
+		super.onServerError();
+		LayoutInflater inflater = getLayoutInflater();
+		if(null != inflater){
+			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
+			if(null != mVgEmptyView){
+				mMainListView.setEmptyView(mVgEmptyView);
+			}
+		}
+	}
 }

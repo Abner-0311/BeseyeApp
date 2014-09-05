@@ -11,6 +11,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.app.beseye.BeseyeApplication;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.OpeningPage;
@@ -144,7 +145,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgSiren = (ViewGroup)findViewById(R.id.vg_siren);
 		if(null != mVgSiren){
 			mVgSiren.setOnClickListener(this);
-			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
 				mVgSiren.setVisibility(View.GONE);
 			}
 		}

@@ -173,6 +173,7 @@
 	<string name="cam_info_mac">MAC address</string>
 	<string name="unknown">N/A</string>
 	
+	<string name="server_error">Network or server error. Please try again later.</string>
 	<string name="streaming_invalid_dvr">Invalid DVR streaming path. Please try again later.</string>
 	<string name="streaming_playing_error">Invalid streaming path or server error. Please try again later.</string>
 	<string name="streaming_error_no_network">Please check out your network connection.</string>
@@ -299,6 +300,10 @@
 	
 	<string name="toast_new_cam_activated">New camera is online. Please refresh your camera list.</string>
 	<string name="toast_cam_deactivated">%s is deactivated. Please refresh your camera list.</string>
+	
+	<string name="notify_motion_detect">Motion detected by %s. Go and check it up.</string>
+	<string name="notify_people_detect">People detected by %s. Go and check it up.</string>
+	<string name="notify_offline_detect">%s: WiFi disconnected.</string>
 	
 	<string name="about_title">About Beseye</string>
 	<string name="about_desc">Beseye and the Beseye logo are registered trademarks of Beseye, Inc. iPhone, iPad, iPood Touch, and App Store are registered trademarks of Apple, Inc. Chrome and Android are registered trademarks of Google, Inc. Internet Explorer is a registered trademark of Microsoft Corporation. Firefox is a registered trademark of Mozilla Corporation. Wi-Fi and Wi-Fi Certified logo are registered trademarks of the Wi-Fi Alliance. Certain other product names, brand names, and company names may be trademarks or designations of their respective owners.</string>

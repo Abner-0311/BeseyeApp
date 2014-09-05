@@ -103,7 +103,7 @@ public class BeseyeApplication extends Application {
 	}
 	
 	public static boolean isInMainProcess(){
-		return BESEYE_MAIN_PROCESS.equals(sCurProcessName);
+		return null != sCurProcessName && sCurProcessName.startsWith(BESEYE_MAIN_PROCESS) && !sCurProcessName.endsWith(":remote");///BESEYE_MAIN_PROCESS.equals(sCurProcessName);
 	}
 	/* Used for flurry trackers identification across multi-process 
 	   -- End */

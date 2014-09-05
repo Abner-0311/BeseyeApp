@@ -581,6 +581,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			Log.e(TAG, "onErrorReport(), task:["+task.getClass().getSimpleName()+"], iErrType:"+iErrType+", strTitle:"+strTitle+", strMsg:"+strMsg);
 		}
 	}
+	
+	protected void onServerError(){
+		showErrorDialog(R.string.server_error, false);
+	}
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
@@ -592,7 +596,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_EXIST == iRetCode  || BeseyeError.E_BE_ACC_SESSION_EXPIRED == iRetCode){
 					onSessionInvalid();
 				}else{
-					
+					onServerError();
 				}
 			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
 				if(task == mGetNewCamTask){
@@ -940,6 +944,48 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
                 	}
                 	break;	
                 }
+                case BeseyeNotificationService.MSG_CAM_EVENT_PEOPLE:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCameraPeopleEvent(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                	break;
+                }
+                case BeseyeNotificationService.MSG_CAM_EVENT_MOTION:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCameraMotionEvent(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                	break;
+                }
+                case BeseyeNotificationService.MSG_CAM_EVENT_OFFLINE:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCameraOfflineEvent(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                	break;
+                }
 //                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{
 //                	BeseyeBaseActivity act = mActivity.get();
 //                	if(null != act)
@@ -1167,7 +1213,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     			String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
     			if(null != strCamUID && strCamUID.equals(mStrVCamID)){
     				launchDelegateActivity(CameraListActivity.class.getName());
-    				Toast.makeText(this, getString(R.string.toast_cam_deactivated), Toast.LENGTH_SHORT).show();
+    				Toast.makeText(this, String.format(getString(R.string.toast_cam_deactivated), BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME)), Toast.LENGTH_SHORT).show();
     			}
     			return true;
     		}
@@ -1217,6 +1263,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	return false;
     }
     
+    protected boolean onCameraMotionEvent(JSONObject msgObj){return false;}
+    protected boolean onCameraPeopleEvent(JSONObject msgObj){return false;}
+    protected boolean onCameraOfflineEvent(JSONObject msgObj){return false;}
     
     protected long mlCamSetupObjUpdateTs = -1;
     
