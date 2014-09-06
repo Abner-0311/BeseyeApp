@@ -520,7 +520,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
         BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, sStrVcamName);
         
-        beginToCheckWebSocketState();
+       // beginToCheckWebSocketState();
     }
     
     private void checkEventPeriod(){

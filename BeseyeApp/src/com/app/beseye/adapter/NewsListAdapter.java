@@ -8,7 +8,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
 import com.app.beseye.R;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -54,14 +57,25 @@ public class NewsListAdapter extends BeseyeJSONAdapter {
 		if(null != convertView){
 			NewsListItmHolder holder = (NewsListItmHolder)convertView.getTag();
 			if(null != holder){
-				if(null != holder.mVgNews){
+				if(null != obj && null != holder.mVgNews){
 					holder.mVgNews.setBackgroundResource((0 == iPosition%2)?R.drawable.cl_news_list_bg_color_1:R.drawable.cl_news_list_bg_color_2);
-					if(0 == iPosition){
+					if(BeseyeNewsHistoryMgr.isUnread(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.NEWS_ID))){
 						holder.mVgNews.setBackgroundResource(R.drawable.cl_news_list_bg_color_unread);
+					}
+					
+					if(null != holder.mTxtTitle){
+						holder.mTxtTitle.setText(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.NEWS_TITLE));
+					}
+					
+					if(null != holder.mTxtNewsTime){
+						holder.mTxtNewsTime.setText(BeseyeUtils.getDateString(new Date(BeseyeJSONUtil.getJSONLong(obj, BeseyeJSONUtil.NEWS_REL_TIME)), "yyyy.MM.dd"));
+					}
+					
+					if(null != holder.mTxtContent){
+						holder.mTxtContent.setText(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.NEWS_ABSTRACT));
 					}
 					//holder.mVgNews.setOnClickListener(mItemOnClickListener);
 				}
-				
 				holder.mObjEvent = obj;
 				convertView.setTag(holder);
 			}

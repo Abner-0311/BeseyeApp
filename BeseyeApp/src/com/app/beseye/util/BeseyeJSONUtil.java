@@ -123,12 +123,39 @@ public class BeseyeJSONUtil {
 	public static final String UPDATE_PROGRESS 			= "progress";
 	public static final String UPDATE_FINAL_STAUS 		= "finalStatus";
 	public static final String UPDATE_DETAIL_STAUS 		= "detailStatus";
-	
-	
+		
 	//WS BE service
 	public static final String CAM_UUID 				= "camUuid";
 	public static final String DEV_ID 					= "deviceId";
 	public static final String SES_TOKEN 				= "SessionToken";
+	
+	//News BE service
+	public static final String NEWS_START_IDX 			= "start";
+	public static final String NEWS_NUM 				= "num";
+	public static final String NEWS_LANG 				= "lang";
+	
+	public static final String NEWS_COUNT 				= "newsCounts";
+	
+	public static final String NEWS_LIST 				= "newsLists";
+	public static final String NEWS_ID 					= "id";
+	public static final String NEWS_TITLE 				= "title";
+	
+	public static final String NEWS_CONTENT 			= "content";
+	public static final String NEWS_DESC 				= "description";
+	public static final String NEWS_OTHER 				= "otherInfo";
+	public static final String NEWS_URL 				= "newsUrl";
+	public static final String NEWS_FW_VER 				= "firmwareVer";
+	
+	public static final String NEWS_ABSTRACT 			= "abstract";
+	public static final String NEWS_REL_TIME 			= "releaseTime";
+	
+	public static final String NEWS_NEWS_ID 			= "newsId";
+	public static final String NEWS_DETAIL 				= "detail";
+	
+	public static final String NEWS_TYPE 				= "type";
+	public static final int NEWS_TYPE_ANNOUNCE 			= 0;
+	public static final int NEWS_TYPE_CAM_UPDATE 		= 1;
+	public static final int NEWS_TYPE_UNKNOWN 			= -1;
 	
 	//Account BE service
 	public static final String ACC_EMAIL 				= "Email";

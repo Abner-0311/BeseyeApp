@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 
 import android.content.Context;
@@ -76,6 +77,11 @@ public class SessionMgr {
 												 "https://wsa-stage.beseye.com/",
 												 "https://wsa-stage.beseye.com/"}; 
 	
+	static private final String[] NEWS_BE_URL = { "https://news-dev.beseye.com/",
+												  "https://news-dev.beseye.com/", 
+												  "https://news-stage.beseye.com/",
+												  "https://news-stage.beseye.com/"}; 
+	
 	
 	
 	static private final String SESSION_PREF 				= "beseye_ses";
@@ -92,6 +98,8 @@ public class SessionMgr {
 	static private final String SESSION_SERVER_MODE	    	= "beseye_server_mode";
 	
 	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
+	
+	static private final String SESSION_NEWS_HISTORY	    = "beseye_news_history";
 	
 	static private SessionMgr sSessionMgr;
 	
@@ -140,6 +148,8 @@ public class SessionMgr {
 		setAccount("");
 		setOwnerInfo("");
 		setIsCertificated(false);
+		setNewsHistory("");
+		BeseyeNewsHistoryMgr.deinit();
 		//setOwnerChannelInfo(null);
 		notifySessionUpdate();
 	}
@@ -150,6 +160,15 @@ public class SessionMgr {
 		setNSBEHostUrl("");
 		setWSHostUrl("");
 		setWSAHostUrl("");
+		setNewsHostUrl("");
+	}
+	
+	public String getNewsHistory(){
+		return getPrefStringValue(mPref, SESSION_NEWS_HISTORY);
+	}
+	
+	public void setNewsHistory(String strHistory){
+		setPrefStringValue(mPref, SESSION_NEWS_HISTORY, strHistory);
 	}
 	
 	public void setBEHostUrl(SERVER_MODE mode){
@@ -158,6 +177,7 @@ public class SessionMgr {
 		setNSBEHostUrl(mode);
 		setWSBEHostUrl(mode);
 		setWSABEHostUrl(mode);
+		setNewsBEHostUrl(mode);
 	}
 	
 	public String getAccountBEHostUrl(){
@@ -223,6 +243,19 @@ public class SessionMgr {
 	
 	public void setWSABEHostUrl(SERVER_MODE mode){
 		setWSAHostUrl(WSA_BE_URL[mode.ordinal()]);
+	}
+	
+	public String getNewsHostUrl(){
+		return mSessionData.getNewsHostUrl();
+	}
+	
+	synchronized public void setNewsHostUrl(String strURL){
+		mSessionData.setNewsHostUrl(strURL);
+		notifySessionUpdate();
+	}
+	
+	public void setNewsBEHostUrl(SERVER_MODE mode){
+		setNewsHostUrl(NEWS_BE_URL[mode.ordinal()]);
 	}
 	
 	public String getUserid(){
@@ -365,7 +398,7 @@ public class SessionMgr {
 	}
 	
 	public static class SessionData implements Parcelable{
-		private String mStrHostUrl, mStrMMHostUrl, mStrNSHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
+		private String mStrHostUrl, mStrMMHostUrl, mStrNSHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
 		private boolean mbIsCertificated;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
@@ -377,6 +410,7 @@ public class SessionMgr {
 			mStrNSHostUrl = "";
 			mStrWSHostUrl = "";
 			mStrWSAHostUrl = "";
+			mStrNewsHostUrl = "";
 			mStrUserid = "";
 			mStrAccount = "";
 			mStrDomain = "";
@@ -428,6 +462,14 @@ public class SessionMgr {
 		
 		synchronized public void setWSAHostUrl(String strURL){
 			mStrWSAHostUrl = strURL;
+		}
+		
+		public String getNewsHostUrl(){
+			return mStrNewsHostUrl;
+		}
+		
+		synchronized public void setNewsHostUrl(String strURL){
+			mStrNewsHostUrl = strURL;
 		}
 
 		public String getUserid(){
@@ -536,6 +578,7 @@ public class SessionMgr {
 			dest.writeString(mStrNSHostUrl);
 			dest.writeString(mStrWSHostUrl);
 			dest.writeString(mStrWSAHostUrl);
+			dest.writeString(mStrNewsHostUrl);
 			
 			dest.writeString(mStrUserid);
 			dest.writeString(mStrAccount);
@@ -572,6 +615,7 @@ public class SessionMgr {
 			mStrNSHostUrl = in.readString();
 			mStrWSHostUrl = in.readString();
 			mStrWSAHostUrl = in.readString();
+			mStrNewsHostUrl = in.readString();
 			
 			mStrUserid = in.readString();
 			mStrAccount = in.readString();

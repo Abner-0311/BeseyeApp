@@ -2,15 +2,27 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Gravity;
@@ -23,19 +35,29 @@ import android.widget.Toast;
 
 import com.app.beseye.adapter.NewsListAdapter;
 import com.app.beseye.adapter.NewsListAdapter.NewsListItmHolder;
+import com.app.beseye.error.BeseyeError;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.widget.PullToRefreshBase.OnLastItemVisibleListener;
 import com.app.beseye.widget.PullToRefreshListView;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
+import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 
 public class BeseyeNewsActivity extends BeseyeBaseActivity {
-
-	private PullToRefreshListView mlvNewsList;
-	private NewsListAdapter mNewsListAdapter;
+	static private final int NUM_NEWS_QUERY = 10;
+	static private final String DEF_NEWS_LANG = "en";
 	
+	private PullToRefreshListView mMainListView;
+	private NewsListAdapter mNewsListAdapter;
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
-	
+	private boolean mbRefreshCase = false;
 	protected JSONArray mlstNews;
+	private BeseyeNewsBEHttpTask.GetNewsListTask mGetNewsListTask = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,19 +85,60 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
 
-		mlvNewsList = (PullToRefreshListView) findViewById(R.id.lst_news_list);
+		mMainListView = (PullToRefreshListView) findViewById(R.id.lst_news_list);
 		
-		if(null != mlvNewsList){
-			mlvNewsList.setMode(LvExtendedMode.NONE);
-			mlstNews = new JSONArray();
-			for(int idx =0; idx < 10;idx++)
-				mlstNews.put(new JSONObject());
+		if(null != mMainListView){
+			mMainListView.setMode(LvExtendedMode.PULL_DOWN_TO_REFRESH);
+			mMainListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener(){
+				@Override
+				public void onLastItemVisible() {
+					if(mMainListView.isFooterLoadMoreViewAttached()){
+						if(null == mGetNewsListTask || AsyncTask.Status.FINISHED == mGetNewsListTask.getStatus()){
+							int iLastIdx = getLastNewsIdx();
+							if(0 <= iLastIdx){
+								monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(BeseyeNewsActivity.this), true, (iLastIdx -1)+"" , ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
+								return;
+							}
+							mMainListView.dettachFooterLoadMoreView();
+						}
+					}
+				}});
+			mMainListView.setOnRefreshListener(new OnRefreshListener() {
+    			@Override
+    			public void onRefresh() {
+    				Log.i(TAG, "onRefresh()");	
+    				monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(BeseyeNewsActivity.this), true, "-1", ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
+    				mbRefreshCase = true;
+    			}
+
+				@Override
+				public void onRefreshCancel() {
+
+				}
+    		});
 			
 			mNewsListAdapter = new NewsListAdapter(this, mlstNews, R.layout.layout_news_itm, this);
-			if(null != mlvNewsList){
-				mlvNewsList.setAdapter(mNewsListAdapter);
+			if(null != mMainListView){
+				mMainListView.setAdapter(mNewsListAdapter);
 			}
 		}
+	}
+	
+	private int getLastNewsIdx(){
+		int iRet = -1;
+		if(null != mNewsListAdapter){
+			JSONArray arrNews = mNewsListAdapter.getJSONList();
+			if(null != arrNews && 0 < arrNews.length()){
+				try {
+					JSONObject newsObj = arrNews.getJSONObject(arrNews.length()-1);
+					iRet = BeseyeJSONUtil.getJSONInt(newsObj, BeseyeJSONUtil.NEWS_ID);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return iRet;
 	}
 
 	@Override
@@ -83,20 +146,162 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 		return R.layout.layout_news_list;
 	}
 	
+	private void postToLvRreshComplete(){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(null != mMainListView){
+					mMainListView.onRefreshComplete();
+					mMainListView.updateLatestTimestamp();
+				}
+			}}, 0);
+	}
+	
 	@Override
 	public void onClick(View view) {
 		if(view.getTag() instanceof NewsListItmHolder){
 			NewsListItmHolder info = (NewsListItmHolder)view.getTag();
-			if(null != info){
-				launchActivityByClassName(CameraUpdateActivity.class.getName(),getIntent().getExtras());
-				//Toast.makeText(this, info.mTimeZone.toString(), Toast.LENGTH_SHORT).show();
-//				Intent intent = new Intent();
-//				intent.putExtra(HWSettingsActivity.TIME_ZONE_INFO, info.mtxtZoneInfo.getText());
-//				setResult(RESULT_OK, intent);
-//				finish();
+			if(null != info && null != info.mObjEvent){
+				BeseyeNewsHistoryMgr.setRead(BeseyeJSONUtil.getJSONInt(info.mObjEvent, BeseyeJSONUtil.NEWS_ID));
+				int iType = BeseyeJSONUtil.getJSONInt(info.mObjEvent, BeseyeJSONUtil.NEWS_TYPE);
+				if(iType == BeseyeJSONUtil.NEWS_TYPE_ANNOUNCE){
+					String strUrl = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(info.mObjEvent,BeseyeJSONUtil.NEWS_CONTENT), BeseyeJSONUtil.NEWS_OTHER), BeseyeJSONUtil.NEWS_URL);
+					if(null != strUrl && 0 < strUrl.length()){
+						Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(strUrl));
+						startActivity(browserIntent);
+					}
+				}else if(iType == BeseyeJSONUtil.NEWS_TYPE_CAM_UPDATE){
+					Bundle bundle = getIntent().getExtras();
+					bundle.putString(CameraUpdateActivity.KEY_UPDATE_INFO, info.mObjEvent.toString());
+					launchActivityByClassName(CameraUpdateActivity.class.getName(),bundle);
+				}else{
+					Log.i(TAG, "onClick(), iType:"+iType);	
+				}
+				if(null != mNewsListAdapter){
+					mNewsListAdapter.notifyDataSetChanged();
+				}
 			}
 		}else {
 			super.onClick(view);
+		}
+	}
+	
+	protected void onSessionComplete(){
+		super.onSessionComplete();
+		monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(this), true, "-1", ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
+	}
+	
+	@Override
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
+		if(task instanceof BeseyeNewsBEHttpTask.GetNewsListTask){
+			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
+			//finish();
+//			int iErrMsgId = R.string.msg_signup_error;
+//			if(BeseyeError.E_BE_ACC_USER_ALREADY_EXIST == iErrType){
+//				iErrMsgId = R.string.msg_signup_err_email_used;
+//			}
+//			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(iErrMsgId));
+		}else
+			super.onErrorReport(task, iErrType, strTitle, strMsg);
+	}
+
+	@Override
+	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeNewsBEHttpTask.GetNewsListTask){
+				if(mbRefreshCase){
+					if(null != mNewsListAdapter){
+						mNewsListAdapter.updateResultList(null);
+					}
+					mbRefreshCase = false;
+				}
+					
+				if(0 == iRetCode){
+					Log.i(TAG, "onPostExecute(), "+result.toString());
+					JSONArray arrNews = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.NEWS_LIST);
+					int iCountNew = (null != arrNews)?arrNews.length():0;
+					
+					JSONArray arrOld = (null != mNewsListAdapter)?mNewsListAdapter.getJSONList():null;
+					if(null != arrOld){
+						for(int idx = 0;idx<iCountNew;idx++){
+							try {
+								arrOld.put(arrNews.getJSONObject(idx));
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+						arrNews = arrOld;
+					}
+					
+					if(iCountNew == NUM_NEWS_QUERY && null != mMainListView){
+						mMainListView.attachFooterLoadMoreView(false, true);
+					}
+					
+					if(null != mNewsListAdapter){
+						mNewsListAdapter.updateResultList(arrNews);
+						mNewsListAdapter.notifyDataSetChanged();
+					}
+				}
+				postToLvRreshComplete();
+			}else{
+				super.onPostExecute(task, result, iRetCode);
+			}
+		}
+		
+		if(task == mGetNewsListTask){
+			mGetNewsListTask = null;
+		}
+	}
+	
+	static public class BeseyeNewsHistoryMgr{
+		static private Set<Integer> sNewsReadHistorySet = null;
+		static private final String DIVIDER = ";";
+		synchronized static public void init(){
+			if(null == sNewsReadHistorySet){
+				String strHistory = SessionMgr.getInstance().getNewsHistory();
+				sNewsReadHistorySet = new TreeSet<Integer>();
+				if(null != strHistory && 0 < strHistory.length()){
+					String[] toNum = strHistory.split(DIVIDER);
+					for(String num : toNum){
+						sNewsReadHistorySet.add(Integer.parseInt(num));
+					}
+				}	
+			}
+		}
+		
+		synchronized static public void deinit(){
+			sNewsReadHistorySet = null;
+		}
+		
+		synchronized static public boolean isUnread(int idx){
+			init();
+			return null != sNewsReadHistorySet && !sNewsReadHistorySet.contains(idx);
+		}
+		
+		synchronized static public void setRead(int idx){
+			init();
+			if(null != sNewsReadHistorySet){
+				sNewsReadHistorySet.add(idx);
+				saveHistory();
+			}
+		}
+		
+		static private void saveHistory(){
+			if(null != sNewsReadHistorySet){
+				String strToSave = null;
+				for(Integer num : sNewsReadHistorySet){
+					if(null != strToSave){
+						strToSave+=(DIVIDER+num);
+					}else{
+						strToSave = num.toString();
+					}
+				}
+				
+				if(null != strToSave){
+					SessionMgr.getInstance().setNewsHistory(strToSave);
+				}
+			}
 		}
 	}
 }
