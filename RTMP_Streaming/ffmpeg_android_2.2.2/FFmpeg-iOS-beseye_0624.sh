@@ -42,6 +42,8 @@ CONFIGURE_FLAGS="--enable-cross-compile \
 --enable-encoder=pcm_mulaw \
 --enable-encoder=adpcm_swf \
 --disable-decoders \
+--enable-vda \
+--enable-hwaccel=h264 \
 --enable-decoder=aac \
 --enable-decoder=pcm_alaw \
 --enable-decoder=pcm_mulaw \
