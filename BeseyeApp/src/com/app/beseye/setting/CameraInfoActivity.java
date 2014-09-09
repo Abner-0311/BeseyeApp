@@ -129,6 +129,15 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	}
 	
 	@Override
+	protected void onResume() {
+		Log.i(TAG, "CameraSettingActivity::onResume()");
+		super.onResume();
+		if(!mbFirstResume){
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		}
+	}
+	
+	@Override
 	protected int getLayoutId() {
 		return R.layout.layout_cam_info;
 	}

@@ -148,18 +148,16 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 				}
 			}
 		}
-		
-
-		
-//		JSONArray arrDays = BeseyeJSONUtil.getJSONArray(mSched_obj, SCHED_DAYS);
-//		int iSize = (null != arrDays)?arrDays.length():0;
-//		for(int idx = 0;idx < iSize;idx++){
-//			try {
-//				BeseyeUtils.setVisibility(mIvNotifyTypeCheck[arrDays.getInt(idx)], View.VISIBLE);
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			}
-//		}
+	}
+	
+	@Override
+	protected void onResume() {
+		Log.i(TAG, "CameraSettingActivity::onResume()");
+		super.onResume();
+		if(!mbFirstResume){
+			updateNotificationTypeState();
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		}
 	}
 	
 	protected void onSessionComplete(){

@@ -96,7 +96,7 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 						if(null == mGetNewsListTask || AsyncTask.Status.FINISHED == mGetNewsListTask.getStatus()){
 							int iLastIdx = getLastNewsIdx();
 							if(0 <= iLastIdx){
-								monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(BeseyeNewsActivity.this), true, (iLastIdx -1)+"" , ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
+								monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(BeseyeNewsActivity.this), true, (iLastIdx)+"" , ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
 								return;
 							}
 							mMainListView.dettachFooterLoadMoreView();
@@ -192,6 +192,16 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	}
 	
 	@Override
+	protected void onResume() {
+		Log.i(TAG, "onResume()");
+		super.onResume();
+		if(!mbFirstResume){
+			monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(this), true, "-1", ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
+			mbRefreshCase = true;
+		}
+	}
+	
+	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
 		if(task instanceof BeseyeNewsBEHttpTask.GetNewsListTask){
 			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
@@ -216,6 +226,8 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 					}
 					mbRefreshCase = false;
 				}
+				if(null != mMainListView)
+					mMainListView.dettachFooterLoadMoreView();
 					
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
@@ -243,6 +255,7 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 						mNewsListAdapter.notifyDataSetChanged();
 					}
 				}
+
 				postToLvRreshComplete();
 			}else{
 				super.onPostExecute(task, result, iRetCode);

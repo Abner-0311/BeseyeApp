@@ -220,6 +220,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    				if(null != mCameraViewControlAnimator){
 				    				setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
 			    				}
+			    				if(mbIsLiveMode){
+			    					if(null == mCheckVideoBlockRunnable){
+		    		        			mCheckVideoBlockRunnable = new CheckVideoBlockRunnable(CameraViewActivity.this);
+		    		        		}
+		    		        		BeseyeUtils.removeRunnable(mCheckVideoBlockRunnable);
+		    		        		BeseyeUtils.postRunnable(mCheckVideoBlockRunnable, CheckVideoBlockRunnable.EXPIRE_VIDEO_NOT_START);
+			    		    	}
 			    			//}
 			    			}
 			    			
@@ -1640,6 +1647,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     
     static class CheckVideoBlockRunnable implements Runnable{
     	static private final long EXPIRE_VIDEO_BLOCK = 10000L;
+    	static private final long EXPIRE_VIDEO_NOT_START = 5000L;
 		private WeakReference<CameraViewActivity> mAct;
 		
 		public CheckVideoBlockRunnable(CameraViewActivity act){
@@ -2116,6 +2124,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
     	
     	setInHoldToTalkMode(false);
+    	
+    	if(null != mCameraViewControlAnimator){
+			mCameraViewControlAnimator.setAmplitudeRatio(0.0f);
+		}
     }
 
 	@Override

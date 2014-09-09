@@ -176,6 +176,16 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 			updateScheduleStatus();
 		}
 	}
+	
+	@Override
+	protected void onResume() {
+		Log.i(TAG, "CameraSettingActivity::onResume()");
+		super.onResume();
+		if(!mbFirstResume){
+			updateScheduleStatus();
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		}
+	}
 
 	@Override
 	protected int getLayoutId() {

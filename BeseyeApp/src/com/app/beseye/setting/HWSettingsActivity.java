@@ -190,6 +190,16 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		return R.layout.layout_hardware_setting_page;
 	}
 	
+	@Override
+	protected void onResume() {
+		Log.i(TAG, "CameraSettingActivity::onResume()");
+		super.onResume();
+		if(!mbFirstResume){
+			updateHWSettingState();
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		}
+	}
+	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
 		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
