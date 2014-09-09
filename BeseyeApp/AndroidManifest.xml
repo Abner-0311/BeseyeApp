@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
     android:versionCode="27"
+<<<<<<< HEAD
     android:versionName="0.1.24" 
+=======
+    android:versionName="0.1.27" 
+>>>>>>> FETCH_HEAD
     android:installLocation="auto">
 
     <!-- Android 2.3.3 -->
@@ -79,8 +83,7 @@
             android:name=".CameraViewActivity"
             android:label="@string/app_name" 
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="unspecified" 
-            android:launchMode="singleTop">
+            android:screenOrientation="unspecified" >
         </activity>
         
         <activity
@@ -154,6 +157,14 @@
         
         <activity
             android:name=".setting.NotificationEventsSettingActivity"
+            android:label="@string/app_name" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
+        </activity>
+        
+        <activity
+            android:name=".setting.LocationAwareSettingActivity"
             android:label="@string/app_name" 
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"

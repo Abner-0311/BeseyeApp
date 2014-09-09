@@ -61,12 +61,24 @@ public class BeseyeJSONUtil {
 	//Cam BE service
 	public static final String CAM_STATUS 				= "CamStatus";
 	public static final String LED_STATUS 				= "LEDStatus";
+	public static final String STATUS 					= "Status";
+	public static final String TYPE 					= "Type";
+	
 	public static final String SPEAKER_STATUS 			= "SpeakerStatus";
 	public static final String SPEAKER_VOLUME 			= "SpeakerVolume";
 	public static final String MIC_STATUS 				= "MicStatus";
 	public static final String MIC_GAIN 				= "MicGain";
 	public static final String IRCUT_STATUS 			= "IRStatus";
 	public static final String VIDEO_RES 				= "VideoResolution";
+	public static final String MAC_ADDR 				= "CamMacAddr";
+	
+	
+	public static final String NOTIFY_OBJ 				= "Notify";
+	public static final String NOTIFY_PEOPLE 			= "People";
+	public static final String NOTIFY_MOTION 			= "Motion";
+	public static final String NOTIFY_FIRE 				= "Fire";
+	public static final String NOTIFY_SOUND 			= "Sound";
+	public static final String NOTIFY_OFFLINE 			= "Offline";
 	
 	public static final String IMG_FLIP 				= "Flip";
 	public static final String IMG_MIRROR 				= "Mirror";
@@ -93,7 +105,7 @@ public class BeseyeJSONUtil {
 	public static final String CAM_SOFTWARE 			= "Firmware";
 	public static final String CAM_TZ 					= "TimeZone";
 	
-	
+	public static final String CAM_STATUS_LST 			= "StatusList";
 	public static final String CAM_WS_STATUS 			= "wsStatus";//1 => on-line, 0=> off-line
 	
 	
@@ -111,12 +123,39 @@ public class BeseyeJSONUtil {
 	public static final String UPDATE_PROGRESS 			= "progress";
 	public static final String UPDATE_FINAL_STAUS 		= "finalStatus";
 	public static final String UPDATE_DETAIL_STAUS 		= "detailStatus";
-	
-	
+		
 	//WS BE service
 	public static final String CAM_UUID 				= "camUuid";
 	public static final String DEV_ID 					= "deviceId";
 	public static final String SES_TOKEN 				= "SessionToken";
+	
+	//News BE service
+	public static final String NEWS_START_IDX 			= "start";
+	public static final String NEWS_NUM 				= "num";
+	public static final String NEWS_LANG 				= "lang";
+	
+	public static final String NEWS_COUNT 				= "newsCounts";
+	
+	public static final String NEWS_LIST 				= "newsLists";
+	public static final String NEWS_ID 					= "id";
+	public static final String NEWS_TITLE 				= "title";
+	
+	public static final String NEWS_CONTENT 			= "content";
+	public static final String NEWS_DESC 				= "description";
+	public static final String NEWS_OTHER 				= "otherInfo";
+	public static final String NEWS_URL 				= "newsUrl";
+	public static final String NEWS_FW_VER 				= "firmwareVer";
+	
+	public static final String NEWS_ABSTRACT 			= "abstract";
+	public static final String NEWS_REL_TIME 			= "releaseTime";
+	
+	public static final String NEWS_NEWS_ID 			= "newsId";
+	public static final String NEWS_DETAIL 				= "detail";
+	
+	public static final String NEWS_TYPE 				= "type";
+	public static final int NEWS_TYPE_ANNOUNCE 			= 0;
+	public static final int NEWS_TYPE_CAM_UPDATE 		= 1;
+	public static final int NEWS_TYPE_UNKNOWN 			= -1;
 	
 	//Account BE service
 	public static final String ACC_EMAIL 				= "Email";
@@ -331,17 +370,19 @@ public class BeseyeJSONUtil {
 	public static final String PS_REG_ID_OLD 			= "from";
 	public static final String PS_REG_ID_NEW 			= "to";
 	
-	public static final String PS_REGULAR_DATA 			= "regularData";
-	public static final String PS_MSG 					= "Message";
-	public static final String PS_CAM_UID 				= "CamUID";
+	public static final String PS_REGULAR_DATA 			= "rData";
+	public static final String PS_MSG 					= "msg";
+	public static final String PS_CAM_UID 				= "vcUuid";
 	public static final String PS_NCODE 				= "nCode";
-	public static final String PS_TS 					= "timestamp";
+	public static final String PS_TS 					= "ts";
 	
-	public static final String PS_CUSTOM_DATA 			= "customData";
+	public static final String PS_CUSTOM_DATA 			= "cData";
 	
 	public static final String PS_WIFI_CONFIG_REPORT 	= "configReport";
-	public static final String PS_PAIR_TOKEN 			= "pairingToken";
+	public static final String PS_PAIR_TOKEN 			= "pairToken";
 	public static final String PS_USER_UUID 			= "userUuid";
+	public static final String PS_CAM_NAME 				= "camName";
+	public static final String PS_EVT_TS 				= "evt_ts";
 	
 	
 	//Helper functions
@@ -719,7 +760,9 @@ public class BeseyeJSONUtil {
 		if(null != objCam){
 			JSONObject dataObj = getJSONObject(objCam, ACC_DATA);
 			if(null != dataObj){
-				int iWsStatus = getJSONInt(dataObj, CAM_WS_STATUS);
+				JSONObject statusLstObj = getJSONObject(dataObj, CAM_STATUS_LST);
+				
+				int iWsStatus = getJSONInt((null != statusLstObj)?statusLstObj:dataObj, CAM_WS_STATUS);
 				if(1 == iWsStatus){
 					int iCamStatus = getJSONInt(dataObj, BeseyeJSONUtil.CAM_STATUS, -1);
 					if(1==iCamStatus){
@@ -728,6 +771,7 @@ public class BeseyeJSONUtil {
 						cRet = CAM_CONN_STATUS.CAM_OFF;
 					}
 				}
+				
 			}else{
 				Log.e(TAG, "getVCamConnStatus(), can't find dataObj");
 			}
@@ -740,10 +784,11 @@ public class BeseyeJSONUtil {
 		if(null != objCam){
 			JSONObject dataObj = getJSONObject(objCam, ACC_DATA);
 			if(null != dataObj){
+				JSONObject statusLstObj = getJSONObject(dataObj, CAM_STATUS_LST);
 				if(status == CAM_CONN_STATUS.CAM_DISCONNECTED){
-					setJSONInt(dataObj, CAM_WS_STATUS, 0);
+					setJSONInt((null != statusLstObj)?statusLstObj:dataObj, CAM_WS_STATUS, 0);
 				}else{
-					setJSONInt(dataObj, CAM_WS_STATUS, 1);
+					setJSONInt((null != statusLstObj)?statusLstObj:dataObj, CAM_WS_STATUS, 1);
 					setJSONInt(dataObj, CAM_STATUS, (status.equals(CAM_CONN_STATUS.CAM_ON))?1:0);
 				}
 			}else{

@@ -149,6 +149,22 @@ public class WifiListActivity extends WifiControlBaseActivity
 
 	}
 	
+	@Override
+	protected boolean onCameraOffline(JSONObject msgObj){
+    	Log.i(TAG, getClass().getSimpleName()+"::onCameraOffline(),  msgObj = "+msgObj);
+		if(mbChangeWifi && null != msgObj){
+    		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+    		if(null != objCus){
+    			String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+    			if(null != mStrVCamID && mStrVCamID.equals(strCamUID)){
+    				finish();
+    				return true;
+    			}
+    		}
+		}
+		return false;
+	 }
+	
     @Override
 	protected void onResume() {
     	Log.d(TAG, "WifiListActivity::onResume()");

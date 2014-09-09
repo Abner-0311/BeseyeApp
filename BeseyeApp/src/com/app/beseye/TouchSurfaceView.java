@@ -297,6 +297,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     public void onOrientationChanged(){
+    	drawDefaultBackground();
     	restoreDisplayAttr();
     }
     

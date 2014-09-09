@@ -101,7 +101,7 @@
     <dimen name="signup_firstPage_bottom_btn_marginBottom">23dp</dimen>
     <dimen name="signup_firstPage_btn_marginSide">20dp</dimen>
     <dimen name="signup_firstPage_bottom_btn_marginSide">40dp</dimen>
-    <dimen name="signup_firstPage_marginTop">26dp</dimen>
+    <dimen name="signup_firstPage_marginTop">40dp</dimen>
     <dimen name="signup_firstPage_marginBottom">32dp</dimen>
     <dimen name="signup_beforeSetup_img_marginTop">56dp</dimen>
     <dimen name="signup_beforeSetup_img_marginBottom">16dp</dimen>
@@ -213,4 +213,11 @@
     <dimen name="about_link_margin_top">10dp</dimen>
     <dimen name="about_ver_font_size">16sp</dimen>
     <dimen name="about_font_size">18sp</dimen>
+    
+    <dimen name="update_logo_margin_top">26dp</dimen>
+    <dimen name="update_logo_margin_right">8dp</dimen>
+    <dimen name="update_margin_hor">28dp</dimen>
+    
+    <dimen name="update_title_font_size">20sp</dimen>
+    <dimen name="update_desc_font_size">17sp</dimen>
 </resources>

@@ -176,6 +176,16 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 			updateScheduleStatus();
 		}
 	}
+	
+	@Override
+	protected void onResume() {
+		Log.i(TAG, "CameraSettingActivity::onResume()");
+		super.onResume();
+		if(!mbFirstResume){
+			updateScheduleStatus();
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		}
+	}
 
 	@Override
 	protected int getLayoutId() {
@@ -239,6 +249,11 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
+	
+	@Override
+	protected void updateUICallback(){
+		updateScheduleStatus();
+	}
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
@@ -249,8 +264,8 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 					updateScheduleStatus();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetScheduleStatusTask){
-				Log.e(TAG, "PowerScheduleActivity::onPostExecute(), result.get(0)="+result.get(0).toString());
 				if(0 == iRetCode){
+					Log.e(TAG, "PowerScheduleActivity::onPostExecute(), result.get(0)="+result.get(0).toString());
 					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
 					if(null != dataObj){
 						JSONObject schedObj = BeseyeJSONUtil.getJSONObject(dataObj, SCHED_OBJ);

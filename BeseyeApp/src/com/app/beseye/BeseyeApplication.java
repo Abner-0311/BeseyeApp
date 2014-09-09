@@ -78,6 +78,10 @@ public class BeseyeApplication extends Application {
 		BeseyeApplication.checkPairingMode();
 		
 		sApplication = this;
+		
+		if(null != s_checkBackgroundRunnable){
+			s_checkBackgroundRunnable.updateContext(this);
+		}
 	}
 	
 	static synchronized public Application getApplication(){
@@ -103,7 +107,7 @@ public class BeseyeApplication extends Application {
 	}
 	
 	public static boolean isInMainProcess(){
-		return BESEYE_MAIN_PROCESS.equals(sCurProcessName);
+		return null != sCurProcessName && sCurProcessName.startsWith(BESEYE_MAIN_PROCESS) && !sCurProcessName.endsWith(":remote");///BESEYE_MAIN_PROCESS.equals(sCurProcessName);
 	}
 	/* Used for flurry trackers identification across multi-process 
 	   -- End */
@@ -111,7 +115,7 @@ public class BeseyeApplication extends Application {
 	//private static Handler s_handler = null; 
 	private static long s_lLastPauseTs = 0;
 	private static volatile int s_iVisibleCount = 0; 
-	
+	private static WeakReference<BeseyeAppStateChangeListener> sLastBeseyeAppStateChangeListener;
 	private static final long FG_CHECK_LATENCY = 1000L;//1s
 	private static final long BG_CHECK_LATENCY = 3000L;//3s
 	
@@ -178,8 +182,13 @@ public class BeseyeApplication extends Application {
 	}
 	
 	synchronized public static void unregisterAppStateChangeListener(BeseyeAppStateChangeListener listener){
-		if(null != s_listeners && null != listener)
+		if(null != s_listeners && null != listener){
 			s_listeners.remove(listener);
+			if(0 == s_listeners.size()){
+				sLastBeseyeAppStateChangeListener = new WeakReference<BeseyeAppStateChangeListener>(listener);
+			}
+		}
+		
 	}
 	
 	static public boolean s_bSeesionBegun = false;
@@ -217,14 +226,19 @@ public class BeseyeApplication extends Application {
 //			s_bSeesionBegun = false;
 //		}
 		
-		if(null != s_listeners && 0 < s_listeners.size()){
+		if(null != s_listeners){
 			boolean bNotifyService = false;
-			for(BeseyeAppStateChangeListener listener: s_listeners){
-				listener.onAppEnterBackground();
-				if(!bNotifyService){
-					listener.notifyServiceAppBackground();
-					bNotifyService = true;
+			if(0 < s_listeners.size()){
+				for(BeseyeAppStateChangeListener listener: s_listeners){
+					listener.onAppEnterBackground();
+					if(!bNotifyService){
+						listener.notifyServiceAppBackground();
+						bNotifyService = true;
+					}
 				}
+			}else if(null != sLastBeseyeAppStateChangeListener && null != sLastBeseyeAppStateChangeListener.get()){
+				sLastBeseyeAppStateChangeListener.get().notifyServiceAppBackground();
+				sLastBeseyeAppStateChangeListener = null;
 			}
 		}
 	}

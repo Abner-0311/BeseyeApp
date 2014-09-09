@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.app.beseye.BeseyeApplication;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.OpeningPage;
@@ -19,6 +20,8 @@ import com.app.beseye.WifiSetupGuideActivity;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
@@ -99,15 +102,39 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 			mTxtCamName.setOnClickListener(this);
 		}
 		
+		ViewGroup vgSWVer = (ViewGroup)findViewById(R.id.vg_sw_ver_holder);
+		if(null != vgSWVer){
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
+				vgSWVer.setVisibility(View.GONE);
+			}
+		}
+		
 		mTxtSwVersion = (TextView)findViewById(R.id.txt_sw_ver);
 		mTxtSerialNum = (TextView)findViewById(R.id.txt_sn);
+		if(null != mTxtSerialNum){
+			mTxtSerialNum.setText(BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_HW_ID));
+		}
+
+		
 		mTxtMacAddr = (TextView)findViewById(R.id.txt_mac_addr);
+		if(null != mTxtMacAddr){
+			mTxtMacAddr.setText(BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA), BeseyeJSONUtil.MAC_ADDR));
+		}
 
 	}
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
 		monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
+	}
+	
+	@Override
+	protected void onResume() {
+		Log.i(TAG, "CameraSettingActivity::onResume()");
+		super.onResume();
+		if(!mbFirstResume){
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		}
 	}
 	
 	@Override

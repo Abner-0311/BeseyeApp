@@ -4,7 +4,9 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -21,9 +23,11 @@ public class BeseyeCamInfoSyncMgr {
 	}
 	
 	private List<WeakReference<OnCamInfoChangedListener>> mLstOnCamInfoChangedListener;
+	private Map<String, JSONObject> mMapCamInfo;
 	
 	private BeseyeCamInfoSyncMgr() {
 		mLstOnCamInfoChangedListener = new ArrayList<WeakReference<OnCamInfoChangedListener>>();
+		mMapCamInfo = new HashMap<String, JSONObject>();
 	}
 	
 	static public interface OnCamInfoChangedListener{
@@ -59,8 +63,19 @@ public class BeseyeCamInfoSyncMgr {
 		return ret;
 	} 
 	
+	synchronized public JSONObject getCamInfoByVCamId(String strVcamId){
+		JSONObject objRet = null;
+		if(null != strVcamId && 0 < strVcamId.length() && null != mMapCamInfo){
+			objRet= mMapCamInfo.get(strVcamId);
+		}
+		return objRet;
+	}
+	
 	synchronized public void updateCamInfo(final String strVcamId, final JSONObject objCamSetup){
 		final List<WeakReference<OnCamInfoChangedListener> > copy = new ArrayList<WeakReference<OnCamInfoChangedListener>>(mLstOnCamInfoChangedListener);
+		if(null != mMapCamInfo){
+			mMapCamInfo.put(strVcamId, objCamSetup);
+		}
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {

@@ -37,12 +37,20 @@
 	   			android:text="@string/cam_setting_hw_night_vision_auto"/>
 	   		
 	   		<ImageView 
+	   		    android:layout_width="wrap_content"
+	   			android:layout_height="wrap_content"
+	   			android:layout_centerVertical="true"
+	   			android:layout_alignParentRight="true"
+	   			android:src="@drawable/setting_radio_box_default"
+	   			android:paddingRight="@dimen/wifi_ap_keyindex_itm_padding_right"/>
+	   		
+	   		<ImageView 
 	   		    android:id="@+id/iv_key_auto_check"
 	   		    android:layout_width="wrap_content"
 	   			android:layout_height="wrap_content"
 	   			android:layout_centerVertical="true"
 	   			android:layout_alignParentRight="true"
-	   			android:src="@drawable/wifisetup_password_check"
+	   			android:src="@drawable/setting_radio_box_highlight"
 	   			android:paddingRight="@dimen/wifi_ap_keyindex_itm_padding_right"/>
 	   	    
 		    <View 
@@ -68,12 +76,20 @@
 	   			android:text="@string/cam_setting_hw_night_vision_on"/>
 	   		
 	   		<ImageView 
+	   		    android:layout_width="wrap_content"
+	   			android:layout_height="wrap_content"
+	   			android:layout_centerVertical="true"
+	   			android:layout_alignParentRight="true"
+	   			android:src="@drawable/setting_radio_box_default"
+	   			android:paddingRight="@dimen/wifi_ap_keyindex_itm_padding_right"/>
+	   		
+	   		<ImageView 
 	   		    android:id="@+id/iv_key_on_check"
 	   		    android:layout_width="wrap_content"
 	   			android:layout_height="wrap_content"
 	   			android:layout_centerVertical="true"
 	   			android:layout_alignParentRight="true"
-	   			android:src="@drawable/wifisetup_password_check"
+	   			android:src="@drawable/setting_radio_box_highlight"
 	   			android:paddingRight="@dimen/wifi_ap_keyindex_itm_padding_right"/>
 	   	    
 		    <View 
@@ -97,14 +113,20 @@
 	   			android:textColor="@color/wifi_info_dialog_btn_font_color"
 	   			android:paddingLeft="@dimen/wifi_ap_keyindex_itm_padding_left"
 	   			android:text="@string/cam_setting_hw_night_vision_off"/>
-	   		
+	   		<ImageView 
+	   		    android:layout_width="wrap_content"
+	   			android:layout_height="wrap_content"
+	   			android:layout_centerVertical="true"
+	   			android:layout_alignParentRight="true"
+	   			android:src="@drawable/setting_radio_box_default"
+	   			android:paddingRight="@dimen/wifi_ap_keyindex_itm_padding_right"/>
 	   		<ImageView 
 	   		    android:id="@+id/iv_key_off_check"
 	   		    android:layout_width="wrap_content"
 	   			android:layout_height="wrap_content"
 	   			android:layout_centerVertical="true"
 	   			android:layout_alignParentRight="true"
-	   			android:src="@drawable/wifisetup_password_check"
+	   			android:src="@drawable/setting_radio_box_highlight"
 	   			android:paddingRight="@dimen/wifi_ap_keyindex_itm_padding_right"/>
 	   	    
 		    <View 

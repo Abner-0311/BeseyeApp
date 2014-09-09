@@ -114,6 +114,7 @@
 	
 	<string name="cam_setting_fail_to_update_cam_status">Fail to update camera status. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_hd_quality">Fail to update video upload quality. Please try again later.</string>
+	<string name="cam_setting_fail_to_update_notify_setting">Fail to update notification settings. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_led_status">Fail to update status light. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_mic_status">Fail to update Camera microphone. Please try again later.</string>
 	<string name="cam_setting_fail_to_update_mic_sensitivity">Fail to update microphone status. Please try again later.</string>
@@ -172,6 +173,7 @@
 	<string name="cam_info_mac">MAC address</string>
 	<string name="unknown">N/A</string>
 	
+	<string name="server_error">Network or server error. Please try again later.</string>
 	<string name="streaming_invalid_dvr">Invalid DVR streaming path. Please try again later.</string>
 	<string name="streaming_playing_error">Invalid streaming path or server error. Please try again later.</string>
 	<string name="streaming_error_no_network">Please check out your network connection.</string>
@@ -200,14 +202,14 @@
 	<string name="dialog_msg_login">Login&#8230;</string>
 	<string name="dialog_msg_logiout">Logout&#8230;</string>
 	
-	<string name="signup_title_before_setup">Before Setup</string>
-	<string name="signup_title_create_account">Create Account</string>
+	<string name="signup_title_before_setup">Before aetup</string>
+	<string name="signup_title_create_account">Create account</string>
 	<string name="signup_title_cam_wifi_settings">Camera WiFi Settings</string>
 	<string name="signup_title_cam_pair_fail">Please try again</string>
 	<string name="signup_title_wifi_list">WiFi List</string>
 	<string name="signup_learn_more">Learn more about</string>
 	<string name="signup_beseye">Beseye</string>
-	<string name="signup_bottom_login">Log In</string>
+	<string name="signup_bottom_login">Log in</string>
 	<string name="signup_bottom_signup">Setup camera and Sign up</string>
 	<string name="signup_before_setup_start">Start</string>
 	<string name="signup_before_setup_description">Please plug in your camera and place it to within 30 centimeters distance of you</string>
@@ -258,7 +260,7 @@
 	<string name="liveview_hold_to_talk">Hold to talk</string>
 	
 	<string name="cam_menu_my_cam">@string/cam_list_tilte</string>
-	<string name="cam_menu_demo_cam">Demo Cameras</string>
+	<string name="cam_menu_demo_cam">Demo cameras</string>
 	<string name="cam_menu_news">News</string>
 	<string name="cam_menu_about">About</string>
 	<string name="cam_menu_support">Support</string>
@@ -271,6 +273,7 @@
 	<string name="update_title">Camera update</string>
 	<string name="update_now">Update now</string>
 	<string name="cam_update_progress">Cameras updating&#8230; %s</string>
+	<string name="cam_update_title">Beseye camera firmware %s is available now</string>
 	
 	<string name="cam_update_success">Update cameras successfully.</string>
 	<string name="cam_update_result">Cameras update result: \n %1$s done, \n %2$s failed.</string>
@@ -296,6 +299,11 @@
 	<string name="toast_cam_off_by_location">Camera is turned off accordIng to location setting</string>
 	
 	<string name="toast_new_cam_activated">New camera is online. Please refresh your camera list.</string>
+	<string name="toast_cam_deactivated">%s is deactivated. Please refresh your camera list.</string>
+	
+	<string name="notify_motion_detect">Motion detected by %s. Go and check it up.</string>
+	<string name="notify_people_detect">People detected by %s. Go and check it up.</string>
+	<string name="notify_offline_detect">%s: WiFi disconnected.</string>
 	
 	<string name="about_title">About Beseye</string>
 	<string name="about_desc">Beseye and the Beseye logo are registered trademarks of Beseye, Inc. iPhone, iPad, iPood Touch, and App Store are registered trademarks of Apple, Inc. Chrome and Android are registered trademarks of Google, Inc. Internet Explorer is a registered trademark of Microsoft Corporation. Firefox is a registered trademark of Mozilla Corporation. Wi-Fi and Wi-Fi Certified logo are registered trademarks of the Wi-Fi Alliance. Certain other product names, brand names, and company names may be trademarks or designations of their respective owners.</string>

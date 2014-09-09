@@ -284,8 +284,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_DATA);
-					String strVcamId = ((BeseyeCamBEHttpTask.GetCamSetupTask)task).getVcamId();
-					int iSeedNum=((BeseyeCamBEHttpTask.GetCamSetupTask)task).getTaskSeed();
+					final String strVcamId = ((BeseyeCamBEHttpTask.GetCamSetupTask)task).getVcamId();
+					final int iSeedNum=((BeseyeCamBEHttpTask.GetCamSetupTask)task).getTaskSeed();
 					//Log.e(TAG, "onPostExecute(), GetLiveStreamTask=> VCAMID = "+strVcamId+", result.get(0)="+result.get(0).toString());
 					JSONArray arrCamList = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
 					int iCount = (null != arrCamList)?arrCamList.length():0;
@@ -302,7 +302,15 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 									BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 								
 								refreshList();
-								monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this, iSeedNum).setDialogId(-1), true, strVcamId);
+								BeseyeUtils.postRunnable(new Runnable(){
+
+									@Override
+									public void run() {
+										if(mActivityResume){
+											monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(CameraListActivity.this, iSeedNum).setDialogId(-1), true, strVcamId);
+										}
+									}}, 200);
+								
 								break;
 							}
 						} catch (JSONException e) {
@@ -357,7 +365,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 								//camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.CAM_STATUS));
 								camObj.put(BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 								BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(strVcamId, camObj);
-								monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, strVcamId);
+								//monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, strVcamId);
 								refreshList();
 								break;
 							}
@@ -455,10 +463,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			if(null != cam_obj){
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
-				
-//				b.putString(CameraListActivity.KEY_VCAM_ID, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
-//				b.putString(CameraListActivity.KEY_VCAM_NAME, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME));
-//				b.putBoolean(CameraListActivity.KEY_VCAM_ADMIN, BeseyeJSONUtil.getJSONBoolean(cam_obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN, true));
+				b.putBoolean(KEY_DEMO_CAM_MODE, mbIsDemoCamMode);
 				launchActivityForResultByClassName(CameraViewActivity.class.getName(), b, REQUEST_CAM_VIEW_CHANGE);
 				//Log.e(TAG, "onClick(), "+cam_obj.toString());
 				return;
@@ -641,6 +646,66 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
     }
 	
+    protected boolean onCameraOnline(JSONObject msgObj){
+    	Log.i(TAG, getClass().getSimpleName()+"::onCameraOnline(),  msgObj = "+msgObj);
+		if(null != msgObj){
+    		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+    		if(null != objCus){
+    			String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+    			if(!mActivityDestroy){
+    	    		if(!mActivityResume){
+    	    			if(null == mOnResumeUpdateCamInfoRunnable || mOnResumeUpdateCamInfoRunnable.isSameVCamId(strCamUID)){
+    	    				setOnResumeUpdateCamInfoRunnable(new OnResumeUpdateCamInfoRunnable(strCamUID));
+    	    			}else{
+    	    				setOnResumeUpdateCamListRunnable(new Runnable(){
+    							@Override
+    							public void run() {
+    								monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true);
+    		
+    							}});
+    	    				mOnResumeUpdateCamInfoRunnable = null;
+    	    			}
+    	    			
+    	    		}else{
+    	    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, strCamUID);
+    	    		}
+    	    	}
+    			return true;
+    		}
+		}
+    	return false;
+    }
+    
+    protected boolean onCameraOffline(JSONObject msgObj){
+    	Log.i(TAG, getClass().getSimpleName()+"::onCameraOffline(),  msgObj = "+msgObj);
+		if(null != msgObj){
+    		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+    		if(null != objCus){
+    			String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+    			if(!mActivityDestroy){
+    	    		if(!mActivityResume){
+    	    			if(null == mOnResumeUpdateCamInfoRunnable || mOnResumeUpdateCamInfoRunnable.isSameVCamId(strCamUID)){
+    	    				setOnResumeUpdateCamInfoRunnable(new OnResumeUpdateCamInfoRunnable(strCamUID));
+    	    			}else{
+    	    				setOnResumeUpdateCamListRunnable(new Runnable(){
+    							@Override
+    							public void run() {
+    								monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true);
+    		
+    							}});
+    	    				mOnResumeUpdateCamInfoRunnable = null;
+    	    			}
+    	    			
+    	    		}else{
+    	    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, strCamUID);
+    	    		}
+    	    	}
+    			return true;
+    		}
+		}
+    	return false;
+    }
+	
 	private Runnable mOnResumeUpdateCamListRunnable = null;
 	private void setOnResumeUpdateCamListRunnable(Runnable run){
     	Log.i(TAG, "setOnResumeUpdateCamListRunnable()");
@@ -656,5 +721,17 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 		}
 		return super.onKeyUp(keyCode, event);
+	}
+	
+	@Override
+	protected void onServerError(){
+		super.onServerError();
+		LayoutInflater inflater = getLayoutInflater();
+		if(null != inflater){
+			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
+			if(null != mVgEmptyView){
+				mMainListView.setEmptyView(mVgEmptyView);
+			}
+		}
 	}
 }

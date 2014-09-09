@@ -17,7 +17,8 @@
     	android:layout_alignParentRight="true"
     	android:layout_centerVertical="true"
     	android:src="@drawable/wifisetup_password_check_form"
-    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"/>
+    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+    	android:duplicateParentState="true"/>
     
     <ImageView 
         android:id="@+id/iv_day_check"
@@ -26,7 +27,8 @@
     	android:layout_alignParentRight="true"
     	android:layout_centerVertical="true"
     	android:src="@drawable/wifisetup_password_check"
-    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"/>
+    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+    	android:duplicateParentState="true"/>
     
    <TextView 
        	android:id="@+id/txt_day_title"
@@ -36,7 +38,8 @@
    		android:layout_centerVertical="true"
    		android:textSize="@dimen/wifi_list_item_main_font_size"
    		android:textColor="@color/cl_wifi_list_main_font_color"
-   		android:text="Monday"/>
+   		android:text="Monday"
+   		android:duplicateParentState="true"/>
 </RelativeLayout>
 	
  

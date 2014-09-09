@@ -182,7 +182,7 @@ void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_C
 }
 
 - (void) playToneCBWrapper:(FreqGenerator::Play_Tone_Status) status withCode:(const char *) code withType:(int) iType{
-
+   
 }
 
 void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const char * code, unsigned int iType){
@@ -193,6 +193,8 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         //[playToneButton.self performSelectorOnMainThread:@selector(disableButton:) withObject:playToneButton waitUntilDone:NO];
     }else if(status == FreqGenerator::PLAY_TONE_END){
         [playToneButton setEnabled:YES];
+        FreqGenerator::getInstance()->stopPlay2();
+
         //[playToneButton. performSelectorOnMainThread:@selector(enableButton:) withObject:playToneButton waitUntilDone:NO];
     }else if(status == FreqGenerator::PLAY_TONE_AUDIO_DEV_INIT){
         NSLog(@"PLAY_TONE_AUDIO_DEV_INIT callback");
@@ -276,6 +278,10 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
 //								   selector:@selector(displayNextFrame:)
 //								   userInfo:nil
 //									repeats:YES];
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application{
+    FreqGenerator::getInstance()->stopPlay2();
 }
 
 - (void)playLive1{

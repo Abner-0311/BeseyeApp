@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.CameraViewActivity;
+import com.app.beseye.EventListActivity;
 import com.app.beseye.GCMIntentService;
 import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
@@ -77,7 +78,9 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -91,6 +94,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private static final int NOTIFICATION_TYPE_BASE = 0x0;
 	private static final int NOTIFICATION_TYPE_INFO = NOTIFICATION_TYPE_BASE+1;
 	private static final int NOTIFICATION_TYPE_MSG  = NOTIFICATION_TYPE_INFO;//NOTIFICATION_TYPE_BASE+2;
+	private static final int NOTIFICATION_TYPE_CAM = NOTIFICATION_TYPE_BASE+2;
+	
 	
 	public static final String MSG_REF_JSON_OBJ 		= "MSG_REF_JSON_OBJ";
 	
@@ -145,6 +150,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     
     public static final int MSG_EXTEND_WS_CONN 				= 28;//extend for receive cam activate ws event
     
+    public static final int MSG_CAM_DEACTIVATE 				= 29;
+    public static final int MSG_CAM_ONLINE 					= 30;
+    public static final int MSG_CAM_OFFLINE 				= 31;
+    
+    public static final int MSG_CAM_EVENT_PEOPLE 			= 32;
+    public static final int MSG_CAM_EVENT_MOTION 			= 33;
+    public static final int MSG_CAM_EVENT_OFFLINE 			= 34;
+    
     /**
      * Handler of incoming messages from clients.
      */
@@ -176,7 +189,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					}
                 }
                 case MSG_CAM_SETTING_UPDATED:
-                case MSG_CAM_ACTIVATE:{
+                case MSG_CAM_ACTIVATE:
+                case MSG_CAM_DEACTIVATE:
+                case MSG_CAM_ONLINE:
+                case MSG_CAM_OFFLINE:
+                case MSG_CAM_EVENT_PEOPLE:
+                case MSG_CAM_EVENT_MOTION:
+                case MSG_CAM_EVENT_OFFLINE:{
                 	for (int i=mClients.size()-1; i>=0; i--) {
                 		try {
                 			Bundle b = new Bundle();
@@ -281,6 +300,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	if(mbAppInBackground){
                 		Log.i(TAG, "BG service detects MSG_APP_TO_FOREGROUND()");
                 		mbAppInBackground = false;
+                		beginToCheckWebSocketState();
                 	}
                 	
 //                	if(shouldPullMsg())
@@ -296,6 +316,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //                		if(null != mMsgInfoTask){
 //                			mMsgInfoTask.cancel(true);
 //                		}
+                		finishToCheckWebSocketState();
                 	}
                 	mbAppInBackground = true;
                 	checkUserLoginState();
@@ -377,7 +398,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	String data = bundle.getString(PS_REGULAR_DATA);
                 	String dataCus = bundle.getString(PS_CUSTOM_DATA);
                 	Log.i(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
-                	Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
+                	if(SessionMgr.getInstance().getServerMode().ordinal() < SessionMgr.SERVER_MODE.MODE_STAGING.ordinal())
+                		Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
                 	handleGCMEvents(data, dataCus);
                 	break;
                 }
@@ -497,6 +519,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         
         BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
         BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, sStrVcamName);
+        
+       // beginToCheckWebSocketState();
     }
     
     private void checkEventPeriod(){
@@ -534,14 +558,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     
     private void checkUserLoginState(){
     	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
-    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid()&& SessionMgr.getInstance().getIsCertificated()){
+    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() /*&& SessionMgr.getInstance().getIsCertificated()*/){
     		if(NetworkMgr.getInstance().isNetworkConnected()){
     			if(false == WebsocketsMgr.getInstance().isWSChannelAlive()){
-	    			if(null != WebsocketsMgr.getInstance().getWSServerIP())
-	    				WebsocketsMgr.getInstance().constructWSChannel();
-	    			else{
-	    				new BeseyeNotificationBEHttpTask.GetWSServerTask(this).execute();
-	    			}
+    				if("".equals(SessionMgr.getInstance().getWSHostUrl())){
+    					new BeseyeNotificationBEHttpTask.GetWSServerTask(this).execute();
+    				}else{
+    					WebsocketsMgr.getInstance().setWSServerIP(SessionMgr.getInstance().getWSHostUrl());
+        				WebsocketsMgr.getInstance().constructWSChannel();
+    				}
     			}
     		}
     	}else{
@@ -563,12 +588,30 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	mCloseWsRunnable = new Runnable(){
 			@Override
 			public void run() {
-				WebsocketsMgr.getInstance().destroyWSChannel();
+				if(WebsocketsMgr.getInstance().isWSChannelAlive())
+					WebsocketsMgr.getInstance().destroyWSChannel();
 				mCloseWsRunnable = null;
 				mlTimeToCloseWs = -1;
 			}};
 		BeseyeUtils.postRunnable(mCloseWsRunnable, (0 < lTimeToClose)?lTimeToClose:0);
     }
+    
+    private void beginToCheckWebSocketState(){
+    	BeseyeUtils.removeRunnable(mCheckWebsocketAliveRunnable);
+		BeseyeUtils.postRunnable(mCheckWebsocketAliveRunnable, mbAppInBackground?60*1000:10*1000);
+    }
+    
+    private void finishToCheckWebSocketState(){
+    	BeseyeUtils.removeRunnable(mCheckWebsocketAliveRunnable);
+    }
+    
+	private Runnable mCheckWebsocketAliveRunnable = new Runnable(){
+		@Override
+		public void run() {
+			checkUserLoginState();
+			//showNotification(1, new Intent(), "Motion Detected","test test test test test test testtest test test test test test testtest test test test test test test test test test test test test test", System.currentTimeMillis());
+			beginToCheckWebSocketState();
+		}};
     
     static private long TIME_TO_CHECK_EVENT = 30*1000;
     private Runnable mCheckEventRunnable = new Runnable(){
@@ -578,19 +621,19 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}};
     
     private void checkEvents(){
-    	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
-    		if(NetworkMgr.getInstance().isNetworkConnected()){
-    			if(null == mGetIMPEventListTask && 0 < TIME_TO_CHECK_EVENT){
-    				mGetIMPEventListTask = new BeseyeMMBEHttpTask.GetIMPEventListTask(this);
-    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT*3)+"", TIME_TO_CHECK_EVENT*3+"");
-        			//mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS+"");
-    			}
-    		}
-    		BeseyeUtils.removeRunnable(mCheckEventRunnable);
-    		
-    		if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
-    			BeseyeUtils.postRunnable(mCheckEventRunnable, TIME_TO_CHECK_EVENT);
-    	}
+//    	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
+//    		if(NetworkMgr.getInstance().isNetworkConnected()){
+//    			if(null == mGetIMPEventListTask && 0 < TIME_TO_CHECK_EVENT){
+//    				mGetIMPEventListTask = new BeseyeMMBEHttpTask.GetIMPEventListTask(this);
+//    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT*3)+"", TIME_TO_CHECK_EVENT*3+"");
+//        			//mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS+"");
+//    			}
+//    		}
+//    		BeseyeUtils.removeRunnable(mCheckEventRunnable);
+//    		
+//    		if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
+//    			BeseyeUtils.postRunnable(mCheckEventRunnable, TIME_TO_CHECK_EVENT);
+//    	}
     }
     
     @Override
@@ -903,85 +946,35 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //	}
 	static int sRequestCode = (int) (System.currentTimeMillis()%100000);
 	
-	private void showNotification(int iNotifyId, Intent intent, CharSequence text, JSONObject eventObj) {
-		long lTs = BeseyeJSONUtil.getJSONLong(eventObj, BeseyeJSONUtil.MM_START_TIME);
-		
+	private void showNotification(int iNotifyId, Intent intent, CharSequence charSequence, CharSequence text, long lTs) {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, sRequestCode++ , intent, 0);
 		
-		Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
-		if(null != contentIntent){
-			 final Notification notification = new Notification(
-				        				R.drawable.common_app_icon,       // the icon for the status bar
-				        				text,                        // the text to display in the ticker
-				        				/*System.currentTimeMillis()*/lTs); // the timestamp for the notification
-
-			 if(null != notification){
-				notification.setLatestEventInfo(
-						 this,                        // the context to use
-						 getText(R.string.app_name),
-						 							  // the title for the notification
-						 text,                        // the details to display in the notification
-						 contentIntent);              // the contentIntent (see above)
-
-				notification.defaults = Notification.DEFAULT_VIBRATE;
-				notification.flags = Notification.FLAG_AUTO_CANCEL;
-				
-				mNotificationManager.notify(
-				iNotifyId, // we use a string id because it is a unique
-				// number.  we use it later to cancel the notification
-				notification);
-			 }
-			 
-			 
-			 
-//			 Notification myNotification =  new NotificationCompat.Builder(this)
-//		        .setSmallIcon(R.drawable.ic_launcher)
-//		        .setAutoCancel(true)
-//		        .setContentIntent(contentIntent)
-//		        .setContentTitle(getText(R.string.app_name))
-//		        .setContentText(text).build();
-//			 
-//			 mNotificationManager.notify(
-//						iNotifyId, // we use a string id because it is a unique
-//						// number.  we use it later to cancel the notification
-//						myNotification);
+		//Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+		if(null != contentIntent){	         
+			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(BeseyeNotificationService.this)
+			        .setContentTitle((null == charSequence)?getText(R.string.app_name):charSequence)  
+			        .setContentText(text)
+			        .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+			        .setWhen(lTs)
+			        .setContentIntent(contentIntent)
+			        .setDefaults(Notification.DEFAULT_VIBRATE)
+			        .setAutoCancel(true)
+					.setSmallIcon(R.drawable.common_app_icon)
+					.setTicker(text);
+			
+			final Notification notification = mBuilder.build();
+			mNotificationManager.cancel(iNotifyId);
+	        mNotificationManager.notify(iNotifyId, notification);
 		}
-//		
-//		if(null == intent){
-//			intent = new Intent(this, iKalaDelegateActivity.class).putExtra(iKalaDelegateActivity.ACTION_BRING_FRONT, true);
-//		}
-//		
-//		int iNotifyMethods = iKalaSettingsMgr.getInstance().getPushNotifyMethods();
-//		if(0 < (iNotifyMethods & (iKalaSettingsMgr.PushNotifMethod.METHOD_LIGHT.value()|iKalaSettingsMgr.PushNotifMethod.METHOD_VIBRATE.value()|iKalaSettingsMgr.PushNotifMethod.METHOD_SOUND.value()))){
-//			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
-//			if(null != contentIntent){
-//				 final Notification notification = new Notification(
-//					        				R.drawable.common_icon,       // the icon for the status bar
-//					        				text,                        // the text to display in the ticker
-//					        				/*System.currentTimeMillis()*/mLastNotifyUpdateTime); // the timestamp for the notification
-//
-//				 if(null != notification){
-//					notification.setLatestEventInfo(
-//							 this,                        // the context to use
-//							 getText(R.string.app_name_live),
-//							                              // the title for the notification
-//							 text,                        // the details to display in the notification
-//							 contentIntent);              // the contentIntent (see above)
-//
-//					notification.defaults = iNotifyMethods;//Notification.DEFAULT_LIGHTS;
-//					notification.flags = Notification.FLAG_AUTO_CANCEL;
-//					
-//					mNotificationManager.notify(
-//					iNotifyId, // we use a string id because it is a unique
-//					// number.  we use it later to cancel the notification
-//					notification);
-//				 }
-//			}
-//		}
-//		final KeyguardManager km = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-//		if((km.inKeyguardRestrictedInputMode() || /*mbAppInBackground*/false == BeseyeUtil.isiKalaForegroundProcess(this)) && 0 < (iNotifyMethods & iKalaSettingsMgr.PushNotifMethod.METHOD_POPUP.value())){
-//			showPushDialog(intent, text);
-//		}
+	}
+	
+	private void showNotification(int iNotifyId, Intent intent, CharSequence text, long lTs) {
+		showNotification(iNotifyId, intent, getText(R.string.app_name), text, lTs);
+	}
+	
+	private void showNotification(int iNotifyId, Intent intent, CharSequence text, JSONObject eventObj) {
+		long lTs = BeseyeJSONUtil.getJSONLong(eventObj, BeseyeJSONUtil.MM_START_TIME);
+		showNotification(iNotifyId, intent, text, lTs);
     }
 	
 	private void showRegIdNotification(){
@@ -1015,80 +1008,80 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //				notification);
 //			 }
 			
-			final String path = "https://beseye-thumbnail.s3-ap-northeast-1.amazonaws.com/clothing-store.jpg?AWSAccessKeyId=AKIAI4TMTBQZA45VAMUQ&Expires=1406781831&Signature=iJ4SFLbXK7NhNuEF3r3VH3KwHAE%3D";
-//			Bitmap bitmap = null;
-//			try {
-//				bitmap = BitmapFactory.decodeStream(
-//			                (InputStream) new URL(path).getContent());
-//			} catch (IOException e) {
-//			        e.printStackTrace();
-//			}			
-			
-			
-			
-			new AsyncTask<String, Integer, Bitmap>(){
-				@Override
-				protected Bitmap doInBackground(String... arg0) {
-					Bitmap bitmap = null;
-					try {
-						URL url;
-						url = new URL(path);
-						URLConnection conn;
-						conn = url.openConnection();
-
-						HttpURLConnection httpConn = (HttpURLConnection) conn;
-						httpConn.setRequestMethod("GET");
-						httpConn.connect();
-						if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-							InputStream inputStream = httpConn.getInputStream();
-							if (inputStream != null) {
-								BitmapFactory.Options options = new BitmapFactory.Options();
-								options.inSampleSize = 2;
-								bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-							}else{
-								Log.w(TAG, "inputStream is null");
-							}
-						}
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					return bitmap;
-				}
-
-				@Override
-				protected void onPostExecute(Bitmap bitmap) {
-					super.onPostExecute(bitmap);
-					NotificationCompat.BigPictureStyle style = new NotificationCompat.BigPictureStyle();
-					
-					style.bigPicture(bitmap);
-					style.setBigContentTitle("Event Detected (Expand)");
-					style.setSummaryText("Description (Expand)");
-					style.bigLargeIcon(bitmap);
-					
-			         
-					NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(  
-							BeseyeNotificationService.this).setSmallIcon(R.drawable.common_app_icon)  
-					        .setContentTitle("Event Detected (Normal)")  
-					        .setContentText("Description (Normal)")
-					        .setStyle(style)
-					        .setWhen(new Date().getTime())  	
-							.setSmallIcon(R.drawable.common_app_icon)
-							.setLargeIcon(bitmap);
-					         mNotificationManager.notify(
-										888, // we use a string id because it is a unique
-										// number.  we use it later to cancel the notification
-										mBuilder.build());
-					
-				
-				}}.execute();
-			
-			
-			
-			
+//			final String path = "https://beseye-thumbnail.s3-ap-northeast-1.amazonaws.com/clothing-store.jpg?AWSAccessKeyId=AKIAI4TMTBQZA45VAMUQ&Expires=1406781831&Signature=iJ4SFLbXK7NhNuEF3r3VH3KwHAE%3D";
+////			Bitmap bitmap = null;
+////			try {
+////				bitmap = BitmapFactory.decodeStream(
+////			                (InputStream) new URL(path).getContent());
+////			} catch (IOException e) {
+////			        e.printStackTrace();
+////			}			
+//			
+//			
+//			
+//			new AsyncTask<String, Integer, Bitmap>(){
+//				@Override
+//				protected Bitmap doInBackground(String... arg0) {
+//					Bitmap bitmap = null;
+//					try {
+//						URL url;
+//						url = new URL(path);
+//						URLConnection conn;
+//						conn = url.openConnection();
+//
+//						HttpURLConnection httpConn = (HttpURLConnection) conn;
+//						httpConn.setRequestMethod("GET");
+//						httpConn.connect();
+//						if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+//							InputStream inputStream = httpConn.getInputStream();
+//							if (inputStream != null) {
+//								BitmapFactory.Options options = new BitmapFactory.Options();
+//								options.inSampleSize = 2;
+//								bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+//							}else{
+//								Log.w(TAG, "inputStream is null");
+//							}
+//						}
+//					} catch (MalformedURLException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					return bitmap;
+//				}
+//
+//				@Override
+//				protected void onPostExecute(Bitmap bitmap) {
+//					super.onPostExecute(bitmap);
+//					NotificationCompat.BigPictureStyle style = new NotificationCompat.BigPictureStyle();
+//					
+//					style.bigPicture(bitmap);
+//					style.setBigContentTitle("Event Detected (Expand)");
+//					style.setSummaryText("Description (Expand)");
+//					style.bigLargeIcon(bitmap);
+//					
+//			         
+//					NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(  
+//							BeseyeNotificationService.this).setSmallIcon(R.drawable.common_app_icon)  
+//					        .setContentTitle("Event Detected (Normal)")  
+//					        .setContentText("Description (Normal)")
+//					        .setStyle(style)
+//					        .setWhen(new Date().getTime())  	
+//							.setSmallIcon(R.drawable.common_app_icon)
+//							.setLargeIcon(bitmap);
+//					         mNotificationManager.notify(
+//										888, // we use a string id because it is a unique
+//										// number.  we use it later to cancel the notification
+//										mBuilder.build());
+//					
+//				
+//				}}.execute();
+//			
+//			
+//			
+//			
 			//NotificationCompat.BigPictureStyle picStyle = new NotificationCompat.BigPictureStyle();  
 			//Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cameralist_thumbnail);  
 			//picStyle.bigPicture(bitmap);  
@@ -1286,7 +1279,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				if(0 == iRetCode && null != result && 0 < result.size()){
 					JSONArray arr = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.OBJ_DATA);
 					try {
-						WebsocketsMgr.getInstance().setWSServerIP(arr.getString(arr.length()-1));
+						WebsocketsMgr.getInstance().setWSServerIP("http://"+arr.getString(arr.length()-1));
 						WebsocketsMgr.getInstance().constructWSChannel();
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -1413,13 +1406,17 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	@Override
 	public void onChannelClosed() {
 		Log.i(TAG, "onChannelCloased()---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		if(miWSDisconnectRetry < MAX_WS_RETRY_TIME && false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && NetworkMgr.getInstance().isNetworkConnected()){
+		if(miWSDisconnectRetry < MAX_WS_RETRY_TIME && false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() /*&& NetworkMgr.getInstance().isNetworkConnected()*/){
 			Log.i(TAG, "onChannelCloased(), abnormal close, retry-----");
+			long lTimeToWait = (miWSDisconnectRetry++)*1000;
+			if(lTimeToWait > 10000){
+				lTimeToWait = 10000;
+			}
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
 					WebsocketsMgr.getInstance().constructWSChannel();
-				}}, (miWSDisconnectRetry++)*1000);
+				}}, lTimeToWait);
     	}
 	}
 
@@ -1428,21 +1425,114 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		checkUserLoginState();
 	}
 	
-	private boolean handleNotificationEvent(JSONObject msgObj){
+	private boolean handleNotificationEvent(JSONObject msgObj, boolean bFromGCM){
 		Log.i(TAG, "handleNotificationEvent(),msgObj="+msgObj.toString());	
 		boolean bRet = true;
-		JSONObject obgReg = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA);
-		if(null != obgReg){
-			int iNCode = BeseyeJSONUtil.getJSONInt(obgReg, BeseyeJSONUtil.PS_NCODE);
+		JSONObject objReg = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA);
+		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+		if(null != objReg){
+			int iNCode = BeseyeJSONUtil.getJSONInt(objReg, BeseyeJSONUtil.PS_NCODE);
 			Log.i(TAG, "handleNotificationEvent(),iNCode="+iNCode);	
 			int iMsgType = -1;
+			String strNotifyMsg = null;
+			String strNotifyTitle = null;
+			int iNotifyType = -1;
+			Intent intent = new Intent();
+			long lTs = System.currentTimeMillis();
 			switch(iNCode){
 				case NCODE_CAM_ACTIVATE:{
 					iMsgType = MSG_CAM_ACTIVATE;
+					if(bFromGCM){
+						strNotifyMsg = getString(R.string.toast_new_cam_activated);
+						iNotifyType = NOTIFICATION_TYPE_CAM;
+						
+						intent.setClassName(this, OpeningPage.class.getName());
+						
+						Intent delegateIntent = new Intent();
+						delegateIntent.setClassName(this, CameraListActivity.class.getName());
+						
+						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);
+						
+						lTs = BeseyeJSONUtil.getJSONLong(objReg, BeseyeJSONUtil.PS_TS);
+					}
+					break;
+				}
+				case NCODE_CAM_DEACTIVATE:{
+					iMsgType = MSG_CAM_DEACTIVATE;
+					if(bFromGCM){
+						strNotifyMsg = getString(R.string.toast_cam_deactivated);
+						iNotifyType = NOTIFICATION_TYPE_CAM;
+						
+						intent.setClassName(this, OpeningPage.class.getName());
+						
+						Intent delegateIntent = new Intent();
+						delegateIntent.setClassName(this, CameraListActivity.class.getName());
+						
+						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);
+						
+						lTs = BeseyeJSONUtil.getJSONLong(objReg, BeseyeJSONUtil.PS_TS);
+					}
 					break;
 				}
 				case NCODE_WIFI_CHANGED:{
 					iMsgType = MSG_CAM_WIFI_CONFIG_CHANGED;
+					break;
+				}
+				case NCODE_CAM_ONLINE:{
+					iMsgType = MSG_CAM_ONLINE;
+					break;
+				}
+				case NCODE_CAM_OFFLINE:{
+					iMsgType = MSG_CAM_OFFLINE;
+					break;
+				}
+				case NCODE_PEOPLE_DETECT:
+				case NCODE_MOTION_DETECT:
+				case NCODE_OFFLINE_DETECT:{
+					String strCamName = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME);
+					if(NCODE_PEOPLE_DETECT == iNCode)
+						iMsgType = MSG_CAM_EVENT_PEOPLE;
+					else if(NCODE_MOTION_DETECT == iNCode)
+						iMsgType = MSG_CAM_EVENT_MOTION;
+					else 
+						iMsgType = MSG_CAM_EVENT_OFFLINE;
+					
+					//if(bFromGCM){
+						if(NCODE_PEOPLE_DETECT == iNCode){
+							strNotifyMsg = String.format(getString(R.string.notify_people_detect), strCamName);
+							//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_people_detect);
+						}else if(NCODE_MOTION_DETECT == iNCode){
+							strNotifyMsg = String.format(getString(R.string.notify_motion_detect), strCamName);
+							//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_motion_detect);
+						}else{ 
+							strNotifyMsg = String.format(getString(R.string.notify_offline_detect), strCamName);
+							//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_offline_detect);
+						}
+	
+						if(NCODE_OFFLINE_DETECT != iNCode){
+							JSONObject cam_obj = new JSONObject();
+							BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_ID, BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID));
+						    BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME, strCamName);
+						        
+							iNotifyType = NOTIFICATION_TYPE_INFO;
+							lTs = BeseyeJSONUtil.getJSONLong(objCus, BeseyeJSONUtil.PS_EVT_TS);
+							
+							intent.setClassName(this, OpeningPage.class.getName());
+							
+							Intent delegateIntent = new Intent();
+							delegateIntent.setClassName(this, CameraViewActivity.class.getName());
+							delegateIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
+							delegateIntent.putExtra(CameraViewActivity.KEY_DVR_STREAM_MODE, true);
+							JSONObject tsInfo = new JSONObject();
+							BeseyeJSONUtil.setJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME, lTs);
+							delegateIntent.putExtra(CameraViewActivity.KEY_TIMELINE_INFO, tsInfo.toString());
+							
+							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);	
+						}
+					//}
 					break;
 				}
 				default:{
@@ -1458,23 +1548,32 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			} catch (RemoteException e) {
 				Log.e(TAG, "handleNotificationEvent(), RemoteException, e="+e.toString());	
 			}
+			
+			if(null != strNotifyMsg){
+				showNotification(iNotifyType, intent, strNotifyTitle, strNotifyMsg, lTs);
+			}
 		}
 		return bRet;
 	}
 	
 	private void handleWSEvent(JSONObject dataObj){
     	if(null != dataObj){
-			int iCmd = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_COMM);
+			final int iCmd = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_COMM);
 			Log.i(TAG, "handleWSEvent(),iCmd="+iCmd);	
 //			//String strCamUID = null;
 //			//long lTs = -1;
-			JSONObject DataObj = BeseyeJSONUtil.getJSONObject(dataObj, WS_ATTR_INTERNAL_DATA);
+			final JSONObject DataObj = BeseyeJSONUtil.getJSONObject(dataObj, WS_ATTR_INTERNAL_DATA);
 //			if(null != DataObj){
 //				strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
 //				lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
 //			}
+//			BeseyeUtils.postRunnable(new Runnable(){
+//				@Override
+//				public void run() {
+//					if(SessionMgr.getInstance().getServerMode().ordinal() < SessionMgr.SERVER_MODE.MODE_STAGING.ordinal())
+//						Toast.makeText(getApplicationContext(), "Got message from websocket, Command="+iCmd+", DataObj = "+DataObj.toString(), Toast.LENGTH_LONG ).show();
+//				}}, 0);
 			
-			Toast.makeText(getApplicationContext(), "Got message from websocket, Command="+iCmd+", DataObj = "+DataObj.toString(), Toast.LENGTH_LONG ).show();
 			int iMsgType = -1;
 			switch(iCmd){
 				case WS_ATTR_COMM_CAM_SETTING_CHANGED:{
@@ -1482,7 +1581,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					break;
 				}
 				case WS_ATTR_COMM_DETECTION_NOTIFY:{
-					handleNotificationEvent(DataObj);
+					handleNotificationEvent(DataObj, false);
 					break;
 				}
 				case WS_ATTR_COMM_SYS_INFO:{
@@ -1513,10 +1612,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private void handleGCMEvents(String strRegularData, String strCusData){
 		if(null != strRegularData){
 			try {
-				JSONObject obgReg = new JSONObject(strRegularData);
-				if(null != obgReg){
+				JSONObject objReg = new JSONObject(strRegularData);
+				if(null != objReg){
 					JSONObject msgObj = new JSONObject();
-					BeseyeJSONUtil.setJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA, obgReg);
+					BeseyeJSONUtil.setJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA, objReg);
 					try {
 						if(null != strCusData){
 							BeseyeJSONUtil.setJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA, new JSONObject(strCusData));
@@ -1525,7 +1624,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						Log.e(TAG, "handleGCMEvents(), e:"+e.toString());	
 					}
 					
-					handleNotificationEvent(msgObj);
+					handleNotificationEvent(msgObj, true);
 				}
 			} catch (JSONException e) {
 				Log.e(TAG, "handleGCMEvents(), e:"+e.toString());	
@@ -1536,6 +1635,29 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	//Notification NCode definitions
+	private static final int NCODE_CAM_NAME_CHANGE 				= 0x0100; 
+	private static final int NCODE_CAM_DEACTIVATE 				= 0x0101;
+	private static final int NCODE_WIFI_CHANGED 				= 0x0102; 
+	
+	private static final int NCODE_SHARE_BROWSE_PERM 			= 0x0200; 
+	private static final int NCODE_PLAN_EXPIRED 				= 0x0201; 
+	private static final int NCODE_PLAN_CHANGE 					= 0x0202; 
+	private static final int NCODE_PW_CHANGE 					= 0x0203;
+	private static final int NCODE_UNSUBSCRIBE 					= 0x0204;
+	
+	private static final int NCODE_MOTION_DETECT 				= 0x0300;
+	private static final int NCODE_PEOPLE_DETECT 				= 0x0301;
+	private static final int NCODE_OFFLINE_DETECT 				= 0x0302;
+	
+	private static final int NCODE_TALK_CHANNEL_USED 			= 0x0400;
+	private static final int NCODE_TALK_CHANNEL_RELE 			= 0x0401;
+	private static final int NCODE_CAM_NEW_VER 					= 0x0402;
+	
 	private static final int NCODE_CAM_ACTIVATE 				= 0X0500;
-	private static final int NCODE_WIFI_CHANGED 				= 0x010E; 
+	
+	private static final int NCODE_CAM_ONLINE 					= 0X1000;
+	private static final int NCODE_CAM_OFFLINE 					= 0X1001;
+	
+	private static final int NCODE_CAM_SETTING_UPDATE 			= 0X2000;
+	
 }

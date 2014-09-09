@@ -27,9 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 
+import com.app.beseye.BeseyeBaseActivity.OnResumeUpdateCamInfoRunnable;
 import com.app.beseye.adapter.EventListAdapter;
 import com.app.beseye.adapter.EventListAdapter.EventListItmHolder;
 import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -84,7 +86,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 			if(null != mIvFilter){
 				mIvFilter.setOnClickListener(this);
 				mIvFilter.setImageResource(R.drawable.sl_event_list_filter);
-				mIvFilter.setVisibility(COMPUTEX_DEMO?View.INVISIBLE:View.VISIBLE);
+				mIvFilter.setVisibility(View.INVISIBLE);
 			}
 			
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
@@ -111,12 +113,8 @@ public class EventListActivity extends BeseyeBaseActivity{
     			public void onRefresh() {
     				Log.i(TAG, "onRefresh()");	
     				mbNeedToCalcu = false;
-
-    				monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS )+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS +"");
-    				if(null != mGetThumbnailByEventListTask){
-    					mGetThumbnailByEventListTask.cancel(true);
-    					mGetThumbnailByEventListTask = null;
-    				}
+    				loadEventList();
+    				
     				//monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, "1389918731000", "600000");
     			}
 
@@ -179,6 +177,14 @@ public class EventListActivity extends BeseyeBaseActivity{
 		}
 	}
 	
+	private void loadEventList(){
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
+		if(null != mGetThumbnailByEventListTask){
+			mGetThumbnailByEventListTask.cancel(true);
+			mGetThumbnailByEventListTask = null;
+		}
+	}
+	
 	private boolean mbNeedToCalcu = true;
 	private int miEventCount = 0;
 	
@@ -226,7 +232,10 @@ public class EventListActivity extends BeseyeBaseActivity{
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(0 <= miLastTaskSeedNum){
+		if(mbNeedToReloadWhenResume){
+			loadEventList();
+			mbNeedToReloadWhenResume = false;
+		}else if(0 <= miLastTaskSeedNum){
 			Log.i(TAG, "onResume(), resume task , miLastTaskSeedNum="+miLastTaskSeedNum);	
 			getThumbnailByEventList(miLastTaskSeedNum);
 			miLastTaskSeedNum = -1;
@@ -262,7 +271,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS +"");
+		loadEventList();
 	}
 	
 	private int miTaskSeedNum = 0;
@@ -563,6 +572,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 				Bundle b = new Bundle();
 				b.putString(CameraViewActivity.KEY_TIMELINE_INFO, event_obj.toString());
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				b.putBoolean(CameraListActivity.KEY_DEMO_CAM_MODE, getIntent().getBooleanExtra(CameraListActivity.KEY_DEMO_CAM_MODE, false));
 				Intent intent = new Intent();
 				intent.setClassName(this, CameraViewActivity.class.getName());
 				intent.putExtras(b);
@@ -582,8 +592,8 @@ public class EventListActivity extends BeseyeBaseActivity{
 			d.setOnDatetimePickerClickListener(new OnDatetimePickerClickListener(){
 				@Override
 				public void onBtnOKClick(Calendar pickDate) {
-					if(!COMPUTEX_DEMO)
-						Toast.makeText(EventListActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
+//					if(!COMPUTEX_DEMO)
+//						Toast.makeText(EventListActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
 					
 					Calendar calendar = Calendar.getInstance();
 					calendar.setTime(pickDate.getTime());
@@ -596,8 +606,8 @@ public class EventListActivity extends BeseyeBaseActivity{
 	
 				@Override
 				public void onBtnCancelClick() {
-					if(!COMPUTEX_DEMO)
-						Toast.makeText(EventListActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
+//					if(!COMPUTEX_DEMO)
+//						Toast.makeText(EventListActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
 				}});
 			
 			d.show();
@@ -668,4 +678,35 @@ public class EventListActivity extends BeseyeBaseActivity{
 			}
 		}
 	}
+	
+	private boolean mbNeedToReloadWhenResume = false;
+	
+	private boolean checkEventById(JSONObject msgObj){
+		Log.i(TAG, getClass().getSimpleName()+"::checkEventById(),  msgObj = "+msgObj);
+		if(null != msgObj){
+    		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+    		if(null != objCus){
+    			String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+    			if(null != mStrVCamID && mStrVCamID.equals(strCamUID)){
+    				if(!mActivityDestroy){
+    		    		if(!mActivityResume){
+    		    			mbNeedToReloadWhenResume = true;
+    		    		}else{
+    		    			loadEventList();
+    		    		}
+    		    	}
+    			}
+    			return true;
+    		}
+		}
+    	return false;
+	}
+	
+	protected boolean onCameraMotionEvent(JSONObject msgObj){
+		return checkEventById(msgObj);
+	}
+	
+    protected boolean onCameraPeopleEvent(JSONObject msgObj){
+    	return checkEventById(msgObj);
+    }
 }

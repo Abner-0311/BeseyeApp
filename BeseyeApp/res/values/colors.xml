@@ -59,7 +59,7 @@
     <color name="picker_font_color">#a0a0a0</color>
     
     <color name="camera_list_video_bg">#f5f5f5</color>
-    <color name="camera_list_video_mask">#88ffffff</color>
+    <color name="camera_list_video_mask">#b3ffffff</color>
     
     <color name="loading_bg">#f4f4f4</color>
     

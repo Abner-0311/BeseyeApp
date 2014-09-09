@@ -2,11 +2,13 @@ package com.app.beseye;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeJSONUtil;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -18,12 +20,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class CameraUpdateActivity extends BeseyeBaseActivity {
+	static public final String KEY_UPDATE_INFO = "KEY_UPDATE_INFO";
 	private Button mBtnUpdate;
 	protected View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	protected ImageView mIvBack;
 	protected TextView mTxtNavTitle;
 	private JSONArray mArrCamList;
+	private JSONObject mNewsObj;
+	
+	private TextView mTxtUpdateTitle, mTxtUpdateDesc;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,8 @@ public class CameraUpdateActivity extends BeseyeBaseActivity {
 		
 		try {
 			mArrCamList = new JSONArray(getIntent().getStringExtra(CameraListActivity.KEY_VALID_CAM_INFO));
+			mNewsObj = new JSONObject(getIntent().getStringExtra(KEY_UPDATE_INFO));
+			//Log.e(BeseyeConfig.TAG, "onCreate(), mNewsObj:"+mNewsObj.toString());
 		} catch (JSONException e) {
 			Log.e(BeseyeConfig.TAG, "onCreate(), failed to parse cam list");
 		}
@@ -54,6 +62,18 @@ public class CameraUpdateActivity extends BeseyeBaseActivity {
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
+		}
+		
+		mTxtUpdateTitle = (TextView)findViewById(R.id.txt_update_title);
+		if(null != mTxtUpdateTitle){
+			String strVer = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mNewsObj,BeseyeJSONUtil.NEWS_CONTENT), BeseyeJSONUtil.NEWS_OTHER), BeseyeJSONUtil.NEWS_FW_VER);
+			//Log.e(BeseyeConfig.TAG, "onCreate(), strVer:"+strVer);
+			mTxtUpdateTitle.setText(String.format(getString(R.string.cam_update_title), strVer));
+		}
+		
+		mTxtUpdateDesc = (TextView)findViewById(R.id.txt_update_desc);
+		if(null != mTxtUpdateDesc){
+			mTxtUpdateDesc.setText(BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(mNewsObj,BeseyeJSONUtil.NEWS_CONTENT), BeseyeJSONUtil.NEWS_DESC));
 		}
 		
 		mBtnUpdate = (Button)this.findViewById(R.id.button_update);

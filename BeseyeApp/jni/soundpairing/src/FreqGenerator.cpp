@@ -337,13 +337,13 @@ void FreqGenerator::invokePlayCode2(){
 //                        	if(NULL != mOnPlayToneCallback)
 //                        		mOnPlayToneCallback->onCurFreqChanged(dFreq);
 
+		pthread_mutex_unlock(&mSyncObj);
+
 		if(NULL != mOnPlayToneCallback)
 			mOnPlayToneCallback->onStopGen(itmCode->strCodeInputAscii);
         
         if(NULL != mPlayToneCB)
             mPlayToneCB(mCbUserData, PLAY_TONE_END, itmCode->strCodeInputAscii.c_str(), 0);
-        
-		pthread_mutex_unlock(&mSyncObj);
 	}
 	LOGE("invokePlayCode2()------, thread end");
 	mThreadPlayTone = 0;
@@ -540,8 +540,8 @@ void FreqGenerator::invokePlayCode3(){
 
 void FreqGenerator::stopPlay2(){
 	LOGE("stopPlay2()+++");
-	//deinitAudioDev();
 	mbStopPlayCodeThread = true;
+	deinitAudioDev();
 	pthread_mutex_lock(&mSyncObj);
 	pthread_cond_broadcast(&mSyncObjCond);
 	pthread_mutex_unlock(&mSyncObj);

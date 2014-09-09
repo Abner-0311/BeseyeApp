@@ -11,6 +11,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.app.beseye.BeseyeApplication;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.OpeningPage;
@@ -126,14 +127,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgLocationAware = (ViewGroup)findViewById(R.id.vg_location_aware);
 		if(null != mVgLocationAware){
 			mVgLocationAware.setOnClickListener(this);
-			TextView txtLoc = (TextView)mVgLocationAware.findViewById(R.id.txt_loc_aware);
-			if(null != txtLoc){
-				txtLoc.setText("Reboot cam !!!(Dev)");
-			}
+//			TextView txtLoc = (TextView)mVgLocationAware.findViewById(R.id.txt_loc_aware);
+//			if(null != txtLoc){
+//				txtLoc.setText("Reboot cam !!!(Dev)");
+//			}
 			
-			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
-				mVgLocationAware.setVisibility(View.GONE);
-			}
+//			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
+//				mVgLocationAware.setVisibility(View.GONE);
+//			}
 		}
 		
 		mVgHWSettings = (ViewGroup)findViewById(R.id.vg_hw_settings);
@@ -144,9 +145,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgSiren = (ViewGroup)findViewById(R.id.vg_siren);
 		if(null != mVgSiren){
 			mVgSiren.setOnClickListener(this);
-//			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
-//				mVgSiren.setVisibility(View.GONE);
-//			}
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
+				mVgSiren.setVisibility(View.GONE);
+			}
 		}
 		
 		TextView txtSiren = (TextView)findViewById(R.id.txt_setting_emergency_siren);
@@ -170,6 +171,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	protected void onResume() {
 		Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
+		if(!mbFirstResume){
+			updateSettingState();
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		}
 		
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true, mStrVCamID,"1");
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamStatusTask(this), true, mStrVCamID);
@@ -220,27 +225,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 	
 	private void updateSettingState(){
+		boolean bIsCamDisconnected = BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj);
+		
 		BeseyeJSONUtil.CAM_CONN_STATUS iCamState = BeseyeJSONUtil.getVCamConnStatus(mCam_obj);// BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));
+		
 		if(null != mCamSwitchBtn){
-			if(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
-				mCamSwitchBtn.setEnabled(false);
-				mTxtPowerTitle.setEnabled(false);
-			}else{
-				mCamSwitchBtn.setEnabled(true);
-				mTxtPowerTitle.setEnabled(true);
-				mCamSwitchBtn.setSwitchState((BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-			}
-		}
-		if(null != mIvViewUpDownCheck){
-			if(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED == iCamState){
-				mTxtViewUpDownTitle.setEnabled(false);
-				mIvViewUpDownCheckBg.setEnabled(false);
-				mIvViewUpDownCheck.setVisibility(View.INVISIBLE);
-			}else{
-				mTxtViewUpDownTitle.setEnabled(true);
-				mIvViewUpDownCheckBg.setEnabled(true);
-				mIvViewUpDownCheck.setVisibility((0 == BeseyeJSONUtil.getJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, 0))?View.INVISIBLE:View.VISIBLE);
-			}
+			mCamSwitchBtn.setEnabled(!bIsCamDisconnected);
+			mCamSwitchBtn.setSwitchState(((!bIsCamDisconnected && BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON == iCamState)?SwitchState.SWITCH_ON:(bIsCamDisconnected?SwitchState.SWITCH_DISABLED:SwitchState.SWITCH_OFF)));
+			BeseyeUtils.setEnabled(mTxtPowerTitle, !bIsCamDisconnected);
 		}
 		
 		updatePowerDesc(mCamSwitchBtn.getSwitchState());
@@ -309,7 +301,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			}
 			case R.id.vg_location_aware:{
 				//launchActivityByClassName(TimezoneListActivity.class.getName());
-				showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				//showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				launchActivityByClassName(LocationAwareSettingActivity.class.getName(),b);
 				break;
 			}
 			case R.id.vg_hw_settings:{
@@ -468,10 +463,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 
 	private void updatePowerDesc(SwitchState state){
-		if(null != mTxtPowerDesc){
-			mTxtPowerDesc.setText(String.format(getResources().getString(R.string.cam_setting_title_power_desc), 
-												getResources().getString((SwitchState.SWITCH_ON.equals(state))?R.string.cam_setting_title_power_on:R.string.cam_setting_title_power_off)));
-		}
+//		if(null != mTxtPowerDesc){
+//			mTxtPowerDesc.setText(String.format(getResources().getString(R.string.cam_setting_title_power_desc), 
+//												getResources().getString((SwitchState.SWITCH_ON.equals(state))?R.string.cam_setting_title_power_on:R.string.cam_setting_title_power_off)));
+//		}
 	}
 
 	@Override
@@ -516,6 +511,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}}, 0);
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
+	}
+	
+	@Override
+	protected void updateUICallback(){
+		updateSettingState();
 	}
 
 	@Override

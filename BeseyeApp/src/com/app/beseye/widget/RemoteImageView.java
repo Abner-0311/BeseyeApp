@@ -201,12 +201,18 @@ public class RemoteImageView extends ImageView {
 			picDir.mkdir();
 		}
 		String strEncode = URLEncoder.encode(cacheName);
-		int iIdx = strEncode.indexOf(".jpg");
-		if(-1 < iIdx){
-			strEncode = strEncode.substring(0, iIdx+4);
-		}else{
-			strEncode = strEncode.substring(0, (strEncode.length()<150)?strEncode.length():150);
-		}
+		
+		int iFrom = (strEncode.length() > 64)?(strEncode.length()-64):0;
+		strEncode = strEncode.substring(iFrom);
+		
+//		int iIdx = strEncode.indexOf(".jpg");
+//		if(-1 < iIdx){
+//			int iFrom = (strEncode.length() > 32)?(strEncode.length()-32):0;
+//			strEncode = strEncode.substring(0, iIdx+4);
+//		}else{
+//			int iFrom = (strEncode.length() > 32)?(strEncode.length()-32):0;
+//			strEncode = strEncode.substring(iFrom);
+//		}
 		return String.format("%s%s", picDir.getAbsolutePath()+ "/", strEncode);
 	}
 

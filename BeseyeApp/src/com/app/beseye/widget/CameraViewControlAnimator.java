@@ -445,8 +445,10 @@ public class CameraViewControlAnimator {
 					
 					if(null != act){
 						if(Configuration.ORIENTATION_PORTRAIT == miOrientation){
-							act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-							act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+							if(!act.isShowStatusForEvent()){
+								act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+								act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+							}
 						}else{
 							act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 							act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -528,11 +530,17 @@ public class CameraViewControlAnimator {
 	}
 	
 	public void showControl(){
-		setControlVisibility(View.VISIBLE);
+		setControlVisibility(View.VISIBLE);	
 	}
 	
 	public void hideControl(){
 		setControlVisibility(View.GONE);
+		
+//		CameraViewActivity act = mCameraViewActivity.get();
+//		if(null != act){
+//			act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+//			act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//		}
 	}
 	
 	private boolean mbP2PMode = false;
@@ -573,6 +581,16 @@ public class CameraViewControlAnimator {
 			
 			m_bInHeaderAnimation = false;
 			Log.d(TAG, "mHeaderFadeOutListener::onAnimationEnd()");
+			
+//			BeseyeUtils.postRunnable(new Runnable(){
+//				@Override
+//				public void run() {
+//					CameraViewActivity act = mCameraViewActivity.get();
+//					if(null != act){
+//						act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//						act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+//					}
+//				}}, 1000);
 		}
 
 		public void onAnimationRepeat(Animation animation) {

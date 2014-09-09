@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 
 import android.content.Context;
@@ -51,20 +52,35 @@ public class SessionMgr {
 	static public final SERVER_MODE DEFAULT_SERVER_MODE = SERVER_MODE.MODE_STAGING;
 	
 	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
-	static private final String[] ACCOUNT_BE_URL = {"https://acc01-dev.beseye.com",
+	static private final String[] ACCOUNT_BE_URL = {"https://acc-dev.beseye.com",
 													"https://acc01.beseye.com", 
-													"https://acc01-stage.beseye.com",
-													"https://acc01-stage.beseye.com"}; 
+													"https://acc-stage.beseye.com",
+													"https://acc-stage.beseye.com"}; 
 	
-	static private final String[] MM_BE_URL = { "http://mm01-forext-dev.beseye.com/",
+	static private final String[] MM_BE_URL = { "https://mm-dev.beseye.com/",
 												"http://mm01-forext-comp.beseye.com/", 
-												"http://mm01-forext-stage.beseye.com/",
-												"https://mm01-forext-stage.beseye.com/"}; 
+												"https://mm-stage.beseye.com/",
+												"https://mm-stage.beseye.com/"}; 
 	
-	static private final String[] NS_BE_URL = { "http://ns01-dev.beseye.com/",
+	static private final String[] NS_BE_URL = { "https://ns-dev.beseye.com/",
 												"http://ns01.beseye.com/", 
-												"http://ns01-stage.beseye.com/",
-												"http://ns01-stage.beseye.com/"}; 
+												"https://ns-stage.beseye.com/",
+												"https://ns-stage.beseye.com/"}; 
+	
+	static private final String[] WS_BE_URL = { "https://ws-dev.beseye.com/",
+												"https://ws-dev.beseye.com/", 
+												"https://ws-stage.beseye.com/",
+												"https://ws-stage.beseye.com/"}; 
+	
+	static private final String[] WSA_BE_URL = { "https://wsa-dev.beseye.com/",
+												 "https://wsa-dev.beseye.com/", 
+												 "https://wsa-stage.beseye.com/",
+												 "https://wsa-stage.beseye.com/"}; 
+	
+	static private final String[] NEWS_BE_URL = { "https://news-dev.beseye.com/",
+												  "https://news-dev.beseye.com/", 
+												  "https://news-stage.beseye.com/",
+												  "https://news-stage.beseye.com/"}; 
 	
 	
 	
@@ -83,6 +99,8 @@ public class SessionMgr {
 	
 	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
 	
+	static private final String SESSION_NEWS_HISTORY	    = "beseye_news_history";
+	
 	static private SessionMgr sSessionMgr;
 	
 	static public void createInstance(Context context){
@@ -95,7 +113,7 @@ public class SessionMgr {
 	}
 	
 	private SharedPreferences mPref, mSecuredPref;
-	//private String mStrHostUrl, mStrStorageHostUrl;
+	//private String mStrHostUrl, mStrMMHostUrl;
 	private SessionData mSessionData;
 	//private ChannelInfo mOwnerChannelInfo;
 	
@@ -130,6 +148,8 @@ public class SessionMgr {
 		setAccount("");
 		setOwnerInfo("");
 		setIsCertificated(false);
+		setNewsHistory("");
+		BeseyeNewsHistoryMgr.deinit();
 		//setOwnerChannelInfo(null);
 		notifySessionUpdate();
 	}
@@ -138,13 +158,26 @@ public class SessionMgr {
 		setAccountBEHostUrl("");
 		setMMBEHostUrl("");
 		setNSBEHostUrl("");
-		setArtistsHostUrl("");
+		setWSHostUrl("");
+		setWSAHostUrl("");
+		setNewsHostUrl("");
+	}
+	
+	public String getNewsHistory(){
+		return getPrefStringValue(mPref, SESSION_NEWS_HISTORY);
+	}
+	
+	public void setNewsHistory(String strHistory){
+		setPrefStringValue(mPref, SESSION_NEWS_HISTORY, strHistory);
 	}
 	
 	public void setBEHostUrl(SERVER_MODE mode){
 		setAccountBEHostUrl(mode);
 		setMMBEHostUrl(mode);
 		setNSBEHostUrl(mode);
+		setWSBEHostUrl(mode);
+		setWSABEHostUrl(mode);
+		setNewsBEHostUrl(mode);
 	}
 	
 	public String getAccountBEHostUrl(){
@@ -186,13 +219,43 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
-	public String getArtistsHostUrl(){
-		return mSessionData.getArtistsHostUrl();
+	public String getWSHostUrl(){
+		return mSessionData.getWSHostUrl();
 	}
 	
-	synchronized public void setArtistsHostUrl(String strURL){
-		mSessionData.setArtistsHostUrl(strURL);
+	synchronized public void setWSHostUrl(String strURL){
+		mSessionData.setWSHostUrl(strURL);
 		notifySessionUpdate();
+	}
+	
+	public void setWSBEHostUrl(SERVER_MODE mode){
+		setWSHostUrl(WS_BE_URL[mode.ordinal()]);
+	}
+	
+	public String getWSAHostUrl(){
+		return mSessionData.getWSAHostUrl();
+	}
+	
+	synchronized public void setWSAHostUrl(String strURL){
+		mSessionData.setWSAHostUrl(strURL);
+		notifySessionUpdate();
+	}
+	
+	public void setWSABEHostUrl(SERVER_MODE mode){
+		setWSAHostUrl(WSA_BE_URL[mode.ordinal()]);
+	}
+	
+	public String getNewsHostUrl(){
+		return mSessionData.getNewsHostUrl();
+	}
+	
+	synchronized public void setNewsHostUrl(String strURL){
+		mSessionData.setNewsHostUrl(strURL);
+		notifySessionUpdate();
+	}
+	
+	public void setNewsBEHostUrl(SERVER_MODE mode){
+		setNewsHostUrl(NEWS_BE_URL[mode.ordinal()]);
 	}
 	
 	public String getUserid(){
@@ -335,7 +398,7 @@ public class SessionMgr {
 	}
 	
 	public static class SessionData implements Parcelable{
-		private String mStrHostUrl, mStrStorageHostUrl, mStrUploadHostUrl, mStrArtistsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
+		private String mStrHostUrl, mStrMMHostUrl, mStrNSHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
 		private boolean mbIsCertificated;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
@@ -343,9 +406,11 @@ public class SessionMgr {
 		
 		public SessionData() {
 			mStrHostUrl = "";
-			mStrStorageHostUrl = "";
-			mStrUploadHostUrl = "";
-			mStrArtistsHostUrl = "";
+			mStrMMHostUrl = "";
+			mStrNSHostUrl = "";
+			mStrWSHostUrl = "";
+			mStrWSAHostUrl = "";
+			mStrNewsHostUrl = "";
 			mStrUserid = "";
 			mStrAccount = "";
 			mStrDomain = "";
@@ -368,27 +433,43 @@ public class SessionMgr {
 		}
 		
 		public String getMMBEHostUrl(){
-			return mStrStorageHostUrl;
+			return mStrMMHostUrl;
 		}
 		
 		synchronized public void setMMBEHostUrl(String strURL){
-			mStrStorageHostUrl = strURL;
+			mStrMMHostUrl = strURL;
 		}
 		
 		public String getNSBEHostUrl(){
-			return mStrUploadHostUrl;
+			return mStrNSHostUrl;
 		}
 		
 		synchronized public void setNSBEHostUrl(String strURL){
-			mStrUploadHostUrl = strURL;
+			mStrNSHostUrl = strURL;
 		}
 
-		public String getArtistsHostUrl(){
-			return mStrArtistsHostUrl;
+		public String getWSHostUrl(){
+			return mStrWSHostUrl;
 		}
 		
-		synchronized public void setArtistsHostUrl(String strURL){
-			mStrArtistsHostUrl = strURL;
+		synchronized public void setWSHostUrl(String strURL){
+			mStrWSHostUrl = strURL;
+		}
+		
+		public String getWSAHostUrl(){
+			return mStrWSAHostUrl;
+		}
+		
+		synchronized public void setWSAHostUrl(String strURL){
+			mStrWSAHostUrl = strURL;
+		}
+		
+		public String getNewsHostUrl(){
+			return mStrNewsHostUrl;
+		}
+		
+		synchronized public void setNewsHostUrl(String strURL){
+			mStrNewsHostUrl = strURL;
 		}
 
 		public String getUserid(){
@@ -493,9 +574,12 @@ public class SessionMgr {
 			// parcel. When we read from parcel, they
 			// will come back in the same order
 			dest.writeString(mStrHostUrl);
-			dest.writeString(mStrStorageHostUrl);
-			dest.writeString(mStrUploadHostUrl);
-			dest.writeString(mStrArtistsHostUrl);
+			dest.writeString(mStrMMHostUrl);
+			dest.writeString(mStrNSHostUrl);
+			dest.writeString(mStrWSHostUrl);
+			dest.writeString(mStrWSAHostUrl);
+			dest.writeString(mStrNewsHostUrl);
+			
 			dest.writeString(mStrUserid);
 			dest.writeString(mStrAccount);
 			dest.writeString(mStrDomain);
@@ -527,9 +611,12 @@ public class SessionMgr {
 			// field in the order that it was
 			// written to the parcel
 			mStrHostUrl = in.readString();
-			mStrStorageHostUrl = in.readString();
-			mStrUploadHostUrl = in.readString();
-			mStrArtistsHostUrl = in.readString();
+			mStrMMHostUrl = in.readString();
+			mStrNSHostUrl = in.readString();
+			mStrWSHostUrl = in.readString();
+			mStrWSAHostUrl = in.readString();
+			mStrNewsHostUrl = in.readString();
+			
 			mStrUserid = in.readString();
 			mStrAccount = in.readString();
 			mStrDomain = in.readString();
