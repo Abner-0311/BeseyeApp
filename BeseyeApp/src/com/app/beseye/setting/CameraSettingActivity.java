@@ -127,14 +127,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgLocationAware = (ViewGroup)findViewById(R.id.vg_location_aware);
 		if(null != mVgLocationAware){
 			mVgLocationAware.setOnClickListener(this);
-			TextView txtLoc = (TextView)mVgLocationAware.findViewById(R.id.txt_loc_aware);
-			if(null != txtLoc){
-				txtLoc.setText("Reboot cam !!!(Dev)");
-			}
+//			TextView txtLoc = (TextView)mVgLocationAware.findViewById(R.id.txt_loc_aware);
+//			if(null != txtLoc){
+//				txtLoc.setText("Reboot cam !!!(Dev)");
+//			}
 			
-			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
-				mVgLocationAware.setVisibility(View.GONE);
-			}
+//			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
+//				mVgLocationAware.setVisibility(View.GONE);
+//			}
 		}
 		
 		mVgHWSettings = (ViewGroup)findViewById(R.id.vg_hw_settings);
@@ -301,7 +301,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			}
 			case R.id.vg_location_aware:{
 				//launchActivityByClassName(TimezoneListActivity.class.getName());
-				showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				//showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				launchActivityByClassName(LocationAwareSettingActivity.class.getName(),b);
 				break;
 			}
 			case R.id.vg_hw_settings:{
