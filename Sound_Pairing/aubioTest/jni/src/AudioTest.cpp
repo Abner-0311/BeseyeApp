@@ -12,6 +12,9 @@ static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 300000;//300 seconds
 static const long TIME_TO_CHECK_LED = 1;//1 seconds
 static msec_t slLastTimeCheckToken = -1;
 
+//Check if SoundPairing is disabled
+static bool sForceDisabledSp = false;
+
 AudioTest* AudioTest::sAudioTest=NULL;
 
 #ifdef ANDROID
@@ -326,6 +329,7 @@ bool AudioTest::isAutoTestMode(){
 
 bool AudioTest::startAutoTest(string strInitCode, int iDigitalToTest){
 	//LOGI("startAutoTest()+, strInitCode:%s\n", strInitCode.c_str());
+	sForceDisabledSp = false;
 	deinitTestRound();
 
 	bool bRet = false;
@@ -370,22 +374,30 @@ bool AudioTest::startPairingAnalysis(){
 	mbPairingAnalysisMode = true;
 	bool bRet = false;
 	if(false == isSenderMode()){
+
 		bRet = startAnalyzeTone();
 #ifndef ANDROID
 		if(bRet){
+			int iRet = system("/beseye/cam_main/cam-handler -chk_sp_enabled") >> 8;
+			LOGE("startPairingAnalysis(),chk_sp_enabled, iRet:%d\n", iRet);
+			if(CMD_RET_CODE_SP_DISABLED == iRet){
+				sForceDisabledSp = true;
+				LOGE("startPairingAnalysis(), chk_sp_enabled, disabled SP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+			}
+
 			miPairingReturnCode = -1;
 			slLastTimeCheckToken = time_ms();
 			AudioBufferMgr::getInstance()->setRecordMode(true);
 			FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(this);
 
-			LOGE("startAutoTest(), begin join mBufRecordThread\n");
+			LOGE("startPairingAnalysis(), begin join mBufRecordThread\n");
 			pthread_join(mBufRecordThread, NULL);
-			LOGE("startAutoTest(), end join mBufRecordThread\n");
+			LOGE("startPairingAnalysis(), end join mBufRecordThread\n");
 			//temp remove !!!!!!!!!!!!
 //			LOGI("startAutoTest(), begin join mAnalysisThread\n");
 //			pthread_join(mAnalysisThread, NULL);
 
-			LOGE("startAutoTest(), end join\n");
+			LOGE("startPairingAnalysis(), end join\n");
 		}
 #endif
 	}
@@ -752,6 +764,46 @@ void setLedLight(int bRedOn, int bGreenOn, int bBlueOn){
 	//LOGW("cmd:[%s], iRet:%d\n", cmd, iRet);
 #endif
 }
+
+static const int  MAX_TIME_TO_WAIT_SYS = 2000;//2 sec
+static pid_t pid_wait_sys = -1;
+static msec_t lTimeWaitSys = 0;
+static int sInvokeSystemRet = 0;
+
+int invokeSystem(const char* cmd){
+	int iRet = 0;
+	sInvokeSystemRet = 0;
+	lTimeWaitSys = time_ms();
+	pid_wait_sys = fork();
+	if (pid_wait_sys == 0) {
+		sInvokeSystemRet = system(cmd);
+		exit(0);
+
+		pid_t timeout_pid = fork();
+		if (timeout_pid == 0) {
+			LOGE( "turnOffSS(), timeout time_ms:%u .............++++\n", time_ms());
+			sleep(MAX_TIME_TO_STOP_SS);
+			LOGE( "turnOffSS(), timeout time_ms:%u .............----\n", time_ms());
+			exit(0);
+		}
+
+		pid_t exited_pid = wait(NULL);
+		if (exited_pid == pid_stop_ss) {
+			LOGE( "turnOffSS(), kill timeout_pid, time_ms:%u .............\n", time_ms());
+			kill(timeout_pid, SIGKILL);
+		} else {
+			LOGE( "turnOffSS(), kill pid_stop_ss, time_ms:%u .............\n", time_ms());
+			kill(pid_stop_ss, SIGKILL); // Or something less violent if you prefer
+			deleteFile(STOP_SS_PROCESS_FLAG);
+		}
+	}
+
+	wait(NULL); // Collect the other process
+
+	LOGE( "turnOffSS(), intermediate_pid:%d \n", intermediate_pid);
+	return sInvokeSystemRet;
+}
+
 static const char* SES_TOKEN_PATH 			= "/beseye/config/ses_token";
 static pthread_t sThreadVerifyToken;
 
@@ -759,7 +811,6 @@ void* AudioTest::verifyToken(void* userdata){
 	LOGE("+\n");
 	AudioTest* tester = (AudioTest*)userdata;
 	while(!tester->mbStopAnalysisThreadFlag){
-
 		msec_t lDelta = time_ms() - slLastTimeCheckToken;
 		if((PAIRING_ANALYSIS != sPairingMode && lDelta > TIME_TO_CHECK_TOKEN) || (PAIRING_ANALYSIS == sPairingMode && lDelta >TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD)){
 			if(readFromFile(SES_TOKEN_PATH)){
@@ -1235,24 +1286,25 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 			}else{
 				ArrayRef<short> bufShort = buf->mbBuf;
 
-				if(0 != iSessionOffset){
-					bufShort = AudioBufferMgr::getInstance()->getBufByIndex(buf->miIndex, iSessionOffset, tester->bufSegment);
+				if(false == sForceDisabledSp){
+					if(0 != iSessionOffset){
+						bufShort = AudioBufferMgr::getInstance()->getBufByIndex(buf->miIndex, iSessionOffset, tester->bufSegment);
+					}
+
+					//LOGE("runAudioBufAnalysis(), idx:%d, bufShort[0]:%d, bufShort[99]:%d\n", buf->miIndex, bufShort[0], bufShort[99]);
+
+					float ret = FreqAnalyzer::getInstance()->analyzeAudioViaAudacity(bufShort,
+																					 buf->miSampleRead,
+																					 tester->mbNeedToResetFFT,
+																					 FreqAnalyzer::getInstance()->getLastDetectedToneIdx(buf->mlTs),
+																					 buf->miFFTValues);
+					LOGD("runAudioBufAnalysis(), iFFTValues=[%d,%d,%d,%d,%d]", buf->miFFTValues[0], buf->miFFTValues[1], buf->miFFTValues[2], buf->miFFTValues[3], buf->miFFTValues[4]);
+					msec_t lTs = buf->mlTs;
+
+					FreqAnalyzer::getInstance()->analyze(lTs, ret, buf->miIndex, buf->miFFTValues);
+					//LOGE("runAudioBufAnalysis(), analyze out\n");
+					Delegate_UpdateFreq(lTs, ret);
 				}
-
-				//LOGE("runAudioBufAnalysis(), idx:%d, bufShort[0]:%d, bufShort[99]:%d\n", buf->miIndex, bufShort[0], bufShort[99]);
-
-				float ret = FreqAnalyzer::getInstance()->analyzeAudioViaAudacity(bufShort,
-																				 buf->miSampleRead,
-																				 tester->mbNeedToResetFFT,
-																				 FreqAnalyzer::getInstance()->getLastDetectedToneIdx(buf->mlTs),
-																				 buf->miFFTValues);
-				LOGD("runAudioBufAnalysis(), iFFTValues=[%d,%d,%d,%d,%d]", buf->miFFTValues[0], buf->miFFTValues[1], buf->miFFTValues[2], buf->miFFTValues[3], buf->miFFTValues[4]);
-				msec_t lTs = buf->mlTs;
-
-				FreqAnalyzer::getInstance()->analyze(lTs, ret, buf->miIndex, buf->miFFTValues);
-				//LOGE("runAudioBufAnalysis(), analyze out\n");
-				Delegate_UpdateFreq(lTs, ret);
-
 			}
 			AudioBufferMgr::getInstance()->addToAvailableBuf(buf);
 
@@ -1490,7 +1542,8 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				if(0 < iTrials)
 					sleep(1);
 
-				iNetworkRet = system("/beseye/cam_main/beseye_network_check") >> 8;
+				//iNetworkRet = system("/beseye/cam_main/beseye_network_check") >> 8;
+				iNetworkRet = system("/beseye/util/curl www.google.com") >> 8;
 				//lDelta = (time_ms() - lCheckTime);
 				LOGE("wifi check ret:%d, ts:%ld, flag:%d, time:%lld \n", iNetworkRet, iTrials, ((iNetworkRet != 0) && (15 > iTrials)), time_ms());
 			}while((iNetworkRet != 0) && (15 > ++iTrials));
@@ -1564,6 +1617,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 		if(0 <= miPairingReturnCode){
 			LOGE("miPairingReturnCode:[%d], close sp\n",miPairingReturnCode);
 			changePairingMode(PAIRING_DONE);
+			saveToFile("/beseye/config/sp_enabled", "");
 			setLedLight(0,1,0);
 			stopAutoTest();
 			return;
