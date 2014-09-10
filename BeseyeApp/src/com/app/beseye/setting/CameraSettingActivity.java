@@ -132,7 +132,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				txtLoc.setText("Reboot cam !!!(Dev)");
 			}
 			
-			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal()){
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
 				mVgLocationAware.setVisibility(View.GONE);
 			}
 		}
@@ -171,9 +171,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	protected void onResume() {
 		Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
-		if(!mbFirstResume){
+		if(!mbFirstResume || null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
 			updateSettingState();
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}
 		
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true, mStrVCamID,"1");

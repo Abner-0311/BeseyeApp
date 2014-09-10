@@ -8,11 +8,21 @@
         android:id="@+id/iv_nav_menu_btn"
 	    android:layout_width="wrap_content"
     	android:layout_height="match_parent"
-    	android:text="@string/title_wifi"
 		android:src="@drawable/sl_cam_list_menu"
     	android:layout_centerVertical="true"
     	android:paddingLeft="@dimen/cameralist_nav_margin_hori"
     	android:paddingRight="@dimen/cameralist_nav_margin_hori">
+    </ImageView>
+    
+     <ImageView
+        android:id="@+id/iv_nav_news"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+		android:src="@drawable/account_inf_menu_news_icon"
+		android:layout_alignParentBottom="true"
+    	android:layout_marginLeft="30dp"
+    	android:paddingBottom="24dp"
+    	android:visibility="gone">
     </ImageView>
     	
   	<TextView 

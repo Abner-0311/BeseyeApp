@@ -181,9 +181,9 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	protected void onResume() {
 		Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
-		if(!mbFirstResume){
+		if(!mbFirstResume || null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
 			updateScheduleStatus();
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}
 	}
 

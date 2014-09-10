@@ -194,9 +194,9 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	protected void onResume() {
 		Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
-		if(!mbFirstResume){
+		if(!mbFirstResume || null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
 			updateHWSettingState();
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}
 	}
 	

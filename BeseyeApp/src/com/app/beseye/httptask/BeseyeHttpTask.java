@@ -350,18 +350,16 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    			httpRequest.setHeader("Bes-Dev-Session", strParams[2]);
 	    		}
 	    	}else{
-	    		httpRequest.setHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
-	    		httpRequest.setHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
-	    		httpRequest.setHeader("Bes-Client-User-Agent", BeseyeUtils.getUserAgent());
+	    		httpRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+	    		httpRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
+	    		httpRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
+	    		httpRequest.addHeader("Content-Type", "application/json");
+	    		httpRequest.addHeader("Accept", "application/json");
+	    		httpRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
 	    	}
 	    	
 	    	if(httpRequest instanceof HttpEntityEnclosingRequestBase && 1 < strParams.length){
 	    		HttpEntityEnclosingRequestBase request = (HttpEntityEnclosingRequestBase)httpRequest;
-	    		
-	    		request.addHeader("Content-Type", "application/json");
-	    		request.addHeader("Accept", "application/json");
-	    		
-	    		//request.addHeader("User-Agent", "Beseye App ver("+Build.VERSION.RELEASE+") in Android "+Build.VERSION.SDK_INT);
 	    		request.setEntity(new StringEntity(strParams[1], HTTP.UTF_8));
 	    	}
 	    	Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl));

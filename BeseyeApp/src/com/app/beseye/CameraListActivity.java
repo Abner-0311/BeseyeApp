@@ -35,6 +35,7 @@ import com.app.beseye.adapter.CameraListAdapter.CameraListItmHolder;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
+import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.setting.CameraSettingActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
@@ -63,7 +64,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	private CameraListAdapter mCameraListAdapter;
 	private ViewGroup mVgEmptyView;
 	private View mVwNavBar;
-	private ImageView mIvMenu, mIvAddCam;
+	private ImageView mIvMenu, mIvAddCam, mIvNewsInd;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
 	private boolean mbIsDemoCamMode = false;
@@ -99,6 +100,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				mIvMenu.setOnClickListener(this);
 				//mIvMenu.setVisibility(COMPUTEX_DEMO?View.INVISIBLE:View.VISIBLE);
 			}
+			
+			mIvNewsInd = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_news);
 			
 			mIvAddCam = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_add_cam_btn);
 			if(null != mIvAddCam){
@@ -168,6 +171,15 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 	}
 	
+	private void checkLatestNew(){
+		if(null != mIvNewsInd){
+			mIvNewsInd.setVisibility(BeseyeNewsActivity.BeseyeNewsHistoryMgr.showNewsIndicator()?View.VISIBLE:View.GONE);
+		}
+		
+		if(null != mCameraListMenuAnimator)
+			mCameraListMenuAnimator.checkNewsStatus();
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -189,6 +201,12 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					updateCamItm(++miTaskSeedNum);
 				}}, 0);
 		}
+		
+		if(false == this.mbFirstResume){
+			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeNewsActivity.DEF_NEWS_LANG);
+		}
+		
+		checkLatestNew();
 	}
 
 	private void refreshList(){
@@ -206,6 +224,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		super.onSessionComplete();
 		if(!mbIsDemoCamMode || null == mVCamListInfoObj){
 			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
+			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeNewsActivity.DEF_NEWS_LANG);
 		}else{
 			fillVCamList(mVCamListInfoObj);
 		}
@@ -374,6 +393,14 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						}
 					}
 				}
+			}else if(task instanceof BeseyeNewsBEHttpTask.GetLatestNewsTask){
+				if(0 == iRetCode){
+					int iLatestNewId = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.NEWS_NEWS_ID);
+					int iCurLatestReadNewId = BeseyeNewsActivity.BeseyeNewsHistoryMgr.getMaxReadIdx();
+					Log.e(TAG, "onPostExecute(), iLatestNewId:"+iLatestNewId+"=> iCurLatestReadNewId = "+iCurLatestReadNewId);
+					BeseyeNewsActivity.BeseyeNewsHistoryMgr.setMaxNewId(iLatestNewId);
+					checkLatestNew();
+				}
 			}else{
 				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
 				super.onPostExecute(task, result, iRetCode);
@@ -469,6 +496,10 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				return;
 			}
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
+			if(View.VISIBLE != mCameraListMenuAnimator.getVisibility()){
+				BeseyeNewsActivity.BeseyeNewsHistoryMgr.hideNewsIndicator();
+				checkLatestNew();
+			}
 			toggleMenu();
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
 			Bundle b = new Bundle();

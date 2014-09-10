@@ -204,6 +204,7 @@
     
     <dimen name="cam_list_item_main_font_size">18sp</dimen>
     <dimen name="cam_list_item_horizontal_padding">10dp</dimen>
+    <dimen name="cam_list_indicator_horizontal_padding">12dp</dimen>
     <dimen name="cam_list_item_margin_right">60dp</dimen>
     
     <dimen name="about_logo_margin_top">21dp</dimen>

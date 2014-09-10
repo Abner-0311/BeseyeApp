@@ -24,6 +24,17 @@
    		android:textSize="@dimen/cam_list_item_main_font_size"
    		android:textColor="@color/cl_wifi_list_main_font_color"
    		android:text="Monday"/>
+   
+   <ImageView 
+        android:id="@+id/iv_menu_indicator"
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_centerVertical="true"
+    	android:src="@drawable/sl_menu_news_news_icon"
+    	android:layout_marginLeft="@dimen/cam_list_indicator_horizontal_padding"
+    	android:layout_toRightOf="@+id/txt_menu_title"
+    	android:visibility="gone"/>
+   
    <View 
         android:layout_width="match_parent"
    		android:layout_height="1dp" 

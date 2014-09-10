@@ -49,7 +49,7 @@ import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 
 public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	static private final int NUM_NEWS_QUERY = 10;
-	static private final String DEF_NEWS_LANG = "en";
+	static public final String DEF_NEWS_LANG = "en";
 	
 	private PullToRefreshListView mMainListView;
 	private NewsListAdapter mNewsListAdapter;
@@ -195,10 +195,10 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	protected void onResume() {
 		Log.i(TAG, "onResume()");
 		super.onResume();
-		if(!mbFirstResume){
-			monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(this), true, "-1", ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
-			mbRefreshCase = true;
-		}
+//		if(!mbFirstResume){
+//			monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(this), true, "-1", ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
+//			mbRefreshCase = true;
+//		}
 	}
 	
 	@Override
@@ -254,6 +254,18 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 						mNewsListAdapter.updateResultList(arrNews);
 						mNewsListAdapter.notifyDataSetChanged();
 					}
+					
+					if(null != arrNews && 0 < arrNews.length()){
+						try {
+							JSONObject objFirst = arrNews.getJSONObject(0);
+							if(null != objFirst){
+								BeseyeNewsHistoryMgr.setMaxTouchNewsIdx(BeseyeJSONUtil.getJSONInt(objFirst, BeseyeJSONUtil.NEWS_ID));
+							}
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
 
 				postToLvRreshComplete();
@@ -270,6 +282,14 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	static public class BeseyeNewsHistoryMgr{
 		static private Set<Integer> sNewsReadHistorySet = null;
 		static private final String DIVIDER = ";";
+		static int siMaxNewsId = -1;
+		static int siMaxTouchNewsId = -1;
+		static int siShowInd = -1;
+		
+		static void showValues(){
+			Log.i(TAG, "showValues(), ("+siMaxNewsId+", "+siMaxTouchNewsId+", "+siShowInd+")");
+		}
+		
 		synchronized static public void init(){
 			if(null == sNewsReadHistorySet){
 				String strHistory = SessionMgr.getInstance().getNewsHistory();
@@ -279,17 +299,57 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 					for(String num : toNum){
 						sNewsReadHistorySet.add(Integer.parseInt(num));
 					}
-				}	
+				}
+				
+				siMaxTouchNewsId = SessionMgr.getInstance().getNewsLastMax();
+				siShowInd = SessionMgr.getInstance().getNewsShowInd();
+				showValues();
 			}
 		}
 		
 		synchronized static public void deinit(){
 			sNewsReadHistorySet = null;
+			SessionMgr.getInstance().setNewsHistory("");
+			SessionMgr.getInstance().setNewsLastMax(-1);
+			SessionMgr.getInstance().setNewsShowInd(-1);
+		}
+		
+		synchronized static public void setMaxTouchNewsIdx(int iMax){
+			init();
+			SessionMgr.getInstance().setNewsLastMax(iMax);
+			siMaxTouchNewsId = iMax;
+			showValues();
+		}
+		
+		synchronized static public int getMaxTouchNewsIdx(){
+			init();
+			return siMaxTouchNewsId;
+		}
+		
+		synchronized static public int getMaxReadIdx(){
+			init();
+			if(null != sNewsReadHistorySet && 0 < sNewsReadHistorySet.size()){
+				return (Integer) sNewsReadHistorySet.toArray()[sNewsReadHistorySet.size()-1];
+			}
+			return -1;
 		}
 		
 		synchronized static public boolean isUnread(int idx){
 			init();
 			return null != sNewsReadHistorySet && !sNewsReadHistorySet.contains(idx);
+		}
+		
+		synchronized static public boolean showNewsIndicator(){
+			init();
+			showValues();
+			return -1 < siMaxNewsId && siShowInd < siMaxNewsId;
+		}
+		
+		synchronized static public void hideNewsIndicator(){
+			init();
+			siShowInd = siMaxNewsId;
+			SessionMgr.getInstance().setNewsShowInd(siShowInd);
+			showValues();
 		}
 		
 		synchronized static public void setRead(int idx){
@@ -298,6 +358,24 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 				sNewsReadHistorySet.add(idx);
 				saveHistory();
 			}
+		}
+		
+		synchronized static public void setMaxNewId(int idx){
+			init();
+			siMaxNewsId = idx;
+//			if(-1 < siMaxNewsId && siMaxTouchNewsId < siMaxNewsId){
+//				siShowInd = true;
+//				SessionMgr.getInstance().setNewsShowInd(siShowInd);
+//			}
+			showValues();
+		}
+		
+		synchronized static public int getMaxNewId(){
+			return siMaxNewsId;
+		}
+		
+		synchronized static public boolean haveLatestNews(){
+			return siMaxNewsId > 0 && siMaxNewsId > siMaxTouchNewsId;
 		}
 		
 		static private void saveHistory(){

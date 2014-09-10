@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.app.beseye.BeseyeNewsActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.util.BeseyeUtils;
@@ -78,9 +79,22 @@ public class CameraListMenuAnimator {
 		View vSupport = m_vgMenuHolderLayout.findViewById(R.id.vg_support);
 		BeseyeUtils.setVisibility(vSupport, View.GONE);
 		
+		checkNewsStatus();
+		
 		initAnimations(context);
 	}
 
+	public void checkNewsStatus(){
+		if(null != m_vgMenuHolderLayout){
+			View vMyCam = m_vgMenuHolderLayout.findViewById(R.id.vg_news);
+			if(null != vMyCam){
+				ImageView imgIndicator = (ImageView)vMyCam.findViewById(R.id.iv_menu_indicator);
+				if(null != imgIndicator){
+					imgIndicator.setVisibility(BeseyeNewsActivity.BeseyeNewsHistoryMgr.haveLatestNews()?View.VISIBLE:View.GONE);
+				}
+			}
+		}
+	}
 
 	private void initAnimations(Context context){
 		if(null == m_aniMenuFadeIn){

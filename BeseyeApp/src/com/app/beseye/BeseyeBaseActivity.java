@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,6 +86,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected String mStrVCamName = null;
 	protected JSONObject mCam_obj;
 	
+	private static ExecutorService FULL_TASK_EXECUTOR; 
+	static {  
+        FULL_TASK_EXECUTOR = (ExecutorService) Executors.newCachedThreadPool();  
+    };  
 	private Handler mHandler = new Handler();
 	
 	@Override
@@ -474,7 +480,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     		if(null != mMapCurAsyncTasks){
         		mMapCurAsyncTasks.put(task, new AsyncTaskParams(bCancelWhenDestroy, strArgs));
         	}
-    		task.execute(strArgs);
+    		task.executeOnExecutor(FULL_TASK_EXECUTOR, strArgs);
     	}
     }
     

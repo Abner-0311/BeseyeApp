@@ -100,6 +100,8 @@ public class SessionMgr {
 	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
 	
 	static private final String SESSION_NEWS_HISTORY	    = "beseye_news_history";
+	static private final String SESSION_NEWS_LAST_MAX	    = "beseye_news_last_max";
+	static private final String SESSION_NEWS_IND_SHOW	    = "beseye_news_show_ind";
 	
 	static private SessionMgr sSessionMgr;
 	
@@ -169,6 +171,22 @@ public class SessionMgr {
 	
 	public void setNewsHistory(String strHistory){
 		setPrefStringValue(mPref, SESSION_NEWS_HISTORY, strHistory);
+	}
+	
+	public int getNewsLastMax(){
+		return getPrefIntValue(mPref, SESSION_NEWS_LAST_MAX, -1);
+	}
+	
+	public void setNewsLastMax(int iValue){
+		setPrefIntValue(mPref, SESSION_NEWS_LAST_MAX, iValue);
+	}
+	
+	public int getNewsShowInd(){
+		return getPrefIntValue(mPref, SESSION_NEWS_IND_SHOW, -1);
+	}
+	
+	public void setNewsShowInd(int iValue){
+		setPrefIntValue(mPref, SESSION_NEWS_IND_SHOW, iValue);
 	}
 	
 	public void setBEHostUrl(SERVER_MODE mode){
