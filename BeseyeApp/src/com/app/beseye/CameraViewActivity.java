@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.R;
+import com.app.beseye.BeseyeBaseActivity.OnResumeUpdateCamInfoRunnable;
 import com.app.beseye.TouchSurfaceView.CameraStatusCallback;
 import com.app.beseye.TouchSurfaceView.OnTouchSurfaceCallback;
 import com.app.beseye.audio.AudioChannelMgr;
@@ -54,6 +55,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -2214,11 +2216,21 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		return isCamPowerOn();
 	}
 	
+	@Override
 	public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
+		boolean bIsCamOn = isCamPowerOn();
 		super.onCamSetupChanged(strVcamId, lTs, objCamSetup);
 		if(null != strVcamId && strVcamId.equals(mStrVCamID)){
 			mbIsCamSettingChanged = true;
 			updateAttrByCamObj();
+			if(mActivityResume){
+//				if(false == bIsCamDisconnect && isCamPowerDisconnected()){
+//					Toast.makeText(getApplicationContext(), getString(R.string.notify_offline_detect_player), Toast.LENGTH_SHORT).show();
+//				}else 
+				if(bIsCamOn && isCamPowerOff()){
+					Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
+				}
+			}
 		}
     }
 	
@@ -2277,5 +2289,26 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
     protected boolean onCameraPeopleEvent(JSONObject msgObj){
     	return checkEventById(msgObj);
+    }
+    
+    @Override
+	protected boolean onCameraOffline(JSONObject msgObj){
+    	Log.i(TAG, getClass().getSimpleName()+"::onCameraOffline(),  msgObj = "+msgObj);
+		if(null != msgObj){
+    		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+    		if(null != objCus){
+    			String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+    			if(mActivityResume){
+    				if(null != strCamUID && strCamUID.equals(mStrVCamID)){
+    	    			Toast.makeText(getApplicationContext(), getString(R.string.notify_offline_detect_player), Toast.LENGTH_SHORT).show();
+    	    		}else{
+    	    			showStatusBar();
+    	    			prepareToHideStatusBar();
+    	    		}
+    			}
+    			return true;
+    		}
+		}
+    	return false;
     }
 }

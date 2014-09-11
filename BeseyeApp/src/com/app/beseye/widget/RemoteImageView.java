@@ -308,6 +308,13 @@ public class RemoteImageView extends ImageView {
 			
 			if(fileExist(fileCache)){
 				Log.i(TAG, "loadImage(), have file cache , fileCache:["+fileCache+"]");
+				Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(fileCache);
+				if (cBmpFile != null) {
+					Log.i(TAG, "loadImage(), have file cache in mem");
+					setImageBitmap(cBmpFile);
+				}else{
+					loadDefaultImage();
+				}
 			}else{
 				Log.i(TAG, "loadImage(), load default , no fileCache:["+fileCache+"]");
 				loadDefaultImage();
@@ -420,11 +427,13 @@ public class RemoteImageView extends ImageView {
 					cacheFileName = strCachePath.substring(strCachePath.lastIndexOf("/")+1);
 					
 					if(null != mStrVCamId){
+						
 						Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
 						vcamidDir = getFirByVCamid(mStrVCamId);
 						String strLastPhoto = findLastPhotoByVCamid(mStrVCamId);
 						Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");
-						if(fileExist(strLastPhoto)){
+						Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(strLastPhoto);
+						if(null == cBmpFile && fileExist(strLastPhoto)){
 							bitmap = BitmapFactory.decodeFile(strLastPhoto);
 							if(null != bitmap){
 								setImage(bitmap);
@@ -543,6 +552,7 @@ public class RemoteImageView extends ImageView {
 						deleteFilesUnderDir(vcamidDir);
 					
 					compressFile(bitmap, fileToCache, Bitmap.CompressFormat.JPEG, 90);
+					BeseyeMemCache.addBitmapToMemoryCache(fileToCache, bitmap);
 				}else if (!fileExist(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample)) {// write image to file cache
 					createParentDir(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample);
 					compressFile(bitmap, mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample, Bitmap.CompressFormat.JPEG, 90);

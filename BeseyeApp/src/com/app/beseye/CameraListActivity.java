@@ -635,7 +635,13 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
 					if(lTs > BeseyeJSONUtil.getJSONLong(camObj, BeseyeJSONUtil.OBJ_TIMESTAMP)){
 						Log.i(TAG, "CameraListActivity::onCamSetupChanged(),  lTs = "+lTs+", objCamSetup="+objCamSetup.toString());
+						boolean bisCamOn = BeseyeJSONUtil.isCamPowerOn(camObj);
 						arrCamList.put(i,objCamSetup);
+						
+						if(bisCamOn && BeseyeJSONUtil.isCamPowerOff(objCamSetup)){
+							Toast.makeText(getApplicationContext(), String.format(getString(R.string.notify_cam_off_detect_cam_list), BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_NAME)), Toast.LENGTH_SHORT).show();
+						}
+						
 						refreshList();
 						
 						if(null != mOnResumeUpdateCamInfoRunnable && mOnResumeUpdateCamInfoRunnable.isSameVCamId(strVcamId)){
