@@ -158,6 +158,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public static final int MSG_CAM_EVENT_MOTION 			= 33;
     public static final int MSG_CAM_EVENT_OFFLINE 			= 34;
     
+    public static final int MSG_UPDATE_PLAYER_VCAM 			= 35;
+    
     /**
      * Handler of incoming messages from clients.
      */
@@ -409,6 +411,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_CHECK_DIALOG:{
                 	checkAndCloseDialog();
                 }
+                case MSG_UPDATE_PLAYER_VCAM:{
+                	final Bundle bundle = msg.getData();
+                	mStrFocusVCamId = bundle.getString("VCAMID");
+                	Log.i(TAG, "mStrFocusVCamId : "+mStrFocusVCamId);
+                	break;
+                }
                 default:
                     super.handleMessage(msg);
             }
@@ -463,6 +471,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     final Messenger mMessenger = new Messenger(new IncomingHandler());
     private String mLastNotifyId = null;
 	private long mLastNotifyUpdateTime = 0;
+	private String mStrFocusVCamId = null;
 //	private SessionData mSessionData = null;
 //	private iKalaSettingsMgr.SettingData mSettingData = null;
 	
@@ -567,6 +576,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     					WebsocketsMgr.getInstance().setWSServerIP(SessionMgr.getInstance().getWSHostUrl());
         				WebsocketsMgr.getInstance().constructWSChannel();
     				}
+    			}else if(true ==  WebsocketsMgr.getInstance().checkLastTimeToGetKeepAlive()){
+    				Log.i(TAG, "Too long to receive keepalive");
+    				WebsocketsMgr.getInstance().destroyWSChannel();
     			}
     		}
     	}else{
@@ -1406,7 +1418,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	@Override
 	public void onChannelClosed() {
 		Log.i(TAG, "onChannelCloased()---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		if(miWSDisconnectRetry < MAX_WS_RETRY_TIME && false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() /*&& NetworkMgr.getInstance().isNetworkConnected()*/){
+		if(/*miWSDisconnectRetry < MAX_WS_RETRY_TIME && */false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() /*&& NetworkMgr.getInstance().isNetworkConnected()*/){
 			Log.i(TAG, "onChannelCloased(), abnormal close, retry-----");
 			long lTimeToWait = (miWSDisconnectRetry++)*1000;
 			if(lTimeToWait > 10000){
@@ -1426,6 +1438,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	private boolean handleNotificationEvent(JSONObject msgObj, boolean bFromGCM){
+		if(!SessionMgr.getInstance().isTokenValid()){
+			return true;
+		}
 		Log.i(TAG, "handleNotificationEvent(),msgObj="+msgObj.toString());	
 		boolean bRet = true;
 		JSONObject objReg = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA);
@@ -1512,25 +1527,33 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						}
 	
 						if(NCODE_OFFLINE_DETECT != iNCode){
-							JSONObject cam_obj = new JSONObject();
-							BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_ID, BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID));
-						    BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME, strCamName);
-						        
-							iNotifyType = NOTIFICATION_TYPE_INFO;
-							lTs = BeseyeJSONUtil.getJSONLong(objCus, BeseyeJSONUtil.PS_EVT_TS);
-							
-							intent.setClassName(this, OpeningPage.class.getName());
-							
-							Intent delegateIntent = new Intent();
-							delegateIntent.setClassName(this, CameraViewActivity.class.getName());
-							delegateIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
-							delegateIntent.putExtra(CameraViewActivity.KEY_DVR_STREAM_MODE, true);
-							JSONObject tsInfo = new JSONObject();
-							BeseyeJSONUtil.setJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME, lTs);
-							delegateIntent.putExtra(CameraViewActivity.KEY_TIMELINE_INFO, tsInfo.toString());
-							
-							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);	
+							String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+							if(null != strVCamId && !strVCamId.equals(mStrFocusVCamId)){
+								JSONObject cam_obj = new JSONObject();
+								BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_ID, strVCamId);
+							    BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME, strCamName);
+							        
+								iNotifyType = NOTIFICATION_TYPE_INFO;
+								lTs = BeseyeJSONUtil.getJSONLong(objCus, BeseyeJSONUtil.PS_EVT_TS);
+								
+								intent.setClassName(this, OpeningPage.class.getName());
+								
+								Intent delegateIntent = new Intent();
+								delegateIntent.setClassName(this, CameraViewActivity.class.getName());
+								delegateIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
+								delegateIntent.putExtra(CameraViewActivity.KEY_DVR_STREAM_MODE, true);
+								
+								JSONObject tsInfo = new JSONObject();
+								BeseyeJSONUtil.setJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME, lTs);
+								delegateIntent.putExtra(CameraViewActivity.KEY_TIMELINE_INFO, tsInfo.toString());
+								
+								//intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);	
+								intent.putExtra(OpeningPage.KEY_EVENT_FLAG, true);
+							}else{
+								strNotifyMsg = null;
+								Log.i(TAG, "handleNotificationEvent(),match mStrFocusVCamId="+mStrFocusVCamId);	
+							}
 						}
 					//}
 					break;
@@ -1557,6 +1580,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	private void handleWSEvent(JSONObject dataObj){
+		if(!SessionMgr.getInstance().isTokenValid()){
+			return;
+		}
     	if(null != dataObj){
 			final int iCmd = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_COMM);
 			Log.i(TAG, "handleWSEvent(),iCmd="+iCmd);	
@@ -1610,6 +1636,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
 	
 	private void handleGCMEvents(String strRegularData, String strCusData){
+		if(!SessionMgr.getInstance().isTokenValid()){
+			return;
+		}
+		
 		if(null != strRegularData){
 			try {
 				JSONObject objReg = new JSONObject(strRegularData);

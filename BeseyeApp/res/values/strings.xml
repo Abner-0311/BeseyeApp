@@ -202,7 +202,7 @@
 	<string name="dialog_msg_login">Login&#8230;</string>
 	<string name="dialog_msg_logiout">Logout&#8230;</string>
 	
-	<string name="signup_title_before_setup">Before aetup</string>
+	<string name="signup_title_before_setup">Before setup</string>
 	<string name="signup_title_create_account">Create account</string>
 	<string name="signup_title_cam_wifi_settings">Camera WiFi Settings</string>
 	<string name="signup_title_cam_pair_fail">Please try again</string>

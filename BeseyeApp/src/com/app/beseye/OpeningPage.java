@@ -35,6 +35,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	public static final String ACTION_BRING_FRONT 		= "ACTION_BRING_FRONT";
 	public static final String KEY_HAVE_HANDLED 		= "KEY_HAVE_HANDLED";
 	public static final String KEY_DELEGATE_INTENT 		= "KEY_DELEGATE_INTENT";
+	public static final String KEY_EVENT_FLAG 			= "KEY_EVENT_FLAG";
+	public static final String KEY_EVENT_INTENT 		= "KEY_EVENT_INTENT";
 	public static final String KEY_IGNORE_ACTIVATED_FLAG= "KEY_IGNORE_ACTIVATED_FLAG";
 	public static final String FIRST_PAGE 				= CameraListActivity.class.getName();
 	
@@ -188,6 +190,16 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			Intent intentBroadcast = new Intent(GCMIntentService.FORWARD_GCM_MSG_ACTION);
 			intentBroadcast.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, GCMIntentService.FORWARD_ACTION_TYPE_CHECK_DIALOG);
 	        sendBroadcast(intentBroadcast);
+	        
+	        if(intent.getBooleanExtra(KEY_EVENT_FLAG, false) && BeseyeBaseActivity.getActiveActivityCount() == 0){
+	        	Intent intentCameraList = new Intent();
+	        	intentCameraList.setClassName(this, FIRST_PAGE);
+	        	intentCameraList.putExtra(KEY_EVENT_FLAG, true);
+	        	intentCameraList.putExtra(KEY_EVENT_INTENT, intentLanuch);
+	        	intentLanuch = intentCameraList;
+	        }else{
+	        	intentLanuch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	        }
 		}
 		
 		String strTsInfo = intentLanuch.getStringExtra(CameraViewActivity.KEY_TIMELINE_INFO);

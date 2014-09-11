@@ -189,6 +189,10 @@ public class WebsocketsMgr {
 		BeseyeUtils.postRunnable(mCheckConnectionRunnable, 15*1000);
 	}
 	
+	public boolean checkLastTimeToGetKeepAlive(){
+		return -1 != mlLastTimeToGetKeepAlive && (System.currentTimeMillis() - mlLastTimeToGetKeepAlive) > 15*1000;
+	}
+	
 	protected Runnable mCheckConnectionRunnable = new Runnable(){
 		@Override
 		public void run() {

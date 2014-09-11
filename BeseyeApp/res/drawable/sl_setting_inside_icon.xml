@@ -6,5 +6,7 @@
           android:drawable="@drawable/setting_inside_icon_highlight" /> <!-- focused -->
     <item android:state_selected="true"
           android:drawable="@drawable/setting_inside_icon_highlight" /> <!-- selected -->
+    <item android:state_enabled="false"
+          android:drawable="@drawable/setting_inside_icon_disable" /> <!-- selected -->
     <item android:drawable="@drawable/setting_inside_icon" /> <!-- default -->
 </selector>

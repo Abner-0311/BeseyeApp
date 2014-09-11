@@ -155,7 +155,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         	displayHeight = (int) ((displayWidth/16.0)*9.0);
         }
         
-        Log.d(TAG, "surfaceChanged(), mWidth:"+mSurfaceWidth+", mHeight:"+mSurfaceHeight+", displayWidth:"+displayWidth+", displayHeight:"+displayHeight);
+        Log.i(TAG, "surfaceChanged(), mWidth:"+mSurfaceWidth+", mHeight:"+mSurfaceHeight+", displayWidth:"+displayWidth+", displayHeight:"+displayHeight);
         //SDLActivity.onNativeResize(width, height, sdlFormat);
         Log.v(TAG, "Window size:" + width + "x"+height);
         
@@ -1044,7 +1044,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     public Bitmap getBitmapBySize(int iWidth, int iHeight){
-    	Log.d(TAG, "getBitmapBySize(), iWidth:"+iWidth+", iHeight:"+iHeight);
+    	Log.i(TAG, "getBitmapBySize(), iWidth:"+iWidth+", iHeight:"+iHeight);
     	if(null != mStreamBitmap && (mStreamBitmap.getWidth() != iWidth || mStreamBitmap.getHeight() != iHeight) && false == mStreamBitmap.isRecycled()){
     		mStreamBitmap.recycle();
     		mStreamBitmap = null;
@@ -1053,11 +1053,13 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     	if(null == mStreamBitmap){
     		mStreamBitmap = Bitmap.createBitmap(iWidth, iHeight, Config.RGB_565);
     		
-    		float scaleX = (float) mSurfaceWidth / iWidth ;
-            float scaleY = (float) mSurfaceHeight / iHeight ;
+    		float scaleX = mSurfaceWidth / (float) iWidth ;
+            float scaleY = mSurfaceHeight / (float) iHeight ;
             scale = Math.min(scaleX, scaleY);
             //scale = (mbUpsideDown)?-scale:scale;
             //c
+            
+            Log.i(TAG, "getBitmapBySize(), scale:"+scale+", scaleX:"+scaleX+", scaleY:"+scaleY);
     		
             redundantXSpace = mSurfaceWidth - iWidth*scale;
             redundantYSpace = mSurfaceHeight - iHeight*scale;
@@ -1068,8 +1070,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     private void updateMatrix(){
-    	matrix.setScale(mbUpsideDown?-scale:scale, 
-					mbUpsideDown?-scale:scale);
+    	matrix.setScale(mbUpsideDown?-scale:scale, mbUpsideDown?-scale:scale);
     	if(null != mStreamBitmap && false == mStreamBitmap.isRecycled()){
         	matrix.postTranslate(redundantXSpace / 2+(mbUpsideDown?mStreamBitmap.getWidth()*scale:0), 
 				     redundantYSpace / 2+(mbUpsideDown?mStreamBitmap.getHeight()*scale:0));

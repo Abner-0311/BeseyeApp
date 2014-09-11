@@ -2,17 +2,12 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.CAM_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.getJSONInt;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,14 +27,11 @@ import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.pairing.SoundPairingNamingActivity;
 import com.app.beseye.service.BeseyeNotificationService;
-import com.app.beseye.setting.CameraSettingActivity;
 import com.app.beseye.setting.HWSettingsActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
-import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -84,17 +76,25 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	protected String mStrVCamID = null;
 	protected String mStrVCamName = null;
-	protected JSONObject mCam_obj;
+	protected JSONObject mCam_obj = null;
+	
+	static private int siActiveActivityCount = 0;
+	
+	static public int getActiveActivityCount(){
+		return siActiveActivityCount;
+	}
 	
 	private static ExecutorService FULL_TASK_EXECUTOR; 
 	static {  
         FULL_TASK_EXECUTOR = (ExecutorService) Executors.newCachedThreadPool();  
+        siActiveActivityCount = 0;
     };  
 	private Handler mHandler = new Handler();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		siActiveActivityCount++;
 		setContentView(getLayoutId());
 		BeseyeApplication.registerAppStateChangeListener(this);
 		SessionMgr.getInstance().registerSessionUpdateCallback(this);
@@ -143,8 +143,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		doUnbindService();
 		BeseyeApplication.unregisterAppStateChangeListener(this);
 		super.onDestroy();
-		
+		siActiveActivityCount--;
 		mActivityDestroy = true;
+		Log.e(TAG, "onDestroy(),"+getClass().getName());
 	}
 
 	@Override
@@ -831,6 +832,23 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}
 	}
 	
+	//TO notify the latest session data to service
+	public void onUpdateFocusVCamId(String strVCamId){
+		if(null != mNotifyService){
+			try {
+				Message msg = Message.obtain(null, BeseyeNotificationService.MSG_UPDATE_PLAYER_VCAM);
+				if(null != msg){
+					msg.getData().putString("VCAMID", strVCamId);
+					mNotifyService.send(msg);
+				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	
 	//TO extend ws connection to avoid mssing cam activate event in bg
 	protected void extendWSConnection(long lTimeToExtend){
 		if(null != mNotifyService){
@@ -1153,7 +1171,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	if(null != mStrVCamID){
     		if(null != DataObj){
     			String strCamUID = BeseyeJSONUtil.getJSONString(DataObj, WS_ATTR_CAM_UID);
-    			long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
+    			//long lTs = BeseyeJSONUtil.getJSONLong(DataObj, WS_ATTR_TS);
     			if(mStrVCamID.equals(strCamUID)){
     				if(!mActivityDestroy){
     		    		if(!mActivityResume){

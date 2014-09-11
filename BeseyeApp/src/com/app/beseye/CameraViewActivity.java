@@ -333,25 +333,24 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     			iReOpenDelay = 500;
     		}
     		
-    		if(mActivityResume){
+    		if(mActivityResume && isCamPowerOn()){
     			BeseyeUtils.postRunnable(new Runnable(){
     				@Override
     				public void run() {
     					beginLiveView();
     				}}, iReOpenDelay);
+    			if(null != mVgPairingDone){
+        			setVisibility(mPbLoadingCursor, View.VISIBLE);
+        		}
     		}else if(!mActivityDestroy){
     			mbIsPauseWhenPlaying = true;
-    		}
-    		
-    		if(null != mVgPairingDone){
-    			setVisibility(mPbLoadingCursor, View.VISIBLE);
     		}
     	//}
     }
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "CameraViewActivity::onCreate()");
+		Log.i(TAG, "CameraViewActivity::onCreate(), width:"+BeseyeUtils.getDeviceWidth(this));
 		super.onCreate(savedInstanceState);
 		
 //		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -406,7 +405,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			
 			ImageView ivStreamType =  mCameraViewControlAnimator.getStremTypeView();
 			if(null != ivStreamType){
-				ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_h_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
+				if(Configuration.ORIENTATION_PORTRAIT == config.orientation)
+					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_xhdpi_s_display_icon:R.drawable.liveview_xhdpi_s_event_icon);
+				else
+					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_h_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
 			}
 			
 			TextView txtGoLive = mCameraViewControlAnimator.getGoLiveView();
@@ -557,11 +559,18 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), ((!COMPUTEX_DEMO || BeseyeConfig.COMPUTEX_PAIRING) && !isInP2PMode() && mbVCamAdmin && !mbIsDemoCam)?View.VISIBLE:View.INVISIBLE);
 		}
 	}
+	
+	@Override
+	protected void notifyServiceConnected(){
+		super.notifyServiceConnected();
+		onUpdateFocusVCamId(mStrVCamID);
+	}
 
 	@Override
 	protected void onResume() {
 		Log.d(TAG, "CameraViewActivity::onResume()");
 		super.onResume();
+		
 		if(null != mPauseCameraViewRunnable){
 			BeseyeUtils.removeRunnable(mPauseCameraViewRunnable);
 			mPauseCameraViewRunnable = null;
@@ -681,7 +690,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mlStartLogoutTs = -1;
 		
 		closeAudioChannel(true);
-		
+		onUpdateFocusVCamId("");
 		super.onPause();
 	}
 
@@ -728,6 +737,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(null != mCameraViewControlAnimator){
 			mCameraViewControlAnimator.setOrientation(iOrient);
+			
+			ImageView ivStreamType =  mCameraViewControlAnimator.getStremTypeView();
+			if(null != ivStreamType){
+				if(Configuration.ORIENTATION_PORTRAIT == iOrient)
+					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_xhdpi_s_display_icon:R.drawable.liveview_xhdpi_s_event_icon);
+				else
+					ivStreamType.setImageResource((mbIsLiveMode || this.isInP2PMode())?R.drawable.liveview_h_display_icon:R.drawable.liveview_xhdpi_h_event_icon);
+			}
+			
 			updatePlayPauseBtnByStatus(mCamViewStatus);
 			if(null != mUpdateDateTimeRunnable)
 				mUpdateDateTimeRunnable.updateDateTimeView(mCameraViewControlAnimator.getDateView(), mCameraViewControlAnimator.getTimeView());
@@ -2229,7 +2247,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //				}else 
 				if(bIsCamOn && isCamPowerOff()){
 					Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
+				}else if(!bIsCamOn && isCamPowerOn()){
+					mlRetryConnectBeginTs = System.currentTimeMillis();
 				}
+			}
+			
+			if(isCamPowerOff() || isCamPowerDisconnected()){
+				removeMyDialog(DIALOG_ID_WARNING);
 			}
 		}
     }
@@ -2301,6 +2325,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     			if(mActivityResume){
     				if(null != strCamUID && strCamUID.equals(mStrVCamID)){
     	    			Toast.makeText(getApplicationContext(), getString(R.string.notify_offline_detect_player), Toast.LENGTH_SHORT).show();
+    	    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+    	    			mbIsCamSettingChanged = true;
     	    		}else{
     	    			showStatusBar();
     	    			prepareToHideStatusBar();
