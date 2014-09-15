@@ -41,6 +41,9 @@ public class WebsocketsMgr {
 	protected String mStrAudioConnJobId = null;
 	protected boolean mBAuth = false;
 	protected boolean mBConstructingNotifyWSChannel = false;
+	protected boolean mbNotifyWSChannelConstructed = false;
+	protected long mlTimeConstrucNotifyWSChannel = 0;
+	protected long mlTimeToRequestWSChannelAuth = 0;
 	protected WeakReference<OnWSChannelStateChangeListener> mOnWSChannelStateChangeListener = null;
 	protected long mlLastTimeToGetKeepAlive = -1;
 	
@@ -92,14 +95,17 @@ public class WebsocketsMgr {
 				bRet = false;
 			}else{
 				synchronized(this){
-					mBConstructingNotifyWSChannel = true;
+					mBConstructingNotifyWSChannel = true; 
+					mbNotifyWSChannelConstructed = false;
+					mlTimeConstrucNotifyWSChannel = System.currentTimeMillis();
+					mlTimeToRequestWSChannelAuth = 0;
 				}
 				OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 				if(null != listener){
 					listener.onChannelConnecting();
 				}
 				
-				//Log.i(TAG, "constructWSChannel()");
+				Log.i(TAG, "constructWSChannel()-----");
 				mFNotifyWSChannel = AsyncHttpClient.getDefaultInstance().websocket(getWSPath(), getWSProtocol(), getWebSocketConnectCallback());
 				Log.i(TAG, "constructWSChannel(), path =>"+getWSPath());
 				WebSocket ws = mFNotifyWSChannel.get();
@@ -109,9 +115,7 @@ public class WebsocketsMgr {
 				}
 			}
 			
-			synchronized(this){
-				mBConstructingNotifyWSChannel = false;
-			}
+			
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			Log.i(TAG, "InterruptedException(), e="+e.toString());
@@ -126,6 +130,13 @@ public class WebsocketsMgr {
 			if(null != listener){
 				listener.onChannelClosed();
 			}
+		} finally{
+			synchronized(this){
+				mbNotifyWSChannelConstructed = false;
+				mBConstructingNotifyWSChannel = false;
+				mlTimeConstrucNotifyWSChannel = 0;
+				mlTimeToRequestWSChannelAuth =0;
+			}
 		}
 		return bRet;
 	}
@@ -136,9 +147,16 @@ public class WebsocketsMgr {
 		//printNotifyWSChannelState();
 		synchronized(this){
 			if(mBConstructingNotifyWSChannel){
-				bRet = true;
+				if(0 < mlTimeConstrucNotifyWSChannel && System.currentTimeMillis() - mlTimeConstrucNotifyWSChannel > 15*1000){
+					Log.i(TAG, "isWSChannelAlive(), too long to construct ws!!!");
+					bRet = false;
+				}else{
+					bRet = true;
+				}
 			}else if(null != mFNotifyWSChannel && false == mFNotifyWSChannel.isCancelled() && true == mFNotifyWSChannel.isDone()){
-				bRet = true;
+				if(mBAuth || (0 < mlTimeToRequestWSChannelAuth && System.currentTimeMillis() - mlTimeToRequestWSChannelAuth < 20*1000)){
+					bRet = true;
+				}
 			}
 		}
 	
@@ -222,6 +240,13 @@ public class WebsocketsMgr {
         		Log.e(TAG, "onCompleted(), webSocket is null...");
         		return;
 			}
+        	
+        	synchronized(this){
+        		mbNotifyWSChannelConstructed = true;
+				mBConstructingNotifyWSChannel = false;
+				mlTimeConstrucNotifyWSChannel = 0;
+				mlTimeToRequestWSChannelAuth = System.currentTimeMillis();
+			}
 
 //        	webSocket.send("Welcone");
 //        	webSocket.send("Welcone".getBytes());
@@ -268,6 +293,7 @@ public class WebsocketsMgr {
 										Log.i(TAG, "onStringAvailable(), Auth OK -----------------------");
 										mStrAuthJobId = null;
 										mBAuth = true;
+										mlTimeToRequestWSChannelAuth = 0;
 									}
 								}
 							}else if(WS_CB_EVT.equals(strCmd)){

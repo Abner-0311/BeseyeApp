@@ -488,6 +488,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 //	}
 	
 	static final private int THUMBNAIL_BUNDLE_SIZE = 2;
+	static final private int THUMBNAIL_NUM = 10;
 	
 	private void getThumbnailByEventList(int iSeed){
 		if(iSeed != miTaskSeedNum || mActivityDestroy){
@@ -522,7 +523,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 					
 					time.put(BeseyeJSONUtil.MM_START_TIME, lStartTime);
 					time.put(BeseyeJSONUtil.MM_DURATION, (0 < lEndTime)?(lEndTime - lStartTime):3000);
-					time.put(BeseyeJSONUtil.MM_MAX_NUM, 30);
+					time.put(BeseyeJSONUtil.MM_MAX_NUM, THUMBNAIL_NUM);
 					
 					//String strThbKey = String.format("%s_%s_%s", mStrVCamID, BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_START_TIME), BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_DURATION));
 					
