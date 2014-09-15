@@ -115,9 +115,17 @@ public class WebsocketsMgr {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			Log.i(TAG, "InterruptedException(), e="+e.toString());
+			OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
+			if(null != listener){
+				listener.onChannelClosed();
+			}
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 			Log.i(TAG, "ExecutionException(), e="+e.toString());
+			OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
+			if(null != listener){
+				listener.onChannelClosed();
+			}
 		}
 		return bRet;
 	}

@@ -587,6 +587,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	
     	if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
     		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
+    	
+//    	try {
+//			handleNotificationEvent(new JSONObject("{\"cData\":{\"camName\":\"sample45\",\"vcUuid\":\"c252bee42e8e4036a065f072a7c39eff\",\"evt_ts\":1410743117715},\"rData\":{\"ts\":1410743142923,\"msg\":\"People Detected\",\"nCode\":769}}"), false);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
     }
     
     private void postToCloseWs(final long lTimeToClose){
@@ -1229,7 +1236,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	private void cancelNotification(){
-		mNotificationManager.cancel(NOTIFICATION_TYPE_INFO);
+		if(null != mNotificationManager){
+			mNotificationManager.cancel(NOTIFICATION_TYPE_INFO);
+			mNotificationManager.cancel(NOTIFICATION_TYPE_MSG);
+			mNotificationManager.cancel(NOTIFICATION_TYPE_CAM);
+		}
 	}
 	
 	private BeseyeHttpTask mNotificationInfoTask, mNotificationListTask, mMsgInfoTask;
@@ -1536,7 +1547,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 								iNotifyType = NOTIFICATION_TYPE_INFO;
 								lTs = BeseyeJSONUtil.getJSONLong(objCus, BeseyeJSONUtil.PS_EVT_TS);
 								
-								intent.setClassName(this, OpeningPage.class.getName());
+								
 								
 								Intent delegateIntent = new Intent();
 								delegateIntent.setClassName(this, CameraViewActivity.class.getName());
@@ -1547,7 +1558,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 								BeseyeJSONUtil.setJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME, lTs);
 								delegateIntent.putExtra(CameraViewActivity.KEY_TIMELINE_INFO, tsInfo.toString());
 								
-								//intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								intent.setClassName(this, OpeningPage.class.getName());
+								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//								intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+//								intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//								intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 								intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);	
 								intent.putExtra(OpeningPage.KEY_EVENT_FLAG, true);
 							}else{

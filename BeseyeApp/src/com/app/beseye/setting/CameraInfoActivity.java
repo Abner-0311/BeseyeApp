@@ -22,6 +22,7 @@ import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
@@ -207,6 +208,8 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 					}
 					
 					BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, mStrNameCandidate);
+					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, System.currentTimeMillis());
+					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					setActivityResultWithCamObj();
 				}
 			}else{

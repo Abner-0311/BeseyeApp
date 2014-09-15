@@ -786,6 +786,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		intent.putExtra("ClassName", strCls);
 		intent.setClass(this, OpeningPage.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		//intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		//intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		if(null != bundle)
 			intent.putExtras(bundle);
 		startActivity(intent);

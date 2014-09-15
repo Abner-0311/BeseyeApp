@@ -36,6 +36,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	public static final String KEY_HAVE_HANDLED 		= "KEY_HAVE_HANDLED";
 	public static final String KEY_DELEGATE_INTENT 		= "KEY_DELEGATE_INTENT";
 	public static final String KEY_EVENT_FLAG 			= "KEY_EVENT_FLAG";
+	public static final String KEY_EVENT_RELAUNCH_FLAG 	= "KEY_EVENT_RELAUNCH_FLAG";
 	public static final String KEY_EVENT_INTENT 		= "KEY_EVENT_INTENT";
 	public static final String KEY_IGNORE_ACTIVATED_FLAG= "KEY_IGNORE_ACTIVATED_FLAG";
 	public static final String FIRST_PAGE 				= CameraListActivity.class.getName();
@@ -44,14 +45,15 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	private static final long TIME_TO_CLOSE_OPENING_PAGE = 3000L;
 	
 	private boolean m_bLaunchForDelegate = false;
+	private Intent intentRelaunch = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		Log.i(TAG, "OpeningPage::onCreate()");
 		//if(sbFirstLaunch)
 		if(getIntent().getBooleanExtra(KEY_HAVE_HANDLED, false)){
-			Log.i(TAG, "OpeningPage::onCreate(), KEY_HAVE_HANDLED is true ");
+			Log.i(TAG, "OpeningPage::onCreate(), call finish for KEY_HAVE_HANDLED is true ");
 			finish();
 			return;
 		}
@@ -62,6 +64,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		if(getIntent().getBooleanExtra(ACTION_BRING_FRONT, false)){
+			Log.i(TAG, "OpeningPage::onCreate(), call finish for ACTION_BRING_FRONT");
 			finish();
 			return;
 		}
@@ -97,15 +100,19 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 
 	@Override
 	protected void onResume() {
+		Log.i(TAG, "OpeningPage::onResume()");
 		super.onResume();
-		if(false == m_bLaunchForDelegate && null == mGetUserInfoTask)
+		if(false == m_bLaunchForDelegate && null == mGetUserInfoTask){
+			Log.i(TAG, "OpeningPage::onResume(), call finish");
 			finish();
+		}
 		m_bLaunchForDelegate = false;
 		sbFirstLaunch = false;
 	}
 	
 	@Override
 	protected void onPause() {
+		Log.i(TAG, "OpeningPage::onPause()");
 		if(null != mGetUserInfoTask){
 			mGetUserInfoTask.cancel(true);
 		}
@@ -114,6 +121,18 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			mGetVCamListTask.cancel(true);
 		}
 		super.onPause();
+//		Log.i(TAG, "OpeningPage::onPause(), call finish");
+//		finish();
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.i(TAG, "OpeningPage::onDestroy()");
+		super.onDestroy();
+		if(intentRelaunch != null){
+			Log.i(TAG, "OpeningPage::onDestroy(), invoke intentRelaunch");
+			startActivity(intentRelaunch);
+		}
 	}
 
 	private BeseyeAccountTask.GetUserInfoTask mGetUserInfoTask;
@@ -191,14 +210,32 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			intentBroadcast.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, GCMIntentService.FORWARD_ACTION_TYPE_CHECK_DIALOG);
 	        sendBroadcast(intentBroadcast);
 	        
-	        if(intent.getBooleanExtra(KEY_EVENT_FLAG, false) && BeseyeBaseActivity.getActiveActivityCount() == 0){
-	        	Intent intentCameraList = new Intent();
-	        	intentCameraList.setClassName(this, FIRST_PAGE);
-	        	intentCameraList.putExtra(KEY_EVENT_FLAG, true);
-	        	intentCameraList.putExtra(KEY_EVENT_INTENT, intentLanuch);
-	        	intentLanuch = intentCameraList;
+	        if(intent.getBooleanExtra(KEY_EVENT_FLAG, false) ){
+	        	if(false == intent.getBooleanExtra(KEY_EVENT_RELAUNCH_FLAG, false) && BeseyeBaseActivity.getActiveActivityCount() == 0){
+	        		Log.i(TAG, "OpeningPage::launchActivityByIntent(), relaunch");
+	        		intentRelaunch = new Intent();
+	        		intentRelaunch.setClassName(this, OpeningPage.class.getName());
+	        		intentRelaunch.setAction("android.intent.action.MAIN"); 
+	        		intentRelaunch.addCategory("android.intent.category.LAUNCHER"); 
+	        		intentRelaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP/* | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET*/);
+	        		intentRelaunch.putExtra(KEY_EVENT_FLAG, true);
+	        		intentRelaunch.putExtra(KEY_EVENT_RELAUNCH_FLAG, true);
+	        		intentRelaunch.putExtra(KEY_DELEGATE_INTENT, intentLanuch);
+	        		
+	        		finish();
+	        		return;
+	        	}else if(intent.getBooleanExtra(KEY_EVENT_RELAUNCH_FLAG, false)){
+	        		Log.i(TAG, "OpeningPage::launchActivityByIntent(), reach relaunch case");
+	        		Intent intentCameraList = new Intent();
+		        	intentCameraList.setClassName(this, FIRST_PAGE);
+		        	intentCameraList.putExtra(KEY_EVENT_FLAG, true);
+		        	intentCameraList.putExtra(KEY_EVENT_INTENT, intentLanuch);
+		        	intentLanuch = intentCameraList;
+		        	finish();
+	        	}
+	        	
 	        }else{
-	        	intentLanuch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	        	//intentLanuch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	        }
 		}
 		
@@ -264,6 +301,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 					SessionMgr.getInstance().cleanSession();
 				}
 				startActivity(intentLanuch);
+				Log.i(TAG, "OpeningPage::onPostExecute(), call finish");
 				finish();
 			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){

@@ -68,6 +68,13 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	protected String miOriginalVcamArr = null;
 	static public final String KEY_CHANGE_WIFI_ONLY = "KEY_CHANGE_WIFI_ONLY";
 	
+	static private String sWiFiPasswordHistory = "";
+	
+	static public void updateWiFiPasswordHistory(String strPW){
+		Log.w(TAG, "updateWiFiPasswordHistory(), strPW:"+strPW);
+		sWiFiPasswordHistory = strPW;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "WifiControlBaseActivity::onCreate()");
@@ -525,7 +532,11 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 							if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 								etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
 								btnConnect.setEnabled(true);
+							}else if(false == getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false) && null != sWiFiPasswordHistory && 0 < sWiFiPasswordHistory.length()){
+								etPassword.setText(sWiFiPasswordHistory);
+								btnConnect.setEnabled(sWiFiPasswordHistory.length() >=iMinPasswordLength);
 							}
+							
 							mWifiApPassword = etPassword.getText().toString();
 							etPassword.addTextChangedListener(new TextWatcher(){
 								@Override

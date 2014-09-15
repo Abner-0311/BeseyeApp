@@ -28,6 +28,7 @@ import com.app.beseye.CameraListActivity;
 import com.app.beseye.CameraViewActivity;
 import com.app.beseye.PairingFailActivity;
 import com.app.beseye.R;
+import com.app.beseye.WifiControlBaseActivity;
 import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
@@ -381,6 +382,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	   } 
 	}
 	
+	private int miFailTry = 0;
+	
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
 		Log.e(TAG, "onErrorReport(), "+task.getClass().getSimpleName()+", iErrType="+iErrType);	
@@ -389,11 +392,18 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
 			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_pairing_error));
 		}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(SoundPairingActivity.this), true);
-				}}, 500);
+			if(3 > miFailTry++){
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(SoundPairingActivity.this), true);
+					}}, 500);
+			}else{
+				//showErrorDialog(iMsgId, true);
+				// if pairing failed
+				WifiControlBaseActivity.updateWiFiPasswordHistory(null != mChosenWifiAPInfo?mChosenWifiAPInfo.password:"");
+				launchActivityByClassName(PairingFailActivity.class.getName());
+			}
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -506,6 +516,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 										Bundle b = new Bundle();
 										b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
 										launchDelegateActivity(SoundPairingNamingActivity.class.getName(), b);
+										WifiControlBaseActivity.updateWiFiPasswordHistory("");
 									}
 								} catch (JSONException e) {
 									// TODO Auto-generated catch block
@@ -515,6 +526,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 							sStrCamNameCandidate = null;
 						}else{
 							// if pairing failed
+							WifiControlBaseActivity.updateWiFiPasswordHistory(null != mChosenWifiAPInfo?mChosenWifiAPInfo.password:"");
 							launchActivityByClassName(PairingFailActivity.class.getName());
 						}
 					}
@@ -540,6 +552,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	    				String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
 	    				monitorAsyncTask(mGetNewCamTask = new BeseyeAccountTask.GetCamInfoTask(this), false, strCamUID);
 	    				mbFindNewCam = true;
+	    				WifiControlBaseActivity.updateWiFiPasswordHistory("");
     				}
     				SessionMgr.getInstance().setPairToken("");
     				if(null != mPairingCounter){

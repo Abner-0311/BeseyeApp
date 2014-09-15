@@ -175,6 +175,7 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity {
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
 				b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
 				launchDelegateActivity(CameraListActivity.class.getName(), b);
+				finish();
 			}else{
 				Log.i(TAG, "onPostExecute(), "+result.toString());
 				super.onPostExecute(task, result, iRetCode);

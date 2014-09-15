@@ -135,19 +135,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
     		});
 			
-			LayoutInflater inflater = getLayoutInflater();
-			if(null != inflater){
-				mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_add, null);
-				if(null != mVgEmptyView){
-					mMainListView.setEmptyView(mVgEmptyView);
-//					if(null != mVgEmptyView){
-//						TextView txt = (TextView)mVgEmptyView.findViewById(R.id.txtNoItmList);
-//						if(null != txt){
-//							txt.setText(R.string.no_camera);
-//						}
-//					}
-				}
-			}
+			addCamListBgView();
 			
         	mMainListView.setMode(LvExtendedMode.PULL_DOWN_TO_REFRESH);
         	
@@ -287,6 +275,10 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			if(null != mCameraListAdapter){
 				mCameraListAdapter.updateResultList(arrCamList);
 				refreshList();
+			}
+			
+			if(null == arrCamList || 0 == arrCamList.length()){
+				addCamAddingView();
 			}
 			
 			postToLvRreshComplete();
@@ -789,6 +781,26 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		LayoutInflater inflater = getLayoutInflater();
 		if(null != inflater){
 			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
+			if(null != mVgEmptyView){
+				mMainListView.setEmptyView(mVgEmptyView);
+			}
+		}
+	}
+	
+	private void addCamAddingView(){
+		LayoutInflater inflater = getLayoutInflater();
+		if(null != inflater){
+			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_add, null);
+			if(null != mVgEmptyView){
+				mMainListView.setEmptyView(mVgEmptyView);
+			}
+		}
+	}
+	
+	private void addCamListBgView(){
+		LayoutInflater inflater = getLayoutInflater();
+		if(null != inflater){
+			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_bg, null);
 			if(null != mVgEmptyView){
 				mMainListView.setEmptyView(mVgEmptyView);
 			}

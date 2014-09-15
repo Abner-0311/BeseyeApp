@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.app.beseye"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color">
+
+    <ImageView
+        android:id="@+id/iv_cloud_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/cameralist_cloudBottom_bottom"
+        android:layout_marginRight="@dimen/cameralist_cloudBottom_right"
+        android:src="@drawable/cameralist_cloud_bottom" />
+    
+    <ImageView
+        android:id="@+id/iv_cloud_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/iv_cloud_bottom"
+        android:layout_marginBottom="@dimen/cameralist_cloudLeft_bottom"
+        android:layout_marginLeft="@dimen/cameralist_cloudLeft_left"
+        android:src="@drawable/cameralist_cloud_left" />
+    
+    <ImageView
+        android:id="@+id/iv_cloud_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/iv_cloud_left"
+        android:layout_marginBottom="@dimen/cameralist_cloudRight_bottom"
+        android:layout_marginRight="@dimen/cameralist_cloudRight_right"
+        android:src="@drawable/cameralist_cloud_right" />
+    
+    <ImageView
+        android:id="@+id/iv_cloud_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/iv_cloud_right"
+        android:layout_marginBottom="@dimen/cameralist_cloudTop_bottom"
+        android:layout_marginLeft="@dimen/cameralist_cloudTop_left"
+        android:src="@drawable/cameralist_cloud_top" />
+</RelativeLayout>
+
+
+
+   
+		
+	
+ 
+
+

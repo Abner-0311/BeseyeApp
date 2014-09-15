@@ -184,6 +184,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    		case CV_STREAM_CONNECTED:{
 			    			//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, CAM_CONN_STATUS.CAM_ON.getValue());
 			    			//setVisibility(mPbLoadingCursor, View.GONE);
+			    			mlRetryConnectBeginTs = 0;
 			    			cancelCheckVideoConn();
 			    			if(null != mCameraViewControlAnimator){
 				    			setEnabled(mCameraViewControlAnimator.getTalkView(), mbIsLiveMode && !isInP2PMode() && !mbIsDemoCam);
@@ -326,6 +327,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     private void tryToReconnect(){
     	Log.i(TAG, "CameraViewActivity::tryToReconnect(), mActivityResume:"+mActivityResume+", mActivityDestroy:"+mActivityDestroy);
     	//if(!isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_INIT, CameraView_Internal_Status.CV_STREAM_PAUSED)){
+    	
+    		if(0 == mlRetryConnectBeginTs){
+    			Log.i(TAG, "CameraViewActivity::tryToReconnect(), set mlRetryConnectBeginTs:"+mlRetryConnectBeginTs);
+    			mlRetryConnectBeginTs = System.currentTimeMillis();
+    		}
+    		
     		int iReOpenDelay = 0;
     		if(!isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_WAITING_CLOSE, CameraView_Internal_Status.CV_STREAM_CLOSE) || 
     		   !isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
@@ -563,7 +570,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	protected void notifyServiceConnected(){
 		super.notifyServiceConnected();
-		onUpdateFocusVCamId(mStrVCamID);
+		if(mbIsLiveMode)
+			onUpdateFocusVCamId(mStrVCamID);
 	}
 
 	@Override
@@ -690,7 +698,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mlStartLogoutTs = -1;
 		
 		closeAudioChannel(true);
-		onUpdateFocusVCamId("");
+		if(mbIsLiveMode)
+			onUpdateFocusVCamId("");
 		super.onPause();
 	}
 
@@ -1138,6 +1147,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					@Override
 					public void run() {
 						if(isCamPowerOn()){
+							Log.e(TAG, "run(), show streaming_playing_error");
 							Bundle b = new Bundle();
 							b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_playing_error));
 							b.putBoolean(KEY_WARNING_CLOSE, true);
@@ -1517,7 +1527,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	       									}
 	       		         				}
 	       		         				Log.i(TAG, "open stream for idx"+miStreamIdx);
-	       		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost, streamList, /*(int)lOffset8*/0);
+	       		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost, streamList, /*(int)lOffset*/0);
 	       		         			}while(iRetCreateStreaming < 0 && iTrial < 8);
 	       		         			
 	       		         			if(miStreamIdx >= 10){
@@ -1943,7 +1953,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
-				//Log.w(TAG, "updateRTMPClockCallback(), iTimeInSec:"+iTimeInSec);
+				Log.w(TAG, "updateRTMPClockCallback(), iTimeInSec:"+iTimeInSec);
 		    	if(false == mbIsLiveMode)
 		    		mUpdateDateTimeRunnable.updateDateTime(new Date(mlDVRStartTs+1000*iTimeInSec));
 			}}, 0);
@@ -1961,7 +1971,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					
 					Log.w(TAG, "updateRTMPErrorCallback(), iMajorType:"+iMajorType+", iMinorType="+iMinorType+", msg="+msg);
 					if(Player_Major_Error.INTERNAL_STREAM_ERR.ordinal() == iMajorType){
-						if(Stream_Error.INVALID_APP_ERROR.ordinal() <= iMinorType && iMinorType <= Stream_Error.SERVER_REQUEST_CLOSE_ERROR.ordinal()){
+						if(Stream_Error.INVALID_APP_ERROR.ordinal() <= iMinorType && iMinorType < Stream_Error.SERVER_REQUEST_CLOSE_ERROR.ordinal()){
 							iErrStrId = R.string.streaming_playing_error;
 							//showInvalidStateMask();
 						}else if(Stream_Error.NETWORK_CONNECTION_ERROR.ordinal() <= iMinorType && iMinorType <= Stream_Error.UNKOWN_NETWORK_ERROR.ordinal()){
