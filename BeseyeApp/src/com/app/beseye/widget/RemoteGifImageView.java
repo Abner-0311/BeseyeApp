@@ -267,6 +267,8 @@ public class RemoteGifImageView extends RemoteImageView {
 			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath[miCurDisplayIdx] , mURI[miCurDisplayIdx] , mIsPreload, false, false));
 		}
 	}
+	
+	static final private long THUMBNAIL_PLAY_INTERVAL = 150;
 
 	private void imageLoaded(final boolean success) {
 		post(new Runnable(){
@@ -277,7 +279,7 @@ public class RemoteGifImageView extends RemoteImageView {
 					mCallback.imageLoaded(success);
 				}
 				RemoteGifImageView.this.removeCallbacks(mLoadNextBmpRunnable);
-				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, 1000);
+				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, THUMBNAIL_PLAY_INTERVAL);
 			}});
 	}
 	

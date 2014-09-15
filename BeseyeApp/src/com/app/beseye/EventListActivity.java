@@ -487,6 +487,8 @@ public class EventListActivity extends BeseyeBaseActivity{
 //		}
 //	}
 	
+	static final private int THUMBNAIL_BUNDLE_SIZE = 2;
+	
 	private void getThumbnailByEventList(int iSeed){
 		if(iSeed != miTaskSeedNum || mActivityDestroy){
 			Log.e(TAG, "getThumbnailByEventList(), iSeed="+iSeed+", miTaskSeedNum="+miTaskSeedNum+", mActivityDestroy="+mActivityDestroy);
@@ -512,7 +514,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 				obj.put("urlExpireTime", 300);
 				
 				JSONArray timeLst = new JSONArray();
-				for(int i = iStartIdx;i<iCount && i <(iStartIdx+5);i++, miCurUpdateIdx++){
+				for(int i = iStartIdx;i<iCount && i <(iStartIdx+THUMBNAIL_BUNDLE_SIZE);i++, miCurUpdateIdx++){
 					JSONObject event = EntList.getJSONObject(i);
 					JSONObject time = new JSONObject();
 					long lStartTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_START_TIME);
@@ -520,7 +522,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 					
 					time.put(BeseyeJSONUtil.MM_START_TIME, lStartTime);
 					time.put(BeseyeJSONUtil.MM_DURATION, (0 < lEndTime)?(lEndTime - lStartTime):3000);
-					time.put(BeseyeJSONUtil.MM_MAX_NUM, 20);
+					time.put(BeseyeJSONUtil.MM_MAX_NUM, 30);
 					
 					//String strThbKey = String.format("%s_%s_%s", mStrVCamID, BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_START_TIME), BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_DURATION));
 					
