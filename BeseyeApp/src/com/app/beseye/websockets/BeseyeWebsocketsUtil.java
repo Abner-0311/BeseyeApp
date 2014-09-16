@@ -1,11 +1,8 @@
 package com.app.beseye.websockets;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.FAKE_AUDIO_RECEIVER;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Semaphore;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,19 +10,8 @@ import android.os.Build;
 import android.util.Log;
 
 import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
-import com.koushikdutta.async.ByteBufferList;
-import com.koushikdutta.async.DataEmitter;
-import com.koushikdutta.async.callback.CompletedCallback;
-import com.koushikdutta.async.callback.DataCallback;
-import com.koushikdutta.async.callback.WritableCallback;
-import com.koushikdutta.async.future.Future;
-import com.koushikdutta.async.http.AsyncHttpClient;
-import com.koushikdutta.async.http.WebSocket;
-import com.koushikdutta.async.http.AsyncHttpClient.WebSocketConnectCallback;
-import com.koushikdutta.async.http.WebSocket.StringCallback;
 
 public class BeseyeWebsocketsUtil {
     static public final String WS_CMD_FORMAT 			= "[\"%s\", %s]";

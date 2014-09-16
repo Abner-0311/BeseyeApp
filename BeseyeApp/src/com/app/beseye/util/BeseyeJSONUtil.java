@@ -1,6 +1,6 @@
 package com.app.beseye.util;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +119,11 @@ public class BeseyeJSONUtil {
 	public static final String SCHED_DAYS 				= "WorkDay";
 	public static final String SCHED_PERIOD 			= "Peroid";
 	public static final String SCHED_ENABLE 			= "Enable";
+	
+	public static final String LOCATION_OBJ 			= "Locale";
+	public static final String LOCATION_LAT 			= "Latitude";
+	public static final String LOCATION_LONG 			= "Longitude";
+	
 	
 	public static final String UPDATE_PROGRESS 			= "progress";
 	public static final String UPDATE_FINAL_STAUS 		= "finalStatus";
@@ -715,6 +720,22 @@ public class BeseyeJSONUtil {
 		}
 		return bRet;
 	}
+	
+	static public boolean setJSONDouble(JSONObject obj, String strKey, Double lVal){
+		boolean bRet = false;
+		try {
+			if(null != obj && null != strKey){
+				obj.put(strKey, lVal);
+				bRet = true;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return bRet;
+	}
+	
+	
+	
 	
 	static public boolean setJSONBoolean(JSONObject obj, String strKey, boolean bVal){
 		boolean bRet = false;

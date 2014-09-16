@@ -1,6 +1,8 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeConfig.TEST_ACC;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,16 +17,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import com.app.beseye.error.BeseyeError;
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
-import com.app.beseye.util.BeseyeAccountFilter;
-import com.app.beseye.util.BeseyeConfig;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.util.DeviceUuidFactory;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,7 +29,15 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.app.beseye.error.BeseyeError;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeAccountFilter;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.DeviceUuidFactory;
 
 public class SignupActivity extends BeseyeAccountBaseActivity {
 	private EditText mEtUserName, mEtPassword;

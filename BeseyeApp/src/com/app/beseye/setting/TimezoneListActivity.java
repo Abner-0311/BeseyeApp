@@ -3,7 +3,6 @@ package com.app.beseye.setting;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -17,19 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.R;
-import com.app.beseye.R.drawable;
-import com.app.beseye.R.id;
-import com.app.beseye.R.layout;
-import com.app.beseye.R.string;
 import com.app.beseye.adapter.TimezoneInfoAdapter;
 import com.app.beseye.adapter.TimezoneInfoAdapter.TimezoneInfoHolder;
 import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.widget.PullToRefreshListView;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
+import com.app.beseye.widget.PullToRefreshListView;
 
 public class TimezoneListActivity extends BeseyeBaseActivity {
 	public final static String KEY_TZ = "KEY_TZ";

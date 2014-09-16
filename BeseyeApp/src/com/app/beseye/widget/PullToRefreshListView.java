@@ -15,12 +15,6 @@
  *******************************************************************************/
 package com.app.beseye.widget;
 
-import com.app.beseye.R;
-import com.app.beseye.widget.internal.BeseyeLoadMoreLayout;
-import com.app.beseye.widget.internal.BeseyeRefreshLayout;
-import com.app.beseye.widget.internal.EmptyViewMethodAccessor;
-import com.app.beseye.widget.internal.LoadingLayout;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -31,6 +25,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+
+import com.app.beseye.R;
+import com.app.beseye.widget.internal.BeseyeLoadMoreLayout;
+import com.app.beseye.widget.internal.BeseyeRefreshLayout;
+import com.app.beseye.widget.internal.EmptyViewMethodAccessor;
+import com.app.beseye.widget.internal.LoadingLayout;
 
 
 public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView> {

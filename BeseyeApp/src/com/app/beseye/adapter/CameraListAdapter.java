@@ -5,16 +5,6 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.app.beseye.R;
-import com.app.beseye.util.BeseyeConfig;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
-import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.widget.BeseyeSwitchBtn;
-import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
-import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
-import com.app.beseye.widget.RemoteImageView;
-
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -22,6 +12,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.app.beseye.R;
+import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.widget.BeseyeSwitchBtn;
+import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
+import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
+import com.app.beseye.widget.RemoteImageView;
 
 public class CameraListAdapter extends BeseyeJSONAdapter {
 	private OnSwitchBtnStateChangedListener mOnSwitchBtnStateChangedListener;

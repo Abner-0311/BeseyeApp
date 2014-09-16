@@ -1,46 +1,23 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.HOCKEY_APP_ID;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.CAM_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.getJSONInt;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.app.beseye.BeseyeApplication.BeseyeAppStateChangeListener;
-import com.app.beseye.error.BeseyeError;
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
-import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
-import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
-import com.app.beseye.httptask.SessionMgr.SessionData;
-import com.app.beseye.pairing.SoundPairingActivity;
-import com.app.beseye.pairing.SoundPairingNamingActivity;
-import com.app.beseye.service.BeseyeNotificationService;
-import com.app.beseye.setting.CameraSettingActivity;
-import com.app.beseye.setting.HWSettingsActivity;
-import com.app.beseye.util.BeseyeCamInfoSyncMgr;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
-import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
-import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
-
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.UpdateManager;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -48,9 +25,9 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.ServiceConnection;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -67,6 +44,24 @@ import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.app.beseye.BeseyeApplication.BeseyeAppStateChangeListener;
+import com.app.beseye.error.BeseyeError;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.httptask.SessionMgr.SessionData;
+import com.app.beseye.pairing.SoundPairingActivity;
+import com.app.beseye.pairing.SoundPairingNamingActivity;
+import com.app.beseye.service.BeseyeNotificationService;
+import com.app.beseye.setting.HWSettingsActivity;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, 
 																			  OnHttpTaskCallback, 

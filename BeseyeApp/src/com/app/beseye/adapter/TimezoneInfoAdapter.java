@@ -4,15 +4,8 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.TimeZone;
-
-import com.app.beseye.R;
-import com.app.beseye.setting.TimezoneListActivity.BeseyeTimeZone;
-import com.app.beseye.util.BeseyeConfig;
-import com.app.beseye.util.BeseyeUtils;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.app.beseye.R;
+import com.app.beseye.setting.TimezoneListActivity.BeseyeTimeZone;
+import com.app.beseye.util.BeseyeUtils;
 
 public class TimezoneInfoAdapter extends BaseAdapter {
 	protected WeakReference<Context> mContext = null;

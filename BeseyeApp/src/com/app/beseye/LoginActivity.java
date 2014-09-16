@@ -1,18 +1,12 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeConfig.TEST_ACC;
 
 import java.util.List;
 
 import org.json.JSONObject;
-
-import com.app.beseye.error.BeseyeError;
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
-import com.app.beseye.util.BeseyeAccountFilter;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeUtils;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,7 +18,14 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.app.beseye.error.BeseyeError;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeAccountFilter;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 
 
 public class LoginActivity extends BeseyeAccountBaseActivity {

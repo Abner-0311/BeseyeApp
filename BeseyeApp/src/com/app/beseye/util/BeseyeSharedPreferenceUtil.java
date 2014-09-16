@@ -1,6 +1,7 @@
 package com.app.beseye.util;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
 import java.util.Map;
 import java.util.Set;
 

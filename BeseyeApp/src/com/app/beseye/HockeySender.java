@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.acra.ACRA;
-import org.acra.collector.CrashReportData;
 import org.acra.ReportField;
+import org.acra.collector.CrashReportData;
 import org.acra.sender.ReportSender;
 import org.acra.sender.ReportSenderException;
 import org.apache.http.NameValuePair;

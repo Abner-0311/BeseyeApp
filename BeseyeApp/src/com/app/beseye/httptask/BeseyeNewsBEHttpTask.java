@@ -1,19 +1,15 @@
 package com.app.beseye.httptask;
 
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
 import java.util.List;
+
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeUtils;
-
-import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 public class BeseyeNewsBEHttpTask  {
 	static private final String URL_NEWS_COUNT  			= "news/get_counts";

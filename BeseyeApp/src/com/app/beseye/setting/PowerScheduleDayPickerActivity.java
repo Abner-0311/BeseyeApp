@@ -1,21 +1,11 @@
 package com.app.beseye.setting;
 
-import static com.app.beseye.util.BeseyeConfig.*;
-import static com.app.beseye.util.BeseyeJSONUtil.*;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeJSONUtil.SCHED_DAYS;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.app.beseye.BeseyeBaseActivity;
-import com.app.beseye.CameraListActivity;
-
-import com.app.beseye.R;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,6 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.CameraListActivity;
+import com.app.beseye.R;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 
 public class PowerScheduleDayPickerActivity extends BeseyeBaseActivity{
 	static private final int DAY_OF_WEEK = 7;

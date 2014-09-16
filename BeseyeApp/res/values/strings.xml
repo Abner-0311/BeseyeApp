@@ -81,6 +81,13 @@
     <string name="dialog_wifi_ap_security">Security</string>
     <string name="dialog_wifi_ap_security_none">None</string>
     
+    <string name="locate_aware_output">Location:lat,lng</string>
+    <string name="locate_aware_search">Search!</string>
+    <string name="loacte_aware_address"></string>
+    
+    
+    
+    
     <string name="dialog_wifi_ap_key_index">Key index</string>
     
     <string name="dialog_dettach_cam">Are you sure to dettach this cam [%s]?</string>
@@ -91,7 +98,9 @@
     <string name="cam_setting_title_power_setting">Power settings</string>
 	<string name="cam_setting_title_power">Camera power</string>
 	<string name="cam_setting_title_power_time">Power schedule</string>
+	<string name="cam_setting_title_Location_aware">Location aware</string>
 	<string name="cam_setting_title_location">Location aware</string>
+	<string name="cam_setting_title_setlocation">Set location</string>
 	<string name="cam_setting_title_notification_setting">Notification settings</string>
 	<string name="cam_setting_title_notification_event">Notification events</string>
 	<string name="cam_setting_title_family_recognition">Family recognition</string>
@@ -153,6 +162,7 @@
 	<string name="cam_setting_title_cam_info">Camera information</string>
 	<string name="cam_setting_empty_name_warning">Camera name can not be empty!</string>
 	<string name="cam_setting_schedule_add">Add&#8230;</string>
+	<string name="cam_setting_Location_aware_setting">Turn off around...</string>
 	<string name="cam_setting_schedule_turnoff_every">Turn off camera on every</string>
 	<string name="cam_setting_schedule_turnoff_from">From:</string>
 	<string name="cam_setting_schedule_turnoff_to">To:</string>

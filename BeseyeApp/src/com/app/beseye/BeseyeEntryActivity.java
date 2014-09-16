@@ -1,18 +1,13 @@
 package com.app.beseye;
 
-import java.util.Calendar;
-
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
-import com.app.beseye.util.BeseyeConfig;
-import com.app.beseye.widget.BeseyeDatetimePickerDialog;
-import com.app.beseye.widget.BeseyeDatetimePickerDialog.OnDatetimePickerClickListener;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeConfig;
 
 public class BeseyeEntryActivity extends BeseyeBaseActivity {
 

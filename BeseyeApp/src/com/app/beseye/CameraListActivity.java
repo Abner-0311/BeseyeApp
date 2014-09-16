@@ -1,10 +1,10 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.COMPUTEX_DEMO;
+import static com.app.beseye.util.BeseyeConfig.COMPUTEX_PAIRING;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -20,26 +19,19 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.app.beseye.BeseyeBaseActivity.OnResumeUpdateCamInfoRunnable;
 import com.app.beseye.adapter.CameraListAdapter;
 import com.app.beseye.adapter.CameraListAdapter.CameraListItmHolder;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.pairing.SoundPairingActivity;
-import com.app.beseye.setting.CameraSettingActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;

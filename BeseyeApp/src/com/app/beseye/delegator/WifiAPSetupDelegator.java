@@ -1,6 +1,8 @@
 package com.app.beseye.delegator;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.RELAY_AP_PW;
+import static com.app.beseye.util.BeseyeConfig.RELAY_AP_SSID;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

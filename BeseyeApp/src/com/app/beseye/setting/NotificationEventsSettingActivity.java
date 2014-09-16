@@ -1,19 +1,30 @@
 package com.app.beseye.setting;
 
-import static com.app.beseye.util.BeseyeConfig.*;
-import static com.app.beseye.util.BeseyeJSONUtil.*;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
+import static com.app.beseye.util.BeseyeJSONUtil.NOTIFY_OBJ;
+import static com.app.beseye.util.BeseyeJSONUtil.OBJ_TIMESTAMP;
+import static com.app.beseye.util.BeseyeJSONUtil.STATUS;
+import static com.app.beseye.util.BeseyeJSONUtil.TYPE;
+import static com.app.beseye.util.BeseyeJSONUtil.getJSONObject;
 
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
-
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
@@ -22,18 +33,6 @@ import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
-
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 											   implements OnSwitchBtnStateChangedListener{

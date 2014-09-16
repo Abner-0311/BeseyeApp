@@ -1,15 +1,16 @@
 package com.app.beseye.httptask;
 
+import static com.app.beseye.util.BeseyeJSONUtil.CAM_UUID;
+import static com.app.beseye.util.BeseyeJSONUtil.DEV_ID;
+import static com.app.beseye.util.BeseyeJSONUtil.SES_TOKEN;
+
 import java.util.List;
+
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.util.BeseyeUtils;
-
-import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 public class BeseyeNotificationBEHttpTask  {
 	static private final String URL_WS_SERVER  			= "websocket/get_avaliable_server";

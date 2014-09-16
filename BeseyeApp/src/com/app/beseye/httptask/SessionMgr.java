@@ -1,15 +1,18 @@
 package com.app.beseye.httptask;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeSharedPreferenceUtil.getPrefIntValue;
+import static com.app.beseye.util.BeseyeSharedPreferenceUtil.getPrefLongValue;
+import static com.app.beseye.util.BeseyeSharedPreferenceUtil.getPrefStringValue;
+import static com.app.beseye.util.BeseyeSharedPreferenceUtil.getSecuredSharedPreferences;
+import static com.app.beseye.util.BeseyeSharedPreferenceUtil.getSharedPreferences;
+import static com.app.beseye.util.BeseyeSharedPreferenceUtil.setPrefIntValue;
+import static com.app.beseye.util.BeseyeSharedPreferenceUtil.setPrefLongValue;
+import static com.app.beseye.util.BeseyeSharedPreferenceUtil.setPrefStringValue;
 
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
-import com.app.beseye.util.BeseyeJSONUtil;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,7 +21,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import static com.app.beseye.util.BeseyeSharedPreferenceUtil.*;
+import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
 
 //SessionMgr is responsible for storing back-end URL, token, user Userid in storage/memory
 public class SessionMgr {

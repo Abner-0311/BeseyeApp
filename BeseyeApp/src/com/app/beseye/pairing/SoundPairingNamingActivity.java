@@ -2,24 +2,18 @@ package com.app.beseye.pairing;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,18 +23,10 @@ import android.widget.Toast;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.CameraViewActivity;
-import com.app.beseye.PairingFailActivity;
 import com.app.beseye.R;
-import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.setting.CameraSettingActivity;
-import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.util.NetworkMgr;
-import com.app.beseye.util.NetworkMgr.WifiAPInfo;
-import com.app.beseye.widget.GifMovieView;
 
 public class SoundPairingNamingActivity extends BeseyeBaseActivity {	
 	private EditText mEtCamName;

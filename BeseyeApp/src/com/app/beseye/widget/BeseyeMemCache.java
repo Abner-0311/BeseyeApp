@@ -1,9 +1,6 @@
 package com.app.beseye.widget;
 
-import static com.app.beseye.util.BeseyeConfig.*;
-
-import com.app.beseye.util.BeseyeConfig;
-
+import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;

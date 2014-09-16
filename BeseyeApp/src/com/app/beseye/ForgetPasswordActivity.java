@@ -8,14 +8,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import com.app.beseye.error.BeseyeError;
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
-import com.app.beseye.util.BeseyeAccountFilter;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeUtils;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +17,14 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.app.beseye.error.BeseyeError;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeAccountFilter;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 
 public class ForgetPasswordActivity extends BeseyeAccountBaseActivity {
 	private Button mBtnSubmit;

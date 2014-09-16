@@ -1,6 +1,8 @@
 package com.app.beseye.util;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.RELAY_AP_SSID;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,11 +16,6 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.app.beseye.R;
-import com.app.beseye.httptask.SessionMgr.SessionData;
-import com.app.beseye.receiver.NetworkChangeReceiver;
-import com.app.beseye.receiver.WifiStateChangeReceiver;
 
 import android.content.Context;
 import android.content.IntentFilter;
@@ -35,6 +32,10 @@ import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+
+import com.app.beseye.R;
+import com.app.beseye.receiver.NetworkChangeReceiver;
+import com.app.beseye.receiver.WifiStateChangeReceiver;
 
 public class NetworkMgr {
 	public static final int NUM_WEP_KEY_IDX = 4;

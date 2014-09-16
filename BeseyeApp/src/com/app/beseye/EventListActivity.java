@@ -1,6 +1,6 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -21,25 +21,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AbsListView.OnScrollListener;
 
-import com.app.beseye.BeseyeBaseActivity.OnResumeUpdateCamInfoRunnable;
 import com.app.beseye.adapter.EventListAdapter;
 import com.app.beseye.adapter.EventListAdapter.EventListItmHolder;
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeClockIndicator;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog;
 import com.app.beseye.widget.BeseyeDatetimePickerDialog.OnDatetimePickerClickListener;
-import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
-import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;

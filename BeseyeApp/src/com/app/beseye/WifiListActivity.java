@@ -1,41 +1,14 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.RELAY_AP_SSID;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.IRCUT_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.LED_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.MIC_GAIN;
-import static com.app.beseye.util.BeseyeJSONUtil.MIC_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.VIDEO_RES;
-import static com.app.beseye.util.BeseyeJSONUtil.getJSONInt;
 
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.app.beseye.adapter.CameraListAdapter;
-import com.app.beseye.adapter.WifiInfoAdapter;
-import com.app.beseye.adapter.WifiInfoAdapter.WifoInfoHolder;
-import com.app.beseye.delegator.WifiAPSetupDelegator;
-import com.app.beseye.delegator.WifiAPSetupDelegator.OnWifiApSetupCallback;
-import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_ERROR;
-import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_STATE;
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
-import com.app.beseye.setting.CamSettingMgr;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
-import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.util.NetworkMgr;
-import com.app.beseye.util.NetworkMgr.WifiAPInfo;
-import com.app.beseye.widget.BeseyeSwitchBtn;
-import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
-import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
-import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
-import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
-import com.app.beseye.widget.PullToRefreshListView;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -51,16 +24,31 @@ import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import com.app.beseye.adapter.WifiInfoAdapter;
+import com.app.beseye.adapter.WifiInfoAdapter.WifoInfoHolder;
+import com.app.beseye.delegator.WifiAPSetupDelegator;
+import com.app.beseye.delegator.WifiAPSetupDelegator.OnWifiApSetupCallback;
+import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_ERROR;
+import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_STATE;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.NetworkMgr;
+import com.app.beseye.util.NetworkMgr.WifiAPInfo;
+import com.app.beseye.widget.BeseyeSwitchBtn;
+import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
+import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
+import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
+import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
+import com.app.beseye.widget.PullToRefreshListView;
 
 public class WifiListActivity extends WifiControlBaseActivity 
 							  implements OnWifiApSetupCallback,

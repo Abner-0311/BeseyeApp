@@ -1,5 +1,7 @@
 package com.app.beseye.httptask;
 
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.List;
+
 import org.apache.http.client.methods.HttpPost;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,8 +22,6 @@ import android.util.Log;
 
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeStorageAgent;
-
-import static com.app.beseye.util.BeseyeConfig.TAG;
 
 public class BeseyeMMBEHttpTask  {
 //	static private final String MM_HOST 				= "http://mm01-forext-dev.beseye.com/";

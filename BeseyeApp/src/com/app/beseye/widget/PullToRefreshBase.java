@@ -15,11 +15,7 @@
  *******************************************************************************/
 package com.app.beseye.widget;
 
-import static com.app.beseye.util.BeseyeConfig.*;
-
-import com.app.beseye.widget.internal.BeseyeRefreshLayout;
-import com.app.beseye.widget.internal.LoadingLayout;
-
+import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -35,6 +31,9 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+
+import com.app.beseye.widget.internal.BeseyeRefreshLayout;
+import com.app.beseye.widget.internal.LoadingLayout;
 
 
 public abstract class PullToRefreshBase<T extends View> extends LinearLayout {

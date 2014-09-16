@@ -1,17 +1,13 @@
 package com.app.beseye.widget;
 
 import static com.app.beseye.util.BeseyeConfig.ASSIGN_ST_PATH;
-import static com.app.beseye.util.BeseyeConfig.COMPUTEX_DEMO;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.lang.ref.WeakReference;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
-import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,13 +20,12 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 
 import com.app.beseye.CameraViewActivity;
 import com.app.beseye.R;
-import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeUtils;
 
 public class CameraViewControlAnimator {

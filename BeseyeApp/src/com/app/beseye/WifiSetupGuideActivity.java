@@ -8,13 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.pairing.SoundPairingActivity;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.util.NetworkMgr;
-import com.app.beseye.util.NetworkMgr.WifiAPInfo;
-
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +18,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.pairing.SoundPairingActivity;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.NetworkMgr;
+import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 
 public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 	protected View mVwNavBar;

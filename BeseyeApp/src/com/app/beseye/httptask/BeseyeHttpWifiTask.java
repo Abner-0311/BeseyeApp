@@ -28,11 +28,11 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.json.JSONObject;
 
-import com.app.beseye.BeseyeBaseActivity;
-import com.app.beseye.util.NetworkMgr.WifiAPInfo;
-
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 
 public class BeseyeHttpWifiTask extends AsyncTask<String, Double, List<JSONObject>> {
 	public static final String LIST_NUM_LOAD = "24";

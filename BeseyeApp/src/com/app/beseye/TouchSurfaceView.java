@@ -1,21 +1,18 @@
 package com.app.beseye;
 
-import static com.app.beseye.TouchSurfaceView.State.*;
-import static com.app.beseye.util.BeseyeConfig.*;
-
-import com.app.beseye.util.BeseyeUtils;
-
+import static com.app.beseye.TouchSurfaceView.State.ANIMATE_ZOOM;
+import static com.app.beseye.TouchSurfaceView.State.DRAG;
+import static com.app.beseye.TouchSurfaceView.State.FLING;
+import static com.app.beseye.TouchSurfaceView.State.NONE;
+import static com.app.beseye.TouchSurfaceView.State.ZOOM;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -27,9 +24,10 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Scroller;
+
+import com.app.beseye.util.BeseyeUtils;
 
 public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callback{
 
