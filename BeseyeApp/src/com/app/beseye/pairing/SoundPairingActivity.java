@@ -261,7 +261,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		if(null != mChosenWifiAPInfo){
 			Log.w(TAG, "beginToPlayPairingTone(), mChosenWifiAPInfo:"+mChosenWifiAPInfo.toString());
 			siOriginalVolume = sAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-			sAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (int)(sAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)*0.8), AudioManager.FLAG_PLAY_SOUND); 
+			sAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (int)(sAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)), AudioManager.FLAG_PLAY_SOUND); 
 			
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override

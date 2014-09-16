@@ -1,10 +1,87 @@
 #include "AudioTest.h"
 #include "simple_websocket_mgr.h"
+#include "delegate/account_mgr.h"
+#include "delegate/cam_controller.h"
+#include "cgi_attr.h"
+#include "json_utils.h"
+#include "utils.h"
+#include "ws_attr.h"
 #include "cmd_error.h"
 
 #ifdef CAM_ENV
 #include "http_cgi.h"
 #endif
+
+#include <dirent.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+static const char* SP_ENABLED_FLAG			= "/beseye/config/sp_enabled";
+
+//void setInvalidWifi(){
+//	int iRet = 0;
+//	int iTrial = 0;
+//	char jsonData[BUF_SIZE]={0};
+//	sprintf(jsonData, "{\"sec\":3,\"key\":\"88888888\",\"ssid\":\"test\"}");
+//	char jsonData2[BUF_SIZE]={0};
+//	do{
+//		strcpy(jsonData2, jsonData);
+//		//LOGI( "ssid:%s, jsonData2:[%s]\n", ssid, jsonData2);
+//		if(0 < iTrial){
+//			sleep(1);
+//		}
+//		iRet = setWiFiSetting(jsonData2);
+//	}while((iRet == RET_CODE_NETWORK_ERR || iRet == CMD_RET_CODE_WEB_API_ERR) && 3 >iTrial++);
+//}
+
+int checkSpEnabled(){
+	int iRet = RET_CODE_OK;
+	BOOL sp_enabled = isFileExist(SP_ENABLED_FLAG);
+
+	if(FALSE == sp_enabled){
+		char wifiInfo[BUF_SIZE]={0};
+		int iTrials = 0;
+		do{
+			if(0 < iTrials){
+				sleep(1);
+			}
+			iRet = getWiFiSetting(wifiInfo);
+		}while(iTrials++ > 3 && RET_CODE_OK != iRet);
+
+		if(RET_CODE_OK == iRet){
+			//LOGE( "wifiInfo:%s\n", wifiInfo?wifiInfo:"");
+			struct json_object *wifi_obj = json_tokener_parse(wifiInfo);
+			if(!is_error(wifi_obj)){
+				json_object *Data_obj = json_object_object_get(wifi_obj, WS_ATTR_INTERNAL_DATA);
+				if(!is_error(Data_obj)){
+					json_object *ssid_obj = json_object_object_get(Data_obj, API_PARAM_SSID);
+					if(!is_error(ssid_obj)){
+						const char *ssid = json_object_to_json_string(ssid_obj);
+						//LOGE( "ssid:[%s]\n", ssid?ssid:"");
+						if(ssid && 0 == strcmp(ssid, "\"beseye_ap1_cam\"")){
+							//LOGE( "ssid is matched\n");
+							json_object *pw_obj = json_object_object_get(Data_obj, API_PARAM_KEY);
+							if(!is_error(pw_obj)){
+								const char *pw = json_object_to_json_string(pw_obj);
+								//LOGE( "pw:[%s]\n", pw?pw:"");
+								if(pw && 0 == strcmp(pw, "\"12345678\"")){
+									//LOGE( "Found match AP info........................\n");
+									iRet = CMD_RET_CODE_SP_DISABLED;
+								}
+							}
+						}
+					}
+				}
+				FREE_JSON_OBJ(wifi_obj)
+			}
+		}
+	}else{
+		LOGE( "sp_enabled is on........................\n");
+	}
+
+	return iRet;
+}
 
 //Check Network and token
 static const msec_t TIME_TO_CHECK_TOKEN = 30000;//30 seconds
@@ -12,8 +89,217 @@ static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 300000;//300 seconds
 static const long TIME_TO_CHECK_LED = 1;//1 seconds
 static msec_t slLastTimeCheckToken = -1;
 
+static const char* LOG_SOURCE = "/tmp/beseye_boot.log.old";
+static const char* LOG_DEST = "%s/sp_failed_%s.log";
+static const char* LOG_DIR = "/beseye/sp_log";
+
+//int checkTokenValid(){
+//	char jsonData[BUF_SIZE]={0};
+//	int iTrial = 0;
+//	int iRet = -1;
+//	do{
+//		if(0 < iTrial){
+//			sleep(1);
+//			memset(jsonData, 0, BUF_SIZE);
+//		}
+//		iRet = validateSession(jsonData);
+//	}while(3 >iTrial++ && (iRet == RET_CODE_NETWORK_ERR || iRet == CMD_RET_CODE_WEB_API_ERR));
+//	LOGI( "checkTokenValid->iRet:%d, iTrial:%d\n", iRet, iTrial);
+//	return iRet;
+//}
+//
+//int verifyUserToken(const char* mac, const char* token){
+//	char jsonData[BUF_SIZE]={0};
+//	int iTrial = 0;
+//	int iRet = -1;
+//	do{
+//		if(0 < iTrial){
+//			sleep(1);
+//			memset(jsonData, 0, BUF_SIZE);
+//		}
+//		iRet = verifyUserToken(jsonData, (char*)mac, (char*)token);
+//	}while(3 >iTrial++ && (iRet == RET_CODE_NETWORK_ERR || iRet == CMD_RET_CODE_WEB_API_ERR));
+//	return iRet;
+//}
+//
+//int attachCam(const char* mac, const char* token){
+//	char jsonData[BUF_SIZE]={0};
+//	int iTrial = 0;
+//	int iRet = -1;
+//	do{
+//		if(0 < iTrial){
+//			sleep(1);
+//			memset(jsonData, 0, BUF_SIZE);
+//		}
+//		iRet = bindUserAccount(jsonData, (char*)mac, (char*)token);
+//	}while(3 >iTrial++ && (iRet == RET_CODE_NETWORK_ERR || iRet == CMD_RET_CODE_WEB_API_ERR));
+//
+//	LOGI( "bindUserAccount->iRet:%d, iTrial:%d\n", iRet, iTrial);
+//	return iRet;
+//}
+
+int setMicrophoneGain(const char* gain){
+	char jsonData[BUF_SIZE]={0};
+	int iRet = RET_CODE_OK;
+	if(gain){
+		sprintf(jsonData, "{\"gain\":%s}", gain);
+		iRet = setMicGain(jsonData);
+		LOGI( "iRet of setMicGain():%d\n", iRet);
+	}else{
+		return CMD_RET_CODE_INVALID_INPUT_ERR;
+	}
+	return iRet;
+}
+
+int checkSPEnv(){
+	char jsonData[BUF_SIZE]={0};
+	int iRet = setMicrophoneGain("25");
+
+	if(RET_CODE_OK == getEventByName(jsonData, "mEvent")){
+		memset(jsonData, 0 , BUF_SIZE);
+		strcpy(jsonData, "{\"name\":\"mEvent\"}");
+		iRet = httpPostViaCGI(API_DEL_EVENT, jsonData);
+		memset(jsonData, 0 , BUF_SIZE);
+		strcpy(jsonData, "{\"name\":\"LocalMotion\"}");
+		iRet = httpPostViaCGI(API_DEL_EVENT_SEVER, jsonData);
+		//system("/beseye/util/curl --basic -u admin:password -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"mEvent\"}' http://localhost/sray/deleteEvent.cgi");
+		//system("/beseye/util/curl --basic -u admin:password -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"LocalMotion\"}' http://localhost/sray/deleteEventServer.cgi");
+		//iRet = CMD_RET_CODE_NEED_REBOOT;
+	}
+	LOGI( "final iRet:%d\n", iRet);
+	return iRet;
+}
+
+int checkLogFiles ()
+{
+    DIR * d = NULL;
+    int iMatchBegin = -1;
+    int iMatchEnd = -1;
+    int idx = 0;
+    int iKillFileEnd = -1;
+    //char * dir_name = ".";
+
+    /* Open the current directory. */
+
+    d = opendir (LOG_DIR);
+
+    if (! d) {
+    	LOGE ("Cannot open directory '%s': %s\n", LOG_DIR, strerror (errno));
+    	mkdir(LOG_DIR, 755);
+    	goto $EXIT;
+    }
+
+    while (1) {
+        struct dirent * entry;
+
+        entry = readdir (d);
+        if (! entry) {
+            break;
+        }
+        //LOGE ("%s\n", entry->d_name);
+        if(NULL != entry->d_name && 0 == strncmp(entry->d_name, "sp_failed_", 10)){
+        	if(-1 == iMatchBegin){
+        		iMatchBegin = iMatchEnd = idx;
+        	}else{
+        		iMatchEnd = idx;
+        	}
+        }
+        idx++;
+    }
+
+    //LOGE ("iMatchBegin:%d, iMatchEnd:%d\n", iMatchBegin, iMatchEnd);
+
+    if(0 <= iMatchBegin && iMatchEnd - iMatchBegin > 2){
+    	rewinddir(d);
+
+    	iKillFileEnd = iMatchEnd - 3;
+
+    	LOGE ("iMatchBegin:%d, iKillFileEnd:%d\n", iMatchBegin, iKillFileEnd);
+    	idx = 0;
+    	if(iKillFileEnd >= iMatchBegin){
+    		if(d){
+				if (closedir (d)) {
+					LOGE ("Could not close '%s': %s\n", LOG_DIR, strerror (errno));
+				}
+				d=NULL;
+			}
+    		d = opendir (LOG_DIR);
+    	    if (! d) {
+    	    	LOGE ("Cannot open directory '%s': %s\n", LOG_DIR, strerror (errno));
+    	    	mkdir(LOG_DIR, 755);
+    	    	goto $EXIT;
+    	    }
+    		while (1) {
+				struct dirent * entry;
+
+				entry = readdir (d);
+				if (! entry) {
+					break;
+				}
+				//LOGE ("%s at %d\n", entry->d_name, idx);
+				if(iMatchBegin<=idx && idx <= iKillFileEnd && NULL != entry->d_name && 0 == strncmp(entry->d_name, "sp_failed_", 10)){
+					char logFilePath[1024] = {0};
+					sprintf(logFilePath, "%s/%s", LOG_DIR, entry->d_name);
+					int iRet = remove(logFilePath);
+
+					LOGE ("del dir %s, iRet:%d\n", entry->d_name, iRet);
+				}
+				idx++;
+				if(idx > iKillFileEnd){
+					break;
+				}
+			}
+    	}
+    }
+
+$EXIT:
+    /* Close the directory. */
+    if(d){
+        if (closedir (d)) {
+            LOGE ("Could not close '%s': %s\n", LOG_DIR, strerror (errno));
+        }
+    }
+    return 0;
+}
+
+static void copyLogFile(){
+	char ch;
+	FILE *source = NULL, *target = NULL;
+	source = fopen(LOG_SOURCE, "r");
+
+	if( source == NULL ){
+		LOGE( "cannot open file[%s]\n", LOG_SOURCE);
+		return;
+	}
+
+	char date[20];
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	strftime(date, sizeof(date) / sizeof(*date), "%Y-%m-%dT%H:%M:%S", gmtime(&tv.tv_sec));
+	char logFilePath[1024] = {0};
+	sprintf(logFilePath, LOG_DEST, LOG_DIR, date);
+
+	target = fopen(logFilePath, "w");
+	if( target == NULL ){
+	    fclose(source);
+	    LOGE( "cannot open file[%s]\n", (logFilePath)?logFilePath:"");
+	    return;
+	}
+
+	while( ( ch = fgetc(source) ) != EOF )
+	  fputc(ch, target);
+
+	LOGE("File copied to %s successfully.\n", logFilePath);
+
+	fclose(source);
+	fclose(target);
+}
+
 //Check if SoundPairing is disabled
 static bool sForceDisabledSp = false;
+
+//Check if SoundPairing Error log is enabled
+static bool sSpErrLogEnabled = false;
 
 AudioTest* AudioTest::sAudioTest=NULL;
 
@@ -330,6 +616,7 @@ bool AudioTest::isAutoTestMode(){
 bool AudioTest::startAutoTest(string strInitCode, int iDigitalToTest){
 	//LOGI("startAutoTest()+, strInitCode:%s\n", strInitCode.c_str());
 	sForceDisabledSp = false;
+	sSpErrLogEnabled = false;
 	deinitTestRound();
 
 	bool bRet = false;
@@ -374,16 +661,23 @@ bool AudioTest::startPairingAnalysis(){
 	mbPairingAnalysisMode = true;
 	bool bRet = false;
 	if(false == isSenderMode()){
+		sForceDisabledSp = false;
+		sSpErrLogEnabled = false;
 
 		bRet = startAnalyzeTone();
 #ifndef ANDROID
 		if(bRet){
-			int iRet = system("/beseye/cam_main/cam-handler -chk_sp_enabled") >> 8;
+			//checkLogFiles();
+			//setInvalidWifi();
+
+			int iRet = checkSpEnabled();//system("/beseye/cam_main/cam-handler -chk_sp_enabled") >> 8;
 			LOGE("startPairingAnalysis(),chk_sp_enabled, iRet:%d\n", iRet);
 			if(CMD_RET_CODE_SP_DISABLED == iRet){
 				sForceDisabledSp = true;
 				LOGE("startPairingAnalysis(), chk_sp_enabled, disabled SP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 			}
+
+			sSpErrLogEnabled = isFileExist("/beseye/config/sp_error_enabled");
 
 			miPairingReturnCode = -1;
 			slLastTimeCheckToken = time_ms();
@@ -432,15 +726,15 @@ bool AudioTest::playTone(string strCode, bool bNeedEncode){
 
 bool AudioTest::startGenerateTone(string strInitCode, int iDigitalToTest){
 	bool bRet = false;
-	int errno = 0;
+	int iErrno = 0;
 	//LOGE("AudioTest::startGenerateTone(),  mControlThread,%d\n", mControlThread);
 	if(!mControlThread){
 		this->strInitCode = "0123456789abcdef";//strInitCode;
 		miDigitalToTest = iDigitalToTest;
-		if (0 != (errno = pthread_create(&mControlThread, NULL, AudioTest::runAutoTestControl, this))) {
-			LOGE("AudioTest::startAutoTet(), error when create mControlThread,%d\n", errno);
+		if (0 != (iErrno = pthread_create(&mControlThread, NULL, AudioTest::runAutoTestControl, this))) {
+			LOGE("AudioTest::startAutoTet(), error when create mControlThread,%d\n", iErrno);
 		}else{
-			LOGE("AudioTest::startAutoTet(), create mControlThread,%d\n", errno);
+			LOGE("AudioTest::startAutoTet(), create mControlThread,%d\n", iErrno);
 			bRet = true;
 #ifdef ANDROID
 			pthread_setname_np(mControlThread, "ControlThread");
@@ -459,10 +753,10 @@ bool AudioTest::stopGenerateTone(){
 
 bool AudioTest::startAnalyzeTone(){
 	bool bRet = false;
-	int errno = 0;
+	int iErrno = 0;
 	if(!mBufRecordThread){
-		if (0 != (errno = pthread_create(&mBufRecordThread, NULL, AudioTest::runAudioBufRecord, this))) {
-			LOGE("AudioTest::startAutoTet(), error when create mBufRecordThread,%d\n", errno);
+		if (0 != (iErrno = pthread_create(&mBufRecordThread, NULL, AudioTest::runAudioBufRecord, this))) {
+			LOGE("AudioTest::startAutoTet(), error when create mBufRecordThread,%d\n", iErrno);
 		}else{
 			bRet = true;
 #ifdef ANDROID
@@ -472,8 +766,8 @@ bool AudioTest::startAnalyzeTone(){
 	}
 
 	if(bRet && !mAnalysisThread){
-		if (0 != (errno = pthread_create(&mAnalysisThread, NULL, AudioTest::runAudioBufAnalysis, this))) {
-			LOGE("AudioTest::startAutoTet(), error when create mAnalysisThread,%d\n", errno);
+		if (0 != (iErrno = pthread_create(&mAnalysisThread, NULL, AudioTest::runAudioBufAnalysis, this))) {
+			LOGE("AudioTest::startAutoTet(), error when create mAnalysisThread,%d\n", iErrno);
 		}else{
 			bRet = true;
 #ifdef ANDROID
@@ -714,6 +1008,7 @@ static Pairing_Mode sPedningPairingMode = PAIRING_NONE;
 static const int ERROR_LED_PERIOD = 10;
 static bool sbNeedToInitBuf = false;
 static int sCurLEDCnt = 0;
+static msec_t lTImeToSaveErrorLog = 0;
 
 void changePairingMode(Pairing_Mode mode){
 	if(sPairingMode != mode)
@@ -723,6 +1018,15 @@ void changePairingMode(Pairing_Mode mode){
 		LOGW("---sPedningPairingMode:%d\n", sPedningPairingMode);
 		sPedningPairingMode = PAIRING_INIT;//mode;
 	}else{
+		if(PAIRING_ANALYSIS == sPairingMode && mode == PAIRING_ERROR){
+			if(sSpErrLogEnabled){
+				lTImeToSaveErrorLog = time_ms() + 10000;
+				LOGE("Need to save error log at %u\n", lTImeToSaveErrorLog);
+			}
+			//try to restart audio
+			stopReceiveAudioBuf();
+		}
+
 		if(mode == PAIRING_ERROR){
 			sCurLEDCnt = 0;
 		}
@@ -750,14 +1054,19 @@ void checkLEDByMode(){
 
 void setLedLight(int bRedOn, int bGreenOn, int bBlueOn){
 #ifndef ANDROID
+//	static char jsonData[BUF_SIZE]={0};
+//	setLEDLight(jsonData, (bRedOn) | (bGreenOn<<1) | (bBlueOn<<2));
 	static char cmd[BUF_SIZE]={0};
 	//sprintf(cmd, "/beseye/cam_main/cam-handler -setled %d", ((bRedOn) | (bGreenOn<<1) | (bBlueOn<<2)));
+	memset(cmd,0,BUF_SIZE);
 	sprintf(cmd, "{\"index\":0, \"status\":%d}", bRedOn);
 	postCGI("http://localhost/sray/setLEDSetting.cgi", cmd);
 
+	memset(cmd,0,BUF_SIZE);
 	sprintf(cmd, "{\"index\":1, \"status\":%d}", bGreenOn);
 	postCGI("http://localhost/sray/setLEDSetting.cgi", cmd);
 
+	memset(cmd,0,BUF_SIZE);
 	sprintf(cmd, "{\"index\":2, \"status\":%d}", bBlueOn);
 	postCGI("http://localhost/sray/setLEDSetting.cgi", cmd);
 	//int iRet = system(cmd);
@@ -765,44 +1074,44 @@ void setLedLight(int bRedOn, int bGreenOn, int bBlueOn){
 #endif
 }
 
-static const int  MAX_TIME_TO_WAIT_SYS = 2000;//2 sec
-static pid_t pid_wait_sys = -1;
-static msec_t lTimeWaitSys = 0;
-static int sInvokeSystemRet = 0;
-
-int invokeSystem(const char* cmd){
-	int iRet = 0;
-	sInvokeSystemRet = 0;
-	lTimeWaitSys = time_ms();
-	pid_wait_sys = fork();
-	if (pid_wait_sys == 0) {
-		sInvokeSystemRet = system(cmd);
-		exit(0);
-
-		pid_t timeout_pid = fork();
-		if (timeout_pid == 0) {
-			LOGE( "turnOffSS(), timeout time_ms:%u .............++++\n", time_ms());
-			sleep(MAX_TIME_TO_STOP_SS);
-			LOGE( "turnOffSS(), timeout time_ms:%u .............----\n", time_ms());
-			exit(0);
-		}
-
-		pid_t exited_pid = wait(NULL);
-		if (exited_pid == pid_stop_ss) {
-			LOGE( "turnOffSS(), kill timeout_pid, time_ms:%u .............\n", time_ms());
-			kill(timeout_pid, SIGKILL);
-		} else {
-			LOGE( "turnOffSS(), kill pid_stop_ss, time_ms:%u .............\n", time_ms());
-			kill(pid_stop_ss, SIGKILL); // Or something less violent if you prefer
-			deleteFile(STOP_SS_PROCESS_FLAG);
-		}
-	}
-
-	wait(NULL); // Collect the other process
-
-	LOGE( "turnOffSS(), intermediate_pid:%d \n", intermediate_pid);
-	return sInvokeSystemRet;
-}
+//static const int  MAX_TIME_TO_WAIT_SYS = 2000;//2 sec
+//static pid_t pid_wait_sys = -1;
+//static msec_t lTimeWaitSys = 0;
+//static int sInvokeSystemRet = 0;
+//
+//int invokeSystem(const char* cmd){
+//	int iRet = 0;
+//	sInvokeSystemRet = 0;
+//	lTimeWaitSys = time_ms();
+//	pid_wait_sys = fork();
+//	if (pid_wait_sys == 0) {
+//		sInvokeSystemRet = system(cmd);
+//		exit(0);
+//
+//		pid_t timeout_pid = fork();
+//		if (timeout_pid == 0) {
+//			LOGE( "turnOffSS(), timeout time_ms:%u .............++++\n", time_ms());
+//			sleep(MAX_TIME_TO_STOP_SS);
+//			LOGE( "turnOffSS(), timeout time_ms:%u .............----\n", time_ms());
+//			exit(0);
+//		}
+//
+//		pid_t exited_pid = wait(NULL);
+//		if (exited_pid == pid_stop_ss) {
+//			LOGE( "turnOffSS(), kill timeout_pid, time_ms:%u .............\n", time_ms());
+//			kill(timeout_pid, SIGKILL);
+//		} else {
+//			LOGE( "turnOffSS(), kill pid_stop_ss, time_ms:%u .............\n", time_ms());
+//			kill(pid_stop_ss, SIGKILL); // Or something less violent if you prefer
+//			deleteFile(STOP_SS_PROCESS_FLAG);
+//		}
+//	}
+//
+//	wait(NULL); // Collect the other process
+//
+//	LOGE( "turnOffSS(), intermediate_pid:%d \n", intermediate_pid);
+//	return sInvokeSystemRet;
+//}
 
 static const char* SES_TOKEN_PATH 			= "/beseye/config/ses_token";
 static pthread_t sThreadVerifyToken;
@@ -816,6 +1125,7 @@ void* AudioTest::verifyToken(void* userdata){
 			if(readFromFile(SES_TOKEN_PATH)){
 				//if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
 					if(0 == (system("/beseye/cam_main/beseye_token_check") >> 8)){
+					//if(0 == checkTokenValid()){
 						AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
 						setLedLight(0,1,0);
 						AudioTest::getInstance()->stopAutoTest();
@@ -852,6 +1162,13 @@ void* AudioTest::verifyToken(void* userdata){
 			}else{
 				sbLEDOn = !sbLEDOn;
 			}
+		}
+
+		if(0 < lTImeToSaveErrorLog && lTImeToSaveErrorLog < time_ms()){
+			LOGE("Time to save error log\n");
+			copyLogFile();
+			checkLogFiles();
+			lTImeToSaveErrorLog = 0;
 		}
 		sleep(TIME_TO_CHECK_LED);
 	}
@@ -904,6 +1221,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 		iCurIdx = siOffset;
 	}
 
+
 	if(fp){
 		if(charBufTmp){
 			free(charBufTmp);
@@ -943,15 +1261,15 @@ void writeBuf(unsigned char* charBuf, int iLen){
 	//Check network and token here
 	if(AudioTest::getInstance()->isPairingAnalysisMode()){
 		if(NULL == sThreadVerifyToken){
-			int errno = 0;
-			if (0 != (errno = pthread_create(&sThreadVerifyToken, NULL,  AudioTest::verifyToken, AudioTest::getInstance()))) {
-				LOGE("writeBuf, error when create thread to verify token,%d\n", errno);
+			int iErrno = 0;
+			if (0 != (iErrno = pthread_create(&sThreadVerifyToken, NULL,  AudioTest::verifyToken, AudioTest::getInstance()))) {
+				LOGE("writeBuf, error when create thread to verify token,%d\n", iErrno);
 			}
 		}
 	}
 
 	if(sbNeedToInitBuf){
-		LOGE("init buffer for entering ¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I¡I\n");
+		LOGE("init buffer for entering!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 		shortsRecBuf = NULL;
 		iCurIdx = 0;
 		ANALYSIS_THRESHHOLD_MONITOR_CNT = 0;
@@ -1025,7 +1343,8 @@ void writeBuf(unsigned char* charBuf, int iLen){
 				if(0 == siRefCount%ANALYSIS_THRESHHOLD_CK_LEN){
 					if(ANALYSIS_MAX_AUDIO_VALUE < sMaxValue){
 						LOGW("-------------------------------------------------------->ANALYSIS_MAX_AUDIO_VALUE:%d < sMaxValue:%d, set mic gain\n", ANALYSIS_MAX_AUDIO_VALUE, sMaxValue);
-						system("/beseye/cam_main/cam-handler -setgain 25") >> 8;
+						//system("/beseye/cam_main/cam-handler -setgain 25") >> 8;
+						setMicrophoneGain("25");
 						saveLogFile("/beseye/sp-gain-set");
 					}
 
@@ -1189,36 +1508,46 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 	Delegate_CloseAudioRecordDevice();
 #else
 
-	int iRet = system("/beseye/cam_main/cam-handler -setspenv 25") >> 8;
+	int iRet = checkSPEnv();//system("/beseye/cam_main/cam-handler -setspenv 25") >> 8;
 	LOGE("runAudioBufRecord(), check sp env, iRet:%d\n", iRet);
 	if(CMD_RET_CODE_NEED_REBOOT == iRet){
 		LOGE("runAudioBufRecord(), need to reboot due to change config\n");
 		saveLogFile("/beseye/reboot-pairing");
-		system("reboot");
+		char jsonData[BUF_SIZE]={0};
+		httpGetViaCGI(API_REBOOT_DEV, jsonData);
+		//system("reboot");
 	}else{
 		//char* session = "0e4bba41bef24f009337727ce44008cd";//[SESSION_SIZE];
-		char session[SESSION_SIZE];
-		memset(session, 0, sizeof(session));
-		int iTrial = 0;
-		int iRet = 0;
 		do{
-			if(0 < iTrial++){
-				LOGE("Get session failed, iTrial:%d", iTrial);
-				sleep(iTrial);
+			if(sPairingMode == PAIRING_INIT){
+				char session[SESSION_SIZE];
+				memset(session, 0, sizeof(session));
+				int iTrial = 0;
+				int iRet = 0;
+				do{
+					if(0 < iTrial++){
+						LOGE("Get session failed, iTrial:%d", iTrial);
+						sleep(iTrial);
+						memset(session, 0, sizeof(session));
+					}
+					iRet = GetSession(HOST_NAME, session);
+				}while(0 != iRet && iTrial < 5);
+
+				if(iRet != 0){
+					LOGE("Get session failed.");
+				}else{
+					LOGE("runAudioBufRecord(), begin to GetAudioBufCGI\n");
+					changePairingMode(PAIRING_INIT);
+
+					int res = GetAudioBufCGI(HOST_NAME_AUDIO, "receiveRaw", session, writeBuf);
+					LOGE("GetAudioBufCGI:res(%d), mbStopBufRecordFlag:%d\n",res, tester->mbStopBufRecordFlag);
+					//Delegate_CloseAudioDevice2();
+				}
+			}else{
+				LOGE("sPairingMode is not PAIRING_INIT, wait a while\n");
+				sleep(2);
 			}
-			iRet = GetSession(HOST_NAME, session);
-		}while(0 != iRet && iTrial < 5);
-
-		if(iRet != 0){
-			LOGE("Get session failed.");
-		}else{
-			LOGE("runAudioBufRecord(), begin to GetAudioBufCGI\n");
-			changePairingMode(PAIRING_INIT);
-
-			int res = GetAudioBufCGI(HOST_NAME_AUDIO, "receiveRaw", session, writeBuf);
-			LOGE("GetAudioBufCGI:res(%d)\n",res);
-			//Delegate_CloseAudioDevice2();
-		}
+		}while(false == tester->mbStopBufRecordFlag);
 	}
 #endif
 	LOGE("runAudioBufRecord()-\n");
@@ -1531,64 +1860,75 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		char cmd[BUF_SIZE]={0};
 		sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", strMAC.c_str(), retPW.str().c_str());
 		LOGE("wifi set cmd:[%s]\n", cmd);
-		int iRet = system(cmd) >> 8;
+		int iRet = setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
 		if(0 == iRet){
+			stopReceiveAudioBuf();
 			LOGE("wifi set OK\n");
 			//long lCheckTime = time_ms();
 			//long lDelta;
 			int iNetworkRet = 0;
 			int iTrials = 0;
+			LOGE("wifi connection check begin.............\n");
 			do{
-				if(0 < iTrials)
+				if(0 < iTrials){
+					LOGE("wifi connection check , trial %d failed, ret:%d, sleep.............\n", iTrials, iNetworkRet);
 					sleep(1);
+				}
+				++iTrials;
+				LOGE("wifi connection check , trial %d.............\n", iTrials);
+				//iNetworkRet = checkInternetStatus(NETWORK_CHECK_HOST);
 
-				//iNetworkRet = system("/beseye/cam_main/beseye_network_check") >> 8;
 				iNetworkRet = system("/beseye/util/curl www.google.com") >> 8;
-				//lDelta = (time_ms() - lCheckTime);
-				LOGE("wifi check ret:%d, ts:%ld, flag:%d, time:%lld \n", iNetworkRet, iTrials, ((iNetworkRet != 0) && (15 > iTrials)), time_ms());
-			}while((iNetworkRet != 0) && (15 > ++iTrials));
 
+				//LOGE("wifi check ret:%d, iTrials:%ld\n", iNetworkRet, iTrials));
+			}while( (15 > iTrials) && (iNetworkRet != 0));
 
 			LOGE("network checking complete, iNetworkRet:%d, iTrials:%ld\n", iNetworkRet, iTrials);
 
 			if(0 == iNetworkRet){
 				LOGE("network connected\n");
 				iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
+				//iRet = checkTokenValid();
 				if(0 == iRet){
 					LOGE("Token is already existed, check tmp token\n");
 					if(1 == cPurpose){
-						sprintf(cmd, "/beseye/cam_main/cam-handler -verToken %s %s", strMAC.c_str(), strUserNum.c_str());
+						sprintf(cmd, "/beseye/cam_main/cam-util -verToken %s %s", strMAC.c_str(), strUserNum.c_str());
 						LOGE("verToken cmd:[%s]\n", cmd);
 						iRet = system(cmd) >> 8;
+						//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
 						if(0 == iRet){
 							LOGE("Tmp User Token verification OK\n");
 							AudioTest::getInstance()->setPairingReturnCode(0);
 						}else{
 							LOGE("Tmp User Token verification failed\n");
 							//roll back wifi settings
-							iRet = system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
+							iRet = restoreWifi();//system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
 						}
 					}else{
 						LOGE("Wrong cPurpose\n");
 						//roll back wifi settings
-						iRet = system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
+						iRet = restoreWifi();//system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
 					}
 
 				}else{
 					if(0 == cPurpose){
 						LOGE("Token is invalid, try to attach\n");
-						sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", strMAC.c_str(), strUserNum.c_str());
+
+						sprintf(cmd, "/beseye/cam_main/cam-util -attach %s %s", strMAC.c_str(), strUserNum.c_str());
 						LOGE("attach cmd:[%s]\n", cmd);
 						iRet = system(cmd) >> 8;
+
+						//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
 						if(0 == iRet){
 							LOGE("Cam attach OK\n");
-							iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
-							if(0 == iRet){
-								LOGE("Token verification OK\n");
+							//iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
+							//iRet = checkTokenValid();
+							//if(0 == iRet){
+							//	LOGE("Token verification OK\n");
 								AudioTest::getInstance()->setPairingReturnCode(0);
-							}else{
-								LOGE("Token verification failed\n");
-							}
+							//}else{
+							//	LOGE("Token verification failed\n");
+							//}
 						}else{
 							LOGE("Cam attach failed\n");
 						}
@@ -1599,7 +1939,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			}else{
 				LOGE("network disconnected\n");
 				if(bGuess){
-					iRet = system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
+					iRet = restoreWifi();//system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
 				}
 			}
 		}else{

@@ -7,7 +7,10 @@
 #include <getopt.h>
 #include <signal.h>
 #include <exception>
+#include <curl/curl.h>
 #include "simple_websocket_mgr.h"
+#include "delegate/account_mgr.h"
+#include "delegate/cam_controller.h"
 
 static int was_closed;
 static int force_exit = 0;
@@ -21,8 +24,12 @@ void sighandler(int sig){
 int main(int argc, char** argv) {
 	LOGE("+++++\n");
 	signal(SIGINT, sighandler);
-	try
-	{
+
+	curl_global_init(CURL_GLOBAL_SSL);
+	Acc_Mgr_Init();
+	Cam_Controller_Init(0);
+	try{
+
 		SoundPair_Config::init();
 		if(1 < argc && 0 == strcmp(argv[1], "-test")){
 			int iDigitalToTest = 24;
@@ -46,6 +53,10 @@ int main(int argc, char** argv) {
 	{
 		std::cerr << "Unknown exception caught\n";
 	}
+
+	Cam_Controller_Deinit();
+	Acc_Mgr_Deinit();
+	curl_global_cleanup();
 
 	int iRetCode = AudioTest::getInstance()->getPairingReturnCode();
 	LOGE("-----, iRetCode:%d\n", iRetCode);
