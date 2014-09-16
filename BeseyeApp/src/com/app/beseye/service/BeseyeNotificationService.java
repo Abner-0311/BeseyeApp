@@ -574,6 +574,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     					new BeseyeNotificationBEHttpTask.GetWSServerTask(this).execute();
     				}else{
     					WebsocketsMgr.getInstance().setWSServerIP(SessionMgr.getInstance().getWSHostUrl());
+    					WebsocketsMgr.getInstance().destroyWSChannel();
         				WebsocketsMgr.getInstance().constructWSChannel();
     				}
     			}else if(true ==  WebsocketsMgr.getInstance().checkLastTimeToGetKeepAlive()){

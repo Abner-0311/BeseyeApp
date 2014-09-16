@@ -64,6 +64,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	private String mStrVCamSN = null;
 	private String mStrVCamMacAddr = null;
+	private int miUnmaskDetachCamHitCount = 0;
 	
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
@@ -86,6 +87,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
 				txtTitle.setText(R.string.cam_setting_title);
+				txtTitle.setOnClickListener(this);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
@@ -321,6 +323,13 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
 				launchActivityByClassName(NotificationEventsSettingActivity.class.getName(),b);
+				break;
+			}
+			case R.id.txt_nav_title:{
+				miUnmaskDetachCamHitCount++;
+				if(miUnmaskDetachCamHitCount >=5 && null != mVgSiren){
+					mVgSiren.setVisibility(View.VISIBLE);
+				}
 				break;
 			}
 			default:
