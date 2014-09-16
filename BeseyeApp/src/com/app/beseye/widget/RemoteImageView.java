@@ -486,7 +486,7 @@ public class RemoteImageView extends ImageView {
 								// HTTP get image
 								int retryCount = 0;
 								while (true) {
-									if ((downloadBitmap = imageHTTPTask(mRemote, mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:2))) != null) {
+									if ((downloadBitmap = imageHTTPTask(mRemote, 1/*mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:2)*/)) != null) {
 										break;
 									}
 									if (++retryCount >= 3

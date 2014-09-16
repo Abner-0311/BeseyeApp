@@ -158,6 +158,13 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			if(ENABLE_INTERNAL_SERVER)
 				new GetSessionTask(AudioWebSocketsMgr.this).execute();
 			
+			synchronized(this){
+        		mbNotifyWSChannelConstructed = true;
+				mBConstructingNotifyWSChannel = false;
+				mlTimeConstrucNotifyWSChannel = 0;
+				mlTimeToRequestWSChannelAuth = System.currentTimeMillis();
+			}
+			
 			//webSocket.send("Test".getBytes());
             webSocket.setStringCallback(new StringCallback() {
                 @Override

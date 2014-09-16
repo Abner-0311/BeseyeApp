@@ -1304,7 +1304,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					JSONArray arr = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.OBJ_DATA);
 					try {
 						WebsocketsMgr.getInstance().setWSServerIP("http://"+arr.getString(arr.length()-1));
-						WebsocketsMgr.getInstance().constructWSChannel();
+						if(NetworkMgr.getInstance().isNetworkConnected()){
+							WebsocketsMgr.getInstance().constructWSChannel();
+						}
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -1439,7 +1441,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					WebsocketsMgr.getInstance().constructWSChannel();
+					if(NetworkMgr.getInstance().isNetworkConnected()){
+						WebsocketsMgr.getInstance().constructWSChannel();
+					}else{
+						long lTimeToWait = (miWSDisconnectRetry++)*1000;
+						if(lTimeToWait > 10000){
+							lTimeToWait = 10000;
+						}
+						BeseyeUtils.postRunnable(this, lTimeToWait);
+					}
 				}}, lTimeToWait);
     	}
 	}

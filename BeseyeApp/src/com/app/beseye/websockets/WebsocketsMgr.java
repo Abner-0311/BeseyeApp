@@ -100,6 +100,7 @@ public class WebsocketsMgr {
 					mlTimeConstrucNotifyWSChannel = System.currentTimeMillis();
 					mlTimeToRequestWSChannelAuth = 0;
 				}
+				
 				OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 				if(null != listener){
 					listener.onChannelConnecting();

@@ -209,6 +209,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			if(null != mVgPairingDone && mVgPairingDone.getVisibility() == View.GONE){
 			    				mVgPairingDone = null;
 			    			}
+			    			
+			    			removeMyDialog(DIALOG_ID_WARNING);
 			    			break;
 			    		}
 			    		case CV_STREAM_PLAYING:{
@@ -1150,10 +1152,18 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							Log.e(TAG, "run(), show streaming_playing_error");
 							Bundle b = new Bundle();
 							b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_playing_error));
-							b.putBoolean(KEY_WARNING_CLOSE, true);
+							//b.putBoolean(KEY_WARNING_CLOSE, true);
 							showMyDialog(DIALOG_ID_WARNING, b);
 							updatePlayPauseBtnEnabledStatus();
 							setVisibility(mPbLoadingCursor, View.GONE);
+							
+							//Continue load
+							mlRetryConnectBeginTs = System.currentTimeMillis();
+							BeseyeUtils.postRunnable(new Runnable(){
+								@Override
+								public void run() {
+									getStreamingInfo(false);
+								}}, 1000);
 						}
 					}}, 0);
 			}
@@ -2119,6 +2129,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				mGetAudioWSServerTask.cancel(true);
 			}
 		}};
+		
+	private Thread mAudioOpenThread = null;
     
     private BeseyeNotificationBEHttpTask.GetAudioWSServerTask mGetAudioWSServerTask = null;
     public void openAudioChannel(){
@@ -2131,9 +2143,16 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     				AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
 					AudioWebSocketsMgr.getInstance().setAudioWSServerIP(SessionMgr.getInstance().getWSAHostUrl());
 					AudioWebSocketsMgr.getInstance().setSienceFlag(false);
-					AudioWebSocketsMgr.getInstance().constructWSChannel();
+					
+					if(null == mAudioOpenThread){
+						mAudioOpenThread = new Thread(new Runnable(){
+							@Override
+							public void run() {
+								AudioWebSocketsMgr.getInstance().constructWSChannel();
+								mAudioOpenThread = null;
+							}}); 
+					}
     			}
-    			
     		else
     			Log.i(TAG, "openAudioChannel(), mGetAudioWSServerTask isn't null");
 		}else{
