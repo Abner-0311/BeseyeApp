@@ -26,7 +26,7 @@
 		    	android:layout_height="wrap_content"
 				android:src="@drawable/locate_search_botton"
 		    	android:layout_centerVertical="true"
-		    	 android:onClick="onLocationClick"
+		    	 android:onClick="onSearchClick"
 		    	android:paddingLeft="@dimen/cameralist_nav_margin_hori"
 		    	android:paddingRight="@dimen/cameralist_nav_margin_hori">
 		    </ImageView>

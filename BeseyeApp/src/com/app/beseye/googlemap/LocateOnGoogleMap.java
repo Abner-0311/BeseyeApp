@@ -54,7 +54,7 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
 																	 OnMarkerDragListener{
    
 	/* layout */
-	private EditText etLocationName;
+	private EditText SearchText;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	private View mVwNavBar;
 	
@@ -72,10 +72,8 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
     private double GET_LAT, GET_LNG;
     private boolean isSelect = false;
     private boolean isGetlocale = false;
-    private JSONObject mlocale_obj;
     public static final String KEY_LOCALE_OBJ = "KEY_LOCALE_OBJ";
     public static final String KEY_LOCALE_TS = "KEY_LOCALE_TS";
-    
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,47 +111,44 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
 			mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 			if(null != mCam_obj){
 				mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
-				//mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
 			}
 		} catch (JSONException e1) {
 			Log.e(TAG, "PowerScheduleActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 		}
 		
+		//map setting
         map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         map.setOnMarkerClickListener(this);
         map.setOnMarkerDragListener(this);
         
-        //checkislocationed();
-        
-        
+        //Get user locale info
         JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
 		if(null != dataObj){
-			Log.e("MAPDEBUG", "GET locale data");
+			
 			JSONObject localeObj = BeseyeJSONUtil.getJSONObject(dataObj, LOCATION_OBJ);
+			
 			if(null != localeObj){
-				Log.e("MAPDEBUG", "locale object is not null");
+				
 				GET_LAT = BeseyeJSONUtil.getJSONDouble(localeObj,BeseyeJSONUtil.LOCATION_LAT);
 				GET_LNG = BeseyeJSONUtil.getJSONDouble(localeObj,BeseyeJSONUtil.LOCATION_LONG);
-				Log.e("MAPDEBUG", "lat,lng = " + GET_LAT + "," + GET_LNG);
+				
 				isGetlocale = true;
-				//BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), OBJ_TIMESTAMP));
-				//BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
+				
+				Log.e("LOCALE DEBUG", "Get locale info ... lat,lng = " + GET_LAT + "," + GET_LNG);
+				
 			}else{
-				Log.e("MAPDEBUG", "locale object is null");
+				
 				isGetlocale = false;
 			}
 			
 		}else{
-			Log.e("MAPDEBUG", "never get locale data");
+			Log.e("LOCALE DEBUG", "never get locale data");
 		}
         
-        
-        
-        //Log.e("MAPDEBUG", "checkislocationed end");
-        	
+		
+		//initial user location
         if(isGetlocale){
-        	
         	try{
         	
         	Geocoder gc = new Geocoder(this, Locale.TRADITIONAL_CHINESE); 	//地區:台灣
@@ -168,6 +163,7 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
         	markerOpt_home.snippet(returnAddress);
         	markerOpt_home.draggable(true);
         	markersearch = map.addMarker(markerOpt_home);
+        	initLocationProvider();
         	
         	cameraFocusOnMe(GET_LAT, GET_LNG);
         	}catch(IOException e){
@@ -184,15 +180,15 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
     }
   
     
-    public void onLocationClick(View view){
+    public void onSearchClick(View view){
     	
-    	etLocationName = (EditText) findViewById(R.id.locate_search_text);
+    	SearchText = (EditText) findViewById(R.id.locate_search_text);
     	
-    	String LocationName = etLocationName.getText().toString().trim();
+    	String LocationName = SearchText.getText().toString().trim();
     	if(LocationName.length()>0){
     		locationNameToMarker(LocationName);
     	}else{
-    		Toast.makeText(this, "Address empty", Toast.LENGTH_SHORT).show();
+    		Toast.makeText(this, "Query empty", Toast.LENGTH_SHORT).show();
     	}
     	
     }
@@ -212,7 +208,7 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
     		
     	}catch(IOException e){
     		
-    		//Toast.makeText(this, "Geocoder error!!", Toast.LENGTH_SHORT).show();
+    		Log.e("TAG", "locationNameToMarker() geocoder error ... " + e.toString());
     		
     	}
     	
@@ -232,16 +228,13 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
         	cameraFocusOnMe(address.getLatitude(), address.getLongitude());
         	
     	}
-    	
     }
  
     private boolean initLocationProvider(){
     	 locationMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    	 
     	 if (locationMgr.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-   		  provider = LocationManager.GPS_PROVIDER;
-   		  //Toast.makeText(this, provider, Toast.LENGTH_SHORT).show();
-   		  
+    		 provider = LocationManager.GPS_PROVIDER;
+    		 return true;
     	 }else{
     		 Toast.makeText(this, "please open gps to improve location accuracy.", Toast.LENGTH_SHORT).show();
     		 Criteria criteria = new Criteria();
@@ -251,12 +244,10 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
         	 criteria.setCostAllowed(true);
         	 criteria.setPowerRequirement(Criteria.POWER_LOW);
         	 provider = locationMgr.getBestProvider(criteria, true);
+        	 if (provider != null) {
+        		 return true;
+        	 }
     	 }
-    	  
-    	 if (provider != null) {
-    		 return true;
-    	 }
-    	
     	return false;
     }
     
@@ -265,8 +256,8 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
     	Location location = locationMgr.getLastKnownLocation(provider);
     	updateWithNewLocation(location);
 
-		long minTime = 2000;//ms
-		float minDist = 1.0f;//meter
+		//long minTime = 2000;//ms
+		//float minDist = 1.0f;//meter
 		//locationMgr.requestLocationUpdates(provider, minTime, minDist, locationListener);
 		
     }
@@ -276,13 +267,14 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
     	if(location != null){
     		double lng = location.getLongitude();
     		double lat = location.getLatitude();
-    		//showMarkerMe(lat,lng);
+    		showMarkerMe(lat,lng);
     		cameraFocusOnMe(lat, lng);
     	}else{
     		Toast.makeText(this, "Can't detect location.", Toast.LENGTH_SHORT).show();
     	}
     	
     }
+    
     
     private void showMarkerMe(double lat, double lng) {
     
@@ -292,7 +284,6 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
 	    	}
 	    	
 	    	Geocoder gc = new Geocoder(this, Locale.TRADITIONAL_CHINESE); 	//地區:台灣
-			//自經緯度取得地址
 			List<Address> lstAddress = gc.getFromLocation(lat, lng, 1);
 	    	
 			String returnAddress = lstAddress.get(0).getAddressLine(0);
@@ -305,9 +296,10 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
 	    	markerMe = map.addMarker(markerOpt);
     	}
     	catch(Exception e){
-    		
+    		Log.e("TAG", "showMarkerMe() geocoder error ... " + e.toString());
     	}
     }
+    
     private void cameraFocusOnMe(double lat, double lng){
     	CameraPosition camposition = new CameraPosition.Builder()
     		.target(new LatLng(lat, lng))
@@ -316,8 +308,8 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
     	map.animateCamera(CameraUpdateFactory.newCameraPosition(camposition));
     }
     
+    
     GpsStatus.Listener gpsListener = new GpsStatus.Listener() {
-		
 		@Override
 		public void onGpsStatusChanged(int event) {
 			switch (event) {
@@ -402,9 +394,6 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
 			SE_LNG = marker.getPosition().longitude;
 			
 			isSelect = true;
-			//OnLocationChanged(SE_LAT, SE_LNG);
-			
-			//Toast.makeText(this, "" + marker.getPosition().latitude , Toast.LENGTH_SHORT).show();
 			
 		}else{
 			Toast.makeText(LocateOnGoogleMap.this, "選擇地點：" + marker.getSnippet() ,Toast.LENGTH_SHORT).show();
@@ -413,7 +402,6 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
 			SE_LNG = marker.getPosition().longitude;
 			
 			isSelect = true;
-			//OnLocationChanged(SE_LAT, SE_LNG);
 			
 		}
 		return false;
@@ -497,7 +485,6 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
 			}
 			default:{
 				super.onClick(view);
-				//Log.d(TAG, "CameraSettingActivity::onClick(), unhandled event by view:"+view);
 			}
 		}
 	}
