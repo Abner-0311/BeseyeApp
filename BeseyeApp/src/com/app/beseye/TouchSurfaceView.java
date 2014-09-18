@@ -85,8 +85,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     private ScaleGestureDetector mScaleDetector;
     private GestureDetector mGestureDetector;
     
-    public static boolean mIsPaused = false, mIsSurfaceReady = false, mHasFocus = true;
+    public static boolean mIsPaused = false, mHasFocus = true;
     
+    private boolean mIsSurfaceReady = false;
     // This is what SDL runs in. It invokes SDL_main(), eventually
     protected static Thread mSDLThread;
 
@@ -163,8 +164,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         mfPaddingBottom = this.getContext().getResources().getDimension(R.dimen.liveview_toolbar_height_landscape);
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
-        synchronized(TouchSurfaceView.class){
-        	TouchSurfaceView.mIsSurfaceReady = true;
+        synchronized(this){
+        	mIsSurfaceReady = true;
         }
         //SDLActivity.onNativeSurfaceChanged();
         drawDefaultBackground();
@@ -187,9 +188,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		synchronized(TouchSurfaceView.class){
-	        TouchSurfaceView.mIsSurfaceReady = false;
-	    }
+        synchronized(this){
+        	mIsSurfaceReady = false;
+        }
 		Log.i(TAG, "surfaceDestroyed()......");
 	}
 	
@@ -1082,8 +1083,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     public void drawStreamBitmap(Bitmap bmp){
-    	synchronized(TouchSurfaceView.class){
-    		if(isCameraStatusOn() && TouchSurfaceView.mIsSurfaceReady){
+    	synchronized(this){
+    		if(isCameraStatusOn() && mIsSurfaceReady){
         		Canvas canvas = getHolder().lockCanvas();
             	if(null != canvas){
             		try{
@@ -1094,7 +1095,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         		        
         				if(null != bmp && false == bmp.isRecycled())
         					canvas.drawBitmap(bmp, matrix, null);
-        				if(TouchSurfaceView.mIsSurfaceReady)
+        				if(mIsSurfaceReady)
         					getHolder().unlockCanvasAndPost(canvas);
             		}catch(java.lang.IllegalStateException e){
             			Log.e(TAG, "drawStreamBitmap(), e"+e.toString());

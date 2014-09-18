@@ -1889,6 +1889,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
         		}
         	}
     	}
+    }
+    
+    private void tryToGetFurtherDVRStreamList(){
     	
     }
     
@@ -2151,6 +2154,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 								AudioWebSocketsMgr.getInstance().constructWSChannel();
 								mAudioOpenThread = null;
 							}}); 
+						mAudioOpenThread.start();
 					}
     			}
     		else

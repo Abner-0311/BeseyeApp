@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- <string name="app_name_alpha">Beseye(α)</string> -->
-    <string name="app_name_alpha">Beseye</string>
-    <string name="app_name">BesEye</string>
-    <string name="crash_toast_text"></string>
     
+    <!-- DO NOT TRANSLATE BEGIN-->
+    <string name="app_name_alpha">Beseye</string>
+    <string name="crash_toast_text"></string>
+    <string name="camerview_init_date">---.--.----</string>
+    <string name="camerview_init_time">--:--:-- --</string>
+    <string name="dialog_dettach_cam">Are you sure to detach this cam [%s]?</string>
+    <string name="dialog_reboot_cam">Are you sure to reboot this cam [%s]?</string>
+    
+    <string name="news_release_date">2014.7.13</string>
+	<string name="news_title">BesEye camera firmware 6.7 update</string>
+	<string name="news_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue augue id...</string>
+	
+	<string name="about_desc">Beseye and the Beseye logo are registered trademarks of Beseye, Inc. iPhone, iPad, iPood Touch, and App Store are registered trademarks of Apple, Inc. Chrome and Android are registered trademarks of Google, Inc. Internet Explorer is a registered trademark of Microsoft Corporation. Firefox is a registered trademark of Mozilla Corporation. Wi-Fi and Wi-Fi Certified logo are registered trademarks of the Wi-Fi Alliance. Certain other product names, brand names, and company names may be trademarks or designations of their respective owners.</string>
+	<string name="about_link">www.beseye.com</string>
+	<string name="forget_password_check_mail_address">k******g@beseye.com</string>
+    <!-- DO NOT TRANSLATE END-->
+    
+    <string name="app_name">BesEye</string>
     <string name="connect">Connect</string>
     <string name="cancel">Cancel</string>
     <string name="done">Done</string>
@@ -23,14 +36,12 @@
 	<string name="cont">Continue</string> 
     <string name="watch_out_sound">Sound reminder</string> 
     <string name="password_hint">6 characters with letter and number</string> 
-    
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="event_cam_view">Event</string>
     <string name="event_go_live">Go Live</string>
     <string name="event_itm_live">Live</string>
-    <string name="camerview_init_date">---.--.----</string>
-    <string name="camerview_init_time">--:--:-- --</string>
+   
     <string name="can_power_state_off">The cam is off</string>
     <string name="can_power_state_disconnect">This cam is not connected</string>
 
@@ -82,9 +93,6 @@
     <string name="dialog_wifi_ap_security_none">None</string>
     
     <string name="dialog_wifi_ap_key_index">Key index</string>
-    
-    <string name="dialog_dettach_cam">Are you sure to dettach this cam [%s]?</string>
-    <string name="dialog_reboot_cam">Are you sure to reboot this cam [%s]?</string>
     
     <string name="cam_setting_title">Settings</string>
     <string name="cam_hardware_setting_title">Hardware settings</string>
@@ -266,10 +274,6 @@
 	<string name="cam_menu_support">Support</string>
 	<string name="cam_menu_logout">Logout</string>
 	
-	<string name="news_release_date">2014.7.13</string>
-	<string name="news_title">BesEye camera firmware 6.7 update</string>
-	<string name="news_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue augue id...</string>
-	
 	<string name="update_title">Camera update</string>
 	<string name="update_now">Update now</string>
 	<string name="cam_update_progress">Cameras updating&#8230; %s</string>
@@ -290,7 +294,6 @@
 	<string name="forget_password_btn_submit">Submit</string>
 	<string name="forget_password_instruction">Don’t worry! Just fill in your email address and we’ll sent you password reset instructions.</string>
 	<string name="forget_password_check_mail_summary">We’ve sent you password reset instructions to the following address:</string>
-	<string name="forget_password_check_mail_address">k******g@beseye.com</string>
 	<string name="forget_password_check_mail_note">Note: The email will be coming from reset-password@beseye.com. If you don’t get the email within a few minutes, please check your spam filter.</string>
 	
 	<string name="toast_cam_on_by_other">Camera is turned on by other user</string>
@@ -311,11 +314,7 @@
 	<string name="notify_cam_off_detect_cam_list">Camera %s turns off.</string>
 	
 	<string name="about_title">About Beseye</string>
-	<string name="about_desc">Beseye and the Beseye logo are registered trademarks of Beseye, Inc. iPhone, iPad, iPood Touch, and App Store are registered trademarks of Apple, Inc. Chrome and Android are registered trademarks of Google, Inc. Internet Explorer is a registered trademark of Microsoft Corporation. Firefox is a registered trademark of Mozilla Corporation. Wi-Fi and Wi-Fi Certified logo are registered trademarks of the Wi-Fi Alliance. Certain other product names, brand names, and company names may be trademarks or designations of their respective owners.</string>
 	<string name="about_ver">Beseye Version %s</string>
-	
-	<!-- No need to translate -->
-	<string name="about_link">www.beseye.com</string>
 	
 	<!-- Timezone definition begin -->
 	<string name="tz_us_eastern">US	– Eastern</string>

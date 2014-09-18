@@ -762,7 +762,7 @@ public class NetworkMgr {
 			if(null != src){
 				for(ScanResult ret : src){
 					if(null != ret){
-						if(ret.frequency < WifiAPInfo.MAX_FREQUENCY){
+						if(ret.frequency < WifiAPInfo.MAX_FREQUENCY && 0 < ret.SSID.length()){
 							WifiAPInfo info = transformFromScanResult(ret, strAciveBSSID);
 							dest.add(info);
 						}
