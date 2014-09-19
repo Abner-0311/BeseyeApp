@@ -60,7 +60,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerDesc,  mTxtPowerTitle, mTxtViewUpDownTitle;
 	private ImageView mIvViewUpDownCheck, mIvViewUpDownCheckBg;
-	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren;
+	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam;
 	
 	private String mStrVCamSN = null;
 	private String mStrVCamMacAddr = null;
@@ -132,11 +132,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgLocationAware = (ViewGroup)findViewById(R.id.vg_location_aware);
 		if(null != mVgLocationAware){
 			mVgLocationAware.setOnClickListener(this);
-			TextView txtLoc = (TextView)mVgLocationAware.findViewById(R.id.txt_loc_aware);
-			if(null != txtLoc){
-				txtLoc.setText("Reboot cam !!!(Dev)");
-			}
-			
 			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
 				mVgLocationAware.setVisibility(View.GONE);
 			}
@@ -155,11 +150,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			}
 		}
 		
-		TextView txtSiren = (TextView)findViewById(R.id.txt_setting_emergency_siren);
-		if(null != txtSiren){
-			txtSiren.setText("Detach cam !!!(Dev)");
-		}
-		
 		mVgNotificationType = (ViewGroup)findViewById(R.id.vg_notification_type);
 		if(null != mVgNotificationType){
 			mVgNotificationType.setOnClickListener(this);
@@ -169,6 +159,22 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		if(null != mVgFamilyRecognition){
 			mVgFamilyRecognition.setOnClickListener(this);
 			mVgFamilyRecognition.setVisibility(View.GONE);
+		}
+		
+		mVgDetachCam = (ViewGroup)findViewById(R.id.vg_detach_cam);
+		if(null != mVgDetachCam){
+			mVgDetachCam.setOnClickListener(this);
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
+				mVgDetachCam.setVisibility(View.GONE);
+			}
+		}
+		
+		mVgRebootCam = (ViewGroup)findViewById(R.id.vg_reboot_cam);
+		if(null != mVgRebootCam){
+			mVgRebootCam.setOnClickListener(this);
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
+				mVgRebootCam.setVisibility(View.GONE);
+			}
 		}
 	}
 	
@@ -306,6 +312,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			}
 			case R.id.vg_location_aware:{
 				//launchActivityByClassName(TimezoneListActivity.class.getName());
+				//showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				break;
+			}
+			case R.id.vg_reboot_cam:{
+				//launchActivityByClassName(TimezoneListActivity.class.getName());
 				showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
 				break;
 			}
@@ -316,6 +327,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				break;
 			}
 			case R.id.vg_siren:{
+				//showMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
+				break;
+			}
+			case R.id.vg_detach_cam:{
 				showMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
 				break;
 			}
@@ -327,8 +342,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			}
 			case R.id.txt_nav_title:{
 				miUnmaskDetachCamHitCount++;
-				if(miUnmaskDetachCamHitCount >=5 && null != mVgSiren){
-					mVgSiren.setVisibility(View.VISIBLE);
+				if(miUnmaskDetachCamHitCount >=5){
+					BeseyeUtils.setVisibility(mVgRebootCam, View.VISIBLE);
+					BeseyeUtils.setVisibility(mVgDetachCam, View.VISIBLE);
 				}
 				break;
 			}

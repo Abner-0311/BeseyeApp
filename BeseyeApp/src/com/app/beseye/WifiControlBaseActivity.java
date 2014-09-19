@@ -5,6 +5,8 @@ import static com.app.beseye.util.BeseyeConfig.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.app.beseye.delegator.WifiAPSetupDelegator;
+import com.app.beseye.delegator.WifiAPSetupDelegator.OnWifiApSetupCallback;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.pairing.SoundPairingActivity;
@@ -47,7 +49,8 @@ import android.widget.TextView;
 public abstract class WifiControlBaseActivity extends BeseyeBaseActivity 
 							  				  implements OnWifiScanResultAvailableCallback, 
 							  				  			 OnNetworkChangeCallback, 
-							  				  			 OnWifiStatusChangeCallback{
+							  				  			 OnWifiStatusChangeCallback,
+							  				  			 OnWifiApSetupCallback{
 	
 	protected WIFI_SETTING_STATE mWifiSettingState = WIFI_SETTING_STATE.STATE_UNINIT; 
 	protected List<WifiAPInfo> mlstScanResult;
@@ -59,6 +62,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	protected Button mbtnConnect;
 	protected EditText mEtSSID;
 	
+	protected WifiAPSetupDelegator mWifiAPSetupDelegator = null;
 	protected String mWifiApPassword = null;
 	protected WifiAPInfo mChosenWifiAPInfo;
 	protected boolean mbChangeWifi = false;
@@ -510,12 +514,6 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 							}
 							
 							Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
-//					    	if(null == mWifiAPSetupDelegator){
-//					    		mWifiAPSetupDelegator = new WifiAPSetupDelegator(mChosenWifiAPInfo, WifiListActivity.this);
-//					    	}else{
-//					    		mWifiAPSetupDelegator.updateTargetAPInfo(mChosenWifiAPInfo);
-//					    	}
-//					    	setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SETTING);
 						}});
 				}
 
@@ -624,11 +622,13 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 								setResult(RESULT_OK, intent);
 								finish();
 							}else{
-								intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
-								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
-								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
-								startActivity(intent);
-								setResult(RESULT_OK);
+								
+						    	if(null == mWifiAPSetupDelegator){
+						    		mWifiAPSetupDelegator = new WifiAPSetupDelegator(mChosenWifiAPInfo, WifiControlBaseActivity.this);
+						    	}else{
+						    		mWifiAPSetupDelegator.updateTargetAPInfo(mChosenWifiAPInfo);
+						    	}
+						    	setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SETTING);
 							}
 							
 							Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);

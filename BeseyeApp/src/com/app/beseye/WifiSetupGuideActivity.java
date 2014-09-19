@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_ERROR;
+import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_STATE;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -180,5 +182,19 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 			}else 
 				super.onPostExecute(task, result, iRetCode);
 		}
+	}
+
+	@Override
+	public void onWifiApSetupStateChanged(WIFI_AP_SETUP_STATE curState,
+			WIFI_AP_SETUP_STATE prevState) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onWifiApSetupError(WIFI_AP_SETUP_STATE curState,
+			WIFI_AP_SETUP_ERROR error, Object userData) {
+		// TODO Auto-generated method stub
+		
 	}
 }

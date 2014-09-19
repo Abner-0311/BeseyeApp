@@ -188,7 +188,7 @@ public class NetworkMgr {
 		for(WifiConfiguration c : configs){
 			if(null != c && c.SSID.equals("\"" + SSID + "\"")){
 				config = c;
-				Log.d(TAG, "getWifiConfigurationByBSSID(), SSID:<"+c.SSID+
+				Log.i(TAG, "getWifiConfigurationByBSSID(), SSID:<"+c.SSID+
 						  ">, BSSID:<"+c.BSSID+
 						  ">, wepTxKeyIndex:<"+c.wepTxKeyIndex+
 						  ">, wepKeys:<"+c.wepKeys[c.wepTxKeyIndex]+
@@ -225,7 +225,7 @@ public class NetworkMgr {
 	
 	public boolean connectWifi(WifiAPInfo wifiApinfo, String password){
 		if(DEBUG)
-			Log.d(TAG, "connectWifi(), SSID:<"+wifiApinfo.SSID+">, password:<"+password+">");
+			Log.i(TAG, "connectWifi(), SSID:<"+wifiApinfo.SSID+">, password:<"+password+">");
 		
 		boolean bRet = false;
 		int netId = -1;
@@ -235,6 +235,10 @@ public class NetworkMgr {
 			Log.i(TAG, "connectWifi(), can't find matched wifi config");
 			wifiConfig = new WifiConfiguration();
 			wifiConfig.SSID = String.format("\"%s\"", wifiApinfo.SSID);	
+			if(wifiApinfo.bIsOther){
+				wifiConfig.hiddenSSID = true;
+			}
+			
 		}else{
 			netId = wifiConfig.networkId;
 		}
@@ -246,7 +250,7 @@ public class NetworkMgr {
 		}
 		
 		wifiConfig.status = WifiConfiguration.Status.ENABLED;
-		if(null == wifiApinfo.cipher || wifiApinfo.cipher.contains(WifiAPInfo.AUTHNICATION_NONE)){
+		if(/*null == wifiApinfo.cipher || */wifiApinfo.cipher.contains(WifiAPInfo.AUTHNICATION_NONE) || wifiApinfo.iCipherIdx == 0){
 			wifiConfig.allowedAuthAlgorithms.clear();
 			wifiConfig.allowedGroupCiphers.clear();
 			wifiConfig.allowedKeyManagement.clear();
@@ -255,11 +259,11 @@ public class NetworkMgr {
 			wifiConfig.wepKeys[0] = "";
 			wifiConfig.wepTxKeyIndex = 0;
 			wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-		}else if(wifiApinfo.cipher.contains(WifiAPInfo.AUTHNICATION_WPA)){
+		}else if(wifiApinfo.cipher.contains(WifiAPInfo.AUTHNICATION_WPA) || wifiApinfo.iCipherIdx > 1){
 			wifiConfig.preSharedKey = String.format("\"%s\"", password);
 			wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
 			Log.i(TAG, "connectWifi(), wifiConfig.preSharedKey:"+wifiConfig.preSharedKey);
-		}else if(wifiApinfo.cipher.contains(WifiAPInfo.AUTHNICATION_WEP)){
+		}else if(wifiApinfo.cipher.contains(WifiAPInfo.AUTHNICATION_WEP) || wifiApinfo.iCipherIdx == 1){
 			wifiConfig.wepTxKeyIndex = wifiApinfo.wepkeyIdx;
 			for(int i = 0; i<4;i++){
 				if(i == wifiConfig.wepTxKeyIndex)
@@ -268,7 +272,7 @@ public class NetworkMgr {
 					wifiConfig.wepKeys[i] = null;
 			}
 			Log.e(TAG, "connectWifi(), AUTHNICATION_WEP, wifiConfig.wepTxKeyIndex="+wifiConfig.wepTxKeyIndex);
-			wifiConfig.hiddenSSID = false;
+			//wifiConfig.hiddenSSID = false;
 			
 			wifiConfig.allowedAuthAlgorithms.clear();
 			wifiConfig.allowedGroupCiphers.clear();

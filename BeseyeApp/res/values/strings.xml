@@ -16,6 +16,9 @@
 	<string name="about_desc">Beseye and the Beseye logo are registered trademarks of Beseye, Inc. iPhone, iPad, iPood Touch, and App Store are registered trademarks of Apple, Inc. Chrome and Android are registered trademarks of Google, Inc. Internet Explorer is a registered trademark of Microsoft Corporation. Firefox is a registered trademark of Mozilla Corporation. Wi-Fi and Wi-Fi Certified logo are registered trademarks of the Wi-Fi Alliance. Certain other product names, brand names, and company names may be trademarks or designations of their respective owners.</string>
 	<string name="about_link">www.beseye.com</string>
 	<string name="forget_password_check_mail_address">k******g@beseye.com</string>
+	
+	<string name="cam_setting_title_detach_cam">Detach cam !!!(Dev)</string>
+	<string name="cam_setting_title_reboot_cam">Reboot cam !!!(Dev)</string>
     <!-- DO NOT TRANSLATE END-->
     
     <string name="app_name">BesEye</string>
