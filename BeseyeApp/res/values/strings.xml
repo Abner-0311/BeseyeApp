@@ -186,6 +186,7 @@
 	
 	<string name="server_error">Network or server error. Please try again later.</string>
 	<string name="streaming_invalid_dvr">Invalid DVR streaming path. Please try again later.</string>
+	<string name="streaming_no_more_dvr">There is no more DVR clip to play.</string>
 	<string name="streaming_playing_error">Invalid streaming path or server error. Please try again later.</string>
 	<string name="streaming_error_no_network">Please check out your network connection.</string>
 	<string name="streaming_error_unknown">Unknown error. Please try again later.</string>

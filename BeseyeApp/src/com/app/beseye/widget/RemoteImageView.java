@@ -66,6 +66,7 @@ public class RemoteImageView extends ImageView {
 	protected boolean mbIsLoaded = false;
 	
 	private String mStrVCamId = null;
+	private String mStrVCamIdLoad = null;
 	
 	static public final String CACHE_POSTFIX_SAMPLE_1 = "_s1";//set sample as 1
 	static public final String CACHE_POSTFIX_SAMPLE_2 = "_s2";//set sample as 2
@@ -312,7 +313,7 @@ public class RemoteImageView extends ImageView {
 				if (cBmpFile != null) {
 					Log.i(TAG, "loadImage(), have file cache in mem");
 					setImageBitmap(cBmpFile);
-				}else{
+				}else if(null == mStrVCamIdLoad || !mStrVCamIdLoad.equals(mStrVCamId)){
 					loadDefaultImage();
 				}
 			}else{
@@ -321,6 +322,12 @@ public class RemoteImageView extends ImageView {
 			}
 		}
 		loadRemoteImage();
+	}
+	
+	public void setImageBitmap(Bitmap bm, String strVcamId) {
+		mStrVCamIdLoad = strVcamId;
+		Log.i(TAG, "setImageBitmap(), mStrVCamIdLoad:["+mStrVCamIdLoad+"], this:"+this);
+		setImageBitmap(bm);
 	}
 
 	@Override
@@ -358,7 +365,7 @@ public class RemoteImageView extends ImageView {
 		private String mLocal;
 		private String mLocalSample, mLocalSampleHQ;
 		private String mRemote;
-		private String mStrVCamId;
+		private String mStrVCamId = null;
 		private boolean mIsPreload, mbIsPhoto, mbIsPhotoViewMode;
 
 		public LoadImageRunnable(String local, String remote, boolean isPreload, boolean bIsPhoto, boolean bIsPhotoViewMode, String strVCamId) {
@@ -375,9 +382,15 @@ public class RemoteImageView extends ImageView {
 
 		class SetImageRunnable implements Runnable {
 			Bitmap mBitmap;
+			String mStrVcamId=null;
 
 			public SetImageRunnable(Bitmap b) {
 				mBitmap = b;
+			}
+			
+			public SetImageRunnable(Bitmap b, String strVcamId) {
+				mBitmap = b;
+				mStrVcamId = strVcamId;
 			}
 
 			@Override
@@ -385,13 +398,19 @@ public class RemoteImageView extends ImageView {
 				if (mBitmap == null || !equalsObj(mLocal, mCachePath)) {
 					return;
 				}
-				setImageBitmap(mBitmap);
+				setImageBitmap(mBitmap, mStrVcamId);
 			}
 		}
 
 		private void setImage(Bitmap b) {
 			if (mHandler != null && b != null) {
 				mHandler.post(new SetImageRunnable(b));
+			}
+		}
+		
+		private void setImage(Bitmap b, String strVcamId) {
+			if (mHandler != null && b != null) {
+				mHandler.post(new SetImageRunnable(b, strVcamId));
 			}
 		}
 
@@ -407,7 +426,7 @@ public class RemoteImageView extends ImageView {
 				if(DEBUG){
 					Log.i(TAG, "use low quality first");
 				}
-				setImage(bitmap);
+				setImage(bitmap, mStrVCamId);
 				bitmap = null;
 			}
 			
@@ -436,7 +455,7 @@ public class RemoteImageView extends ImageView {
 						if(null == cBmpFile && fileExist(strLastPhoto)){
 							bitmap = BitmapFactory.decodeFile(strLastPhoto);
 							if(null != bitmap){
-								setImage(bitmap);
+								setImage(bitmap, mStrVCamId);
 								
 								// write low quality image to memory cache
 								BeseyeMemCache.addBitmapToMemoryCache(mLocal, bitmap);
@@ -452,7 +471,7 @@ public class RemoteImageView extends ImageView {
 					if(mbIsPhotoViewMode && !fileExist(mLocalSampleHQ) && fileExist(mLocalSample)){
 						bitmap = BitmapFactory.decodeFile(mLocalSample);
 						if(null != bitmap){
-							setImage(bitmap);
+							setImage(bitmap, mStrVCamId);
 							
 							// write low quality image to memory cache
 							BeseyeMemCache.addBitmapToMemoryCache(mLocal, bitmap);
@@ -562,7 +581,7 @@ public class RemoteImageView extends ImageView {
 				}
 				
 				// set image
-				setImage(bitmap);
+				setImage(bitmap, mStrVCamId);
 
 				if(false == mbIsPhotoViewMode){
 					// write image to memory cache
