@@ -757,6 +757,31 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
     	return false;
     }
+    
+    private boolean onCameraEventTrigger(JSONObject msgObj){
+    	Log.i(TAG, getClass().getSimpleName()+"::onCameraEventTrigger(msgObj);(),  msgObj = "+msgObj);
+		if(null != msgObj){
+    		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+    		if(null != objCus){
+    			String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+    			if(!mActivityDestroy){
+    	    		if(mActivityResume){
+    	    			monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, strCamUID);
+    	    		}
+    	    	}
+    			return true;
+    		}
+		}
+    	return false;
+    }
+    
+	protected boolean onCameraMotionEvent(JSONObject msgObj){
+		return onCameraEventTrigger(msgObj);
+	}
+	
+    protected boolean onCameraPeopleEvent(JSONObject msgObj){
+    	return onCameraEventTrigger(msgObj);
+    }
 	
 	private Runnable mOnResumeUpdateCamListRunnable = null;
 	private void setOnResumeUpdateCamListRunnable(Runnable run){

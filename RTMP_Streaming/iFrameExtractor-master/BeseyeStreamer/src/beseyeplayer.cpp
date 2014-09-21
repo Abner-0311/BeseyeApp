@@ -2689,7 +2689,7 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 		if(AVMATCH(content, &av_NetStream_Play_Stop)){
 			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Stop");
 			//closeStreaming();
-			triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
+			//triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
 		}else if(AVMATCH(content, &av_NetStream_Play_Start)){
 			AMFObject* obj = (AMFObject*)extra;
 			AVal desc;

@@ -24,6 +24,7 @@ import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_ERROR;
 import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_STATE;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
@@ -63,12 +64,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class WifiListActivity extends WifiControlBaseActivity 
-							  implements OnWifiApSetupCallback,
-							  			 OnSwitchBtnStateChangedListener{
+							  implements OnSwitchBtnStateChangedListener{
 	
 	private PullToRefreshListView mlvWifiList;
 	private WifiInfoAdapter mWifiInfoAdapter;
-	private WifiAPSetupDelegator mWifiAPSetupDelegator = null;
 	private View mSwWifi;
 	private ActionBar.LayoutParams mSwWifiViewLayoutParams;
 	private BeseyeSwitchBtn mWifiSwitchBtn;
@@ -479,12 +478,16 @@ public class WifiListActivity extends WifiControlBaseActivity
 		
 		if(curState.equals(WIFI_AP_SETUP_STATE.SETUP_DONE)){
 			setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SET_DONE);
+		}else if(curState.equals(WIFI_AP_SETUP_STATE.TARGET_AP_CONNECTED)){
+			mChosenWifiAPInfo.BSSID = NetworkMgr.getInstance().getActiveWifiBSSID();
+			Intent intent = new Intent();
+			intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
+			intent.setClass(this, SoundPairingActivity.class);
+			intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+			intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
+			startActivity(intent);
+			setResult(RESULT_OK);		
 		}
-//		else if(REDDOT_DEMO && curState.equals(WIFI_AP_SETUP_STATE.TARGET_AP_CONNECTED)){
-//			setResult(RESULT_OK);
-//			CamSettingMgr.getInstance().setCamPowerState(TMP_CAM_ID, CAM_CONN_STATUS.CAM_ON);
-//			finish();
-//		}
 	}
 
 	@Override

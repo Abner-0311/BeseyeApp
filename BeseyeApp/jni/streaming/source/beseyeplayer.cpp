@@ -67,14 +67,18 @@ getWindowByHolderFunc(NULL),
 mVecPendingStreamPaths(NULL),
 iNumOfPendingStreamPaths(0),
 rtmpRef(NULL),
-mdStreamClock(-1.0){
+mdStreamClock(-1.0),
+miRestDVRCount(0){
 	wanted_stream[AVMEDIA_TYPE_AUDIO] = -1;
 	wanted_stream[AVMEDIA_TYPE_VIDEO] = -1;
 	wanted_stream[AVMEDIA_TYPE_SUBTITLE] = -1;
+	pthread_mutex_init(&mDVRRestCountMux, NULL);
 	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::CBeseyePlayer(), screen_width:%d, screen_height:%d", screen_width, screen_height);
 }
 
 CBeseyePlayer::~CBeseyePlayer(){
+	pthread_mutex_destroy(&mDVRRestCountMux);
+
 	if(window && mVideoDeinitCallback){
 		//ANativeWindow_release(window);
 		mVideoDeinitCallback(window);
@@ -88,28 +92,6 @@ CBeseyePlayer::~CBeseyePlayer(){
 
 void* CBeseyePlayer::getWindow(){
 	return window;
-}
-
-void CBeseyePlayer::addPendingStreamPaths(){
-	if(mVecPendingStreamPaths){
-		if(0 <= addStreamingPathList((const char**)mVecPendingStreamPaths, iNumOfPendingStreamPaths))
-			freePendingStreamPaths();
-	}
-}
-
-void CBeseyePlayer::freePendingStreamPaths(){
-	if(mVecPendingStreamPaths){
-		for(int i =0;i < iNumOfPendingStreamPaths;i++){
-			if(mVecPendingStreamPaths[i]){
-				free(mVecPendingStreamPaths[i]);
-				mVecPendingStreamPaths[i]=NULL;
-			}
-		}
-		free(mVecPendingStreamPaths);
-		mVecPendingStreamPaths = NULL;
-		iNumOfPendingStreamPaths = 0;
-		av_log(NULL, AV_LOG_ERROR, "freePendingStreamPaths(), free done");
-	}
 }
 
 int64_t CBeseyePlayer::get_start_time(){
@@ -650,6 +632,11 @@ int CBeseyePlayer::addStreamingPath(const char *path){
 						iRet = gen_play_wrapper(urlCtx, path);
 						if(0 > iRet){
 							av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), failed to add path =>[%s]\n", (path)?path:"");
+						}else{
+							pthread_mutex_lock(&mDVRRestCountMux);
+							miRestDVRCount++;
+							av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), miRestDVRCount =>[%d]\n", miRestDVRCount);
+							pthread_mutex_unlock(&mDVRRestCountMux);
 						}
 					}else{
 						av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), urlCtx is null\n");
@@ -667,6 +654,11 @@ int CBeseyePlayer::addStreamingPath(const char *path){
 		iRet = gen_play_wrapper_rtmp(rtmp, path);
 		if(0 > iRet){
 			av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), 2 failed to add path =>[%s]\n", (path)?path:"");
+		}else{
+			pthread_mutex_lock(&mDVRRestCountMux);
+			miRestDVRCount++;
+			av_log(NULL, AV_LOG_ERROR,"addStreamingPath(), miRestDVRCount =>[%d]\n", miRestDVRCount);
+			pthread_mutex_unlock(&mDVRRestCountMux);
 		}
 	}
 
@@ -2470,11 +2462,34 @@ extern void  main13(int argc, char **argv);
  	return input_filename;
  }
 
+void CBeseyePlayer::addPendingStreamPaths(){
+	if(mVecPendingStreamPaths){
+		if(0 <= addStreamingPathList((const char**)mVecPendingStreamPaths, iNumOfPendingStreamPaths))
+			freePendingStreamPaths();
+	}
+}
+
+void CBeseyePlayer::freePendingStreamPaths(){
+	if(mVecPendingStreamPaths){
+		for(int i =0;i < iNumOfPendingStreamPaths;i++){
+			if(mVecPendingStreamPaths[i]){
+				free(mVecPendingStreamPaths[i]);
+				mVecPendingStreamPaths[i]=NULL;
+			}
+		}
+		free(mVecPendingStreamPaths);
+		mVecPendingStreamPaths = NULL;
+		iNumOfPendingStreamPaths = 0;
+		av_log(NULL, AV_LOG_ERROR, "freePendingStreamPaths(), free done");
+	}
+}
+
 int CBeseyePlayer::createStreaming(const char* streamHost, const char** streamPathList, int iStreamCount, int iSeekTimeInMs){
 	if(0 < iStreamCount){
 		//Abner: temp solution for ffmpeg 2.2.2 aac audio sluggish
 		//av_sync_type = AV_SYNC_EXTERNAL_CLOCK;
 		//av_sync_type = AV_SYNC_VIDEO_MASTER;
+
 		int idx = 1;
 		iNumOfPendingStreamPaths = iStreamCount -1;
 		for(; idx < iStreamCount;idx++){
@@ -2487,9 +2502,13 @@ int CBeseyePlayer::createStreaming(const char* streamHost, const char** streamPa
 				av_log(NULL, AV_LOG_ERROR, "createStreaming(), streamPathList[%d] is null", idx);
 		}
 		av_log(NULL, AV_LOG_INFO, "createStreaming(), iNumOfPendingStreamPaths is [%d] ", iNumOfPendingStreamPaths);
+
 		string host(streamHost);
 		string path(streamPathList[0]);
 		string strPath = host + path;
+		pthread_mutex_lock(&mDVRRestCountMux);
+		miRestDVRCount = 1;
+		pthread_mutex_unlock(&mDVRRestCountMux);
 		return createStreaming(strPath.c_str(), iSeekTimeInMs);
 	}
 	return -1;
@@ -2687,15 +2706,28 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 
 	if(AVMATCH(method, &RTMP_ON_STATUS)){
 		if(AVMATCH(content, &av_NetStream_Play_Stop)){
-			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Stop");
+
 			//closeStreaming();
-			//triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
+			pthread_mutex_lock(&mDVRRestCountMux);
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Stop, miRestDVRCount:%d", miRestDVRCount);
+			int iRestDVRCount = miRestDVRCount;
+			pthread_mutex_unlock(&mDVRRestCountMux);
+			if(0 == iRestDVRCount){
+				is->abort_request = 1;
+				triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
+				//do_exit(is);
+				//closeStreaming();
+			}
 		}else if(AVMATCH(content, &av_NetStream_Play_Start)){
 			AMFObject* obj = (AMFObject*)extra;
 			AVal desc;
 			if(obj){
 				AMFProp_GetString(AMF_GetProp(obj, &av_description, -1), &desc);
 				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Play, desc:%s", desc.av_val?desc.av_val:"");
+				pthread_mutex_lock(&mDVRRestCountMux);
+				miRestDVRCount -- ;
+				av_log(NULL, AV_LOG_ERROR,"invokeRtmpCallback(), miRestDVRCount =>[%d]\n", miRestDVRCount);
+				pthread_mutex_unlock(&mDVRRestCountMux);
 				string strPath(desc.av_val?desc.av_val:"");
 				int iFoundLastSpace = strPath.find_last_of(" ");
 				if(0 <=  iFoundLastSpace){
@@ -2718,6 +2750,11 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 				AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
 				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_StreamNotFound, desc:%s", desc.av_val);
 			}
+		}else if(AVMATCH(content, &av_NetStream_Seek_Notify)){
+			pthread_mutex_lock(&mDVRRestCountMux);
+			miRestDVRCount ++ ;
+			av_log(NULL, AV_LOG_ERROR,"invokeRtmpCallback(), av_NetStream_Seek_Notify, miRestDVRCount =>[%d]\n", miRestDVRCount);
+			pthread_mutex_unlock(&mDVRRestCountMux);
 		}else{
 			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), non-handled content:[%s]", (NULL != content)?content->av_val:"");
 			AMFObject* obj = (AMFObject*)extra;
