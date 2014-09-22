@@ -2555,9 +2555,9 @@ HandleInvoke(RTMP *r, const char *body, unsigned int nBodySize)
 	  r->m_stream_id = -1;
 	  if(r->m_rtmpErrorCallback){
 		  if(AVMATCH(&code, &av_NetConnection_Connect_InvalidApp)){
-			  r->m_rtmpErrorCallback(r->mUserCb, INVALID_APP_ERROR, NULL);
+			  r->m_rtmpErrorCallback(r->mUserCb, INVALID_APP_ERROR, &obj2);
 		  }else if(AVMATCH(&code, &av_NetStream_Failed)){
-			  r->m_rtmpErrorCallback(r->mUserCb, INVALID_STREAM_ERROR, NULL);
+			  r->m_rtmpErrorCallback(r->mUserCb, INVALID_STREAM_ERROR, &obj2);
 		  }
 	  }
 
@@ -2568,9 +2568,9 @@ HandleInvoke(RTMP *r, const char *body, unsigned int nBodySize)
 			|| AVMATCH(&code, &av_NetStream_Play_Failed)){
 		 if(r->m_rtmpErrorCallback){
 			  if(AVMATCH(&code, &av_NetStream_Play_StreamNotFound)){
-				  r->m_rtmpErrorCallback(r->mUserCb, INVALID_PATH_ERROR, NULL);
+				  r->m_rtmpErrorCallback(r->mUserCb, INVALID_PATH_ERROR, &obj2);
 			  }else if(AVMATCH(&code, &av_NetStream_Play_Failed)){
-				  r->m_rtmpErrorCallback(r->mUserCb, STREAM_PLAY_ERROR, NULL);
+				  r->m_rtmpErrorCallback(r->mUserCb, STREAM_PLAY_ERROR, &obj2);
 			  }
 		  }
 		 //else{

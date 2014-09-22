@@ -413,8 +413,8 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 			char *nativeString = NULL;
 			//ANativeWindow* anw = ANativeWindow_fromSurface(env, surface);
 
-			int surface_width = 1280;//NULL != anw ?ANativeWindow_getWidth(anw):0;
-			int surface_height = 720;//NULL != anw ?ANativeWindow_getHeight(anw):0;
+			int surface_width = 0;//NULL != anw ?ANativeWindow_getWidth(anw):0;
+			int surface_height = 0;//NULL != anw ?ANativeWindow_getHeight(anw):0;
 
 			//LOGI("anw is [%d]", anw);
 
@@ -477,8 +477,8 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreamingList(J
 		if(NULL == player[iStreamIdx]){
 			jni_host = jni_env->NewGlobalRef(obj);
 
-			int surface_width = 1280;//NULL != anw ?ANativeWindow_getWidth(anw):0;
-			int surface_height = 720;//NULL != anw ?ANativeWindow_getHeight(anw):0;
+			int surface_width = 0;//NULL != anw ?ANativeWindow_getWidth(anw):0;
+			int surface_height = 0;//NULL != anw ?ANativeWindow_getHeight(anw):0;
 
 			//LOGI("anw is [%d]", anw);
 

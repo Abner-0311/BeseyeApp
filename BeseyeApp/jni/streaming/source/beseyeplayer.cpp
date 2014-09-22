@@ -764,6 +764,8 @@ int CBeseyePlayer::queue_picture(VideoState *is, AVFrame *src_frame, double pts1
 
         if (is->videoq.abort_request)
             return -1;
+    }else{
+    	//av_log(NULL, AV_LOG_ERROR, "queue_picture()1\n");
     }
 
     //av_log(NULL, AV_LOG_ERROR, "queue_picture()1\n");
@@ -777,6 +779,7 @@ int CBeseyePlayer::queue_picture(VideoState *is, AVFrame *src_frame, double pts1
         	uint32_t target_height = (0 == screen_height)?vp->height:screen_height;//screen_height;//vp->height;
 
 			if(NULL == pFrameRGB){
+				av_log(NULL, AV_LOG_ERROR, "screen_width:%d, screen_height:%d\n", screen_width, screen_height);
 				av_log(NULL, AV_LOG_ERROR, "target_width:%d, target_height:%d\n", target_width, target_height);
 				pFrameRGB=avcodec_alloc_frame();
 				int numBytes = avpicture_get_size((PixelFormat)miFrameFormat, target_width, target_height);
@@ -1033,11 +1036,15 @@ int video_thread(void *arg)
         av_free_packet(&pkt);
 
         ret = player->get_video_frame(is, frame, &pts_int, &pkt);
-        if (ret < 0)
+        if (ret < 0){
+        	av_log(NULL, AV_LOG_ERROR, "video_thread(), fail to get_video_frame, ret:%d\n", ret);
             goto the_end;
+        }
 
-        if (!ret)
+        if (!ret){
+        	//av_log(NULL, AV_LOG_ERROR, "video_thread(), continue, ret:%d\n", ret);
             continue;
+        }
 
 //#if CONFIG_AVFILTER
 //        if (   last_w != is->video_st->codec->width
@@ -1120,8 +1127,10 @@ int video_thread(void *arg)
         ret = player->queue_picture(is, frame, pts, pkt.pos);
 //#endif
 
-        if (ret < 0)
+        if (ret < 0){
+        	av_log(NULL, AV_LOG_ERROR, "video_thread(), fail to queue_picture, ret:%d\n", ret);
             goto the_end;
+        }
 
         if (is->step)
         	player->stream_toggle_pause(is);
@@ -2713,10 +2722,9 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 			int iRestDVRCount = miRestDVRCount;
 			pthread_mutex_unlock(&mDVRRestCountMux);
 			if(0 == iRestDVRCount){
-				is->abort_request = 1;
 				triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
-				//do_exit(is);
-				//closeStreaming();
+				closeStreaming();
+				addStreamingPath("dummy");
 			}
 		}else if(AVMATCH(content, &av_NetStream_Play_Start)){
 			AMFObject* obj = (AMFObject*)extra;
@@ -2755,6 +2763,15 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 			miRestDVRCount ++ ;
 			av_log(NULL, AV_LOG_ERROR,"invokeRtmpCallback(), av_NetStream_Seek_Notify, miRestDVRCount =>[%d]\n", miRestDVRCount);
 			pthread_mutex_unlock(&mDVRRestCountMux);
+
+		}else if(AVMATCH(content, &av_NetStream_Play_StreamNotFound)){
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_StreamNotFound");
+			AMFObject* obj = (AMFObject*)extra;
+			AVal desc;
+			if(obj){
+				AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s", desc.av_val);
+			}
 		}else{
 			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), non-handled content:[%s]", (NULL != content)?content->av_val:"");
 			AMFObject* obj = (AMFObject*)extra;
@@ -2791,6 +2808,19 @@ void CBeseyePlayer::invokeRtmpStatusCallback(int iStatus, void* extra){
 
 void CBeseyePlayer::invokeRtmpErrorCallback(int iError, void* extra){
     av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpErrorCallback(), iError:%d",iError);
+    if(INVALID_PATH_ERROR == iError){
+    	AMFObject* obj = (AMFObject*)extra;
+		AVal desc;
+		if(obj){
+			AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpErrorCallback(), desc:%s", desc.av_val);
+			if(0 == strcmp("dummy", desc.av_val)){
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpErrorCallback(), found dummy, not report");
+				return;
+			}
+		}
+    }
+
 	triggerPlayCB(CBeseyeRTMPObserver::ERROR_CB, NULL, INTERNAL_STREAM_ERR, iError);
 }
 

@@ -26,6 +26,7 @@ public class SessionMgr {
 		MODE_DEV,
 		MODE_COMPUTEX,
 		MODE_STAGING,
+		MODE_STAGING_TOKYO,
 		MODE_PRODUCTION,
 		MODE_TYPES_CNT;
 		
@@ -41,6 +42,10 @@ public class SessionMgr {
 					break;
 				} 
 				case 3:{
+					mode = MODE_STAGING_TOKYO;
+					break;
+				} 
+				case 4:{
 					mode = MODE_PRODUCTION;
 					break;
 				} 
@@ -55,31 +60,37 @@ public class SessionMgr {
 	static private final String[] ACCOUNT_BE_URL = {"https://acc-dev.beseye.com",
 													"https://acc01.beseye.com", 
 													"https://acc-stage.beseye.com",
+													"https://tokyo-acc-stage.beseye.com",
 													"https://acc-stage.beseye.com"}; 
 	
 	static private final String[] MM_BE_URL = { "https://mm-dev.beseye.com/",
 												"http://mm01-forext-comp.beseye.com/", 
 												"https://mm-stage.beseye.com/",
+												"https://tokyo-mm-stage.beseye.com/",
 												"https://mm-stage.beseye.com/"}; 
 	
 	static private final String[] NS_BE_URL = { "https://ns-dev.beseye.com/",
 												"http://ns01.beseye.com/", 
 												"https://ns-stage.beseye.com/",
+												"https://tokyo-ns-stage.beseye.com/",
 												"https://ns-stage.beseye.com/"}; 
 	
 	static private final String[] WS_BE_URL = { "https://ws-dev.beseye.com/",
 												"https://ws-dev.beseye.com/", 
 												"https://ws-stage.beseye.com/",
+												"https://tokyo-ws-stage.beseye.com/",
 												"https://ws-stage.beseye.com/"}; 
 	
 	static private final String[] WSA_BE_URL = { "https://wsa-dev.beseye.com/",
 												 "https://wsa-dev.beseye.com/", 
 												 "https://wsa-stage.beseye.com/",
+												 "https://tokyo-wsa-stage.beseye.com/",
 												 "https://wsa-stage.beseye.com/"}; 
 	
 	static private final String[] NEWS_BE_URL = { "https://news-dev.beseye.com/",
 												  "https://news-dev.beseye.com/", 
 												  "https://news-stage.beseye.com/",
+												  "https://tokyo-news-stage.beseye.com/",
 												  "https://news-stage.beseye.com/"}; 
 	
 	
