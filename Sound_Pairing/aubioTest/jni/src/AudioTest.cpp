@@ -17,6 +17,123 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <signal.h>
+#include <pthread.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+#define MONITOR_PROCESS_FLAG "/tmp/beseye_monitor_process"
+#define MONITOR_PROCESS_RET "/tmp/beseye_monitor_process_ret"
+
+static const int  MAX_TIME_TO_INVOKE_SYSTEM = 10;//10 sec
+static pid_t pid_system = -1;
+static msec_t lTimeInvodeSystem = 0;
+static pid_t intermediate_pid = -1;
+//static int iRetSystemCall = 0;
+
+//To avoid system call/fork blocking issue, we need to monitor it and kill it when timeout
+int invokeSystem(const char* cmd){
+	return system(cmd);
+//	int iRetSystemCall = -1;
+//	//LOGE( "invokeSystem(), time_ms:%lld .............++++\n", time_ms());
+//	saveToFile(MONITOR_PROCESS_FLAG,"monitor");
+//	saveToFile(MONITOR_PROCESS_RET,"-1");
+//
+//	intermediate_pid = fork();
+//	if (intermediate_pid == 0) {
+//		//LOGE( "invokeSystem(), intermediate_pid fork successfully time_ms:%lld .............+++++++++++++++++\n", time_ms());
+//		pid_system = fork();
+//	    if (pid_system == 0) {
+//	    	//LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG begin pid_system:%d, time_ms:%lld .............+++++++++++++++++\n",pid_system, time_ms());
+//
+//	    	int iRet = system(cmd);
+//	    	char cRet[32]={0};
+//	    	sprintf(cRet, "%d", iRet);
+//	    	saveToFile(MONITOR_PROCESS_RET,cRet);
+//
+//			deleteFile(MONITOR_PROCESS_FLAG);
+//			LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG end time_ms:%lld, cRet:[%s] .............---------------\n", time_ms(), cRet);
+//			exit (0);
+//	    }
+//
+//	    pid_t timeout_pid = fork();
+//	    if (timeout_pid == 0) {
+//	    	//LOGE( "invokeSystem(), timeout time_ms:%lld .............++++\n", time_ms());
+//	        sleep(MAX_TIME_TO_INVOKE_SYSTEM);
+//	        LOGE( "invokeSystem(), timeout time_ms:%lld .............----\n", time_ms());
+//	        exit(0);
+//	    }
+//
+//	    pid_t exited_pid = wait(NULL);
+//	    if (exited_pid == pid_system) {
+//	    	LOGE( "invokeSystem(), kill timeout_pid, time_ms:%lld .............\n", time_ms());
+//	        kill(timeout_pid, SIGKILL);
+//	    } else {
+//	    	LOGE( "invokeSystem(), kill pid_system, time_ms:%lld .............\n", time_ms());
+//	        kill(pid_system, SIGKILL); // Or something less violent if you prefer
+//	        deleteFile(MONITOR_PROCESS_FLAG);
+//	    }
+//	    wait(NULL); // Collect the other process
+//	    exit(0); // Or some more informative status
+//	}
+//
+//	//LOGE( "invokeSystem(), intermediate_pid:%d \n", intermediate_pid);
+//
+//	if(0 < intermediate_pid){
+//		lTimeInvodeSystem = time_ms();
+//		//LOGE( "invokeSystem(), waitpid begin\n");
+//		waitpid(intermediate_pid, 0, 0);
+//		//LOGE( "invokeSystem(), waitpid end\n");
+//		deleteFile(MONITOR_PROCESS_FLAG);
+//		intermediate_pid = -1;
+//	}else{
+//		LOGE( "invokeSystem(), invalid intermediate_pid:%d \n", intermediate_pid);
+//	}
+//
+//	char* cRet = readFromFile(MONITOR_PROCESS_RET);
+//	if(cRet){
+//		iRetSystemCall = atoi(cRet);
+//	}
+//	FREE(cRet)
+//	LOGE( "invokeSystem(), iRetSystemCall:%d, time_ms:%lld .............----\n", iRetSystemCall, time_ms());
+//	return iRetSystemCall;
+}
+
+bool isSystemProcessExist(){
+	bool bRet = false;
+	char* stopSSFlag = readFromFile(MONITOR_PROCESS_FLAG);
+	if(stopSSFlag){
+		bRet = true;
+	}
+	FREE(stopSSFlag)
+	return bRet;
+}
+
+void killSystemProcess(){
+	if(0 < intermediate_pid){
+		if(0 > kill(intermediate_pid, SIGKILL)){
+			LOGE( "failed tp kill intermediate_pid\n");
+		}
+		intermediate_pid = -1;
+		lTimeInvodeSystem = 0;
+	}
+}
+
+void checkSystemProcess(){
+	if(0 < intermediate_pid){
+		if(isSystemProcessExist()){
+			if((0 < lTimeInvodeSystem) && (time_ms() - lTimeInvodeSystem > (MAX_TIME_TO_INVOKE_SYSTEM*1000))){
+				LOGE( "stop monitor flag is on over 10 sec\n");
+				killSystemProcess();
+			}
+		}else{
+			LOGE( "stop monitor flag is off\n");
+			lTimeInvodeSystem = 0;
+			intermediate_pid = -1;
+		}
+	}
+}
+
 static const char* SP_ENABLED_FLAG			= "/beseye/config/sp_enabled";
 
 //void setInvalidWifi(){
@@ -272,7 +389,7 @@ static void copyLogFile(){
 		return;
 	}
 
-	char date[20];
+	char date[20]={0};
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	strftime(date, sizeof(date) / sizeof(*date), "%Y-%m-%dT%H:%M:%S", gmtime(&tv.tv_sec));
@@ -1074,45 +1191,6 @@ void setLedLight(int bRedOn, int bGreenOn, int bBlueOn){
 #endif
 }
 
-//static const int  MAX_TIME_TO_WAIT_SYS = 2000;//2 sec
-//static pid_t pid_wait_sys = -1;
-//static msec_t lTimeWaitSys = 0;
-//static int sInvokeSystemRet = 0;
-//
-//int invokeSystem(const char* cmd){
-//	int iRet = 0;
-//	sInvokeSystemRet = 0;
-//	lTimeWaitSys = time_ms();
-//	pid_wait_sys = fork();
-//	if (pid_wait_sys == 0) {
-//		sInvokeSystemRet = system(cmd);
-//		exit(0);
-//
-//		pid_t timeout_pid = fork();
-//		if (timeout_pid == 0) {
-//			LOGE( "turnOffSS(), timeout time_ms:%u .............++++\n", time_ms());
-//			sleep(MAX_TIME_TO_STOP_SS);
-//			LOGE( "turnOffSS(), timeout time_ms:%u .............----\n", time_ms());
-//			exit(0);
-//		}
-//
-//		pid_t exited_pid = wait(NULL);
-//		if (exited_pid == pid_stop_ss) {
-//			LOGE( "turnOffSS(), kill timeout_pid, time_ms:%u .............\n", time_ms());
-//			kill(timeout_pid, SIGKILL);
-//		} else {
-//			LOGE( "turnOffSS(), kill pid_stop_ss, time_ms:%u .............\n", time_ms());
-//			kill(pid_stop_ss, SIGKILL); // Or something less violent if you prefer
-//			deleteFile(STOP_SS_PROCESS_FLAG);
-//		}
-//	}
-//
-//	wait(NULL); // Collect the other process
-//
-//	LOGE( "turnOffSS(), intermediate_pid:%d \n", intermediate_pid);
-//	return sInvokeSystemRet;
-//}
-
 static const char* SES_TOKEN_PATH 			= "/beseye/config/ses_token";
 static pthread_t sThreadVerifyToken;
 
@@ -1124,7 +1202,7 @@ void* AudioTest::verifyToken(void* userdata){
 		if((PAIRING_ANALYSIS != sPairingMode && lDelta > TIME_TO_CHECK_TOKEN) || (PAIRING_ANALYSIS == sPairingMode && lDelta >TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD)){
 			if(readFromFile(SES_TOKEN_PATH)){
 				//if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
-					if(0 == (system("/beseye/cam_main/beseye_token_check") >> 8)){
+					if(0 == (invokeSystem("/beseye/cam_main/beseye_token_check") >> 8)){
 					//if(0 == checkTokenValid()){
 						AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
 						setLedLight(0,1,0);
@@ -1253,6 +1331,8 @@ void writeBuf(unsigned char* charBuf, int iLen){
 		}
 	 }
 #endif
+
+	checkSystemProcess();
 
 	if(!AudioTest::getInstance()->isPairingAnalysisMode() && !AudioTest::getInstance()->isAutoTestBeginAnalyzeOnReceiver()){
 		return;
@@ -1878,7 +1958,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				LOGE("wifi connection check , trial %d.............\n", iTrials);
 				//iNetworkRet = checkInternetStatus(NETWORK_CHECK_HOST);
 
-				iNetworkRet = system("/beseye/util/curl www.google.com") >> 8;
+				iNetworkRet = invokeSystem("/beseye/util/curl www.google.com") >> 8;
 
 				//LOGE("wifi check ret:%d, iTrials:%ld\n", iNetworkRet, iTrials));
 			}while( (15 > iTrials) && (iNetworkRet != 0));
@@ -1887,14 +1967,14 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 			if(0 == iNetworkRet){
 				LOGE("network connected\n");
-				iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
+				iRet = invokeSystem("/beseye/cam_main/beseye_token_check") >> 8;
 				//iRet = checkTokenValid();
 				if(0 == iRet){
 					LOGE("Token is already existed, check tmp token\n");
 					if(1 == cPurpose){
 						sprintf(cmd, "/beseye/cam_main/cam-util -verToken %s %s", strMAC.c_str(), strUserNum.c_str());
 						LOGE("verToken cmd:[%s]\n", cmd);
-						iRet = system(cmd) >> 8;
+						iRet = invokeSystem(cmd) >> 8;
 						//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
 						if(0 == iRet){
 							LOGE("Tmp User Token verification OK\n");
@@ -1916,7 +1996,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 						sprintf(cmd, "/beseye/cam_main/cam-util -attach %s %s", strMAC.c_str(), strUserNum.c_str());
 						LOGE("attach cmd:[%s]\n", cmd);
-						iRet = system(cmd) >> 8;
+						iRet = invokeSystem(cmd) >> 8;
 
 						//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
 						if(0 == iRet){
