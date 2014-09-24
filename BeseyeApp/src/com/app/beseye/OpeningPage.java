@@ -58,6 +58,12 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			return;
 		}
 		
+		if(null != savedInstanceState && savedInstanceState.getBoolean(KEY_HAVE_HANDLED, false)){
+			Log.i(TAG, "OpeningPage::onCreate(), call finish for KEY_HAVE_HANDLED of savedInstanceState is true ");
+			finish();
+			return;
+		}
+		
 		setContentView(R.layout.layout_opening);
 		
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -71,7 +77,13 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		
 		launchActivityByIntent(getIntent());
 	}
-	
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putBoolean(KEY_HAVE_HANDLED, true);
+	}
+
 	@Override
 	protected void onNewIntent(Intent intent) {
 		if(DEBUG)

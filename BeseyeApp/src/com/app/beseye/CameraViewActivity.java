@@ -609,6 +609,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		checkAndExtendHideHeader();
 		
 		if(!mbFirstResume || mbIsRetryAtNextResume){
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 			triggerPlay();
 		}
 	}

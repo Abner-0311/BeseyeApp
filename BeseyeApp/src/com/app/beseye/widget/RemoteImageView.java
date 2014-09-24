@@ -458,7 +458,7 @@ public class RemoteImageView extends ImageView {
 								setImage(bitmap, mStrVCamId);
 								
 								// write low quality image to memory cache
-								BeseyeMemCache.addBitmapToMemoryCache(mLocal, bitmap);
+								BeseyeMemCache.addBitmapToMemoryCache(strLastPhoto, bitmap);
 								
 								bitmap = null;
 								
