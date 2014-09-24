@@ -381,7 +381,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    }
 		    
 		    if(AUDIO_REC_FILE){
-			    File file = new File("/data/data/com.app.beseye/sample_8k.ulaw");
+			    File file = new File("/sdcard/sample_8k.ulaw");
 			    try{
 			    	fos = new FileOutputStream(file);
 			    }catch (FileNotFoundException e) {

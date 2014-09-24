@@ -62,7 +62,7 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 				break;
 			}
 			case R.id.iv_signup_top_logo:{
-				if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING.ordinal()){
+				if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal()){
 					miDemoCount++;
 					if(miDemoCount >=5){
 						launchActivityByClassName(BeseyeComputexModeActivity.class.getName());

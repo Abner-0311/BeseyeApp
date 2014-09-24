@@ -193,7 +193,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private void checkForUpdates() {
 	    // Remove this for store builds!
-		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING.ordinal())
+		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal())
 			UpdateManager.register(this, HOCKEY_APP_ID);
 	}
 	

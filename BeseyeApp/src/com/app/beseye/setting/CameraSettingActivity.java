@@ -124,7 +124,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgPowerSchedule = (ViewGroup)findViewById(R.id.vg_power_schedule);
 		if(null != mVgPowerSchedule){
 			mVgPowerSchedule.setOnClickListener(this);
-			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING_TOKYO.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
 				mVgPowerSchedule.setVisibility(View.GONE);
 			}
 		}
@@ -132,7 +132,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgLocationAware = (ViewGroup)findViewById(R.id.vg_location_aware);
 		if(null != mVgLocationAware){
 			mVgLocationAware.setOnClickListener(this);
-			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING_TOKYO.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
 				mVgLocationAware.setVisibility(View.GONE);
 			}
 		}
@@ -145,7 +145,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgSiren = (ViewGroup)findViewById(R.id.vg_siren);
 		if(null != mVgSiren){
 			mVgSiren.setOnClickListener(this);
-			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING_TOKYO.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
 				mVgSiren.setVisibility(View.GONE);
 			}
 		}
@@ -164,7 +164,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgDetachCam = (ViewGroup)findViewById(R.id.vg_detach_cam);
 		if(null != mVgDetachCam){
 			mVgDetachCam.setOnClickListener(this);
-			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING_TOKYO.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
 				mVgDetachCam.setVisibility(View.GONE);
 			}
 		}
@@ -172,7 +172,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgRebootCam = (ViewGroup)findViewById(R.id.vg_reboot_cam);
 		if(null != mVgRebootCam){
 			mVgRebootCam.setOnClickListener(this);
-			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
+			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING_TOKYO.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
 				mVgRebootCam.setVisibility(View.GONE);
 			}
 		}
