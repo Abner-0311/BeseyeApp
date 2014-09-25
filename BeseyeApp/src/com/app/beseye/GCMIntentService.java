@@ -1,19 +1,12 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeJSONUtil.PS_CUSTOM_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.PS_REGULAR_DATA;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.app.beseye.httptask.BeseyePushServiceTask;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.util.BeseyeConfig;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeUtils;
 import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService{
@@ -26,7 +19,7 @@ public class GCMIntentService extends GCMBaseIntentService{
 	public static final String FORWARD_ACTION_TYPE_ERR_MSG  	= "ErrorMsg";
 	public static final String FORWARD_ACTION_TYPE_CHECK_DIALOG = "CheckDialog";
 	
-	static public String SENDER_ID = "309705516409";
+	static public String SENDER_ID = "";//"309705516409";
 	
 	public GCMIntentService(){
 		super(SENDER_ID);

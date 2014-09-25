@@ -166,6 +166,8 @@ private:
 	int64_t duration;
 	int64_t audio_callback_time;
 
+	pthread_mutex_t mDVRRestCountMux;
+	int miRestDVRCount;
 	char** mVecPendingStreamPaths;
 	int iNumOfPendingStreamPaths;
 	void freePendingStreamPaths();

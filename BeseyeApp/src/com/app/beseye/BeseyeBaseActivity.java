@@ -783,6 +783,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	protected void launchDelegateActivity(String strCls, Bundle bundle){
     	Intent intent = new Intent();
+    	intent.setAction("android.intent.action.MAIN"); 
+    	intent.addCategory("android.intent.category.LAUNCHER"); 
 		intent.putExtra("ClassName", strCls);
 		intent.setClass(this, OpeningPage.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

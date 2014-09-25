@@ -99,7 +99,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private String mstrLiveStreamPath = null;
 	private List<JSONObject> mstrDVRStreamPathList;
 	private List<JSONObject> mstrPendingStreamPathList;
-	private JSONArray mstrDiffStreamPathList;
+	private List<JSONObject> mstrDiffStreamPathList;
 	private long mlDVRStartTs;
 	private long mlDVRFirstSegmentStartTs = -1;
 	private long mlRetryConnectBeginTs = -1;
@@ -513,7 +513,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				mbIsLiveMode = !intent.getBooleanExtra(KEY_DVR_STREAM_MODE, false);
 				mstrDVRStreamPathList = new ArrayList<JSONObject>();
 				mstrPendingStreamPathList = new ArrayList<JSONObject>();
-				mstrDiffStreamPathList = new JSONArray();
+				mstrDiffStreamPathList = new ArrayList<JSONObject>();
 				
 				Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), mbIsDemoCam:"+mbIsDemoCam);
 				
@@ -1079,7 +1079,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 								mbReachLiveTime = false;
 								mbCannotFindFurtherDVR = false;
 								mlLastDurationForDVR = DVR_REQ_TIME;
-	            			}else if(0 == mstrDiffStreamPathList.length()){
+	            			}else if(0 == mstrDiffStreamPathList.size()){
 	            				if(isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
 		            				Bundle b = new Bundle();
 		        					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
@@ -1604,9 +1604,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				synchronized(CameraViewActivity.this){
 					if(null == mPlayStreamThread){
 						mstrDVRStreamPathList.clear();
-						if(0 < mstrDiffStreamPathList.length()){
+						if(0 < mstrDiffStreamPathList.size()){
 							checkStreamList(mstrDiffStreamPathList, true);
-							beginLiveView();
+							BeseyeUtils.postRunnable(new Runnable(){
+
+								@Override
+								public void run() {
+									beginLiveView();
+								}}, 0);
+							
 						}
 					}else{
 						BeseyeUtils.postRunnable(this, 500);
@@ -1923,7 +1929,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
         		}
         	}
         	
-        	if(3 >= mstrDVRStreamPathList.size() && null == mDVRStreamAppendTask && 0 == mstrDiffStreamPathList.length()){
+        	if(3 >= mstrDVRStreamPathList.size() && null == mDVRStreamAppendTask && 0 == mstrDiffStreamPathList.size()){
         		long startTime = findLastTimeFromList();
         		if(0 < startTime){
 					monitorAsyncTask(mDVRStreamAppendTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(-1), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, startTime+"", (mlLastDurationForDVR = DVR_REQ_TIME)+"");
@@ -1982,24 +1988,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		Log.i(TAG, "appendStreamList(), iCount: "+iCount);
 
 		synchronized(CameraViewActivity.this){
-//			if(0 < mstrDiffStreamPathList.length()){
-//				for(int i = 0;i< iCount;i++){
-//					try {
-//						mstrDiffStreamPathList.put(streamList.getJSONObject(i));
-//					} catch (JSONException e) {
-//						e.printStackTrace();
-//						Log.e(TAG, "appendStreamList(), e:"+e.toString());	
-//					}
-//				}
-//				Log.i(TAG, "appendStreamList(), save to mstrDiffStreamPathList");
-//				return;
-//			}
-			
-			checkStreamList(streamList, false);
+			List<JSONObject> list = new ArrayList<JSONObject>();
+			for(int idx = 0;idx <iCount;idx++){
+				list.add(streamList.optJSONObject(idx));
+			}
+			checkStreamList(list, false);
 		}
     }
     
-    private void checkStreamList(JSONArray streamList, boolean fromCache){
+    private void checkStreamList(List<JSONObject> streamList, boolean fromCache){
     	Log.i(TAG, "checkStreamList(), fromCache: "+fromCache);
  //   	int iCount = streamList.length();
     	
@@ -2029,73 +2026,68 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
 			//int i = 0;
 			//for(;i< iCount;i++){
-			while(0 < streamList.length()){
-				try {
-					JSONObject check = streamList.getJSONObject(0);
-					if(null == target){
-						Log.i(TAG, "checkStreamList(), target is null");
-						target = check;
-						lStartTime = BeseyeJSONUtil.getJSONLong(target, BeseyeJSONUtil.MM_START_TIME);
-						lEndTime = lStartTime+BeseyeJSONUtil.getJSONLong(target, BeseyeJSONUtil.MM_DURATION);
-						strStream = BeseyeJSONUtil.getJSONString(target, BeseyeJSONUtil.MM_STREAM);
-						if(null != strStream){
-							int iStreamIdPattern = strStream.lastIndexOf("_{r}");
-							if(0 <= iStreamIdPattern){
-								strStreamId = strStream.substring(iStreamIdPattern);
-							}
+			while(0 < streamList.size()){
+				JSONObject check = streamList.get(0);
+				if(null == target){
+					Log.i(TAG, "checkStreamList(), target is null");
+					target = check;
+					lStartTime = BeseyeJSONUtil.getJSONLong(target, BeseyeJSONUtil.MM_START_TIME);
+					lEndTime = lStartTime+BeseyeJSONUtil.getJSONLong(target, BeseyeJSONUtil.MM_DURATION);
+					strStream = BeseyeJSONUtil.getJSONString(target, BeseyeJSONUtil.MM_STREAM);
+					if(null != strStream){
+						int iStreamIdPattern = strStream.lastIndexOf("_{r}");
+						if(0 <= iStreamIdPattern){
+							strStreamId = strStream.substring(iStreamIdPattern);
 						}
-						
-						Log.i(TAG, "checkStreamList()2, lStartTime: "+lStartTime+", lEndTime:"+lEndTime+", traget:"+target.toString()+", strStreamId="+strStreamId);
-						mstrPendingStreamPathList.add(target);
-						streamList.remove(0);
-						continue;
 					}
 					
-					
-					if(null != check){
-						long lStartTimeCk = BeseyeJSONUtil.getJSONLong(check, BeseyeJSONUtil.MM_START_TIME);
-		    			long lEndTimeCk = lStartTimeCk+BeseyeJSONUtil.getJSONLong(check, BeseyeJSONUtil.MM_DURATION);
-		    			
-		    			//avoid duplicate itm
-		    			if(lStartTime == lStartTimeCk && lEndTime == lEndTimeCk && 
-		    			   strStream.equals(BeseyeJSONUtil.getJSONString(check, BeseyeJSONUtil.MM_STREAM))){
-		    				Log.w(TAG, "checkStreamList(), find duplicate item,  check:"+check.toString());
-		    				continue;
-		    			}
-		    			
-		    			String strStreamIdChk = null;
-		    			String strStreamChk = BeseyeJSONUtil.getJSONString(check, BeseyeJSONUtil.MM_STREAM);
-		    			if(null != strStreamChk){
-		    				int iStreamIdPattern = strStreamChk.lastIndexOf("_{r}");
-		    				if(0 <= iStreamIdPattern){
-		    					strStreamIdChk = strStreamChk.substring(iStreamIdPattern);
-		    				}
-		    				
-		    				if(null != strStreamIdChk && !strStreamIdChk.equals(strStreamId)){
-		    	    			Log.i(TAG, "checkStreamList(), diff strStreamIdChk: "+strStreamIdChk+", strStreamId="+strStreamId);
-		    	    			if(false == fromCache){
-		    	    				Log.i(TAG, "checkStreamList(), save to mstrDiffStreamPathList, count:"+streamList.length());
-		    	    				while(0 < streamList.length()){
-			    	    				mstrDiffStreamPathList.put(streamList.getJSONObject(0));
-			    	    				streamList.remove(0);
-			    	    			}
-		    	    			}else if(0 == mstrPendingStreamPathList.size()){
-		    	    				Log.e(TAG, "checkStreamList(), add itm.......:"+check.toString());	
-		    	    				mstrPendingStreamPathList.add(check);
+					Log.i(TAG, "checkStreamList()2, lStartTime: "+lStartTime+", lEndTime:"+lEndTime+", traget:"+target.toString()+", strStreamId="+strStreamId);
+					mstrPendingStreamPathList.add(target);
+					streamList.remove(0);
+					continue;
+				}
+				
+				
+				if(null != check){
+					long lStartTimeCk = BeseyeJSONUtil.getJSONLong(check, BeseyeJSONUtil.MM_START_TIME);
+	    			long lEndTimeCk = lStartTimeCk+BeseyeJSONUtil.getJSONLong(check, BeseyeJSONUtil.MM_DURATION);
+	    			
+	    			//avoid duplicate itm
+	    			if(lStartTime == lStartTimeCk && lEndTime == lEndTimeCk && 
+	    			   strStream.equals(BeseyeJSONUtil.getJSONString(check, BeseyeJSONUtil.MM_STREAM))){
+	    				Log.w(TAG, "checkStreamList(), find duplicate item,  check:"+check.toString());
+	    				continue;
+	    			}
+	    			
+	    			String strStreamIdChk = null;
+	    			String strStreamChk = BeseyeJSONUtil.getJSONString(check, BeseyeJSONUtil.MM_STREAM);
+	    			if(null != strStreamChk){
+	    				int iStreamIdPattern = strStreamChk.lastIndexOf("_{r}");
+	    				if(0 <= iStreamIdPattern){
+	    					strStreamIdChk = strStreamChk.substring(iStreamIdPattern);
+	    				}
+	    				
+	    				if(null != strStreamIdChk && !strStreamIdChk.equals(strStreamId)){
+	    	    			Log.i(TAG, "checkStreamList(), diff strStreamIdChk: "+strStreamIdChk+", strStreamId="+strStreamId);
+	    	    			if(false == fromCache){
+	    	    				Log.i(TAG, "checkStreamList(), save to mstrDiffStreamPathList, count:"+streamList.size());
+	    	    				while(0 < streamList.size()){
+		    	    				mstrDiffStreamPathList.add(streamList.get(0));
 		    	    				streamList.remove(0);
 		    	    			}
-		    	    			break;
-		    				}
-		    			}
-					}
-					//Log.e(TAG, "checkStreamList(), add itm:"+check.toString());	
-					mstrPendingStreamPathList.add(check);
-					streamList.remove(0);
-					//Log.e(TAG, "onPostExecute(), mstrLiveStreamServer:"+mstrLiveStreamServer+", mstrLiveStreamPathList[i]="+mstrDVRStreamPathList[i]);	
-				} catch (JSONException e) {
-					e.printStackTrace();
-					Log.e(TAG, "checkStreamList(), e:"+e.toString());	
+	    	    			}else if(0 == mstrPendingStreamPathList.size()){
+	    	    				Log.e(TAG, "checkStreamList(), add itm.......:"+check.toString());	
+	    	    				mstrPendingStreamPathList.add(check);
+	    	    				streamList.remove(0);
+	    	    			}
+	    	    			break;
+	    				}
+	    			}
 				}
+				//Log.e(TAG, "checkStreamList(), add itm:"+check.toString());	
+				mstrPendingStreamPathList.add(check);
+				streamList.remove(0);
+				//Log.e(TAG, "onPostExecute(), mstrLiveStreamServer:"+mstrLiveStreamServer+", mstrLiveStreamPathList[i]="+mstrDVRStreamPathList[i]);	
 			}
     	}
     }

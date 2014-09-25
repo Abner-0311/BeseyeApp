@@ -37,7 +37,8 @@
 		        android:layout_height="wrap_content"  
 		        android:orientation="vertical"  
 				android:layout_centerHorizontal="true"
-				android:layout_below="@+id/sp_server_type">  
+				android:layout_below="@+id/sp_server_type"
+				android:visibility="gone">  
 		        <RadioButton  
 		            android:id="@+id/rbDemo"  
 		            android:layout_width="wrap_content"  
@@ -71,7 +72,8 @@
 		        android:paddingLeft="@dimen/login_marginMedium"
 		        android:paddingRight="@dimen/login_marginMedium"
 		        android:textSize="@dimen/login_fontRegular" 
-		        android:singleLine="true"/>
+		        android:singleLine="true"
+		        android:visibility="gone"/>
 		    
 		    <EditText
 		        android:id="@+id/editText_cam_name"
@@ -88,7 +90,8 @@
 		  		android:singleLine="true"
 		        android:paddingLeft="@dimen/login_marginMedium"
 		        android:paddingRight="@dimen/login_marginMedium"
-		        android:textSize="@dimen/login_fontRegular"/>
+		        android:textSize="@dimen/login_fontRegular"
+		        android:visibility="gone"/>
 		    
 		    <EditText
 		        android:id="@+id/editText_notify_period"
@@ -107,7 +110,8 @@
 		  		android:inputType="number"
 		        android:paddingLeft="@dimen/login_marginMedium"
 		        android:paddingRight="@dimen/login_marginMedium"
-		        android:textSize="@dimen/login_fontRegular"/>
+		        android:textSize="@dimen/login_fontRegular"
+		        android:visibility="gone"/>
         </RelativeLayout>
     </ScrollView>
 

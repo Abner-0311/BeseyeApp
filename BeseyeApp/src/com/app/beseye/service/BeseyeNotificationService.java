@@ -1558,8 +1558,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 								iNotifyType = NOTIFICATION_TYPE_INFO;
 								lTs = BeseyeJSONUtil.getJSONLong(objCus, BeseyeJSONUtil.PS_EVT_TS);
 								
-								
-								
 								Intent delegateIntent = new Intent();
 								delegateIntent.setClassName(this, CameraViewActivity.class.getName());
 								delegateIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());

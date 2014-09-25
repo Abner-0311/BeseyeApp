@@ -2715,15 +2715,13 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 
 	if(AVMATCH(method, &RTMP_ON_STATUS)){
 		if(AVMATCH(content, &av_NetStream_Play_Stop)){
-
-			//closeStreaming();
 			pthread_mutex_lock(&mDVRRestCountMux);
 			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Stop, miRestDVRCount:%d", miRestDVRCount);
 			int iRestDVRCount = miRestDVRCount;
 			pthread_mutex_unlock(&mDVRRestCountMux);
 			if(0 == iRestDVRCount){
 				triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
-				closeStreaming();
+				//closeStreaming();
 				addStreamingPath("dummy");
 			}
 		}else if(AVMATCH(content, &av_NetStream_Play_Start)){

@@ -82,35 +82,35 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 	}
 	
 	private void checkMode(){
-		File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
-		if((null != pairingFile)&&pairingFile.exists()){
-			mRbPairingmode.setChecked(true);
-		}else{
-			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
-			if(null != p2pFile && p2pFile.exists()){
-				mRbP2Pmode.setChecked(true);
-			}else{
-				mRbDemomode.setChecked(true);
-			}
-		}
-		
-		File notifyFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_notify");
-		int iPeriod = 5;
-		if(null != notifyFile && notifyFile.exists()){
-			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(notifyFile)));
-				try {
-					String strPeriod = (null != reader)?reader.readLine():null;
-					if(null != strPeriod && 0 < strPeriod.length())
-						iPeriod = Integer.parseInt(strPeriod);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		mTxtPeriod.setText(iPeriod+"");
+//		File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
+//		if((null != pairingFile)&&pairingFile.exists()){
+//			mRbPairingmode.setChecked(true);
+//		}else{
+//			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
+//			if(null != p2pFile && p2pFile.exists()){
+//				mRbP2Pmode.setChecked(true);
+//			}else{
+//				mRbDemomode.setChecked(true);
+//			}
+//		}
+//		
+//		File notifyFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_notify");
+//		int iPeriod = 5;
+//		if(null != notifyFile && notifyFile.exists()){
+//			try {
+//				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(notifyFile)));
+//				try {
+//					String strPeriod = (null != reader)?reader.readLine():null;
+//					if(null != strPeriod && 0 < strPeriod.length())
+//						iPeriod = Integer.parseInt(strPeriod);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			} catch (FileNotFoundException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		mTxtPeriod.setText(iPeriod+"");
 		
 		SERVER_MODE mode = SessionMgr.getInstance().getServerMode();
 		if(null != mSpServerType){
@@ -127,94 +127,94 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			Toast.makeText(this, "Server mode is "+mode, Toast.LENGTH_LONG).show();
 		}
 		
-		if(mRbDemomode.isChecked() && mode.ordinal() <= SERVER_MODE.MODE_COMPUTEX.ordinal()){
-			File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
-			if((null != pairingFile)&&pairingFile.exists()){
-				pairingFile.delete();
-			}
-			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
-			if(null != p2pFile && p2pFile.exists()){
-				p2pFile.delete();
-			}
-			Toast.makeText(this, "Demo mode applied", Toast.LENGTH_LONG).show();
-		}else if(mRbPairingmode.isChecked() || mode.ordinal() > SERVER_MODE.MODE_COMPUTEX.ordinal()){
-			File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
-			if((null != pairingFile)){
-				Writer writer = null;
-				try {
-					writer = new BufferedWriter(new FileWriter(pairingFile));
-					if(null != writer){
-						writer.write("pairing");
-						writer.close();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
-			if(null != p2pFile && p2pFile.exists()){
-				p2pFile.delete();
-			}
-			Toast.makeText(this, "Pairing mode applied", Toast.LENGTH_LONG).show();
-		}else{
-			File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
-			if((null != pairingFile)&&pairingFile.exists()){
-				pairingFile.delete();
-			}
-			
-			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
-			if(null != p2pFile){
-				Writer writer = null;
-				try {
-					writer = new BufferedWriter(new FileWriter(p2pFile));
-					if(null != writer){
-						writer.write("rtmp://"+mTxtIP.getText().toString()+"/proxypublish/stream2 live=1"+"\n"+mTxtCamName.getText().toString());
-						writer.close();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			Toast.makeText(this, "P2P mode applied", Toast.LENGTH_LONG).show();
-		}
-		
-		if(null != mTxtPeriod){
-			int iPeriod = 5;
-			String strPeriod  = mTxtPeriod.getText().toString();
-			if(null != strPeriod && 0 < strPeriod.length()){
-				iPeriod = Integer.parseInt(strPeriod);
-			}
-			
-			if(0 > iPeriod){
-				iPeriod = 0;
-			}
-			
-			if(60*60*1000 < iPeriod){
-				iPeriod = 60*60;
-			}
-			
-			File notifyFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_notify");
-			
-			if((null != notifyFile)&&notifyFile.exists()){
-				notifyFile.delete();
-			}
-			
-			Writer writer = null;
-			try {
-				writer = new BufferedWriter(new FileWriter(notifyFile));
-				if(null != writer){
-					writer.write(iPeriod+"");
-					writer.flush();
-					writer.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			Toast.makeText(this, "Notify period is "+iPeriod+" seconds", Toast.LENGTH_LONG).show();
-		}
+//		if(mRbDemomode.isChecked() && mode.ordinal() <= SERVER_MODE.MODE_COMPUTEX.ordinal()){
+//			File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
+//			if((null != pairingFile)&&pairingFile.exists()){
+//				pairingFile.delete();
+//			}
+//			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
+//			if(null != p2pFile && p2pFile.exists()){
+//				p2pFile.delete();
+//			}
+//			Toast.makeText(this, "Demo mode applied", Toast.LENGTH_LONG).show();
+//		}else if(mRbPairingmode.isChecked() || mode.ordinal() > SERVER_MODE.MODE_COMPUTEX.ordinal()){
+//			File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
+//			if((null != pairingFile)){
+//				Writer writer = null;
+//				try {
+//					writer = new BufferedWriter(new FileWriter(pairingFile));
+//					if(null != writer){
+//						writer.write("pairing");
+//						writer.close();
+//					}
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			
+//			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
+//			if(null != p2pFile && p2pFile.exists()){
+//				p2pFile.delete();
+//			}
+//			Toast.makeText(this, "Pairing mode applied", Toast.LENGTH_LONG).show();
+//		}else{
+//			File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
+//			if((null != pairingFile)&&pairingFile.exists()){
+//				pairingFile.delete();
+//			}
+//			
+//			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
+//			if(null != p2pFile){
+//				Writer writer = null;
+//				try {
+//					writer = new BufferedWriter(new FileWriter(p2pFile));
+//					if(null != writer){
+//						writer.write("rtmp://"+mTxtIP.getText().toString()+"/proxypublish/stream2 live=1"+"\n"+mTxtCamName.getText().toString());
+//						writer.close();
+//					}
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			
+//			Toast.makeText(this, "P2P mode applied", Toast.LENGTH_LONG).show();
+//		}
+//		
+//		if(null != mTxtPeriod){
+//			int iPeriod = 5;
+//			String strPeriod  = mTxtPeriod.getText().toString();
+//			if(null != strPeriod && 0 < strPeriod.length()){
+//				iPeriod = Integer.parseInt(strPeriod);
+//			}
+//			
+//			if(0 > iPeriod){
+//				iPeriod = 0;
+//			}
+//			
+//			if(60*60*1000 < iPeriod){
+//				iPeriod = 60*60;
+//			}
+//			
+//			File notifyFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_notify");
+//			
+//			if((null != notifyFile)&&notifyFile.exists()){
+//				notifyFile.delete();
+//			}
+//			
+//			Writer writer = null;
+//			try {
+//				writer = new BufferedWriter(new FileWriter(notifyFile));
+//				if(null != writer){
+//					writer.write(iPeriod+"");
+//					writer.flush();
+//					writer.close();
+//				}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			Toast.makeText(this, "Notify period is "+iPeriod+" seconds", Toast.LENGTH_LONG).show();
+//		}
 		
 		launchDelegateActivity(BeseyeEntryActivity.class.getName());
 	}
