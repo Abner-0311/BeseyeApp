@@ -1207,6 +1207,7 @@ void* AudioTest::verifyToken(void* userdata){
 						AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
 						setLedLight(0,1,0);
 						AudioTest::getInstance()->stopAutoTest();
+						exit(0);
 					}
 				//}
 			}
