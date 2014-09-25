@@ -135,9 +135,9 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		mlstTimeZone.add(new BeseyeTimeZone("Canada/Pacific",  getString(R.string.tz_can_pacific)));
 		
 		mlstTimeZone.add(new BeseyeTimeZone("NZ",  getString(R.string.tz_new_zealand)));
-		mlstTimeZone.add(new BeseyeTimeZone("Canada/Eastern",  getString(R.string.tz_aus_eastern)));
-		mlstTimeZone.add(new BeseyeTimeZone("Canada/Eastern",  getString(R.string.tz_aus_western)));
-		mlstTimeZone.add(new BeseyeTimeZone("Canada/Eastern",  getString(R.string.tz_aus_central)));
+		mlstTimeZone.add(new BeseyeTimeZone("Australia/ACT",  getString(R.string.tz_aus_eastern)));
+		mlstTimeZone.add(new BeseyeTimeZone("Australia/West",  getString(R.string.tz_aus_western)));
+		mlstTimeZone.add(new BeseyeTimeZone("Australia/Adelaide",  getString(R.string.tz_aus_central)));
 		
 		mlstTimeZone.add(new BeseyeTimeZone("Europe/Copenhagen",  getString(R.string.tz_euro_denmark)));
 		mlstTimeZone.add(new BeseyeTimeZone("Atlantic/Reykjavik",  getString(R.string.tz_euro_iceland)));

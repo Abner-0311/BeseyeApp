@@ -73,7 +73,7 @@ miRestDVRCount(0){
 	wanted_stream[AVMEDIA_TYPE_VIDEO] = -1;
 	wanted_stream[AVMEDIA_TYPE_SUBTITLE] = -1;
 	pthread_mutex_init(&mDVRRestCountMux, NULL);
-	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::CBeseyePlayer(), screen_width:%d, screen_height:%d", screen_width, screen_height);
+	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::CBeseyePlayer(), screen_width:%d, screen_height:%d\n", screen_width, screen_height);
 }
 
 CBeseyePlayer::~CBeseyePlayer(){
@@ -87,7 +87,7 @@ CBeseyePlayer::~CBeseyePlayer(){
 
 	freePendingStreamPaths();
 
-	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::~CBeseyePlayer()--");
+	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::~CBeseyePlayer()--\n");
 }
 
 void* CBeseyePlayer::getWindow(){
@@ -338,7 +338,7 @@ void CBeseyePlayer::stream_seek(VideoState *is, int64_t pos, int64_t rel, int se
 /* pause or resume the video */
 void CBeseyePlayer::stream_toggle_pause(VideoState *is)
 {
-	av_log(NULL, AV_LOG_INFO, "stream_toggle_pause()++, is->paused:%d", is->paused);
+	av_log(NULL, AV_LOG_INFO, "stream_toggle_pause()++, is->paused:%d\n", is->paused);
     if (is->paused) {
         is->frame_timer += av_gettime() / 1000000.0 + is->video_current_pts_drift - is->video_current_pts;
         if (is->read_pause_return != AVERROR(ENOSYS)) {
@@ -1549,18 +1549,18 @@ int CBeseyePlayer::stream_component_open(VideoState *is, int stream_index)
     if (stream_index < 0 || stream_index >= ic->nb_streams)
         return -1;
     avctx = ic->streams[stream_index]->codec;
-    av_log(NULL, AV_LOG_ERROR, "stream_component_open(), stream_index:%d, avctx->codec_id:%d", stream_index, avctx->codec_id);
+    av_log(NULL, AV_LOG_ERROR, "stream_component_open(), stream_index:%d, avctx->codec_id:%d\n", stream_index, avctx->codec_id);
     codec = avcodec_find_decoder(avctx->codec_id);
     opts = filter_codec_opts(codec_opts, avctx->codec_id, ic, ic->streams[stream_index], codec);
 
-    //av_log(NULL, AV_LOG_ERROR, "stream_component_open(), stream_index:%d", stream_index);
+    //av_log(NULL, AV_LOG_ERROR, "stream_component_open(), stream_index:%d\n", stream_index);
     switch(avctx->codec_type){
         case AVMEDIA_TYPE_AUDIO   : is->last_audio_stream    = stream_index; if(audio_codec_name   ) codec= avcodec_find_decoder_by_name(   audio_codec_name); break;
         case AVMEDIA_TYPE_SUBTITLE: is->last_subtitle_stream = stream_index; if(subtitle_codec_name) codec= avcodec_find_decoder_by_name(subtitle_codec_name); break;
         case AVMEDIA_TYPE_VIDEO   : is->last_video_stream    = stream_index; if(video_codec_name   ) codec= avcodec_find_decoder_by_name(   video_codec_name); break;
     }
 
-    //av_log(NULL, AV_LOG_ERROR, "stream_component_open(), codec:%s", codec);
+    //av_log(NULL, AV_LOG_ERROR, "stream_component_open(), codec:%s\n", codec);
     if (!codec)
         return -1;
 
@@ -1602,7 +1602,7 @@ int CBeseyePlayer::stream_component_open(VideoState *is, int stream_index)
     }
 
     ic->streams[stream_index]->discard = AVDISCARD_DEFAULT;
-    av_log(NULL, AV_LOG_ERROR, "stream_component_open(), avctx->codec_type:%d", avctx->codec_type);
+    av_log(NULL, AV_LOG_ERROR, "stream_component_open(), avctx->codec_type:%d\n", avctx->codec_type);
     switch (avctx->codec_type) {
     case AVMEDIA_TYPE_AUDIO:
         is->audio_stream = stream_index;
@@ -1800,7 +1800,7 @@ int read_thread(void *arg)
 
     err = avformat_open_input(&ic, is->filename, is->iformat, &format_opts);
     if (err < 0) {
-    	av_log(NULL, AV_LOG_ERROR, "avformat_open_input() err:0x%x--", err);
+    	av_log(NULL, AV_LOG_ERROR, "avformat_open_input() err:0x%x--\n", err);
 
     	if(-5 == err){
     		int itrial = 0;
@@ -1808,12 +1808,12 @@ int read_thread(void *arg)
     			av_usleep(500000*itrial);
 				err = avformat_open_input(&ic, is->filename, is->iformat, &format_opts);
 				 if (err < 0) {
-					av_log(NULL, AV_LOG_ERROR, "avformat_open_input(), itrial:%d, err:%d--", itrial, err);
+					av_log(NULL, AV_LOG_ERROR, "avformat_open_input(), itrial:%d, err:%d--\n", itrial, err);
 				 }
     		}
 
     		 if (err < 0) {
-				//av_log(NULL, AV_LOG_ERROR, "avformat_open_input(), err:%d--", err);
+				//av_log(NULL, AV_LOG_ERROR, "avformat_open_input(), err:%d--\n", err);
 				print_error_internal(player, is->filename, err);
 				//print_error(is->filename, err);
 				ret = -1;
@@ -1847,18 +1847,18 @@ int read_thread(void *arg)
 
     //for video stream only
     //err = avformat_find_stream_info_ext(ic, opts);
-    av_log(NULL, AV_LOG_INFO, "avformat_find_stream_info_ext++");
+    av_log(NULL, AV_LOG_INFO, "avformat_find_stream_info_ext++\n");
 
     err = avformat_find_stream_info(ic, opts);
     if (err < 0) {
-    	av_log(NULL, AV_LOG_ERROR, "avformat_find_stream_info() err:%d--", err);
+    	av_log(NULL, AV_LOG_ERROR, "avformat_find_stream_info() err:%d--\n", err);
         fprintf(stderr, "%s: could not find codec parameters\n", is->filename);
         print_error_internal(player, is->filename, err);
         ret = -1;
         goto fail;
     }
 
-    av_log(NULL, AV_LOG_INFO, "avformat_find_stream_info_ext--");
+    av_log(NULL, AV_LOG_INFO, "avformat_find_stream_info_ext--\n");
 
     player->registerRtmpCallback(ic);
     player->addPendingStreamPaths();
@@ -1878,15 +1878,15 @@ int read_thread(void *arg)
         int64_t timestamp = 0;
 
         timestamp = player->get_start_time();
-        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld, AV_NOPTS_VALUE:%lld", timestamp, ic->start_time, AV_NOPTS_VALUE);
+        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld, AV_NOPTS_VALUE:%lld\n", timestamp, ic->start_time, AV_NOPTS_VALUE);
 
         /* add the stream start time */
         if (ic->start_time != AV_NOPTS_VALUE){
             timestamp += ic->start_time;
-            av_log(NULL, AV_LOG_INFO, "read_thread(), add timestamp:%lld, ic->start_time:%lld", timestamp, ic->start_time);
+            av_log(NULL, AV_LOG_INFO, "read_thread(), add timestamp:%lld, ic->start_time:%lld\n", timestamp, ic->start_time);
         }
         ret = avformat_seek_file(ic, 0, INT64_MIN, timestamp, INT64_MAX, 0);
-        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld", timestamp, ic->start_time);
+        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld\n", timestamp, ic->start_time);
 
         if (ret < 0) {
         	av_log(NULL, AV_LOG_ERROR, "%s: could not seek to position %0.3f\n",
@@ -1899,7 +1899,7 @@ int read_thread(void *arg)
     for (i = 0; i < ic->nb_streams; i++)
         ic->streams[i]->discard = AVDISCARD_ALL;
 
-    av_log(NULL, AV_LOG_INFO, "read_thread(),  st_index[AVMEDIA_TYPE_VIDEO]:%d, %d", st_index[AVMEDIA_TYPE_VIDEO], player->get_wanted_stream(AVMEDIA_TYPE_VIDEO));
+    av_log(NULL, AV_LOG_INFO, "read_thread(),  st_index[AVMEDIA_TYPE_VIDEO]:%d, %d\n", st_index[AVMEDIA_TYPE_VIDEO], player->get_wanted_stream(AVMEDIA_TYPE_VIDEO));
 
     //if (!video_disable)
        st_index[AVMEDIA_TYPE_VIDEO] =
@@ -1913,7 +1913,7 @@ int read_thread(void *arg)
 									   NULL, 0);
 
 
-    av_log(NULL, AV_LOG_DEBUG, "read_thread(), --- st_index[AVMEDIA_TYPE_VIDEO]:%d, %d, st_index[AVMEDIA_TYPE_AUDIO]:%d", st_index[AVMEDIA_TYPE_VIDEO], player->get_wanted_stream(AVMEDIA_TYPE_VIDEO), st_index[AVMEDIA_TYPE_AUDIO]);
+    av_log(NULL, AV_LOG_DEBUG, "read_thread(), --- st_index[AVMEDIA_TYPE_VIDEO]:%d, %d, st_index[AVMEDIA_TYPE_AUDIO]:%d\n", st_index[AVMEDIA_TYPE_VIDEO], player->get_wanted_stream(AVMEDIA_TYPE_VIDEO), st_index[AVMEDIA_TYPE_AUDIO]);
 
     is->show_mode = player->get_show_mode();
 
@@ -1958,9 +1958,9 @@ int read_thread(void *arg)
     player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PLAYING, 0);
 
     for (;;) {
-    	//av_log(NULL, AV_LOG_ERROR, "for loop");
+    	//av_log(NULL, AV_LOG_ERROR, "for loop\n");
         if (is->abort_request){
-        	av_log(NULL, AV_LOG_INFO, "read_thread(),break loop");
+        	av_log(NULL, AV_LOG_INFO, "read_thread(),break loop\n");
             break;
         }
 
@@ -2013,7 +2013,7 @@ int read_thread(void *arg)
             eof = 0;
         }
 
-        //av_log(NULL, AV_LOG_ERROR, "read_thread(), checking [%d, %d, %d], [%d, %d, %d], %d", is->audioq.abort_request,is->audio_stream,  is->audioq   .nb_packets, is->videoq.abort_request,is->video_stream,  is->videoq   .nb_packets, (is->audioq.size + is->videoq.size + is->subtitleq.size));
+        //av_log(NULL, AV_LOG_ERROR, "read_thread(), checking [%d, %d, %d], [%d, %d, %d], %d\n", is->audioq.abort_request,is->audio_stream,  is->audioq   .nb_packets, is->videoq.abort_request,is->video_stream,  is->videoq   .nb_packets, (is->audioq.size + is->videoq.size + is->subtitleq.size));
         /* if the queue are full, no need to read more */
         if (!player->get_infinite_buffer() &&
               (is->audioq.size + is->videoq.size + is->subtitleq.size > MAX_QUEUE_SIZE
@@ -2047,11 +2047,11 @@ int read_thread(void *arg)
                 if (iLoop != 1 && (!iLoop || player->set_loop(--iLoop))) {
                 	player->stream_seek(is, player->get_start_time()!= AV_NOPTS_VALUE ? player->get_start_time(): 0, 0, 0);
                 }else if(STREAM_CLOSE == player->get_Stream_Status()){
-                	av_log(NULL, AV_LOG_ERROR, "read_thread(), exit due to STREAM_CLOSE, is:%d", is);
+                	av_log(NULL, AV_LOG_ERROR, "read_thread(), exit due to STREAM_CLOSE, is:%d\n", is);
 					ret = AVERROR_EOF;
 					goto fail;
                 }else if (player->get_autoexit()) {
-                	av_log(NULL, AV_LOG_INFO, "read_thread(), autoexit, is:%d", is);
+                	av_log(NULL, AV_LOG_INFO, "read_thread(), autoexit, is:%d\n", is);
                     ret = AVERROR_EOF;
                     goto fail;
                 }
@@ -2062,10 +2062,10 @@ int read_thread(void *arg)
         }
 
         ret = av_read_frame(ic, pkt);
-        //av_log(NULL, AV_LOG_ERROR, "read_thread(), av_read_frame, ret:%d", ret);
+        //av_log(NULL, AV_LOG_ERROR, "read_thread(), av_read_frame, ret:%d\n", ret);
         if (ret < 0) {
             if (ret == AVERROR_EOF || url_feof(ic->pb)){
-            	av_log(NULL, AV_LOG_INFO, "read_thread(), eof, is:%d, ret:%d", is, ret);
+            	av_log(NULL, AV_LOG_INFO, "read_thread(), eof, is:%d, ret:%d\n", is, ret);
                 eof = 1;
                 if(player->get_Stream_Status() != STREAM_EOF)
                 	player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_EOF, 0);
@@ -2097,12 +2097,12 @@ int read_thread(void *arg)
             av_free_packet(pkt);
         }
     }
-    av_log(NULL, AV_LOG_DEBUG, "read_thread(), out of for loop");
+    av_log(NULL, AV_LOG_DEBUG, "read_thread(), out of for loop\n");
     /* wait until the end */
     while (!is->abort_request) {
         SDL_Delay(100);
     }
-    av_log(NULL, AV_LOG_DEBUG, "near end--");
+    av_log(NULL, AV_LOG_DEBUG, "near end--\n");
     ret = 0;
  fail:
     /* close each stream */
@@ -2127,7 +2127,7 @@ int read_thread(void *arg)
     }
     av_dict_set(&format_opts, "holder", NULL, 0);
     av_free(ci);
-    av_log(NULL, AV_LOG_INFO, "read_thread()--, is:%d", is);
+    av_log(NULL, AV_LOG_INFO, "read_thread()--, is:%d\n", is);
     return 0;
 }
 
@@ -2266,22 +2266,22 @@ void CBeseyePlayer::step_to_next_frame(VideoState *is)
 /* handle an event sent by the GUI */
 void CBeseyePlayer::event_loop(VideoState *cur_stream)
 {
-	av_log(NULL, AV_LOG_INFO, "event_loop(), cur_stream:%d", cur_stream);
+	av_log(NULL, AV_LOG_INFO, "event_loop(), cur_stream:%d\n", cur_stream);
     SDL_Event event;
     //double incr, pos, frac;
 
     for (;;) {
         //double x;
         if(NULL == cur_stream){
-        	av_log(NULL, AV_LOG_INFO, "event_loop(), cur_stream is null, break loop");
+        	av_log(NULL, AV_LOG_INFO, "event_loop(), cur_stream is null, break loop\n");
             break;
         }
 
         SDL_WaitEvent(&event);
-        //av_log(NULL, AV_LOG_ERROR, "event_loop(), SDL_WaitEvent, cur_stream:%d, event.type:%d", cur_stream, event.type);
+        //av_log(NULL, AV_LOG_ERROR, "event_loop(), SDL_WaitEvent, cur_stream:%d, event.type:%d\n", cur_stream, event.type);
 
 //        if(NULL != cur_stream && event.type != FF_ALLOC_EVENT && cur_stream != event.user.data1){
-//        	av_log(NULL, AV_LOG_ERROR, "event_loop(), cur_stream is %d,, event.user.data1:%d, event.type:%d, continue", cur_stream, event.user.data1, event.type);
+//        	av_log(NULL, AV_LOG_ERROR, "event_loop(), cur_stream is %d,, event.user.data1:%d, event.type:%d, continue\n", cur_stream, event.user.data1, event.type);
 //        	continue;
 //        }
 
@@ -2291,15 +2291,15 @@ void CBeseyePlayer::event_loop(VideoState *cur_stream)
 				if(cur_stream == event.user.data1){
                     //addStreamingPath("dummy");//workaround, trigger read_thread
 					do_exit((VideoState *)event.user.data1/*cur_stream*/);
-					av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_stream:%d", cur_stream);
+					av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_stream:%d\n", cur_stream);
 					cur_stream = NULL;
 				}else{
-					av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_stream:%d, event.user.data1:%d", cur_stream, event.user.data1);
+					av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_stream:%d, event.user.data1:%d\n", cur_stream, event.user.data1);
 					//SDL_PushEvent(&event);
 				}
 				break;
 			case FF_PAUSE_EVENT:{
-				av_log(NULL, AV_LOG_INFO, "event_loop(), FF_PAUSE_EVENT, mStream_Status:%d", mStream_Status);
+				av_log(NULL, AV_LOG_INFO, "event_loop(), FF_PAUSE_EVENT, mStream_Status:%d\n", mStream_Status);
 				if(NULL != cur_stream && !isStreamPaused() && mStream_Status >= STREAM_CONNECTED && mStream_Status < STREAM_CLOSE){
 					toggle_pause(cur_stream);
 					//Abner: DVR abnormal behaviors
@@ -2309,7 +2309,7 @@ void CBeseyePlayer::event_loop(VideoState *cur_stream)
 				break;
 			}
 			case FF_RESUME_EVENT:{
-				av_log(NULL, AV_LOG_INFO, "event_loop(), FF_RESUME_EVENT, mStream_Status:%d", mStream_Status);
+				av_log(NULL, AV_LOG_INFO, "event_loop(), FF_RESUME_EVENT, mStream_Status:%d\n", mStream_Status);
 				if(NULL != is && isStreamPaused() && mStream_Status == STREAM_PAUSED){
 					toggle_pause(cur_stream);
 				}
@@ -2321,7 +2321,7 @@ void CBeseyePlayer::event_loop(VideoState *cur_stream)
 //				}
 
 				if(cur_stream == ((AllocEventProps*)event.user.data1)->is){
-					av_log(NULL, AV_LOG_INFO, "event_loop(), FF_ALLOC_EVENT");
+					av_log(NULL, AV_LOG_INFO, "event_loop(), FF_ALLOC_EVENT\n");
 					alloc_picture((AllocEventProps*)event.user.data1);
 				}else{
 					SDL_PushEvent(&event);
@@ -2330,7 +2330,7 @@ void CBeseyePlayer::event_loop(VideoState *cur_stream)
 			}
 			case FF_REFRESH_EVENT:{
 				if(cur_stream == event.user.data1){
-					//av_log(NULL, AV_LOG_ERROR, "event_loop(), FF_REFRESH_EVENT");
+					//av_log(NULL, AV_LOG_ERROR, "event_loop(), FF_REFRESH_EVENT\n");
 					video_refresh(event.user.data1);
 					((VideoState *)event.user.data1)->refresh = 0;
 				}else{
@@ -2348,7 +2348,7 @@ void CBeseyePlayer::event_loop(VideoState *cur_stream)
 						screen_height=wi->screen_height;
 						delete wi;
 						wi=NULL;
-						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_UPDATE_SCREEN_EVENT, update window:%d", window);
+						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_UPDATE_SCREEN_EVENT, update window:%d\n", window);
 					}
 				}else{
 					SDL_PushEvent(&event);
@@ -2359,7 +2359,7 @@ void CBeseyePlayer::event_loop(VideoState *cur_stream)
 				break;
         }
     }
-    av_log(NULL, AV_LOG_INFO, "event_loop()----");
+    av_log(NULL, AV_LOG_INFO, "event_loop()----\n");
 }
 
 int CBeseyePlayer::lockmgr(void **mtx, enum AVLockOp op)
@@ -2489,7 +2489,7 @@ void CBeseyePlayer::freePendingStreamPaths(){
 		free(mVecPendingStreamPaths);
 		mVecPendingStreamPaths = NULL;
 		iNumOfPendingStreamPaths = 0;
-		av_log(NULL, AV_LOG_ERROR, "freePendingStreamPaths(), free done");
+		av_log(NULL, AV_LOG_ERROR, "freePendingStreamPaths(), free done\n");
 	}
 }
 
@@ -2508,9 +2508,9 @@ int CBeseyePlayer::createStreaming(const char* streamHost, const char** streamPa
 			if(streamPathList[idx])
 				mVecPendingStreamPaths[idx - 1] = strdup(streamPathList[idx]);
 			else
-				av_log(NULL, AV_LOG_ERROR, "createStreaming(), streamPathList[%d] is null", idx);
+				av_log(NULL, AV_LOG_ERROR, "createStreaming(), streamPathList[%d] is null\n", idx);
 		}
-		av_log(NULL, AV_LOG_INFO, "createStreaming(), iNumOfPendingStreamPaths is [%d] ", iNumOfPendingStreamPaths);
+		av_log(NULL, AV_LOG_INFO, "createStreaming(), iNumOfPendingStreamPaths is [%d] \n", iNumOfPendingStreamPaths);
 
 		string host(streamHost);
 		string path(streamPathList[0]);
@@ -2532,7 +2532,7 @@ int CBeseyePlayer::createStreaming(const char* fullPath, int iSeekTimeInMs){
 
 int CBeseyePlayer::createStreaming(const char* fullPath){
 	//av_sync_type = AV_SYNC_AUDIO_MASTER;
-	av_log(NULL, AV_LOG_INFO, "createStreaming()++: %s", fullPath);
+	av_log(NULL, AV_LOG_INFO, "createStreaming()++: %s\n", fullPath);
 	if(NULL == fullPath){
 		return -1;
 	}
@@ -2553,9 +2553,9 @@ int CBeseyePlayer::createStreaming(const char* fullPath){
     char* path2 = NULL;
 	string strPath(fullPath);
 	int iPos = strPath.find("rtsp");
-	av_log(NULL, AV_LOG_INFO, "createStreaming(), iPos:%d", iPos);
+	av_log(NULL, AV_LOG_INFO, "createStreaming(), iPos:%d\n", iPos);
 	if(0 <= iPos){
-		av_log(NULL, AV_LOG_INFO, "createStreaming(), go rtsp");
+		av_log(NULL, AV_LOG_INFO, "createStreaming(), go rtsp\n");
 		char* argg1[] = { "ffplay",
 						  //"-probesize",
 						  //"50000",
@@ -2585,9 +2585,9 @@ int CBeseyePlayer::createStreaming(const char* fullPath){
 
     //main13(4,argg1);
     //path2 = main12(sizeof(argg1)/sizeof(argg1[0])-1,argg1);
-    av_log(NULL, AV_LOG_INFO, "createStreaming(): path2:[%s]", path2);
+    av_log(NULL, AV_LOG_INFO, "createStreaming(): path2:[%s]\n", path2);
     if (!path2) {
-    	av_log(NULL, AV_LOG_ERROR, "null path2");
+    	av_log(NULL, AV_LOG_ERROR, "null path2\n");
     	goto EXIT;
     }
 
@@ -2619,7 +2619,7 @@ int CBeseyePlayer::createStreaming(const char* fullPath){
     }
 
     event_loop(is);
-    av_log(NULL, AV_LOG_ERROR, "createStreaming()-- : %s", path2);
+    av_log(NULL, AV_LOG_ERROR, "createStreaming()-- : %s\n", path2);
     /* never returns */
 EXIT:
     return 0;
@@ -2643,7 +2643,7 @@ int CBeseyePlayer::isStreamPaused(){
 
 int CBeseyePlayer::pauseStreaming(){
 	int iRet = 0;
-	av_log(NULL, AV_LOG_INFO, "pauseStreaming()++, mStream_Status:%d", mStream_Status);
+	av_log(NULL, AV_LOG_INFO, "pauseStreaming()++, mStream_Status:%d\n", mStream_Status);
 	if(NULL != is && !isStreamPaused() && mStream_Status >= STREAM_CONNECTED && mStream_Status < STREAM_CLOSE){
 //		toggle_pause(is);
 //		//Abner: DVR abnormal behaviors
@@ -2660,7 +2660,7 @@ int CBeseyePlayer::pauseStreaming(){
 
 int CBeseyePlayer::resumeStreaming(){
 	int iRet = 0;
-	av_log(NULL, AV_LOG_INFO, "resumeStreaming()++, mStream_Status:%d", mStream_Status);
+	av_log(NULL, AV_LOG_INFO, "resumeStreaming()++, mStream_Status:%d\n", mStream_Status);
 	if(NULL != is && isStreamPaused() && mStream_Status == STREAM_PAUSED){
 		SDL_Event event;
 		event.type = FF_RESUME_EVENT;
@@ -2673,7 +2673,7 @@ int CBeseyePlayer::resumeStreaming(){
 }
 
 int CBeseyePlayer::closeStreaming(){
-	av_log(NULL, AV_LOG_INFO, "closeStreaming()++, is:%d", is);
+	av_log(NULL, AV_LOG_INFO, "closeStreaming()++, is:%d\n", is);
 	int iRet = 0;
 	if(NULL != is && mStream_Status > STREAM_UNINIT && mStream_Status < STREAM_CLOSE){
 		is->abort_request = 1;
@@ -2683,14 +2683,14 @@ int CBeseyePlayer::closeStreaming(){
 		SDL_PushEvent(&event);
 		iRet = 1;
 	}else{
-		av_log(NULL, AV_LOG_INFO, "closeStreaming(), mStream_Status:%d, skip it", mStream_Status);
+		av_log(NULL, AV_LOG_INFO, "closeStreaming(), mStream_Status:%d, skip it\n", mStream_Status);
 	}
-	av_log(NULL, AV_LOG_INFO, "closeStreaming()--, iRet:%d", iRet);
+	av_log(NULL, AV_LOG_INFO, "closeStreaming()--, iRet:%d\n", iRet);
 	return iRet;
 }
 
 int CBeseyePlayer::updateWindow(void* window, int iFrameFormat, int screen_width, int screen_height){
-	av_log(NULL, AV_LOG_INFO, "updateWindow()++, is:%d", is);
+	av_log(NULL, AV_LOG_INFO, "updateWindow()++, is:%d\n", is);
 	int iRet = 0;
 	if(NULL != is && mStream_Status > STREAM_UNINIT && mStream_Status < STREAM_CLOSE){
 		SDL_Event event;
@@ -2705,18 +2705,18 @@ int CBeseyePlayer::updateWindow(void* window, int iFrameFormat, int screen_width
 		SDL_PushEvent(&event);
 		iRet = 1;
 	}else{
-		av_log(NULL, AV_LOG_ERROR, "updateWindow(), cannot update, mStream_Status:%d", mStream_Status);
+		av_log(NULL, AV_LOG_ERROR, "updateWindow(), cannot update, mStream_Status:%d\n", mStream_Status);
 	}
 	return iRet;
 }
 
 void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVal* content, void* extra){
-	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpCallback(), method:%s, content:%s",(NULL != method)?method->av_val:"", (NULL != content)?content->av_val:"");
+	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpCallback(), method:%s, content:%s\n",(NULL != method)?method->av_val:"", (NULL != content)?content->av_val:"");
 
 	if(AVMATCH(method, &RTMP_ON_STATUS)){
 		if(AVMATCH(content, &av_NetStream_Play_Stop)){
 			pthread_mutex_lock(&mDVRRestCountMux);
-			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Stop, miRestDVRCount:%d", miRestDVRCount);
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Stop, miRestDVRCount:%d\n", miRestDVRCount);
 			int iRestDVRCount = miRestDVRCount;
 			pthread_mutex_unlock(&mDVRRestCountMux);
 			if(0 == iRestDVRCount){
@@ -2729,7 +2729,7 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 			AVal desc;
 			if(obj){
 				AMFProp_GetString(AMF_GetProp(obj, &av_description, -1), &desc);
-				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Play, desc:%s", desc.av_val?desc.av_val:"");
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_Play, desc:%s\n", desc.av_val?desc.av_val:"");
 				pthread_mutex_lock(&mDVRRestCountMux);
 				miRestDVRCount -- ;
 				av_log(NULL, AV_LOG_ERROR,"invokeRtmpCallback(), miRestDVRCount =>[%d]\n", miRestDVRCount);
@@ -2747,14 +2747,14 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 				triggerPlayCB(CBeseyeRTMPObserver::STREAM_STATUS_CB, strPath.c_str(), STREAM_PLAYING, 0);
 			}
 		}else if(AVMATCH(content, &av_NetStream_Pause_Notify)){
-			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Pause_Notify");
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Pause_Notify\n");
 			triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_PAUSED, 0);
 		}else if(AVMATCH(content, &av_NetStream_Play_StreamNotFound)){
 			AMFObject* obj = (AMFObject*)extra;
 			AVal desc;
 			if(obj){
 				AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
-				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_StreamNotFound, desc:%s", desc.av_val);
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_StreamNotFound, desc:%s\n", desc.av_val);
 			}
 		}else if(AVMATCH(content, &av_NetStream_Seek_Notify)){
 			pthread_mutex_lock(&mDVRRestCountMux);
@@ -2763,41 +2763,41 @@ void CBeseyePlayer::invokeRtmpStreamMethodCallback(const AVal* method, const AVa
 			pthread_mutex_unlock(&mDVRRestCountMux);
 
 		}else if(AVMATCH(content, &av_NetStream_Play_StreamNotFound)){
-			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_StreamNotFound");
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), match av_NetStream_Play_StreamNotFound\n");
 			AMFObject* obj = (AMFObject*)extra;
 			AVal desc;
 			if(obj){
 				AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
-				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s", desc.av_val);
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s\n", desc.av_val);
 			}
 		}else{
-			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), non-handled content:[%s]", (NULL != content)?content->av_val:"");
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), non-handled content:[%s]\n", (NULL != content)?content->av_val:"");
 			AMFObject* obj = (AMFObject*)extra;
 			AVal desc;
 			if(obj){
 				AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
-				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s", desc.av_val);
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s\n", desc.av_val);
 			}
 		}
 	}else{
-		av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback()2, non-handled content:[%s]", (NULL != content)?content->av_val:"");
+		av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback()2, non-handled content:[%s]\n", (NULL != content)?content->av_val:"");
 		AMFObject* obj = (AMFObject*)extra;
 		AVal desc;
 		if(obj){
 			AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
-			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s", desc.av_val);
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpCallback(), desc:%s\n", desc.av_val);
 		}
 	}
 }
 
 void CBeseyePlayer::invokeRtmpStatusCallback(int iStatus, void* extra){
-	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpStatusCallback(), iStatus:%d",iStatus);
+	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpStatusCallback(), iStatus:%d\n",iStatus);
 	if(iStatus == STREAM_CONNECTING){
 		rtmpRef = extra;
 	}else if(iStatus == STREAM_CLOSE){
 		rtmpRef = NULL;
 	}else if(iStatus == STREAM_INTERNAL_CLOSE){
-		av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpStatusCallback(), abort_request = 1 ---------------\n");
+		av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpStatusCallback(), set abort_request = 1 ---------------\n");
 		is->abort_request = 1;
 		rtmpRef = NULL;
 	}
@@ -2805,15 +2805,15 @@ void CBeseyePlayer::invokeRtmpStatusCallback(int iStatus, void* extra){
 }
 
 void CBeseyePlayer::invokeRtmpErrorCallback(int iError, void* extra){
-    av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpErrorCallback(), iError:%d",iError);
+    av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::invokeRtmpErrorCallback(), iError:%d\n",iError);
     if(INVALID_PATH_ERROR == iError){
     	AMFObject* obj = (AMFObject*)extra;
 		AVal desc;
 		if(obj){
 			AMFProp_GetString(AMF_GetProp(obj, &av_details, -1), &desc);
-			av_log(NULL, AV_LOG_INFO, "invokeRtmpErrorCallback(), desc:%s", desc.av_val);
+			av_log(NULL, AV_LOG_INFO, "invokeRtmpErrorCallback(), desc:%s\n", desc.av_val);
 			if(0 == strcmp("dummy", desc.av_val)){
-				av_log(NULL, AV_LOG_INFO, "invokeRtmpErrorCallback(), found dummy, not report");
+				av_log(NULL, AV_LOG_INFO, "invokeRtmpErrorCallback(), found dummy, not report\n");
 				return;
 			}
 		}

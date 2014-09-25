@@ -185,6 +185,35 @@ public class EventListActivity extends BeseyeBaseActivity{
 		}
 	}
 	
+	private void loadNewEventList(){
+		JSONArray events = null;
+		long lLatestEventTs = -1;
+		if(null != mEventListAdapter){
+			events = mEventListAdapter.getJSONList();
+			JSONObject eventLatest = (null != events && 1 < events.length())?events.optJSONObject(1):null;
+			if(null != eventLatest){
+				long lStartTime = BeseyeJSONUtil.getJSONLong(eventLatest, BeseyeJSONUtil.MM_START_TIME);
+				//long lEndTime = BeseyeJSONUtil.getJSONLong(eventLatest, BeseyeJSONUtil.MM_END_TIME);
+				
+				lLatestEventTs = lStartTime+1;
+				
+				Log.i(TAG, "loadNewEventList(), eventLatest:"+eventLatest.toString());	
+			}
+		}
+		
+		
+		if(-1 < lLatestEventTs){
+			monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, true), true, mStrVCamID, (lLatestEventTs)+"", (System.currentTimeMillis()-lLatestEventTs)+"");
+		}else{
+			monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
+		}
+		
+		if(null != mGetThumbnailByEventListTask){
+			mGetThumbnailByEventListTask.cancel(true);
+			mGetThumbnailByEventListTask = null;
+		}
+	}
+	
 	private boolean mbNeedToCalcu = true;
 	private int miEventCount = 0;
 	
@@ -286,6 +315,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 				JSONArray OldEntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
 				JSONArray EntList = new JSONArray();
+				boolean bAppendCase = ((BeseyeMMBEHttpTask.GetEventListTask)task).mbAppend;
 				if(0 == iRetCode){
 					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 					miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
@@ -330,6 +360,23 @@ public class EventListActivity extends BeseyeBaseActivity{
 						liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
 						
 						BeseyeJSONUtil.appendObjToArrayBegin(EntList, liveObj);
+						
+						if(bAppendCase && null != OldEntList && 1 < OldEntList.length()){
+							int iOldEventCount = OldEntList.length();
+							JSONObject newEventEnd = (null != EntList && 1 < EntList.length())?EntList.optJSONObject(EntList.length()-1):null;
+							long lNewEventEndTs = BeseyeJSONUtil.getJSONLong(newEventEnd, BeseyeJSONUtil.MM_START_TIME, -1);
+							boolean bNeedCheck = true;
+							for(int idx = 1;idx < iOldEventCount;idx++){
+								JSONObject oldEvent = OldEntList.optJSONObject(idx);
+								if(null != oldEvent){
+									if(!bNeedCheck || -1 == lNewEventEndTs || BeseyeJSONUtil.getJSONLong(oldEvent, BeseyeJSONUtil.MM_START_TIME, -1) < lNewEventEndTs){
+										bNeedCheck = false;
+										EntList.put(oldEvent);
+									}
+								}
+							}
+							miEventCount = (null != EntList)?EntList.length()-1:1;
+						}
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -487,7 +534,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 //		}
 //	}
 	
-	static final private int THUMBNAIL_BUNDLE_SIZE = 2;
+	static final private int THUMBNAIL_BUNDLE_SIZE = 10;
 	static final private int THUMBNAIL_NUM = 10;
 	
 	private void getThumbnailByEventList(int iSeed){
@@ -501,6 +548,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 			miLastTaskSeedNum  = iSeed;
 			return;
 		}
+		
 		JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
 		int iCount = (null != EntList)?EntList.length():0;
 		int iStartIdx = miCurUpdateIdx;
@@ -515,7 +563,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 				obj.put("urlExpireTime", 300);
 				
 				JSONArray timeLst = new JSONArray();
-				for(int i = iStartIdx;i<iCount && i <(iStartIdx+THUMBNAIL_BUNDLE_SIZE);i++, miCurUpdateIdx++){
+				for(int i = iStartIdx;i<iCount && i <(iStartIdx+(1 == iStartIdx?2:THUMBNAIL_BUNDLE_SIZE));i++, miCurUpdateIdx++){
 					JSONObject event = EntList.getJSONObject(i);
 					JSONObject time = new JSONObject();
 					long lStartTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_START_TIME);
@@ -695,7 +743,7 @@ public class EventListActivity extends BeseyeBaseActivity{
     		    		if(!mActivityResume){
     		    			mbNeedToReloadWhenResume = true;
     		    		}else{
-    		    			loadEventList();
+    		    			loadNewEventList();
     		    		}
     		    	}
     			}

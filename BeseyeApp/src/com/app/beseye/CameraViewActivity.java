@@ -353,15 +353,22 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     			iReOpenDelay = 500;
     		}
     		
-    		if(mActivityResume && isCamPowerOn()){
+    		if(mbIsLiveMode && mActivityResume && isCamPowerOn()){
     			BeseyeUtils.postRunnable(new Runnable(){
     				@Override
     				public void run() {
     					beginLiveView();
     				}}, iReOpenDelay);
+    			
     			if(null != mVgPairingDone){
         			setVisibility(mPbLoadingCursor, View.VISIBLE);
         		}
+    		}else if(!mbIsLiveMode && mActivityResume){
+    			BeseyeUtils.postRunnable(new Runnable(){
+    				@Override
+    				public void run() {
+    					getStreamingInfo(true);
+    				}}, iReOpenDelay);
     		}else if(!mActivityDestroy){
     			mbIsPauseWhenPlaying = true;
     		}
@@ -2056,6 +2063,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	    			if(lStartTime == lStartTimeCk && lEndTime == lEndTimeCk && 
 	    			   strStream.equals(BeseyeJSONUtil.getJSONString(check, BeseyeJSONUtil.MM_STREAM))){
 	    				Log.w(TAG, "checkStreamList(), find duplicate item,  check:"+check.toString());
+	    				streamList.remove(0);
 	    				continue;
 	    			}
 	    			

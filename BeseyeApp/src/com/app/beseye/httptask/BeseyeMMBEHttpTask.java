@@ -78,8 +78,15 @@ public class BeseyeMMBEHttpTask  {
 	}
 	
 	public static class GetEventListTask extends BeseyeHttpTask{
+		public boolean mbAppend = false;
+		
 		public GetEventListTask(OnHttpTaskCallback cb) {
 			super(cb);
+		}
+		
+		public GetEventListTask(OnHttpTaskCallback cb, boolean bAppend) {
+			super(cb);
+			mbAppend = bAppend;
 		}
 		
 		@Override

@@ -8,31 +8,39 @@
 	    android:id="@+id/rl_eventlist_video_block"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content">
-
-	    <ImageView
-	        android:id="@+id/iv_timeline_grayline"
-	        android:layout_width="@dimen/eventlist_gray_line_width"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="@dimen/eventlist_gray_line_left"
-	        android:layout_marginRight="@dimen/eventlist_gray_line_right"
-	        android:layout_alignParentTop="true"
-	        android:layout_alignBottom="@+id/v_dummy"
-	        android:src="@color/eventlist_gray_line" />
 	    
-	    <ImageView
-	        android:id="@+id/iv_timeline_dot_greenblue"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_marginLeft="@dimen/eventlist_timeline_dot_left"
-	        android:src="@drawable/eventlist_timeline_point_bluegreen" />
+	    <RelativeLayout 
+	         android:id="@+id/iv_timeline_grayline_holder"
+		     android:layout_width="wrap_content"
+		     android:layout_height="match_parent"
+		     android:layout_marginLeft="@dimen/eventlist_timeline_dot_left"
+		     android:layout_marginRight="@dimen/eventlist_gray_line_right"
+		     android:layout_alignBottom="@+id/v_dummy">
+	       	<ImageView
+		        android:id="@+id/iv_timeline_grayline"
+		        android:layout_width="@dimen/eventlist_gray_line_width"
+		        android:layout_height="match_parent"
+		        android:layout_alignParentTop="true"
+		        android:layout_centerHorizontal="true"
+		        android:src="@color/eventlist_gray_line" />
+		    
+		    <ImageView
+		        android:id="@+id/iv_timeline_dot_greenblue"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerVertical="true"
+		        android:src="@drawable/eventlist_timeline_point_bluegreen" />
+	        
+	    </RelativeLayout>
+
+
 	    
 	    <TextView
 	        android:id="@+id/tv_eventlist_event_name"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="@dimen/eventlist_content_top"
-	        android:layout_toRightOf="@id/iv_timeline_grayline"
+	        android:layout_toRightOf="@id/iv_timeline_grayline_holder"
 	        android:text="Event Name"
 	        android:singleLine="true"
 	        android:textColor="@color/liveview_font_normal_color"
@@ -43,7 +51,7 @@
 	        android:id="@+id/vg_timeline_video_thumbnail"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/iv_timeline_grayline"
+	        android:layout_toRightOf="@id/iv_timeline_grayline_holder"
 		    android:layout_below="@+id/tv_eventlist_event_name"
 		    android:layout_marginTop="@dimen/eventlist_thumbnail_top"
 	        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
@@ -59,7 +67,7 @@
 	        android:id="@+id/vg_timeline_go_live"
 	        android:layout_width="225dp"
 		    android:layout_height="128dp"
-	        android:layout_toRightOf="@id/iv_timeline_grayline"
+	        android:layout_toRightOf="@id/iv_timeline_grayline_holder"
 		    android:layout_below="@+id/tv_eventlist_event_name"
 		    android:layout_marginTop="@dimen/eventlist_thumbnail_top"
 	        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"

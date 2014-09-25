@@ -481,13 +481,17 @@ public class BeseyeJSONUtil {
 	}
 	
 	static public long getJSONLong(JSONObject obj, String strKey){
+		return getJSONLong(obj, strKey, 0);
+	}
+	
+	static public long getJSONLong(JSONObject obj, String strKey, long lDef){
 		long lRet = 0;
 		if(null != obj){
 			try {
 				lRet = obj.getLong(strKey);
 			} catch (JSONException e) {
 				Log.d(TAG, "getJSONLong(), can't get value by "+strKey);
-				lRet = -1;
+				lRet = lDef;
 			}
 		}
 		return lRet;
