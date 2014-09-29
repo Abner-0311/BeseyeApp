@@ -33,6 +33,7 @@ import com.app.beseye.adapter.EventListAdapter.EventListItmHolder;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
+import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeClockIndicator;
@@ -41,6 +42,7 @@ import com.app.beseye.widget.BeseyeDatetimePickerDialog.OnDatetimePickerClickLis
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
+import com.app.beseye.widget.PullToRefreshBase.OnLastItemVisibleListener;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
 
@@ -112,6 +114,7 @@ public class EventListActivity extends BeseyeBaseActivity{
     			@Override
     			public void onRefresh() {
     				Log.i(TAG, "onRefresh()");	
+    				mMainListView.dettachFooterLoadMoreView();
     				mbNeedToCalcu = false;
     				loadEventList();
     				
@@ -124,7 +127,19 @@ public class EventListActivity extends BeseyeBaseActivity{
 				}
     		});
 			
+			mMainListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener(){
+				@Override
+				public void onLastItemVisible() {
+					if(mMainListView.isFooterLoadMoreViewAttached()){
+						if(null == mGetEventListTask || AsyncTask.Status.FINISHED == mGetEventListTask.getStatus()){
+							getEventListContent(miTaskSeedNum);
+							//mMainListView.dettachFooterLoadMoreView();
+						}
+					}
+				}});
+			
 			mMainListView.setOnScrollListener(new OnScrollListener(){
+				boolean bNeedToTrack = false;
 				@Override
 				public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 					calculateTotalLvHeight();
@@ -132,8 +147,15 @@ public class EventListActivity extends BeseyeBaseActivity{
 				}
 
 				@Override
-				public void onScrollStateChanged(AbsListView view,
-						int scrollState) {
+				public void onScrollStateChanged(AbsListView view, int scrollState) {
+					if(scrollState == OnScrollListener.SCROLL_STATE_FLING || scrollState == OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+						bNeedToTrack = true;
+					}else if(scrollState == OnScrollListener.SCROLL_STATE_IDLE && bNeedToTrack){
+						bNeedToTrack = false;
+						int iFirstPos = getFirstItem();
+						Log.e(TAG, "onScrollStateChanged(), SCROLL_STATE_IDLE, first item is :"+getFirstItem());
+						getThunbnailAtPos((0==iFirstPos)?1:iFirstPos);
+					}
 				}});
 			
 			LayoutInflater inflater = getLayoutInflater();
@@ -177,8 +199,20 @@ public class EventListActivity extends BeseyeBaseActivity{
 		}
 	}
 	
+	private BeseyeMMBEHttpTask.GetEventListCountTask mGetEventListCountTask;
+	private BeseyeMMBEHttpTask.GetEventListTask mGetEventListTask;
+	private BeseyeMMBEHttpTask.GetEventListTask mGetNewEventListTask;
+	private BeseyeMMBEHttpTask.GetThumbnailByEventListTask mGetThumbnailByEventListTask;
+	
 	private void loadEventList(){
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
+		if(null != mGetEventListCountTask){
+			mGetEventListCountTask.cancel(true);
+			mGetEventListCountTask = null;
+		}
+		
+		mlTaskTs = System.currentTimeMillis();
+		monitorAsyncTask((mGetEventListCountTask = new BeseyeMMBEHttpTask.GetEventListCountTask(EventListActivity.this)), true, mStrVCamID, (mlTaskTs-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
+		
 		if(null != mGetThumbnailByEventListTask){
 			mGetThumbnailByEventListTask.cancel(true);
 			mGetThumbnailByEventListTask = null;
@@ -203,9 +237,14 @@ public class EventListActivity extends BeseyeBaseActivity{
 		
 		
 		if(-1 < lLatestEventTs){
-			monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, true), true, mStrVCamID, (lLatestEventTs)+"", (System.currentTimeMillis()-lLatestEventTs)+"");
+			if(null != mGetNewEventListTask){
+				mGetNewEventListTask.cancel(true);
+				mGetNewEventListTask = null;
+			}
+			monitorAsyncTask(mGetNewEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, true), true, mStrVCamID, (lLatestEventTs)+"", (System.currentTimeMillis()-lLatestEventTs)+"", "100");
 		}else{
-			monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
+			loadEventList();
+			//monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
 		}
 		
 		if(null != mGetThumbnailByEventListTask){
@@ -215,16 +254,22 @@ public class EventListActivity extends BeseyeBaseActivity{
 	}
 	
 	private boolean mbNeedToCalcu = true;
-	private int miEventCount = 0;
+	private int miTotalEventCount = 0;
+	
+	private int getCurEventCount(){
+		JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+		return (null != EntList)?EntList.length()-1:0;
+	}
 	
 	private void calculateTotalLvHeight(){
 		if(mbNeedToCalcu){
-			if(0 <= miEventCount){
+			int iEventCount = miTotalEventCount;//getCurEventCount();
+			if(0 <= iEventCount){
 				ListView list  = mMainListView.getRefreshableView();
 				if(null != list){
-					View vFirstChild = list.getChildAt(list.getHeaderViewsCount()+((miEventCount>0)?1:0));
+					View vFirstChild = list.getChildAt(list.getHeaderViewsCount()+((getCurEventCount()>0)?1:0));
 					if(null != vFirstChild){
-						mVgIndicator.calculateTotalLvHeight(miEventCount+1, vFirstChild.getHeight(), list.getHeight());
+						mVgIndicator.calculateTotalLvHeight(iEventCount+1, vFirstChild.getHeight(), list.getHeight());
 						mbNeedToCalcu = false;
 					}
 				}
@@ -234,7 +279,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	
 	private void updateIndicatorPosition(int iFirstIdx){
 		ListView list  = mMainListView.getRefreshableView();
-		if(null != list && !mbNeedToCalcu && 0 <= miEventCount){			
+		if(null != list && !mbNeedToCalcu && 0 <= miTotalEventCount){			
 			if(0 <= iFirstIdx){
 				View topChild = list.getChildAt(0 == iFirstIdx?1:0);
 				if(null != topChild){
@@ -300,97 +345,165 @@ public class EventListActivity extends BeseyeBaseActivity{
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
 		super.onSessionComplete();
+		
 		loadEventList();
 	}
 	
+	private long mlTaskTs = -1;
 	private int miTaskSeedNum = 0;
 	private int miLastTaskSeedNum = -1;
-	private int miCurUpdateIdx = -1;
+	private int miCurUpdateEventIdx = -1;
+	private int miCurUpdateThunbnailIdx = -1;
 	
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
 		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode+", "+System.currentTimeMillis());	
 		if(!task.isCancelled()){
-			if(task instanceof BeseyeMMBEHttpTask.GetEventListTask){
-				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
-				JSONArray OldEntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+			if(task instanceof BeseyeMMBEHttpTask.GetEventListCountTask){
+				Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+				int iCount = miTotalEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_CNT);
 				JSONArray EntList = new JSONArray();
-				boolean bAppendCase = ((BeseyeMMBEHttpTask.GetEventListTask)task).mbAppend;
-				if(0 == iRetCode){
-					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
-					miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
-					if(0 < miEventCount){
-						EntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);
-					}
-					
-					int iOldCount = (null != OldEntList)?OldEntList.length():0;
-					if(1 < iOldCount){
-						try {
-							JSONObject oldFirstobj = OldEntList.getJSONObject(1);
-							long lStartTs = BeseyeJSONUtil.getJSONLong(oldFirstobj, BeseyeJSONUtil.MM_START_TIME);
-							if(0 < lStartTs){
-								for(int idx = 0; idx < miEventCount;idx++){
-									if(lStartTs == BeseyeJSONUtil.getJSONLong(EntList.getJSONObject(idx), BeseyeJSONUtil.MM_START_TIME)){
-										Log.e(TAG, "onPostExecute(), update old info to new list at "+idx);	
-										for(int idx2 = 0; idx2 < iOldCount && (idx+idx2) < miEventCount;idx2++){
-											EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_PATH, BeseyeJSONUtil.getJSONArray(OldEntList.getJSONObject(1+idx2),BeseyeJSONUtil.MM_THUMBNAIL_PATH));
-										}
-										break;
+				JSONObject liveObj = new JSONObject();
+				try {
+					liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
+					liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
+					EntList.put(liveObj);
+//					for(int idx = 0; idx < iCount;idx++){
+//						EntList.put(new JSONObject());
+//					}
+				}catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+				mEventListAdapter.updateResultList(EntList);
+				
+				if(null != mMainListView){
+					mMainListView.onRefreshComplete();
+					mMainListView.updateLatestTimestamp();
+				}
+				
+				checkClockByTime();
+				mbNeedToCalcu = true;
+				miCurUpdateEventIdx = 0;
+				miCurUpdateThunbnailIdx = 1;
+				getEventListContent(++miTaskSeedNum);
+//				getThumbnailByEventList(miTaskSeedNum);
+				
+			}else if(task instanceof BeseyeMMBEHttpTask.GetEventListTask){
+				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+				
+				if(null != mMainListView)
+					mMainListView.dettachFooterLoadMoreView();
+				
+				int iTaskSeed = ((BeseyeMMBEHttpTask.GetEventListTask)task).iTaskSeed;
+				if(0 <= iTaskSeed){
+					if(iTaskSeed != miTaskSeedNum){
+						Log.e(TAG, "onPostExecute(), iTaskSeed is not equal to miTaskSeedNum");	
+					}else{
+						if(0 == iRetCode){
+							JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+							int iCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
+							if(0 < iCount){
+								JSONArray newEntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);
+								for(int idx = 0; idx < iCount;idx++){
+									try {
+										EntList.put(++miCurUpdateEventIdx, newEntList.opt(idx));
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
 									}
 								}
+								//getEventListContent(iTaskSeed);
+								getThumbnailByEventList(iTaskSeed);
+								
+								if(null != mTimeWantToReach){
+									Date date = mTimeWantToReach;
+									mTimeWantToReach = null;
+									gotoEventByTime(date);
+								}
+								
+								if(null != mMainListView){
+									mMainListView.attachFooterLoadMoreView(false, true);
+								}
+							}
+						}
+					}
+				}else{
+					JSONArray OldEntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+					JSONArray EntList = new JSONArray();
+					
+					boolean bAppendCase = ((BeseyeMMBEHttpTask.GetEventListTask)task).mbAppend;
+					Log.e(TAG, "onPostExecute(), bAppendCase: "+bAppendCase);	
+					
+					if(0 == iRetCode){
+						//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+						int iCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
+						if(0 < iCount){
+							EntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);
+						}
+						
+						int iOldCount = (null != OldEntList)?OldEntList.length():0;
+						if(1 < iOldCount){
+							try {
+								JSONObject oldFirstobj = OldEntList.getJSONObject(1);
+								long lStartTs = BeseyeJSONUtil.getJSONLong(oldFirstobj, BeseyeJSONUtil.MM_START_TIME);
+								if(0 < lStartTs){
+									for(int idx = 0; idx < iCount;idx++){
+										if(lStartTs == BeseyeJSONUtil.getJSONLong(EntList.getJSONObject(idx), BeseyeJSONUtil.MM_START_TIME)){
+											Log.e(TAG, "onPostExecute(), update old info to new list at "+idx);	
+											for(int idx2 = 0; idx2 < iOldCount && (idx+idx2) < iCount;idx2++){
+												EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_PATH, BeseyeJSONUtil.getJSONArray(OldEntList.getJSONObject(1+idx2),BeseyeJSONUtil.MM_THUMBNAIL_PATH));
+											}
+											break;
+										}
+									}
+								}
+							} catch (JSONException e) {
+								Log.e(TAG, "onPostExecute(), e:"+e.toString());	
+							}
+						}
+					}
+					
+					if(null != EntList){
+						JSONObject liveObj = new JSONObject();
+						try {
+							liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
+							liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
+							
+							BeseyeJSONUtil.appendObjToArrayBegin(EntList, liveObj);
+							
+							if(bAppendCase && null != OldEntList && 1 < OldEntList.length()){
+								int iOldEventCount = OldEntList.length();
+								JSONObject newEventEnd = (null != EntList && 1 < EntList.length())?EntList.optJSONObject(EntList.length()-1):null;
+								long lNewEventEndTs = BeseyeJSONUtil.getJSONLong(newEventEnd, BeseyeJSONUtil.MM_START_TIME, -1);
+								boolean bNeedCheck = true;
+								for(int idx = 1;idx < iOldEventCount;idx++){
+									JSONObject oldEvent = OldEntList.optJSONObject(idx);
+									if(null != oldEvent){
+										if(!bNeedCheck || -1 == lNewEventEndTs || BeseyeJSONUtil.getJSONLong(oldEvent, BeseyeJSONUtil.MM_START_TIME, -1) < lNewEventEndTs){
+											bNeedCheck = false;
+											EntList.put(oldEvent);
+											//miEventCount++;
+											miCurUpdateEventIdx++;
+										}
+									}
+								}
+								
+								miTotalEventCount = (null != EntList && 0 < EntList.length())?EntList.length()-1:0;
+								//miEventCount = (null != EntList)?EntList.length()-1:1;
 							}
 						} catch (JSONException e) {
-							Log.e(TAG, "onPostExecute(), e:"+e.toString());	
+							e.printStackTrace();
 						}
-					}
-				}
-				
-				if(null != EntList){
-					JSONObject liveObj = new JSONObject();
-					try {
-//						JSONObject fakeObj = new JSONObject();
-//						Calendar cal = Calendar.getInstance();
-//						cal.add(Calendar.MINUTE, -5);
-//						fakeObj.put(BeseyeJSONUtil.MM_START_TIME, cal.getTime().getTime());
-//						fakeObj.put(BeseyeJSONUtil.MM_IS_LIVE, false);
-//						
-//						BeseyeJSONUtil.appendObjToArrayBegin(EntList, fakeObj);
 						
-						liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
-						liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
-						
-						BeseyeJSONUtil.appendObjToArrayBegin(EntList, liveObj);
-						
-						if(bAppendCase && null != OldEntList && 1 < OldEntList.length()){
-							int iOldEventCount = OldEntList.length();
-							JSONObject newEventEnd = (null != EntList && 1 < EntList.length())?EntList.optJSONObject(EntList.length()-1):null;
-							long lNewEventEndTs = BeseyeJSONUtil.getJSONLong(newEventEnd, BeseyeJSONUtil.MM_START_TIME, -1);
-							boolean bNeedCheck = true;
-							for(int idx = 1;idx < iOldEventCount;idx++){
-								JSONObject oldEvent = OldEntList.optJSONObject(idx);
-								if(null != oldEvent){
-									if(!bNeedCheck || -1 == lNewEventEndTs || BeseyeJSONUtil.getJSONLong(oldEvent, BeseyeJSONUtil.MM_START_TIME, -1) < lNewEventEndTs){
-										bNeedCheck = false;
-										EntList.put(oldEvent);
-									}
-								}
-							}
-							miEventCount = (null != EntList)?EntList.length()-1:1;
-						}
-					} catch (JSONException e) {
-						e.printStackTrace();
+						mEventListAdapter.updateResultList(EntList);
+						//recheck form head
+						miCurUpdateThunbnailIdx = 1;
+						getThumbnailByEventList(miTaskSeedNum);
 					}
 					
-					mEventListAdapter.updateResultList(EntList);
+					mbNeedToCalcu = true;
 				}
-				
-				miCurUpdateIdx = 1;
-				getThumbnailByEventList(++miTaskSeedNum);
-				//getThumbnailByEventList(EntList);
-				
-//				if(null != EntList && 1 == EntList.length()){
-//					calculateTotalLvHeight();
-//				}
 				
 				refreshList();
 				if(null != mMainListView){
@@ -398,7 +511,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 					mMainListView.updateLatestTimestamp();
 				}
 				checkClockByTime();
-				mbNeedToCalcu = true;
+				
 			}else if(task instanceof BeseyeMMBEHttpTask.GetThumbnailByEventListTask){
 				if(0 == iRetCode){
 					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
@@ -481,6 +594,12 @@ public class EventListActivity extends BeseyeBaseActivity{
 		
 		if(task.equals(mGetThumbnailByEventListTask)){
 			mGetThumbnailByEventListTask = null;
+		}else if(task.equals(mGetEventListTask)){
+			mGetEventListTask = null;
+		}else if(task.equals(mGetNewEventListTask)){
+			mGetNewEventListTask = null;
+		}else if(task.equals(mGetEventListCountTask)){
+			mGetEventListCountTask = null;
 		}
 	}
 	
@@ -494,50 +613,64 @@ public class EventListActivity extends BeseyeBaseActivity{
 		return bRet;
 	}
 	
-	private BeseyeMMBEHttpTask.GetThumbnailByEventListTask mGetThumbnailByEventListTask;
-//	private void getThumbnailByEventList(JSONArray EntList){
-//		int iCount = (null != EntList)?EntList.length():0;
-//		if(0 < iCount){
-//			if(null != mGetThumbnailByEventListTask){
-//				mGetThumbnailByEventListTask.cancel(true);
-//			}
-//			JSONObject obj = new JSONObject();
-//			try {
-//				obj.put(BeseyeJSONUtil.MM_VCAM_UUID, mStrVCamID);
-//				obj.put(BeseyeJSONUtil.MM_SIZE, "small");
-//				obj.put("ContinuousTimeQuery", true);
-//				obj.put("urlPathQuery", true);
-//				obj.put("urlExpireTime", 300);
-//				
-//				JSONArray timeLst = new JSONArray();
-//				for(int i = 0;i<iCount;i++){
-//					JSONObject event = EntList.getJSONObject(i);
-//					JSONObject time = new JSONObject();
-//					long lStartTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_START_TIME);
-//					long lEndTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_END_TIME);
-//					
-//					time.put(BeseyeJSONUtil.MM_START_TIME, lStartTime);
-//					time.put(BeseyeJSONUtil.MM_DURATION, (0 < lEndTime)?(lEndTime - lStartTime):3000);
-//					time.put(BeseyeJSONUtil.MM_MAX_NUM, 10);
-//					
-//					String strThbKey = String.format("%s_%s_%s", mStrVCamID, BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_START_TIME), BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_DURATION));
-//					
-//					timeLst.put(time);
-//					
-//				}
-//				obj.put(BeseyeJSONUtil.MM_EVT_LST, timeLst);
-//				monitorAsyncTask(new BeseyeMMBEHttpTask.GetThumbnailByEventListTask(EventListActivity.this), true, "", obj.toString());
-//				
-//			} catch (JSONException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
+	private int getFirstItem(){
+		int iRet = -1;
+		if(null != mMainListView && null != mMainListView.getRefreshableView()){
+			iRet = mMainListView.getRefreshableView().getFirstVisiblePosition();
+		}
+		return iRet;
+	}
+	
+	private int getItemCountInView(){
+		int iRet = 0;
+		if(null != mMainListView && null != mMainListView.getRefreshableView()){
+			iRet = mMainListView.getRefreshableView().getLastVisiblePosition() - mMainListView.getRefreshableView().getFirstVisiblePosition()+1;
+		}
+		return iRet;
+	}
+	
+	private void getEventListContent(int iSeed){
+		if(iSeed != miTaskSeedNum || mActivityDestroy){
+			Log.e(TAG, "getEventListContent(), iSeed="+iSeed+", miTaskSeedNum="+miTaskSeedNum+", mActivityDestroy="+mActivityDestroy);
+			return;
+		}
+		
+		if(!mActivityResume){
+			Log.e(TAG, "getEventListContent(), mActivityResume="+mActivityResume+", iSeed="+iSeed);
+			miLastTaskSeedNum  = iSeed;
+			return;
+		}
+		
+		JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+		
+		if(null != EntList && miCurUpdateEventIdx >= EntList.length()){
+			Log.e(TAG, "getEventListContent(), miCurUpdateEventIdx="+miCurUpdateEventIdx+", EntList.length()="+EntList.length());
+			return;
+		}
+		
+		JSONObject lastObj = (null != EntList)?EntList.optJSONObject(miCurUpdateEventIdx):null;
+		
+		if(null != lastObj){
+			long lStartTime = BeseyeJSONUtil.getJSONLong(lastObj, BeseyeJSONUtil.MM_START_TIME, -1);
+			long lDuration = BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS - ((-1 == lStartTime)?0:(mlTaskTs-lStartTime+1)) ;
+			Log.e(TAG, "getEventListContent(), miCurUpdateEventIdx:"+miCurUpdateEventIdx+", lDuration:"+lDuration+", lastObj="+lastObj.toString()+", mTimeWantToReach:"+((mTimeWantToReach!=null)?mTimeWantToReach.toLocaleString():""));
+			if(null != mGetEventListTask){
+				mGetEventListTask.cancel(true);
+				mGetEventListTask = null;
+			}
+			monitorAsyncTask((mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, iSeed)).setDialogId( (null != mTimeWantToReach)?DIALOG_ID_LOADING:-1), true, mStrVCamID, (mlTaskTs-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", lDuration+"", (0 == getCurEventCount())?"15":(null != mTimeWantToReach)?"10000":"100");
+		}
+	}
 	
 	static final private int THUMBNAIL_BUNDLE_SIZE = 10;
 	static final private int THUMBNAIL_NUM = 10;
 	
 	private void getThumbnailByEventList(int iSeed){
+		if(null != mGetThumbnailByEventListTask && iSeed <= miTaskSeedNum){
+			Log.e(TAG, "getThumbnailByEventList(), mGetThumbnailByEventListTask is not null, iSeed="+iSeed);
+			return;
+		}
+		
 		if(iSeed != miTaskSeedNum || mActivityDestroy){
 			Log.e(TAG, "getThumbnailByEventList(), iSeed="+iSeed+", miTaskSeedNum="+miTaskSeedNum+", mActivityDestroy="+mActivityDestroy);
 			return;
@@ -551,7 +684,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 		
 		JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
 		int iCount = (null != EntList)?EntList.length():0;
-		int iStartIdx = miCurUpdateIdx;
+		int iStartIdx = miCurUpdateThunbnailIdx;
 		if(0 < iCount && iStartIdx < iCount){
 			Log.e(TAG, "getThumbnailByEventList(), iCount="+iCount+", iStartIdx="+iStartIdx);
 			JSONObject obj = new JSONObject();
@@ -563,8 +696,13 @@ public class EventListActivity extends BeseyeBaseActivity{
 				obj.put("urlExpireTime", 300);
 				
 				JSONArray timeLst = new JSONArray();
-				for(int i = iStartIdx;i<iCount && i <(iStartIdx+(1 == iStartIdx?2:THUMBNAIL_BUNDLE_SIZE));i++, miCurUpdateIdx++){
+				int iCountToExpectGet = (1 == iStartIdx)?2:THUMBNAIL_BUNDLE_SIZE;
+				int iCountToGet = 0;
+				for(int i = iStartIdx; i<iCount && iCountToGet < iCountToExpectGet;i++, miCurUpdateThunbnailIdx++){
 					JSONObject event = EntList.getJSONObject(i);
+					if(null != BeseyeJSONUtil.getJSONArray(event, BeseyeJSONUtil.MM_THUMBNAIL_PATH)){
+						continue;
+					}
 					JSONObject time = new JSONObject();
 					long lStartTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_START_TIME);
 					long lEndTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_END_TIME);
@@ -576,10 +714,14 @@ public class EventListActivity extends BeseyeBaseActivity{
 					//String strThbKey = String.format("%s_%s_%s", mStrVCamID, BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_START_TIME), BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_DURATION));
 					
 					timeLst.put(time);
-					
+					iCountToGet++;
 				}
-				obj.put(BeseyeJSONUtil.MM_EVT_LST, timeLst);
-				monitorAsyncTask(new BeseyeMMBEHttpTask.GetThumbnailByEventListTask(EventListActivity.this, miTaskSeedNum).setDialogId(-1), true, "", obj.toString());
+				
+				if(0 < iCountToGet){
+					obj.put(BeseyeJSONUtil.MM_EVT_LST, timeLst);
+					monitorAsyncTask((mGetThumbnailByEventListTask = new BeseyeMMBEHttpTask.GetThumbnailByEventListTask(EventListActivity.this, iSeed)).setDialogId(-1), true, "", obj.toString());
+				}
+				
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -666,6 +808,8 @@ public class EventListActivity extends BeseyeBaseActivity{
 			super.onClick(view);
 	}
 	
+	private Date mTimeWantToReach = null;
+	
 	private void gotoEventByTime(Date time){
 		JSONArray evtList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
 		int iEventCnt = (null != evtList)?evtList.length():0;
@@ -693,7 +837,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 				//iIdxToJump = 2;
 			}else if(idx == iEventCnt && -1 == iIdxToJump){
 				Log.e(TAG, "gotoEventByTime(), can not find time ");
-				iIdxToJump = iEventCnt;
+				iIdxToJump = miTotalEventCount;
 			}
 		}
 		
@@ -701,8 +845,71 @@ public class EventListActivity extends BeseyeBaseActivity{
 		if(0 <= iIdxToJump){
 			//mMainListView.getRefreshableView().smoothScrollToPosition(iIdxToJump);
 			//mMainListView.getRefreshableView().setSelection(iIdxToJump);
+			if(miCurUpdateEventIdx < (miTotalEventCount-1) && miCurUpdateEventIdx < iIdxToJump){
+				Log.e(TAG, "gotoEventByTime(), need to get further event, miCurUpdateEventIdx:"+miCurUpdateEventIdx+", iEventCnt:"+iEventCnt+", miTotalEventCount:"+miTotalEventCount);
+				mTimeWantToReach = time;
+				getEventListContent(miTaskSeedNum);
+				return;
+			}
+			final int iJumpTo = iIdxToJump;
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					mMainListView.getRefreshableView().setSelectionFromTop(iJumpTo, 0);
+					JSONArray evtList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+					JSONObject jumpObj = (null != evtList && iJumpTo < evtList.length())?evtList.optJSONObject(iJumpTo):null;
+					if(null != jumpObj && null == BeseyeJSONUtil.getJSONArray(jumpObj, BeseyeJSONUtil.MM_THUMBNAIL_PATH)){
+						Log.e(TAG, "gotoEventByTime(), need to load thunbnail for jumpObj:"+jumpObj);
+						getThunbnailAtPos(iJumpTo-1);
+					}
+				}}, 200);
 			
-			mMainListView.getRefreshableView().setSelectionFromTop(iIdxToJump, 0);
+		}
+	}
+	
+	private void getThunbnailAtPos(int iPos){
+		JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+		int iCount = (null != EntList)?EntList.length():0;
+		int iStartIdx = (iPos + THUMBNAIL_BUNDLE_SIZE >= iCount)? (iCount-THUMBNAIL_BUNDLE_SIZE):iPos;
+		
+		if(0 < iCount && iStartIdx < iCount){
+			Log.e(TAG, "getThunbnailAtPos(), iCount="+iCount+", iStartIdx="+iStartIdx);
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(BeseyeJSONUtil.MM_VCAM_UUID, mStrVCamID);
+				obj.put(BeseyeJSONUtil.MM_SIZE, "small");
+				obj.put("ContinuousTimeQuery", true);
+				obj.put("urlPathQuery", true);
+				obj.put("urlExpireTime", 300);
+				
+				JSONArray timeLst = new JSONArray();
+				int iCountToExpectGet = iStartIdx+THUMBNAIL_BUNDLE_SIZE;
+				for(int i = iStartIdx; i < iCountToExpectGet;i++){
+					JSONObject event = EntList.getJSONObject(i);
+					if(null != BeseyeJSONUtil.getJSONArray(event, BeseyeJSONUtil.MM_THUMBNAIL_PATH)){
+						continue;
+					}
+					JSONObject time = new JSONObject();
+					long lStartTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_START_TIME);
+					long lEndTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_END_TIME);
+					
+					time.put(BeseyeJSONUtil.MM_START_TIME, lStartTime);
+					time.put(BeseyeJSONUtil.MM_DURATION, (0 < lEndTime)?(lEndTime - lStartTime):3000);
+					time.put(BeseyeJSONUtil.MM_MAX_NUM, THUMBNAIL_NUM);
+					
+					//String strThbKey = String.format("%s_%s_%s", mStrVCamID, BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_START_TIME), BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_DURATION));
+					
+					timeLst.put(time);
+				}
+				
+				if(0 < timeLst.length()){
+					obj.put(BeseyeJSONUtil.MM_EVT_LST, timeLst);
+					monitorAsyncTask((new BeseyeMMBEHttpTask.GetThumbnailByEventListTask(EventListActivity.this, miTaskSeedNum)).setDialogId(-1), true, "", obj.toString());
+				}
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

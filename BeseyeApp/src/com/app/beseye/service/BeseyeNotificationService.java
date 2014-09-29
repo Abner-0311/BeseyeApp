@@ -24,7 +24,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,7 +99,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private static final int NOTIFICATION_TYPE_CAM = NOTIFICATION_TYPE_BASE+2;
 	
 	
-	public static final String MSG_REF_JSON_OBJ 		= "MSG_REF_JSON_OBJ";
+	public static final String MSG_REF_JSON_OBJ 	= "MSG_REF_JSON_OBJ";
 	
 	public static final String MSG_WS_EXTEND 		= "MSG_WS_EXTEND";
 	
@@ -491,6 +493,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private long mlTimeToCloseWs = -1;
 	private Runnable mCloseWsRunnable = null;
     
+	private Map<String, Integer> mMapNotificationId = new HashMap<String, Integer>();
+	
     @Override
     public void onCreate() {
     	if(DEBUG)
@@ -1241,6 +1245,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			mNotificationManager.cancel(NOTIFICATION_TYPE_INFO);
 			mNotificationManager.cancel(NOTIFICATION_TYPE_MSG);
 			mNotificationManager.cancel(NOTIFICATION_TYPE_CAM);
+			if(0 < mMapNotificationId.size()){
+				for(String strVCamId : mMapNotificationId.keySet()){
+					if(null != mNotificationManager){
+						mNotificationManager.cancel(mMapNotificationId.get(strVCamId));
+					}
+				}
+				mMapNotificationId.clear();
+			}
 		}
 	}
 	
@@ -1511,6 +1523,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						
 						lTs = BeseyeJSONUtil.getJSONLong(objReg, BeseyeJSONUtil.PS_TS);
 					}
+					
+					String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+					if(null != strVCamId && true == mMapNotificationId.containsKey(strVCamId)){
+						if(null != mNotificationManager){
+							mNotificationManager.cancel(mMapNotificationId.get(strVCamId));
+						}
+						mMapNotificationId.remove(strVCamId);
+					}
 					break;
 				}
 				case NCODE_WIFI_CHANGED:{
@@ -1547,15 +1567,21 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 							strNotifyMsg = String.format(getString(R.string.notify_offline_detect), strCamName);
 							//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_offline_detect);
 						}
-	
+						String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+						
+						iNotifyType = NOTIFICATION_TYPE_INFO+((null != strVCamId)?strVCamId.hashCode():0);
+						if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
+							mMapNotificationId.put(strVCamId, iNotifyType);
+						}
+						
 						if(NCODE_OFFLINE_DETECT != iNCode){
-							String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
 							if(null != strVCamId && !strVCamId.equals(mStrFocusVCamId)){
 								JSONObject cam_obj = new JSONObject();
 								BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_ID, strVCamId);
 							    BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME, strCamName);
 							        
-								iNotifyType = NOTIFICATION_TYPE_INFO;
+							   // iNotifyType = NOTIFICATION_TYPE_INFO+((null != strVCamId)?strVCamId.hashCode():0);
+								
 								lTs = BeseyeJSONUtil.getJSONLong(objCus, BeseyeJSONUtil.PS_EVT_TS);
 								
 								Intent delegateIntent = new Intent();

@@ -225,6 +225,7 @@ public class BeseyeJSONUtil {
 	
 	public static final String MM_OBJ_LST 				= "objs";
 	public static final String MM_OBJ_CNT 				= "objCount";
+	public static final String MM_CNT 					= "count";
 	
 	public static final String MM_TYPE_IDS				= "typeIds";
 	public static final int MM_TYPE_ID_MOTION			= 1;

@@ -226,6 +226,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	private void fillVCamList(JSONObject objVCamList){
 		Log.d(TAG, "fillVCamList(), objVCamList="+objVCamList.toString());
+		JSONArray arrCamListOld = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
+		
 		JSONArray arrCamList = new JSONArray();
 		int iVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_VCAM_CNT);
 		//miOriginalVcamCnt = iVcamCnt;
@@ -271,6 +273,29 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					}
 				}
 			}
+			
+			//reuse info
+			if(null != arrCamListOld && 0 < arrCamListOld.length()){
+				for(int idx = 0; idx < arrCamList.length();idx++){
+					JSONObject newObj = arrCamList.optJSONObject(idx);
+					if(null != newObj){
+						String strNewVcamid = BeseyeJSONUtil.getJSONString(newObj, BeseyeJSONUtil.ACC_ID);
+						if(null != strNewVcamid){
+							for(int idxOld = 0; idxOld < arrCamListOld.length();idxOld++){
+								JSONObject oldObj = arrCamListOld.optJSONObject(idxOld);
+								if(null != oldObj && strNewVcamid.equals(BeseyeJSONUtil.getJSONString(oldObj, BeseyeJSONUtil.ACC_ID))){
+									try {
+										newObj.put(BeseyeJSONUtil.ACC_DATA, BeseyeJSONUtil.getJSONObject(oldObj, BeseyeJSONUtil.ACC_DATA));
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+									break;
+								}
+							}
+						}
+					}
+				}
+			}		
 			
 			if(null != mCameraListAdapter){
 				mCameraListAdapter.updateResultList(arrCamList);
@@ -500,7 +525,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
 			Bundle b = new Bundle();
 			b.putInt(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
-			launchActivityByClassName(PairingWatchOutActivity.class.getName(), b);
+			b.putBoolean(PairingRemindActivity.KEY_ADD_CAM_FROM_LIST, true);
+			launchActivityByClassName(PairingRemindActivity.class.getName(), b);
 		}else if(R.id.vg_my_cam == view.getId()){
 			if(mbIsDemoCamMode){
 				finish();
