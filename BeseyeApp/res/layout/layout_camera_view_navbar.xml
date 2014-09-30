@@ -11,7 +11,7 @@
     <RelativeLayout 
         android:id="@+id/vg_nav_bar_title"
         android:layout_width="match_parent"
-   		android:layout_height="@dimen/liveview_navbar_height_landscape"
+   		android:layout_height="@dimen/liveview_navbar_height"
         android:background="@color/signup_nav_bg_color"
         android:layout_below="@+id/vg_nav_bar_title_up">
         <ImageView 
@@ -43,7 +43,15 @@
 	   		android:text="@string/cam_info_cam_name"
 	   		android:layout_toRightOf="@+id/iv_back"
 	   		android:layout_toLeftOf="@+id/ib_settings"
-	   		android:gravity="center"/>
+	   		android:paddingLeft="4dp"
+	   		android:paddingRight="4dp"
+	   		android:gravity="center"
+	   		android:singleLine="true"/>
+	    <!-- android:ellipsize="marquee"
+	   		android:marqueeRepeatLimit="marquee_forever"
+	   		android:scrollbars="vertical"
+	   		android:focusable="true"
+			android:focusableInTouchMode="true" -->
     </RelativeLayout>
    	
     <RelativeLayout 
@@ -72,7 +80,7 @@
 	       	android:id="@+id/txt_streaming_date"
 	    	android:layout_width="wrap_content"
 	   		android:layout_height="wrap_content"
-	   		android:layout_marginRight="16dp" 
+	   		android:layout_marginRight="@dimen/listview_time_divider_dist" 
 	   		android:layout_toLeftOf="@+id/iv_time_divider"
 	   		android:layout_marginTop="2dp"
 	   		android:layout_centerVertical="true"
@@ -85,7 +93,7 @@
 	       	android:id="@+id/txt_streaming_time"
 	    	android:layout_width="wrap_content"
 	   		android:layout_height="wrap_content" 
-	   		android:layout_marginLeft="16dp" 
+	   		android:layout_marginLeft="@dimen/listview_time_divider_dist" 
 	   		android:layout_toRightOf="@+id/iv_time_divider"
 	   		android:layout_marginTop="2dp"
 	   		android:layout_centerVertical="true"

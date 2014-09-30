@@ -719,12 +719,15 @@ int CBeseyePlayer::queue_picture(VideoState *is, AVFrame *src_frame, double pts1
 
     while (is->pictq_size >= VIDEO_PICTURE_QUEUE_SIZE &&
            !is->videoq.abort_request) {
+    	av_log(NULL, AV_LOG_ERROR, "queue_picture(), SDL_CondWait\n");
         SDL_CondWait(is->pictq_cond, is->pictq_mutex);
     }
     SDL_UnlockMutex(is->pictq_mutex);
 
-    if (is->videoq.abort_request)
+    if (is->videoq.abort_request){
+    	av_log(NULL, AV_LOG_ERROR, "queue_picture(), is->videoq.abort_request:%d\n", is->videoq.abort_request);
         return -1;
+    }
 
     vp = &is->pictq[is->pictq_windex];
 
@@ -752,18 +755,22 @@ int CBeseyePlayer::queue_picture(VideoState *is, AVFrame *src_frame, double pts1
         /* wait until the picture is allocated */
         SDL_LockMutex(is->pictq_mutex);
         while (!vp->allocated && !is->videoq.abort_request) {
+        	av_log(NULL, AV_LOG_ERROR, "queue_picture(), SDL_CondWait, vp->allocated:%d, is->videoq.abort_request:%d\n", vp->allocated, is->videoq.abort_request);
             SDL_CondWait(is->pictq_cond, is->pictq_mutex);
         }
         /* if the queue is aborted, we have to pop the pending ALLOC event or wait for the allocation to complete */
         if (is->videoq.abort_request && SDL_PeepEvents(&event, 1, SDL_GETEVENT, FF_ALLOC_EVENT, FF_ALLOC_EVENT) != 1) {
             while (!vp->allocated) {
+            	av_log(NULL, AV_LOG_ERROR, "queue_picture(), SDL_CondWait, vp->allocated:%d\n", vp->allocated);
                 SDL_CondWait(is->pictq_cond, is->pictq_mutex);
             }
         }
         SDL_UnlockMutex(is->pictq_mutex);
 
-        if (is->videoq.abort_request)
+        if (is->videoq.abort_request){
+        	av_log(NULL, AV_LOG_ERROR, "queue_picture(), 2, is->videoq.abort_request:%d\n", is->videoq.abort_request);
             return -1;
+        }
     }else{
     	//av_log(NULL, AV_LOG_ERROR, "queue_picture()1\n");
     }
@@ -1046,86 +1053,8 @@ int video_thread(void *arg)
             continue;
         }
 
-//#if CONFIG_AVFILTER
-//        if (   last_w != is->video_st->codec->width
-//            || last_h != is->video_st->codec->height
-//            || last_format != is->video_st->codec->pix_fmt) {
-//            av_log(NULL, AV_LOG_INFO, "Frame changed from size:%dx%d to size:%dx%d\n",
-//                   last_w, last_h, is->video_st->codec->width, is->video_st->codec->height);
-//            avfilter_graph_free(&graph);
-//            graph = avfilter_graph_alloc();
-//            if ((ret = configure_video_filters(graph, is, vfilters)) < 0) {
-//                SDL_Event event;
-//                event.type = FF_QUIT_EVENT;
-//                event.user.data1 = is;
-//                SDL_PushEvent(&event);
-//                av_free_packet(&pkt);
-//                goto the_end;
-//            }
-//            filt_in  = is->in_video_filter;
-//            filt_out = is->out_video_filter;
-//            last_w = is->video_st->codec->width;
-//            last_h = is->video_st->codec->height;
-//            last_format = is->video_st->codec->pix_fmt;
-//        }
-//
-//        frame->pts = pts_int;
-//        frame->sample_aspect_ratio = av_guess_sample_aspect_ratio(is->ic, is->video_st, frame);
-//        if (is->use_dr1 && frame->opaque) {
-//            FrameBuffer      *buf = frame->opaque;
-//            AVFilterBufferRef *fb = avfilter_get_video_buffer_ref_from_arrays(
-//                                        frame->data, frame->linesize,
-//                                        AV_PERM_READ | AV_PERM_PRESERVE,
-//                                        frame->width, frame->height,
-//                                        frame->format);
-//
-//            avfilter_copy_frame_props(fb, frame);
-//            fb->buf->priv           = buf;
-//            fb->buf->free           = filter_release_buffer;
-//
-//            buf->refcount++;
-//            av_buffersrc_add_ref(filt_in, fb, AV_BUFFERSRC_FLAG_NO_COPY);
-//
-//        } else
-//            av_buffersrc_write_frame(filt_in, frame);
-//
-//        av_free_packet(&pkt);
-//
-//        while (ret >= 0) {
-//            is->frame_last_returned_time = av_gettime() / 1000000.0;
-//
-//            ret = av_buffersink_get_buffer_ref(filt_out, &picref, 0);
-//            if (ret < 0) {
-//                ret = 0;
-//                break;
-//            }
-//
-//            is->frame_last_filter_delay = av_gettime() / 1000000.0 - is->frame_last_returned_time;
-//            if (fabs(is->frame_last_filter_delay) > AV_NOSYNC_THRESHOLD / 10.0)
-//                is->frame_last_filter_delay = 0;
-//
-//            avfilter_copy_buf_props(frame, picref);
-//
-//            pts_int = picref->pts;
-//            tb      = filt_out->inputs[0]->time_base;
-//            pos     = picref->pos;
-//            frame->opaque = picref;
-//
-//            if (av_cmp_q(tb, is->video_st->time_base)) {
-//                av_unused int64_t pts1 = pts_int;
-//                pts_int = av_rescale_q(pts_int, tb, is->video_st->time_base);
-//                av_dlog(NULL, "video_thread(): "
-//                        "tb:%d/%d pts:%"PRId64" -> tb:%d/%d pts:%"PRId64"\n",
-//                        tb.num, tb.den, pts1,
-//                        is->video_st->time_base.num, is->video_st->time_base.den, pts_int);
-//            }
-//            pts = pts_int * av_q2d(is->video_st->time_base);
-//            ret = queue_picture(is, frame, pts, pos);
-//        }
-//#else
         pts = pts_int * av_q2d(is->video_st->time_base);
         ret = player->queue_picture(is, frame, pts, pkt.pos);
-//#endif
 
         if (ret < 0){
         	av_log(NULL, AV_LOG_ERROR, "video_thread(), fail to queue_picture, ret:%d\n", ret);
@@ -2324,6 +2253,7 @@ void CBeseyePlayer::event_loop(VideoState *cur_stream)
 					av_log(NULL, AV_LOG_INFO, "event_loop(), FF_ALLOC_EVENT\n");
 					alloc_picture((AllocEventProps*)event.user.data1);
 				}else{
+					av_log(NULL, AV_LOG_INFO, "event_loop(), FF_ALLOC_EVENT, [%d, %d]\n", cur_stream, ((AllocEventProps*)event.user.data1)->is);
 					SDL_PushEvent(&event);
 				}
 				break;

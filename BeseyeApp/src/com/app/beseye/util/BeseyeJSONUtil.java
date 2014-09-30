@@ -358,6 +358,8 @@ public class BeseyeJSONUtil {
 	public static final String MM_THUMBNAILS 			= "thumbnails";
 	public static final String MM_TIMESTAMP 			= "timestamp";
 	
+	public static final String MM_THUMBNAIL_REQ 		= "thumbnailReq";
+	
 	
 	//For Push service
 	public static final String PS_PORJ_ID 				= "projectId";

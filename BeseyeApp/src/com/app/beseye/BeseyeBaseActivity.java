@@ -477,11 +477,15 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     }
     
     public void monitorAsyncTask(AsyncTask task, boolean bCancelWhenDestroy, String... strArgs){
+    	monitorAsyncTask(task, bCancelWhenDestroy, FULL_TASK_EXECUTOR, strArgs);
+    }
+    
+    public void monitorAsyncTask(AsyncTask task, boolean bCancelWhenDestroy, ExecutorService executor , String... strArgs){
     	if(null != task){
     		if(null != mMapCurAsyncTasks){
         		mMapCurAsyncTasks.put(task, new AsyncTaskParams(bCancelWhenDestroy, strArgs));
         	}
-    		task.executeOnExecutor(FULL_TASK_EXECUTOR, strArgs);
+    		task.executeOnExecutor(executor, strArgs);
     	}
     }
     
