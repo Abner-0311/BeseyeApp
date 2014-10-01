@@ -60,6 +60,7 @@ public class PairingFailActivity extends BeseyeAccountBaseActivity {
 		Intent intent = new Intent();
 		intent.setClassName(this, PairingWatchOutActivity.class.getName());
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		intent.putExtras(getIntent().getExtras());
 		intent.putExtra(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
 		launchActivityByIntent(intent);
 		finish();

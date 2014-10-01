@@ -90,7 +90,7 @@
 			            android:text="@string/camera_list_more"
 			            android:textColor="@color/cl_link_font_color"
 	           			android:textSize="@dimen/login_fontSmall" 
-	           			android:visibility="gone"/>
+	           			android:visibility="visible"/>
 		        </RelativeLayout>
 			</RelativeLayout>
 			

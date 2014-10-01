@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res/com.app.beseye"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,11 +30,7 @@
 		        android:layout_height="wrap_content"
 		        android:layout_centerVertical="true"
 		        android:src="@drawable/eventlist_timeline_point_bluegreen" />
-	        
 	    </RelativeLayout>
-
-
-	    
 	    <TextView
 	        android:id="@+id/tv_eventlist_event_name"
 	        android:layout_width="wrap_content"
@@ -52,13 +48,14 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_toRightOf="@id/iv_timeline_grayline_holder"
+	        android:layout_toLeftOf="@+id/iv_timeline_icon_face"
 		    android:layout_below="@+id/tv_eventlist_event_name"
 		    android:layout_marginTop="@dimen/eventlist_thumbnail_top"
 	        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
 	        android:layout_marginRight="@dimen/eventlist_thumbnail_right">
 	        <com.app.beseye.widget.RemoteGifImageView
 		        android:id="@+id/iv_timeline_video_thumbnail"
-		        android:layout_width="225dp"
+		        android:layout_width="fill_parent"
 		        android:layout_height="128dp"
 		        android:src="@drawable/eventlist_s_eventview_noview_bg" />
 	    </RelativeLayout>
@@ -71,7 +68,7 @@
 		    android:layout_below="@+id/tv_eventlist_event_name"
 		    android:layout_marginTop="@dimen/eventlist_thumbnail_top"
 	        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
-	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
+	        android:layout_alignRight="@+id/vg_timeline_video_thumbnail"
 	        android:background="@color/liveview_background"
 	        android:visibility="gone">
 	        <TextView 
@@ -93,10 +90,11 @@
 	        android:id="@+id/iv_timeline_icon_face"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/vg_timeline_video_thumbnail"
+	        android:layout_alignParentRight="true"
 	        android:layout_below="@+id/tv_eventlist_event_name"
 	        android:layout_marginTop="@dimen/eventlist_thumbnail_top"
 	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
 	        android:src="@drawable/eventlist_filter_icon_familyface"
 	        android:visibility="invisible" />
 	    
@@ -104,27 +102,30 @@
 	        android:id="@+id/iv_timeline_icon_fire"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/vg_timeline_video_thumbnail"
+	        android:layout_alignParentRight="true"
 	        android:layout_below="@+id/iv_timeline_icon_face"
 	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
 	        android:src="@drawable/eventlist_filter_icon_fire" 
 	        android:visibility="invisible" />
 	    <ImageView
 	        android:id="@+id/iv_timeline_icon_sound"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/vg_timeline_video_thumbnail"
+	        android:layout_alignParentRight="true"
 	        android:layout_below="@+id/iv_timeline_icon_fire"
 	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
 	        android:src="@drawable/eventlist_filter_icon_sound" 
 	        android:visibility="invisible" />
 	    <ImageView
 	        android:id="@+id/iv_timeline_icon_motion"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/vg_timeline_video_thumbnail"
+	        android:layout_alignParentRight="true"
 	        android:layout_below="@+id/iv_timeline_icon_sound"
 	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
 	        android:src="@drawable/eventlist_filter_icon_motion" 
 	        android:visibility="invisible" />
 	    
@@ -134,7 +135,7 @@
 	        android:layout_height="@dimen/eventlist_content_bottom"
 	        android:layout_below="@+id/vg_timeline_video_thumbnail"/>
 	</RelativeLayout>
-</RelativeLayout>
+</LinearLayout>
 
 
 

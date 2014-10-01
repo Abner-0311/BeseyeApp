@@ -110,8 +110,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 			
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
-			if(null != txtTitle && mbIsDemoCamMode){
-				txtTitle.setText(R.string.cam_menu_demo_cam);
+			if(null != txtTitle){
+				if(mbIsDemoCamMode)
+					txtTitle.setText(R.string.cam_menu_demo_cam);
+				
+				txtTitle.setOnClickListener(this);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
@@ -503,18 +506,33 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 			}}, 0);
 	}
+	
+	private void startSoundPairingProcess(String strVcamId){
+		Bundle b = new Bundle();
+		b.putInt(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+		b.putBoolean(PairingRemindActivity.KEY_ADD_CAM_FROM_LIST, true);
+		b.putBoolean(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, null != strVcamId && 0 < strVcamId.length());
+		if(null != strVcamId && 0 < strVcamId.length()){
+			Log.e(TAG, "startSoundPairingProcess(), strVcamId="+strVcamId);
+			b.putString(SoundPairingActivity.KEY_CHANGE_WIFI_VCAM, strVcamId);
+		}
+		launchActivityByClassName(PairingRemindActivity.class.getName(), b);
+	}
 
 	@Override
 	public void onClick(View view) {
 		if(view.getTag() instanceof CameraListItmHolder){
 			JSONObject cam_obj = ((CameraListItmHolder)view.getTag()).mObjCam;
 			if(null != cam_obj){
-				Bundle b = new Bundle();
-				b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
-				b.putBoolean(KEY_DEMO_CAM_MODE, mbIsDemoCamMode);
-				launchActivityForResultByClassName(CameraViewActivity.class.getName(), b, REQUEST_CAM_VIEW_CHANGE);
-				//Log.e(TAG, "onClick(), "+cam_obj.toString());
-				return;
+				if(R.id.tv_camera_more == view.getId()){
+					startSoundPairingProcess(BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
+				}else{
+					Bundle b = new Bundle();
+					b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
+					b.putBoolean(KEY_DEMO_CAM_MODE, mbIsDemoCamMode);
+					launchActivityForResultByClassName(CameraViewActivity.class.getName(), b, REQUEST_CAM_VIEW_CHANGE);
+					//Log.e(TAG, "onClick(), "+cam_obj.toString());
+				}
 			}
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
 			if(View.VISIBLE != mCameraListMenuAnimator.getVisibility()){
@@ -523,10 +541,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 			toggleMenu();
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
-			Bundle b = new Bundle();
-			b.putInt(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
-			b.putBoolean(PairingRemindActivity.KEY_ADD_CAM_FROM_LIST, true);
-			launchActivityByClassName(PairingRemindActivity.class.getName(), b);
+			startSoundPairingProcess("");
 		}else if(R.id.vg_my_cam == view.getId()){
 			if(mbIsDemoCamMode){
 				finish();
@@ -572,9 +587,18 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else if(R.id.vg_logout == view.getId()){
 			invokeLogout();
 			showMenu();
+		}else if(R.id.txt_nav_title == view.getId()){
+			if(++miShowMoreCount == 5){
+				if(null != mCameraListAdapter){
+					mCameraListAdapter.setShowMore(true);
+					refreshList();
+				}
+			}
 		}else
 			super.onClick(view);
 	}
+	
+	private int miShowMoreCount = 0;
 	
 	private void toggleMenu(){
 		if(null != mCameraListMenuAnimator && !mCameraListMenuAnimator.isInAnimation()){

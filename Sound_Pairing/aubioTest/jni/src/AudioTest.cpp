@@ -202,7 +202,7 @@ int checkSpEnabled(){
 
 //Check Network and token
 static const msec_t TIME_TO_CHECK_TOKEN = 30000;//30 seconds
-static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 300000;//300 seconds
+static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 6000000;//600 seconds
 static const long TIME_TO_CHECK_LED = 1;//1 seconds
 static msec_t slLastTimeCheckToken = -1;
 
@@ -1199,7 +1199,7 @@ void* AudioTest::verifyToken(void* userdata){
 	AudioTest* tester = (AudioTest*)userdata;
 	while(!tester->mbStopAnalysisThreadFlag){
 		msec_t lDelta = time_ms() - slLastTimeCheckToken;
-		if((PAIRING_ANALYSIS != sPairingMode && lDelta > TIME_TO_CHECK_TOKEN) || (PAIRING_ANALYSIS == sPairingMode && lDelta >TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD)){
+		if((PAIRING_ANALYSIS != sPairingMode && lDelta > TIME_TO_CHECK_TOKEN)/* || (PAIRING_ANALYSIS == sPairingMode && lDelta >TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD)*/){
 			if(readFromFile(SES_TOKEN_PATH)){
 				//if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
 					if(0 == (invokeSystem("/beseye/cam_main/beseye_token_check") >> 8)){
@@ -2002,26 +2002,19 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
 						if(0 == iRet){
 							LOGE("Cam attach OK\n");
-							//iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
-							//iRet = checkTokenValid();
-							//if(0 == iRet){
-							//	LOGE("Token verification OK\n");
-								AudioTest::getInstance()->setPairingReturnCode(0);
-							//}else{
-							//	LOGE("Token verification failed\n");
-							//}
+							AudioTest::getInstance()->setPairingReturnCode(0);
 						}else{
 							LOGE("Cam attach failed\n");
+							iRet = restoreWifi();
 						}
 					}else{
 						LOGE("Wrong cPurpose for attach\n");
+						iRet = restoreWifi();
 					}
 				}
 			}else{
 				LOGE("network disconnected\n");
-				if(bGuess){
-					iRet = restoreWifi();//system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
-				}
+				iRet = restoreWifi();
 			}
 		}else{
 			LOGE("wifi set failed\n");

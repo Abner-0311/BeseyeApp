@@ -27,6 +27,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 	private OnSwitchBtnStateChangedListener mOnSwitchBtnStateChangedListener;
 	private int miThumbnailWidth;
 	private boolean mbIsDemoCamList = false;
+	private boolean mbShowMore = false;
 	
 	public CameraListAdapter(Context context, JSONArray list, int iLayoutId,
 			OnClickListener itemOnClickListener, OnSwitchBtnStateChangedListener onSwitchBtnStateChangedListener) {
@@ -42,6 +43,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 		public ViewGroup mVgCamOff;
 		public ViewGroup mVgCamDisconnected;
 		public TextView mTxtCamName;
+		public TextView mTxtMore;
 		public RemoteImageView mImgThumbnail;
 		public BeseyeSwitchBtn mSbCamOnOff;
 		public JSONObject mObjCam;
@@ -51,6 +53,10 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 		mbIsDemoCamList = bIsDemoCamList;
 	}
 	
+	public void setShowMore(boolean bShowMore){
+		mbShowMore = bShowMore;
+	}
+	
 	@Override
 	protected View inflateItem(int iPosition, View convertView, ViewGroup parent) {
 		if(null == convertView){
@@ -58,6 +64,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 			if(null != convertView){
 				CameraListItmHolder holder = new CameraListItmHolder();
 				holder.mTxtCamName = (TextView)convertView.findViewById(R.id.tv_camera_name);
+				holder.mTxtMore = (TextView)convertView.findViewById(R.id.tv_camera_more);
 				
 				holder.mSbCamOnOff = (BeseyeSwitchBtn)convertView.findViewById(R.id.sb_camera_switch);
 				if(null != holder.mSbCamOnOff){
@@ -94,6 +101,12 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 			if(null != holder){
 				if(null != holder.mTxtCamName){
 					holder.mTxtCamName.setText(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_NAME));
+				}
+				
+				if(null != holder.mTxtMore){
+					holder.mTxtMore.setVisibility(mbShowMore?View.VISIBLE:View.GONE);
+					holder.mTxtMore.setOnClickListener(mItemOnClickListener);
+					holder.mTxtMore.setTag(holder);
 				}
 				
 				BeseyeJSONUtil.CAM_CONN_STATUS connState = BeseyeJSONUtil.getVCamConnStatus(obj);//CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));

@@ -31,7 +31,7 @@ public class PairingWatchOutActivity extends BeseyeAccountBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_continue:{
-				launchActivityByClassName(WifiListActivity.class.getName());
+				launchActivityByClassName(WifiListActivity.class.getName(), getIntent().getExtras());
 				break;
 			}
 			default:

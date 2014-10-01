@@ -483,6 +483,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 			Intent intent = new Intent();
 			intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
 			intent.setClass(this, SoundPairingActivity.class);
+			intent.putExtra(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, getIntent().getBooleanExtra(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, false));
 			intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
 			intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
 			startActivity(intent);
