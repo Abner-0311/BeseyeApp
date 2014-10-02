@@ -544,6 +544,7 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_addStreamingPath(JN
 	if(0 <= iStreamIdx && iStreamIdx < MAX_STREAM_COUNT && player[iStreamIdx]){
 		char *nativeString = (char *)jni_env->GetStringUTFChars( path, 0);
 		iRet = player[iStreamIdx]->addStreamingPath(nativeString);
+		//LOGE("addStreamingPath(), iRet:[%d]", iRet);
 		jni_env->ReleaseStringUTFChars( path, nativeString);
 	}else{
 		LOGE("addStreamingPath(), stream[%d] is null", iStreamIdx);
