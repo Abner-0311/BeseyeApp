@@ -203,6 +203,8 @@ public class BeseyeJSONUtil {
 	public static final String ACC_VCAM_LST 			= "Vcams";
 	public static final String ACC_DEMO_VCAM_CNT 		= "DemoVcamsCnt";
 	public static final String ACC_DEMO_VCAM_LST 		= "DemoVcams";
+	public static final String ACC_PRIVATE_VCAM_CNT 	= "PrivateVcamsCnt";
+	public static final String ACC_PRIVATE_VCAM_LST 	= "PrivateVcams";
 	public static final String ACC_VCAM_PLAN 			= "Plan";
 	public static final String ACC_VCAM_HW_ID 			= "PhyCamHwSn";
 	

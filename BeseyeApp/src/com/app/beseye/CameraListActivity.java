@@ -60,6 +60,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	static public final String KEY_DEMO_CAM_INFO 	= "KEY_DEMO_CAM_INFO";
 	static public final String KEY_VALID_CAM_INFO 	= "KEY_VALID_CAM_INFO";
 	
+	static public final String KEY_PRIVATE_CAM_MODE 	= "KEY_PRIVATE_CAM_MODE";
+	
 	private PullToRefreshListView mMainListView;
 	private CameraListAdapter mCameraListAdapter;
 	private ViewGroup mVgEmptyView;
@@ -68,8 +70,10 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
 	private boolean mbIsDemoCamMode = false;
+	private boolean mbIsPrivateCamMode = false;
 	private JSONObject mVCamListInfoObj = null;
 	private Bundle mBundleDemo;
+	private Bundle mBundlePrivate;
 	private CameraListMenuAnimator mCameraListMenuAnimator;
 	
 	@Override
@@ -93,6 +97,21 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			mBundleDemo.putBoolean(KEY_DEMO_CAM_MODE, true);
 		}
 		
+		mbIsPrivateCamMode = getIntent().getBooleanExtra(KEY_PRIVATE_CAM_MODE, false);
+		if(mbIsPrivateCamMode){
+			String strVCamListInfo = getIntent().getStringExtra(KEY_DEMO_CAM_INFO);
+			if(null != strVCamListInfo && 0 < strVCamListInfo.length()){
+				try {
+					mVCamListInfoObj = new JSONObject(strVCamListInfo);
+				} catch (JSONException e) {
+					Log.i(TAG, "onCreate(), e:"+e.toString());	
+				}
+			}
+		}else{
+			mBundlePrivate = new Bundle();
+			mBundlePrivate.putBoolean(KEY_PRIVATE_CAM_MODE, true);
+		}
+		
 		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_cam_list_nav, null);
 		if(null != mVwNavBar){
 			mIvMenu = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_menu_btn);
@@ -113,6 +132,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			if(null != txtTitle){
 				if(mbIsDemoCamMode)
 					txtTitle.setText(R.string.cam_menu_demo_cam);
+				
+				if(mbIsPrivateCamMode)
+					txtTitle.setText(R.string.cam_menu_private_demo_cam);
 				
 				txtTitle.setOnClickListener(this);
 			}
@@ -237,7 +259,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		Log.e(TAG, "fillVCamList(), miOriginalVcamCnt="+miOriginalVcamCnt);
 		if(0 < iVcamCnt){
 			JSONArray VcamList = BeseyeJSONUtil.getJSONArray(objVCamList, BeseyeJSONUtil.ACC_VCAM_LST);
-			if(!mbIsDemoCamMode){
+			if(!mbIsDemoCamMode && !mbIsPrivateCamMode){
 				for(int i = 0;i< iVcamCnt;i++){
 					try {
 						JSONObject camObj = VcamList.getJSONObject(i);
@@ -266,6 +288,24 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					for(int i = 0; i < iDemoVcamCnt;i++){
 						try {
 							JSONObject camObj = DemoVcamList.getJSONObject(i);
+							if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+								arrCamList.put(camObj);
+							}
+							//VcamList.put(DemoVcamList.get(i));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			
+			if(mbIsPrivateCamMode){
+				int iPrivateVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_PRIVATE_VCAM_CNT);
+				if(0 < iPrivateVcamCnt){
+					JSONArray PrivateVcamList = BeseyeJSONUtil.getJSONArray(objVCamList, BeseyeJSONUtil.ACC_PRIVATE_VCAM_LST);
+					for(int i = 0; i < iPrivateVcamCnt;i++){
+						try {
+							JSONObject camObj = PrivateVcamList.getJSONObject(i);
 							if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
 								arrCamList.put(camObj);
 							}
@@ -579,6 +619,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				launchActivityByClassName(CameraListActivity.class.getName(), mBundleDemo);
 			}
 			showMenu();
+		}else if(R.id.vg_private_cam == view.getId()){
+			if(!mbIsPrivateCamMode){
+				launchActivityByClassName(CameraListActivity.class.getName(), mBundlePrivate);
+			}
+			showMenu();
 		}else if(R.id.vg_about == view.getId()){
 			launchActivityByClassName(BeseyeAboutActivity.class.getName(), null);
 			showMenu();
@@ -592,6 +637,10 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				if(null != mCameraListAdapter){
 					mCameraListAdapter.setShowMore(true);
 					refreshList();
+				}
+				
+				if(null != mCameraListMenuAnimator){
+					mCameraListMenuAnimator.showPrivateCam();
 				}
 			}
 		}else

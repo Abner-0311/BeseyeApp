@@ -19,6 +19,8 @@
 	
 	<string name="cam_setting_title_detach_cam">Detach cam !!!(Dev)</string>
 	<string name="cam_setting_title_reboot_cam">Reboot cam !!!(Dev)</string>
+	
+	<string name="cam_menu_private_demo_cam">Private Demo cameras</string>
     <!-- DO NOT TRANSLATE END-->
     
     <string name="app_name">BesEye</string>
