@@ -78,6 +78,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected String mStrVCamName = null;
 	protected JSONObject mCam_obj = null;
 	
+	static private long slLastTimeToCheckSession = -1;
 	static private int siActiveActivityCount = 0;
 	
 	static public int getActiveActivityCount(){
@@ -116,7 +117,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	    BeseyeApplication.increVisibleCount(this);
 	    
 		//if(! mbIgnoreSessionCheck && checkSession())
-	    if( mbIgnoreSessionCheck || checkSession())
+	    if( mbIgnoreSessionCheck || (-1 != slLastTimeToCheckSession && (System.currentTimeMillis() - slLastTimeToCheckSession) < 300000) || checkSession())
 			invokeSessionComplete();
 	    
 	    checkOnResumeUpdateCamInfoRunnable();
@@ -603,6 +604,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.CheckAccountTask){
 				if(0 == iRetCode){
+					slLastTimeToCheckSession = System.currentTimeMillis();
 					invokeSessionComplete();
 				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_EXIST == iRetCode  || BeseyeError.E_BE_ACC_SESSION_EXPIRED == iRetCode){
 					onSessionInvalid();

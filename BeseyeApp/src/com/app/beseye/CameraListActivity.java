@@ -36,6 +36,7 @@ import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.setting.CameraSettingActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
@@ -174,6 +175,10 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		ViewGroup mVgMenu = (ViewGroup)findViewById(R.id.vg_cam_menu);
 		if(null != mVgMenu){
 			mCameraListMenuAnimator = new CameraListMenuAnimator(this, mVgMenu);
+			String strAcc =SessionMgr.getInstance().getAccount();
+			if(null != strAcc && strAcc.endsWith("@beseye.com")){
+				mCameraListMenuAnimator.showPrivateCam();
+			}
 		}
 		
 		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false)){
