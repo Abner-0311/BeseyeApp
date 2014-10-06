@@ -32,7 +32,7 @@ public class BeseyeMMBEHttpTask  {
 	static private final String URL_LIVE_STREAM_INFO 	= "live-stream/downstream_info/%s?narrowBW=%s";
 	static private final String URL_DVR_STREAM_INFO 	= "dvr/dvr_playlist/%s?startTime=%s&duration=%s&transc=aac";
 	
-	static private final String URL_GET_EVENT_LIST 	    = "events/%s?startTime=%s&duration=%s&order=desc";
+	static private final String URL_GET_EVENT_LIST 	    = "events/%s?startTime=%s&duration=%s&order=desc&count=%s";
 	static private final String URL_GET_IMP_EVENT_LIST 	= "imp-events/%s?startTime=%s&duration=%s&order=desc&typeFilter=2";
 	static private final String URL_GET_EVENT_LIST_CNT 	= "events/count/%s?startTime=%s&duration=%s";
 	
@@ -79,9 +79,15 @@ public class BeseyeMMBEHttpTask  {
 	
 	public static class GetEventListTask extends BeseyeHttpTask{
 		public boolean mbAppend = false;
+		public int iTaskSeed = -1;
 		
 		public GetEventListTask(OnHttpTaskCallback cb) {
 			super(cb);
+		}
+		
+		public GetEventListTask(OnHttpTaskCallback cb, int iSeed) {
+			super(cb);
+			iTaskSeed = iSeed;
 		}
 		
 		public GetEventListTask(OnHttpTaskCallback cb, boolean bAppend) {
@@ -91,7 +97,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST, strParams[0], strParams[1], strParams[2]));
+			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST, strParams[0], strParams[1], strParams[2], strParams[3]));
 		}
 	}
 	

@@ -22,8 +22,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define MONITOR_PROCESS_FLAG "/tmp/beseye_monitor_process"
-#define MONITOR_PROCESS_RET "/tmp/beseye_monitor_process_ret"
+#define MONITOR_PROCESS_FLAG "/tmp/beseye_sp_monitor_process"
+#define MONITOR_PROCESS_RET "/tmp/beseye_sp_monitor_process_ret"
 
 static const int  MAX_TIME_TO_INVOKE_SYSTEM = 10;//10 sec
 static pid_t pid_system = -1;
@@ -33,15 +33,23 @@ static pid_t intermediate_pid = -1;
 
 //To avoid system call/fork blocking issue, we need to monitor it and kill it when timeout
 int invokeSystem(const char* cmd){
-	return system(cmd);
-//	int iRetSystemCall = -1;
-//	//LOGE( "invokeSystem(), time_ms:%lld .............++++\n", time_ms());
-//	saveToFile(MONITOR_PROCESS_FLAG,"monitor");
-//	saveToFile(MONITOR_PROCESS_RET,"-1");
-//
-//	intermediate_pid = fork();
-//	if (intermediate_pid == 0) {
-//		//LOGE( "invokeSystem(), intermediate_pid fork successfully time_ms:%lld .............+++++++++++++++++\n", time_ms());
+	//return system(cmd);
+	int iRetSystemCall = -1;
+	//LOGE( "invokeSystem(), time_ms:%lld .............++++\n", time_ms());
+	saveToFile(MONITOR_PROCESS_FLAG,"monitor");
+	saveToFile(MONITOR_PROCESS_RET,"-1");
+
+	intermediate_pid = fork();
+	if (intermediate_pid == 0) {
+		LOGE( "invokeSystem(), intermediate_pid fork successfully time_ms:%lld .............+++++++++++++++++\n", time_ms());
+		int iRet = system(cmd);
+		char cRet[32]={0};
+		sprintf(cRet, "%d", iRet);
+		saveToFile(MONITOR_PROCESS_RET,cRet);
+		deleteFile(MONITOR_PROCESS_FLAG);
+		LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG end time_ms:%lld,cmd:[%s] cRet:[%s] .............---------------\n", time_ms(),cmd, cRet);
+		exit (0);
+
 //		pid_system = fork();
 //	    if (pid_system == 0) {
 //	    	//LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG begin pid_system:%d, time_ms:%lld .............+++++++++++++++++\n",pid_system, time_ms());
@@ -75,28 +83,27 @@ int invokeSystem(const char* cmd){
 //	    }
 //	    wait(NULL); // Collect the other process
 //	    exit(0); // Or some more informative status
-//	}
-//
-//	//LOGE( "invokeSystem(), intermediate_pid:%d \n", intermediate_pid);
-//
-//	if(0 < intermediate_pid){
-//		lTimeInvodeSystem = time_ms();
-//		//LOGE( "invokeSystem(), waitpid begin\n");
-//		waitpid(intermediate_pid, 0, 0);
-//		//LOGE( "invokeSystem(), waitpid end\n");
-//		deleteFile(MONITOR_PROCESS_FLAG);
-//		intermediate_pid = -1;
-//	}else{
-//		LOGE( "invokeSystem(), invalid intermediate_pid:%d \n", intermediate_pid);
-//	}
-//
-//	char* cRet = readFromFile(MONITOR_PROCESS_RET);
-//	if(cRet){
-//		iRetSystemCall = atoi(cRet);
-//	}
-//	FREE(cRet)
-//	LOGE( "invokeSystem(), iRetSystemCall:%d, time_ms:%lld .............----\n", iRetSystemCall, time_ms());
-//	return iRetSystemCall;
+	}
+
+	LOGE( "invokeSystem(), intermediate_pid:%d \n", intermediate_pid);
+	if(0 < intermediate_pid){
+		lTimeInvodeSystem = time_ms();
+		//LOGE( "invokeSystem(), waitpid begin\n");
+		waitpid(intermediate_pid, 0, 0);
+		//LOGE( "invokeSystem(), waitpid end\n");
+		deleteFile(MONITOR_PROCESS_FLAG);
+		intermediate_pid = -1;
+	}else{
+		LOGE( "invokeSystem(), invalid intermediate_pid:%d \n", intermediate_pid);
+	}
+
+	char* cRet = readFromFile(MONITOR_PROCESS_RET);
+	if(cRet){
+		iRetSystemCall = atoi(cRet);
+	}
+	FREE(cRet)
+	LOGE( "invokeSystem(), iRetSystemCall:%d, time_ms:%lld .............----\n", iRetSystemCall, time_ms());
+	return iRetSystemCall;
 }
 
 bool isSystemProcessExist(){
@@ -202,58 +209,13 @@ int checkSpEnabled(){
 
 //Check Network and token
 static const msec_t TIME_TO_CHECK_TOKEN = 30000;//30 seconds
-static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 300000;//300 seconds
+static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 6000000;//600 seconds
 static const long TIME_TO_CHECK_LED = 1;//1 seconds
 static msec_t slLastTimeCheckToken = -1;
 
-static const char* LOG_SOURCE = "/tmp/beseye_boot.log.old";
+static const char* LOG_SOURCE = "/tmp/beseye_boot.log";
 static const char* LOG_DEST = "%s/sp_failed_%s.log";
 static const char* LOG_DIR = "/beseye/sp_log";
-
-//int checkTokenValid(){
-//	char jsonData[BUF_SIZE]={0};
-//	int iTrial = 0;
-//	int iRet = -1;
-//	do{
-//		if(0 < iTrial){
-//			sleep(1);
-//			memset(jsonData, 0, BUF_SIZE);
-//		}
-//		iRet = validateSession(jsonData);
-//	}while(3 >iTrial++ && (iRet == RET_CODE_NETWORK_ERR || iRet == CMD_RET_CODE_WEB_API_ERR));
-//	LOGI( "checkTokenValid->iRet:%d, iTrial:%d\n", iRet, iTrial);
-//	return iRet;
-//}
-//
-//int verifyUserToken(const char* mac, const char* token){
-//	char jsonData[BUF_SIZE]={0};
-//	int iTrial = 0;
-//	int iRet = -1;
-//	do{
-//		if(0 < iTrial){
-//			sleep(1);
-//			memset(jsonData, 0, BUF_SIZE);
-//		}
-//		iRet = verifyUserToken(jsonData, (char*)mac, (char*)token);
-//	}while(3 >iTrial++ && (iRet == RET_CODE_NETWORK_ERR || iRet == CMD_RET_CODE_WEB_API_ERR));
-//	return iRet;
-//}
-//
-//int attachCam(const char* mac, const char* token){
-//	char jsonData[BUF_SIZE]={0};
-//	int iTrial = 0;
-//	int iRet = -1;
-//	do{
-//		if(0 < iTrial){
-//			sleep(1);
-//			memset(jsonData, 0, BUF_SIZE);
-//		}
-//		iRet = bindUserAccount(jsonData, (char*)mac, (char*)token);
-//	}while(3 >iTrial++ && (iRet == RET_CODE_NETWORK_ERR || iRet == CMD_RET_CODE_WEB_API_ERR));
-//
-//	LOGI( "bindUserAccount->iRet:%d, iTrial:%d\n", iRet, iTrial);
-//	return iRet;
-//}
 
 int setMicrophoneGain(const char* gain){
 	char jsonData[BUF_SIZE]={0};
@@ -786,6 +748,7 @@ bool AudioTest::startPairingAnalysis(){
 		if(bRet){
 			//checkLogFiles();
 			//setInvalidWifi();
+			deleteFile(MONITOR_PROCESS_FLAG);
 
 			int iRet = checkSpEnabled();//system("/beseye/cam_main/cam-handler -chk_sp_enabled") >> 8;
 			LOGE("startPairingAnalysis(),chk_sp_enabled, iRet:%d\n", iRet);
@@ -1199,7 +1162,7 @@ void* AudioTest::verifyToken(void* userdata){
 	AudioTest* tester = (AudioTest*)userdata;
 	while(!tester->mbStopAnalysisThreadFlag){
 		msec_t lDelta = time_ms() - slLastTimeCheckToken;
-		if((PAIRING_ANALYSIS != sPairingMode && lDelta > TIME_TO_CHECK_TOKEN) || (PAIRING_ANALYSIS == sPairingMode && lDelta >TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD)){
+		if((PAIRING_ANALYSIS != sPairingMode && lDelta > TIME_TO_CHECK_TOKEN)/* || (PAIRING_ANALYSIS == sPairingMode && lDelta >TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD)*/){
 			if(readFromFile(SES_TOKEN_PATH)){
 				//if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
 					if(0 == (invokeSystem("/beseye/cam_main/beseye_token_check") >> 8)){
@@ -2002,26 +1965,19 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
 						if(0 == iRet){
 							LOGE("Cam attach OK\n");
-							//iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
-							//iRet = checkTokenValid();
-							//if(0 == iRet){
-							//	LOGE("Token verification OK\n");
-								AudioTest::getInstance()->setPairingReturnCode(0);
-							//}else{
-							//	LOGE("Token verification failed\n");
-							//}
+							AudioTest::getInstance()->setPairingReturnCode(0);
 						}else{
 							LOGE("Cam attach failed\n");
+							iRet = restoreWifi();
 						}
 					}else{
 						LOGE("Wrong cPurpose for attach\n");
+						iRet = restoreWifi();
 					}
 				}
 			}else{
 				LOGE("network disconnected\n");
-				if(bGuess){
-					iRet = restoreWifi();//system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
-				}
+				iRet = restoreWifi();
 			}
 		}else{
 			LOGE("wifi set failed\n");

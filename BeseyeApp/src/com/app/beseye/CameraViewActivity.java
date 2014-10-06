@@ -174,7 +174,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			if(null != mCameraViewControlAnimator){
 		    				setEnabled(mCameraViewControlAnimator.getPlayPauseView(), false);
 		    			}
-		    			setVisibility(mPbLoadingCursor, View.VISIBLE);
+		    			
+		    			if(isCamPowerOn() && mbIsLiveMode)
+		    				setVisibility(mPbLoadingCursor, View.VISIBLE);
 		    			startCheckVideoConn();
 		    			break;
 		    		}
@@ -238,7 +240,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			break;
 		    		}
 		    		case CV_STREAM_WAITING_PAUSE:{
-		    			setVisibility(mPbLoadingCursor, View.VISIBLE);
+		    			//if(isCamPowerOn() && mbIsLiveMode)
+		    				setVisibility(mPbLoadingCursor, View.VISIBLE);
 		    			break;
 		    		}
 		    		case CV_STREAM_PAUSED:{
@@ -267,7 +270,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    		}
 		    		case CV_STREAM_EOF:{
 		    			if(!precCamViewStatus.equals(CameraView_Internal_Status.CV_STREAM_EOF)){
-		    				setVisibility(mPbLoadingCursor, View.VISIBLE);
+		    				if(isCamPowerOn() && mbIsLiveMode)
+		    					setVisibility(mPbLoadingCursor, View.VISIBLE);
 			    			stopUpdateTime();
 			    			if(mbIsLiveMode){
 				    			BeseyeUtils.postRunnable(new Runnable(){
@@ -296,7 +300,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			break;
 		    		}
 		    		case CV_STREAM_WAITING_CLOSE:{
-		    			setVisibility(mPbLoadingCursor, View.VISIBLE);
+		    			if(isCamPowerOn() && mbIsLiveMode)
+		    				setVisibility(mPbLoadingCursor, View.VISIBLE);
 		    			break;
 		    		}
 		    		case CV_STREAM_CLOSE:{
@@ -939,7 +944,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(mbIsLiveMode){
 				if(null == mLiveStreamTask){
 					monitorAsyncTask(mLiveStreamTask = new BeseyeMMBEHttpTask.GetLiveStreamTask(this, -1).setDialogId(bShowDialog?DIALOG_ID_LOADING:-1), true, (null != mStrVCamID)?mStrVCamID:TMP_MM_VCAM_ID, "false");
-					setVisibility(mPbLoadingCursor, View.VISIBLE);
+					if(isCamPowerOn() && mbIsLiveMode)
+						setVisibility(mPbLoadingCursor, View.VISIBLE);
 				}
 			}else{
 				if(null == mDVRStreamTask){
@@ -1137,6 +1143,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
+					boolean bIsCamOn = isCamPowerOn();
 					super.onPostExecute(task, result, iRetCode);
 					if(isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED)){
 						closeStreaming();
@@ -1144,6 +1151,22 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					mbIsCamSettingChanged = true;
 					updateAttrByCamObj();
 					checkPlayState();
+					if(mbIsLiveMode){
+						if(mActivityResume){
+							Log.i(TAG, "onPostExecute(), bIsCamOn:"+bIsCamOn+", isCamPowerOn():"+isCamPowerOn());
+							
+							if(bIsCamOn && isCamPowerOff()){
+								setVisibility(mPbLoadingCursor, View.GONE);
+								Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
+							}else if(!bIsCamOn && isCamPowerOn()){
+								mlRetryConnectBeginTs = System.currentTimeMillis();
+							}
+						}
+						
+						if(isCamPowerOff() || isCamPowerDisconnected()){
+							removeMyDialog(DIALOG_ID_WARNING);
+						}
+					}
 				}
 			}else{
 				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
@@ -2410,19 +2433,24 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(null != strVcamId && strVcamId.equals(mStrVCamID)){
 			mbIsCamSettingChanged = true;
 			updateAttrByCamObj();
-			if(mActivityResume){
-//				if(false == bIsCamDisconnect && isCamPowerDisconnected()){
-//					Toast.makeText(getApplicationContext(), getString(R.string.notify_offline_detect_player), Toast.LENGTH_SHORT).show();
-//				}else 
-				if(bIsCamOn && isCamPowerOff()){
-					Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
-				}else if(!bIsCamOn && isCamPowerOn()){
-					mlRetryConnectBeginTs = System.currentTimeMillis();
-				}
-			}
 			
-			if(isCamPowerOff() || isCamPowerDisconnected()){
-				removeMyDialog(DIALOG_ID_WARNING);
+			if(mbIsLiveMode){
+				if(mActivityResume){
+//					if(false == bIsCamDisconnect && isCamPowerDisconnected()){
+//						Toast.makeText(getApplicationContext(), getString(R.string.notify_offline_detect_player), Toast.LENGTH_SHORT).show();
+//					}else 
+					Log.i(TAG, "onCamSetupChanged(), bIsCamOn:"+bIsCamOn+", isCamPowerOn():"+isCamPowerOn());
+					
+					if(bIsCamOn && isCamPowerOff()){
+						Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
+					}else if(!bIsCamOn && isCamPowerOn()){
+						mlRetryConnectBeginTs = System.currentTimeMillis();
+					}
+				}
+				
+				if(isCamPowerOff() || isCamPowerDisconnected()){
+					removeMyDialog(DIALOG_ID_WARNING);
+				}
 			}
 		}
     }

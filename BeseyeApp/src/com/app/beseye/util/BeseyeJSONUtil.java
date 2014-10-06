@@ -203,6 +203,8 @@ public class BeseyeJSONUtil {
 	public static final String ACC_VCAM_LST 			= "Vcams";
 	public static final String ACC_DEMO_VCAM_CNT 		= "DemoVcamsCnt";
 	public static final String ACC_DEMO_VCAM_LST 		= "DemoVcams";
+	public static final String ACC_PRIVATE_VCAM_CNT 	= "PrivateVcamsCnt";
+	public static final String ACC_PRIVATE_VCAM_LST 	= "PrivateVcams";
 	public static final String ACC_VCAM_PLAN 			= "Plan";
 	public static final String ACC_VCAM_HW_ID 			= "PhyCamHwSn";
 	
@@ -225,6 +227,7 @@ public class BeseyeJSONUtil {
 	
 	public static final String MM_OBJ_LST 				= "objs";
 	public static final String MM_OBJ_CNT 				= "objCount";
+	public static final String MM_CNT 					= "count";
 	
 	public static final String MM_TYPE_IDS				= "typeIds";
 	public static final int MM_TYPE_ID_MOTION			= 1;
@@ -356,6 +359,8 @@ public class BeseyeJSONUtil {
 	public static final String MM_EVT_LST 				= "eventList";
 	public static final String MM_THUMBNAILS 			= "thumbnails";
 	public static final String MM_TIMESTAMP 			= "timestamp";
+	
+	public static final String MM_THUMBNAIL_REQ 		= "thumbnailReq";
 	
 	
 	//For Push service

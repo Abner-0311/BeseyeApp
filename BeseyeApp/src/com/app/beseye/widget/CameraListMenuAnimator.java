@@ -71,6 +71,7 @@ public class CameraListMenuAnimator {
 		}
 		setupMenu(R.id.vg_my_cam, R.drawable.sl_menu_my_cam_icon, R.string.cam_menu_my_cam);
 		setupMenu(R.id.vg_demo_cam, R.drawable.sl_menu_demo_cam_icon, R.string.cam_menu_demo_cam);
+		setupMenu(R.id.vg_private_cam, R.drawable.sl_menu_demo_cam_icon, R.string.cam_menu_private_demo_cam);
 		setupMenu(R.id.vg_news, R.drawable.sl_menu_news_icon, R.string.cam_menu_news);
 		setupMenu(R.id.vg_about, R.drawable.sl_menu_about_icon, R.string.cam_menu_about);
 		setupMenu(R.id.vg_support, R.drawable.sl_menu_support_icon, R.string.cam_menu_support);
@@ -93,6 +94,12 @@ public class CameraListMenuAnimator {
 					imgIndicator.setVisibility(BeseyeNewsActivity.BeseyeNewsHistoryMgr.haveLatestNews()?View.VISIBLE:View.GONE);
 				}
 			}
+		}
+	}
+	
+	public void showPrivateCam(){
+		if(null != m_vgMenuHolderLayout){
+			BeseyeUtils.setVisibility(m_vgMenuHolderLayout.findViewById(R.id.vg_private_cam), View.VISIBLE);
 		}
 	}
 

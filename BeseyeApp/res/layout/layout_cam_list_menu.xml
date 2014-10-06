@@ -26,6 +26,10 @@
 			    android:id="@+id/vg_demo_cam"
 			    layout="@layout/layout_cam_list_menu_itm"></include>
 			<include 
+			    android:id="@+id/vg_private_cam"
+			    layout="@layout/layout_cam_list_menu_itm"
+			    android:visibility="gone"></include>
+			<include 
 			    android:id="@+id/vg_news"
 			    layout="@layout/layout_cam_list_menu_itm"></include>
 			<include 

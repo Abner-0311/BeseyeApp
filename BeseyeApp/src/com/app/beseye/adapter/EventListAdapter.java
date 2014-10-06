@@ -19,6 +19,7 @@ import com.app.beseye.widget.RemoteGifImageView;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -68,7 +69,10 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 				holder.mTxtEventType = (TextView)convertView.findViewById(R.id.tv_eventlist_event_name);
 				
 				holder.mImgThumbnail = (RemoteGifImageView)convertView.findViewById(R.id.iv_timeline_video_thumbnail);
-				
+				if(null != holder.mImgThumbnail){
+					convertView.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(0, MeasureSpec.AT_MOST));
+					BeseyeUtils.setThumbnailRatio(holder.mImgThumbnail, holder.mImgThumbnail.getMeasuredWidth(), BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
+				}
 				holder.mImgDot = (ImageView)convertView.findViewById(R.id.iv_timeline_dot_greenblue);
 				holder.mImgFace = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_face);
 				holder.mImgFire = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_fire);
@@ -157,10 +161,10 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 	private String genDetectionType(EventListItmHolder holder, int typeArr, JSONObject obj){
 		//Log.e(TAG, "genDetectionType(), typeArr:"+typeArr);	
 		String strRet = "";
-		BeseyeUtils.setVisibility(holder.mImgFace, View.INVISIBLE);
+		
 		BeseyeUtils.setVisibility(holder.mImgFire, View.INVISIBLE);
 		BeseyeUtils.setVisibility(holder.mImgSound, View.INVISIBLE);
-		BeseyeUtils.setVisibility(holder.mImgMotion, View.INVISIBLE);
+		
 		
 		String strType = null;
 		if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr)){
@@ -190,11 +194,15 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 //			}
 			strType = mStrPeopleDetect;
 			BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
+		}else{
+			BeseyeUtils.setVisibility(holder.mImgFace, View.INVISIBLE);
 		}
 		
 		if(0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArr)){
 			strType = ((null != strType)?(strType):mStrMotionDetect );
 			BeseyeUtils.setVisibility(holder.mImgMotion, View.VISIBLE);
+		}else{
+			BeseyeUtils.setVisibility(holder.mImgMotion, View.INVISIBLE);
 		}
 		
 		if(null == strType){

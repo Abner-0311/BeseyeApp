@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 
 public class PairingRemindActivity extends BeseyeAccountBaseActivity {
+	static public final String KEY_ADD_CAM_FROM_LIST = "KEY_ADD_CAM_FROM_LIST";
 	private Button mBtnStart;
 	
 	@Override
@@ -27,7 +28,11 @@ public class PairingRemindActivity extends BeseyeAccountBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_start:{
-				launchActivityByClassName(SignupActivity.class.getName());
+				if(getIntent().getBooleanExtra(KEY_ADD_CAM_FROM_LIST, false)){
+					launchActivityByClassName(PairingWatchOutActivity.class.getName(), getIntent().getExtras());
+				}else{
+					launchActivityByClassName(SignupActivity.class.getName());
+				}
 				break;
 			}
 			default:

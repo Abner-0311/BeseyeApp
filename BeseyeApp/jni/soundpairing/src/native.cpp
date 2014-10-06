@@ -387,6 +387,20 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playPair
 	return iRet;
 }
 
+JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playPairingCodeWithPurpose(JNIEnv * env, jobject thisObj, jstring strMACAddr, jstring strKey, jint iSecType, jshort userToken, jchar cPurpose){
+	DECLARE_JNIENV_WITH_RETURN()
+	SoundPair_Config::init();
+	char *mac = (char *)jni_env->GetStringUTFChars( strMACAddr, 0);
+	char *key = (char *)jni_env->GetStringUTFChars( strKey, 0);
+	//string curCode(mac);
+	//jni_env->ReleaseStringUTFChars( strCode, code);
+	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
+	LOGW("mac:%s, key:%s, cPurpose:%d", mac, key, cPurpose);
+	int iRet = FreqGenerator::getInstance()->playPairingCodeWithPurpose(mac, key, userToken, cPurpose);
+	LOGW("iRet:%x", iRet);
+	return iRet;
+}
+
 JNIEXPORT void JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_finishPlayCode(JNIEnv * env, jobject thisObj){
 	DECLARE_JNIENV_WITHOUT_RETURN()
 	FreqGenerator::getInstance()->stopPlay2();

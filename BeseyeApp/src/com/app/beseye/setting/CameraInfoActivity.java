@@ -163,7 +163,7 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 				public void run() {
 					Bundle b = new Bundle();
 					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_get_cam_info));
-					b.putBoolean(KEY_WARNING_CLOSE, true);
+					//b.putBoolean(KEY_WARNING_CLOSE, true);
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
 			

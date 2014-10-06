@@ -70,7 +70,7 @@
 		    	android:paddingLeft="10dp"
 		    	android:layout_alignParentRight="true"
 		    	android:layout_centerVertical="true"
-		    	android:src="@drawable/wifisetup_password_check_form"
+		    	android:src="@drawable/setting_check_box_default"
 		    	android:layout_marginRight="@dimen/cam_setting_item_padding_right"/>
 		    
 		    <ImageView 
@@ -79,7 +79,7 @@
 		    	android:layout_height="wrap_content"
 		    	android:layout_alignParentRight="true"
 		    	android:layout_centerVertical="true"
-		    	android:src="@drawable/wifisetup_password_check"
+		    	android:src="@drawable/sl_setting_check_box"
 		    	android:layout_marginRight="@dimen/cam_setting_item_padding_right"/>
 		    
 		   <TextView 

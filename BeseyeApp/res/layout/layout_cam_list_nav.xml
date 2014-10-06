@@ -32,6 +32,10 @@
     	android:layout_centerInParent="true"
     	android:textColor="@color/word_white"
     	android:text="@string/cam_list_tilte"
+    	android:singleLine="true"
+    	android:gravity="center"
+    	android:layout_toRightOf="@+id/iv_nav_menu_btn"
+    	android:layout_toLeftOf="@+id/iv_nav_add_cam_btn"
     	android:textSize="@dimen/login_fontMedium"/>
   	
   	<ImageView

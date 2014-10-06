@@ -18,6 +18,12 @@ using namespace std;
 
 class CBeseyePlayer: public CBeseyeRTMPObserver{
 public:
+
+	typedef struct BeseyeAllocEventProps {
+		CBeseyePlayer *player;
+	    AVFrame *frame;
+	} BeseyeAllocEventProps;
+
 	CBeseyePlayer(void* window, int iFrameFormat, int screen_width, int screen_height);
 	virtual ~CBeseyePlayer();
 
@@ -121,7 +127,7 @@ private:
 	virtual void pictq_next_picture(VideoState *is);
 	virtual void update_video_pts(VideoState *is, double pts, int64_t pos);
 	virtual void video_refresh(void *opaque);
-	virtual void alloc_picture(AllocEventProps *event_props);
+	virtual void alloc_picture(BeseyeAllocEventProps *event_props);
 
 //#if CONFIG_AVFILTER
 //	virtual int configure_filtergraph(AVFilterGraph *graph, const char *filtergraph,
@@ -141,7 +147,7 @@ private:
 	virtual void step_to_next_frame(VideoState *is);
 	//virtual void toggle_audio_display(VideoState *is);
 
-	virtual void event_loop(VideoState *cur_stream);
+	virtual void event_loop(CBeseyePlayer *cur_player);
 	static int lockmgr(void **mtx, enum AVLockOp op);
 
 private:
@@ -166,6 +172,7 @@ private:
 	int64_t duration;
 	int64_t audio_callback_time;
 
+	pthread_mutex_t mDVRVecMux;
 	pthread_mutex_t mDVRRestCountMux;
 	int miRestDVRCount;
 	char** mVecPendingStreamPaths;
@@ -215,6 +222,7 @@ private:
 	void(* mVideoCallback)(void* window, uint8_t* srcbuf, uint32_t iFormat, uint32_t linesize, uint32_t iWidth, uint32_t iHeight) ;
 	void(* mVideoDeinitCallback)(void* window) ;
 
+	int addStreamingPath(const char *path, int iIgnoreVec);
 	//void(* mPlayCB)(CBeseyePlayer *, Player_Callback, const char *, int) ;
 };
 

@@ -26,7 +26,8 @@
     	android:layout_alignParentRight="true"
 		android:layout_marginRight="@dimen/signup_paring_nav_margin"
     	android:layout_centerVertical="true"
-    	android:visibility="gone">
+    	android:src="@drawable/sl_nav_back_btn"
+    	android:visibility="invisible">
     </ImageView>
     
   	<TextView 
@@ -36,5 +37,9 @@
     	android:layout_centerInParent="true"
     	android:textColor="@color/word_white"
     	android:text="@string/signup_title_wifi_list"
-    	android:textSize="@dimen/login_fontMedium"/>
+    	android:textSize="@dimen/login_fontMedium"
+    	android:singleLine="true"
+    	android:gravity="center"
+    	android:layout_toRightOf="@+id/iv_nav_left_btn"
+    	android:layout_toLeftOf="@+id/iv_nav_right_btn"/>
 </RelativeLayout>

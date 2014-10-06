@@ -19,6 +19,8 @@
 	
 	<string name="cam_setting_title_detach_cam">Detach cam !!!(Dev)</string>
 	<string name="cam_setting_title_reboot_cam">Reboot cam !!!(Dev)</string>
+	
+	<string name="cam_menu_private_demo_cam">Private cameras</string>
     <!-- DO NOT TRANSLATE END-->
     
     <string name="app_name">BesEye</string>
@@ -306,6 +308,8 @@
 	<string name="toast_cam_off_by_location">Camera is turned off accordIng to location setting</string>
 	
 	<string name="toast_new_cam_activated">New camera is online. Please refresh your camera list.</string>
+	<string name="toast_cam_change_wifi_done">Camera %s is online. Please refresh your camera list.</string>
+	
 	<string name="toast_cam_deactivated">%s is deactivated. Please refresh your camera list.</string>
 	
 	<string name="notify_motion_detect">Motion detected by %s. Go and check it up.</string>

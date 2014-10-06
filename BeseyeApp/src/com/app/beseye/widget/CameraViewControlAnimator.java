@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -137,6 +138,7 @@ public class CameraViewControlAnimator {
 				syncViewProprety(mTxtCamName, txtCamName);
 				mTxtCamName = txtCamName;
 				mTxtCamName.setOnClickListener(act);
+				//mTxtCamName.setMovementMethod(ScrollingMovementMethod.getInstance());
 			}
 			
 			ImageView ivStreamType = (ImageView)vgReference.findViewById(R.id.iv_streaming_type);

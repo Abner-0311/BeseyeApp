@@ -506,6 +506,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 								finish();
 							}else{
 								intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
+								intent.putExtras(getIntent().getExtras());
 								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
 								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
 								
