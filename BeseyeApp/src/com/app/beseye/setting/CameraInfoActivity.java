@@ -60,6 +60,7 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	private String mStrSwVer = null;
 	
 	private View mVwNavBar;
+	private ViewGroup mVgSWVer;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
 	@Override
@@ -103,10 +104,10 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 			mTxtCamName.setOnClickListener(this);
 		}
 		
-		ViewGroup vgSWVer = (ViewGroup)findViewById(R.id.vg_sw_ver_holder);
-		if(null != vgSWVer){
+		mVgSWVer = (ViewGroup)findViewById(R.id.vg_sw_ver_holder);
+		if(null != mVgSWVer){
 			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
-				vgSWVer.setVisibility(View.GONE);
+				mVgSWVer.setVisibility(View.GONE);
 			}
 		}
 		
@@ -143,12 +144,18 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 		return R.layout.layout_cam_info;
 	}
 
+	private int miHitCount = 0;
+	
 	@Override
 	public void onClick(View view) {
 		if(R.id.txt_cam_name == view.getId()){
 			showDialog(DIALOG_ID_CAM_INFO);
 		}else if(R.id.btn_ok == view.getId()){
 			removeDialog(DIALOG_ID_CAM_INFO);
+		}else if(R.id.txt_nav_title == view.getId()){
+			if(++miHitCount == 5){
+				BeseyeUtils.setVisibility(mVgSWVer, View.VISIBLE);
+			}
 		}else{
 			super.onClick(view);
 		}
@@ -157,7 +164,7 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
 			String strMsg) {
-		if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask){
+		if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask && null != mVgSWVer && View.VISIBLE == mVgSWVer.getVisibility()){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
