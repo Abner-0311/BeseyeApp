@@ -585,7 +585,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 							Log.i(TAG, "onPostExecute(), "+dataObj.toString());
 							//JSONArray iLEDStatus = getJSONInt(dataObj, LED_STATUS, 0);
 							JSONArray ssidList = BeseyeJSONUtil.getJSONArray(dataObj, BeseyeJSONUtil.WIFI_SSIDLST);
-							NetworkMgr.getInstance().filterWifiAPInfo(mlstScanResult, ssidList, BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.WIFI_SSIDLST_USED));
+							NetworkMgr.getInstance().filterWifiAPInfo(mlstScanResult, ssidList, BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.WIFI_SSIDLST_USED), BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.WIFI_SSIDLST_USED_BSSID));
 							onWiFiScanComplete();
 						}
 					}

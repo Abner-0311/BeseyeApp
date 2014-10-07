@@ -99,6 +99,7 @@ public class BeseyeJSONUtil {
 	public static final String WIFI_SSIDLST_SGL 		= "signal";
 	public static final String WIFI_SSIDLST_SEC 		= "sec";
 	public static final String WIFI_SSIDLST_USED 		= "CurrentUsed";
+	public static final String WIFI_SSIDLST_USED_BSSID  = "CurrentUsedBSSID";
 	
 	public static final String CAM_SN 					= "SerialNumber";
 	public static final String CAM_MAC_ADDR 			= "MACAddr";
