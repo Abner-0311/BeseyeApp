@@ -81,6 +81,7 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
 				txtTitle.setText(R.string.cam_setting_title_cam_info);
+				txtTitle.setOnClickListener(this);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
