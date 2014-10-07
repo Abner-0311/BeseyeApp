@@ -39,6 +39,7 @@ public class BeseyeMMBEHttpTask  {
 	static private final String URL_GET_LATEST_THUMB 	= "thumbnail/get_latest?vcamUuid=%s";
 	static private final String URL_GET_THUMB_BY_EVENT 	= "thumbnail/get_by_event_list";
 	
+	static public final long THIRTY_DAYS_IN_MS = 30*24*60*60*1000;
 	static public final long SEVEN_DAYS_IN_MS = 7*24*60*60*1000;
 	static public final long ONE_DAY_IN_MS = 24*60*60*1000;
 	static public final long ONE_HOUR_IN_MS = 60*60*1000;

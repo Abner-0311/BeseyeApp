@@ -69,7 +69,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				holder.mSbCamOnOff = (BeseyeSwitchBtn)convertView.findViewById(R.id.sb_camera_switch);
 				if(null != holder.mSbCamOnOff){
 					holder.mSbCamOnOff.setOnSwitchBtnStateChangedListener(mOnSwitchBtnStateChangedListener);
-					holder.mSbCamOnOff.setVisibility((BeseyeConfig.COMPUTEX_DEMO  || !mbIsDemoCamList)?View.VISIBLE:View.INVISIBLE);
+					holder.mSbCamOnOff.setVisibility((!mbIsDemoCamList)?View.VISIBLE:View.INVISIBLE);
 				}
 				
 				holder.mImgThumbnail = (RemoteImageView)convertView.findViewById(R.id.iv_cameralist_thumbnail);
@@ -127,7 +127,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					holder.mImgThumbnail.loadImage();
 				}
 				
-				convertView.setEnabled(((BeseyeConfig.COMPUTEX_DEMO && connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON)) || BeseyeConfig.COMPUTEX_PAIRING)?true:false);
+				convertView.setEnabled(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON)?true:false);
 				
 				holder.mObjCam = obj;
 				convertView.setTag(holder);

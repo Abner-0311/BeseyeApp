@@ -361,43 +361,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		Log.d(TAG, "CameraSettingActivity::onCreateDialog()");
 		Dialog dialog;
 		switch(id){
-			case DIALOG_ID_CAM_INFO:{
-				dialog = new Dialog(this);
-				dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-				dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-				dialog.setContentView(createCamInfoDialog());
-				
-				if(null != dialog){
-					dialog.setCanceledOnTouchOutside(true);
-					dialog.setOnCancelListener(new OnCancelListener(){
-						@Override
-						public void onCancel(DialogInterface arg0) {
-							//removeMyDialog(DIALOG_ID_CAM_INFO);
-						}});
-					dialog.setOnDismissListener(new OnDismissListener(){
-						@Override
-						public void onDismiss(DialogInterface dialog) {
-							EditText etCamName = (EditText)((Dialog)dialog).findViewById(R.id.et_cam_name);
-							if(null != etCamName){
-								Log.i(TAG, "onDismiss(), cam name is "+etCamName.getText().toString());
-								mstrNameCandidate = etCamName.getText().toString();
-								if(null != mstrNameCandidate && 0 < mstrNameCandidate.length()){
-									if(ASSIGN_ST_PATH){
-										STREAM_PATH_LIST.set(0, mstrNameCandidate);
-									}else if(null == mStrVCamName || !mStrVCamName.equals(mstrNameCandidate)){
-										monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(CameraSettingActivity.this), true, mStrVCamID, etCamName.getText().toString());
-									}
-								}else{
-									Bundle b = new Bundle();
-									b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_empty_name_warning));
-									showMyDialog(DIALOG_ID_WARNING, b);
-								}
-								//CamSettingMgr.getInstance().setCamName(TMP_CAM_ID, etCamName.getText().toString());
-							}
-						}});
-				}
-            	break;
-			}
 			case DIALOG_ID_CAM_DETTACH_CONFIRM:{
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
             	builder.setTitle(getString(R.string.dialog_title_warning));
@@ -455,37 +418,37 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		return dialog;
 	}
 	
-	private View createCamInfoDialog(){
-		View viewRet = null;
-		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		if(null != inflater){
-			viewRet = (View)inflater.inflate(R.layout.cam_info_dialog, null);
-			if(null != viewRet){
-				EditText etCamName = (EditText)viewRet.findViewById(R.id.et_cam_name);
-				if(null != etCamName){
-					etCamName.setText(null == mStrVCamName?CamSettingMgr.getInstance().getCamName(TMP_CAM_ID):mStrVCamName);
-//					if(!ASSIGN_ST_PATH)
-//						etCamName.setFocusable(false);
-				}
-				
-				TextView txtSN = (TextView)viewRet.findViewById(R.id.txt_sn_value);
-				if(null != txtSN){
-					txtSN.setText(mStrVCamSN);
-				}
-				
-				TextView txtMAC = (TextView)viewRet.findViewById(R.id.txt_mac_value);
-				if(null != txtMAC){
-					txtMAC.setText(mStrVCamMacAddr);
-				}
-				
-				Button btnOK = (Button)viewRet.findViewById(R.id.btn_ok);
-				if(null != btnOK){
-					btnOK.setOnClickListener(this);
-				}
-			}
-		}
-		return viewRet;
-	}
+//	private View createCamInfoDialog(){
+//		View viewRet = null;
+//		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//		if(null != inflater){
+//			viewRet = (View)inflater.inflate(R.layout.cam_info_dialog, null);
+//			if(null != viewRet){
+//				EditText etCamName = (EditText)viewRet.findViewById(R.id.et_cam_name);
+//				if(null != etCamName){
+//					etCamName.setText(null == mStrVCamName?CamSettingMgr.getInstance().getCamName(TMP_CAM_ID):mStrVCamName);
+////					if(!ASSIGN_ST_PATH)
+////						etCamName.setFocusable(false);
+//				}
+//				
+//				TextView txtSN = (TextView)viewRet.findViewById(R.id.txt_sn_value);
+//				if(null != txtSN){
+//					txtSN.setText(mStrVCamSN);
+//				}
+//				
+//				TextView txtMAC = (TextView)viewRet.findViewById(R.id.txt_mac_value);
+//				if(null != txtMAC){
+//					txtMAC.setText(mStrVCamMacAddr);
+//				}
+//				
+//				Button btnOK = (Button)viewRet.findViewById(R.id.btn_ok);
+//				if(null != btnOK){
+//					btnOK.setOnClickListener(this);
+//				}
+//			}
+//		}
+//		return viewRet;
+//	}
 
 	private void updatePowerDesc(SwitchState state){
 //		if(null != mTxtPowerDesc){
@@ -586,14 +549,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					onToastShow(task, "Detach  Successfully.");
-					if(BeseyeConfig.COMPUTEX_PAIRING){
-						//invokeLogout();
+//					if(BeseyeConfig.COMPUTEX_PAIRING){
+//						//invokeLogout();
 						launchDelegateActivity(CameraListActivity.class.getName(), null);
-					}else{
-						Bundle b = new Bundle();
-						b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-						launchDelegateActivity(WifiListActivity.class.getName(), b);
-					}
+//					}else{
+//						Bundle b = new Bundle();
+//						b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
+//						launchDelegateActivity(WifiListActivity.class.getName(), b);
+//					}
 				}
 			}else if(task instanceof BeseyeAccountTask.SetCamAttrTask){
 				if(0 == iRetCode){

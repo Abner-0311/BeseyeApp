@@ -1,7 +1,5 @@
 package com.app.beseye.widget;
 
-import static com.app.beseye.util.BeseyeConfig.ASSIGN_ST_PATH;
-import static com.app.beseye.util.BeseyeConfig.COMPUTEX_DEMO;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.lang.ref.WeakReference;
@@ -134,7 +132,7 @@ public class CameraViewControlAnimator {
 			}
 			
 			TextView txtCamName = (TextView)vgReference.findViewById(R.id.txt_cam_name);
-			if(!ASSIGN_ST_PATH && null != txtCamName){
+			if(/*!ASSIGN_ST_PATH && */null != txtCamName){
 				syncViewProprety(mTxtCamName, txtCamName);
 				mTxtCamName = txtCamName;
 				mTxtCamName.setOnClickListener(act);

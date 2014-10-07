@@ -438,7 +438,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					//Log.i(TAG, "onPostExecute(), "+result.toString());
 					//monitorAsyncTask(new BeseyeAccountTask.CamAttchTask(this), true, BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.ACC_PAIRING_TOKEN), mChosenWifiAPInfo.BSSID);
 				}
-			}else if(task instanceof BeseyeAccountTask.CamAttchTask){
+			}/*else if(task instanceof BeseyeAccountTask.CamAttchTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					vcam_id = BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.ACC_VCAM_ID);
@@ -451,7 +451,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(this), true, vcam_id, "My Test Cam");
 				}
-			}else if(task instanceof BeseyeAccountTask.SetCamAttrTask){
+			}*/else if(task instanceof BeseyeAccountTask.SetCamAttrTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					//monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(this), true, vcam_id, "My Test Cam");

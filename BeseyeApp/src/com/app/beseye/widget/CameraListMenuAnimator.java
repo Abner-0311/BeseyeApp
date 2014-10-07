@@ -102,6 +102,16 @@ public class CameraListMenuAnimator {
 			BeseyeUtils.setVisibility(m_vgMenuHolderLayout.findViewById(R.id.vg_private_cam), View.VISIBLE);
 		}
 	}
+	
+	public boolean isPrivateCamShow(){
+		boolean bShow = false;
+		if(null != m_vgMenuHolderLayout){
+			View vPirvateCam = m_vgMenuHolderLayout.findViewById(R.id.vg_private_cam);
+			bShow = (null != vPirvateCam) && View.VISIBLE==vPirvateCam.getVisibility();
+		}
+		
+		return bShow;
+	}
 
 	private void initAnimations(Context context){
 		if(null == m_aniMenuFadeIn){

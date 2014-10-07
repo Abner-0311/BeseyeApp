@@ -248,11 +248,6 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 						mEtPassword.setText("");
 					}
 				}
-			}else if(task instanceof BeseyeAccountTask.CamAttchTask){
-				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-					//monitorAsyncTask(new BeseyeAccountTask.CamAttchTask(this), true, SessionMgr.getInstance().getMdid());
-				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);
 			}

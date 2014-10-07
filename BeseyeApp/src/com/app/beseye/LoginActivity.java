@@ -26,7 +26,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 public class LoginActivity extends BeseyeAccountBaseActivity {
 	private EditText mEtUserName, mEtPassword;
 	private TextView mTvForgetPassword, mTvCreateAcc, mTvLogin;

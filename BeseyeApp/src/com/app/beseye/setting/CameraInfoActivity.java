@@ -251,9 +251,10 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 								Log.i(TAG, "onDismiss(), cam name is "+etCamName.getText().toString());
 								mStrNameCandidate = etCamName.getText().toString();
 								if(null != mStrNameCandidate && 0 < mStrNameCandidate.length()){
-									if(ASSIGN_ST_PATH){
+									/*if(ASSIGN_ST_PATH){
 										STREAM_PATH_LIST.set(0, mStrNameCandidate);
-									}else if(null == mStrVCamName || !mStrVCamName.equals(mStrNameCandidate)){
+									}else */
+									if(null == mStrVCamName || !mStrVCamName.equals(mStrNameCandidate)){
 										monitorAsyncTask(new BeseyeAccountTask.SetCamAttrTask(CameraInfoActivity.this), true, mStrVCamID, etCamName.getText().toString());
 									}
 								}else{
@@ -281,7 +282,7 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 			if(null != viewRet){
 				EditText etCamName = (EditText)viewRet.findViewById(R.id.et_cam_name);
 				if(null != etCamName){
-					etCamName.setText(null == mStrVCamName?CamSettingMgr.getInstance().getCamName(TMP_CAM_ID):mStrVCamName);
+					etCamName.setText(mStrVCamName);
 //					if(!ASSIGN_ST_PATH)
 //						etCamName.setFocusable(false);
 				}

@@ -345,18 +345,18 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    		return null;
 	    	}
 	
-	    	if(this instanceof BeseyeAccountTask.CamAttchTask || this instanceof BeseyeAccountTask.CamValidateTask || this instanceof BeseyeAccountTask.CamBeeValidateTask){
-	    		if(this instanceof BeseyeAccountTask.CamValidateTask || this instanceof BeseyeAccountTask.CamBeeValidateTask){
-	    			httpRequest.setHeader("Bes-Dev-Session", strParams[2]);
-	    		}
-	    	}else{
+//	    	if(this instanceof BeseyeAccountTask.CamAttchTask || this instanceof BeseyeAccountTask.CamValidateTask || this instanceof BeseyeAccountTask.CamBeeValidateTask){
+//	    		if(this instanceof BeseyeAccountTask.CamValidateTask || this instanceof BeseyeAccountTask.CamBeeValidateTask){
+//	    			httpRequest.setHeader("Bes-Dev-Session", strParams[2]);
+//	    		}
+//	    	}else{
 	    		httpRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
 	    		httpRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
 	    		httpRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
 	    		httpRequest.addHeader("Content-Type", "application/json");
 	    		httpRequest.addHeader("Accept", "application/json");
 	    		httpRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
-	    	}
+//	    	}
 	    	
 	    	if(httpRequest instanceof HttpEntityEnclosingRequestBase && 1 < strParams.length){
 	    		HttpEntityEnclosingRequestBase request = (HttpEntityEnclosingRequestBase)httpRequest;

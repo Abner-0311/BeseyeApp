@@ -378,8 +378,8 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 		d.setOnDatetimePickerClickListener(new BeseyeTimePickerDialog.OnDatetimePickerClickListener(){
 			@Override
 			public void onBtnOKClick(Calendar pickDate) {
-				if(!COMPUTEX_DEMO)
-					Toast.makeText(PowerScheduleEditActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
+//				if(!COMPUTEX_DEMO)
+//					Toast.makeText(PowerScheduleEditActivity.this, "onBtnOKClick(),pickDate="+pickDate.getTime().toLocaleString(), Toast.LENGTH_SHORT).show();
 				
 				BeseyeJSONUtil.setJSONInt(mSched_obj_edit, strFieldTUpdate, (pickDate.get(Calendar.HOUR_OF_DAY)*60+pickDate.get(Calendar.MINUTE))*60);
 				
@@ -389,8 +389,8 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 
 			@Override
 			public void onBtnCancelClick() {
-				if(!COMPUTEX_DEMO)
-					Toast.makeText(PowerScheduleEditActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
+//				if(!COMPUTEX_DEMO)
+//					Toast.makeText(PowerScheduleEditActivity.this, "onBtnCancelClick(),", Toast.LENGTH_SHORT).show();
 			}});
 		
 		d.show();

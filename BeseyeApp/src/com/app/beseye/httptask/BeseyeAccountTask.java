@@ -333,90 +333,90 @@ public class BeseyeAccountTask {
 	}
 	
 	//Test cam behaviors
-	static public class CamAttchTask extends BeseyeHttpTask {	 	
-		public CamAttchTask(OnHttpTaskCallback cb) {
-			super(cb);
-			setHttpMethod(HttpPost.METHOD_NAME);
-			//enableHttps();
-		}
- 
-		@Override
-		protected List<JSONObject> doInBackground(String... strParams) {
-			JSONObject obj = new JSONObject();
-			try {
-				obj.put(ACC_PAIRING_TOKEN, strParams[0]);
-				obj.put(ACC_PAIRING_AP_MAC, strParams[1].replaceAll(":", ""));
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_CLIENT_UDID, TMP_VCAM_ID);
-				objClient.put(ACC_CLIENT_UA, "BeseyeCam");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_VCAM_CLIENT, objClient);
-				Log.e(TAG, "obj:"+obj.toString());
-				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_ATTACH, obj.toString());
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			return null;	
-		}
-	}
+//	static public class CamAttchTask extends BeseyeHttpTask {	 	
+//		public CamAttchTask(OnHttpTaskCallback cb) {
+//			super(cb);
+//			setHttpMethod(HttpPost.METHOD_NAME);
+//			//enableHttps();
+//		}
+// 
+//		@Override
+//		protected List<JSONObject> doInBackground(String... strParams) {
+//			JSONObject obj = new JSONObject();
+//			try {
+//				obj.put(ACC_PAIRING_TOKEN, strParams[0]);
+//				obj.put(ACC_PAIRING_AP_MAC, strParams[1].replaceAll(":", ""));
+//				JSONObject objClient = new JSONObject();
+//				objClient.put(ACC_CLIENT_UDID, TMP_VCAM_ID);
+//				objClient.put(ACC_CLIENT_UA, "BeseyeCam");
+//				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
+//				obj.put(ACC_VCAM_CLIENT, objClient);
+//				Log.e(TAG, "obj:"+obj.toString());
+//				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_ATTACH, obj.toString());
+//			} catch (NumberFormatException e) {
+//				e.printStackTrace();
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//			return null;	
+//		}
+//	}
 	
-	static public class CamBeeValidateTask extends BeseyeHttpTask {	 	
-		public CamBeeValidateTask(OnHttpTaskCallback cb) {
-			super(cb);
-			setHttpMethod(HttpPost.METHOD_NAME);
-			//enableHttps();
-		}
- 
-		@Override
-		protected List<JSONObject> doInBackground(String... strParams) {
-			JSONObject obj = new JSONObject();
-			try {
-				obj.put(ACC_PAIRING_TOKEN, strParams[0]);
-				obj.put(ACC_PAIRING_AP_MAC, strParams[1].replaceAll(":", ""));
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_VCAM_ID, strParams[2]);
-				objClient.put(ACC_CLIENT_UDID, TMP_VCAM_ID);
-				objClient.put(ACC_CLIENT_UA, "BeseyeCam");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_VCAM_CLIENT, objClient);
-				Log.e(TAG, "obj:"+obj.toString());
-				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_VALIDATE_BEE, obj.toString(), strParams[3]);
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			return null;	
-		}
-	}
+//	static public class CamBeeValidateTask extends BeseyeHttpTask {	 	
+//		public CamBeeValidateTask(OnHttpTaskCallback cb) {
+//			super(cb);
+//			setHttpMethod(HttpPost.METHOD_NAME);
+//			//enableHttps();
+//		}
+// 
+//		@Override
+//		protected List<JSONObject> doInBackground(String... strParams) {
+//			JSONObject obj = new JSONObject();
+//			try {
+//				obj.put(ACC_PAIRING_TOKEN, strParams[0]);
+//				obj.put(ACC_PAIRING_AP_MAC, strParams[1].replaceAll(":", ""));
+//				JSONObject objClient = new JSONObject();
+//				objClient.put(ACC_VCAM_ID, strParams[2]);
+//				objClient.put(ACC_CLIENT_UDID, TMP_VCAM_ID);
+//				objClient.put(ACC_CLIENT_UA, "BeseyeCam");
+//				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
+//				obj.put(ACC_VCAM_CLIENT, objClient);
+//				Log.e(TAG, "obj:"+obj.toString());
+//				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_VALIDATE_BEE, obj.toString(), strParams[3]);
+//			} catch (NumberFormatException e) {
+//				e.printStackTrace();
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//			return null;	
+//		}
+//	}
 	
-	static public class CamValidateTask extends BeseyeHttpTask {	 	
-		public CamValidateTask(OnHttpTaskCallback cb) {
-			super(cb);
-			setHttpMethod(HttpPost.METHOD_NAME);
-			//enableHttps();
-		}
- 
-		@Override
-		protected List<JSONObject> doInBackground(String... strParams) {
-			JSONObject obj = new JSONObject();
-			try {
-				JSONObject objClient = new JSONObject();
-				objClient.put(ACC_VCAM_ID, strParams[0]);
-				objClient.put(ACC_CLIENT_UDID, TMP_VCAM_ID);
-				objClient.put(ACC_CLIENT_UA, "BeseyeCam");
-				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
-				obj.put(ACC_VCAM_CLIENT, objClient);
-				Log.e(TAG, "obj:"+obj.toString());
-				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_VALIDATE, obj.toString(), strParams[1]);
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			return null;	
-		}
-	}
+//	static public class CamValidateTask extends BeseyeHttpTask {	 	
+//		public CamValidateTask(OnHttpTaskCallback cb) {
+//			super(cb);
+//			setHttpMethod(HttpPost.METHOD_NAME);
+//			//enableHttps();
+//		}
+// 
+//		@Override
+//		protected List<JSONObject> doInBackground(String... strParams) {
+//			JSONObject obj = new JSONObject();
+//			try {
+//				JSONObject objClient = new JSONObject();
+//				objClient.put(ACC_VCAM_ID, strParams[0]);
+//				objClient.put(ACC_CLIENT_UDID, TMP_VCAM_ID);
+//				objClient.put(ACC_CLIENT_UA, "BeseyeCam");
+//				//objClient.put(ACC_CLIENT_LOC, "Taiwan");
+//				obj.put(ACC_VCAM_CLIENT, objClient);
+//				Log.e(TAG, "obj:"+obj.toString());
+//				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_VALIDATE, obj.toString(), strParams[1]);
+//			} catch (NumberFormatException e) {
+//				e.printStackTrace();
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//			return null;	
+//		}
+//	}
 }

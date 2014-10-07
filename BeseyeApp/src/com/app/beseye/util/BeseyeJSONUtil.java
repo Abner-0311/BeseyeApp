@@ -174,6 +174,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_ACTIVATED 			= "IsActivated";
 	public static final String ACC_VCAM 				= "Vcam";
 	
+	
 	public static final String ACC_SES 					= "UserSession";
 	public static final String ACC_SES_TOKEN 			= "SessionToken";
 	public static final String ACC_DATA 				= "Data";

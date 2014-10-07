@@ -1,6 +1,5 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.COMPUTEX_PAIRING;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.io.BufferedReader;
@@ -62,7 +61,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		
 		mSpServerType = (Spinner)findViewById(R.id.sp_server_type);
 		if(null != mSpServerType){
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Computex Server","Staging Server", "Tokyo Staging Server"/*, "Production Server"*/});
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server","Staging Server", "Tokyo Staging Server(deprecated)"/*, "Production Server"*/});
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			mSpServerType.setAdapter(adapter);
 		}

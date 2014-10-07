@@ -59,9 +59,9 @@ public class CamSettingMgr {
 					settingData.setCamID(id);
 					settingData.setCamPowerState(BeseyeSharedPreferenceUtil.getPrefIntValue(pref, CAM_POWER, BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON.getValue()));
 					settingData.setVideoUpsideDown(BeseyeSharedPreferenceUtil.getPrefIntValue(pref, CAM_UPSIDE_DOWN, 0));
-					settingData.setCamName(BeseyeSharedPreferenceUtil.getPrefStringValue(pref, CAM_NAME, ASSIGN_ST_PATH?TMP_CAM_NAME_S:TMP_CAM_NAME));
-					settingData.setCamSN(BeseyeSharedPreferenceUtil.getPrefStringValue(pref, CAM_SN, TMP_CAM_SN));
-					settingData.setCamMAC(BeseyeSharedPreferenceUtil.getPrefStringValue(pref, CAM_MAC, TMP_CAM_MAC));
+					//settingData.setCamName(BeseyeSharedPreferenceUtil.getPrefStringValue(pref, CAM_NAME, ASSIGN_ST_PATH?TMP_CAM_NAME_S:TMP_CAM_NAME));
+					//settingData.setCamSN(BeseyeSharedPreferenceUtil.getPrefStringValue(pref, CAM_SN, TMP_CAM_SN));
+					//settingData.setCamMAC(BeseyeSharedPreferenceUtil.getPrefStringValue(pref, CAM_MAC, TMP_CAM_MAC));
 					mSettingDataMap.put(id, settingData);
 				}
 			}

@@ -24,7 +24,7 @@ import static com.app.beseye.util.BeseyeSharedPreferenceUtil.*;
 public class SessionMgr {
 	static public enum SERVER_MODE{
 		MODE_DEV,
-		MODE_COMPUTEX,
+		MODE_DEV2,
 		MODE_STAGING,
 		MODE_STAGING_TOKYO,
 		MODE_PRODUCTION,
@@ -34,7 +34,7 @@ public class SessionMgr {
 			SERVER_MODE mode = MODE_DEV;
 			switch(iMode){
 				case 1:{
-					mode = MODE_COMPUTEX;
+					mode = MODE_DEV2;
 					break;
 				} 
 				case 2:{
@@ -58,19 +58,19 @@ public class SessionMgr {
 	
 	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
 	static private final String[] ACCOUNT_BE_URL = {"https://acc-dev.beseye.com",
-													"https://acc01.beseye.com", 
+													"https://acc-dev.beseye.com", 
 													"https://acc-stage.beseye.com",
 													"https://tokyo-acc-stage.beseye.com",
 													"https://acc-stage.beseye.com"}; 
 	
 	static private final String[] MM_BE_URL = { "https://mm-dev.beseye.com/",
-												"http://mm01-forext-comp.beseye.com/", 
+												"https://mm-dev.beseye.com/",
 												"https://mm-stage.beseye.com/",
 												"https://tokyo-mm-stage.beseye.com/",
 												"https://mm-stage.beseye.com/"}; 
 	
 	static private final String[] NS_BE_URL = { "https://ns-dev.beseye.com/",
-												"http://ns01.beseye.com/", 
+												"https://ns-dev.beseye.com/",
 												"https://ns-stage.beseye.com/",
 												"https://tokyo-ns-stage.beseye.com/",
 												"https://ns-stage.beseye.com/"}; 

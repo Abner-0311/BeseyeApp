@@ -70,6 +70,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	private boolean mbNeedToReloadWhenResume = false;
 	private boolean mbNeedToCalcu = true;
 	private int miTotalEventCount = 0;//Total count from server
+	private long mlEventQueryPeriod = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -230,7 +231,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 		cancelRunningTasks();
 		
 		mlTaskTs = System.currentTimeMillis();
-		monitorAsyncTask((mGetEventListCountTask = new BeseyeMMBEHttpTask.GetEventListCountTask(EventListActivity.this)), true, mStrVCamID, (mlTaskTs-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
+		monitorAsyncTask((mGetEventListCountTask = new BeseyeMMBEHttpTask.GetEventListCountTask(EventListActivity.this)), true, mStrVCamID, (mlTaskTs-mlEventQueryPeriod )+"", mlEventQueryPeriod +"");
 	}
 	
 	private void loadNewEventList(){
@@ -262,7 +263,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 				mbNeedToLoadNewInNextRound = true;
 			}else{
 				loadEventList();
-				//monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS +"");
+				//monitorAsyncTask(new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this), true, mStrVCamID, (System.currentTimeMillis()-mlEventQueryPeriod )+"", mlEventQueryPeriod +"");
 			}
 		}
 		
@@ -370,6 +371,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	private int miLastTaskSeedNum = -1;
 	private int miCurUpdateEventIdx = -1;
 	private int miCurUpdateThunbnailIdx = -1;
+	private JSONArray mArrOldEventList = null;
 	
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
@@ -377,7 +379,10 @@ public class EventListActivity extends BeseyeBaseActivity{
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeMMBEHttpTask.GetEventListCountTask){
 				Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
-				int iCount = miTotalEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_CNT);
+				miTotalEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_CNT);
+				
+				mArrOldEventList = mEventListAdapter.getJSONList();
+				
 				JSONArray EntList = new JSONArray();
 				JSONObject liveObj = new JSONObject();
 				try {
@@ -422,8 +427,11 @@ public class EventListActivity extends BeseyeBaseActivity{
 					}else{
 						if(0 == iRetCode){
 							JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+							int iOldCount = (null != EntList)?EntList.length():0;
 							int iCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
 							if(0 < iCount){
+								int iTotalCount = iOldCount+iCount;
+								
 								JSONArray newEntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);
 								for(int idx = 0; idx < iCount;idx++){
 									try {
@@ -432,6 +440,31 @@ public class EventListActivity extends BeseyeBaseActivity{
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
+								}
+								
+								if(1 == iOldCount && null != mArrOldEventList){
+									int iOldCMemCount = (null != mArrOldEventList)?mArrOldEventList.length()-1:0;
+									if(1 < iOldCMemCount){
+										try {
+											JSONObject oldFirstobj = mArrOldEventList.getJSONObject(1);
+											long lStartTs = BeseyeJSONUtil.getJSONLong(oldFirstobj, BeseyeJSONUtil.MM_START_TIME);
+											if(0 < lStartTs){
+												for(int idx = iOldCount; idx < iTotalCount;idx++){
+													if(lStartTs == BeseyeJSONUtil.getJSONLong(EntList.getJSONObject(idx), BeseyeJSONUtil.MM_START_TIME)){
+														Log.e(TAG, "onPostExecute(), update old info to new list at "+idx);	
+														for(int idx2 = 0; idx2 < iOldCMemCount && (idx+idx2) < iTotalCount;idx2++){
+															EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_PATH, BeseyeJSONUtil.getJSONArray(mArrOldEventList.getJSONObject(1+idx2),BeseyeJSONUtil.MM_THUMBNAIL_PATH));
+															EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_REQ, BeseyeJSONUtil.getJSONLong(mArrOldEventList.getJSONObject(1+idx2), BeseyeJSONUtil.MM_THUMBNAIL_REQ));
+														}
+														break;
+													}
+												}
+											}
+										} catch (JSONException e) {
+											Log.e(TAG, "onPostExecute(), e:"+e.toString());	
+										}
+									}
+									mArrOldEventList = null;
 								}
 								//getEventListContent(iTaskSeed);
 								getThumbnailByEventList(iTaskSeed);
@@ -695,13 +728,13 @@ public class EventListActivity extends BeseyeBaseActivity{
 		
 		if(null != lastObj){
 			long lStartTime = BeseyeJSONUtil.getJSONLong(lastObj, BeseyeJSONUtil.MM_START_TIME, -1);
-			long lDuration = BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS - ((-1 == lStartTime)?0:(mlTaskTs-lStartTime+1)) ;
+			long lDuration = mlEventQueryPeriod - ((-1 == lStartTime)?0:(mlTaskTs-lStartTime+1)) ;
 			Log.e(TAG, "getEventListContent(), miCurUpdateEventIdx:"+miCurUpdateEventIdx+", lDuration:"+lDuration+", lastObj="+lastObj.toString()+", mTimeWantToReach:"+((mTimeWantToReach!=null)?mTimeWantToReach.toLocaleString():""));
 			if(null != mGetEventListTask){
 				mGetEventListTask.cancel(true);
 				mGetEventListTask = null;
 			}
-			monitorAsyncTask((mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, iSeed)).setDialogId( (null != mTimeWantToReach)?DIALOG_ID_LOADING:-1), true, mStrVCamID, (mlTaskTs-BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS )+"", lDuration+"", (0 == getCurEventCount())?"15":(null != mTimeWantToReach)?"10000":"100");
+			monitorAsyncTask((mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, iSeed)).setDialogId( (null != mTimeWantToReach)?DIALOG_ID_LOADING:-1), true, mStrVCamID, (mlTaskTs-mlEventQueryPeriod )+"", lDuration+"", (0 == getCurEventCount())?"15":(null != mTimeWantToReach)?"10000":"100");
 		}
 	}
 	
@@ -857,6 +890,46 @@ public class EventListActivity extends BeseyeBaseActivity{
 				}
 			}}, lTimeToCheck);
 	}
+	
+	private int getEventPeriodByPlan(){
+		int iRet = 0;
+		int iPlan = BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN);
+		switch(iPlan){
+			case 1:{
+				iRet = -1;
+				break;
+			}
+			case 2:{
+				iRet = -7;
+				break;
+			}
+			case 3:{
+				iRet = -30;
+				break;
+			}
+		}
+		return iRet;
+	}
+	
+	private void setEventQueryPeriodByPlan(){
+		int iPlan = BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN);
+		switch(iPlan){
+			case 1:{
+				mlEventQueryPeriod = BeseyeMMBEHttpTask.ONE_DAY_IN_MS;
+				break;
+			}
+			case 2:{
+				mlEventQueryPeriod = BeseyeMMBEHttpTask.SEVEN_DAYS_IN_MS;
+				break;
+			}
+			case 3:{
+				mlEventQueryPeriod = BeseyeMMBEHttpTask.THIRTY_DAYS_IN_MS;
+				break;
+			}
+		}
+		
+		Log.e(TAG, "setEventQueryPeriodByPlan(), iPlan="+iPlan+", mlEventQueryPeriod="+mlEventQueryPeriod);
+	}
 
 	@Override
 	public void onClick(View view) {
@@ -882,7 +955,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
 			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
 		}else if(R.id.iv_calendar_icon == view.getId()){
-			BeseyeDatetimePickerDialog d = new BeseyeDatetimePickerDialog(this); 
+			BeseyeDatetimePickerDialog d = new BeseyeDatetimePickerDialog(this, new Date(), getEventPeriodByPlan()); 
 			d.setOnDatetimePickerClickListener(new OnDatetimePickerClickListener(){
 				@Override
 				public void onBtnOKClick(Calendar pickDate) {
@@ -989,6 +1062,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 			if(null != mVgIndicator){
 				mVgIndicator.updateTimeZone(mTimeZone);
 			}
+			setEventQueryPeriodByPlan();
 		}
 	}
 	

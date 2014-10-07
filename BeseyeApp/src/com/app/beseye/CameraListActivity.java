@@ -126,7 +126,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			mIvAddCam = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_add_cam_btn);
 			if(null != mIvAddCam){
 				mIvAddCam.setOnClickListener(this);
-				mIvAddCam.setVisibility((COMPUTEX_DEMO && !COMPUTEX_PAIRING || mbIsDemoCamMode)?View.INVISIBLE:View.VISIBLE);
+				mIvAddCam.setVisibility((mbIsDemoCamMode || mbIsPrivateCamMode)?View.INVISIBLE:View.VISIBLE);
 			}
 			
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
@@ -588,10 +588,17 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
 			startSoundPairingProcess("");
 		}else if(R.id.vg_my_cam == view.getId()){
-			if(mbIsDemoCamMode){
-				finish();
-			}else{
+			if(mCameraListMenuAnimator.isPrivateCamShow()){
+				if(mbIsDemoCamMode || mbIsPrivateCamMode){
+					launchActivityByClassName(CameraListActivity.class.getName(), null);
+				}
 				showMenu();
+			}else{
+				if(mbIsDemoCamMode){
+					finish();
+				}else{
+					showMenu();
+				}
 			}
 		}else if(R.id.vg_news == view.getId()){
 			Bundle bundle = new Bundle();

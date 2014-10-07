@@ -75,7 +75,7 @@ public class BeseyeApplication extends Application {
 		startService(new Intent(this,BeseyeNotificationService.class));
 		BeseyeMemCache.init(this);
 		
-		BeseyeApplication.checkPairingMode();
+//		BeseyeApplication.checkPairingMode();
 		
 		sApplication = this;
 		
@@ -272,14 +272,14 @@ public class BeseyeApplication extends Application {
 		}
 	}
 	
-	static public boolean checkPairingMode(){
-		File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
-		SERVER_MODE mode = SessionMgr.getInstance().getServerMode();
-		COMPUTEX_PAIRING = ((null != pairingFile)&&pairingFile.exists()) || (mode.ordinal() >= SERVER_MODE.MODE_STAGING.ordinal());
-		
-		Log.i(TAG, "checkPairingMode(), COMPUTEX_PAIRING :"+COMPUTEX_PAIRING);
-		return COMPUTEX_PAIRING;
-	}
+//	static public boolean checkPairingMode(){
+//		File pairingFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_pairing");
+//		SERVER_MODE mode = SessionMgr.getInstance().getServerMode();
+//		COMPUTEX_PAIRING = ((null != pairingFile)&&pairingFile.exists()) || (mode.ordinal() >= SERVER_MODE.MODE_STAGING.ordinal());
+//		
+//		Log.i(TAG, "checkPairingMode(), COMPUTEX_PAIRING :"+COMPUTEX_PAIRING);
+//		return COMPUTEX_PAIRING;
+//	}
 	
 	static public void checkServerMode(){
 		SERVER_MODE mode = SessionMgr.getInstance().getServerMode();

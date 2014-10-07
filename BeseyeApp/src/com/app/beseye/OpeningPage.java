@@ -151,44 +151,44 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	private BeseyeHttpTask mGetVCamListTask;
 	
 	private void launchActivityByIntent(Intent intent){
-		if(SessionMgr.getInstance().isTokenValid()){
-			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
-			String strP2P = null;
-			String strName = null;
-			if(null != p2pFile && p2pFile.exists()){
-				try {
-					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(p2pFile)));
-					try {
-						strP2P = (null != reader)?reader.readLine():null;
-						strName = (null != reader)?reader.readLine():null;
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			Log.i(TAG, "OpeningPage::launchActivityByIntent(), strP2P :"+strP2P+", p2pFile:"+p2pFile.getAbsolutePath());
-			
-			if(null != strP2P && 0 < strP2P.length()){
-				COMPUTEX_P2P = true;
-				Intent intentLanuch = new Intent();
-				intentLanuch.setClassName(this, CameraViewActivity.class.getName());
-				JSONObject mCam_obj = new JSONObject();
-				//BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ID, mStrVCamID);
-		        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, strName);
-		        intentLanuch.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM, strP2P);
-				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM_NAME, strName);
-				startActivity(intentLanuch);
-				return;
-			}else{
-				COMPUTEX_P2P = false;
-			}
-		}
-		
-		BeseyeApplication.checkPairingMode();
+//		if(SessionMgr.getInstance().isTokenValid()){
+//			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
+//			String strP2P = null;
+//			String strName = null;
+//			if(null != p2pFile && p2pFile.exists()){
+//				try {
+//					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(p2pFile)));
+//					try {
+//						strP2P = (null != reader)?reader.readLine():null;
+//						strName = (null != reader)?reader.readLine():null;
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//				} catch (FileNotFoundException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			
+//			Log.i(TAG, "OpeningPage::launchActivityByIntent(), strP2P :"+strP2P+", p2pFile:"+p2pFile.getAbsolutePath());
+//			
+//			if(null != strP2P && 0 < strP2P.length()){
+//				COMPUTEX_P2P = true;
+//				Intent intentLanuch = new Intent();
+//				intentLanuch.setClassName(this, CameraViewActivity.class.getName());
+//				JSONObject mCam_obj = new JSONObject();
+//				//BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ID, mStrVCamID);
+//		        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, strName);
+//		        intentLanuch.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+//				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM, strP2P);
+//				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM_NAME, strName);
+//				startActivity(intentLanuch);
+//				return;
+//			}else{
+//				COMPUTEX_P2P = false;
+//			}
+//		}
+//		
+//		BeseyeApplication.checkPairingMode();
 		
 		Intent intentLanuch = null;
 		if(null == (intentLanuch = intent.getParcelableExtra(KEY_DELEGATE_INTENT))){

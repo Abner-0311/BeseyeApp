@@ -349,7 +349,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			
                 			cancelNotification();
                 			setLastEventItem(null);
-                			BeseyeUtils.removeRunnable(mCheckEventRunnable);
+                			//BeseyeUtils.removeRunnable(mCheckEventRunnable);
                 			if(null != mGetIMPEventListTask){
                 				mGetIMPEventListTask.cancel(true);
                 				mGetIMPEventListTask = null;
@@ -357,7 +357,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 		}//If Login
                 		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid()){
                 			registerGCMServer();
-                			checkEventPeriod();
+                			//checkEventPeriod();
 //                			try {
 //            		        	mMessenger.send(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0));
 //            				} catch (RemoteException e) {
@@ -527,7 +527,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         registerGCMServer();
         WebsocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
         
-        checkEventPeriod();
+        //checkEventPeriod();
         checkUserLoginState();
         
         BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID, mStrVCamID);
@@ -536,33 +536,33 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
        // beginToCheckWebSocketState();
     }
     
-    private void checkEventPeriod(){
-    	 File notifyFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_notify");
- 		int iPeriod = 5;
- 		if(null != notifyFile && notifyFile.exists()){
- 			try {
- 				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(notifyFile)));
- 				try {
- 					String strPeriod = (null != reader)?reader.readLine():null;
- 					if(null != strPeriod && 0 < strPeriod.length())
- 						iPeriod = Integer.parseInt(strPeriod);
- 				} catch (IOException e) {
- 					e.printStackTrace();
- 				}
- 			} catch (FileNotFoundException e) {
- 				e.printStackTrace();
- 			}
- 		}
- 		
- 		TIME_TO_CHECK_EVENT = iPeriod*1000;
- 		
- 		File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
-		if(null != p2pFile && p2pFile.exists()){
-			TIME_TO_CHECK_EVENT = 0;
-		}
- 		
- 		Log.i(TAG, "BeseyeNotificationService::checkEventPeriod(), TIME_TO_CHECK_EVENT :"+TIME_TO_CHECK_EVENT+", p2p mode is "+(null != p2pFile && p2pFile.exists()));
-    }
+//    private void checkEventPeriod(){
+//        File notifyFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_notify");
+// 		int iPeriod = 5;
+// 		if(null != notifyFile && notifyFile.exists()){
+// 			try {
+// 				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(notifyFile)));
+// 				try {
+// 					String strPeriod = (null != reader)?reader.readLine():null;
+// 					if(null != strPeriod && 0 < strPeriod.length())
+// 						iPeriod = Integer.parseInt(strPeriod);
+// 				} catch (IOException e) {
+// 					e.printStackTrace();
+// 				}
+// 			} catch (FileNotFoundException e) {
+// 				e.printStackTrace();
+// 			}
+// 		}
+// 		
+//// 		TIME_TO_CHECK_EVENT = iPeriod*1000;
+//// 		
+//// 		File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
+////		if(null != p2pFile && p2pFile.exists()){
+////			TIME_TO_CHECK_EVENT = 0;
+////		}
+//// 		
+//// 		Log.i(TAG, "BeseyeNotificationService::checkEventPeriod(), TIME_TO_CHECK_EVENT :"+TIME_TO_CHECK_EVENT+", p2p mode is "+(null != p2pFile && p2pFile.exists()));
+//    }
     
     private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
     private JSONObject mCam_obj = new JSONObject();
@@ -589,9 +589,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	}else{
     		postToCloseWs((-1 != mlTimeToCloseWs && mlTimeToCloseWs >= System.currentTimeMillis())?(mlTimeToCloseWs - System.currentTimeMillis()):0);
     	}
-    	
-    	if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
-    		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
+//    	
+//    	if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
+//    		BeseyeUtils.postRunnable(mCheckEventRunnable, 0);
     	
 //    	try {
 //			handleNotificationEvent(new JSONObject("{\"cData\":{\"camName\":\"sample45\",\"vcUuid\":\"c252bee42e8e4036a065f072a7c39eff\",\"evt_ts\":1410743117715},\"rData\":{\"ts\":1410743142923,\"msg\":\"People Detected\",\"nCode\":769}}"), false);
@@ -637,28 +637,28 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			beginToCheckWebSocketState();
 		}};
     
-    static private long TIME_TO_CHECK_EVENT = 30*1000;
-    private Runnable mCheckEventRunnable = new Runnable(){
-		@Override
-		public void run() {
-			checkEvents();
-		}};
-    
-    private void checkEvents(){
-//    	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
-//    		if(NetworkMgr.getInstance().isNetworkConnected()){
-//    			if(null == mGetIMPEventListTask && 0 < TIME_TO_CHECK_EVENT){
-//    				mGetIMPEventListTask = new BeseyeMMBEHttpTask.GetIMPEventListTask(this);
-//    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT*3)+"", TIME_TO_CHECK_EVENT*3+"");
-//        			//mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS+"");
-//    			}
-//    		}
-//    		BeseyeUtils.removeRunnable(mCheckEventRunnable);
-//    		
-//    		if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
-//    			BeseyeUtils.postRunnable(mCheckEventRunnable, TIME_TO_CHECK_EVENT);
-//    	}
-    }
+//    static private long TIME_TO_CHECK_EVENT = 30*1000;
+//    private Runnable mCheckEventRunnable = new Runnable(){
+//		@Override
+//		public void run() {
+//			checkEvents();
+//		}};
+//    
+//    private void checkEvents(){
+////    	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
+////    		if(NetworkMgr.getInstance().isNetworkConnected()){
+////    			if(null == mGetIMPEventListTask && 0 < TIME_TO_CHECK_EVENT){
+////    				mGetIMPEventListTask = new BeseyeMMBEHttpTask.GetIMPEventListTask(this);
+////    				mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-TIME_TO_CHECK_EVENT*3)+"", TIME_TO_CHECK_EVENT*3+"");
+////        			//mGetIMPEventListTask.execute(mStrVCamID, (System.currentTimeMillis()-BeseyeMMBEHttpTask.ONE_DAY_IN_MS)+"", BeseyeMMBEHttpTask.ONE_DAY_IN_MS+"");
+////    			}
+////    		}
+////    		BeseyeUtils.removeRunnable(mCheckEventRunnable);
+////    		
+////    		if(false == COMPUTEX_P2P && 0 < TIME_TO_CHECK_EVENT)
+////    			BeseyeUtils.postRunnable(mCheckEventRunnable, TIME_TO_CHECK_EVENT);
+////    	}
+//    }
     
     @Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
