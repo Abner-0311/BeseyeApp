@@ -107,7 +107,7 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 		
 		mVgSWVer = (ViewGroup)findViewById(R.id.vg_sw_ver_holder);
 		if(null != mVgSWVer){
-			if(SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha")){
+			if(BeseyeUtils.isHiddenFeature()){
 				mVgSWVer.setVisibility(View.GONE);
 			}
 		}

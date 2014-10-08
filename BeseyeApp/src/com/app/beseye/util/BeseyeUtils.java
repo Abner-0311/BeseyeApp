@@ -14,6 +14,10 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.app.beseye.BeseyeApplication;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -343,5 +347,9 @@ public class BeseyeUtils {
 		view.setLayoutParams(lp);
 		
 		return lp.height;
+	}
+	
+	static public boolean isHiddenFeature(){
+		return SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha");
 	}
 }
