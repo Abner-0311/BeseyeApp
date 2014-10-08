@@ -15,8 +15,6 @@
  *******************************************************************************/
 package com.app.beseye.widget.internal;
 
-import com.app.beseye.R;
-
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
@@ -28,6 +26,8 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import com.app.beseye.R;
 
 
 public class IndicatorLayout extends FrameLayout implements AnimationListener {

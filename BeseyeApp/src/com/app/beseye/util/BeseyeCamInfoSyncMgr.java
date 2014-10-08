@@ -1,7 +1,5 @@
 package com.app.beseye.util;
 
-import static com.app.beseye.util.BeseyeConfig.TAG;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
-
-import android.util.Log;
 
 public class BeseyeCamInfoSyncMgr {
 	static private BeseyeCamInfoSyncMgr sBeseyeCamInfoSyncMgr;

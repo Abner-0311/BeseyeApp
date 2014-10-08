@@ -58,16 +58,15 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.text.format.Formatter;
+import android.util.Log;
+
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
-
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.format.Formatter;
-import android.util.Log;
 
 public class BeseyeHttpTask extends AsyncTask<String, Double, List<JSONObject>> {
 	

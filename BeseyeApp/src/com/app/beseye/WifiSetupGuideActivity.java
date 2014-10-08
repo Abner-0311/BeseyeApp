@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_ERROR;
 import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_STATE;
 import com.app.beseye.httptask.BeseyeAccountTask;
@@ -16,6 +17,7 @@ import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
+
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -27,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 
 public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 	protected View mVwNavBar;

@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
-import com.app.beseye.CameraViewActivity;
 import com.app.beseye.PairingFailActivity;
 import com.app.beseye.R;
 import com.app.beseye.WifiControlBaseActivity;
@@ -34,11 +33,8 @@ import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.setting.CameraSettingActivity;
-import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 import com.app.beseye.widget.GifMovieView;
 

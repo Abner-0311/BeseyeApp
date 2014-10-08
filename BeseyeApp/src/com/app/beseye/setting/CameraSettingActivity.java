@@ -1,42 +1,23 @@
 package com.app.beseye.setting;
 
-import static com.app.beseye.util.BeseyeConfig.*;
-import static com.app.beseye.util.BeseyeJSONUtil.*;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_TS;
-import static com.app.beseye.setting.CamSettingMgr.*;
+
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
+import static com.app.beseye.util.BeseyeJSONUtil.OBJ_TIMESTAMP;
 
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.app.beseye.BeseyeApplication;
-import com.app.beseye.BeseyeBaseActivity;
-import com.app.beseye.CameraListActivity;
-import com.app.beseye.OpeningPage;
-import com.app.beseye.R;
-import com.app.beseye.WifiListActivity;
-import com.app.beseye.WifiSetupGuideActivity;
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
-import com.app.beseye.util.BeseyeCamInfoSyncMgr;
-import com.app.beseye.util.BeseyeConfig;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.widget.BeseyeSwitchBtn;
-import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
-import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -47,12 +28,31 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.app.beseye.BeseyeApplication;
+import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.CameraListActivity;
+import com.app.beseye.OpeningPage;
+import com.app.beseye.R;
+import com.app.beseye.WifiListActivity;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr;
+import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
+import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.widget.BeseyeSwitchBtn;
+import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
+import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
 public class CameraSettingActivity extends BeseyeBaseActivity 
 								   implements OnSwitchBtnStateChangedListener{
@@ -132,6 +132,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgLocationAware = (ViewGroup)findViewById(R.id.vg_location_aware);
 		if(null != mVgLocationAware){
 			mVgLocationAware.setOnClickListener(this);
+
 			if(BeseyeUtils.isHiddenFeature()){
 				mVgLocationAware.setVisibility(View.GONE);
 			}
@@ -313,6 +314,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			case R.id.vg_location_aware:{
 				//launchActivityByClassName(TimezoneListActivity.class.getName());
 				//showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				launchActivityByClassName(LocationAwareSettingActivity.class.getName(),b);
+
 				break;
 			}
 			case R.id.vg_reboot_cam:{

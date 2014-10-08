@@ -3,12 +3,7 @@ package com.app.beseye.adapter;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import com.app.beseye.R;
-import com.app.beseye.util.NetworkMgr;
-import com.app.beseye.util.NetworkMgr.WifiAPInfo;
-
 import android.content.Context;
-import android.net.NetworkInfo.DetailedState;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.app.beseye.R;
+import com.app.beseye.util.NetworkMgr;
+import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 
 public class WifiInfoAdapter extends BaseAdapter {
 	protected WeakReference<Context> mContext = null;

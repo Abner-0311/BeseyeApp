@@ -1,9 +1,5 @@
 package com.app.beseye.receiver;
 
-import static com.app.beseye.util.BeseyeConfig.TAG;
-
-import com.app.beseye.util.NetworkMgr;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +7,8 @@ import android.net.NetworkInfo;
 import android.net.NetworkInfo.DetailedState;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
-import android.util.Log;
+
+import com.app.beseye.util.NetworkMgr;
 
 public class WifiStateChangeReceiver extends BroadcastReceiver {
 	@Override

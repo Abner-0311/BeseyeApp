@@ -1,13 +1,10 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
 
-import java.io.BufferedReader;
+import static com.app.beseye.util.BeseyeConfig.HOCKEY_APP_ID;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +13,13 @@ import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+
+import android.app.Application;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Environment;
+import android.util.Log;
 
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
@@ -28,14 +32,6 @@ import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.DeviceUuidFactory;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.widget.BeseyeMemCache;
-
-import android.app.Application;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Environment;
-import android.os.Handler;
-import android.util.Log;
 
 @ReportsCrashes(formKey= HOCKEY_APP_ID,
 				logcatArguments = { "-t", "2500", "-v", "long", "BesEye:W", "*:S" },

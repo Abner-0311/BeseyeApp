@@ -1,19 +1,15 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.RELAY_AP_SSID;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.IRCUT_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.LED_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.MIC_GAIN;
-import static com.app.beseye.util.BeseyeJSONUtil.MIC_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.VIDEO_RES;
-import static com.app.beseye.util.BeseyeJSONUtil.getJSONInt;
 
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 import com.app.beseye.adapter.CameraListAdapter;
 import com.app.beseye.adapter.WifiInfoAdapter;
@@ -38,6 +34,7 @@ import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
 
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -52,16 +49,13 @@ import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
+
 
 public class WifiListActivity extends WifiControlBaseActivity 
 							  implements OnSwitchBtnStateChangedListener{

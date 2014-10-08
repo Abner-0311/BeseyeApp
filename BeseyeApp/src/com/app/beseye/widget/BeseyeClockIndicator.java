@@ -7,9 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import com.app.beseye.R;
-import com.app.beseye.util.BeseyeUtils;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -17,15 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
+
+import com.app.beseye.R;
+import com.app.beseye.util.BeseyeUtils;
 
 public class BeseyeClockIndicator extends LinearLayout {
 

@@ -1,27 +1,18 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.TimeZone;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeHttpTask;
-import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeUtils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -30,6 +21,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.WindowManager;
+
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeHttpTask;
+import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 
 public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	public static final String ACTION_BRING_FRONT 		= "ACTION_BRING_FRONT";

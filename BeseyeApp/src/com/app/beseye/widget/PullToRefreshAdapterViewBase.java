@@ -15,10 +15,6 @@
  *******************************************************************************/
 package com.app.beseye.widget;
 
-import com.app.beseye.R;
-import com.app.beseye.widget.internal.IndicatorLayout;
-import com.app.beseye.widget.internal.EmptyViewMethodAccessor;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -32,6 +28,10 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import com.app.beseye.R;
+import com.app.beseye.widget.internal.EmptyViewMethodAccessor;
+import com.app.beseye.widget.internal.IndicatorLayout;
 
 public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extends PullToRefreshBase<T> implements
 		OnScrollListener {

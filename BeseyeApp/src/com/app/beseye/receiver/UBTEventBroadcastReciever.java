@@ -1,13 +1,13 @@
 package com.app.beseye.receiver;
 
 
-import com.app.beseye.BeseyeApplication;
-import com.app.beseye.util.BeseyeConfig;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import com.app.beseye.BeseyeApplication;
+import com.app.beseye.util.BeseyeConfig;
 
 public class UBTEventBroadcastReciever extends BroadcastReceiver {
 	static final public String ACTION_UBT_EVENT  = "com.app.beseye.ubt.EVENT_BROADCAST";

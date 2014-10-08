@@ -1,9 +1,11 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 import com.app.beseye.delegator.WifiAPSetupDelegator;
 import com.app.beseye.delegator.WifiAPSetupDelegator.OnWifiApSetupCallback;
@@ -17,7 +19,9 @@ import com.app.beseye.util.NetworkMgr.OnWifiStatusChangeCallback;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 
 import android.app.Dialog;
+
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -25,7 +29,6 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.NetworkInfo.DetailedState;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -45,6 +48,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 
 public abstract class WifiControlBaseActivity extends BeseyeBaseActivity 
 							  				  implements OnWifiScanResultAvailableCallback, 

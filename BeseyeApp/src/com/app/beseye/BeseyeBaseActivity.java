@@ -1,6 +1,8 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.HOCKEY_APP_ID;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
 
@@ -10,10 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 import com.app.beseye.BeseyeApplication.BeseyeAppStateChangeListener;
 import com.app.beseye.error.BeseyeError;
@@ -33,18 +38,15 @@ import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
 import com.app.beseye.util.BeseyeUtils;
 
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.UpdateManager;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.ServiceConnection;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -61,6 +63,7 @@ import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, 
 																			  OnHttpTaskCallback, 

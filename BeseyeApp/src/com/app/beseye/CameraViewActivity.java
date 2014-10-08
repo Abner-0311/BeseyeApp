@@ -1,10 +1,13 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.*;
-import static com.app.beseye.util.BeseyeUtils.*;
+
+import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeUtils.getStatusBarHeight;
+import static com.app.beseye.util.BeseyeUtils.setEnabled;
+import static com.app.beseye.util.BeseyeUtils.setImageRes;
+import static com.app.beseye.util.BeseyeUtils.setVisibility;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,31 +20,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.app.beseye.R;
-import com.app.beseye.BeseyeBaseActivity.OnResumeUpdateCamInfoRunnable;
-import com.app.beseye.TouchSurfaceView.CameraStatusCallback;
-import com.app.beseye.TouchSurfaceView.OnTouchSurfaceCallback;
-import com.app.beseye.audio.AudioChannelMgr;
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
-import com.app.beseye.httptask.BeseyeHttpTask;
-import com.app.beseye.httptask.BeseyeMMBEHttpTask;
-import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.BeseyeNotificationBEHttpTask.GetAudioWSServerTask;
-import com.app.beseye.setting.CameraSettingActivity;
-import com.app.beseye.util.BeseyeCamInfoSyncMgr;
-import com.app.beseye.util.BeseyeConfig;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
-import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.util.NetworkMgr;
-import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
-import com.app.beseye.websockets.AudioWebSocketsMgr;
-import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioAmplitudeUpdateListener;
-import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
-import com.app.beseye.widget.CameraViewControlAnimator;
-
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -56,18 +45,30 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.DialogInterface.OnDismissListener;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.PowerManager;
+
+import com.app.beseye.TouchSurfaceView.CameraStatusCallback;
+import com.app.beseye.TouchSurfaceView.OnTouchSurfaceCallback;
+import com.app.beseye.audio.AudioChannelMgr;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.BeseyeHttpTask;
+import com.app.beseye.httptask.BeseyeMMBEHttpTask;
+import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
+import com.app.beseye.httptask.BeseyeNotificationBEHttpTask.GetAudioWSServerTask;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.setting.CameraSettingActivity;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
+import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.NetworkMgr;
+import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
+import com.app.beseye.websockets.AudioWebSocketsMgr;
+import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioAmplitudeUpdateListener;
+import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
+import com.app.beseye.widget.CameraViewControlAnimator;
+
+
 
 public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSurfaceCallback,
 																	  OnNetworkChangeCallback,

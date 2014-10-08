@@ -1,7 +1,5 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.DEBUG;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;

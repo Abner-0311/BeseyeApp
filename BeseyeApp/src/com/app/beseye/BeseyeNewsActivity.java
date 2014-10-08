@@ -27,10 +27,10 @@ import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.widget.PullToRefreshBase.OnLastItemVisibleListener;
-import com.app.beseye.widget.PullToRefreshListView;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
+import com.app.beseye.widget.PullToRefreshBase.OnLastItemVisibleListener;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
+import com.app.beseye.widget.PullToRefreshListView;
 
 public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	static private final int NUM_NEWS_QUERY = 10;

@@ -1,11 +1,11 @@
 package com.app.beseye.widget.internal;
 
-import com.app.beseye.R;
-import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+
+import com.app.beseye.R;
+import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 
 public class BeseyeRefreshLayout extends LoadingLayout {
 	public BeseyeRefreshLayout(Context context, AttributeSet attrs) {

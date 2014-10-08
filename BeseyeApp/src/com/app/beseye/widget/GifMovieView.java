@@ -1,7 +1,5 @@
 package com.app.beseye.widget;
 
-import com.app.beseye.R;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,8 +7,9 @@ import android.graphics.Canvas;
 import android.graphics.Movie;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+
+import com.app.beseye.R;
 
 public class GifMovieView extends View {
 

@@ -1,11 +1,11 @@
 package com.app.beseye.receiver;
 
-import com.app.beseye.util.NetworkMgr;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+
+import com.app.beseye.util.NetworkMgr;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
 	@Override

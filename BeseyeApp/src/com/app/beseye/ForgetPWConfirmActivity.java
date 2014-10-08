@@ -1,9 +1,9 @@
 package com.app.beseye;
 
-import com.app.beseye.util.BeseyeJSONUtil;
-
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.app.beseye.util.BeseyeJSONUtil;
 
 public class ForgetPWConfirmActivity extends BeseyeAccountBaseActivity {
 	private TextView mEtUserEmail;

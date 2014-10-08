@@ -1,23 +1,13 @@
 package com.app.beseye;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.util.BeseyeConfig;
-
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 

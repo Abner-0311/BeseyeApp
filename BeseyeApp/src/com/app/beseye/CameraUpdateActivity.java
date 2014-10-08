@@ -4,12 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.util.BeseyeConfig;
-import com.app.beseye.util.BeseyeJSONUtil;
-
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -18,6 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeJSONUtil;
 
 public class CameraUpdateActivity extends BeseyeBaseActivity {
 	static public final String KEY_UPDATE_INFO = "KEY_UPDATE_INFO";

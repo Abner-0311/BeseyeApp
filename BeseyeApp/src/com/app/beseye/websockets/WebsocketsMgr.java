@@ -1,7 +1,20 @@
 package com.app.beseye.websockets;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.*;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CODE;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_DATA;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_JOB_ID;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_CB_ACK;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_CB_CLIENT_CONNECTION;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_CB_EVT;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_CB_KEEP_ALIVE;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_CMD_FORMAT;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_FUNC_AUTH;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_FUNC_CONNECTED;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_FUNC_KEEP_ALIVE;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_FUNC_RAILS_PING;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_FUNC_RAILS_PONG;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.wrapWSBaseMsg;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutionException;
@@ -21,8 +34,8 @@ import com.koushikdutta.async.callback.DataCallback;
 import com.koushikdutta.async.callback.WritableCallback;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.http.AsyncHttpClient;
-import com.koushikdutta.async.http.WebSocket;
 import com.koushikdutta.async.http.AsyncHttpClient.WebSocketConnectCallback;
+import com.koushikdutta.async.http.WebSocket;
 import com.koushikdutta.async.http.WebSocket.StringCallback;
 
 public class WebsocketsMgr {

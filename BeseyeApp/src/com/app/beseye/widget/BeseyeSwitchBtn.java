@@ -1,18 +1,15 @@
 package com.app.beseye.widget;
 
-import static com.app.beseye.util.BeseyeConfig.*;
-import com.app.beseye.R;
-
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import com.app.beseye.R;
 
 public class BeseyeSwitchBtn extends LinearLayout implements View.OnClickListener{
 	

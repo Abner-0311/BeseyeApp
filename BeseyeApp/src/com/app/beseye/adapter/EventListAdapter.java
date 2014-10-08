@@ -2,19 +2,9 @@ package com.app.beseye.adapter;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
-import java.util.Date;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.app.beseye.R;
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.widget.BeseyeSwitchBtn;
-import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
-import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
-import com.app.beseye.widget.RemoteGifImageView;
 
 import android.content.Context;
 import android.util.Log;
@@ -22,9 +12,13 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.app.beseye.R;
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.widget.RemoteGifImageView;
 
 public class EventListAdapter extends BeseyeJSONAdapter {
 	private int miSelectedImt = 0;

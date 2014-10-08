@@ -1,7 +1,18 @@
 package com.app.beseye.httptask;
 
-import static com.app.beseye.util.BeseyeJSONUtil.*;
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT_UA;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT_UDID;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_EMAIL;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_NAME;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_PAIRING_AP_MAC;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_PAIRING_COUNT;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_PAIRING_TYPE;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_PASSWORD;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_REMEM_ME;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_VCAM_ATTR;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_VCAM_ID;
 
 import java.util.List;
 
@@ -12,9 +23,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.app.beseye.R;
-import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.util.DeviceUuidFactory;
 
 public class BeseyeAccountTask {
 	

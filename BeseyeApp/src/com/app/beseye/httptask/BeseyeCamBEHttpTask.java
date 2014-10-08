@@ -1,5 +1,29 @@
 package com.app.beseye.httptask;
 
+import static com.app.beseye.util.BeseyeJSONUtil.CAM_STATUS;
+import static com.app.beseye.util.BeseyeJSONUtil.CAM_TZ;
+import static com.app.beseye.util.BeseyeJSONUtil.IMG_BRIGHTNESS;
+import static com.app.beseye.util.BeseyeJSONUtil.IMG_CONTRAST;
+import static com.app.beseye.util.BeseyeJSONUtil.IMG_FLIP;
+import static com.app.beseye.util.BeseyeJSONUtil.IMG_FPS;
+import static com.app.beseye.util.BeseyeJSONUtil.IMG_HUE;
+import static com.app.beseye.util.BeseyeJSONUtil.IMG_MIRROR;
+import static com.app.beseye.util.BeseyeJSONUtil.IMG_SATURATION;
+import static com.app.beseye.util.BeseyeJSONUtil.IMG_SHARPNESS;
+import static com.app.beseye.util.BeseyeJSONUtil.IRCUT_STATUS;
+import static com.app.beseye.util.BeseyeJSONUtil.LED_STATUS;
+import static com.app.beseye.util.BeseyeJSONUtil.MIC_GAIN;
+import static com.app.beseye.util.BeseyeJSONUtil.MIC_STATUS;
+import static com.app.beseye.util.BeseyeJSONUtil.SCHEDULE_STATUS;
+import static com.app.beseye.util.BeseyeJSONUtil.LOCATION_LAT;
+import static com.app.beseye.util.BeseyeJSONUtil.LOCATION_LONG;
+import static com.app.beseye.util.BeseyeJSONUtil.SPEAKER_STATUS;
+import static com.app.beseye.util.BeseyeJSONUtil.SPEAKER_VOLUME;
+import static com.app.beseye.util.BeseyeJSONUtil.VIDEO_RES;
+import static com.app.beseye.util.BeseyeJSONUtil.WIFI_KEY;
+import static com.app.beseye.util.BeseyeJSONUtil.WIFI_SECU;
+import static com.app.beseye.util.BeseyeJSONUtil.WIFI_SSID;
+
 import java.util.List;
 
 import org.apache.http.client.methods.HttpDelete;
@@ -7,10 +31,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
-
-import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_SETUP 			= "cam/%s/setup";
@@ -46,6 +66,8 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_SCHEDULE_STATUS = "cam/%s/schedule/onoff";
 	static private final String URL_CAM_SCHEDULE  		= "cam/%s/schedule";
 	static private final String URL_CAM_SCHEDULE_IDX  	= "cam/%s/schedule/%s";
+	
+	static private final String URL_CAM_LOCATION_POS = "cam/%s/locale";
 	
 	static private final String URL_NOTIFY_SETTING  	= "cam/%s/notify_setting";
 	
@@ -564,6 +586,39 @@ public class BeseyeCamBEHttpTask  {
 			return null;
 		}
 	}
+	
+	public static class SetCamLocaleTask extends BeseyeHttpTask{
+		public SetCamLocaleTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPut.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(LOCATION_LAT, Double.parseDouble(strParams[1]));
+				obj.put(LOCATION_LONG, Double.parseDouble(strParams[2]));
+				return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_LOCATION_POS, strParams[0]), obj.toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+	
+	public static class GetCamLocaleTask extends BeseyeHttpTask{
+		public GetCamLocaleTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_LOCATION_POS, strParams[0]));
+		}
+	}
+	
+	
 	
 	public static class AddScheduleTask extends BeseyeHttpTask{
 		public AddScheduleTask(OnHttpTaskCallback cb) {

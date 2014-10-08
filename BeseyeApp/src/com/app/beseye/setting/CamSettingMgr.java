@@ -1,19 +1,19 @@
 package com.app.beseye.setting;
 
-import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeSharedPreferenceUtil;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+
+import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeSharedPreferenceUtil;
 
 public class CamSettingMgr {
 	static private CamSettingMgr sCamSettingMgr;
