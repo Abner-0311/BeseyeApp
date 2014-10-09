@@ -126,7 +126,9 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					holder.mImgThumbnail.loadImage();
 				}
 				
-				convertView.setEnabled(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON)?true:false);
+				//convertView.setEnabled(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON)?true:false);
+//				convertView.setOnClickListener(mItemOnClickListener);
+//				convertView.setClickable(true);
 				
 				holder.mObjCam = obj;
 				convertView.setTag(holder);
