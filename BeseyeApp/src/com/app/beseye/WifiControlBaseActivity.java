@@ -498,14 +498,14 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 //							if(mChosenWifiAPInfo.iCipherIdx != WifiAPInfo.AUTHNICATION_KEY_NONE && (null ==mWifiApPassword || 0 == mWifiApPassword.length())){
 //								
 //							}
-							
 							mChosenWifiAPInfo.password = mWifiApPassword;
 					    	//mChosenWifiAPInfo.wepkeyIdx = Integer.parseInt(String.valueOf(mtxtKeyIndex.getText())) -1;
 					    	
 							Intent intent = new Intent();
 							
-							intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
+							
 							if(getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false)){
+								intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
 								setResult(RESULT_OK, intent);
 								finish();
 							}else{
@@ -513,6 +513,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 								intent.putExtras(getIntent().getExtras());
 								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
 								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
+								intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
 								
 								startActivity(intent);
 								setResult(RESULT_OK);
@@ -546,6 +547,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 								public void afterTextChanged(Editable editable) {
 									btnConnect.setEnabled(editable.length() >= iMinPasswordLength);
 									mWifiApPassword = etPassword.getText().toString();
+									Log.i(TAG, "afterTextChanged(), mWifiApPassword=>"+mWifiApPassword);
+
 									//password.matches("[0-9A-Fa-f]*")
 								}
 
