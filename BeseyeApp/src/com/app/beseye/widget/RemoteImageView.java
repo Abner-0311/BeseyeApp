@@ -12,7 +12,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -199,8 +201,12 @@ public class RemoteImageView extends ImageView {
 		}
 		return false;
 	}
+	
+	private static Map<String, String> sMapCachePath = new HashMap<String, String>();
 
 	static public String buildCachePath(Context context, String cacheName) {
+		
+		long lStartTime = System.currentTimeMillis();
 		if (cacheName == null || cacheName.length() == 0) {
 			return null;
 		}
@@ -209,10 +215,17 @@ public class RemoteImageView extends ImageView {
 		if(null != picDir){
 			picDir.mkdir();
 		}
-		String strEncode = URLEncoder.encode(cacheName);
 		
-		int iFrom = (strEncode.length() > 64)?(strEncode.length()-64):0;
-		strEncode = strEncode.substring(iFrom);
+		String strEncode = null;
+		
+		if(sMapCachePath.containsKey(cacheName)){
+			strEncode = sMapCachePath.get(cacheName);
+		}else{
+			strEncode = cacheName;//URLEncoder.encode(cacheName);
+			int iFrom = (strEncode.length() > 64)?(strEncode.length()-64):0;
+			strEncode = strEncode.substring(iFrom);
+			sMapCachePath.put(cacheName, strEncode);
+		}
 		
 //		int iIdx = strEncode.indexOf(".jpg");
 //		if(-1 < iIdx){
@@ -222,8 +235,21 @@ public class RemoteImageView extends ImageView {
 //			int iFrom = (strEncode.length() > 32)?(strEncode.length()-32):0;
 //			strEncode = strEncode.substring(iFrom);
 //		}
+		Log.i(TAG, "buildCachePath(), takes "+(System.currentTimeMillis() - lStartTime)+" ms");
+
 		return String.format("%s%s", picDir.getAbsolutePath()+ "/", strEncode);
 	}
+	
+	static public String[] getCachePaths(Context context, String[] cacheNames){
+		String[] strRet = null;
+		if(null != context && null != cacheNames && 0 < cacheNames.length){
+			strRet = new String[cacheNames.length];
+			for(int idx = 0; idx < cacheNames.length;idx++){
+				strRet[idx] = buildCachePath(context, cacheNames[idx]);
+			}
+		}
+		return strRet;
+	} 
 
 	static Hashtable<Integer, SoftReference<Bitmap>> mDefaultImageHolder = new Hashtable<Integer, SoftReference<Bitmap>>();
 

@@ -2,6 +2,9 @@ package com.app.beseye.adapter;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
+import java.lang.ref.WeakReference;
+import java.util.Collections;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,14 +22,22 @@ import com.app.beseye.R;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.RemoteGifImageView;
+import com.app.beseye.widget.RemoteImageView;
 
 public class EventListAdapter extends BeseyeJSONAdapter {
+	
+	static public interface IListViewScrollListenser{
+		public boolean isLvScrolling();
+	}
+	
 	private int miSelectedImt = 0;
 	private String mStrFamilyDetectFormat, mStrPeopleDetect, mStrSoundDetect, mStrFireDetect, mStrMotionDetect, mStrEventDetect;
+	private IListViewScrollListenser mIListViewScrollListenser;
 	
 	public EventListAdapter(Context context, JSONArray list, int iLayoutId,
-			OnClickListener itemOnClickListener) {
+			OnClickListener itemOnClickListener, IListViewScrollListenser listViewScrollListenser) {
 		super(context, list, iLayoutId, itemOnClickListener);
+		mIListViewScrollListenser = listViewScrollListenser;
 		mStrFamilyDetectFormat = context.getResources().getString(R.string.event_list_family_detected);
 		mStrPeopleDetect = context.getResources().getString(R.string.event_list_people_detected);
 		mStrSoundDetect = context.getResources().getString(R.string.event_list_sound_detected);
@@ -107,30 +118,52 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 					if(0 < iPosition){
 						JSONArray arr = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_THUMBNAIL_PATH);
 						String[] path  = null;
+						String[] pathCache = null;
 						if(null != arr && 0 < arr.length()){
 							path = new String[arr.length()];
+							
 							for(int i = 0;i<arr.length();i++){
 								try {
-									path[i] = arr.getString(i);
-//									Log.e(TAG, "setupItem(), "+iPosition+"-"+i+" ="+path[i] );	
-//									if(i == 0){
-//										Log.e(TAG, "setupItem(), path[i] ="+path[i] );	
-//									}
-//									
-//									path[i] =path[i].replace("\\/", "/");
-//									
-//									if(i == 0){
-//										Log.e(TAG, "setupItem(),2 path[i] ="+path[i] );	
-//									}
+									path[i] = arr.getString(i);	
 								} catch (JSONException e) {
 									Log.e(TAG, "setupItem(), e:"+e.toString());	
 								}
+							}	
+							
+							JSONArray arrCache = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_THUMBNAIL_PATH_CACHE);
+							if(null != arrCache && 0 < arrCache.length()){
+								Log.d(TAG, "setupItem(), reuse MM_THUMBNAIL_PATH_CACHE");	
+								pathCache = new String[arrCache.length()];
+								for(int i = 0;i<arrCache.length();i++){
+									try {
+										pathCache[i] = arrCache.getString(i);	
+									} catch (JSONException e) {
+										Log.e(TAG, "setupItem(), e:"+e.toString());	
+									}
+								}	
+							}else{
+								Log.d(TAG, "setupItem(), create MM_THUMBNAIL_PATH_CACHE");	
+								pathCache = RemoteImageView.getCachePaths(mContext, path);
+								JSONArray arrToCache = new JSONArray();
+								for(String toCache:pathCache){
+									arrToCache.put(toCache);
+								}
+								
+								try {
+									obj.put(BeseyeJSONUtil.MM_THUMBNAIL_PATH_CACHE, arrToCache);
+								} catch (JSONException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 							}
 							
+							Log.i(TAG, "setupItem(), path="+((null != path)?path.length:"null")+" at "+iPosition);	
+						}else{
+							Log.e(TAG, "setupItem(), no thumbnail path at "+iPosition);	
 						}
-						Log.e(TAG, "setupItem(), path="+((null != path)?path.length:"null")+" at "+iPosition);	
-
-						holder.mImgThumbnail.setURI(path, R.drawable.eventlist_s_eventview_noview_bg);
+						
+						holder.mImgThumbnail.setIListViewScrollListenser(mIListViewScrollListenser);
+						holder.mImgThumbnail.setURI(path, pathCache, R.drawable.eventlist_s_eventview_noview_bg);
 						holder.mImgThumbnail.loadImage(true);
 //						String[] path = {"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858859902_{dur}10351_{r}1400850536594_{th}1400858859551.jpg",
 //								"s3://beseye-thumbnail/taiwan_Taipei-101.jpg",

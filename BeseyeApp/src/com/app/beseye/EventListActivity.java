@@ -2,6 +2,7 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 
 import com.app.beseye.adapter.EventListAdapter;
 import com.app.beseye.adapter.EventListAdapter.EventListItmHolder;
+import com.app.beseye.adapter.EventListAdapter.IListViewScrollListenser;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -45,7 +47,12 @@ import com.app.beseye.widget.PullToRefreshBase.OnLastItemVisibleListener;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
 
-public class EventListActivity extends BeseyeBaseActivity{
+
+
+public class EventListActivity extends BeseyeBaseActivity implements IListViewScrollListenser{
+	
+	static private final long THUMBNAIL_URL_EXPIRE = 300L; 
+	
 	private PullToRefreshListView mMainListView;
 	private EventListAdapter mEventListAdapter;
 	private ViewGroup mVgEmptyView;
@@ -63,6 +70,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	private boolean mbNeedToLoadNewInNextRound  = false;
 	private boolean mbNeedToReloadWhenResume = false;
 	private boolean mbNeedToCalcu = true;
+	private boolean mbIsScrolling = false;
 	private int miTotalEventCount = 0;//Total count from server
 	private long mlEventQueryPeriod = 0;
 	
@@ -156,11 +164,13 @@ public class EventListActivity extends BeseyeBaseActivity{
 				public void onScrollStateChanged(AbsListView view, int scrollState) {
 					if(scrollState == OnScrollListener.SCROLL_STATE_FLING || scrollState == OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
 						bNeedToTrack = true;
+						mbIsScrolling = true;
 					}else if(scrollState == OnScrollListener.SCROLL_STATE_IDLE && bNeedToTrack){
 						bNeedToTrack = false;
+						mbIsScrolling = false;
 						int iFirstPos = getFirstItem();
 						Log.e(TAG, "onScrollStateChanged(), SCROLL_STATE_IDLE, first item is :"+getFirstItem());
-						getThunbnailAtPos((0==iFirstPos)?1:iFirstPos);
+						getThunbnailAtPos((0==iFirstPos)?1:iFirstPos-1);
 					}
 				}});
 			
@@ -178,7 +188,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 			
         	mMainListView.setMode(LvExtendedMode.PULL_DOWN_TO_REFRESH);
         	
-        	mEventListAdapter = new EventListAdapter(this, null, R.layout.layout_event_list_itm, this);
+        	mEventListAdapter = new EventListAdapter(this, null, R.layout.layout_event_list_itm, this, this);
         	if(null != mEventListAdapter){
         		JSONArray EntList = new JSONArray();
         		JSONObject liveObj = new JSONObject();
@@ -197,6 +207,10 @@ public class EventListActivity extends BeseyeBaseActivity{
 				mVgIndicator.updateDateTime(new Date().getTime());
         	}
 		}
+	}
+	
+	public boolean isLvScrolling(){
+		return mbIsScrolling;
 	}
 	
 	private void loadEventList(){
@@ -448,7 +462,9 @@ public class EventListActivity extends BeseyeBaseActivity{
 														Log.e(TAG, "onPostExecute(), update old info to new list at "+idx);	
 														for(int idx2 = 0; idx2 < iOldCMemCount && (idx+idx2) < iTotalCount;idx2++){
 															EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_PATH, BeseyeJSONUtil.getJSONArray(mArrOldEventList.getJSONObject(1+idx2),BeseyeJSONUtil.MM_THUMBNAIL_PATH));
+															EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_PATH_CACHE, BeseyeJSONUtil.getJSONArray(mArrOldEventList.getJSONObject(1+idx2),BeseyeJSONUtil.MM_THUMBNAIL_PATH_CACHE));
 															EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_REQ, BeseyeJSONUtil.getJSONLong(mArrOldEventList.getJSONObject(1+idx2), BeseyeJSONUtil.MM_THUMBNAIL_REQ));
+															EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_EXPIRE, BeseyeJSONUtil.getJSONLong(mArrOldEventList.getJSONObject(1+idx2), BeseyeJSONUtil.MM_THUMBNAIL_EXPIRE));
 														}
 														break;
 													}
@@ -504,7 +520,10 @@ public class EventListActivity extends BeseyeBaseActivity{
 											Log.e(TAG, "onPostExecute(), update old info to new list at "+idx);	
 											for(int idx2 = 0; idx2 < iOldCount && (idx+idx2) < iCount;idx2++){
 												EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_PATH, BeseyeJSONUtil.getJSONArray(OldEntList.getJSONObject(1+idx2),BeseyeJSONUtil.MM_THUMBNAIL_PATH));
+												EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_PATH_CACHE, BeseyeJSONUtil.getJSONArray(mArrOldEventList.getJSONObject(1+idx2),BeseyeJSONUtil.MM_THUMBNAIL_PATH_CACHE));
+
 												EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_REQ, BeseyeJSONUtil.getJSONLong(OldEntList.getJSONObject(1+idx2), BeseyeJSONUtil.MM_THUMBNAIL_REQ));
+												EntList.getJSONObject(idx+idx2).put(BeseyeJSONUtil.MM_THUMBNAIL_EXPIRE, BeseyeJSONUtil.getJSONLong(mArrOldEventList.getJSONObject(1+idx2), BeseyeJSONUtil.MM_THUMBNAIL_EXPIRE));
 											}
 											break;
 										}
@@ -584,7 +603,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 				
 			}else if(task instanceof BeseyeMMBEHttpTask.GetThumbnailByEventListTask){
 				if(0 == iRetCode){
-					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 					//String path = ((BeseyeMMBEHttpTask.GetThumbnailByEventListTask)task).getPath();
 					//JSONArray thumbnailList = null != path ?new JSONArray():BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_THUMBNAILS);
 					JSONArray thumbnailList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_THUMBNAILS);
@@ -606,7 +625,9 @@ public class EventListActivity extends BeseyeBaseActivity{
 												for(int idx = 0; idx < iCount;idx++){
 													event = EntList.getJSONObject(i + idx);
 													event.put(BeseyeJSONUtil.MM_THUMBNAIL_PATH, BeseyeJSONUtil.getJSONArray(thumbnailList.getJSONObject(idx),BeseyeJSONUtil.MM_THUMBNAIL_PATH));
-													
+													event.put(BeseyeJSONUtil.MM_THUMBNAIL_PATH_CACHE, BeseyeJSONUtil.getJSONArray(thumbnailList.getJSONObject(idx),BeseyeJSONUtil.MM_THUMBNAIL_PATH_CACHE));
+
+													event.put(BeseyeJSONUtil.MM_THUMBNAIL_EXPIRE, System.currentTimeMillis()+THUMBNAIL_URL_EXPIRE);
 													if(!bRefreshFlag && isItmInScreen(i + idx)){
 														Log.e(TAG, "onPostExecute(), refresh for "+(i + idx));
 														bRefreshFlag = true;
@@ -769,24 +790,27 @@ public class EventListActivity extends BeseyeBaseActivity{
 				obj.put(BeseyeJSONUtil.MM_SIZE, "small");
 				obj.put("ContinuousTimeQuery", true);
 				obj.put("urlPathQuery", true);
-				obj.put("urlExpireTime", 300);
+				obj.put("urlExpireTime", THUMBNAIL_URL_EXPIRE);
 				
 				JSONArray timeLst = new JSONArray();
 				int iCountToExpectGet = (1 == iStartIdx)?2:THUMBNAIL_BUNDLE_SIZE;
 				int iCountToGet = 0;
 				for(int i = iStartIdx; i<iCount && iCountToGet < iCountToExpectGet;i++, miCurUpdateThunbnailIdx++){
 					JSONObject event = EntList.getJSONObject(i);
-					if(null != BeseyeJSONUtil.getJSONArray(event, BeseyeJSONUtil.MM_THUMBNAIL_PATH)){
+					long lExpireTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_THUMBNAIL_EXPIRE, -1);
+					if(null != BeseyeJSONUtil.getJSONArray(event, BeseyeJSONUtil.MM_THUMBNAIL_PATH) || (-1 < lExpireTime && System.currentTimeMillis() > lExpireTime)){
+						Log.e(TAG, "getThumbnailByEventList(), skip "+i);
 						continue;
 					}
 					
 					BeseyeJSONUtil.setJSONLong(event, BeseyeJSONUtil.MM_THUMBNAIL_REQ, System.currentTimeMillis());
 					JSONObject time = new JSONObject();
 					long lStartTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_START_TIME);
-					long lEndTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_END_TIME);
+					long lEndTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_END_TIME, 0L);
 					
 					time.put(BeseyeJSONUtil.MM_START_TIME, lStartTime);
-					time.put(BeseyeJSONUtil.MM_DURATION, (0 < lEndTime)?(lEndTime - lStartTime):3000);
+					long lDuration = (0 == lEndTime || (lEndTime - lStartTime) < 20000)?20000:(lEndTime - lStartTime);
+					time.put(BeseyeJSONUtil.MM_DURATION, lDuration);
 					time.put(BeseyeJSONUtil.MM_MAX_NUM, THUMBNAIL_NUM);
 					
 					//String strThbKey = String.format("%s_%s_%s", mStrVCamID, BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_START_TIME), BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_DURATION));
@@ -797,6 +821,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 				
 				if(0 < iCountToGet){
 					obj.put(BeseyeJSONUtil.MM_EVT_LST, timeLst);
+					Log.e(TAG, "getThumbnailByEventList(), obj:"+obj);
 					monitorAsyncTask((mGetThumbnailByEventListTask = new BeseyeMMBEHttpTask.GetThumbnailByEventListTask(EventListActivity.this, iSeed)).setDialogId(-1), true, "", obj.toString());
 				}
 				
@@ -809,7 +834,7 @@ public class EventListActivity extends BeseyeBaseActivity{
 	private void getThunbnailAtPos(int iPos){
 		JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
 		int iCount = (null != EntList)?EntList.length():0;
-		int iStartIdx = (iPos + THUMBNAIL_BUNDLE_SIZE >= iCount)? (iCount-THUMBNAIL_BUNDLE_SIZE):iPos;
+		int iStartIdx = ((iPos + THUMBNAIL_BUNDLE_SIZE >= iCount)? (iCount-THUMBNAIL_BUNDLE_SIZE):iPos);//-(null != mMainListView ?mMainListView.getRefreshableView().getHeaderViewsCount():0);
 		
 		if(0 < iCount && iStartIdx < iCount){
 			Log.e(TAG, "getThunbnailAtPos(), iCount="+iCount+", iStartIdx="+iStartIdx);
@@ -819,13 +844,16 @@ public class EventListActivity extends BeseyeBaseActivity{
 				obj.put(BeseyeJSONUtil.MM_SIZE, "small");
 				obj.put("ContinuousTimeQuery", true);
 				obj.put("urlPathQuery", true);
-				obj.put("urlExpireTime", 300);
+				obj.put("urlExpireTime", THUMBNAIL_URL_EXPIRE);
 				
 				JSONArray timeLst = new JSONArray();
 				int iCountToExpectGet = iStartIdx+THUMBNAIL_BUNDLE_SIZE;
 				for(int i = iStartIdx; i < iCountToExpectGet;i++){
 					JSONObject event = EntList.getJSONObject(i);
-					if(null != BeseyeJSONUtil.getJSONArray(event, BeseyeJSONUtil.MM_THUMBNAIL_PATH) || (System.currentTimeMillis() - BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_THUMBNAIL_REQ)) < 10000){
+					long lExpireTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_THUMBNAIL_EXPIRE, -1);
+					if(null != BeseyeJSONUtil.getJSONArray(event, BeseyeJSONUtil.MM_THUMBNAIL_PATH) || 
+					   (System.currentTimeMillis() - BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_THUMBNAIL_REQ)) < 10000 ||
+					   (-1 < lExpireTime && System.currentTimeMillis() > lExpireTime)){
 						continue;
 					}
 					
@@ -833,10 +861,11 @@ public class EventListActivity extends BeseyeBaseActivity{
 					
 					JSONObject time = new JSONObject();
 					long lStartTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_START_TIME);
-					long lEndTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_END_TIME);
+					long lEndTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_END_TIME, 0L);
 					
 					time.put(BeseyeJSONUtil.MM_START_TIME, lStartTime);
-					time.put(BeseyeJSONUtil.MM_DURATION, (0 < lEndTime)?(lEndTime - lStartTime):3000);
+					long lDuration = (0 == lEndTime || (lEndTime - lStartTime) < 20000)?20000:(lEndTime - lStartTime);
+					time.put(BeseyeJSONUtil.MM_DURATION, lDuration);
 					time.put(BeseyeJSONUtil.MM_MAX_NUM, THUMBNAIL_NUM);
 					
 					//String strThbKey = String.format("%s_%s_%s", mStrVCamID, BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_START_TIME), BeseyeJSONUtil.getJSONLong(time, BeseyeJSONUtil.MM_DURATION));

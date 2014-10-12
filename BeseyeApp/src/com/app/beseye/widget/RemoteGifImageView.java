@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -32,6 +33,7 @@ import android.util.Log;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.app.beseye.adapter.EventListAdapter.IListViewScrollListenser;
 
 public class RemoteGifImageView extends RemoteImageView {
 	private String[] mCachePath;
@@ -40,6 +42,13 @@ public class RemoteGifImageView extends RemoteImageView {
 	private int miCurDisplayIdx ;
 	private boolean mbIsInitPage;
 	private boolean mbIsSameList = false;
+	private WeakReference<IListViewScrollListenser> mIListViewScrollListenser;
+	
+	public void setIListViewScrollListenser(IListViewScrollListenser listener){
+		if(null != listener){
+			mIListViewScrollListenser = new WeakReference<IListViewScrollListenser>(listener);
+		}
+	}
 	
 	public RemoteGifImageView(Context context) {
 		this(context, null, 0);
@@ -85,6 +94,10 @@ public class RemoteGifImageView extends RemoteImageView {
 	}
 
 	public void setURI(String[] uri, int defaultImage) {
+		setURI(uri, null, defaultImage);
+	}
+
+	public void setURI(String[] uri, String[] uriCache, int defaultImage) {
 		mbIsInitPage = true;
 		if(null != mURI && null != uri && mURI.length == uri.length){
 			boolean bDiff = false;
@@ -108,9 +121,13 @@ public class RemoteGifImageView extends RemoteImageView {
 		miIvCount = (null != mURI)?mURI.length:0;
 		
 		if(0 < miIvCount){
-			mCachePath = new String[miIvCount];
-			for(int i = 0;i<miIvCount;i++){
-				mCachePath[i] = buildCachePath(getContext(), mURI[i]);
+			if(null == uriCache){
+				mCachePath = new String[miIvCount];
+				for(int i = 0;i<miIvCount;i++){
+					mCachePath[i] = buildCachePath(getContext(), mURI[i]);
+				}
+			}else{
+				mCachePath = uriCache;
 			}
 		}else{
 			mCachePath=null;
@@ -121,6 +138,7 @@ public class RemoteGifImageView extends RemoteImageView {
 		mbIsLoaded = false;
 		miCurDisplayIdx = 0;
 		
+		removeCallbacks(mLoadRemoteImageRunnable);
 		removeCallbacks(mLoadNextBmpRunnable);
 		
 //		if(DEBUG)
@@ -210,7 +228,6 @@ public class RemoteGifImageView extends RemoteImageView {
 		if(miCurDisplayIdx < iLen){
 			// load image from cache
 			Bitmap cBmp = BeseyeMemCache.getBitmapFromMemCache(mCachePath[miCurDisplayIdx]);
-			
 			if (cBmp != null) {
 				setImageBitmap(cBmp);
 //				//We don't cache high quality pic in memory
@@ -224,6 +241,7 @@ public class RemoteGifImageView extends RemoteImageView {
 				loadDefaultImage();
 			}
 			loadRemoteImage();
+			//mLoadRemoteImageRunnable.run();
 		}else{
 			Log.e(TAG, "loadDefaultImage(), 2");	
 			loadDefaultImage();
@@ -231,19 +249,36 @@ public class RemoteGifImageView extends RemoteImageView {
 		mbIsInitPage = false;
 	}
 	
+	private Runnable mLoadRemoteImageRunnable = new Runnable(){
+		@Override
+		public void run() {
+			IListViewScrollListenser listener = (null != mIListViewScrollListenser)?mIListViewScrollListenser.get():null;
+			if(null != listener && listener.isLvScrolling()){
+				RemoteGifImageView.this.postDelayed(this, THUMBNAIL_SCROLLING_PENDING);
+			}else{
+				loadRemoteImage();
+			}
+		}
+	};
+	
 	private Runnable mLoadNextBmpRunnable = new Runnable(){
 		@Override
 		public void run() {
-			if(0 < miIvCount){
-				Bitmap cBmp = BeseyeMemCache.getBitmapFromMemCache(mCachePath[miCurDisplayIdx]);
-				if (cBmp != null) {
-					setImageBitmap(cBmp);
-				}
-				miCurDisplayIdx = (++miCurDisplayIdx)%miIvCount;
-				loadImage();
+			IListViewScrollListenser listener = (null != mIListViewScrollListenser)?mIListViewScrollListenser.get():null;
+			if(null != listener && listener.isLvScrolling()){
+				RemoteGifImageView.this.postDelayed(this, THUMBNAIL_PLAY_INTERVAL);
 			}else{
-				//Log.e(TAG, "loadDefaultImage(), 3");	
-				//loadDefaultImage();
+				if(0 < miIvCount){
+					Bitmap cBmp = BeseyeMemCache.getBitmapFromMemCache(mCachePath[miCurDisplayIdx]);
+					if (cBmp != null) {
+						setImageBitmap(cBmp);
+					}
+					miCurDisplayIdx = (++miCurDisplayIdx)%miIvCount;
+					loadImage();
+				}else{
+					//Log.e(TAG, "loadDefaultImage(), 3");	
+					//loadDefaultImage();
+				}
 			}
 		}};
 
@@ -258,6 +293,7 @@ public class RemoteGifImageView extends RemoteImageView {
 		}
 	}
 	
+	static final private long THUMBNAIL_SCROLLING_PENDING = 500;
 	static final private long THUMBNAIL_PLAY_INTERVAL = 150;
 
 	private void imageLoaded(final boolean success) {
