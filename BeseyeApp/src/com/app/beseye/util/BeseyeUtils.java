@@ -350,6 +350,6 @@ public class BeseyeUtils {
 	}
 	
 	static public boolean isHiddenFeature(){
-		return SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha");
+		return BeseyeConfig.PRODUCTION_VER || (SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha"));
 	}
 }

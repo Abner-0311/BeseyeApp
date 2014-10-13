@@ -9,6 +9,7 @@ import com.app.beseye.setting.CamSettingMgr;
 
 public class BeseyeConfig {
 	static public final String TAG = "BesEye";
+	static public final boolean DEBUG = true;
 	public static final String HOCKEY_APP_ID = "1caf00210eb940171eb56a1904a204e8"; 
 	static public final long TIME_TO_CHECK_WIFI_SETUP = 10000L;
 	
@@ -22,9 +23,8 @@ public class BeseyeConfig {
 	//static public boolean COMPUTEX_PAIRING = false;
 	//static public boolean COMPUTEX_P2P = false;
 	
-	static public final boolean DEBUG = true;
-	static public final boolean ALPHA_VER = false;
-	static public final boolean PRODUCTION_VER = false;
+	static public boolean ALPHA_VER = true;
+	static public boolean PRODUCTION_VER = false;
 	
 	static public final String TEST_ACC 	= "privatecam@beseye.com";
 	static public final String RELAY_AP_SSID = "raylios WiFi";

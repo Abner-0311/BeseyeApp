@@ -1146,12 +1146,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(0 == iRetCode){
 					boolean bIsCamOn = isCamPowerOn();
 					super.onPostExecute(task, result, iRetCode);
-					if(isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED)){
+					if(mbIsLiveMode && bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED)){
 						closeStreaming();
 					}
+					
 					mbIsCamSettingChanged = true;
 					updateAttrByCamObj();
 					checkPlayState();
+					
 					if(mbIsLiveMode){
 						if(mActivityResume){
 							Log.i(TAG, "onPostExecute(), bIsCamOn:"+bIsCamOn+", isCamPowerOn():"+isCamPowerOn());

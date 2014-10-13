@@ -332,7 +332,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 	protected void onResume() {
 		super.onResume();
 		if(mbNeedToReloadWhenResume){
-			loadEventList();
+			loadNewEventList();
 			mbNeedToReloadWhenResume = false;
 		}else if(0 <= miLastTaskSeedNum){
 			Log.i(TAG, "onResume(), resume task , miLastTaskSeedNum="+miLastTaskSeedNum);	
@@ -743,7 +743,8 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		}
 	}
 	
-	static final private int THUMBNAIL_BUNDLE_SIZE = 10;
+	static final private int THUMBNAIL_BUNDLE_SIZE = 1;
+	static final private int THUMBNAIL_JUMP_BUNDLE_SIZE = 5;
 	static final private int THUMBNAIL_NUM = 10;
 	
 	private static ExecutorService THUNBNAIL_TASK_EXECUTOR; 
@@ -783,7 +784,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				obj.put("urlExpireTime", THUMBNAIL_URL_EXPIRE);
 				
 				JSONArray timeLst = new JSONArray();
-				int iCountToExpectGet = (1 == iStartIdx)?2:THUMBNAIL_BUNDLE_SIZE;
+				int iCountToExpectGet = (1 == iStartIdx)?1:THUMBNAIL_BUNDLE_SIZE;
 				int iCountToGet = 0;
 				for(int i = iStartIdx; i<iCount && iCountToGet < iCountToExpectGet;i++, miCurUpdateThunbnailIdx++){
 					JSONObject event = EntList.getJSONObject(i);
@@ -824,7 +825,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 	private void getThunbnailAtPos(int iPos){
 		JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
 		int iCount = (null != EntList)?EntList.length():0;
-		int iStartIdx = ((iPos + THUMBNAIL_BUNDLE_SIZE >= iCount)? (iCount-THUMBNAIL_BUNDLE_SIZE):iPos);//-(null != mMainListView ?mMainListView.getRefreshableView().getHeaderViewsCount():0);
+		int iStartIdx = ((iPos + THUMBNAIL_JUMP_BUNDLE_SIZE >= iCount)? (iCount-THUMBNAIL_JUMP_BUNDLE_SIZE):iPos);//-(null != mMainListView ?mMainListView.getRefreshableView().getHeaderViewsCount():0);
 		
 		if(0 < iCount && iStartIdx < iCount){
 			Log.e(TAG, "getThunbnailAtPos(), iCount="+iCount+", iStartIdx="+iStartIdx);
@@ -837,7 +838,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				obj.put("urlExpireTime", THUMBNAIL_URL_EXPIRE);
 				
 				JSONArray timeLst = new JSONArray();
-				int iCountToExpectGet = iStartIdx+THUMBNAIL_BUNDLE_SIZE;
+				int iCountToExpectGet = iStartIdx+THUMBNAIL_JUMP_BUNDLE_SIZE;
 				for(int i = iStartIdx; i < iCountToExpectGet;i++){
 					JSONObject event = EntList.getJSONObject(i);
 					long lExpireTime = BeseyeJSONUtil.getJSONLong(event, BeseyeJSONUtil.MM_THUMBNAIL_EXPIRE, -1);
