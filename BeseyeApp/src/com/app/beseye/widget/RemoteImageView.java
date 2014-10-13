@@ -235,7 +235,8 @@ public class RemoteImageView extends ImageView {
 //			int iFrom = (strEncode.length() > 32)?(strEncode.length()-32):0;
 //			strEncode = strEncode.substring(iFrom);
 //		}
-		Log.i(TAG, "buildCachePath(), takes "+(System.currentTimeMillis() - lStartTime)+" ms");
+		if(DEBUG)
+			Log.d(TAG, "buildCachePath(), takes "+(System.currentTimeMillis() - lStartTime)+" ms");
 
 		return String.format("%s%s", picDir.getAbsolutePath()+ "/", strEncode);
 	}
@@ -317,7 +318,9 @@ public class RemoteImageView extends ImageView {
 		Bitmap cBmp = BeseyeMemCache.getBitmapFromMemCache(mCachePath);
 		
 		if (cBmp != null) {
-			Log.i(TAG, "loadImage(), use mem cache , mCachePath:["+mCachePath+"]");
+			if(DEBUG)
+				Log.d(TAG, "loadImage(), use mem cache , mCachePath:["+mCachePath+"]");
+			
 			setImageBitmap(cBmp);
 			//We don't cache high quality pic in memory
 			if(mbIsPhotoViewMode){
@@ -334,7 +337,8 @@ public class RemoteImageView extends ImageView {
 			}
 			
 			if(fileExist(fileCache)){
-				Log.i(TAG, "loadImage(), have file cache , fileCache:["+fileCache+"]");
+				if(DEBUG)
+					Log.d(TAG, "loadImage(), have file cache , fileCache:["+fileCache+"]");
 				Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(fileCache);
 				if (cBmpFile != null) {
 					Log.i(TAG, "loadImage(), have file cache in mem");
@@ -343,7 +347,8 @@ public class RemoteImageView extends ImageView {
 					loadDefaultImage();
 				}
 			}else{
-				Log.i(TAG, "loadImage(), load default , no fileCache:["+fileCache+"]");
+				if(DEBUG)
+					Log.d(TAG, "loadImage(), load default , no fileCache:["+fileCache+"]");
 				loadDefaultImage();
 			}
 		}
@@ -352,7 +357,8 @@ public class RemoteImageView extends ImageView {
 	
 	public void setImageBitmap(Bitmap bm, String strVcamId) {
 		mStrVCamIdLoad = strVcamId;
-		Log.i(TAG, "setImageBitmap(), mStrVCamIdLoad:["+mStrVCamIdLoad+"], this:"+this);
+		if(DEBUG)
+			Log.d(TAG, "setImageBitmap(), mStrVCamIdLoad:["+mStrVCamIdLoad+"], this:"+this);
 		setImageBitmap(bm);
 	}
 

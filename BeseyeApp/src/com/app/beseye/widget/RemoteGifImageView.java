@@ -237,7 +237,8 @@ public class RemoteGifImageView extends RemoteImageView {
 				imageLoaded(true);
 				return;
 			} else if(mbIsInitPage && 0 == miCurDisplayIdx){
-				Log.e(TAG, "loadDefaultImage(), 1 for "+mCachePath[miCurDisplayIdx]);	
+				if(DEBUG)
+					Log.d(TAG, "loadDefaultImage(), 1 for "+mCachePath[miCurDisplayIdx]);	
 				loadDefaultImage();
 			}
 			loadRemoteImage();

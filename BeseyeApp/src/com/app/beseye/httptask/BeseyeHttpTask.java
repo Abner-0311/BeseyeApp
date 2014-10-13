@@ -291,29 +291,11 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	static public String filterPrivacyData(String input){
 		String strRet = input;
 		if(null != input && 0 < input.length()){
-//			if(input.contains("login/login.php?")){
-//				strRet = iKalaAccountTask.URL_LOGIN;
-//			}else if(input.contains("login/openid.php?")){
-//				strRet = iKalaAccountTask.URL_LOGIN_OPEN;
-//			}else if(input.contains("signup/signup.php?")){
-//				strRet = iKalaAccountTask.URL_REGISTER;
-//			}else if(input.contains("signup/reset-password.php?")){
-//				strRet = iKalaAccountTask.URL_PW_RESET;
-//			}else if(input.contains("login/forget.php?")){
-//				strRet = iKalaAccountTask.URL_CHANGE_PW_W_CODE;
-//			}else if(input.contains("&TxType=P")){
-//				strRet = iKalaPaymentTask.FORMAT_TELEPAY_INIT_PAYMENT;
-//			}else if(input.contains("&TxType=U")){
-//				strRet = iKalaPaymentTask.FORMAT_TELEPAY_USER_IDENTIFY;
-//			}else if(input.contains("&TxType=O")){
-//				strRet = iKalaPaymentTask.FORMAT_TELEPAY_OTP_IDENTIFY;
-//			}else if(input.contains("&TxType=BC")){
-//				strRet = iKalaPaymentTask.FORMAT_TELEPAY_BILL_CONFIRM;
-//			}else if(input.contains("payment/shopcart.php?function=initial")){
-//				strRet = iKalaPaymentTask.FORMAT_INIT_PAYMENT;
-//			}else if(input.contains("payment/shopcart.php?function=confirm")){
-//				strRet = iKalaPaymentTask.FORMAT_CONFIRM_PAYMENT;
-//			}
+			if(input.contains("user/sign_in")){
+				strRet = BeseyeAccountTask.URL_LOGIN;
+			}else if(input.contains("user/sign_up")){
+				strRet = BeseyeAccountTask.URL_REGISTER;
+			}
 		}
 		return strRet;
 	}

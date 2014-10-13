@@ -240,7 +240,7 @@ public class BeseyeApplication extends Application {
 	}
 	
 	static public class DataUpdateBroadcastReciever extends BroadcastReceiver {
-		static final public String ACTION_DATA_UPDATE_EVENT  	= "com.ikala.app.DATA_UPDATE_EVENT";
+		static final public String ACTION_DATA_UPDATE_EVENT  	= "com.app.beseye.DATA_UPDATE_EVENT";
 		static final public String SESSION_DATA_OBJ 	 		= "SESSION_DATA_OBJ";
 		static final public String SETTING_DATA_OBJ 			= "SETTING_DATA_OBJ";
 		
