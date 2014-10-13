@@ -31,8 +31,10 @@ import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
@@ -637,14 +639,16 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			invokeLogout();
 			showMenu();
 		}else if(R.id.txt_nav_title == view.getId()){
-			if(++miShowMoreCount == 5){
-				if(null != mCameraListAdapter){
-					mCameraListAdapter.setShowMore(true);
-					refreshList();
-				}
-				
-				if(null != mCameraListMenuAnimator){
-					mCameraListMenuAnimator.showPrivateCam();
+			if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal()){
+				if(++miShowMoreCount == 5){
+					if(null != mCameraListAdapter){
+						mCameraListAdapter.setShowMore(true);
+						refreshList();
+					}
+					
+					if(null != mCameraListMenuAnimator){
+						mCameraListMenuAnimator.showPrivateCam();
+					}
 				}
 			}
 		}else
