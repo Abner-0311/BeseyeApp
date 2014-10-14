@@ -2,9 +2,6 @@ package com.app.beseye.adapter;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
-import java.lang.ref.WeakReference;
-import java.util.Collections;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
