@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.CrashManagerListener;
 import net.hockeyapp.android.UpdateManager;
 
 import org.json.JSONArray;
@@ -192,7 +193,45 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	private void checkForCrashes() {
-	    CrashManager.register(this, HOCKEY_APP_ID);
+	    CrashManager.register(this, HOCKEY_APP_ID,  new CrashManagerListener(){
+
+			@Override
+			public String getContact() {
+				// TODO Auto-generated method stub
+				return super.getContact();
+			}
+
+			@Override
+			public String getDescription() {
+				// TODO Auto-generated method stub
+				return super.getDescription();
+			}
+
+			@Override
+			public String getUserID() {
+				// TODO Auto-generated method stub
+				return super.getUserID();
+			}
+
+			@Override
+			public boolean ignoreDefaultHandler() {
+				// TODO Auto-generated method stub
+				return super.ignoreDefaultHandler();
+			}
+
+			@Override
+			public boolean includeDeviceData() {
+				// TODO Auto-generated method stub
+				return super.includeDeviceData();
+			}
+
+			@Override
+			public void onNewCrashesFound() {
+				// TODO Auto-generated method stub
+				super.onNewCrashesFound();
+			}
+	    	
+	    });
 	}
 	
 	private void checkForUpdates() {

@@ -1,5 +1,10 @@
 package com.app.beseye;
 
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeUtils;
+
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -36,6 +41,7 @@ public class BeseyeAboutActivity extends BeseyeBaseActivity {
 			mTxtNavTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != mTxtNavTitle){
 				mTxtNavTitle.setText(R.string.about_title);
+				mTxtNavTitle.setOnClickListener(this);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
@@ -64,12 +70,22 @@ public class BeseyeAboutActivity extends BeseyeBaseActivity {
 		return R.layout.layout_about_page;
 	}
 
+	private int miSendLog = 0;
+	
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.txt_app_link:{
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.beseye.com"));
 				startActivity(browserIntent);
+				break;
+			}
+			case R.id.txt_nav_title:{
+				if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal()){
+					if(++miSendLog == 5){
+						BeseyeUtils.saveLogToFile(this);
+					}
+				}
 				break;
 			}
 			default:

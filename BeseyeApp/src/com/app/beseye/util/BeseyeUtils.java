@@ -2,6 +2,13 @@ package com.app.beseye.util;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,7 +28,10 @@ import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
@@ -33,6 +43,7 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class BeseyeUtils {
 	static private Handler sHandler = new Handler();
@@ -351,5 +362,84 @@ public class BeseyeUtils {
 	
 	static public boolean isHiddenFeature(){
 		return BeseyeConfig.PRODUCTION_VER || (SessionMgr.getInstance().getServerMode().ordinal() >= SERVER_MODE.MODE_STAGING.ordinal() && BeseyeApplication.getProcessName().equals("com.app.beseye.alpha"));
+	}
+	
+	static public String getLog(){
+		String description = "";
+
+	    try {
+	      Process process = Runtime.getRuntime().exec("logcat -d BesEye:D SoundPairing:I Debug:W *:S");
+	      BufferedReader bufferedReader = 
+	        new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+	      StringBuilder log = new StringBuilder();
+	      String line;
+	      while ((line = bufferedReader.readLine()) != null) {
+	        log.append(line);
+	        log.append(System.getProperty("line.separator"));
+	      }
+	      bufferedReader.close();
+
+	      description = log.toString();
+	    } 
+	    catch (IOException e) {
+	    	
+	    }
+
+	    return description;
+	}
+	
+	static public void saveLogToFile(Context context){
+		File cacheDir = BeseyeStorageAgent.getCacheDir(context);
+		if(null != cacheDir){
+			cacheDir.mkdir();
+			File logDir = new File(cacheDir.getAbsolutePath()+"/log");
+			if(null != logDir){
+				logDir.mkdir();
+				File[] oldLogs = logDir.listFiles();
+				for(File log:oldLogs){
+					if(log.exists() && log.isFile()){
+						log.delete();
+					}
+				}
+				
+				Toast.makeText(context, "Dumping log, please wait...", Toast.LENGTH_LONG).show();
+				
+				File logFile = new File(logDir.getAbsolutePath()+"/"+SessionMgr.getInstance().getAccount()+"_"+getDateString(new Date(), "yyyy-MM-dd_hh:mm:ss")+".log");
+				if(null != logFile){
+					Writer writer = null;
+					try {
+						writer = new BufferedWriter(new FileWriter(logFile));
+						if(null != writer){
+							writer.write(getLog());
+							writer.close();
+						}
+						
+						Intent intent = new Intent(Intent.ACTION_SEND);
+						intent.setType("text/plain");
+						
+						final PackageManager pm = context.getPackageManager();
+					    final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
+					    ResolveInfo best = null;
+					    for (final ResolveInfo info : matches)
+					      if (info.activityInfo.packageName.endsWith(".gm") ||
+					          info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
+					    if (best != null)
+					      intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+					    
+						intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"abner.huang@beseye.com"});
+						intent.putExtra(Intent.EXTRA_SUBJECT, "[Android Log]"+logFile.getName());
+						intent.putExtra(Intent.EXTRA_TEXT, "This is log from "+SessionMgr.getInstance().getAccount()+"\nIssue occurred on [Cam name]");
+						
+						Uri uri = Uri.parse("file://" + logFile);
+						intent.putExtra(Intent.EXTRA_STREAM, uri);
+						context.startActivity(Intent.createChooser(intent, "Send email..."));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		}
 	}
 }
