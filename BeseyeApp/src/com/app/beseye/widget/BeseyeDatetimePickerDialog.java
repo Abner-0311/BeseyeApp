@@ -3,6 +3,7 @@ package com.app.beseye.widget;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeUtils.isSameDay;
 
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,6 +14,8 @@ import net.simonvt.numberpicker.NumberPicker.OnValueChangeListener;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +37,7 @@ public class BeseyeDatetimePickerDialog extends Dialog implements OnClickListene
 	private Calendar mShowDate,mStartDate,mEndDate; 
 	private int miPeriodInDay;
 	private MonthFormatter mMonthFormatter;
-	static private final SimpleDateFormat sDateFormat = new SimpleDateFormat("ccc, MMM, dd, yyyy");
+	static private SimpleDateFormat sDateFormat = new SimpleDateFormat("ccc, MMM, dd, yyyy");
 	
 	public BeseyeDatetimePickerDialog(Context context) {
 		super(context);
@@ -58,6 +61,16 @@ public class BeseyeDatetimePickerDialog extends Dialog implements OnClickListene
 	}
 
 	private void init(Context context, Date dateSelected, int iPeriodInDay){
+		
+//		sDateFormat = (SimpleDateFormat) android.text.format.DateFormat.getDateFormat(context);
+//		
+//		final String format = Settings.System.getString(context.getContentResolver(), Settings.System.DATE_FORMAT);
+//		if (TextUtils.isEmpty(format)) {
+//			sDateFormat = (SimpleDateFormat) android.text.format.DateFormat.getMediumDateFormat(context);
+//		} else {
+//			sDateFormat = new SimpleDateFormat(format);
+//		}
+		
 		getWindow().setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		

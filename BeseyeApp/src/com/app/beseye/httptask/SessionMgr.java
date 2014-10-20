@@ -119,6 +119,7 @@ public class SessionMgr {
 	
 	static private SessionMgr sSessionMgr;
 	
+	
 	static public void createInstance(Context context){
 		if(null == sSessionMgr)
 			sSessionMgr = new SessionMgr(context);
@@ -131,6 +132,7 @@ public class SessionMgr {
 	private SharedPreferences mPref, mSecuredPref;
 	//private String mStrHostUrl, mStrMMHostUrl;
 	private SessionData mSessionData;
+	private boolean mbShowPirvateCam  = false;
 	//private ChannelInfo mOwnerChannelInfo;
 	
 	private SessionMgr(Context context){
@@ -167,6 +169,7 @@ public class SessionMgr {
 		setNewsHistory("");
 		BeseyeNewsHistoryMgr.deinit();
 		//setOwnerChannelInfo(null);
+		mbShowPirvateCam = false;
 		notifySessionUpdate();
 	}
 	
@@ -177,6 +180,14 @@ public class SessionMgr {
 		setWSHostUrl("");
 		setWSAHostUrl("");
 		setNewsHostUrl("");
+	}
+	
+	public void setShowPirvateCam(boolean bFlag){
+		mbShowPirvateCam = bFlag;
+	}
+	
+	public boolean getShowPirvateCam(){
+		return mbShowPirvateCam;
 	}
 	
 	public String getNewsHistory(){

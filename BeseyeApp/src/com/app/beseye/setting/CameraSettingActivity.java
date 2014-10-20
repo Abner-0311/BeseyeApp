@@ -165,9 +165,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgDetachCam = (ViewGroup)findViewById(R.id.vg_detach_cam);
 		if(null != mVgDetachCam){
 			mVgDetachCam.setOnClickListener(this);
-			if(BeseyeUtils.isHiddenFeature()){
-				mVgDetachCam.setVisibility(View.GONE);
-			}
+//			if(BeseyeUtils.isHiddenFeature()){
+//				mVgDetachCam.setVisibility(View.GONE);
+//			}
 		}
 		
 		mVgRebootCam = (ViewGroup)findViewById(R.id.vg_reboot_cam);
@@ -381,6 +381,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 //							public void run() {
 //															
 //							}}, 1000);
+				    }
+				});
+				builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				    public void onClick(DialogInterface dialog, int item) {
+				    	removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
 				    }
 				});
 				builder.setOnCancelListener(new OnCancelListener(){

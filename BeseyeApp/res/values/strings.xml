@@ -6,7 +6,7 @@
     <string name="crash_toast_text"></string>
     <string name="camerview_init_date">---.--.----</string>
     <string name="camerview_init_time">--:--:-- --</string>
-    <string name="dialog_dettach_cam">Are you sure to detach this cam [%s]?</string>
+    <string name="dialog_dettach_cam">Camera [%s] and its recorded video will be removed, are you sure?</string>
     <string name="dialog_reboot_cam">Are you sure to reboot this cam [%s]?</string>
     
     <string name="news_release_date">2014.7.13</string>
@@ -17,7 +17,7 @@
 	<string name="about_link">www.beseye.com</string>
 	<string name="forget_password_check_mail_address">k******g@beseye.com</string>
 	
-	<string name="cam_setting_title_detach_cam">Detach cam !!!(Dev)</string>
+	<string name="cam_setting_title_detach_cam">Remove camera</string>
 	<string name="cam_setting_title_reboot_cam">Reboot cam !!!(Dev)</string>
 	
 	<string name="cam_menu_private_demo_cam">Private cameras</string>

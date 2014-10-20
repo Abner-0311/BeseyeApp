@@ -169,10 +169,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		ViewGroup mVgMenu = (ViewGroup)findViewById(R.id.vg_cam_menu);
 		if(null != mVgMenu){
 			mCameraListMenuAnimator = new CameraListMenuAnimator(this, mVgMenu);
-			String strAcc =SessionMgr.getInstance().getAccount();
-			if(null != strAcc && strAcc.endsWith("@beseye.com")){
+			if(true == SessionMgr.getInstance().getShowPirvateCam())
 				mCameraListMenuAnimator.showPrivateCam();
-			}
 		}
 		
 		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false)){
@@ -241,6 +239,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		if(!mbIsDemoCamMode || null == mVCamListInfoObj){
 			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeNewsActivity.DEF_NEWS_LANG);
+			monitorAsyncTask(new BeseyeAccountTask.GetUserInfoTask(this), true);
 		}else{
 			fillVCamList(mVCamListInfoObj);
 		}
@@ -362,6 +361,20 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				if(0 == iRetCode){
 					JSONObject objVCamList = result.get(0);
 					fillVCamList(objVCamList);
+				}
+			}else if (task instanceof BeseyeAccountTask.GetUserInfoTask){
+				if(0 == iRetCode){
+					JSONObject obj = result.get(0);
+					if(null != obj){
+						//Log.i(TAG, "onPostExecute(), obj "+obj);
+						JSONObject objUser = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_USER);
+						if(null != objUser){
+							if(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_BESEYE_ACCOUNT)){
+								SessionMgr.getInstance().setShowPirvateCam(true);
+								mCameraListMenuAnimator.showPrivateCam();
+							}
+						}
+					}
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
