@@ -216,7 +216,7 @@ public class BeseyeUtils {
 	}
 	
 	static public String getAndroidUUid(){
-		return "{Mobile}_{Android}_{"+DeviceUuidFactory.getDeviceUuid()+(BeseyeConfig.PRODUCTION_VER?"":(BeseyeConfig.ALPHA_VER?"-alpha":"-debug"))+"}";
+		return "{Mobile}_{Android}_{"+DeviceUuidFactory.getDeviceUuid()+(BeseyeConfig.PRODUCTION_VER?"-alpha":(BeseyeConfig.ALPHA_VER?"-alpha":"-debug"))+"}";
 	}
 	
 	static public String getUserAgent(){

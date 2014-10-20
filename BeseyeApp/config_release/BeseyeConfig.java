@@ -1,9 +1,13 @@
 package com.app.beseye.util;
 
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import android.util.Log;
 
 import com.app.beseye.setting.CamSettingMgr;
 
@@ -23,7 +27,7 @@ public class BeseyeConfig {
 	//static public boolean COMPUTEX_PAIRING = false;
 	//static public boolean COMPUTEX_P2P = false;
 	
-	static public final boolean DEBUG = false;
+	static public final boolean DEBUG = true;
 	static public boolean ALPHA_VER = false;
 	static public boolean PRODUCTION_VER = true;
 	
@@ -75,6 +79,8 @@ public class BeseyeConfig {
 //	static public final List<String> STREAM_PATH_LIST = new ArrayList<String>();
 //	static public final Map<String, String> REDDOT_STREAM_PATH_MAP = new HashMap<String, String>();
 	static{
+		Log.i(TAG, "BeseyeConfig init, BeseyeConfig.DEBUG:"+ BeseyeConfig.DEBUG);
+		
 //		if(REDDOT_DEMO){
 //			for(int i = 1; i<= REDDOT_STREAM_PATH.length;i++){
 //				STREAM_PATH_LIST.add(REDDOT_STREAM_PATH[i-1]);

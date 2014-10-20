@@ -88,7 +88,7 @@
     -->
     
     <property name="alpha.package" value="com.app.beseye.alpha" />
-    <property name="live.package" value="com.app.beseye" />
+    <property name="live.package" value="com.app.beseye.alpha" />
     <property name="config-target-dir-path" value="com/app/beseye/util" />
     
      <target name="-increase-version">
