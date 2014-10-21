@@ -906,7 +906,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 	}
 	
 	private int getEventPeriodByPlan(){
-		int iRet = 0;
+		int iRet = -1;//temp workaround 0;
 		int iPlan = BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN);
 		switch(iPlan){
 			case 1:{
@@ -939,6 +939,9 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			case 3:{
 				mlEventQueryPeriod = BeseyeMMBEHttpTask.THIRTY_DAYS_IN_MS;
 				break;
+			}
+			default:{
+				mlEventQueryPeriod = BeseyeMMBEHttpTask.ONE_DAY_IN_MS;
 			}
 		}
 		
