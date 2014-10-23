@@ -129,7 +129,7 @@ void killSystemProcess(){
 void checkSystemProcess(){
 	if(0 < intermediate_pid){
 		if(isSystemProcessExist()){
-			if((0 < lTimeInvodeSystem) && (time_ms() - lTimeInvodeSystem > (MAX_TIME_TO_INVOKE_SYSTEM*1000))){
+			if((0 != lTimeInvodeSystem) && ((time_ms() - lTimeInvodeSystem) > (MAX_TIME_TO_INVOKE_SYSTEM*1000))){
 				LOGE( "stop monitor flag is on over 10 sec\n");
 				killSystemProcess();
 			}
@@ -1922,7 +1922,10 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				LOGE("wifi connection check , trial %d.............\n", iTrials);
 				//iNetworkRet = checkInternetStatus(NETWORK_CHECK_HOST);
 
-				iNetworkRet = invokeSystem("/beseye/util/curl www.google.com") >> 8;
+				iNetworkRet = invokeSystem("/beseye/util/curl www.beseye.com") >> 8;
+
+				if(iNetworkRet != 0)
+					iNetworkRet = invokeSystem("/beseye/util/curl www.alibaba.com.cn") >> 8;
 
 				//LOGE("wifi check ret:%d, iTrials:%ld\n", iNetworkRet, iTrials));
 			}while( (15 > iTrials) && (iNetworkRet != 0));
