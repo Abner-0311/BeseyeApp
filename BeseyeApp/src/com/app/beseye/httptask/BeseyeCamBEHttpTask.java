@@ -1,28 +1,6 @@
 package com.app.beseye.httptask;
 
-import static com.app.beseye.util.BeseyeJSONUtil.CAM_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.CAM_TZ;
-import static com.app.beseye.util.BeseyeJSONUtil.IMG_BRIGHTNESS;
-import static com.app.beseye.util.BeseyeJSONUtil.IMG_CONTRAST;
-import static com.app.beseye.util.BeseyeJSONUtil.IMG_FLIP;
-import static com.app.beseye.util.BeseyeJSONUtil.IMG_FPS;
-import static com.app.beseye.util.BeseyeJSONUtil.IMG_HUE;
-import static com.app.beseye.util.BeseyeJSONUtil.IMG_MIRROR;
-import static com.app.beseye.util.BeseyeJSONUtil.IMG_SATURATION;
-import static com.app.beseye.util.BeseyeJSONUtil.IMG_SHARPNESS;
-import static com.app.beseye.util.BeseyeJSONUtil.IRCUT_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.LED_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.MIC_GAIN;
-import static com.app.beseye.util.BeseyeJSONUtil.MIC_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.SCHEDULE_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.LOCATION_LAT;
-import static com.app.beseye.util.BeseyeJSONUtil.LOCATION_LONG;
-import static com.app.beseye.util.BeseyeJSONUtil.SPEAKER_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.SPEAKER_VOLUME;
-import static com.app.beseye.util.BeseyeJSONUtil.VIDEO_RES;
-import static com.app.beseye.util.BeseyeJSONUtil.WIFI_KEY;
-import static com.app.beseye.util.BeseyeJSONUtil.WIFI_SECU;
-import static com.app.beseye.util.BeseyeJSONUtil.WIFI_SSID;
+import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 import java.util.List;
 
@@ -55,7 +33,7 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_SYS_INFO 		= "cam/%s/sysinfo";
 	static private final String URL_CAM_DATETIME 		= "cam/%s/datetime";
 	static private final String URL_CAM_TIMEZONE 		= "cam/%s/time_zone";
-	
+	static private final String URL_CAM_UPSIDE_DOWN_SET = "cam/%s/image/set_upside_down";
 	
 	static private final String URL_CAM_DATETIME_CONFIG = "cam/%s/datetime/config";
 	static private final String URL_CAM_DATETIME_NTP_CONFIG = "cam/%s/datetime/ntpconfig";
@@ -67,7 +45,7 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_SCHEDULE  		= "cam/%s/schedule";
 	static private final String URL_CAM_SCHEDULE_IDX  	= "cam/%s/schedule/%s";
 	
-	static private final String URL_CAM_LOCATION_POS = "cam/%s/locale";
+	static private final String URL_CAM_LOCATION_POS 	= "cam/%s/locale";
 	
 	static private final String URL_NOTIFY_SETTING  	= "cam/%s/notify_setting";
 	
@@ -618,8 +596,6 @@ public class BeseyeCamBEHttpTask  {
 		}
 	}
 	
-	
-	
 	public static class AddScheduleTask extends BeseyeHttpTask{
 		public AddScheduleTask(OnHttpTaskCallback cb) {
 			super(cb);
@@ -676,6 +652,25 @@ public class BeseyeCamBEHttpTask  {
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_NOTIFY_SETTING, strParams[0]), strParams[1]);
+		}
+	}
+	
+	public static class SetVideoUpsideDownTask extends BeseyeHttpTask{
+		public SetVideoUpsideDownTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPut.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(CAM_UPSIDE_DOWN, Boolean.valueOf(strParams[1]));
+				return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_UPSIDE_DOWN_SET, strParams[0]), obj.toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
 		}
 	}
 }

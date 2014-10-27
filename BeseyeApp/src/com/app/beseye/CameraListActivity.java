@@ -236,7 +236,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	protected void onSessionComplete(){
 		Log.i(TAG, "onSessionComplete()");	
 		super.onSessionComplete();
-		if(!mbIsDemoCamMode || null == mVCamListInfoObj){
+		if((!mbIsDemoCamMode && !mbIsPrivateCamMode)|| null == mVCamListInfoObj){
 			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeNewsActivity.DEF_NEWS_LANG);
 			monitorAsyncTask(new BeseyeAccountTask.GetUserInfoTask(this), true);
@@ -610,7 +610,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else if(R.id.vg_news == view.getId()){
 			Bundle bundle = new Bundle();
 			JSONArray arrCamLst = new JSONArray();;
-			if(mbIsDemoCamMode){
+			if(mbIsDemoCamMode || mbIsPrivateCamMode){
 				int iVcamCnt = BeseyeJSONUtil.getJSONInt(mVCamListInfoObj, BeseyeJSONUtil.ACC_VCAM_CNT);
 				if(0 < iVcamCnt){
 					JSONArray VcamList = BeseyeJSONUtil.getJSONArray(mVCamListInfoObj, BeseyeJSONUtil.ACC_VCAM_LST);

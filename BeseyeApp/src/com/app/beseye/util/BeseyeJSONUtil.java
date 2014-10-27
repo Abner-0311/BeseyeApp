@@ -80,6 +80,7 @@ public class BeseyeJSONUtil {
 	public static final String NOTIFY_SOUND 			= "Sound";
 	public static final String NOTIFY_OFFLINE 			= "Offline";
 	
+	public static final String IMG_OBJ 					= "Image";
 	public static final String IMG_FLIP 				= "Flip";
 	public static final String IMG_MIRROR 				= "Mirror";
 	public static final String IMG_BRIGHTNESS 			= "Brightness";
@@ -105,6 +106,8 @@ public class BeseyeJSONUtil {
 	public static final String CAM_MAC_ADDR 			= "MACAddr";
 	public static final String CAM_SOFTWARE 			= "Firmware";
 	public static final String CAM_TZ 					= "TimeZone";
+	public static final String CAM_UPSIDE_DOWN 			= "UpsideDown";
+	
 	
 	public static final String CAM_STATUS_LST 			= "StatusList";
 	public static final String CAM_WS_STATUS 			= "wsStatus";//1 => on-line, 0=> off-line
@@ -746,9 +749,6 @@ public class BeseyeJSONUtil {
 		}
 		return bRet;
 	}
-	
-	
-	
 	
 	static public boolean setJSONBoolean(JSONObject obj, String strKey, boolean bVal){
 		boolean bRet = false;

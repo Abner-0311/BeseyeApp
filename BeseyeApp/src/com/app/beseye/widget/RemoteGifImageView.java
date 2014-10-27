@@ -529,6 +529,8 @@ public class RemoteGifImageView extends RemoteImageView {
 					}else{
 						Log.w(TAG, "inputStream is null");
 					}
+				}else{
+					Log.i(TAG, "get http image failed, code:"+httpConn.getResponseCode());
 				}
 			}else if(uri.startsWith(S3_FILE_PREFIX)){
 				int iBucketPos = S3_FILE_PREFIX.length();

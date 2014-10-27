@@ -1,16 +1,7 @@
 package com.app.beseye.setting;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.CAM_TZ;
-import static com.app.beseye.util.BeseyeJSONUtil.IRCUT_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.LED_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.MIC_GAIN;
-import static com.app.beseye.util.BeseyeJSONUtil.MIC_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.OBJ_TIMESTAMP;
-import static com.app.beseye.util.BeseyeJSONUtil.VIDEO_RES;
-import static com.app.beseye.util.BeseyeJSONUtil.getJSONInt;
-import static com.app.beseye.util.BeseyeJSONUtil.getJSONObject;
+import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 import java.util.List;
 import java.util.TimeZone;
@@ -89,6 +80,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
 				txtTitle.setText(R.string.cam_hardware_setting_title);
+				txtTitle.setOnClickListener(this);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
@@ -163,7 +155,12 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 		
 		mVgViewUpDown = (ViewGroup)findViewById(R.id.vg_video_upside_down);
-		BeseyeUtils.setVisibility(mVgViewUpDown, View.GONE);
+		if(null != mVgViewUpDown){
+			mVgViewUpDown.setOnClickListener(this);
+			if(BeseyeUtils.isHiddenFeature()){
+				BeseyeUtils.setVisibility(mVgViewUpDown, View.GONE);
+			}
+		}
 		
 		mIvViewUpDownCheck = (ImageView)findViewById(R.id.iv_video_upside_down_check);
 		if(null != mIvViewUpDownCheck){
@@ -216,14 +213,19 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 	}
 	
+	private int miUnmaskHitCount = 0;
+	
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()){
+			case R.id.vg_video_upside_down:
 			case R.id.iv_video_upside_down_check_bg:{
 				if(null != mIvViewUpDownCheck){
 					mIvViewUpDownCheck.setVisibility((View.VISIBLE == mIvViewUpDownCheck.getVisibility())?View.INVISIBLE:View.VISIBLE);
-					BeseyeJSONUtil.setJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, (View.VISIBLE == mIvViewUpDownCheck.getVisibility())?1:0);
-					setActivityResultWithCamObj();
+					monitorAsyncTask(new BeseyeCamBEHttpTask.SetVideoUpsideDownTask(this), true, mStrVCamID,new Boolean((View.VISIBLE == mIvViewUpDownCheck.getVisibility())).toString());
+					
+//					BeseyeJSONUtil.setJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, (View.VISIBLE == mIvViewUpDownCheck.getVisibility())?1:0);
+//					setActivityResultWithCamObj();
 				}
 				break;
 			}
@@ -241,8 +243,16 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				break;
 			}
 			case R.id.vg_night_vision:{
-				//launchActivityForResultByClassName(TimezoneListActivity.class.getName(), null, REQUEST_TIMEZONE_CHANGED);
-				showMyDialog(DIALOG_ID_CAM_NIGHT_VISION);
+				//showMyDialog(DIALOG_ID_CAM_NIGHT_VISION);
+				Bundle bundle = new Bundle();
+				bundle.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				launchActivityForResultByClassName(NightVisionActivity.class.getName(), bundle, REQUEST_NIGHT_VISION_CHANGED);
+				break;
+			}
+			case R.id.txt_nav_title:{
+				if(5 == ++miUnmaskHitCount){
+					BeseyeUtils.setVisibility(mVgViewUpDown, View.VISIBLE);
+				}
 				break;
 			}
 			default:
@@ -361,8 +371,9 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	static public final String TIME_ZONE_INFO = "TIME_ZONE_INFO";
-	static public final int REQUEST_TIMEZONE_CHANGED = 10001;
-	static public final int REQUEST_WIFI_SETTING_CHANGED = 10002;
+	static public final int REQUEST_TIMEZONE_CHANGED 		= 10001;
+	static public final int REQUEST_WIFI_SETTING_CHANGED 	= 10002;
+	static public final int REQUEST_NIGHT_VISION_CHANGED 	= 10003;
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -381,6 +392,10 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 					monitorAsyncTask(new BeseyeCamBEHttpTask.SetWiFiConfigTask(this), true, mStrVCamID, chosenWifiAPInfo.SSID, chosenWifiAPInfo.password, ""+chosenWifiAPInfo.iCipherIdx);
 				}
 				//mbIsWifiSettingChanged = true;
+			}
+		}else if(REQUEST_NIGHT_VISION_CHANGED== requestCode){
+			if(resultCode == RESULT_OK){
+				updateHWSettingState();
 			}
 		}else
 			super.onActivityResult(requestCode, resultCode, intent);
@@ -455,6 +470,15 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 						miBeginPosOfMicGain = -1;
 					}
 				}}, 0);
+		}else if(task instanceof BeseyeCamBEHttpTask.SetVideoUpsideDownTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					showErrorDialog(R.string.cam_setting_fail_to_update_video_upside_down, false);
+					if(null != mIvViewUpDownCheck){
+						mIvViewUpDownCheck.setVisibility((View.VISIBLE == mIvViewUpDownCheck.getVisibility())?View.INVISIBLE:View.VISIBLE);
+					}
+				}}, 0);
 		}else if(task instanceof BeseyeCamBEHttpTask.SetCamTimezoneTask){
 			showErrorDialog(R.string.cam_setting_fail_to_update_timezone, false);
 		}else
@@ -525,6 +549,14 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				
 				if(null != mIvViewUpDownCheckBg){
 					mIvViewUpDownCheckBg.setEnabled(!bIsCamDisconnected);
+				}
+				
+				if(null != mIvViewUpDownCheck){
+					mIvViewUpDownCheck.setEnabled(!bIsCamDisconnected);
+					JSONObject imageObj = BeseyeJSONUtil.getJSONObject(dataObj, IMG_OBJ);
+					if(null != imageObj){
+						mIvViewUpDownCheck.setVisibility((getJSONBoolean(imageObj, CAM_UPSIDE_DOWN, false))?View.VISIBLE:View.INVISIBLE);
+					}
 				}
 				
 				if(null != mVgTimezone){
@@ -605,6 +637,21 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					setActivityResultWithCamObj();
+				}
+			}else if(task instanceof BeseyeCamBEHttpTask.SetVideoUpsideDownTask){
+				if(0 == iRetCode){
+					Log.i(TAG, "onPostExecute(), "+result.toString());
+					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
+					if(null != dataObj){
+						JSONObject imageObj = BeseyeJSONUtil.getJSONObject(dataObj, IMG_OBJ);
+						if(null != imageObj){
+							BeseyeJSONUtil.setJSONBoolean(imageObj, CAM_UPSIDE_DOWN, BeseyeJSONUtil.getJSONBoolean(result.get(0), CAM_UPSIDE_DOWN));
+						}
+					}
+					
+					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
+					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
+					setActivityResultWithCamObj();	
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetImageSettingTask){
 				if(0 == iRetCode)
