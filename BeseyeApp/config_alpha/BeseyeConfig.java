@@ -1,12 +1,5 @@
 package com.app.beseye.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.app.beseye.setting.CamSettingMgr;
-
 public class BeseyeConfig {
 	static public final String TAG = "BesEye";
 	
