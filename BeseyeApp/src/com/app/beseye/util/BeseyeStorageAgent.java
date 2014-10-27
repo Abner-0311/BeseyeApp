@@ -25,8 +25,8 @@ public class BeseyeStorageAgent {
 	static private boolean sExternalStorageWriteable = false;
 	
 	static private final int MIN_STORAGE_VOLUME = 1024*1024*10;//10MB
-	static private final int MAX_CACHE_VOLUME = 1024*1024*6;//6MB
-	static private final String CACHE_FOLDER = "Cache";
+	static private final int MAX_CACHE_VOLUME = 1024*1024*10;//10MB
+	static private final String CACHE_FOLDER = "cache";
 	
 	static private OnSDCardNotifyListener sSDCardListener = null;
 	
@@ -133,17 +133,17 @@ public class BeseyeStorageAgent {
 	    // otherwise use internal cache dir
 	    final String cachePath = canUseExternalStorage()//Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
 	            /*|| !Environment.isExternalStorageRemovable()*/ ?
-	                    context.getExternalCacheDir().getPath() : context.getCacheDir().getPath();
+	                    context.getExternalCacheDir().getAbsolutePath() : context.getCacheDir().getAbsolutePath();
 
 	    return new File(cachePath + File.separator + uniqueName);
 	}
 	
 	public static boolean checkInternalSpaceEnough(Context context){
-		return checkEnoughSpaceInFolder(context.getCacheDir().getPath());
+		return checkEnoughSpaceInFolder(context.getCacheDir().getAbsolutePath());
 	}
 	
 	public static boolean checkExternalSpaceEnough(Context context){
-		return canUseExternalStorage() && checkEnoughSpaceInFolder(context.getExternalCacheDir().getPath());
+		return canUseExternalStorage() && checkEnoughSpaceInFolder(context.getExternalCacheDir().getAbsolutePath());
 	}
 	
 	public static boolean checkEnoughSpaceInFolder(String Folder){
@@ -190,6 +190,7 @@ public class BeseyeStorageAgent {
 		}
 		return bRes;
 	}
+	static private AsyncTask sCheckCacheTask;
 	
 	public static boolean doCheckCacheSize(Context context){
 		try{
@@ -203,8 +204,6 @@ public class BeseyeStorageAgent {
 		return true;
 	}
 	
-	static private AsyncTask sCheckCacheTask;
-	
 	static private class CacheSizeCheckTask extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected void onCancelled() {
@@ -217,6 +216,7 @@ public class BeseyeStorageAgent {
 			sCheckCacheTask = null;
 		}
 		private Context mContext;
+		
 		CacheSizeCheckTask(Context context){
 			mContext = context;
 		}
@@ -236,9 +236,65 @@ public class BeseyeStorageAgent {
 		Log.d(LOG_TAG, "checkCacheSize() -");
 	}
 	
+	static private AsyncTask sDeleteCacheTask;
+	
+	public static boolean doDeleteCacheSize(Context context){
+		try{
+			if(null == sDeleteCacheTask){
+				sDeleteCacheTask = new CacheDeleteTask(context).execute();
+				return false;
+			}
+		}catch(RejectedExecutionException ex){
+			Log.e(LOG_TAG, "doDeleteCacheSize(), "+ex.toString());
+		}
+		return true;
+	}
+	
+	static private class CacheDeleteTask extends AsyncTask<Void, Void, Void> {
+		@Override
+		protected void onCancelled() {
+			super.onCancelled();
+			sDeleteCacheTask = null;
+		}
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			sDeleteCacheTask = null;
+		}
+		private Context mContext;
+		
+		CacheDeleteTask(Context context){
+			mContext = context;
+		}
+		@Override
+		protected Void doInBackground(Void... params) {
+			deleteCache(mContext);
+			return null;
+		}
+	}
+	
+	public static void deleteCache(Context context){
+		Log.d(LOG_TAG, "deleteCache() +");
+		//File cacheFolder = new File(context.getCacheDir().getAbsolutePath()+ File.separator + CACHE_FOLDER);
+		File cacheFolder = context.getCacheDir();
+		if(null != cacheFolder && cacheFolder.exists()){
+			deleteDir(cacheFolder);
+		}
+		
+		if(canUseExternalStorage()){
+			//File cacheExtenalFolder = new File(context.getExternalCacheDir().getAbsolutePath()+ File.separator + CACHE_FOLDER);
+			File cacheExtenalFolder = context.getExternalCacheDir();
+			if(null != cacheExtenalFolder){
+				deleteDir(cacheExtenalFolder);
+			}
+		}
+		Log.d(LOG_TAG, "deleteCache() -");
+	}
+	
 	private static void checkInternalCache(Context context){
 		try {
-			File cacheFolder = new File(context.getCacheDir().getPath()+ File.separator + CACHE_FOLDER);
+			//File cacheFolder = new File(context.getCacheDir().getAbsolutePath()+ File.separator + CACHE_FOLDER);
+			File cacheFolder = context.getCacheDir();
 			if(null != cacheFolder && cacheFolder.exists()){
 				File[] files = cacheFolder.listFiles();
 				if(0 ==  files.length)
@@ -247,14 +303,15 @@ public class BeseyeStorageAgent {
 				if(canUseExternalStorage()){
 					//try to migrate the internal data to external 
 					Log.d(LOG_TAG, "checkInternalCache(), try to migrate the internal data to external");
-					File cacheExtenalFolder = new File(context.getExternalCacheDir().getPath()+ File.separator + CACHE_FOLDER);
+					//File cacheExtenalFolder = new File(context.getExternalCacheDir().getAbsolutePath()+ File.separator + CACHE_FOLDER);
+					File cacheExtenalFolder = context.getExternalCacheDir();
 					if(null != cacheExtenalFolder){
 						cacheExtenalFolder.mkdir();
 						for(File file:files){
 							if(null == file)
 								continue;
 							
-							File fileExternal = new File(context.getExternalCacheDir().getPath()+ File.separator +file.getName());
+							File fileExternal = new File(cacheExtenalFolder.getAbsolutePath()+ File.separator +file.getName());
 							if(null != fileExternal && (!fileExternal.exists() || (file.lastModified() > fileExternal.lastModified()))){
 								copyFile(file, fileExternal);
 							}
@@ -267,13 +324,17 @@ public class BeseyeStorageAgent {
 					Arrays.sort(files, fileLastModifiedComparator);
 					
 					long lTotalSize = 0;
+					long lTotalDeleteSize = 0;
 					for(File file:files){
 						if(MAX_CACHE_VOLUME < (lTotalSize + file.length())){
+							lTotalDeleteSize+=file.length();
 							file.delete();
 						}else{
 							lTotalSize+=file.length();
 						}
 					}
+					
+					Log.d(LOG_TAG, "checkInternalCache(), lTotalSize:"+lTotalSize+", lTotalDeleteSize:"+lTotalDeleteSize);
 				}
 			}
 		} catch (IOException e) {
@@ -282,7 +343,9 @@ public class BeseyeStorageAgent {
 	}
 	
 	private static void checkExternalCache(Context context){
-		File cacheExtenalFolder = new File(context.getExternalCacheDir().getPath()+ File.separator + CACHE_FOLDER);
+		//File cacheExtenalFolder = new File(context.getExternalCacheDir().getAbsolutePath()+ File.separator + CACHE_FOLDER);
+		//Log.d(LOG_TAG, "checkExternalCache(), cacheExtenalFolder is "+cacheExtenalFolder.getAbsolutePath());
+		File cacheExtenalFolder = context.getExternalCacheDir();
 		if(null != cacheExtenalFolder && cacheExtenalFolder.exists()){
 			File[] files = cacheExtenalFolder.listFiles();
 			if(0 ==  files.length)
@@ -293,13 +356,17 @@ public class BeseyeStorageAgent {
 			Arrays.sort(files, fileLastModifiedComparator);
 			
 			long lTotalSize = 0;
+			long lTotalDeleteSize = 0;
 			for(File file:files){
 				if(MAX_CACHE_VOLUME < (lTotalSize + file.length())){
+					lTotalDeleteSize+=file.length();
 					file.delete();
 				}else{
 					lTotalSize+=file.length();
 				}
 			}
+			
+			Log.d(LOG_TAG, "checkExternalCache(), lTotalSize:"+lTotalSize+", lTotalDeleteSize:"+lTotalDeleteSize);
 		}
 	}
 	
@@ -321,5 +388,20 @@ public class BeseyeStorageAgent {
 	        if (outChannel != null)
 	            outChannel.close();
 	    }
+	}
+	
+	private static boolean deleteDir(File dir) {
+	    if (dir != null && dir.isDirectory()) {
+	       String[] children = dir.list();
+	       for (int i = 0; i < children.length; i++) {
+	          boolean success = deleteDir(new File(dir, children[i]));
+	          if (!success) {
+	        	  Log.e(LOG_TAG, "deleteDir(), fail to delete dir :"+children[i]);
+	             return false;
+	          }
+	       }
+	    }
+	    // The directory is now empty so delete it
+	    return dir.delete();
 	}
 }

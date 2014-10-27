@@ -314,6 +314,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	}
                 	mbAppInBackground = true;
                 	checkUserLoginState();
+                	BeseyeStorageAgent.doCheckCacheSize(BeseyeNotificationService.this.getApplicationContext());
                 	break;
                 }
                 case MSG_UPDATE_SESSION_DATA:{
@@ -344,6 +345,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 				mGetIMPEventListTask.cancel(true);
                 				mGetIMPEventListTask = null;
                 			}
+                			BeseyeStorageAgent.doDeleteCacheSize(BeseyeNotificationService.this.getApplicationContext());
                 		}//If Login
                 		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid()){
                 			registerGCMServer();
