@@ -1,5 +1,7 @@
 package com.app.beseye.util;
 
+import android.util.Log;
+
 public class BeseyeConfig {
 	static public final String TAG = "BesEye";
 	
@@ -68,6 +70,8 @@ public class BeseyeConfig {
 //	static public final List<String> STREAM_PATH_LIST = new ArrayList<String>();
 //	static public final Map<String, String> REDDOT_STREAM_PATH_MAP = new HashMap<String, String>();
 	static{
+		Log.i(TAG, "BeseyeConfig init, BeseyeConfig.DEBUG:"+ BeseyeConfig.DEBUG);
+		
 //		if(REDDOT_DEMO){
 //			for(int i = 1; i<= REDDOT_STREAM_PATH.length;i++){
 //				STREAM_PATH_LIST.add(REDDOT_STREAM_PATH[i-1]);

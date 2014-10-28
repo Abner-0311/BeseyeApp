@@ -133,6 +133,8 @@
     <target name="switch-config">
         <echo>Configuration file: ${config.filename}</echo>
         <property name="config-target-path" value="${source.dir}/${config-target-dir-path}" />
+        <echo>Saving original Config...</echo>
+	    <copy file="${config-target-path}/BeseyeConfig.java" tofile="BeseyeConfig.java.bak" />
         <copy file="${config.filename}" todir="${config-target-path}" overwrite="true" encoding="utf-8">
         </copy>
     </target>
@@ -161,7 +163,9 @@
     </target>
     
     <target name="-recover-config">
-        <antcall target="-release-alpha"></antcall>
+        <property name="config-target-path" value="${source.dir}/${config-target-dir-path}" />
+        <copy file="BeseyeConfig.java.bak" tofile="${config-target-path}/BeseyeConfig.java" />
+        <delete file="BeseyeConfig.java.bak" quiet="true" />
     </target>
     
     <target name="-save-manifest">
