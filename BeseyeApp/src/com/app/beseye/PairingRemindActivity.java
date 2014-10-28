@@ -1,5 +1,7 @@
 package com.app.beseye;
 
+import com.app.beseye.widget.GifMovieView;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +18,11 @@ public class PairingRemindActivity extends BeseyeAccountBaseActivity {
 		mBtnStart = (Button)findViewById(R.id.button_start);
 		if(null != mBtnStart){
 			mBtnStart.setOnClickListener(this);
+		}
+		
+		GifMovieView gifTop = (GifMovieView)findViewById(R.id.iv_before_setup_top_img);
+		if(null != gifTop){
+			gifTop.setMovieResource(R.drawable.signup_blinking_green);
 		}
 	}
 	

@@ -1922,10 +1922,10 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				LOGE("wifi connection check , trial %d.............\n", iTrials);
 				//iNetworkRet = checkInternetStatus(NETWORK_CHECK_HOST);
 
-				iNetworkRet = invokeSystem("/beseye/util/curl www.beseye.com") >> 8;
+				iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 3 www.beseye.com") >> 8;
 
 				if(iNetworkRet != 0)
-					iNetworkRet = invokeSystem("/beseye/util/curl www.alibaba.com.cn") >> 8;
+					iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 3 www.alibaba.com.cn") >> 8;
 
 				//LOGE("wifi check ret:%d, iTrials:%ld\n", iNetworkRet, iTrials));
 			}while( (15 > iTrials) && (iNetworkRet != 0));

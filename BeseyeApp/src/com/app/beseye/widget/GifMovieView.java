@@ -128,9 +128,9 @@ public class GifMovieView extends View {
 
             float scaleH = 1f;
             int measureModeWidth = MeasureSpec.getMode(widthMeasureSpec);
-            if (measureModeWidth != MeasureSpec.UNSPECIFIED) {
+            if (measureModeWidth == MeasureSpec.EXACTLY) {
                 int maximumWidth = MeasureSpec.getSize(widthMeasureSpec);
-                if (movieWidth > maximumWidth) {
+                if (movieWidth != maximumWidth) {
                     scaleH = (float) movieWidth / (float) maximumWidth;
                 }
             }
@@ -140,10 +140,10 @@ public class GifMovieView extends View {
 
             float scaleW = 1f;
             int measureModeHeight = MeasureSpec.getMode(heightMeasureSpec);
-
-            if (measureModeHeight != MeasureSpec.UNSPECIFIED) {
+            
+            if (measureModeHeight == MeasureSpec.EXACTLY) {
                 int maximumHeight = MeasureSpec.getSize(heightMeasureSpec);
-                if (movieHeight > maximumHeight) {
+                if (movieHeight != maximumHeight) {
                     scaleW = (float) movieHeight / (float) maximumHeight;
                 }
             }

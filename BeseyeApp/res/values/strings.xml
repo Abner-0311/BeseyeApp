@@ -46,7 +46,9 @@
     <string name="event_cam_view">Event</string>
     <string name="event_go_live">Go Live</string>
     <string name="event_itm_live">Live</string>
-   
+    
+    <string name="dialog_btn_let_it_bee">Let it bee™</string>
+    
     <string name="can_power_state_off">The cam is off</string>
     <string name="can_power_state_disconnect">This cam is not connected</string>
 
@@ -204,7 +206,7 @@
 	<string name="streaming_error_unknown">Unknown error. Please try again later.</string>
 	<string name="streaming_error_low_mem">App is unstable due to low memory. Please relaunch it again.</string>
 	
-	<string name="signup_paring_title_1">Waking up camera by Let it bee</string>
+	<string name="signup_paring_title_1">Waking up camera by Let it bee™</string>
 	<string name="signup_paring_title_2">Please hold on</string>
 	<string name="signup_paring_percentage">100%</string>
 	
@@ -236,7 +238,7 @@
 	<string name="signup_bottom_login">Log in</string>
 	<string name="signup_bottom_signup">Setup camera and Sign up</string>
 	<string name="signup_before_setup_start">Start</string>
-	<string name="signup_before_setup_description">Please plug in your camera and place it to within 30 centimeters distance of you</string>
+	<string name="signup_before_setup_description">Please plug in your camera, and wait until green light is blinking, and place it to within 30 centimeters distance of you</string>
 	<string name="signup_sound_reminder_description">To wake up camera, your smart device will start beeping in next step!</string>
 	<string name="signup_createAccount_description_title">By continuing, I agree to Beseye\'s</string>
 	<string name="signup_createAccount_description_terms">Terms of service</string>
