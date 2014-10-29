@@ -35,7 +35,7 @@
 		       android:id="@+id/iv_before_setup_top_img"
 		       android:layout_width="fill_parent"
 		       android:layout_height="fill_parent"
-		       android:scaleType="centerCrop"
+
 			   android:layout_below="@+id/tv_before_setup_description"
 			   android:layout_marginTop="25dp"
 		       android:src="@drawable/signup_sound_reminder_page_android" />

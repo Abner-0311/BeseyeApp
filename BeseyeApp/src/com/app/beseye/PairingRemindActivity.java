@@ -1,14 +1,17 @@
 package com.app.beseye;
 
-import com.app.beseye.widget.GifMovieView;
+import com.app.beseye.util.BeseyeUtils;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class PairingRemindActivity extends BeseyeAccountBaseActivity {
 	static public final String KEY_ADD_CAM_FROM_LIST = "KEY_ADD_CAM_FROM_LIST";
 	private Button mBtnStart;
+	private ImageView mIvSetupHint;
+	private boolean mbFirstPic = true;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -20,11 +23,42 @@ public class PairingRemindActivity extends BeseyeAccountBaseActivity {
 			mBtnStart.setOnClickListener(this);
 		}
 		
-		GifMovieView gifTop = (GifMovieView)findViewById(R.id.iv_before_setup_top_img);
-		if(null != gifTop){
-			gifTop.setMovieResource(R.drawable.signup_blinking_green);
-		}
+		mIvSetupHint = (ImageView)findViewById(R.id.iv_before_setup_top_img);
+
+//		GifMovieView gifTop = (GifMovieView)findViewById(R.id.iv_before_setup_top_img);
+//		if(null != gifTop){
+//			int iDeviceWidth = BeseyeUtils.getDeviceWidth(this);
+//			int iGifRedId = R.drawable.signup_blinking_green_720;
+//			if(iDeviceWidth >= 1080){
+//				iGifRedId = R.drawable.signup_blinking_green_1080;
+//			}
+//			gifTop.setMovieResource(iGifRedId);
+//		}
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		BeseyeUtils.removeRunnable(mPlayAnimationRunnable);
+		BeseyeUtils.postRunnable(mPlayAnimationRunnable, ANI_PLAY_INTERVAL);
+	}
+
+	@Override
+	protected void onPause() {
+		BeseyeUtils.removeRunnable(mPlayAnimationRunnable);
+		super.onPause();
+	}
+
+	static private long ANI_PLAY_INTERVAL = 200L;
+	private Runnable mPlayAnimationRunnable = new Runnable(){
+		@Override
+		public void run() {
+			if(null != mIvSetupHint){
+				mIvSetupHint.setImageResource(mbFirstPic?R.drawable.signup_blinking_green_02:R.drawable.signup_blinking_green_01);
+				mbFirstPic=!mbFirstPic;
+			}
+			BeseyeUtils.postRunnable(this, ANI_PLAY_INTERVAL);
+		}};
 	
 	@Override
 	protected int getLayoutId() {

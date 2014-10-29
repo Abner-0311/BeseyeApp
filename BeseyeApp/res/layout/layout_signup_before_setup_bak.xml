@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/signup_bg_color" >
-
     <RelativeLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="0dp"
-        android:layout_weight="80">
+        android:layout_weight="78">
 	
 		<TextView
 		    android:id="@+id/tv_before_setup_description"
@@ -25,22 +24,17 @@
 		    android:textSize="@dimen/login_fontNormal" 
 		    android:layout_alignParentBottom="true"/>
 		
-		<ImageView
+		<com.app.beseye.widget.GifMovieView
 	        android:id="@+id/iv_before_setup_top_img"
-	       	android:layout_width="match_parent"
-		    android:layout_height="match_parent"
+	       	android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
 	        android:layout_centerHorizontal="true"
-	        android:layout_alignParentTop="true"
-	        android:layout_marginLeft="16dp"
-		    android:layout_marginRight="16dp"
-	        android:layout_above="@+id/tv_before_setup_description"
-	        android:src="@drawable/signup_blinking_green_01">
-		</ImageView>	
+	        android:layout_above="@+id/tv_before_setup_description"/>
 	</RelativeLayout>
     <RelativeLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="0dp"
-        android:layout_weight="20">
+        android:layout_weight="22">
 	
 		<Button
 		    android:id="@+id/button_start"

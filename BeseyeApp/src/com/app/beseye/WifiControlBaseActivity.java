@@ -12,6 +12,7 @@ import com.app.beseye.delegator.WifiAPSetupDelegator.OnWifiApSetupCallback;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.pairing.SoundPairingActivity;
+import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.util.NetworkMgr.OnWifiScanResultAvailableCallback;
@@ -296,6 +297,13 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		if(null != mlstScanResult){
 			NetworkMgr.getInstance().filterWifiAPInfo(mlstScanResult, NetworkMgr.getInstance().getWifiScanList());
 			onWiFiScanComplete();
+			if(null != mlstScanResult && 0 == mlstScanResult.size()){
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						scanWifi(false);
+					}}, 2000);
+			}
 		}
 	}
 	
