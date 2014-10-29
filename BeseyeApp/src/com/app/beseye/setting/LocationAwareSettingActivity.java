@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
+import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -108,13 +109,15 @@ public class LocationAwareSettingActivity extends BeseyeBaseActivity
 		super.onSessionComplete();
 	}
 	
-	
 	@Override
 	protected void onResume() {
 		Log.i(TAG, "LocationAwareSettingActivity::onResume()");
 		super.onResume();
 		if(!mbFirstResume){
-
+			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
+			
+			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA))
+				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}
 	}
 

@@ -238,7 +238,7 @@ public class BeseyeStorageAgent {
 	
 	static private AsyncTask sDeleteCacheTask;
 	
-	public static boolean doDeleteCacheSize(Context context){
+	public static boolean doDeleteCache(Context context){
 		try{
 			if(null == sDeleteCacheTask){
 				sDeleteCacheTask = new CacheDeleteTask(context).execute();
@@ -289,6 +289,66 @@ public class BeseyeStorageAgent {
 			}
 		}
 		Log.d(LOG_TAG, "deleteCache() -");
+	}
+	
+	static private AsyncTask sDeleteCacheByFolderTask;
+	
+	public static boolean doDeleteCacheByFolder(Context context, String strFolder){
+		try{
+			if(null == sDeleteCacheTask){
+				sDeleteCacheTask = new DeleteCacheByFolderTask(context, strFolder).execute();
+				return false;
+			}
+		}catch(RejectedExecutionException ex){
+			Log.e(LOG_TAG, "doDeleteCacheSize(), "+ex.toString());
+		}
+		return true;
+	}
+	
+	static private class DeleteCacheByFolderTask extends AsyncTask<Void, Void, Void> {
+		private Context mContext;
+		private String mStrFolder;
+		
+		DeleteCacheByFolderTask(Context context, String strFolder){
+			mContext = context;
+			mStrFolder = strFolder;
+		}
+		
+		@Override
+		protected void onCancelled() {
+			super.onCancelled();
+			sDeleteCacheByFolderTask = null;
+		}
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			sDeleteCacheByFolderTask = null;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			deleteCacheByFolder(mContext, mStrFolder);
+			return null;
+		}
+	}
+	
+	public static void deleteCacheByFolder(Context context, String strFolder){
+		Log.d(LOG_TAG, "deleteCacheByFolder() +, strFolder:"+strFolder);
+		if(null != strFolder && 0 < strFolder.length()){
+			File cacheFolder = new File(context.getCacheDir().getAbsolutePath()+ File.separator + strFolder);
+			if(null != cacheFolder && cacheFolder.exists()){
+				deleteDir(cacheFolder);
+			}
+			
+			if(canUseExternalStorage()){
+				File cacheExtenalFolder = new File(context.getExternalCacheDir().getAbsolutePath()+ File.separator + strFolder);
+				if(null != cacheExtenalFolder){
+					deleteDir(cacheExtenalFolder);
+				}
+			}
+		}
+		
+		Log.d(LOG_TAG, "deleteCacheByFolder() -");
 	}
 	
 	private static void checkInternalCache(Context context){

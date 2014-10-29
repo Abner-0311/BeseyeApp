@@ -33,9 +33,11 @@ import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.pairing.SoundPairingActivity;
+import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
@@ -207,16 +209,17 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			miLastTaskSeedNum = -1;
 		}
 		
-		if(-1 == miLastTaskSeedNum && false == this.mbFirstResume && (null != mCameraListAdapter && 0 < mCameraListAdapter.getCount())){
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					miCurUpdateIdx = 0;
-					updateCamItm(++miTaskSeedNum);
-				}}, 0);
-		}
+//		if(-1 == miLastTaskSeedNum && false == this.mbFirstResume && (null != mCameraListAdapter && 0 < mCameraListAdapter.getCount())){
+//			BeseyeUtils.postRunnable(new Runnable(){
+//				@Override
+//				public void run() {
+//					miCurUpdateIdx = 0;
+//					updateCamItm(++miTaskSeedNum);
+//				}}, 0);
+//		}
 		
-		if(false == this.mbFirstResume){
+		if(false == mbFirstResume){
+			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this).setDialogId(-1), true);
 			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeNewsActivity.DEF_NEWS_LANG);
 		}
 		
@@ -270,6 +273,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 				
 				mBundleDemo.putString(KEY_DEMO_CAM_INFO, objVCamList.toString());
+				mBundlePrivate.putString(KEY_DEMO_CAM_INFO, objVCamList.toString());
 				
 				if(checkCamUpdateFlag()){
 					resumeCamUpdate(arrCamList);
@@ -327,6 +331,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 								if(null != oldObj && strNewVcamid.equals(BeseyeJSONUtil.getJSONString(oldObj, BeseyeJSONUtil.ACC_ID))){
 									try {
 										newObj.put(BeseyeJSONUtil.ACC_DATA, BeseyeJSONUtil.getJSONObject(oldObj, BeseyeJSONUtil.ACC_DATA));
+										arrCamListOld.put(idxOld, null);
 									} catch (JSONException e) {
 										e.printStackTrace();
 									}
@@ -334,6 +339,15 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 								}
 							}
 						}
+					}
+				}
+				
+				for(int idxOld = 0; idxOld < arrCamListOld.length();idxOld++){
+					JSONObject oldObj = arrCamListOld.optJSONObject(idxOld);
+					if(null != oldObj){
+						BeseyeJSONUtil.setJSONBoolean(oldObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED, false);
+						BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(BeseyeJSONUtil.getJSONString(oldObj, BeseyeJSONUtil.ACC_ID), oldObj);
+						BeseyeStorageAgent.doDeleteCacheByFolder(this, BeseyeJSONUtil.getJSONString(oldObj, BeseyeJSONUtil.ACC_ID));
 					}
 				}
 			}		
@@ -526,11 +540,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			return;
 		}
 		
-		if(!mActivityResume){
-			Log.e(TAG, "updateCamItm(), mActivityResume="+mActivityResume+", iSeed="+iSeed);
-			miLastTaskSeedNum  = iSeed;
-			return;
-		}
+//		if(!mActivityResume){
+//			Log.e(TAG, "updateCamItm(), mActivityResume="+mActivityResume+", iSeed="+iSeed);
+//			miLastTaskSeedNum  = iSeed;
+//			return;
+//		}
 		
 		if(null != mCameraListAdapter){
 			JSONArray arrCamList = mCameraListAdapter.getJSONList();
@@ -908,6 +922,53 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     	Log.i(TAG, "setOnResumeUpdateCamListRunnable()");
     	mOnResumeUpdateCamListRunnable = run;
     }
+	
+	@Override
+    protected boolean onCameraActivated(JSONObject msgObj){
+		Log.i(TAG, getClass().getSimpleName()+"::onCameraActivated(),  msgObj = "+msgObj);
+		if(null != msgObj){
+    		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+    		if(null != objCus){
+    			if(false == mActivityResume){
+					setOnResumeUpdateCamListRunnable(new Runnable(){
+						@Override
+						public void run() {
+							monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this).setDialogId(-1), true);
+						}});
+					mOnResumeUpdateCamInfoRunnable = null;
+				}else{
+					monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this).setDialogId(-1), true);
+				}
+    			Toast.makeText(this, getString(R.string.toast_new_cam_activated), Toast.LENGTH_SHORT).show();
+    			return true;
+    		}
+		}
+    	return false;
+    }
+	
+	@Override
+	protected boolean onCameraDeactivated(JSONObject msgObj){
+		Log.i(TAG, getClass().getSimpleName()+"::onCameraDeactivated(),  msgObj = "+msgObj);
+		if(null != msgObj){
+			JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+			if(null != objCus){
+				//String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+				if(false == mActivityResume){
+					setOnResumeUpdateCamListRunnable(new Runnable(){
+						@Override
+						public void run() {
+							monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this).setDialogId(-1), true);
+						}});
+					mOnResumeUpdateCamInfoRunnable = null;
+				}else{
+					monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this).setDialogId(-1), true);
+				}
+				Toast.makeText(this, String.format(getString(R.string.toast_cam_deactivated), BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME)), Toast.LENGTH_SHORT).show();
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {

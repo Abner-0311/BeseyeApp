@@ -123,7 +123,10 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 		Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
 		if(!mbFirstResume){
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
+			
+			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA))
+				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}
 	}
 	

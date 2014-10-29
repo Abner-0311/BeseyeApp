@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
+import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -127,6 +128,17 @@ public class NightVisionActivity extends BeseyeBaseActivity {
 	@Override
 	protected void updateUICallback(){
 		updateUIByCamObj();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(!mbFirstResume){
+			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
+			
+			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA))
+				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+		}
 	}
 	
 	@Override

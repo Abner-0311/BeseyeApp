@@ -622,6 +622,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		checkAndExtendHideHeader();
 		
 		if(!mbFirstResume || mbIsRetryAtNextResume){
+			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
 			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 			triggerPlay();
 		}
@@ -636,7 +637,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
 			}
 		}
-		
 		
 		triggerPlay();
 	}
@@ -1125,18 +1125,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					mbIsCamSettingChanged = false;
 				}
 			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
-				if(0 == iRetCode){
-					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
-					JSONObject vcamObj = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_VCAM);
-					if(null != vcamObj){
-						mStrVCamName = BeseyeJSONUtil.getJSONString(vcamObj, BeseyeJSONUtil.ACC_NAME);
-						BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN, BeseyeJSONUtil.getJSONInt(vcamObj, BeseyeJSONUtil.ACC_VCAM_PLAN));
-						
-						//mbVCamAdmin  = BeseyeJSONUtil.getJSONBoolean(vcamObj, BeseyeJSONUtil.ACC_SUBSC_ADMIN);
-						applyCamAttr();
-						Log.e(TAG, "onPostExecute(), mStrVCamID:"+mStrVCamID);
-					}
-				}
+				super.onPostExecute(task, result, iRetCode);
 				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
 			}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 				if(0 == iRetCode){
@@ -2445,6 +2434,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(null != strVcamId && strVcamId.equals(mStrVCamID)){
 			mbIsCamSettingChanged = true;
 			updateAttrByCamObj();
+			applyCamAttr();
 			
 			if(mbIsLiveMode){
 				if(mActivityResume){

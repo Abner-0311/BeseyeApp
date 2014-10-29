@@ -36,6 +36,7 @@ import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.HWSettingsActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
 import com.app.beseye.util.BeseyeUtils;
 
@@ -656,19 +657,40 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					onServerError();
 				}
 			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
-				if(task == mGetNewCamTask){
-					if(0 == iRetCode){
-						JSONObject cam_obj = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_VCAM);
-						if(null != cam_obj){
+				if(0 == iRetCode){
+					JSONObject cam_obj = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_VCAM);
+					if(null != cam_obj){
+						if(task == mGetNewCamTask){
 							//workaround
 							SessionMgr.getInstance().setIsCertificated(true);						
 							Bundle b = new Bundle();
 							b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
 							launchDelegateActivity(SoundPairingNamingActivity.class.getName(), b);
+							
+							mGetNewCamTask = null;
+						}else{
+							String strVcamId = BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID);
+							if(false == BeseyeJSONUtil.getJSONBoolean(cam_obj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+								BeseyeStorageAgent.doDeleteCacheByFolder(this, strVcamId);
+								if(null != strVcamId && strVcamId.equals(mStrVCamID)){
+									if(mActivityResume){
+					    				Toast.makeText(this, String.format(getString(R.string.toast_cam_deactivated), BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME)), Toast.LENGTH_SHORT).show();
+									}
+									finish();
+								}
+							}
+							
+							if(null != mCam_obj){
+								BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME));
+								BeseyeJSONUtil.setJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ATTACHED, BeseyeJSONUtil.getJSONBoolean(cam_obj, BeseyeJSONUtil.ACC_VCAM_ATTACHED));
+								BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN, BeseyeJSONUtil.getJSONInt(cam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN));
+							}else{
+								mCam_obj = cam_obj;
+							}
+							
+							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(strVcamId, mCam_obj);
 						}
 					}
-					
-					mGetNewCamTask = null;
 				}
 			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 				if(0 == iRetCode){

@@ -81,6 +81,12 @@ public class BeseyeCamInfoSyncMgr {
 						listener.onCamSetupChanged(strVcamId, BeseyeJSONUtil.getJSONLong(objCamSetup, BeseyeJSONUtil.OBJ_TIMESTAMP), objCamSetup);
 					}
 				}
+				
+				if(false == BeseyeJSONUtil.getJSONBoolean(objCamSetup, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+					if(null != mMapCamInfo){
+						mMapCamInfo.remove(strVcamId);
+					}
+				}
 			}}, 0);
 	}
 }

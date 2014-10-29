@@ -206,80 +206,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	}
                 	break;
                 }
-//                case MSG_CHECK_NOTIFY_NUM:{
-//                	if(!SessionMgr.getInstance().isUseridValid() || !SessionMgr.getInstance().getIsCertificated()){
-//                		//sendMessageDelayed(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0), 30*1000L);
-//                		return;
-//                	}
-//                	
-//                	if(null == mNotificationInfoTask || mNotificationInfoTask.getStatus().equals(AsyncTask.Status.FINISHED)){
-//                		mNotificationInfoTask = new iKalaNotificationTask.LoadNotificationInfoTask(BeseyeNotificationService.this);
-//                        if(null != mNotificationInfoTask){
-//                        	mNotificationInfoTask.execute(SessionMgr.getInstance().getMdid());
-//                        }
-//                        mNotifyInfo = null;
-//                	}
-//                    break;
-//                }
-//                case MSG_CHECK_UNREAD_MSG_NUM:{
-//                	if(!SessionMgr.getInstance().isUseridValid() || !SessionMgr.getInstance().getIsCertificated()){
-//                		//sendMessageDelayed(Message.obtain(null,MSG_CHECK_UNREAD_MSG_NUM,0,0), 30*1000L);
-//                		return;
-//                	}
-//                	
-//                	if(null == mMsgInfoTask || mMsgInfoTask.getStatus().equals(AsyncTask.Status.FINISHED)){
-//                		mMsgInfoTask = new iKalaMsgTask.LoadMsgListInfoTask(BeseyeNotificationService.this);
-//                        if(null != mMsgInfoTask){
-//                        	mMsgInfoTask.execute(SessionMgr.getInstance().getMdid());
-//                        }
-//                	}
-//                    break;
-//                }
-//                case MSG_QUERY_NOTIFY_NUM:
-//                case MSG_SET_NOTIFY_NUM:{
-//                	if(null == mNotifyInfo){
-//                		sendMessage(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0));
-//                		break;
-//                	}
-//                	
-//              	  	int iUnreadNot = getUnreadNotificationNum();
-//                	if(Configuration.DEBUG)
-//                		Log.i(TAG, "MSG_QUERY_NOTIFY_NUM, iUnreadNot "+iUnreadNot);
-//                	for (int i=mClients.size()-1; i>=0; i--) {
-//	                      try {
-//	                          mClients.get(i).send(Message.obtain(null,
-//	                        		  MSG_SET_NOTIFY_NUM, iUnreadNot, 0));
-//	                      } catch (RemoteException e) {
-//	                          // The client is dead.  Remove it from the list;
-//	                          // we are going through the list from back to front
-//	                          // so this is safe to do inside the loop.
-//	                          mClients.remove(i);
-//	                      }
-//	                  }
-//                	break;
-//                }
-//                
-//                case MSG_SET_UNREAD_MSG_NUM:{
-//                	/*if(shouldPullMsg())*/{
-//                		int iUnreadMsg = getUnreadMsgNum();
-//                		if(Configuration.DEBUG)
-//                    		Log.i(TAG, "MSG_SET_UNREAD_MSG_NUM, iUnreadMsg "+iUnreadMsg);
-//	                	for (int i=mClients.size()-1; i>=0; i--) {
-//		                      try {
-//		                          mClients.get(i).send(Message.obtain(null,
-//		                        		  MSG_SET_UNREAD_MSG_NUM, iUnreadMsg, 0));
-//		                      } catch (RemoteException e) {
-//		                          mClients.remove(i);
-//		                      }
-//		                }
-//                	}
-//                	break;
-//                }
-//                case MSG_SHOW_NOTIFICATION:{
-//                	if(iKalaFeatureTable.ENABLED_PUSH_SERVICE)
-//                		showFirstUnreadNotification();
-//                	break;
-//                }
                 case MSG_CHECK_CACHE_STATE:{
                 	if(-1 != msg.arg1){
                 		if(BeseyeStorageAgent.doCheckCacheSize(BeseyeNotificationService.this.getApplicationContext())){
@@ -345,7 +271,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 				mGetIMPEventListTask.cancel(true);
                 				mGetIMPEventListTask = null;
                 			}
-                			BeseyeStorageAgent.doDeleteCacheSize(BeseyeNotificationService.this.getApplicationContext());
+                			BeseyeStorageAgent.doDeleteCache(BeseyeNotificationService.this.getApplicationContext());
                 		}//If Login
                 		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid()){
                 			registerGCMServer();
@@ -1543,6 +1469,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						}
 						mMapNotificationId.remove(strVCamId);
 					}
+					
+					BeseyeStorageAgent.doDeleteCacheByFolder(BeseyeNotificationService.this.getApplicationContext(), strVCamId);
 					break;
 				}
 				case NCODE_WIFI_CHANGED:{

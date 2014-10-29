@@ -38,6 +38,7 @@ import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.WifiControlBaseActivity;
 import com.app.beseye.WifiListActivity;
+import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
@@ -198,9 +199,12 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	protected void onResume() {
 		Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
-		if(!mbFirstResume || null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
+		if(!mbFirstResume){
 			updateHWSettingState();
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
+			
+			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA))
+				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}
 	}
 	

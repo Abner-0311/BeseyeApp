@@ -1,10 +1,8 @@
 package com.app.beseye.setting;
 
-
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.OBJ_TIMESTAMP;
+import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 import java.util.List;
 
@@ -13,40 +11,27 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.app.beseye.BeseyeApplication;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
-import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
-import com.app.beseye.WifiListActivity;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
-import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
@@ -58,12 +43,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 								   implements OnSwitchBtnStateChangedListener{
 	
 	private BeseyeSwitchBtn mCamSwitchBtn;
-	private TextView mTxtPowerDesc,  mTxtPowerTitle, mTxtViewUpDownTitle;
-	private ImageView mIvViewUpDownCheck, mIvViewUpDownCheckBg;
+	private TextView mTxtPowerTitle;
 	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam;
 	
-	private String mStrVCamSN = null;
-	private String mStrVCamMacAddr = null;
 	private int miUnmaskDetachCamHitCount = 0;
 	
 	private View mVwNavBar;
@@ -113,8 +95,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		}
 		
 		mTxtPowerTitle = (TextView)findViewById(R.id.txt_power_title);
-		
-		mTxtPowerDesc = (TextView)findViewById(R.id.txt_power_desc);
 		
 		mVgCamInfo = (ViewGroup)findViewById(R.id.vg_cam_info);
 		if(null != mVgCamInfo){
@@ -183,16 +163,13 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	protected void onResume() {
 		Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
-		if(!mbFirstResume || null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
+		if(!mbFirstResume){
 			updateSettingState();
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
+			
+			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA))
+				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}
-		
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true, mStrVCamID,"1");
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamStatusTask(this), true, mStrVCamID);
-		
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.SetLEDStatusTask(this), true, mStrVCamID,"0");
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetLEDStatusTask(this), true, mStrVCamID);
 		
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.SetSpeakerStatusTask(this), true, mStrVCamID,"1");
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.GetSpeakerStatusTask(this), true, mStrVCamID);
@@ -200,25 +177,15 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.SetSpeakerVolumeTask(this), true, mStrVCamID,"60");
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.GetSpeakerVolumeTask(this), true, mStrVCamID);
 //		
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.SetMicStatusTask(this), true, mStrVCamID,"1");
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetMicStatusTask(this), true, mStrVCamID);
-//		
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.SetMicGainTask(this), true, mStrVCamID,"30");
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetMicGainTask(this), true, mStrVCamID);
-//		
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.SetIRCutStatusTask(this), true, mStrVCamID,"1");
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetIRCutStatusTask(this), true, mStrVCamID);
-//		
-//		
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetImageSettingTask(this), true, mStrVCamID);
-//		
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(this), true, mStrVCamID);
 //		
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.ReconnectMMTask(this), true, mStrVCamID);
-//		
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.SetWiFiConfigTask(this), true, mStrVCamID, "beseye", "0630BesEye", "3");
-//		
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+		
+//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetWiFiConfigTask(this), true, mStrVCamID);
+//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetWiFiSSIDListTask(this), true, mStrVCamID);
+//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetDateTimeTask(this), true, mStrVCamID);
+//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
+		
+		//monitorAsyncTask(new BeseyeCamBEHttpTask.SetImageSettingTask(this), true, mStrVCamID,"0","0","32","32","32","32","32","15");
 	}
 	
 	protected void onSessionComplete(){
@@ -228,12 +195,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		}else{
 			updateSettingState();
 		}
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetWiFiConfigTask(this), true, mStrVCamID);
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetWiFiSSIDListTask(this), true, mStrVCamID);
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetDateTimeTask(this), true, mStrVCamID);
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
-		
-		//monitorAsyncTask(new BeseyeCamBEHttpTask.SetImageSettingTask(this), true, mStrVCamID,"0","0","32","32","32","32","32","15");
 	}
 	
 	private void updateSettingState(){
@@ -275,15 +236,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()){
-			case R.id.iv_video_upside_down_check_bg:{
-				if(null != mIvViewUpDownCheck){
-					mIvViewUpDownCheck.setVisibility((View.VISIBLE == mIvViewUpDownCheck.getVisibility())?View.INVISIBLE:View.VISIBLE);
-					//CamSettingMgr.getInstance().setVideoUpsideDown(TMP_CAM_ID, (View.VISIBLE == mIvViewUpDownCheck.getVisibility())?1:0);
-					BeseyeJSONUtil.setJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, (View.VISIBLE == mIvViewUpDownCheck.getVisibility())?1:0);
-					setActivityResultWithCamObj();
-				}
-				break;
-			}
 			case R.id.vg_cam_info:{
 //				if(null == mStrVCamSN)
 //					monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
@@ -527,19 +479,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 					super.onPostExecute(task, result, iRetCode);
 					updatePowerDesc((BeseyeJSONUtil.getVCamConnStatus(mCam_obj).equals(CAM_CONN_STATUS.CAM_ON))?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
 					updateSettingState();
-				}
-			}else if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask){
-				if(0 == iRetCode){
-					JSONObject obj = result.get(0);
-					if(null != obj){
-						Log.i(TAG, "onPostExecute(), "+obj.toString());
-						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
-						if(null != dataObj){
-							mStrVCamSN = BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.CAM_SN);
-							mStrVCamMacAddr = BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.CAM_MAC_ADDR);
-							showMyDialog(DIALOG_ID_CAM_INFO);
-						}
-					}
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 				if(0 == iRetCode){
