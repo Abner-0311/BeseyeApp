@@ -72,7 +72,7 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 				getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 			}}, 100);
 		
-		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_base_nav, null);
+		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_timezone_nav, null);
 		if(null != mVwNavBar){
 			ImageView mIvBack = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_left_btn);
 			if(null != mIvBack){
@@ -83,6 +83,11 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
 				txtTitle.setText(R.string.title_timezone);
+			}
+			
+			ImageView mIvRight = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_right_btn);
+			if(null != mIvRight){
+				mIvRight.setVisibility(View.GONE);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
