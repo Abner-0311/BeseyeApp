@@ -164,6 +164,7 @@
     
     <target name="-recover-config">
         <property name="config-target-path" value="${source.dir}/${config-target-dir-path}" />
+        <delete file="${config-target-path}/BeseyeConfig.java" quiet="true" />
         <copy file="BeseyeConfig.java.bak" tofile="${config-target-path}/BeseyeConfig.java" />
         <delete file="BeseyeConfig.java.bak" quiet="true" />
     </target>
