@@ -3,12 +3,12 @@ package com.app.beseye.util;
 import android.util.Log;
 
 public class BeseyeConfig {
-	static public final String TAG = "BesEye";
-	public static final String HOCKEY_APP_ID = "1caf00210eb940171eb56a1904a204e8"; 
+	static public final String TAG = "BesEye";	
+	public static final String HOCKEY_APP_ID = "f90a325fb2364345a826c493888913b8"; 
 	
 	static public final boolean DEBUG = true;
 	static public boolean ALPHA_VER = false;
-	static public boolean BETA_VER = false;
+	static public boolean BETA_VER = true;
 	static public boolean PRODUCTION_VER = false;
 	
 	static public final long TIME_TO_CHECK_WIFI_SETUP = 10000L;

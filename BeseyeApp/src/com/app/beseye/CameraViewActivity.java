@@ -604,6 +604,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	protected void onResume() {
 		Log.d(TAG, "CameraViewActivity::onResume()");
+		
 		super.onResume();
 		
 		if(null != mPauseCameraViewRunnable){
@@ -621,19 +622,22 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkAndExtendHideHeader();
 		
-		if(!mbFirstResume || mbIsRetryAtNextResume){
+		if(!mbFirstResume){
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
-			triggerPlay();
+			if(mbIsRetryAtNextResume)
+				triggerPlay();
 		}
 	}
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
 		if(-1 == BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN, -1)){
+			Log.i(TAG, "CameraViewActivity::onSessionComplete(), need to get plan");
+
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this), true, mStrVCamID);
 		}else{
 			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
+				Log.i(TAG, "CameraViewActivity::onSessionComplete(), need to get cam setup");
 				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
 			}
 		}
@@ -1126,7 +1130,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}
 			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
 				super.onPostExecute(task, result, iRetCode);
-				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 			}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 				if(0 == iRetCode){
 					BeseyeJSONUtil.setVCamConnStatus(mCam_obj, (BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.CAM_STATUS)==1)?CAM_CONN_STATUS.CAM_ON:CAM_CONN_STATUS.CAM_OFF);

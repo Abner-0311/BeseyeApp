@@ -184,9 +184,14 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	private void invokeSessionComplete(){
-		if(mbFirstResume)
-			onSessionComplete();
-		mbFirstResume = false;
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(mbFirstResume)
+					onSessionComplete();
+				mbFirstResume = false;
+			}}, 0);
+
 	}
 	
 	protected void onSessionComplete(){
@@ -237,7 +242,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private void checkForUpdates() {
 	    // Remove this for store builds!
-		if(BeseyeApplication.getProcessName().equals("com.app.beseye.alpha") || (DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal()))
+		if(BeseyeUtils.canUpdateFromHockeyApp())
 			UpdateManager.register(this, HOCKEY_APP_ID);
 	}
 	
@@ -689,6 +694,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 							}
 							
 							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(strVcamId, mCam_obj);
+							monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 						}
 					}
 				}

@@ -1,5 +1,6 @@
 package com.app.beseye.util;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.io.BufferedReader;
@@ -215,8 +216,13 @@ public class BeseyeUtils {
 		return bRet;
 	}
 	
+	static public boolean canUpdateFromHockeyApp(){
+		String strProcessName = BeseyeApplication.getProcessName();
+		return (null != strProcessName && 0 < strProcessName.length() && strProcessName.startsWith("com.app.beseye.")) || (DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal());
+	}
+	
 	static public String getAndroidUUid(){
-		return "{Mobile}_{Android}_{"+DeviceUuidFactory.getDeviceUuid()+(BeseyeConfig.PRODUCTION_VER?"-alpha":(BeseyeConfig.ALPHA_VER?"-alpha":"-debug"))+"}";
+		return "{Mobile}_{Android}_{"+DeviceUuidFactory.getDeviceUuid()+(BeseyeConfig.PRODUCTION_VER?"-alpha":(BeseyeConfig.ALPHA_VER?"-alpha":(BeseyeConfig.BETA_VER?"-beta":"-debug")))+"}";
 	}
 	
 	static public String getUserAgent(){

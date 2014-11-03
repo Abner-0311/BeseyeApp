@@ -1083,8 +1083,15 @@ typedef enum{
     PAIRING_DONE
 }Pairing_Mode;
 
+typedef enum{
+	PAIRING_ERR_BASE,
+	PAIRING_ERR_MAC_NOT_FOUND,
+	PAIRING_ERR_COUNT
+}Pairing_Err_Type;
+
 static Pairing_Mode sPairingMode = PAIRING_INIT;
-static Pairing_Mode sPedningPairingMode = PAIRING_NONE;
+static Pairing_Mode sPedningPairingMode = PAIRING_INIT;
+static Pairing_Err_Type sPairingErrType = PAIRING_ERR_BASE;
 static const int ERROR_LED_PERIOD = 10;
 static bool sbNeedToInitBuf = false;
 static int sCurLEDCnt = 0;
@@ -1114,6 +1121,7 @@ void changePairingMode(Pairing_Mode mode){
 		if(PAIRING_ERROR == sPairingMode || (PAIRING_ANALYSIS == sPairingMode && PAIRING_INIT == mode)){
 			sbNeedToInitBuf = true;
 			sPairingMode = PAIRING_INIT;
+			sPairingErrType = PAIRING_ERR_BASE;
 //			sPairingMode = (PAIRING_NONE==sPedningPairingMode)?mode:sPedningPairingMode;
 //			sPedningPairingMode = PAIRING_NONE;
 		}else{
@@ -1127,6 +1135,7 @@ void checkLEDByMode(){
 	if(PAIRING_ERROR == sPairingMode && sCurLEDCnt > ERROR_LED_PERIOD){
 		//sPairingMode = (PAIRING_NONE==sPedningPairingMode)?PAIRING_WAITING:sPedningPairingMode;
 		changePairingMode(PAIRING_INIT);
+		sPairingErrType = PAIRING_ERR_BASE;
 		//sPairingMode = PAIRING_INIT;
 		//sPedningPairingMode = PAIRING_NONE;
 	}
@@ -1200,6 +1209,13 @@ void* AudioTest::verifyToken(void* userdata){
 			if(PAIRING_ERROR == sPairingMode){
 				sCurLEDCnt++;
 				checkLEDByMode();
+				if(sPairingErrType == PAIRING_ERR_MAC_NOT_FOUND){
+					if(0 == sCurLEDCnt%2){
+						setLedLight(0,0,1);
+					}else{
+						setLedLight(1,0,0);
+					}
+				}
 				sbLEDOn = false;
 			}else{
 				sbLEDOn = !sbLEDOn;
@@ -1912,23 +1928,30 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			//long lDelta;
 			int iNetworkRet = 0;
 			int iTrials = 0;
+			msec_t lTimeToChkNetwork = time_ms();
+			msec_t lTimeDelta = 0;
+
 			LOGE("wifi connection check begin.............\n");
 			do{
 				if(0 < iTrials){
-					LOGE("wifi connection check , trial %d failed, ret:%d, sleep.............\n", iTrials, iNetworkRet);
+					//LOGE("wifi connection check , trial %d failed, ret:%d, sleep.............\n", iTrials, iNetworkRet);
 					sleep(1);
 				}
 				++iTrials;
 				LOGE("wifi connection check , trial %d.............\n", iTrials);
 				//iNetworkRet = checkInternetStatus(NETWORK_CHECK_HOST);
 
-				iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 3 www.beseye.com") >> 8;
+				iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.beseye.com") >> 8;
 
 				if(iNetworkRet != 0)
-					iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 3 www.alibaba.com.cn") >> 8;
+					iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.alibaba.com.cn") >> 8;
+
+				lTimeDelta = time_ms() - lTimeToChkNetwork;
+				LOGE("wifi connection check, trial: %d ,iNetworkRet:%d, lTimeDelta:%lld\n", iTrials, iNetworkRet, lTimeDelta);
+			}while((iTrials < 15 && lTimeDelta < 40000L) && 0 != iNetworkRet);
 
 				//LOGE("wifi check ret:%d, iTrials:%ld\n", iNetworkRet, iTrials));
-			}while( (15 > iTrials) && (iNetworkRet != 0));
+			//}while( (15 > iTrials) && (iNetworkRet != 0));
 
 			LOGE("network checking complete, iNetworkRet:%d, iTrials:%ld\n", iNetworkRet, iTrials);
 
@@ -1983,7 +2006,10 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				iRet = restoreWifi();
 			}
 		}else{
-			LOGE("wifi set failed\n");
+			LOGE("wifi set failed, iRet = &d\n", CMD_RET_CODE_MAC_NOT_FOUND);
+			if(CMD_RET_CODE_MAC_NOT_FOUND == iRet){
+				sPairingErrType = PAIRING_ERR_MAC_NOT_FOUND;
+			}
 		}
 	}
 #endif

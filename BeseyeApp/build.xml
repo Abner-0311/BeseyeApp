@@ -88,33 +88,82 @@
     -->
     
     <property name="alpha.package" value="com.app.beseye.alpha" />
-    <property name="live.package" value="com.app.beseye.alpha" />
+    <property name="beta.package" value="com.app.beseye.beta" />
+    <property name="live.package" value="com.app.beseye" />
     <property name="config-target-dir-path" value="com/app/beseye/util" />
     
-     <target name="-increase-version">
+    <target name="-increase-version">
          <if condition="${build.is.packaging.debug}">
 	        <then>
 
 	        </then>
 	        <else>
-	            <propertyfile file="version.properties">
-		            <entry key="app.version.code" type="int" operation="+" value="1" />
-		            <entry key="app.version.minor" type="int" operation="+" value="1" />
-		        </propertyfile>
-		        <property file="version.properties" />
-		        <echo>Version code: ${app.version.code}</echo>
-		        <echo>Version name: ${app.version.major}${app.version.minor}</echo>
-		        
-		        <property name="match.end" value='"' />
-		        
-		        <property name="matchVersionCode.start" value='android:versionCode=\"' />
-		        <replaceregexp file="AndroidManifest.xml" match='${matchVersionCode.start}[^"]*${match.end}' replace="${matchVersionCode.start}${app.version.code}${match.end}" />
-		
-		        <property name="matchVersionName.start" value='android:versionName=\"' />
-		        <replaceregexp file="AndroidManifest.xml" match='${matchVersionName.start}[^"]*${match.end}' replace="${matchVersionName.start}${app.version.major}${app.version.minor}${app.version.branch}${match.end}" />
-		        
-		        <property name="matchAppName.start" value='android:label=\"' />
-		        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name${match.end}" />
+	            <if condition="${Is_Beta}">
+		        	<then>
+		            	<propertyfile file="version.properties">
+				            <entry key="app.version.code.beta" type="int" operation="+" value="1" />
+				            <entry key="app.version.minor.beta" type="int" operation="+" value="1" />
+				        </propertyfile>
+				        <property file="version.properties" />
+				        <echo>Version code: ${app.version.code.beta}</echo>
+				        <echo>Version name: ${app.version.major.beta}${app.version.minor.beta}</echo>
+				        
+				        <property name="match.end" value='"' />
+				        
+				        <property name="matchVersionCode.start" value='android:versionCode=\"' />
+				        <replaceregexp file="AndroidManifest.xml" match='${matchVersionCode.start}[^"]*${match.end}' replace="${matchVersionCode.start}${app.version.code.beta}${match.end}" />
+				
+				        <property name="matchVersionName.start" value='android:versionName=\"' />
+				        <replaceregexp file="AndroidManifest.xml" match='${matchVersionName.start}[^"]*${match.end}' replace="${matchVersionName.start}${app.version.major.beta}${app.version.minor.beta}${app.version.branch}${match.end}" />
+				        
+				        <property name="matchAppName.start" value='android:label=\"' />
+				        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name${match.end}" />
+		        	</then>
+		        	<else>
+		        	    <if condition="${Is_Alpha}">
+				        	<then>
+				            	<propertyfile file="version.properties">
+						            <entry key="app.version.code.alpha" type="int" operation="+" value="1" />
+						            <entry key="app.version.minor.alpha" type="int" operation="+" value="1" />
+						        </propertyfile>
+						        <property file="version.properties" />
+						        <echo>Version code: ${app.version.code.alpha}</echo>
+						        <echo>Version name: ${app.version.major.alpha}${app.version.minor.alpha}</echo>
+						        
+						        <property name="match.end" value='"' />
+						        
+						        <property name="matchVersionCode.start" value='android:versionCode=\"' />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchVersionCode.start}[^"]*${match.end}' replace="${matchVersionCode.start}${app.version.code.alpha}${match.end}" />
+						
+						        <property name="matchVersionName.start" value='android:versionName=\"' />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchVersionName.start}[^"]*${match.end}' replace="${matchVersionName.start}${app.version.major.alpha}${app.version.minor.alpha}${app.version.branch}${match.end}" />
+						        
+						        <property name="matchAppName.start" value='android:label=\"' />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name${match.end}" />
+				        	</then>
+				        	<else>
+				        	    <propertyfile file="version.properties">
+						            <entry key="app.version.code" type="int" operation="+" value="1" />
+						            <entry key="app.version.minor" type="int" operation="+" value="1" />
+						        </propertyfile>
+						        <property file="version.properties" />
+						        <echo>Version code: ${app.version.code}</echo>
+						        <echo>Version name: ${app.version.major}${app.version.minor}</echo>
+						        
+						        <property name="match.end" value='"' />
+						        
+						        <property name="matchVersionCode.start" value='android:versionCode=\"' />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchVersionCode.start}[^"]*${match.end}' replace="${matchVersionCode.start}${app.version.code}${match.end}" />
+						
+						        <property name="matchVersionName.start" value='android:versionName=\"' />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchVersionName.start}[^"]*${match.end}' replace="${matchVersionName.start}${app.version.major}${app.version.minor}${app.version.branch}${match.end}" />
+						        
+						        <property name="matchAppName.start" value='android:label=\"' />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name${match.end}" />
+			            	</else>
+			            </if>
+	            	</else>
+	            </if>
 	        </else>
 	    </if>
     </target>
@@ -125,40 +174,61 @@
 	            <antcall target="-release-alpha"></antcall>
 	        </then>
 	        <else>
-	            <antcall target="-release-public"></antcall>
+	            <if condition="${Is_Beta}">
+		        	<then>
+		            	<antcall target="-release-beta"></antcall>
+		            	<property name="key.alias" value="beseye-release-key" />
+		        	</then>
+		        	<else>
+		        	    <if condition="${Is_Alpha}">
+				        	<then>
+				            	<antcall target="-release-alpha"></antcall>
+				            	<property name="key.alias" value="androiddebugkey" />
+				        	</then>
+				        	<else>
+				        	    <antcall target="-release-public"></antcall>
+				        	    <property name="key.alias" value="beseye-release-key" />
+			            	</else>
+			            </if>
+	            	</else>
+	            </if>
 	        </else>
 	    </if>
     </target>
     
     <target name="switch-config">
-        <echo>Configuration file: ${config.filename}</echo>
+        <echo>Configuration file: ${config.filename} and ${keystore.filename}</echo>
         <property name="config-target-path" value="${source.dir}/${config-target-dir-path}" />
         <echo>Saving original Config...</echo>
 	    <copy file="${config-target-path}/BeseyeConfig.java" tofile="BeseyeConfig.java.bak" />
-        <copy file="${config.filename}" todir="${config-target-path}" overwrite="true" encoding="utf-8">
-        </copy>
+        <copy file="${config.filename}" todir="${config-target-path}" overwrite="true" encoding="utf-8"/>
+        <delete file="beseye.release.keystore" quiet="true" />
+        <copy file="${keystore.filename}" tofile="beseye.release.keystore" overwrite="true"/>
     </target>
     
     <target name="-release-alpha">
-        <echo>Selected developer configuration</echo>
+        <echo>Selected developer configuration -release-alpha</echo>
         <antcall target="switch-config">
             <param name="config.filename" value="config_alpha/BeseyeConfig.java" />
+            <param name="keystore.filename" value="config_alpha/beseye.release.keystore" />
         </antcall>
         
     </target>
 
     <target name="-release-beta">
-        <echo>Selected developer configuration</echo>
+        <echo>Selected developer configuration -release-beta</echo>
         <antcall target="switch-config">
-            <param name="config.filename" value="config_beta/BeseyeConfig.java" />
+            <param name="config.filename" value="config_beta/BeseyeConfig.java"/>
+            <param name="keystore.filename" value="config_beta/beseye.release.keystore"  />
         </antcall>
         
     </target>
 
     <target name="-release-public">
-        <echo>Selected release configuration</echo>
+        <echo>Selected release configuration -release-public</echo>
         <antcall target="switch-config">
-            <param name="config.filename" value="config_release/BeseyeConfig.java" />
+            <param name="config.filename" value="config_release/BeseyeConfig.java"/>
+            <param name="keystore.filename" value="config_release/beseye.release.keystore"  />
         </antcall>
     </target>
     
@@ -224,10 +294,31 @@
 			    </replace>
 	        </then>
 	        <else>
-	            <replace file="AndroidManifest.xml">
-				    <replacefilter token="${app.package}" value="${live.package}" />
-				    <replacefilter token='name=".' value='name="${app.package}.' />
-			    </replace>
+	            <if condition="${Is_Beta}">
+		        	<then>
+		            	<replace file="AndroidManifest.xml">
+						    <replacefilter token="${app.package}" value="${beta.package}" />
+						    <replacefilter token='name=".' value='name="${app.package}.' />
+					    </replace>
+		        	</then>
+		        	<else>
+		        	    <if condition="${Is_Alpha}">
+				        	<then>
+				            	 <replace file="AndroidManifest.xml">
+								    <replacefilter token="${app.package}" value="${alpha.package}" />
+								    <replacefilter token='name=".' value='name="${app.package}.' />
+							    </replace>
+				        	</then>
+				        	<else>
+				        	     <replace file="AndroidManifest.xml">
+								    <replacefilter token="${app.package}" value="${live.package}" />
+								    <replacefilter token='name=".' value='name="${app.package}.' />
+							    </replace>
+			            	</else>
+			            </if>
+	            	</else>
+	            </if>
+	            
 	        </else>
 	    </if>
 	    

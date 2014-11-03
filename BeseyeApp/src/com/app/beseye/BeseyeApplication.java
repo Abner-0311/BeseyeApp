@@ -52,32 +52,29 @@ public class BeseyeApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
+		SessionMgr.createInstance(getApplicationContext());
+		sApplication = this;
 		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
+		
 		if(BeseyeConfig.DEBUG)
-			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" "+System.currentTimeMillis());
+			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" HOCKEY_APP_ID:"+HOCKEY_APP_ID+", can update:"+BeseyeUtils.canUpdateFromHockeyApp());
 		
 		ACRA.init(this);
 		ACRA.getErrorReporter().setReportSender(new HockeySender());
 		
 		NetworkMgr.createInstance(getApplicationContext());
 		CamSettingMgr.createInstance(getApplicationContext());
-		//CamSettingMgr.getInstance().addCamID(getApplicationContext(), TMP_CAM_ID);
 		
-		SessionMgr.createInstance(getApplicationContext());
 		checkServerMode();
 		
 		DeviceUuidFactory.getInstance(getApplicationContext());
 		startService(new Intent(this,BeseyeNotificationService.class));
 		BeseyeMemCache.init(this);
 		
-//		BeseyeApplication.checkPairingMode();
-		
-		sApplication = this;
-		
 		if(null != s_checkBackgroundRunnable){
 			s_checkBackgroundRunnable.updateContext(this);
 		}
+		
 	}
 	
 	static synchronized public Application getApplication(){

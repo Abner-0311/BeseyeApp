@@ -53,7 +53,7 @@ public class BeseyeAboutActivity extends BeseyeBaseActivity {
 		if(null != txtVer){
 			try {
 				PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-				txtVer.setText(String.format(getString(R.string.about_ver), packageInfo.versionName));
+				txtVer.setText(String.format(getString(R.string.about_ver), packageInfo.versionName)+(BeseyeConfig.ALPHA_VER?" (£\)":(BeseyeConfig.BETA_VER?" (£])":(BeseyeConfig.DEBUG?" (dev)":""))));
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
 			}

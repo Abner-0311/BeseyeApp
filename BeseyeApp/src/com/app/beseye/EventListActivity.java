@@ -386,38 +386,39 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode+", "+System.currentTimeMillis());	
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeMMBEHttpTask.GetEventListCountTask){
-				Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
-				miTotalEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_CNT);
-				
-				mArrOldEventList = mEventListAdapter.getJSONList();
-				
-				JSONArray EntList = new JSONArray();
-				JSONObject liveObj = new JSONObject();
-				try {
-					liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
-					liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
-					EntList.put(liveObj);
-//					for(int idx = 0; idx < iCount;idx++){
-//						EntList.put(new JSONObject());
-//					}
-				}catch (JSONException e) {
-					e.printStackTrace();
+				if(0 == iRetCode){
+					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					miTotalEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_CNT);
+					
+					mArrOldEventList = mEventListAdapter.getJSONList();
+					
+					JSONArray EntList = new JSONArray();
+					JSONObject liveObj = new JSONObject();
+					try {
+						liveObj.put(BeseyeJSONUtil.MM_START_TIME, (new Date()).getTime());
+						liveObj.put(BeseyeJSONUtil.MM_IS_LIVE, true);
+						EntList.put(liveObj);
+	//					for(int idx = 0; idx < iCount;idx++){
+	//						EntList.put(new JSONObject());
+	//					}
+					}catch (JSONException e) {
+						e.printStackTrace();
+					}
+					
+					mEventListAdapter.updateResultList(EntList);
+					
+					if(null != mMainListView){
+						mMainListView.onRefreshComplete();
+						mMainListView.updateLatestTimestamp();
+					}
+					
+					checkClockByTime();
+					mbNeedToCalcu = true;
+					miCurUpdateEventIdx = 0;
+					miCurUpdateThunbnailIdx = 1;
+					getEventListContent(++miTaskSeedNum);
+	//				getThumbnailByEventList(miTaskSeedNum);
 				}
-				
-				mEventListAdapter.updateResultList(EntList);
-				
-				if(null != mMainListView){
-					mMainListView.onRefreshComplete();
-					mMainListView.updateLatestTimestamp();
-				}
-				
-				checkClockByTime();
-				mbNeedToCalcu = true;
-				miCurUpdateEventIdx = 0;
-				miCurUpdateThunbnailIdx = 1;
-				getEventListContent(++miTaskSeedNum);
-//				getThumbnailByEventList(miTaskSeedNum);
-				
 			}else if(task instanceof BeseyeMMBEHttpTask.GetEventListTask){
 				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 				
