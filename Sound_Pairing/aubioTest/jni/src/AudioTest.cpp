@@ -26,13 +26,20 @@
 #define MONITOR_PROCESS_RET "/tmp/beseye_sp_monitor_process_ret"
 
 static const int  MAX_TIME_TO_INVOKE_SYSTEM = 10;//10 sec
+static int  siTimeoutValue = MAX_TIME_TO_INVOKE_SYSTEM;
 static pid_t pid_system = -1;
 static msec_t lTimeInvodeSystem = 0;
 static pid_t intermediate_pid = -1;
 //static int iRetSystemCall = 0;
 
 //To avoid system call/fork blocking issue, we need to monitor it and kill it when timeout
-int invokeSystem(const char* cmd){
+
+int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
+	siTimeoutValue = MAX_TIME_TO_INVOKE_SYSTEM;
+	if(0 < iTimeoutInSec && iTimeoutInSec < 120){
+		siTimeoutValue = iTimeoutInSec;
+	}
+
 	//return system(cmd);
 	int iRetSystemCall = -1;
 	//LOGE( "invokeSystem(), time_ms:%lld .............++++\n", time_ms());
@@ -104,6 +111,11 @@ int invokeSystem(const char* cmd){
 	FREE(cRet)
 	LOGE( "invokeSystem(), iRetSystemCall:%d, time_ms:%lld .............----\n", iRetSystemCall, time_ms());
 	return iRetSystemCall;
+
+}
+
+int invokeSystem(const char* cmd){
+	return invokeSystemWithTimeout(cmd, -1);
 }
 
 bool isSystemProcessExist(){
@@ -129,8 +141,8 @@ void killSystemProcess(){
 void checkSystemProcess(){
 	if(0 < intermediate_pid){
 		if(isSystemProcessExist()){
-			if((0 != lTimeInvodeSystem) && ((time_ms() - lTimeInvodeSystem) > (MAX_TIME_TO_INVOKE_SYSTEM*1000))){
-				LOGE( "stop monitor flag is on over 10 sec\n");
+			if((0 != lTimeInvodeSystem) && ((time_ms() - lTimeInvodeSystem) > (siTimeoutValue*1000))){
+				LOGE( "stop monitor flag is on over %d sec\n", siTimeoutValue);
 				killSystemProcess();
 			}
 		}else{
@@ -1174,7 +1186,7 @@ void* AudioTest::verifyToken(void* userdata){
 		if((PAIRING_ANALYSIS != sPairingMode && lDelta > TIME_TO_CHECK_TOKEN)/* || (PAIRING_ANALYSIS == sPairingMode && lDelta >TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD)*/){
 			if(readFromFile(SES_TOKEN_PATH)){
 				//if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
-					if(0 == (invokeSystem("/beseye/cam_main/beseye_token_check") >> 8)){
+					if(0 == (invokeSystemWithTimeout("/beseye/cam_main/beseye_token_check", 40) >> 8)){
 					//if(0 == checkTokenValid()){
 						AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
 						setLedLight(0,1,0);
