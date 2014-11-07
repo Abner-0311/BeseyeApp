@@ -1770,7 +1770,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     } 
     
     static class CheckVideoBlockRunnable implements Runnable{
-    	static private final long EXPIRE_VIDEO_BLOCK = 10000L;
+    	static private final long EXPIRE_VIDEO_BLOCK = 20000L;
     	static private final long EXPIRE_VIDEO_NOT_START = 5000L;
 		private WeakReference<CameraViewActivity> mAct;
 		
@@ -1782,7 +1782,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		public void run() {
 			final CameraViewActivity act = mAct.get();
 			if(null != act && !act.isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
-				Log.e(TAG, "CheckVideoBlockRunnable::run(), time to reconnect..............");
+				Log.e(TAG, "CheckVideoBlockRunnable::run(), time to reconnect.............., EXPIRE_VIDEO_BLOCK:"+EXPIRE_VIDEO_BLOCK);
 				act.closeStreaming();
 				act.mReStartRunnable =  new Runnable(){
 					@Override
