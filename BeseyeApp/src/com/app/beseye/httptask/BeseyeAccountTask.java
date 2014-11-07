@@ -296,11 +296,20 @@ public class BeseyeAccountTask {
 	}
 	
 	static public class GetCamInfoTask extends BeseyeHttpTask {	 	
+		private boolean mbNeedToLoadCamSetup = true;
 		public GetCamInfoTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
 			//enableHttps();
 		}
+		
+		public GetCamInfoTask(OnHttpTaskCallback cb, boolean bNeedToLoadCamSetup) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+			mbNeedToLoadCamSetup = bNeedToLoadCamSetup;
+		}
+		
+		public boolean getNeedToLoadCamSetup(){return mbNeedToLoadCamSetup;}
  
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {

@@ -623,8 +623,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		checkAndExtendHideHeader();
 		
 		if(!mbFirstResume){
-			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
-			if(mbIsRetryAtNextResume)
+			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this, false).setDialogId(-1), true, mStrVCamID);
+			triggerPlay();
+		}else if(mbIsRetryAtNextResume){
 				triggerPlay();
 		}
 	}
@@ -1130,7 +1131,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}
 			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
 				super.onPostExecute(task, result, iRetCode);
-				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+				if(true == ((BeseyeAccountTask.GetCamInfoTask)task).getNeedToLoadCamSetup())
+					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 			}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 				if(0 == iRetCode){
 					BeseyeJSONUtil.setVCamConnStatus(mCam_obj, (BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.CAM_STATUS)==1)?CAM_CONN_STATUS.CAM_ON:CAM_CONN_STATUS.CAM_OFF);
