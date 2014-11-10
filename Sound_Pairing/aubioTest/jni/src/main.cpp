@@ -11,6 +11,7 @@
 #include "simple_websocket_mgr.h"
 #include "delegate/account_mgr.h"
 #include "delegate/cam_controller.h"
+#include "delegate/led_controller.h"
 
 static int was_closed;
 static int force_exit = 0;
@@ -28,6 +29,7 @@ int main(int argc, char** argv) {
 	curl_global_init(CURL_GLOBAL_SSL);
 	Acc_Mgr_Init();
 	Cam_Controller_Init(0);
+	LED_Controller_Init();
 	try{
 
 		SoundPair_Config::init();
@@ -54,6 +56,7 @@ int main(int argc, char** argv) {
 		std::cerr << "Unknown exception caught\n";
 	}
 
+	LED_Controller_Deinit();
 	Cam_Controller_Deinit();
 	Acc_Mgr_Deinit();
 	curl_global_cleanup();

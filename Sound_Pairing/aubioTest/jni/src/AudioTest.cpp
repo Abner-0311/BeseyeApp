@@ -2,6 +2,7 @@
 #include "simple_websocket_mgr.h"
 #include "delegate/account_mgr.h"
 #include "delegate/cam_controller.h"
+#include "delegate/led_controller.h"
 #include "cgi_attr.h"
 #include "json_utils.h"
 #include "utils.h"
@@ -1134,9 +1135,26 @@ void changePairingMode(Pairing_Mode mode){
 			sbNeedToInitBuf = true;
 			sPairingMode = PAIRING_INIT;
 			sPairingErrType = PAIRING_ERR_BASE;
+			setLEDMode(LED_MODE_SOLID_GB);
+
 //			sPairingMode = (PAIRING_NONE==sPedningPairingMode)?mode:sPedningPairingMode;
 //			sPedningPairingMode = PAIRING_NONE;
 		}else{
+			if(PAIRING_INIT == mode){
+				setLEDMode(LED_MODE_SOLID_GB);
+			}else if(PAIRING_WAITING == mode){
+				setLEDMode(LED_MODE_BLINK_G);
+			}else if(PAIRING_ANALYSIS == mode){
+				setLEDMode(LED_MODE_BLINK_B);
+			}else if(PAIRING_ERROR == mode){
+				if(sPairingErrType == PAIRING_ERR_MAC_NOT_FOUND){
+					setLEDMode(LED_MODE_CYCLE_R_B);
+				}else{
+					setLEDMode(LED_MODE_SOLID_R);
+				}
+			}else if(PAIRING_DONE == mode){
+				setLEDMode(LED_MODE_SOLID_G);
+			}
 			sPairingMode = mode;
 		}
 	}
@@ -1148,6 +1166,8 @@ void checkLEDByMode(){
 		//sPairingMode = (PAIRING_NONE==sPedningPairingMode)?PAIRING_WAITING:sPedningPairingMode;
 		changePairingMode(PAIRING_INIT);
 		sPairingErrType = PAIRING_ERR_BASE;
+		//setLEDMode(LED_MODE_SOLID_GB);
+
 		//sPairingMode = PAIRING_INIT;
 		//sPedningPairingMode = PAIRING_NONE;
 	}
@@ -1200,38 +1220,39 @@ void* AudioTest::verifyToken(void* userdata){
 
 
 		if(AudioTest::getInstance()->isPairingAnalysisMode()){
-			//LOGW("sPairingMode is %d-----\n", sPairingMode);
-			if(false == sbLEDOn){
-				if(PAIRING_INIT == sPairingMode){
-					setLedLight(0,1,1);
-				}else if(PAIRING_WAITING == sPairingMode){
-					setLedLight(0,1,0);
-				}else if(PAIRING_ANALYSIS == sPairingMode){
-					setLedLight(0,0,1);
-				}else if(PAIRING_ERROR == sPairingMode){
-					setLedLight(1,0,0);
-				}else if(PAIRING_DONE == sPairingMode){
-					setLedLight(0,1,0);
-				}
-			}
-			else if(sPairingMode != PAIRING_DONE && PAIRING_INIT != sPairingMode){
-				setLedLight(0,0,0);
-			}
+//			//LOGW("sPairingMode is %d-----\n", sPairingMode);
+//			if(false == sbLEDOn){
+//				if(PAIRING_INIT == sPairingMode){
+//					setLedLight(0,1,1);
+//				}else if(PAIRING_WAITING == sPairingMode){
+//					setLedLight(0,1,0);
+//				}else if(PAIRING_ANALYSIS == sPairingMode){
+//					setLedLight(0,0,1);
+//				}else if(PAIRING_ERROR == sPairingMode){
+//					setLedLight(1,0,0);
+//				}else if(PAIRING_DONE == sPairingMode){
+//					setLedLight(0,1,0);
+//				}
+//			}
+//			else if(sPairingMode != PAIRING_DONE && PAIRING_INIT != sPairingMode){
+//				setLedLight(0,0,0);
+//			}
 
 			if(PAIRING_ERROR == sPairingMode){
 				sCurLEDCnt++;
 				checkLEDByMode();
-				if(sPairingErrType == PAIRING_ERR_MAC_NOT_FOUND){
-					if(0 == sCurLEDCnt%2){
-						setLedLight(0,0,1);
-					}else{
-						setLedLight(1,0,0);
-					}
-				}
-				sbLEDOn = false;
-			}else{
-				sbLEDOn = !sbLEDOn;
+//				if(sPairingErrType == PAIRING_ERR_MAC_NOT_FOUND){
+//					if(0 == sCurLEDCnt%2){
+//						setLedLight(0,0,1);
+//					}else{
+//						setLedLight(1,0,0);
+//					}
+//				}
+//				sbLEDOn = false;
 			}
+//			else{
+//				sbLEDOn = !sbLEDOn;
+//			}
 		}
 
 		if(0 < lTImeToSaveErrorLog && lTImeToSaveErrorLog < time_ms()){
@@ -1431,7 +1452,8 @@ void writeBuf(unsigned char* charBuf, int iLen){
 							}
 							ANALYSIS_END_THRESHHOLD = (ANALYSIS_THRESHHOLD_MONITOR + ANALYSIS_START_THRESHHOLD)/2;
 							LOGW("-------------------------------------------------------->ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD);
-							sPairingMode = PAIRING_WAITING;
+							//sPairingMode = PAIRING_WAITING;
+							changePairingMode(PAIRING_WAITING);
 							ANALYSIS_END_THRESHHOLD_DETECT = -1;
 						}
 					}else{
