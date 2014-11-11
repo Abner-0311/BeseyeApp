@@ -235,6 +235,7 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 			if(null != mRefreshableView){
 				mRefreshableView.removeFooterView(mFooterLoadMoreView);
 				mbFooterLoadMoreViewAttached = false;
+				mSavedLastVisibleIndex = -1;
 			}
 		}
 	}

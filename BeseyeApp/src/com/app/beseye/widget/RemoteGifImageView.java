@@ -550,11 +550,11 @@ public class RemoteGifImageView extends RemoteImageView {
 				}
 			}
 		} catch (Exception e) {
-			Log.w(TAG, "Http Get image fail: " + e);
+			Log.e(TAG, "Http Get image fail: " + e);
 		} finally {
 			closeStream(inputStream);
 		}
-		Log.w(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs));
+		Log.d(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs));
 		return bitmap;
 	}
 

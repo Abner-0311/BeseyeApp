@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +34,6 @@ import com.app.beseye.adapter.EventListAdapter;
 import com.app.beseye.adapter.EventListAdapter.EventListItmHolder;
 import com.app.beseye.adapter.EventListAdapter.IListViewScrollListenser;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
-import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.BlockingLifoQueue;
@@ -46,8 +44,6 @@ import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshBase.OnLastItemVisibleListener;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
-
-
 
 public class EventListActivity extends BeseyeBaseActivity implements IListViewScrollListenser{
 	
@@ -73,6 +69,8 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 	private boolean mbIsScrolling = false;
 	private int miTotalEventCount = 0;//Total count from server
 	private long mlEventQueryPeriod = 0;
+	
+	private int miFilterValue = EventFilterActivity.DEF_EVENT_FILTER_VALUE;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +102,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			if(null != mIvFilter){
 				mIvFilter.setOnClickListener(this);
 				mIvFilter.setImageResource(R.drawable.sl_event_list_filter);
-				mIvFilter.setVisibility(View.INVISIBLE);
+				//mIvFilter.setVisibility(View.INVISIBLE);
 			}
 			
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
@@ -144,6 +142,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			mMainListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener(){
 				@Override
 				public void onLastItemVisible() {
+					Log.e(TAG, "onLastItemVisible(), mMainListView.isFooterLoadMoreViewAttached():"+mMainListView.isFooterLoadMoreViewAttached()+", mGetEventListTask is"+(null == mGetEventListTask?"null":"valid"));
 					if(mMainListView.isFooterLoadMoreViewAttached()){
 						if(null == mGetEventListTask || AsyncTask.Status.FINISHED == mGetEventListTask.getStatus()){
 							getEventListContent(miTaskSeedNum);
@@ -239,7 +238,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		cancelRunningTasks();
 		
 		mlTaskTs = System.currentTimeMillis();
-		monitorAsyncTask((mGetEventListCountTask = new BeseyeMMBEHttpTask.GetEventListCountTask(EventListActivity.this)), true, mStrVCamID, (mlTaskTs-mlEventQueryPeriod )+"", mlEventQueryPeriod +"");
+		monitorAsyncTask((mGetEventListCountTask = new BeseyeMMBEHttpTask.GetEventListCountTask(EventListActivity.this)), true, mStrVCamID, (mlTaskTs-mlEventQueryPeriod )+"", mlEventQueryPeriod +"", miFilterValue+"");
 	}
 	
 	private void loadNewEventList(){
@@ -264,7 +263,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				mGetNewEventListTask.cancel(true);
 				mGetNewEventListTask = null;
 			}
-			monitorAsyncTask(mGetNewEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, true), true, mStrVCamID, (lLatestEventTs)+"", (System.currentTimeMillis()-lLatestEventTs)+"", "100");
+			monitorAsyncTask(mGetNewEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, true), true, mStrVCamID, (lLatestEventTs)+"", (System.currentTimeMillis()-lLatestEventTs)+"", "100", miFilterValue+"");
 		}else{
 			if(null != mGetNewEventListTask){
 				Log.i(TAG, "loadNewEventList(), mGetNewEventListTask isn't null, load in next round ");	
@@ -740,7 +739,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				mGetEventListTask.cancel(true);
 				mGetEventListTask = null;
 			}
-			monitorAsyncTask((mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, iSeed)).setDialogId( (null != mTimeWantToReach)?DIALOG_ID_LOADING:-1), true, mStrVCamID, (mlTaskTs-mlEventQueryPeriod )+"", lDuration+"", (0 == getCurEventCount())?"15":(null != mTimeWantToReach)?"10000":"100");
+			monitorAsyncTask((mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, iSeed)).setDialogId( (null != mTimeWantToReach)?DIALOG_ID_LOADING:-1), true, mStrVCamID, (mlTaskTs-mlEventQueryPeriod )+"", lDuration+"", (0 == getCurEventCount())?"15":(null != mTimeWantToReach)?"10000":"100", miFilterValue+"");
 		}
 	}
 	
@@ -971,7 +970,9 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
 			finish();
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
-			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
+			Bundle b = new Bundle();
+			b.putInt(EventFilterActivity.KEY_EVENT_FILTER_VALUE, miFilterValue);
+			launchActivityForResultByClassName(EventFilterActivity.class.getName(), b, REQUEST_EVENT_FILTER);
 		}else if(R.id.iv_calendar_icon == view.getId()){
 			BeseyeDatetimePickerDialog d = new BeseyeDatetimePickerDialog(this, new Date(), getEventPeriodByPlan()); 
 			d.setOnDatetimePickerClickListener(new OnDatetimePickerClickListener(){
@@ -998,6 +999,26 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			d.show();
 		}else
 			super.onClick(view);
+	}
+	
+	static public final int REQUEST_EVENT_FILTER = 3001;
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		Log.w(TAG, "onActivityResult(), requestCode:"+requestCode+", resultCode:"+resultCode);
+		if(REQUEST_EVENT_FILTER == requestCode && resultCode == RESULT_OK){
+			int iNewValue = intent.getIntExtra(EventFilterActivity.KEY_EVENT_FILTER_VALUE, EventFilterActivity.DEF_EVENT_FILTER_VALUE);
+			if(iNewValue != miFilterValue){
+				mMainListView.dettachFooterLoadMoreView();
+				
+				miFilterValue = iNewValue;
+				mbNeedToCalcu = false;
+				loadEventList();
+				
+				mMainListView.getRefreshableView().setSelection(0);		
+			}
+		}else
+			super.onActivityResult(requestCode, resultCode, intent);
 	}
 	
 	private Date mTimeWantToReach = null;

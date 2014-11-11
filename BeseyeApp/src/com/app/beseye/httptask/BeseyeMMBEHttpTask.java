@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.util.Log;
 
+import com.app.beseye.EventFilterActivity;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeStorageAgent;
 
@@ -30,15 +31,22 @@ public class BeseyeMMBEHttpTask  {
 
 	//static private final String MM_HOST_EVENT 	    	= "http://beseye-mm00-forext-stage.no-ip.org/";
 	
-	static private final String URL_LIVE_STREAM_INFO 	= "live-stream/downstream_info/%s?narrowBW=%s";
-	static private final String URL_DVR_STREAM_INFO 	= "dvr/dvr_playlist/%s?startTime=%s&duration=%s&transc=aac";
+	static private final String URL_LIVE_STREAM_INFO 		= "live-stream/downstream_info/%s?narrowBW=%s";
+	static private final String URL_DVR_STREAM_INFO 		= "dvr/dvr_playlist/%s?startTime=%s&duration=%s&transc=aac";
 	
-	static private final String URL_GET_EVENT_LIST 	    = "events/%s?startTime=%s&duration=%s&order=desc&count=%s";
-	static private final String URL_GET_IMP_EVENT_LIST 	= "imp-events/%s?startTime=%s&duration=%s&order=desc&typeFilter=2";
-	static private final String URL_GET_EVENT_LIST_CNT 	= "events/count/%s?startTime=%s&duration=%s";
+	static private final String URL_GET_EVENT_LIST 	    	= "events/%s?startTime=%s&duration=%s&order=desc&count=%s";
+	static private final String URL_GET_EVENT_LIST_FILT 	= "events/%s?startTime=%s&duration=%s&order=desc&count=%s&typeFilter=%s";
+	static private final String URL_GET_IMP_EVENT_LIST 		= "imp-events/%s?startTime=%s&duration=%s&order=desc&typeFilter=2";
+	static private final String URL_GET_EVENT_LIST_CNT		= "events/count/%s?startTime=%s&duration=%s";
+	static private final String URL_GET_EVENT_LIST_CNT_FILT = "events/count/%s?startTime=%s&duration=%s&typeFilter=%s";
 	
-	static private final String URL_GET_LATEST_THUMB 	= "thumbnail/get_latest?vcamUuid=%s";
-	static private final String URL_GET_THUMB_BY_EVENT 	= "thumbnail/get_by_event_list";
+	static private final String URL_GET_LATEST_THUMB 		= "thumbnail/get_latest?vcamUuid=%s";
+	static private final String URL_GET_THUMB_BY_EVENT 		= "thumbnail/get_by_event_list";
+	
+	static public final int EVENT_FILTER_MOTION = 0x1;
+	static public final int EVENT_FILTER_PEOPLE = 0x2;
+	static public final int EVENT_FILTER_SOUND 	= 0x4;
+	static public final int EVENT_FILTER_FIRE	= 0x8;
 	
 	static public final long THIRTY_DAYS_IN_MS = 30*24*60*60*1000;
 	static public final long SEVEN_DAYS_IN_MS = 7*24*60*60*1000;
@@ -99,7 +107,10 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST, strParams[0], strParams[1], strParams[2], strParams[3]));
+			if(strParams.length == 5 && strParams[4].equals(EventFilterActivity.DEF_EVENT_FILTER_VALUE+""))
+				return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST, strParams[0], strParams[1], strParams[2], strParams[3]));
+			else
+				return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST_FILT, strParams[0], strParams[1], strParams[2], strParams[3], strParams[4]));
 		}
 	}
 	
@@ -121,7 +132,10 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST_CNT, strParams[0], strParams[1], strParams[2]));
+			if(strParams.length == 4 && strParams[3].equals(EventFilterActivity.DEF_EVENT_FILTER_VALUE+""))
+				return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST_CNT, strParams[0], strParams[1], strParams[2]));
+			else
+				return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST_CNT_FILT, strParams[0], strParams[1], strParams[2], strParams[3]));
 		}
 	}
 	

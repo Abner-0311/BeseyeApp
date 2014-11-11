@@ -1,0 +1,24 @@
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+   	android:layout_width="match_parent"
+   	android:layout_height="wrap_content">
+   <LinearLayout 
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical">	
+    	<include 
+		    android:id="@+id/vg_people_event"
+		    layout="@layout/layout_power_schdule_select_days_itm"></include>
+		<include 
+		    android:id="@+id/vg_motion_event"
+		    layout="@layout/layout_power_schdule_select_days_itm"></include>
+		<include 
+		    android:id="@+id/vg_fire_event"
+		    layout="@layout/layout_power_schdule_select_days_itm"></include>
+		<include 
+		    android:id="@+id/vg_sound_event"
+		    layout="@layout/layout_power_schdule_select_days_itm"></include>
+
+    </LinearLayout>
+</ScrollView>

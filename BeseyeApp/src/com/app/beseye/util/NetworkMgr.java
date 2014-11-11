@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -36,6 +38,7 @@ import android.util.Log;
 import com.app.beseye.R;
 import com.app.beseye.receiver.NetworkChangeReceiver;
 import com.app.beseye.receiver.WifiStateChangeReceiver;
+import com.app.beseye.setting.TimezoneListActivity.BeseyeTimeZone;
 
 public class NetworkMgr {
 	public static final int NUM_WEP_KEY_IDX = 4;
@@ -759,6 +762,50 @@ public class NetworkMgr {
 		return strRet;
 	}
 	
+	private void sortWifiApInfo(List<WifiAPInfo> dest){
+		if(null != dest){
+			Collections.sort(dest, sWiFiInfoNameComparator);
+			
+			int iNewCount = dest.size();
+			
+			for(int idx = 1;idx < iNewCount;){
+				WifiAPInfo prevInfo = dest.get(idx -1);
+				WifiAPInfo curInfo = dest.get(idx);
+				if(null != prevInfo && null != curInfo && curInfo.SSID.equals(prevInfo.SSID)){
+					if(prevInfo.signalLevel < curInfo.signalLevel){
+						if(false == prevInfo.bActiveConn){
+							dest.remove(idx -1);
+						}else{
+							dest.remove(idx);
+						}
+						
+					}else{
+						if(false == curInfo.bActiveConn){
+							dest.remove(idx);
+						}else{
+							dest.remove(idx-1);
+						}
+					}
+					iNewCount--;
+				}else{
+					idx++;
+				}
+			}
+			
+			Collections.sort(dest, sWiFiInfoComparator);
+			
+			iNewCount = dest.size();
+			
+			for(int idx = 0;idx < iNewCount;idx++){
+				WifiAPInfo curInfo = dest.get(idx);
+				if(null != curInfo && curInfo.bActiveConn ){
+					dest.add(0, dest.remove(idx));
+					break;
+				}
+			}
+		}
+	}
+	
 	public void filterWifiAPInfo(List<WifiAPInfo> dest, List<ScanResult> src){
 		if(null != dest){
 			dest.clear();
@@ -773,6 +820,8 @@ public class NetworkMgr {
 						}
 					}
 				}
+				
+				sortWifiApInfo(dest);
 				
 				if(null != dest && 0 < dest.size()){
 					WifiAPInfo infoOther = new WifiAPInfo(true);
@@ -807,6 +856,8 @@ public class NetworkMgr {
 					}
 				}
 				
+				sortWifiApInfo(dest);
+				
 				if(null != dest && 0 < dest.size()){
 					WifiAPInfo infoOther = new WifiAPInfo(true);
 					dest.add(infoOther);
@@ -814,6 +865,21 @@ public class NetworkMgr {
 			}
 		}
 	}
+	
+	static private WiFiInfoNameComparator sWiFiInfoNameComparator = new WiFiInfoNameComparator();
+	static private WiFiInfoComparator sWiFiInfoComparator = new WiFiInfoComparator();
+	
+	private static class WiFiInfoNameComparator implements Comparator<WifiAPInfo> {
+        public int compare(WifiAPInfo info1, WifiAPInfo info2) {
+        	return info2.SSID.compareTo(info1.SSID);
+        }
+    }
+	
+	private static class WiFiInfoComparator implements Comparator<WifiAPInfo> {
+        public int compare(WifiAPInfo info1, WifiAPInfo info2) {
+        	return info1.signalLevel >= info2.signalLevel ?-1:1;
+        }
+    }
 	
 	public WifiAPInfo getWifiAPInfoBySSID(String SSID){
 		WifiAPInfo retInfo = null;

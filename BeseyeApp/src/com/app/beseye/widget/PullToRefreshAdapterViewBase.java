@@ -38,7 +38,7 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 
 	static final boolean DEFAULT_SHOW_INDICATOR = true;
 
-	private int mSavedLastVisibleIndex = -1;
+	protected int mSavedLastVisibleIndex = -1;
 	private OnScrollListener mOnScrollListener;
 	private OnLastItemVisibleListener mOnLastItemVisibleListener;
 	private View mEmptyView;
