@@ -356,11 +356,11 @@
             android:name=".GCMIntentService" 
             android:process=":remote"/>
         
-        
-        	<meta-data
+        <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyB9SRsPD1MFHxZYuI0k_dJY6MHY81a9tUw" />
-			<meta-data
+            android:value="AIzaSyBOFJ-maqKlPlfRuhfpAas2b93l1WcFiBM" />
+		
+		<meta-data
 			android:name="com.google.android.gms.version"
 			android:value="@integer/google_play_services_version" />
         
