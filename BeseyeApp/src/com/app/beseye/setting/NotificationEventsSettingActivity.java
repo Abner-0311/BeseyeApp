@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -53,6 +54,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	private ImageView mIvNotifyTypeCheck[], mIvNotifyTypeCheckBg[];
 	private TextView mTxtSchedDays[];
 	private JSONObject mSched_obj;
+	private boolean mbModified = false;
 	
 	private String[] mStrObjKey = {BeseyeJSONUtil.NOTIFY_PEOPLE, 
 								   BeseyeJSONUtil.NOTIFY_MOTION,
@@ -173,24 +175,52 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	}
 	
 	private void updateNotificationTypeState(){
-		boolean bIsCamDisconnected = BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj);
+		//boolean bIsCamDisconnected = false;//BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj);
 		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
-		boolean bMotifyMe = false;
+		if(false == mbModified){
+			boolean bNotifyMe = false;
+			if(null != notify_obj){
+				bNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
+			}
+			
+			if(null != mNotifyMeSwitchBtn){
+				//mNotifyMeSwitchBtn.setEnabled(!bIsCamDisconnected);
+				mNotifyMeSwitchBtn.setSwitchState((bNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+				//BeseyeUtils.setEnabled(mVNotifyMe, !bIsCamDisconnected);
+			}
+			
+			JSONObject type_obj =  BeseyeJSONUtil.getJSONObject(notify_obj, TYPE);
+			for(int idx = 0; idx < s_NotifyTypeNum;idx++){
+				BeseyeUtils.setEnabled(mVgNotifyType[idx], bNotifyMe);
+				BeseyeUtils.setVisibility(mIvNotifyTypeCheck[idx], (mbEnabledLst[idx] && BeseyeJSONUtil.getJSONBoolean(type_obj, mStrObjKey[idx]))?View.VISIBLE:View.INVISIBLE);
+			}
+		}else{
+			boolean bNotifyMe = mNotifyMeSwitchBtn.getSwitchState().equals(SwitchState.SWITCH_ON);
+			for(int idx = 0; idx < s_NotifyTypeNum;idx++){
+				BeseyeUtils.setEnabled(mVgNotifyType[idx], bNotifyMe);
+			}
+		}
+	}
+	
+	private boolean checkDiff(){
+		boolean bRet = false;
+		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
 		if(null != notify_obj){
-			bMotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
+			boolean bNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
+			if(!mNotifyMeSwitchBtn.getSwitchState().equals(bNotifyMe?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF)){
+				bRet = true;
+			}else{
+				JSONObject type_obj =  BeseyeJSONUtil.getJSONObject(notify_obj, TYPE);
+				for(int idx = 0; idx < s_NotifyTypeNum;idx++){
+					if(mIvNotifyTypeCheck[idx].getVisibility() != ((mbEnabledLst[idx] && BeseyeJSONUtil.getJSONBoolean(type_obj, mStrObjKey[idx]))?View.VISIBLE:View.INVISIBLE)){
+						bRet = true;
+						break;
+					}
+				}
+			}
 		}
 		
-		if(null != mNotifyMeSwitchBtn){
-			mNotifyMeSwitchBtn.setEnabled(!bIsCamDisconnected);
-			mNotifyMeSwitchBtn.setSwitchState(((!bIsCamDisconnected && bMotifyMe)?SwitchState.SWITCH_ON:(bIsCamDisconnected?SwitchState.SWITCH_DISABLED:SwitchState.SWITCH_OFF)));
-			BeseyeUtils.setEnabled(mVNotifyMe, !bIsCamDisconnected);
-		}
-		
-		JSONObject type_obj =  BeseyeJSONUtil.getJSONObject(notify_obj, TYPE);
-		for(int idx = 0; idx < s_NotifyTypeNum;idx++){
-			BeseyeUtils.setEnabled(mVgNotifyType[idx], !bIsCamDisconnected && bMotifyMe);
-			BeseyeUtils.setVisibility(mIvNotifyTypeCheck[idx], (mbEnabledLst[idx] && BeseyeJSONUtil.getJSONBoolean(type_obj, mStrObjKey[idx]))?View.VISIBLE:View.INVISIBLE);
-		}
+		return bRet;
 	}
 	
 	@Override
@@ -200,7 +230,9 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	public void onSwitchBtnStateChanged(SwitchState state, View view) {
-		setNotifySetting();
+		//setNotifySetting();
+		mbModified = true;
+		updateNotificationTypeState();
 	}
 
 	@Override
@@ -208,20 +240,24 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 		int idx = findIdxByView(view);
 		if(0 <= idx){
 			if(null != mIvNotifyTypeCheck[idx]){
-				boolean bNeedToUpdate = true;
+				//boolean bNeedToUpdate = true;
 				if(View.VISIBLE != mIvNotifyTypeCheck[idx].getVisibility()){
 					mIvNotifyTypeCheck[idx].setVisibility(View.VISIBLE);
+					mbModified = true;
 				}else if(1 < getNumOfChecked()){
 					mIvNotifyTypeCheck[idx].setVisibility(View.INVISIBLE);
-				}else{
+					mbModified = true;
+				}/*else{
 					bNeedToUpdate = false;
 				}
 				
 				if(bNeedToUpdate)
 					setNotifySetting();
+				 */
 			}
 		}else if(R.id.iv_nav_left_btn == view.getId()){
-			finish();
+			setNotifySetting();
+			//finish();
 		}else{
 			super.onClick(view);
 		}
@@ -250,29 +286,34 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 		return iRet;
 	}
 	
-//	@Override
-//	public boolean onKeyUp(int keyCode, KeyEvent event) {
-//		if(keyCode == KeyEvent.KEYCODE_BACK){
-//			setPickResult();
-//		}
-//		
-//		return super.onKeyUp(keyCode, event);
-//	}
-	
 	private void setNotifySetting(){
-		JSONObject obj =  new JSONObject();
-		if(null != obj){
-			BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, (null != mNotifyMeSwitchBtn && mNotifyMeSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON));
-			JSONObject type_obj =  new JSONObject();
-			if(null != type_obj){
-				for(int idx = 0; idx < s_NotifyTypeNum;idx++){
-					BeseyeJSONUtil.setJSONBoolean(type_obj, mStrObjKey[idx], (null != mIvNotifyTypeCheck[idx] && mIvNotifyTypeCheck[idx].getVisibility() == View.VISIBLE));	
+		if(checkDiff()){
+			JSONObject obj =  new JSONObject();
+			if(null != obj){
+				BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, (null != mNotifyMeSwitchBtn && mNotifyMeSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON));
+				JSONObject type_obj =  new JSONObject();
+				if(null != type_obj){
+					for(int idx = 0; idx < s_NotifyTypeNum;idx++){
+						BeseyeJSONUtil.setJSONBoolean(type_obj, mStrObjKey[idx], (null != mIvNotifyTypeCheck[idx] && mIvNotifyTypeCheck[idx].getVisibility() == View.VISIBLE));	
+					}
+					BeseyeJSONUtil.setJSONObject(obj, BeseyeJSONUtil.TYPE, type_obj);
 				}
-				BeseyeJSONUtil.setJSONObject(obj, BeseyeJSONUtil.TYPE, type_obj);
+				
+				monitorAsyncTask(new BeseyeCamBEHttpTask.SetNotifySettingTask(this), true, mStrVCamID, obj.toString());
 			}
-			
-			monitorAsyncTask(new BeseyeCamBEHttpTask.SetNotifySettingTask(this), true, mStrVCamID, obj.toString());
+		}else{
+			finish();
 		}
+	}
+	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			setNotifySetting();
+			return true;
+		}
+		
+		return super.onKeyUp(keyCode, event);
 	}
 	
 	@Override
@@ -291,6 +332,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 					BeseyeJSONUtil.setJSONObject(getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ, notify_obj);
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
+					finish();
 				}
 				updateNotificationTypeState();
 			}else{
