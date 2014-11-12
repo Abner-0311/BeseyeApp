@@ -1127,11 +1127,11 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 	}
 	
 	protected boolean onCameraMotionEvent(JSONObject msgObj){
-		return checkEventById(msgObj);
+		return (miFilterValue&(BeseyeMMBEHttpTask.EVENT_FILTER_MOTION)) > 0 ?checkEventById(msgObj):false;
 	}
 	
     protected boolean onCameraPeopleEvent(JSONObject msgObj){
-    	return checkEventById(msgObj);
+    	return (miFilterValue&(BeseyeMMBEHttpTask.EVENT_FILTER_MOTION|BeseyeMMBEHttpTask.EVENT_FILTER_PEOPLE)) > 0 ?checkEventById(msgObj):false;
     }
     
 	@Override
