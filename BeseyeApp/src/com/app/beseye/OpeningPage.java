@@ -263,7 +263,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 					}
 					startActivity(intentLanuchRunnable);
 				}
-			}, TIME_TO_CLOSE_OPENING_PAGE);
+			}, sbFirstLaunch?TIME_TO_CLOSE_OPENING_PAGE:0);
 		}else{
 			startActivity(intentLanuch);
 		}

@@ -245,8 +245,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			sendMessage(Message.obtain(null,MSG_SET_NEWS_NUM,0,0));
                 			sendMessage(Message.obtain(null,MSG_SET_UNREAD_NEWS_NUM,0,0));
                 			
-                			if(!SessionMgr.getInstance().isUseridValid())
+                			if(!SessionMgr.getInstance().isUseridValid()){
                 				unregisterGCMServer();
+                			}
                 			
                 			unregisterPushServer();
                 			
@@ -604,16 +605,28 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	
     	if(mbRegisterGCM){
     		mbRegisterGCM = false;
-    		try {
-    			//GCMRegistrar.unregister(getApplicationContext());
-    			try {
-					mGCMInstance.unregister();
-				} catch (IOException e) {
-					Log.i(TAG, "unregisterGCMServer(), e: "+e.toString());
-				}
-    		}catch (UnsupportedOperationException e) {
-        		Log.i(TAG, "unregisterGCMServer(), e: "+e.toString());
-            }
+    	    new AsyncTask<Void, Integer, String>() {
+    	        @Override
+    	        protected String doInBackground(Void... params) {
+    	            String msg = "";
+    	            try {
+    	    			//GCMRegistrar.unregister(getApplicationContext());
+    	    			try {
+    						mGCMInstance.unregister();
+    					} catch (IOException e) {
+    						Log.i(TAG, "unregisterGCMServer(), e: "+e.toString());
+    					}
+    	    		}catch (UnsupportedOperationException e) {
+    	        		Log.i(TAG, "unregisterGCMServer(), e: "+e.toString());
+    	            }
+    	            return msg;
+    	        }
+
+    	        @Override
+    	        protected void onPostExecute(String msg) {
+    	            //mDisplay.append(msg + "\n");
+    	        }
+    	    }.execute(null, null, null);
     	}
     }
 
