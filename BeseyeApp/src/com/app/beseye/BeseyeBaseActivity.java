@@ -694,7 +694,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 							}
 							
 							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(strVcamId, mCam_obj);
-							monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+							
+							if(true == ((BeseyeAccountTask.GetCamInfoTask)task).getNeedToLoadCamSetup()){
+								monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+							}
 						}
 					}
 				}

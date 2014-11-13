@@ -145,7 +145,15 @@ static int rtmp_open2(URLContext *s, const char *uri, int flags, AVDictionary **
     if (flags & AVIO_FLAG_WRITE)
         RTMP_EnableWrite(r);
 
-    if (!RTMP_Connect(r, NULL) || !RTMP_ConnectStream(r, 0)) {
+    int iSeekTime = 0;
+    AVDictionaryEntry *seekTimeEntry = av_dict_get(*options, "seekTime", NULL, 0);
+    if(NULL != seekTimeEntry && NULL != seekTimeEntry->value){
+    	iSeekTime = atoi(seekTimeEntry->value);
+    }
+
+	av_log(NULL, AV_LOG_INFO, "iSeekTime:%d\n", iSeekTime);
+
+    if (!RTMP_Connect(r, NULL) || !RTMP_ConnectStream(r, iSeekTime)) {
     	av_log(NULL, AV_LOG_INFO, "failed to connect\n");
         rc = AVERROR_UNKNOWN;
         goto fail;

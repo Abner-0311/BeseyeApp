@@ -140,9 +140,9 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	@Override
 	public void onClick(View view) {
 		if(R.id.txt_cam_name == view.getId()){
-			showDialog(DIALOG_ID_CAM_INFO);
+			showMyDialog(DIALOG_ID_CAM_INFO);
 		}else if(R.id.btn_ok == view.getId()){
-			removeDialog(DIALOG_ID_CAM_INFO);
+			removeMyDialog(DIALOG_ID_CAM_INFO);
 		}else if(R.id.txt_nav_title == view.getId()){
 			if(++miHitCount == 5){
 				BeseyeUtils.setVisibility(mVgSWVer, View.VISIBLE);

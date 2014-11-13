@@ -73,9 +73,9 @@ int gen_play_wrapper_rtmp(void *rtmpCtx, const char *path){
 		enc = AMF_EncodeNumber(enc, pend, -1000.0);
 	  else
 		{
-		  if (r->Link.seekTime > 0.0)
-		enc = AMF_EncodeNumber(enc, pend, r->Link.seekTime);	/* resume from here */
-		  else
+//		  if (r->Link.seekTime > 0.0)
+//		enc = AMF_EncodeNumber(enc, pend, r->Link.seekTime);	/* resume from here */
+//		  else
 		enc = AMF_EncodeNumber(enc, pend, 0.0);	/*-2000.0);*/ /* recorded as default, -2000.0 is not reliable since that freezes the player if the stream is not found */
 		}
 	  if (!enc)

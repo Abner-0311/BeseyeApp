@@ -101,7 +101,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private List<JSONObject> mstrDVRStreamPathList;
 	private List<JSONObject> mstrPendingStreamPathList;
 	private List<JSONObject> mstrDiffStreamPathList;
-	private long mlDVRStartTs;
+	private long mlDVROriginalStartTs;
+	private long mlDVRCurrentStartTs;
+	private long mlDVRPlayTimeInSec;
+	private long mlDVRPlayTimeFromPauseInMs;
 	private long mlDVRFirstSegmentStartTs = -1;
 	private long mlRetryConnectBeginTs = -1;
 	private TimeZone mTimeZone;
@@ -537,8 +540,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), tsInfo:"+tsInfo.toString());
 						if(null != tsInfo && false == BeseyeJSONUtil.getJSONBoolean(tsInfo, BeseyeJSONUtil.MM_IS_LIVE, false)){
 							mbIsLiveMode = false;
-							mlDVRStartTs = BeseyeJSONUtil.getJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME);
-							Log.i(TAG, "CameraViewActivity::onCreate(), mlDVRStartTs="+mlDVRStartTs);
+							mlDVRCurrentStartTs = mlDVROriginalStartTs = BeseyeJSONUtil.getJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME);
+							
+							Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), mlDVROriginalStartTs="+mlDVROriginalStartTs);
 						}
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -622,11 +626,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkAndExtendHideHeader();
 		
-		if(!mbFirstResume){
-			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this, false).setDialogId(-1), true, mStrVCamID);
+		if(!mbFirstResume || mbIsRetryAtNextResume){
+			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this, true).setDialogId(-1), true, mStrVCamID);
 			triggerPlay();
-		}else if(mbIsRetryAtNextResume){
-				triggerPlay();
 		}
 	}
 	
@@ -643,6 +645,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
 		}
 		
+		mlDVRPlayTimeInSec = 0;
 		triggerPlay();
 	}
 	
@@ -709,6 +712,16 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					Log.d(TAG, "CameraViewActivity::onPause()->run(), pause when playing");
 					act.mbIsPauseWhenPlaying = true;
 				}
+				
+				if(!act.mbIsLiveMode){
+					act.mlDVRCurrentStartTs = act.mlDVRCurrentStartTs+1000*act.mlDVRPlayTimeInSec;
+//					act.mlDVRPlayTimeFromPauseInMs += (act.mlDVRPlayTimeInSec*1000);
+//					if(act.mlDVRPlayTimeFromPauseInMs >=1000){
+//						act.mlDVRPlayTimeFromPauseInMs -=1000;
+//					}
+					Log.i(TAG, "CameraViewActivity::onPause()->run(), change act.mlDVRCurrentStartTs:"+act.mlDVRCurrentStartTs);
+				}
+				
 				//Close it because pause not implement
 				act.closeStreaming();
 				act.stopUpdateTime();
@@ -915,7 +928,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(bNetworkConnected && bPowerOn && (mbIsFirstLaunch || mbIsPauseWhenPlaying || mbIsCamSettingChanged || mbIsWifiSettingChanged || mbIsRetryAtNextResume)){
 			mbIsRetryAtNextResume = false;
-			getStreamingInfo(true);
+			getStreamingInfo(false);
 		}/*else{
 			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		}*/
@@ -964,8 +977,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					mbReachLiveTime = false;
 					mbCannotFindFurtherDVR = false;
 					mlLastDurationForDVR = DVR_REQ_TIME;
+					mlDVRPlayTimeInSec = 0;
+					//mlDVRCurrentStartTs += mlDVRPlayTimeFromPauseInMs;
 					
-					monitorAsyncTask(mDVRStreamTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(DIALOG_ID_LOADING), true, mStrVCamID, mlDVRStartTs+"", (mlLastDurationForDVR = DVR_REQ_TIME)+"");
+					monitorAsyncTask(mDVRStreamTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(bShowDialog?DIALOG_ID_LOADING:-1), true, mStrVCamID, (mlDVRCurrentStartTs)+"", (mlLastDurationForDVR = DVR_REQ_TIME)+"");
 					mlDVRFirstSegmentStartTs = -1;
 					setVisibility(mPbLoadingCursor, View.VISIBLE);
 				}
@@ -1080,7 +1095,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						if(null != streamList){
 							appendStreamList(streamList);
 							if(0 < mstrPendingStreamPathList.size()){
-								
 								new Thread(new Runnable(){
 									@Override
 									public void run() {
@@ -1129,10 +1143,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					mbIsCamStatusChanged = false;
 					mbIsCamSettingChanged = false;
 				}
-			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
-				super.onPostExecute(task, result, iRetCode);
-				if(true == ((BeseyeAccountTask.GetCamInfoTask)task).getNeedToLoadCamSetup())
-					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 			}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 				if(0 == iRetCode){
 					BeseyeJSONUtil.setVCamConnStatus(mCam_obj, (BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.CAM_STATUS)==1)?CAM_CONN_STATUS.CAM_ON:CAM_CONN_STATUS.CAM_OFF);
@@ -1150,13 +1160,19 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(0 == iRetCode){
 					boolean bIsCamOn = isCamPowerOn();
 					super.onPostExecute(task, result, iRetCode);
-					if(mbIsLiveMode && bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED)){
-						closeStreaming();
+					if(mbIsLiveMode){
+						if(bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED))
+							closeStreaming();
+						
+						if(isCamPowerOn() && !bIsCamOn){
+							checkPlayState();
+						}
 					}
 					
 					mbIsCamSettingChanged = true;
 					updateAttrByCamObj();
-					checkPlayState();
+					
+					//checkPlayState();
 					
 					if(mbIsLiveMode){
 						if(mActivityResume){
@@ -1543,16 +1559,25 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
                 					int iLen = mstrPendingStreamPathList.size();
                 					Log.i(TAG, "mstrPendingStreamPathList.size():"+mstrPendingStreamPathList.size());
                 					if(0 < iLen){
+//                						mlDVRCurrentStartTs = mlDVROriginalStartTs + mlDVRPlayTimeFromPauseInMs;
+                						
                 						streamList = new String[mstrPendingStreamPathList.size()];
                     					strHost = BeseyeJSONUtil.getJSONString(mstrPendingStreamPathList.get(0), BeseyeJSONUtil.MM_SERVER)+"/";
                     					mlDVRFirstSegmentStartTs = BeseyeJSONUtil.getJSONLong(mstrPendingStreamPathList.get(0), BeseyeJSONUtil.MM_START_TIME);
-                    					if(mlDVRFirstSegmentStartTs > mlDVRStartTs){
-                    						mlDVRStartTs = mlDVRFirstSegmentStartTs;
+                    					long lDVRFirstSegmentDuration = BeseyeJSONUtil.getJSONLong(mstrPendingStreamPathList.get(0), BeseyeJSONUtil.MM_DURATION);
+                    					if(mlDVRFirstSegmentStartTs > mlDVRCurrentStartTs){
+                    						mlDVRCurrentStartTs =  mlDVRFirstSegmentStartTs;
                     					}else{
-                    						lOffset = mlDVRStartTs-mlDVRFirstSegmentStartTs;
+                    						lOffset = mlDVRCurrentStartTs-mlDVRFirstSegmentStartTs;
+                    						if(0 < (lDVRFirstSegmentDuration-lOffset) && (lDVRFirstSegmentDuration-lOffset) < 2000){//too close to segment end
+                    							lOffset-=2000;
+                    							if(0 > lOffset){
+                    								lOffset = 0;
+                    							}
+                    						}
                     					}
                     					
-                    					Log.i(TAG, "mlDVRFirstSegmentStartTs:"+mlDVRFirstSegmentStartTs+" > mlDVRStartTs:"+mlDVRStartTs+", lOffset:"+lOffset);
+                    					Log.i(TAG, "mlDVRFirstSegmentStartTs:"+mlDVRFirstSegmentStartTs+" > mlDVRCurrentStartTs:"+mlDVRCurrentStartTs+", lOffset:"+lOffset);
                 					}
                 					for(int i = 0;i< iLen;i++){
                 						streamList[i] = BeseyeJSONUtil.getJSONString(mstrPendingStreamPathList.get(i), BeseyeJSONUtil.MM_STREAM);
@@ -1593,7 +1618,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	       									}
 	       		         				}
 	       		         				Log.i(TAG, "open stream for idx"+miStreamIdx);
-	       		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost, streamList, /*(int)lOffset*/0);
+	       		         				iRetCreateStreaming = openStreamingList(miStreamIdx, getNativeSurface(), strHost, streamList, (int)lOffset);
 	       		         			}while(iRetCreateStreaming < 0 && iTrial < 8);
 	       		         			
 	       		         			if(miStreamIdx >= 10){
@@ -1982,6 +2007,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		if(!isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED))
     			setVisibility(mPbLoadingCursor, View.VISIBLE);
     		
+    		mlDVRPlayTimeInSec = mlDVRPlayTimeFromPauseInMs = 0;
 	    	mlLastTimestampForDVR +=mlLastDurationForDVR;
 	    	long lCurTs = System.currentTimeMillis();
 	    	mlLastDurationForDVR = mlLastDurationForDVR*10;
@@ -2134,9 +2160,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
-				Log.w(TAG, "updateRTMPClockCallback(), iTimeInSec:"+iTimeInSec);
-		    	if(false == mbIsLiveMode)
-		    		mUpdateDateTimeRunnable.updateDateTime(new Date(mlDVRStartTs+1000*iTimeInSec));
+				Date now = new Date();
+				Log.w(TAG, "updateRTMPClockCallback(), iTimeInSec:"+iTimeInSec+", now:"+BeseyeUtils.getDateString(now, "hh:mm:ss")+"."+(String.format("%03d", now.getTime()%1000)));
+		    	if(false == mbIsLiveMode){
+		    		mlDVRPlayTimeInSec = iTimeInSec;
+		    		mUpdateDateTimeRunnable.updateDateTime(new Date(mlDVRCurrentStartTs+1000*mlDVRPlayTimeInSec));
+		    	}
 			}}, 0);
     }
     
