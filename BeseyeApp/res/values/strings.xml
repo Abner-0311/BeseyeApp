@@ -105,10 +105,10 @@
     
     
     <string name="title_event_filter">Event filter</string>
-	<string name="notification_event_people">People event</string>
-	<string name="notification_event_motion">Motion event</string>
-	<string name="notification_event_fire">Fire event</string>
-	<string name="notification_event_sound">Sound event</string>
+	<string name="notification_event_people">People</string>
+	<string name="notification_event_motion">Motion</string>
+	<string name="notification_event_fire">Fire</string>
+	<string name="notification_event_sound">Sound</string>
     
     <string name="dialog_wifi_ap_key_index">Key index</string>
     
@@ -325,6 +325,9 @@
 	
 	<string name="toast_new_cam_activated">New camera is online. Please refresh your camera list.</string>
 	<string name="toast_cam_change_wifi_done">Camera %s is online. Please refresh your camera list.</string>
+	
+	<string name="toast_password_changed">Your password is changed. Please login again.</string>
+	<string name="toast_session_invalid">Your session is invalid. Please login again.</string>
 	
 	<string name="toast_cam_deactivated">%s is deactivated. Please refresh your camera list.</string>
 	

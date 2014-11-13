@@ -137,6 +137,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public static final int MSG_CAM_EVENT_OFFLINE 			= 34;
     
     public static final int MSG_UPDATE_PLAYER_VCAM 			= 35;
+    public static final int MSG_USER_PW_CHANGED 			= 36;
     
     /**
      * Handler of incoming messages from clients.
@@ -183,6 +184,24 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			Message msgToSend = Message.obtain(null, msg.what);
                 			msgToSend.setData(b);
                 			mClients.get(i).send(msgToSend);
+                		} catch (RemoteException e) {
+                			// The client is dead.  Remove it from the list;
+                			// we are going through the list from back to front
+                			// so this is safe to do inside the loop.
+                			mClients.remove(i);
+                		}
+                	}
+                	break;
+                }
+                case MSG_USER_PW_CHANGED:{
+                	for (int i=mClients.size()-1; i>=0; i--) {
+                		try {
+                			Bundle b = new Bundle();
+                			b.putString(MSG_REF_JSON_OBJ, (String)msg.obj);
+                			Message msgToSend = Message.obtain(null, msg.what);
+                			msgToSend.setData(b);
+                			mClients.get(i).send(msgToSend);
+                			break;
                 		} catch (RemoteException e) {
                 			// The client is dead.  Remove it from the list;
                 			// we are going through the list from back to front
@@ -1451,6 +1470,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 				case NCODE_CAM_OFFLINE:{
 					iMsgType = MSG_CAM_OFFLINE;
+					break;
+				}
+				case NCODE_PW_CHANGE:{
+					iMsgType = MSG_USER_PW_CHANGED;
 					break;
 				}
 				case NCODE_PEOPLE_DETECT:

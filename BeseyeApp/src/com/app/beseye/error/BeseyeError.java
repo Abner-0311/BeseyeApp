@@ -22,6 +22,8 @@ public class BeseyeError {
 	static public final int   E_BE_ACC_USER_NEW_PASSWORD_STRENGTH_TOO_LOW  = 0x00101010;//New password's strength is too low!" }.freeze,
 	
 	
+	static public final int E_BE_ACC_SESSION_NOT_FOUND                    = 0x00102008;   
+	
 	//# session sub-module
 	static public final int E_BE_ACC_SESSION_CLIENT_DEV_UDID_INVALID     = 0x00012000;
 	static public final int E_BE_ACC_SESSION_CLIENT_USR_AGENT_INVALID    = 0x00012001;

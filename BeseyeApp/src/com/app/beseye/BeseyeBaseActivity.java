@@ -656,7 +656,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				if(0 == iRetCode){
 					slLastTimeToCheckSession = System.currentTimeMillis();
 					invokeSessionComplete();
-				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_EXIST == iRetCode  || BeseyeError.E_BE_ACC_SESSION_EXPIRED == iRetCode){
+				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_EXIST == iRetCode  || BeseyeError.E_BE_ACC_SESSION_EXPIRED == iRetCode || BeseyeError.E_BE_ACC_SESSION_NOT_FOUND == iRetCode){
+					Toast.makeText(this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
 					onSessionInvalid();
 				}else{
 					onServerError();
@@ -1098,6 +1099,19 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
                 	}
                 	break;
                 }
+                case BeseyeNotificationService.MSG_USER_PW_CHANGED:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onPasswordChanged(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                }
 //                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{
 //                	BeseyeBaseActivity act = mActivity.get();
 //                	if(null != act)
@@ -1378,6 +1392,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     protected boolean onCameraMotionEvent(JSONObject msgObj){return false;}
     protected boolean onCameraPeopleEvent(JSONObject msgObj){return false;}
     protected boolean onCameraOfflineEvent(JSONObject msgObj){return false;}
+    
+    protected boolean onPasswordChanged(JSONObject msgObj){
+    	Toast.makeText(this, getString(R.string.toast_password_changed), Toast.LENGTH_SHORT).show();
+    	onSessionInvalid();
+    	return true;
+    }
     
     protected long mlCamSetupObjUpdateTs = -1;
     

@@ -102,12 +102,15 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			if(null != mIvFilter){
 				mIvFilter.setOnClickListener(this);
 				mIvFilter.setImageResource(R.drawable.sl_event_list_filter);
-				//mIvFilter.setVisibility(View.INVISIBLE);
+				if(BeseyeUtils.isHiddenFeature()){
+					mIvFilter.setVisibility(View.INVISIBLE);
+				}
 			}
 			
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
 				txtTitle.setText(mStrVCamName);
+				txtTitle.setOnClickListener(this);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
@@ -948,6 +951,8 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		Log.e(TAG, "setEventQueryPeriodByPlan(), iPlan="+iPlan+", mlEventQueryPeriod="+mlEventQueryPeriod);
 	}
 
+	private int miHitCount = 0;
+	
 	@Override
 	public void onClick(View view) {
 		if(view.getTag() instanceof EventListItmHolder){
@@ -966,6 +971,10 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				
 				//launchActivityByClassName(CameraViewActivity.class.getName(), b);
 				return;
+			}
+		}else if(R.id.txt_nav_title == view.getId()){
+			if(++miHitCount == 5){
+				BeseyeUtils.setVisibility(mIvFilter, View.VISIBLE);
 			}
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
 			finish();
