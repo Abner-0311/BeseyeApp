@@ -112,6 +112,12 @@ public class BeseyeClockIndicator extends LinearLayout {
 		//Log.i(TAG, "updateIndicatorPosition(), [ "+iFirstIdx+", "+iPosBottom+", "+iCurPos+", "+fRatio+", "+miTop+", "+miIndRange+"]");	
 	}
 	
+	public int getIndPosByItmPos(int iPosItm){
+		int iRet = (((miHolderHeight - miIndHeight)*(iPosItm*miItmHeight))/miTotalHeight);//+(miIndHeight/2)-5;
+		Log.i(TAG, "getIndPosByItmPos(), iRet:"+iRet);	
+		return iRet;
+	}
+	
 	public int getIndicatorPos(){
 		return miTop + miIndHeight/2;
 	}

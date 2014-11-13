@@ -1068,7 +1068,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					mMainListView.getRefreshableView().setSelectionFromTop(iJumpTo, 0);
+					mMainListView.getRefreshableView().setSelectionFromTop(iJumpTo, (miTotalEventCount == iJumpTo)?0:mVgIndicator.getIndPosByItmPos(iJumpTo));
 					JSONArray evtList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
 					JSONObject jumpObj = (null != evtList && iJumpTo < evtList.length())?evtList.optJSONObject(iJumpTo):null;
 					if(null != jumpObj && null == BeseyeJSONUtil.getJSONArray(jumpObj, BeseyeJSONUtil.MM_THUMBNAIL_PATH)){
