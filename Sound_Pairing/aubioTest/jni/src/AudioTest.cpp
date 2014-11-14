@@ -1869,44 +1869,6 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				bGuess = true;
 			}
 		}
-
-//		int idx = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER, 13);//13 = strMAC(12)+first div(1)
-//		if(0 < idx){
-//			string strToken = strDecodeUnmark.substr(idx+1, 4);
-//			LOGE("Possible pairing code [%s]\n",strToken.c_str());
-//			int iRet = 0;
-//			char cmd[BUF_SIZE]={0};
-//			sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", "60a44c39fcf8", strToken.c_str());
-//			LOGE("attach cmd:[%s]\n", cmd);
-//			iRet = system(cmd) >> 8;
-//			if(0 == iRet){
-//				LOGE("Cam attach OK\n");
-//				iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
-//				if(0 == iRet){
-//					LOGE("Token verification OK\n");
-//					AudioTest::getInstance()->setPairingReturnCode(0);
-//				}else{
-//					LOGE("Token verification failed\n");
-//				}
-//			}else{
-//				LOGE("Cam attach failed, try another\n");
-//				sprintf(cmd, "/beseye/cam_main/cam-handler -attach %s %s", "107befd9322f", strToken.c_str());
-//				LOGE("attach cmd:[%s]\n", cmd);
-//				iRet = system(cmd) >> 8;
-//				if(0 == iRet){
-//					LOGE("Cam attach OK\n");
-//					iRet = system("/beseye/cam_main/beseye_token_check") >> 8;
-//					if(0 == iRet){
-//						LOGE("Token verification OK\n");
-//						AudioTest::getInstance()->setPairingReturnCode(0);
-//					}else{
-//						LOGE("Token verification failed\n");
-//					}
-//				}else{
-//					LOGE("Cam attach failed\n");
-//				}
-//			}
-//		}
 	}else{
 		int iRetLen = strCode.length();
 		if(iRetLen < (MAC_LEN + TOKEN_LEN + PURPOSE_LEN /*+ MIN_PW_LEN +2*/)){
