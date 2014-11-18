@@ -253,7 +253,7 @@ void FreqAnalyzer::triggerTimeout(){
 				}
 
 				if(-1 < iPossiblePrefix){
-					string strPossibleDecode = strDecodeCheck.substr(iPossiblePrefix+2, iPosPostfix+2);
+					string strPossibleDecode = strDecodeCheck.substr(iPossiblePrefix+2, iPosPostfix+2 -iPossiblePrefix);
 					LOGE("triggerTimeout(), strPossibleDecode [%s] +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", strPossibleDecode.c_str());
 
 					msbDecode.clear();
@@ -263,10 +263,13 @@ void FreqAnalyzer::triggerTimeout(){
 //					while(0 < iCountToRemove--){
 //						mCodeRecordList.erase(mCodeRecordList.begin());
 //					}
-					LOGE("triggerTimeout(), to check result+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+
+
 					int iIndex = (iPosPostfix - iPossiblePrefix);
-					if(0 <= iIndex && iIndex < strDecodeCheck.length()){
-						checkResult(strDecodeCheck.substr(0, iIndex), optimizeDecodeString(iIndex));
+
+					LOGE("triggerTimeout(), to check result, iIndex:[%d]+++++++++++++++++++++++++++++++++++++++++++++++++++++\n", iIndex);
+					if(0 <= iIndex && iIndex < strPossibleDecode.length()){
+						checkResult(strPossibleDecode, optimizeDecodeString(iIndex));
 						mFreqRecordList.clear();
 					}else{
 						LOGE("triggerTimeout(), invalid iIndex:%d, strDecodeCheck.length():%d \n", iIndex, strDecodeCheck.length());
@@ -672,18 +675,18 @@ void FreqAnalyzer::appendRet(string strCode){
 
 void FreqAnalyzer::normalAnalysis(int iIndex){
 	mbStartAppend = false;
-	const int MAC_LEN = 12;
+	//const int MAC_LEN = 12;
 	string strDecodeCheck(msbDecode.str());
 	int iFirstDiv = strDecodeCheck.find(SoundPair_Config::PAIRING_DIVIDER);
 
 	LOGE("normalAnalysis(), index = %d, iFirstDiv=%d\n",iIndex,iFirstDiv);
 
-	if(0 > iIndex || iFirstDiv != MAC_LEN){
-		int iShift = checkFrameBySessionAndAutoCorrection();
-		strDecodeCheck = msbDecode.str();
-		if(0 != iShift){
+	if(0 > iIndex/* || iFirstDiv != MAC_LEN*/){
+//		int iShift = checkFrameBySessionAndAutoCorrection();
+//		strDecodeCheck = msbDecode.str();
+//		if(0 != iShift){
 			int iNewIndex = checkPostfix();
-			LOGE("normalAnalysis(), redetect index, iShift = %d, iNewIndex=%d\n",iShift,iNewIndex);
+//			LOGE("normalAnalysis(), redetect index, iShift = %d, iNewIndex=%d\n",iShift,iNewIndex);
 
 			int iDxFstC = -1;
 			do{
@@ -722,7 +725,7 @@ void FreqAnalyzer::normalAnalysis(int iIndex){
 				LOGE("normalAnalysis(), change index from %d to %d\n", iIndex, iNewIndex);
 				iIndex = iNewIndex;
 			}
-		}
+//		}
 	}
 
 	LOGE("normalAnalysis(), iIndex = %d,  strDecodeCheck.length()=%d\n",iIndex, strDecodeCheck.length());
@@ -1082,7 +1085,7 @@ int FreqAnalyzer::segmentCheck(bool bForcePerform){
 
 string FreqAnalyzer::replaceInvalidChar(string strDecode){
 	const int iLenPrefix = SoundPair_Config::PREFIX_DECODE.length();
-	const int POS_FST_DIVIDER = 12;
+	//const int POS_FST_DIVIDER = 12;
 	stringstream strRet;
 
 	int iLen = strDecode.length();
@@ -1104,14 +1107,14 @@ string FreqAnalyzer::replaceInvalidChar(string strDecode){
 //		}
 //	}
 
-	if(iLen <= POS_FST_DIVIDER){
-		LOGE("replaceInvalidChar(), iLen is %d, return\n");
-		return strRet.str();
-	}
+//	if(iLen <= POS_FST_DIVIDER){
+//		LOGE("replaceInvalidChar(), iLen is %d, return\n");
+//		return strRet.str();
+//	}
 
 	//Remove 2 dividers
 	int iLenNoDivider = iLen - 2;
-	int iPosSndDividerShouldBe = (iLenNoDivider*2/3)-4;//minus token len
+	int iPosSndDividerShouldBe = (iLenNoDivider*2/3)-10;//minus (token len + purpose + sec + reserved)
 
 	LOGE("replaceInvalidChar(), iLenNoDivider is %d, iPosSndDividerShouldBe = %d\n", iLenNoDivider, iPosSndDividerShouldBe);
 
@@ -1120,25 +1123,27 @@ string FreqAnalyzer::replaceInvalidChar(string strDecode){
 	LOGE("replaceInvalidChar(), iPosFstDivider is at %d, strDecode = %s\n", iPosFstDivider, strDecode.c_str());
 	if(0 <= iPosFstDivider){
 		iPosSndDivider = strDecode.find(SoundPair_Config::PAIRING_DIVIDER, iPosFstDivider+1);
-		int iPosFstDividerDelta = iPosFstDivider-POS_FST_DIVIDER;
 
-		if( 2 >= abs(iPosFstDividerDelta)){
-			if(0 < iPosFstDividerDelta && iPosFstDividerDelta < iLen){
-				strDecode = strDecode.substr(iPosFstDividerDelta);
-			}else if(0 > iPosFstDividerDelta){
-				int iDumbToAdd=abs(iPosFstDividerDelta);
-				int i = 0;
-				for(; i < iDumbToAdd ;i++){
-					strDecode = strDefReplaced+strDecode;
-				}
-			}
 
-			//iLen +=iPosFstDividerDelta;
-			//iLenNoDivider+=iPosFstDividerDelta;
-			iPosSndDividerShouldBe = (iLenNoDivider*2/3)-4;//minus token len
-			iPosFstDivider-=iPosFstDividerDelta;
-
-			iPosSndDivider = strDecode.find(SoundPair_Config::PAIRING_DIVIDER, iPosFstDivider+1);
+//		int iPosFstDividerDelta = iPosFstDivider-POS_FST_DIVIDER;
+//
+//		//if( 2 >= abs(iPosFstDividerDelta)){
+//			if(0 < iPosFstDividerDelta && iPosFstDividerDelta < iLen){
+//				strDecode = strDecode.substr(iPosFstDividerDelta);
+//			}else if(0 > iPosFstDividerDelta){
+//				int iDumbToAdd=abs(iPosFstDividerDelta);
+//				int i = 0;
+//				for(; i < iDumbToAdd ;i++){
+//					strDecode = strDefReplaced+strDecode;
+//				}
+//			}
+//
+//			//iLen +=iPosFstDividerDelta;
+//			//iLenNoDivider+=iPosFstDividerDelta;
+//			iPosSndDividerShouldBe = (iLenNoDivider*2/3)-10;//minus token len
+//			iPosFstDivider-=iPosFstDividerDelta;
+//
+//			iPosSndDivider = strDecode.find(SoundPair_Config::PAIRING_DIVIDER, iPosFstDivider+1);
 			LOGE("replaceInvalidChar(), iPosSndDivider is at %d, strDecode = %s\n", iPosSndDivider, strDecode.c_str());
 			if(0 < iPosSndDivider && iPosSndDivider+1 < iLen){
 				strDecode = strDecode.substr(0, iPosSndDivider)+strDecode.substr(iPosSndDivider+1);
@@ -1151,28 +1156,29 @@ string FreqAnalyzer::replaceInvalidChar(string strDecode){
 			}else{
 				LOGE("replaceInvalidChar(), invalid iPosFstDivider %d\n", iPosFstDivider);
 			}
-		}else{
-			LOGE("replaceInvalidChar(), iPosFstDividerDelta is too large (%d)\n", iPosFstDividerDelta);
-			if(0 < iPosFstDividerDelta && iPosFstDividerDelta+1 < strDecode.length()){
-				strDecode = strDecode.substr(0, iPosFstDividerDelta)+strDecode.substr(iPosFstDividerDelta+1);
-				if(0 < POS_FST_DIVIDER && POS_FST_DIVIDER+1 < strDecode.length()){
-					strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
-				}
-			}else if(0 < iPosSndDividerShouldBe && iPosSndDividerShouldBe+1 < strDecode.length()){
-				strDecode = strDecode.substr(0, iPosSndDividerShouldBe)+strDecode.substr(iPosSndDividerShouldBe+1);
-				if(0 < POS_FST_DIVIDER && POS_FST_DIVIDER+1 < strDecode.length()){
-					strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
-				}
-			}
-		}
+		//}
+//		else{
+//			LOGE("replaceInvalidChar(), iPosFstDividerDelta is too large (%d)\n", iPosFstDividerDelta);
+//			if(0 < iPosFstDividerDelta && iPosFstDividerDelta+1 < strDecode.length()){
+//				strDecode = strDecode.substr(0, iPosFstDividerDelta)+strDecode.substr(iPosFstDividerDelta+1);
+//				if(0 < POS_FST_DIVIDER && POS_FST_DIVIDER+1 < strDecode.length()){
+//					strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
+//				}
+//			}else if(0 < iPosSndDividerShouldBe && iPosSndDividerShouldBe+1 < strDecode.length()){
+//				strDecode = strDecode.substr(0, iPosSndDividerShouldBe)+strDecode.substr(iPosSndDividerShouldBe+1);
+//				if(0 < POS_FST_DIVIDER && POS_FST_DIVIDER+1 < strDecode.length()){
+//					strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
+//				}
+//			}
+//		}
 	}else{
 		LOGE("replaceInvalidChar(), can not fnd divider\n");
 		if(0 < iPosSndDividerShouldBe && iPosSndDividerShouldBe+1 < strDecode.length()){
 			strDecode = strDecode.substr(0, iPosSndDividerShouldBe)+strDecode.substr(iPosSndDividerShouldBe+1);
 		}
-		if(0 < POS_FST_DIVIDER && POS_FST_DIVIDER+1 < strDecode.length()){
-			strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
-		}
+//		if(0 < POS_FST_DIVIDER && POS_FST_DIVIDER+1 < strDecode.length()){
+//			strDecode = strDecode.substr(0, POS_FST_DIVIDER)+strDecode.substr(POS_FST_DIVIDER+1);
+//		}
 	}
 
 	iLen = strDecode.length();

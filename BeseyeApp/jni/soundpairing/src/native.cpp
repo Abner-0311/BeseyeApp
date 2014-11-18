@@ -387,6 +387,8 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playPair
 	return iRet;
 }
 
+
+
 JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playPairingCodeWithPurpose(JNIEnv * env, jobject thisObj, jstring strMACAddr, jstring strKey, jint iSecType, jshort userToken, jchar cPurpose){
 	DECLARE_JNIENV_WITH_RETURN()
 	SoundPair_Config::init();
@@ -397,6 +399,20 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playPair
 	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
 	LOGW("mac:%s, key:%s, cPurpose:%d", mac, key, cPurpose);
 	int iRet = FreqGenerator::getInstance()->playPairingCodeWithPurpose(mac, key, userToken, cPurpose);
+	LOGW("iRet:%x", iRet);
+	return iRet;
+}
+
+JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playSSIDPairingCodeWithPurpose(JNIEnv * env, jobject thisObj, jstring strSSID, jstring strKey, jint iSecType, jshort userToken, jchar cPurpose){
+	DECLARE_JNIENV_WITH_RETURN()
+	SoundPair_Config::init();
+	char *ssid = (char *)jni_env->GetStringUTFChars( strSSID, 0);
+	char *key = (char *)jni_env->GetStringUTFChars( strKey, 0);
+	//string curCode(mac);
+	//jni_env->ReleaseStringUTFChars( strCode, code);
+	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
+	LOGW("ssid:%s, key:%s, cPurpose:%d", ssid, key, cPurpose);
+	int iRet = FreqGenerator::getInstance()->playSSIDPairingCodeWithPurpose(ssid, key, (PAIRING_SEC_TYPE)iSecType, userToken, cPurpose);
 	LOGW("iRet:%x", iRet);
 	return iRet;
 }

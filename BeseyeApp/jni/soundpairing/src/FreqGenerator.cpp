@@ -157,7 +157,7 @@ bool FreqGenerator::playCode2(const string strMacAddr, const string strWifiKey, 
 							  strToken+
 							  strECCode+
 							  SoundPair_Config::POSTFIX_DECODE+
-							  "789"):
+							  "789XX"):
 							strEncode;
 
 	pthread_mutex_lock(&mSyncObj);
@@ -768,6 +768,91 @@ void FreqGenerator::writeTone(double sample[], byte generatedSnd[], int iLen){
 }
 
 #define LEN_OF_MAC_ADDR 12
+#define LEN_OF_MAX_SSID 32
+
+unsigned int FreqGenerator::playSSIDPairingCode(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken){
+	return playSSIDPairingCodeWithPurpose(ssid, wifiKey, secType, tmpUserToken, (unsigned char) 0);
+}
+
+unsigned int FreqGenerator::playSSIDPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, unsigned char cPurpose){//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+	unsigned int iRet = R_OK;
+	stringstream sstrSsid;
+	stringstream sstrWifiKey;
+	stringstream sstrToken;
+
+	{
+		int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
+		int iPower = SoundPair_Config::getPowerByFFTYPE();
+
+		if(!ssid ){
+			iRet = E_FE_MOD_SP_INVALID_SSID;
+			goto ERR;
+		}else{
+			int iLen = strlen(ssid);
+			LOGE("ssid length is = %d\n", iLen);
+
+			if(iLen > LEN_OF_MAX_SSID){//mac addr contains 12 hex values
+				iRet = E_FE_MOD_SP_INVALID_SSID;
+				goto ERR;
+			}else{
+				sstrSsid << SoundPair_Config::sCodeTable.at((iLen & 0xf0) >> iPower);
+				sstrSsid << SoundPair_Config::sCodeTable.at(iLen & 0x0f);
+
+				string strSSID(ssid);
+				for(int i = 0; i< iLen;i++){
+					char ch = strSSID.at(i);
+					sstrSsid << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
+					sstrSsid << SoundPair_Config::sCodeTable.at(ch & 0x0f);
+
+					//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
+				}
+			}
+		}
+
+		string strWifiKey(wifiKey);
+		int iLen = strWifiKey.length();
+
+		for(int i = 0; i< iLen;i++){
+			char ch = strWifiKey.at(i);
+			sstrWifiKey << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
+			sstrWifiKey << SoundPair_Config::sCodeTable.at(ch & 0x0f);
+
+			//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
+		}
+
+		//tmpUserToken = 0xff;
+
+		//LOGE("macAddrZip= [%s]\n", macAddrZip);
+		//LOGE("tokenToPlay= [%c%c%c%c]\n", SoundPair_Config::sCodeTable.at((tmpUserToken&0xf000)>>12),  (tmpUserToken&0xf00)>>8,  (tmpUserToken&0xf0)>>4, (tmpUserToken&0xf));
+//		sprintf(tokenToPlay, "%s%s%s%s", SoundPair_Config::sCodeTable.at((tmpUserToken & 0xf000)>>12),
+//										 SoundPair_Config::sCodeTable.at((tmpUserToken & 0x0f00)>>8),
+//										 SoundPair_Config::sCodeTable.at((tmpUserToken & 0x00f0)>>4),
+//										 SoundPair_Config::sCodeTable.at((tmpUserToken & 0x000f)));
+
+		sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0xf000)>>12);
+		sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x0f00)>>8);
+		sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x00f0)>>4);
+		sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x000f));
+
+		//sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0xf0)>>4);
+		sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0x0f));
+		sstrToken<<SoundPair_Config::sCodeTable.at((secType  & 0x0f));
+
+		//Reserved
+		sstrToken<<SoundPair_Config::sCodeTable.at(0);
+		sstrToken<<SoundPair_Config::sCodeTable.at(0);
+		sstrToken<<SoundPair_Config::sCodeTable.at(0);
+		sstrToken<<SoundPair_Config::sCodeTable.at(0);
+	}
+
+	if(!FreqGenerator::getInstance()->playCode2(sstrSsid.str(), sstrWifiKey.str(), sstrToken.str(), true)){
+		iRet = E_FE_MOD_SP_PLAY_CODE_ERR;
+		goto ERR;
+	}
+ERR:
+	//LOGE("iRet= [0x%x]\n", iRet);
+	return iRet;
+}
 
 unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken){
 	return playPairingCodeWithPurpose(macAddr, wifiKey, tmpUserToken, (unsigned char) 0);

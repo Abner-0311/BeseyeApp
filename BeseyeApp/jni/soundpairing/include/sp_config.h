@@ -23,6 +23,14 @@ using zxing::GenericGF;
 
 using namespace std;
 
+enum PAIRING_SEC_TYPE{
+	PAIRING_SEC_NONE 	= 0x0,
+	PAIRING_SEC_WEP  	= 0x1,
+	PAIRING_SEC_WPA  	= 0x2,
+	PAIRING_SEC_WPA2 	= 0x3,
+	PAIRING_SEC_UNKNOWN = 0xf
+};
+
 class FreqRangeData : public Counted{
 private:
 	double mdValue;

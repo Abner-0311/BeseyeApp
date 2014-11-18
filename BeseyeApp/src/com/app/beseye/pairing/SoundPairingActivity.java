@@ -71,6 +71,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private native boolean playCode(String strCode, boolean bNeedEncode);
 	private native int playPairingCode(String strMac, String strKey, int iSecType, short sUserToken);
 	private native int playPairingCodeWithPurpose(String strMac, String strKey, int iSecType, short sUserToken, char cPurpose);
+	private native int playSSIDPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
+
 	
 	private native void finishPlayCode();
 	private native void swTest();
@@ -150,7 +152,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		super.onSessionComplete();
 		
 		//monitorAsyncTask(new BeseyeAccountTask.CamDeattchTask(this), true);
-		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, (getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE+"":BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", mChosenWifiAPInfo.BSSID);
+		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, (getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE+"":BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", mChosenWifiAPInfo.SSID);
 	}
 	@Override
 	protected void onPause() {
@@ -275,7 +277,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					int iRet = playPairingCodeWithPurpose(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose);
+					//int iRet = playPairingCodeWithPurpose(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose);
+					int iRet = playSSIDPairingCodeWithPurpose(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose);
+
 					if(iRet != 0)
 						Toast.makeText(SoundPairingActivity.this, "ret:"+iRet, Toast.LENGTH_SHORT).show();
 					else{

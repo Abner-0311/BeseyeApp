@@ -28,13 +28,13 @@
 
 static const int  MAX_TIME_TO_INVOKE_SYSTEM = 10;//10 sec
 static int  siTimeoutValue = MAX_TIME_TO_INVOKE_SYSTEM;
+
 static pid_t pid_system = -1;
 static msec_t lTimeInvodeSystem = 0;
 static pid_t intermediate_pid = -1;
 //static int iRetSystemCall = 0;
 
 //To avoid system call/fork blocking issue, we need to monitor it and kill it when timeout
-
 int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
 	siTimeoutValue = MAX_TIME_TO_INVOKE_SYSTEM;
 	if(0 < iTimeoutInSec && iTimeoutInSec < 120){
@@ -353,6 +353,32 @@ $EXIT:
     }
     return 0;
 }
+
+//static std::string UTF8_To_string(const std::string & str){
+//	int nwLen = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
+//
+//	wchar_t * pwBuf = new wchar_t[nwLen + 1];//
+//	memset(pwBuf, 0, nwLen * 2 + 2);
+//
+//	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), pwBuf, nwLen);
+//
+//	int nLen = WideCharToMultiByte(CP_ACP, 0, pwBuf, -1, NULL, NULL, NULL, NULL);
+//
+//	char * pBuf = new char[nLen + 1];
+//	memset(pBuf, 0, nLen + 1);
+//
+//	WideCharToMultiByte(CP_ACP, 0, pwBuf, nwLen, pBuf, nLen, NULL, NULL);
+//
+//	std::string retStr = pBuf;
+//
+//	delete []pBuf;
+//	delete []pwBuf;
+//
+//	pBuf = NULL;
+//	pwBuf = NULL;
+//
+//	return retStr;
+//}
 
 static void copyLogFile(){
 	char ch;
@@ -1828,33 +1854,40 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
 	int iPower = SoundPair_Config::getPowerByFFTYPE();
 
-	const int MAC_LEN = 12;
+	//const int MAC_LEN = 12;
+	const int SSID_MIN_LEN = 2;
+	const int SSID_MAX_LEN = 32*2;
 	const int TOKEN_LEN = 4;
-	const int PURPOSE_LEN = 2;
+	const int PURPOSE_LEN = 6;
 	const int MIN_PW_LEN = 0;
 
-	string strMAC, strUserNum, strPurpose, strPW;
+	string /*strMAC*/strSSID, strUserNum, strPurposeSeg, strPW;
 
-	stringstream retPW;
+	stringstream retSSID, retPW;
 	unsigned char cPurpose = 0;
+	unsigned char cSecType = 0;
+	unsigned int iReserved = 0;
 	bool bGuess = false;
 
 	if(0 == strCode.find("error")){
 		LOGE("Error, trying to get pairing code!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 
 		int iRetLen = strDecodeUnmark.length();
-		if(iRetLen < (MAC_LEN + TOKEN_LEN + PURPOSE_LEN +2 /*+ MIN_PW_LEN +2*/)){
-			LOGE("iRetLen:[%d] < min len\n",iRetLen, (MAC_LEN + TOKEN_LEN + PURPOSE_LEN +2/*+ MIN_PW_LEN +2*/));
+		if(iRetLen < (SSID_MIN_LEN + TOKEN_LEN + PURPOSE_LEN +2 /*+ MIN_PW_LEN +2*/)){
+			LOGE("iRetLen:[%d] < min len\n",iRetLen, (SSID_MIN_LEN + TOKEN_LEN + PURPOSE_LEN +2/*+ MIN_PW_LEN +2*/));
 			return;
 		}
 
 		int iFirstDiv = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER);
 		LOGE("iFirstDiv:%d\n", iFirstDiv);
-		if(MAC_LEN <= iFirstDiv){
+		if(SSID_MIN_LEN <= iFirstDiv){
 			int iSecondDiv = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER, iFirstDiv+1);
 			LOGE("iSecondDiv:%d\n", iSecondDiv);
 			if(iSecondDiv > iFirstDiv){
-				strMAC = strDecodeUnmark.substr(iFirstDiv - MAC_LEN, MAC_LEN);
+				//string ssidSeg = strDecodeUnmark.substr(0, iFirstDiv);
+
+				strSSID = strDecodeUnmark.substr(SSID_MIN_LEN, iFirstDiv - SSID_MIN_LEN);
+
 				strPW = strDecodeUnmark.substr(iFirstDiv+1, (iSecondDiv - (iFirstDiv+1)));
 
 				if(iRetLen >= (iSecondDiv+1+TOKEN_LEN)){
@@ -1862,29 +1895,67 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				}
 
 				if(iRetLen >= (iSecondDiv+1+TOKEN_LEN +PURPOSE_LEN)){
-					strPurpose = strDecodeUnmark.substr((iSecondDiv+TOKEN_LEN+1), PURPOSE_LEN);
+					strPurposeSeg = strDecodeUnmark.substr((iSecondDiv+TOKEN_LEN+1), PURPOSE_LEN);
 				}
 
-				LOGE("possible bundle [%s, %s, %s, %s]\n",strMAC.c_str(),strPW.c_str(),strUserNum.c_str(),strPurpose.c_str());
+				LOGE("possible bundle [%s, %s, %s, %s]\n",strSSID.c_str(),strPW.c_str(),strUserNum.c_str(),strPurposeSeg.c_str());
 				bGuess = true;
 			}
 		}
 	}else{
 		int iRetLen = strCode.length();
-		if(iRetLen < (MAC_LEN + TOKEN_LEN + PURPOSE_LEN /*+ MIN_PW_LEN +2*/)){
-			LOGE("iRetLen:[%d] < min len\n",iRetLen, (MAC_LEN + TOKEN_LEN + PURPOSE_LEN/*+ MIN_PW_LEN +2*/));
+		if(iRetLen < (SSID_MIN_LEN + TOKEN_LEN + PURPOSE_LEN /*+ MIN_PW_LEN +2*/)){
+			LOGE("iRetLen:[%d] < min len\n",iRetLen, (SSID_MIN_LEN + TOKEN_LEN + PURPOSE_LEN/*+ MIN_PW_LEN +2*/));
 			return;
 		}
 
-		strMAC = strCode.substr(0, MAC_LEN);
-		strUserNum = strCode.substr(iRetLen - (TOKEN_LEN+PURPOSE_LEN), TOKEN_LEN);
-		strPurpose = strCode.substr(iRetLen - (PURPOSE_LEN));
-		strPW = strCode.substr(MAC_LEN, ( iRetLen - (MAC_LEN+TOKEN_LEN+PURPOSE_LEN)));
+		string strSSIDLen = strCode.substr(0, SSID_MIN_LEN);
+		int iSSIDLen = 0;
+		for(int idx = 0;idx < SSID_MIN_LEN;idx++){
+			iSSIDLen <<= iPower;
+			string strTmp = strSSIDLen.substr(idx, 1);
+			int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+			iSSIDLen += (unsigned char) iVal;
+		}
 
-		LOGE("[%s, %s, %s, %s]\n",strMAC.c_str(),strPW.c_str(),strUserNum.c_str(),strPurpose.c_str());
+		iSSIDLen*=2;
+
+		LOGI("iSSIDLen:[%d]\n",iSSIDLen);
+
+		if(iSSIDLen > SSID_MAX_LEN){
+			LOGE("iSSIDLen:[%d] > SSID_MAX_LEN, return \n",iSSIDLen, SSID_MAX_LEN);
+		}
+
+		strSSID = strCode.substr(SSID_MIN_LEN, iSSIDLen);
+		strUserNum = strCode.substr(iRetLen - (TOKEN_LEN+PURPOSE_LEN), TOKEN_LEN);
+		strPurposeSeg = strCode.substr(iRetLen - (PURPOSE_LEN));
+		strPW = strCode.substr((SSID_MIN_LEN+iSSIDLen), ( iRetLen - ((SSID_MIN_LEN+iSSIDLen)+TOKEN_LEN+PURPOSE_LEN)));
+
+		LOGE("[%s, %s, %s, %s]\n",strSSID.c_str(),strPW.c_str(),strUserNum.c_str(),strPurposeSeg.c_str());
 	}
 
-	if(0 < strMAC.length() && 0 < strUserNum.length() && 0 < strPurpose.length()){
+	if(0 < strSSID.length() && 0 < strUserNum.length() && 0 < strPurposeSeg.length()){
+
+		int iLenSSID = strSSID.length()/iMultiply;
+		for(int i =0;i < iLenSSID;i++){
+			unsigned char c = 0;
+			for(int j = 0;j < iMultiply;j++){
+				c <<= iPower;
+				string strTmp = strSSID.substr(i*iMultiply+j, 1);
+				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+				c += (unsigned char) iVal;
+				//LOGI("iVal:[%d]\n",iVal);
+			}
+			//LOGI("c:[%u]\n",c);
+			retSSID << c;
+		}
+
+		LOGE("retSSID:[%s]\n",retSSID.str().c_str());
+
+		string strSSIDFinal = retSSID.str();//UTF8_To_string(retSSID.str());
+
+		LOGE("strSSIDFinal:[%s]\n",strSSIDFinal.c_str());
+
 		int iLenPW = strPW.length()/iMultiply;
 		for(int i =0;i < iLenPW;i++){
 			unsigned char c = 0;
@@ -1901,22 +1972,28 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 		LOGE("retPW:[%s]\n",retPW.str().c_str());
 
-		int iLenPurpose = strPurpose.length()/iMultiply;
-		for(int i =0;i < iLenPurpose;i++){
-			for(int j = 0;j < iMultiply;j++){
-				string strTmp = strPurpose.substr(i*iMultiply+j, 1);
-				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
-				cPurpose += (unsigned char) iVal;
-				//LOGI("iVal:[%d]\n",iVal);
-			}
+		int iLenPurpose = strPurposeSeg.length();///iMultiply;
+		cPurpose =SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(0, 1).c_str());
+		cSecType =SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(1, 1).c_str());
+		for(int i =2;i < iLenPurpose;i++){
+			iReserved << iPower;
+			int iVal = SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(i, 1).c_str());
+			iReserved+=iVal;
+//			for(int j = 0;j < iMultiply;j++){
+//				string strTmp = strPurposeSeg.substr(i*iMultiply+j, 1);
+//				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+//				cPurpose += (unsigned char) iVal;
+//				//LOGI("iVal:[%d]\n",iVal);
+//			}
 		}
 
-		LOGE("cPurpose:%u, strPurpose:[%s]\n", cPurpose, strPurpose.c_str());
+		LOGE("cPurpose:%u, cSecType:%u, iReserved:%d, strPurposeSeg:[%s]\n", cPurpose, cSecType, iReserved, strPurposeSeg.c_str());
 
 		char cmd[BUF_SIZE]={0};
-		sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", strMAC.c_str(), retPW.str().c_str());
-		LOGE("wifi set cmd:[%s]\n", cmd);
-		int iRet = setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
+//		sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", strMAC.c_str(), retPW.str().c_str());
+//		LOGE("wifi set cmd:[%s]\n", cmd);
+
+		int iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
 		if(0 == iRet){
 			stopReceiveAudioBuf();
 			LOGE("wifi set OK\n");
@@ -1958,7 +2035,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				if(0 == iRet){
 					LOGE("Token is already existed, check tmp token\n");
 					if(1 == cPurpose){
-						sprintf(cmd, "/beseye/cam_main/cam-util -verToken %s %s", strMAC.c_str(), strUserNum.c_str());
+						sprintf(cmd, "/beseye/cam_main/cam-util -verToken %s %s", strSSIDFinal.c_str(), strUserNum.c_str());
 						LOGE("verToken cmd:[%s]\n", cmd);
 						iRet = invokeSystem(cmd) >> 8;
 						//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
@@ -1980,7 +2057,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					if(0 == cPurpose){
 						LOGE("Token is invalid, try to attach\n");
 
-						sprintf(cmd, "/beseye/cam_main/cam-util -attach %s %s", strMAC.c_str(), strUserNum.c_str());
+						sprintf(cmd, "/beseye/cam_main/cam-util -attach %s %s", strSSIDFinal.c_str(), strUserNum.c_str());
 						LOGE("attach cmd:[%s]\n", cmd);
 						iRet = invokeSystem(cmd) >> 8;
 

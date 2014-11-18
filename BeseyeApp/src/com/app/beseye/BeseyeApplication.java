@@ -74,7 +74,26 @@ public class BeseyeApplication extends Application {
 		if(null != s_checkBackgroundRunnable){
 			s_checkBackgroundRunnable.updateContext(this);
 		}
+	
+		String str1 = "abcd-*?";
+		String str2 = "ด๚ธี";
 		
+		String strRet = "";
+		byte[] b1 = str1.getBytes();
+		byte[] b2 = str2.getBytes();
+		
+		for(byte b :b1){
+			strRet+=String.format("%02x ", b);
+		}
+		
+		strRet+="\n";
+		
+		for(byte b :b2){
+			strRet+=String.format("%02x ", b);
+		}
+		
+		Log.i(TAG, "str1:"+str1.getBytes().length+", str2:"+str2.getBytes().length+", strRet:"+strRet);
+
 	}
 	
 	static synchronized public Application getApplication(){
