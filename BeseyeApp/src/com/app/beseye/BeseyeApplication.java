@@ -59,6 +59,8 @@ public class BeseyeApplication extends Application {
 		if(BeseyeConfig.DEBUG)
 			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" HOCKEY_APP_ID:"+HOCKEY_APP_ID+", can update:"+BeseyeUtils.canUpdateFromHockeyApp());
 		
+		Log.i(TAG, "*****************BeseyeApplication::onCreate(), can update:"+BeseyeUtils.canUpdateFromHockeyApp());
+
 		ACRA.init(this);
 		ACRA.getErrorReporter().setReportSender(new HockeySender());
 		
