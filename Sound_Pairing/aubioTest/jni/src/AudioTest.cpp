@@ -1512,13 +1512,13 @@ void writeBuf(unsigned char* charBuf, int iLen){
 									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
 									AudioBufferMgr::getInstance()->setRecordMode(false);
 								}
-								AudioTest::getInstance()->setAboveThresholdFlag(true);
+								//AudioTest::getInstance()->setAboveThresholdFlag(true);
 								siAboveThreshHoldCount = 0;
 							}
 							siUnderThreshHoldCount = 0;
 						}else if(ANALYSIS_END_THRESHHOLD > sMaxValue || (0 < ANALYSIS_END_THRESHHOLD_DETECT && ANALYSIS_END_THRESHHOLD_DETECT > sMaxValue && PAIRING_WAITING < sPairingMode)){
 							siUnderThreshHoldCount++;
-							if(AudioTest::getInstance()->getAboveThresholdFlag() && siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
+							if((PAIRING_ANALYSIS ==  sPairingMode || AudioTest::getInstance()->getAboveThresholdFlag()) && siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
 								LOGE("trigger stop analysis-----\n");
 								//stop analysis
 								if(AudioTest::getInstance()->isPairingAnalysisMode()){
@@ -1532,7 +1532,9 @@ void writeBuf(unsigned char* charBuf, int iLen){
 									LOGE("miStopAnalysisBufIdx != -1\n");
 								}
 
+								AudioTest::getInstance()->setAboveThresholdFlag(true);
 								FreqAnalyzer::getInstance()->setDetectLowSound(true);
+
 								siUnderThreshHoldCount = 0;
 							}
 							siAboveThreshHoldCount = 0;
@@ -1923,7 +1925,11 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		LOGI("iSSIDLen:[%d]\n",iSSIDLen);
 
 		if(iSSIDLen > SSID_MAX_LEN){
-			LOGE("iSSIDLen:[%d] > SSID_MAX_LEN, return \n",iSSIDLen, SSID_MAX_LEN);
+			LOGE("iSSIDLen:[%d] > SSID_MAX_LEN:[%d], return \n",iSSIDLen, SSID_MAX_LEN);
+		}
+
+		if((iSSIDLen+SSID_MIN_LEN) >= iRetLen){
+			LOGE("(iSSIDLen+SSID_MIN_LEN) >= iRetLen:[%d], return \n",(iSSIDLen+SSID_MIN_LEN), iRetLen);
 		}
 
 		strSSID = strCode.substr(SSID_MIN_LEN, iSSIDLen);
@@ -2035,7 +2041,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				if(0 == iRet){
 					LOGE("Token is already existed, check tmp token\n");
 					if(1 == cPurpose){
-						sprintf(cmd, "/beseye/cam_main/cam-util -verToken %s %s", strSSIDFinal.c_str(), strUserNum.c_str());
+						sprintf(cmd, "/beseye/cam_main/cam-util -verToken \"%s\" %s", strSSIDFinal.c_str(), strUserNum.c_str());
 						LOGE("verToken cmd:[%s]\n", cmd);
 						iRet = invokeSystem(cmd) >> 8;
 						//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
@@ -2057,13 +2063,16 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					if(0 == cPurpose){
 						LOGE("Token is invalid, try to attach\n");
 
-						sprintf(cmd, "/beseye/cam_main/cam-util -attach %s %s", strSSIDFinal.c_str(), strUserNum.c_str());
+						sprintf(cmd, "/beseye/cam_main/cam-util -attach \"%s\" %s", strSSIDFinal.c_str(), strUserNum.c_str());
 						LOGE("attach cmd:[%s]\n", cmd);
 						iRet = invokeSystem(cmd) >> 8;
 
 						//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
 						if(0 == iRet){
 							LOGE("Cam attach OK\n");
+
+							iRet = invokeSystem("/beseye/cam_main/beseye_token_check") >> 8;
+
 							AudioTest::getInstance()->setPairingReturnCode(0);
 						}else{
 							LOGE("Cam attach failed\n");

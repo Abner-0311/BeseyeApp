@@ -239,12 +239,12 @@ void FreqAnalyzer::triggerTimeout(){
 				int iPossiblePrefix = -1;
 				int iPossibleSndPrefix = strDecodeCheck.rfind(SoundPair_Config::POSTFIX_DECODE_C2, iPosPostfix-1);
 				if(0 < iPossibleSndPrefix){
-					LOGE("triggerTimeout(), detect [%s] at %d+++++++++++++++++++++++++++++++++++++++++++++++++++++\n", SoundPair_Config::POSTFIX_DECODE_C2.c_str(), iPossibleSndPrefix);
+					LOGE("triggerTimeout(), detect [%s] at %d +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", SoundPair_Config::POSTFIX_DECODE_C2.c_str(), iPossibleSndPrefix);
 					iPossiblePrefix = iPossibleSndPrefix - 1;
 				}else{
 					int iPossibleFstPrefix = strDecodeCheck.rfind(SoundPair_Config::POSTFIX_DECODE_C1, iPosPostfix-1);
 					if(0 <= iPossibleFstPrefix){
-						LOGE("triggerTimeout(), detect [%s] at %d+++++++++++++++++++++++++++++++++++++++++++++++++++++\n", SoundPair_Config::POSTFIX_DECODE_C1.c_str(), iPossibleFstPrefix);
+						LOGE("triggerTimeout(), detect [%s] at %d +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", SoundPair_Config::POSTFIX_DECODE_C1.c_str(), iPossibleFstPrefix);
 						iPossiblePrefix = iPossibleFstPrefix ;
 					}else{
 						LOGE("triggerTimeout(), can not detect one of prefix +++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -252,10 +252,11 @@ void FreqAnalyzer::triggerTimeout(){
 					}
 				}
 
-				if(-1 < iPossiblePrefix){
-					string strPossibleDecode = strDecodeCheck.substr(iPossiblePrefix+2, iPosPostfix+2 -iPossiblePrefix);
+				if(-1 < iPossiblePrefix && strDecodeCheck.length() >= (iPosPostfix+2)){
+					string strPossibleDecode = strDecodeCheck.substr(iPossiblePrefix+2, (iPosPostfix+2) - (iPossiblePrefix+2));//need to have postfix
 					LOGE("triggerTimeout(), strPossibleDecode [%s] +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", strPossibleDecode.c_str());
 
+					msbDecode.str("");
 					msbDecode.clear();
 					msbDecode<<strPossibleDecode;
 
@@ -264,12 +265,11 @@ void FreqAnalyzer::triggerTimeout(){
 //						mCodeRecordList.erase(mCodeRecordList.begin());
 //					}
 
-
 					int iIndex = (iPosPostfix - iPossiblePrefix);
 
 					LOGE("triggerTimeout(), to check result, iIndex:[%d]+++++++++++++++++++++++++++++++++++++++++++++++++++++\n", iIndex);
 					if(0 <= iIndex && iIndex < strPossibleDecode.length()){
-						checkResult(strPossibleDecode, optimizeDecodeString(iIndex));
+						checkResult(strPossibleDecode, optimizeDecodeString(iIndex, strPossibleDecode));
 						mFreqRecordList.clear();
 					}else{
 						LOGE("triggerTimeout(), invalid iIndex:%d, strDecodeCheck.length():%d \n", iIndex, strDecodeCheck.length());
@@ -731,7 +731,8 @@ void FreqAnalyzer::normalAnalysis(int iIndex){
 	LOGE("normalAnalysis(), iIndex = %d,  strDecodeCheck.length()=%d\n",iIndex, strDecodeCheck.length());
 
 	if(0 <= iIndex && iIndex < strDecodeCheck.length()){
-		checkResult(strDecodeCheck.substr(0, iIndex), optimizeDecodeString(iIndex));
+		string strDecodeChk = strDecodeCheck.substr(0, iIndex);
+		checkResult(strDecodeChk, optimizeDecodeString(iIndex, strDecodeCheck));
 	}else{
 		LOGE("normalAnalysis(), invalid iIndex:%d, strDecodeCheck.length():%d \n", iIndex, strDecodeCheck.length());
 	}
@@ -739,11 +740,13 @@ void FreqAnalyzer::normalAnalysis(int iIndex){
 	mFreqRecordList.clear();
 }
 
-string FreqAnalyzer::optimizeDecodeString(int iIndex){
+string FreqAnalyzer::optimizeDecodeString(int iIndex, string strDecodeCheck){
 	//string strDecode = msbDecode.substr(0, msbDecode.length()-((-1 < msbDecode.rfind(POSTFIX_DECODE) )?POSTFIX_DECODE.length():1));
 	string strDecodeUnmark;
-	string strDecodeCheck(msbDecode.str());
+	//string strDecodeCheck(msbDecode.str());
+
 	LOGE("optimizeDecodeString(), strDecodeCheck:[%s], index is %d\n", strDecodeCheck.c_str(), iIndex);
+
 	if(0 <= iIndex && iIndex < strDecodeCheck.length()){
 		string strDecode = strDecodeCheck.substr(0, iIndex);
 		strDecodeUnmark = replaceInvalidChar(strDecode);
@@ -1317,7 +1320,8 @@ bool FreqAnalyzer::checkEndPoint(){
 			}
 
 			if(0 <= iIndex && iIndex < strDecodeCheck.length()){
-				checkResult(strDecodeCheck.substr(0, iIndex), optimizeDecodeString(iIndex));
+				string strDecodeChk = strDecodeCheck.substr(0, iIndex);
+				checkResult(strDecodeChk, optimizeDecodeString(iIndex, strDecodeCheck));
 				return true;
 			}else{
 				LOGE("checkEndPoint(), invalid iIndex:%d, strDecodeCheck.length():%d \n", iIndex, strDecodeCheck.length());

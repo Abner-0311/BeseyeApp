@@ -102,7 +102,7 @@ private:
 	void checkEmptySlot();
 	void appendRet(Ref<CodeRecord> rec);
 	void appendRet(string strCode);
-	string optimizeDecodeString(int iIndex);
+	string optimizeDecodeString(int iIndex, string strDecodeCheck);
 	int checkPostfix();
 	void checkFirstCharOfPrefix(Ref<CodeRecord> rec);
 	void amplitudeTest(int iBufIndex);
