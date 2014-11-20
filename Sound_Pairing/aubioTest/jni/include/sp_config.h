@@ -104,9 +104,9 @@ public:
 
 	static const int SAMPLE_RATE_PLAY = 16000;
 	static const int SAMPLE_RATE_REC  = 16000;
-	static const int FRAME_SIZE_REC   = 512;
+	static const int FRAME_SIZE_REC   = 512;//512;
 	static const float BIN_SIZE       ;//= 16000.0/512.0;
-	static const int TONE_SIZE_REC    = 1536;
+	static const int TONE_SIZE_REC    = 1024;//1536;
 	static const int TONE_FRAME_COUNT = TONE_SIZE_REC/FRAME_SIZE_REC;
 	static const long FRAME_TS        = (FRAME_SIZE_REC*1000)/SAMPLE_RATE_REC;
 	constexpr static const float TONE_DURATION  = TONE_SIZE_REC/16000.0f;//4096.0f/44100.0f;
