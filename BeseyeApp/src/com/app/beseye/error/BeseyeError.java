@@ -36,4 +36,7 @@ public class BeseyeError {
 	static public final int E_BE_ACC_SESSION_EXPIRED                     = 0x00012008;   
 	static public final int E_BE_ACC_SESSION_CLIENT_DEV_UDID_NOT_MATCH   = 0x00012009;   
 	static public final int E_BE_ACC_SESSION_CLIENT_USR_AGENT_NOT_MATCH  = 0x0001200a;
+	
+	//# OTA related
+	static public final int E_OTA_SW_ALRADY_LATEST  = 0x00500202;
 }

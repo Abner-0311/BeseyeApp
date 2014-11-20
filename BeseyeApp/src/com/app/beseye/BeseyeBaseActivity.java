@@ -647,7 +647,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask task, final List<JSONObject> result, final int iRetCode) {
 		if(DEBUG)
 			Log.i(TAG, "BeseyeBaseActivity::onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		
@@ -727,7 +727,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					mOnResumeUpdateCamInfoRunnable = null;
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
-				String strVcamId = ((BeseyeCamBEHttpTask.UpdateCamSWTask)task).getVcamId();
+				final String strVcamId = ((BeseyeCamBEHttpTask.UpdateCamSWTask)task).getVcamId();
 				if(0 == iRetCode){
 					if(DEBUG)
 						Log.i(TAG, "onPostExecute(), "+result.toString());
@@ -741,6 +741,20 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					if(null != mUpdateVcamList){
 						mLstUpdateCandidate.remove(strVcamId);
 						miCheckUpdateCamIdx--;
+						
+						if(iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST){
+							BeseyeUtils.postRunnable(new Runnable(){
+
+								@Override
+								public void run() {
+									String strMsg = (0 < result.size())?BeseyeJSONUtil.getJSONString(result.get(0), "exceptionMessage"):"";
+									Bundle b = new Bundle();
+		        					b.putString(KEY_INFO_TITLE, "Cam update failed");
+		        					b.putString(KEY_INFO_TEXT, String.format("Msg:[%s]\nerrCode:[0x%x]\nCamName:[%s]\nVcam_id:[%s]", strMsg, iRetCode, findCamNameFromVcamUpdateList(strVcamId), strVcamId));
+		        					showMyDialog(DIALOG_ID_INFO, b);
+								}}, 200);
+							
+						}
 					}
 				}
 				
@@ -1431,10 +1445,28 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	private JSONObject mUpdateVcamList;
 	private int miUpdateCamNum = 0;
 	private int miCurUpdateCamStatusIdx = 0;
+	private JSONArray mVcamUpdateList = null;
+	
+	private String findCamNameFromVcamUpdateList(String strVCamId){
+		String strRet = "";
+		int iVcamNum = (null != mVcamUpdateList)?mVcamUpdateList.length():0;
+		for(int idx = 0; idx < iVcamNum;idx++){
+			try {
+				String strVCamIdChk = BeseyeJSONUtil.getJSONString(mVcamUpdateList.getJSONObject(idx), BeseyeJSONUtil.ACC_ID);
+				if(strVCamId.equals(strVCamIdChk)){
+					strRet = BeseyeJSONUtil.getJSONString(mVcamUpdateList.getJSONObject(idx), BeseyeJSONUtil.ACC_NAME);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return strRet;
+	}
 	
 	protected void triggerCamUpdate(JSONArray VcamList){
 		int iVcamNum = (null != VcamList)?VcamList.length():0;
 		if(0 < iVcamNum){
+			mVcamUpdateList = VcamList;
 			miCheckUpdateCamIdx = 0;
 			mUpdateVcamList = new JSONObject();
 			mLstUpdateCandidate = new ArrayList<String>();
