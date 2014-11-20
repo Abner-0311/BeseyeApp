@@ -573,11 +573,12 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}}, 0);
 	}
 	
-	private void startSoundPairingProcess(String strVcamId){
+	private void startSoundPairingProcess(String strVcamId, boolean bFakeProcess){
 		Bundle b = new Bundle();
 		b.putInt(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
 		b.putBoolean(PairingRemindActivity.KEY_ADD_CAM_FROM_LIST, true);
 		b.putBoolean(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, null != strVcamId && 0 < strVcamId.length());
+		b.putBoolean(SoundPairingActivity.KEY_FAKE_PROCESS, bFakeProcess);
 		if(null != strVcamId && 0 < strVcamId.length()){
 			Log.e(TAG, "startSoundPairingProcess(), strVcamId="+strVcamId);
 			b.putString(SoundPairingActivity.KEY_CHANGE_WIFI_VCAM, strVcamId);
@@ -591,7 +592,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			JSONObject cam_obj = ((CameraListItmHolder)view.getTag()).mObjCam;
 			if(null != cam_obj){
 				if(R.id.tv_camera_more == view.getId()){
-					startSoundPairingProcess(BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
+					startSoundPairingProcess(BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID), false);
 				}else{
 					Bundle b = new Bundle();
 					b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
@@ -606,8 +607,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				checkLatestNew();
 			}
 			toggleMenu();
+			miShowMoreCountMenu++;
 		}else if(R.id.iv_nav_add_cam_btn == view.getId()){
-			startSoundPairingProcess("");
+			startSoundPairingProcess("", false);
 		}else if(R.id.vg_my_cam == view.getId()){
 			if(mCameraListMenuAnimator.isPrivateCamShow()){
 				if(mbIsDemoCamMode || mbIsPrivateCamMode){
@@ -667,7 +669,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			showMenu();
 		}else if(R.id.txt_nav_title == view.getId()){
 			if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal()){
-				if(++miShowMoreCount == 5){
+				++miShowMoreCount;
+				if( miShowMoreCount == 1 && miShowMoreCountMenu >= 6){
 					if(null != mCameraListAdapter){
 						mCameraListAdapter.setShowMore(true);
 						refreshList();
@@ -676,6 +679,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					if(null != mCameraListMenuAnimator){
 						mCameraListMenuAnimator.showPrivateCam();
 					}
+					miShowMoreCount = 0;
+					miShowMoreCountMenu = 0;
+				}else if( miShowMoreCount == 2){
+					startSoundPairingProcess("", true);
+					miShowMoreCount = 0;
 				}
 			}
 		}else
@@ -683,6 +691,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	private int miShowMoreCount = 0;
+	private int miShowMoreCountMenu = 0;
 	
 	private void toggleMenu(){
 		if(null != mCameraListMenuAnimator && !mCameraListMenuAnimator.isInAnimation()){
