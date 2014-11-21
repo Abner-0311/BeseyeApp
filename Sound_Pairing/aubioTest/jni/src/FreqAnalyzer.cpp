@@ -135,8 +135,7 @@ void FreqAnalyzer::setSenderMode(bool bIsSenderMode){
 void FreqAnalyzer::beginToTrace(string strCode){
 	mstrCodeTrace = strCode;
 	mlTraceTs = time_ms();
-	mlMaxWaitingTime = (0 == strCode.length())?25000:(strCode.length()*400+4000);
-
+	mlMaxWaitingTime = (0 == strCode.length())?60000:(strCode.length()*400+4000);
 	LOGW("beginToTrace(), mlTraceTs:%lld, mlMaxWaitingTime: %lld\n", mlTraceTs, mlMaxWaitingTime);
 }
 

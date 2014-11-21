@@ -318,10 +318,16 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
-				int iNumWords = mChosenWifiAPInfo.BSSID.replace(":", "").length()+
+//				int iNumWords = mChosenWifiAPInfo.BSSID.replace(":", "").length()+
+//						mChosenWifiAPInfo.password.length()*2+
+//						4+//user temp id
+//						2+//purpose
+//						6;//prefix+postfix+divider
+				
+				int iNumWords = mChosenWifiAPInfo.SSID.getBytes().length*2+
 						mChosenWifiAPInfo.password.length()*2+
 						4+//user temp id
-						2+//purpose
+						6+//purpose
 						6;//prefix+postfix+divider
 		
 				long lTimeToWait = iNumWords*6*100 + 24*1000;
