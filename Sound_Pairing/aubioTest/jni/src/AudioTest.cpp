@@ -1216,6 +1216,15 @@ void* AudioTest::verifyToken(void* userdata){
 				//}
 			}
 			slLastTimeCheckToken = time_ms();
+
+			char WifiLinkInfo[BUF_SIZE]={0};
+			int iTrials = 0, iRet = RET_CODE_OK;
+			do{
+				iRet = getWiFiStatus(WifiLinkInfo);
+				if(RET_CODE_OK == iRet){
+					LOGE( "WifiLinkInfo:[%s]\n", WifiLinkInfo);
+				}
+			}while(RET_CODE_OK != iRet && iTrials++ < 3);
 		}
 
 
