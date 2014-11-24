@@ -1,5 +1,6 @@
 #include "FreqGenerator.h"
 #include "soundpairing_error.h"
+#include "city.h"
 #include <sys/time.h>
 #include <zxing/common/Array.h>
 
@@ -770,6 +771,65 @@ void FreqGenerator::writeTone(double sample[], byte generatedSnd[], int iLen){
 #define LEN_OF_MAC_ADDR 12
 #define LEN_OF_MAX_SSID 32
 
+uint64 FreqGenerator::getSSIDHashValue(const char* ssid){
+	uint64 ulRet = 0;
+	if(ssid){
+		ulRet = CityHash32(ssid, strlen(ssid));
+		LOGE("ssid:[%s], ulRet = %llu\n",ssid, ulRet);
+	}
+	return ulRet;
+}
+
+char *ultostr(uint64 ulong_value){
+	char * ret = NULL;
+	const int n = snprintf(NULL, 0, "%llu", ulong_value);
+
+	ret = (char*)malloc(n+1);
+	if(ret){
+		memset(ret, 0, n+1);
+		int c = snprintf(ret, n+1, "%llu", ulong_value);
+	}
+	return ret;
+}
+
+char* FreqGenerator::getSSIDStringHashValue(const char* ssid){
+//	char* cRet = (char*)malloc(8+1);
+//	memset(cRet, 0, 8+1);
+
+	uint64 ihash = getSSIDHashValue(ssid);
+
+	char* cRet = ultostr(ihash);
+
+//	LOGE(" ihash = %llu\n", ihash);
+//
+//	sprintf(cRet,
+//			"%s%s%s%s%s%s%s%s",
+//			SoundPair_Config::sCodeTable.at((ihash & 0xf0000000) >> 28).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x0f000000) >> 24).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x00f00000) >> 20).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x000f0000) >> 16).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x0000f000) >> 12).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x00000f00) >> 8).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x000000f0) >> 4).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x0000000f)).c_str()
+//			);
+
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0xf0000000) >> 28);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x0f000000) >> 24);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x00f00000) >> 20);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x000f0000) >> 16);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x0000f000) >> 12);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x00000f00) >> 8);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x000000f0) >> 4);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x0000000f) );
+
+//	LOGE(" ihash = %llu --\n", ihash);
+
+//	LOGE("cRet:[%s]\n",cRet);
+
+	return cRet;//strdup(sstrSsidHash.str().c_str());
+}
+
 unsigned int FreqGenerator::playSSIDPairingCode(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken){
 	return playSSIDPairingCodeWithPurpose(ssid, wifiKey, secType, tmpUserToken, (unsigned char) 0);
 }
@@ -795,17 +855,40 @@ unsigned int FreqGenerator::playSSIDPairingCodeWithPurpose(const char* ssid, con
 				iRet = E_FE_MOD_SP_INVALID_SSID;
 				goto ERR;
 			}else{
+				iLen+=LEN_OF_MAX_SSID;
 				sstrSsid << SoundPair_Config::sCodeTable.at((iLen & 0xf0) >> iPower);
 				sstrSsid << SoundPair_Config::sCodeTable.at(iLen & 0x0f);
 
-				string strSSID(ssid);
-				for(int i = 0; i< iLen;i++){
-					char ch = strSSID.at(i);
-					sstrSsid << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
-					sstrSsid << SoundPair_Config::sCodeTable.at(ch & 0x0f);
+//				string strSSID(ssid);
+//				for(int i = 0; i< iLen;i++){
+//					char ch = strSSID.at(i);
+//					sstrSsid << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
+//					sstrSsid << SoundPair_Config::sCodeTable.at(ch & 0x0f);
+//
+//					//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
+//				}
 
-					//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
-				}
+				uint64 ihash = getSSIDHashValue(ssid);
+
+//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0xf000000000000000) >> 60);
+//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0f00000000000000) >> 56);
+//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00f0000000000000) >> 52);
+//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000f000000000000) >> 48);
+//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0000f00000000000) >> 44);
+//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00000f0000000000) >> 40);
+//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000000f000000000) >> 36);
+//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0000000f00000000) >> 32);
+				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00000000f0000000) >> 28);
+				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000000000f000000) >> 24);
+				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0000000000f00000) >> 20);
+				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00000000000f0000) >> 16);
+				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000000000000f000) >> 12);
+				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0000000000000f00) >> 8);
+				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00000000000000f0) >> 4);
+				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000000000000000f) );
+
+				LOGE("sstrSsid = %s\n", sstrSsid.str().c_str());
+
 			}
 		}
 

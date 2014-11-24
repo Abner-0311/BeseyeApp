@@ -75,7 +75,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private native int playPairingCode(String strMac, String strKey, int iSecType, short sUserToken);
 	private native int playPairingCodeWithPurpose(String strMac, String strKey, int iSecType, short sUserToken, char cPurpose);
 	private native int playSSIDPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
-
+	private native String getSSIDHashValue(String strSSID);
 	
 	private native void finishPlayCode();
 	private native void swTest();
@@ -157,7 +157,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		super.onSessionComplete();
 		
 		//monitorAsyncTask(new BeseyeAccountTask.CamDeattchTask(this), true);
-		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, (getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE+"":BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", mChosenWifiAPInfo.SSID);
+		String strSSIDHash = getSSIDHashValue(mChosenWifiAPInfo.SSID);
+		Log.w(TAG, "onSessionComplete(),strSSIDHash:"+strSSIDHash);
+		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, (getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE+"":BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", strSSIDHash);
 	}
 	@Override
 	protected void onPause() {

@@ -387,7 +387,19 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playPair
 	return iRet;
 }
 
-
+JNIEXPORT jstring JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_getSSIDHashValue(JNIEnv * env, jobject thisObj, jstring strSSID){
+	DECLARE_JNIENV_WITH_RETURN()
+	char *ssid = (char *)jni_env->GetStringUTFChars(strSSID, 0);
+	char *ssidHash = FreqGenerator::getInstance()->getSSIDStringHashValue(ssid);
+	LOGW("ssidHash:[%s]", ssidHash);
+	jstring ret = (jstring)jni_env->NewStringUTF(ssidHash);
+	//jni_env->DeleteLocalRef(ret);
+	if(ssidHash){
+		free(ssidHash);
+		ssidHash = NULL;
+	}
+	return ret;//str2jstring();
+}
 
 JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playPairingCodeWithPurpose(JNIEnv * env, jobject thisObj, jstring strMACAddr, jstring strKey, jint iSecType, jshort userToken, jchar cPurpose){
 	DECLARE_JNIENV_WITH_RETURN()

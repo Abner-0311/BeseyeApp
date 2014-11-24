@@ -541,10 +541,11 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 						final int iMinPasswordLength = (mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP)?8:13;
 						final EditText etPassword = (EditText)vgPassord.findViewById(R.id.et_password_value);
 						if(null != etPassword){
-							if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-								etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
-								btnConnect.setEnabled(true);
-							}else if(false == getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false) && null != sWiFiPasswordHistory && 0 < sWiFiPasswordHistory.length()){
+//							if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
+//								etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
+//								btnConnect.setEnabled(true);
+//							}else 
+							if(false == getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false) && null != sWiFiPasswordHistory && 0 < sWiFiPasswordHistory.length()){
 								etPassword.setText(sWiFiPasswordHistory);
 								btnConnect.setEnabled(sWiFiPasswordHistory.length() >=iMinPasswordLength);
 							}

@@ -24,6 +24,7 @@ LOCAL_SRC_FILES        := $(SOUNDPAIRING_PATH)/zxing/Exception.cpp \
 						  $(AUBIO_SRC_ROOT)/sp_config.cpp \
 						  $(AUBIO_SRC_ROOT)/FreqGenerator.cpp \
 						  $(AUBIO_SRC_ROOT)/native.cpp \
+						  $(AUBIO_SRC_ROOT)/city.cc \
 
 LOCAL_C_INCLUDES 	   := $(SOUNDPAIRING_PATH)\
 						  $(SOUNDPAIRING_PATH)/include \

@@ -1512,13 +1512,13 @@ void writeBuf(unsigned char* charBuf, int iLen){
 									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
 									AudioBufferMgr::getInstance()->setRecordMode(false);
 								}
-								//AudioTest::getInstance()->setAboveThresholdFlag(true);
+								AudioTest::getInstance()->setAboveThresholdFlag(true);
 								siAboveThreshHoldCount = 0;
 							}
 							siUnderThreshHoldCount = 0;
 						}else if(ANALYSIS_END_THRESHHOLD > sMaxValue || (0 < ANALYSIS_END_THRESHHOLD_DETECT && ANALYSIS_END_THRESHHOLD_DETECT > sMaxValue && PAIRING_WAITING < sPairingMode)){
 							siUnderThreshHoldCount++;
-							if((PAIRING_ANALYSIS ==  sPairingMode || AudioTest::getInstance()->getAboveThresholdFlag()) && siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
+							if((PAIRING_ANALYSIS ==  sPairingMode/* || AudioTest::getInstance()->getAboveThresholdFlag()*/) && siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
 								LOGE("trigger stop analysis-----\n");
 								//stop analysis
 								if(AudioTest::getInstance()->isPairingAnalysisMode()){
@@ -1532,7 +1532,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 									LOGE("miStopAnalysisBufIdx != -1\n");
 								}
 
-								AudioTest::getInstance()->setAboveThresholdFlag(true);
+								//AudioTest::getInstance()->setAboveThresholdFlag(true);
 								FreqAnalyzer::getInstance()->setDetectLowSound(true);
 
 								siUnderThreshHoldCount = 0;
@@ -1858,18 +1858,21 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 	//const int MAC_LEN = 12;
 	const int SSID_MIN_LEN = 2;
+	const int SSID_HASH_LEN = 8;
 	const int SSID_MAX_LEN = 32*2;
 	const int TOKEN_LEN = 4;
 	const int PURPOSE_LEN = 6;
 	const int MIN_PW_LEN = 0;
 
-	string /*strMAC*/strSSID, strUserNum, strPurposeSeg, strPW;
+	string /*strMAC*/strSSID, strSSIDHash, strUserNum, strPurposeSeg, strPW;
 
 	stringstream retSSID, retPW;
 	unsigned char cPurpose = 0;
 	unsigned char cSecType = 0;
 	unsigned int iReserved = 0;
+	uint64 lSSIDHash = 0;
 	bool bGuess = false;
+	int iSSIDLen = 0;
 
 	if(0 == strCode.find("error")){
 		LOGE("Error, trying to get pairing code!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
@@ -1912,7 +1915,6 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		}
 
 		string strSSIDLen = strCode.substr(0, SSID_MIN_LEN);
-		int iSSIDLen = 0;
 		for(int idx = 0;idx < SSID_MIN_LEN;idx++){
 			iSSIDLen <<= iPower;
 			string strTmp = strSSIDLen.substr(idx, 1);
@@ -1925,42 +1927,72 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		LOGI("iSSIDLen:[%d]\n",iSSIDLen);
 
 		if(iSSIDLen > SSID_MAX_LEN){
-			LOGE("iSSIDLen:[%d] > SSID_MAX_LEN:[%d], return \n",iSSIDLen, SSID_MAX_LEN);
-		}
+			LOGE("iSSIDLen:[%d] > SSID_MAX_LEN:[%d] \n",iSSIDLen, SSID_MAX_LEN);
+			if(iSSIDLen > 2*SSID_MAX_LEN){
+				LOGE("iSSIDLen:[%d] > 2*SSID_MAX_LEN:[%d], return \n",iSSIDLen, 2*SSID_MAX_LEN);
+				return;
+			}else{
+				iSSIDLen -=SSID_MAX_LEN;
+				if((SSID_HASH_LEN+SSID_MIN_LEN) >= iRetLen){
+					LOGE("(SSID_HASH_LEN+SSID_MIN_LEN) >= iRetLen:[%d], return \n",(SSID_HASH_LEN+SSID_MIN_LEN), iRetLen);
+					return;
+				}
 
-		if((iSSIDLen+SSID_MIN_LEN) >= iRetLen){
+				strSSIDHash = strCode.substr(SSID_MIN_LEN, SSID_HASH_LEN);
+			}
+		}else if((iSSIDLen+SSID_MIN_LEN) >= iRetLen){
 			LOGE("(iSSIDLen+SSID_MIN_LEN) >= iRetLen:[%d], return \n",(iSSIDLen+SSID_MIN_LEN), iRetLen);
+			return;
 		}
 
-		strSSID = strCode.substr(SSID_MIN_LEN, iSSIDLen);
+		if(0 == strSSIDHash.length()){
+			strSSID = strCode.substr(SSID_MIN_LEN, iSSIDLen);
+			strPW = strCode.substr((SSID_MIN_LEN+iSSIDLen), ( iRetLen - ((SSID_MIN_LEN+iSSIDLen)+TOKEN_LEN+PURPOSE_LEN)));
+		}else{
+			strPW = strCode.substr((SSID_MIN_LEN+SSID_HASH_LEN), ( iRetLen - ((SSID_MIN_LEN+SSID_HASH_LEN)+TOKEN_LEN+PURPOSE_LEN)));
+		}
+
 		strUserNum = strCode.substr(iRetLen - (TOKEN_LEN+PURPOSE_LEN), TOKEN_LEN);
 		strPurposeSeg = strCode.substr(iRetLen - (PURPOSE_LEN));
-		strPW = strCode.substr((SSID_MIN_LEN+iSSIDLen), ( iRetLen - ((SSID_MIN_LEN+iSSIDLen)+TOKEN_LEN+PURPOSE_LEN)));
 
-		LOGE("[%s, %s, %s, %s]\n",strSSID.c_str(),strPW.c_str(),strUserNum.c_str(),strPurposeSeg.c_str());
+		LOGE("[%s, %s, %s, %s, %s]\n",strSSID.c_str(), strSSIDHash.c_str(), strPW.c_str(),strUserNum.c_str(),strPurposeSeg.c_str());
 	}
 
-	if(0 < strSSID.length() && 0 < strUserNum.length() && 0 < strPurposeSeg.length()){
-
-		int iLenSSID = strSSID.length()/iMultiply;
-		for(int i =0;i < iLenSSID;i++){
-			unsigned char c = 0;
-			for(int j = 0;j < iMultiply;j++){
-				c <<= iPower;
-				string strTmp = strSSID.substr(i*iMultiply+j, 1);
-				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
-				c += (unsigned char) iVal;
-				//LOGI("iVal:[%d]\n",iVal);
+	if((0 < strSSID.length() || 0 < strSSIDHash.length()) && 0 < strUserNum.length() && 0 < strPurposeSeg.length()){
+		LOGE("strSSIDHash.length():[%d]\n",strSSIDHash.length());
+		string strSSIDFinal, strAPIChk;
+		if(0 == strSSIDHash.length()){
+			int iLenSSID = strSSID.length()/iMultiply;
+			for(int i =0;i < iLenSSID;i++){
+				unsigned char c = 0;
+				for(int j = 0;j < iMultiply;j++){
+					c <<= iPower;
+					string strTmp = strSSID.substr(i*iMultiply+j, 1);
+					int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+					c += (unsigned char) iVal;
+					//LOGI("iVal:[%d]\n",iVal);
+				}
+				//LOGI("c:[%u]\n",c);
+				retSSID << c;
 			}
-			//LOGI("c:[%u]\n",c);
-			retSSID << c;
+
+			LOGE("retSSID:[%s]\n",retSSID.str().c_str());
+
+			strAPIChk = strSSIDFinal = retSSID.str();//UTF8_To_string(retSSID.str());
+
+			LOGE("strSSIDFinal:[%s]\n",strSSIDFinal.c_str());
+		}else{
+			for(int i =0;i < SSID_HASH_LEN;i++){
+				lSSIDHash <<= iPower;
+				string strTmp = strSSIDHash.substr(i, 1);
+				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+				lSSIDHash |= iVal;
+				LOGE("strTmp:[%s], iVal:[%d], lSSIDHash:[%llu]\n",strTmp.c_str(), iVal, lSSIDHash);
+			}
+
+			strAPIChk = ultostr(lSSIDHash);
+			LOGE("lSSIDHash:[%llu], strAPIChk:[%s]\n",lSSIDHash, strAPIChk.c_str());
 		}
-
-		LOGE("retSSID:[%s]\n",retSSID.str().c_str());
-
-		string strSSIDFinal = retSSID.str();//UTF8_To_string(retSSID.str());
-
-		LOGE("strSSIDFinal:[%s]\n",strSSIDFinal.c_str());
 
 		int iLenPW = strPW.length()/iMultiply;
 		for(int i =0;i < iLenPW;i++){
@@ -1998,8 +2030,14 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		char cmd[BUF_SIZE]={0};
 //		sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", strMAC.c_str(), retPW.str().c_str());
 //		LOGE("wifi set cmd:[%s]\n", cmd);
+		int iRet = 0;
 
-		int iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
+		if(0 == strSSIDHash.length()){
+			iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
+		}else{
+			iRet = setWifiBySSIDHash(lSSIDHash, iSSIDLen/2, (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
+		}
+		//
 		if(0 == iRet){
 			stopReceiveAudioBuf();
 			LOGE("wifi set OK\n");
@@ -2041,7 +2079,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				if(0 == iRet){
 					LOGE("Token is already existed, check tmp token\n");
 					if(1 == cPurpose){
-						sprintf(cmd, "/beseye/cam_main/cam-util -verToken \"%s\" %s", strSSIDFinal.c_str(), strUserNum.c_str());
+						sprintf(cmd, "/beseye/cam_main/cam-util -verToken \"%s\" %s", strAPIChk.c_str(), strUserNum.c_str());
 						LOGE("verToken cmd:[%s]\n", cmd);
 						iRet = invokeSystem(cmd) >> 8;
 						//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
@@ -2063,7 +2101,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					if(0 == cPurpose){
 						LOGE("Token is invalid, try to attach\n");
 
-						sprintf(cmd, "/beseye/cam_main/cam-util -attach \"%s\" %s", strSSIDFinal.c_str(), strUserNum.c_str());
+						sprintf(cmd, "/beseye/cam_main/cam-util -attach \"%s\" %s", strAPIChk.c_str(), strUserNum.c_str());
 						LOGE("attach cmd:[%s]\n", cmd);
 						iRet = invokeSystem(cmd) >> 8;
 
