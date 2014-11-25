@@ -75,6 +75,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private native int playPairingCode(String strMac, String strKey, int iSecType, short sUserToken);
 	private native int playPairingCodeWithPurpose(String strMac, String strKey, int iSecType, short sUserToken, char cPurpose);
 	private native int playSSIDPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
+	private native int playSSIDHashPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
 	private native String getSSIDHashValue(String strSSID);
 	
 	private native void finishPlayCode();
@@ -155,11 +156,13 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	@Override
 	protected void onSessionComplete() {
 		super.onSessionComplete();
-		
-		//monitorAsyncTask(new BeseyeAccountTask.CamDeattchTask(this), true);
-		String strSSIDHash = getSSIDHashValue(mChosenWifiAPInfo.SSID);
-		Log.w(TAG, "onSessionComplete(),strSSIDHash:"+strSSIDHash);
-		monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, (getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE+"":BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", strSSIDHash);
+		if(null == mChosenWifiAPInfo.BSSID || 0 == mChosenWifiAPInfo.BSSID.length()){
+			monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, (getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE+"":BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", mChosenWifiAPInfo.SSID);
+		}else{
+			String strSSIDHash = getSSIDHashValue(mChosenWifiAPInfo.SSID);
+			Log.w(TAG, "onSessionComplete(),strSSIDHash:"+strSSIDHash);
+			monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, (getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE+"":BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", strSSIDHash);
+		}
 	}
 	@Override
 	protected void onPause() {
@@ -285,28 +288,18 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				@Override
 				public void run() {
 					//int iRet = playPairingCodeWithPurpose(mChosenWifiAPInfo.BSSID.replace(":", ""), mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose);
-					int iRet = playSSIDPairingCodeWithPurpose(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose);
-
+					int iRet = 0;
+					if(null == mChosenWifiAPInfo.BSSID || 0 == mChosenWifiAPInfo.BSSID.length()){
+						iRet = playSSIDPairingCodeWithPurpose(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose);
+					}else{
+						iRet = playSSIDHashPairingCodeWithPurpose(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose);
+					}
+					
 					if(iRet != 0)
 						Toast.makeText(SoundPairingActivity.this, "ret:"+iRet, Toast.LENGTH_SHORT).show();
 					else{
 						sbFinishToPlay = false;
 						estimatePairingTime();
-						/*if(false == BeseyeConfig.COMPUTEX_DEMO)*/{
-//							BeseyeUtils.postRunnable(new Runnable(){
-//								@Override
-//								public void run() {
-//									mStrCamName = null;
-//									if(null != sStrCamNameCandidate){
-//										mEtCamName.setText(sStrCamNameCandidate);
-//										mStrCamName = sStrCamNameCandidate;
-//										sStrCamNameCandidate = null;
-//									}
-//									BeseyeUtils.setVisibility(mVgCamNameHolder, View.VISIBLE);	
-//									mEtCamName.requestFocus();
-//									BeseyeUtils.showSoftKeyboard(SoundPairingActivity.this, mEtCamName);
-//								}}, 2000);
-						}
 					}
 				}}, 500);			
 		}else{

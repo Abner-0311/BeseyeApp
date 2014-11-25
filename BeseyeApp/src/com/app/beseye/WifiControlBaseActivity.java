@@ -640,12 +640,19 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 								finish();
 							}else{
 								
-						    	if(null == mWifiAPSetupDelegator){
-						    		mWifiAPSetupDelegator = new WifiAPSetupDelegator(mChosenWifiAPInfo, WifiControlBaseActivity.this);
-						    	}else{
-						    		mWifiAPSetupDelegator.updateTargetAPInfo(mChosenWifiAPInfo);
-						    	}
-						    	setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SETTING);
+//						    	if(null == mWifiAPSetupDelegator){
+//						    		mWifiAPSetupDelegator = new WifiAPSetupDelegator(mChosenWifiAPInfo, WifiControlBaseActivity.this);
+//						    	}else{
+//						    		mWifiAPSetupDelegator.updateTargetAPInfo(mChosenWifiAPInfo);
+//						    	}
+//						    	setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SETTING);
+								
+								intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
+								intent.putExtra(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, getIntent().getBooleanExtra(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, false));
+								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
+								startActivity(intent);
+								setResult(RESULT_OK);	
 							}
 							
 							Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
@@ -718,7 +725,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 					final EditText etPassword = (EditText)mVgPassordHolder.findViewById(R.id.et_password_value);
 					if(null != etPassword){
 						if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-							etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
+							etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"":"12345678"):"");
 						}
 						mWifiApPassword = etPassword.getText().toString();
 						etPassword.addTextChangedListener(new TextWatcher(){
@@ -778,7 +785,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				}
 				
 				if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-					etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
+					etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"":"12345678"):"");
 				}
 				
 				mWifiApPassword = etPassword.getText().toString();

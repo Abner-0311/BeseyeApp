@@ -473,7 +473,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 		if(curState.equals(WIFI_AP_SETUP_STATE.SETUP_DONE)){
 			setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SET_DONE);
 		}else if(curState.equals(WIFI_AP_SETUP_STATE.TARGET_AP_CONNECTED)){
-			mChosenWifiAPInfo.BSSID = NetworkMgr.getInstance().getActiveWifiBSSID();
+			//mChosenWifiAPInfo.BSSID = NetworkMgr.getInstance().getActiveWifiBSSID();
 			Intent intent = new Intent();
 			intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
 			intent.setClass(this, SoundPairingActivity.class);
