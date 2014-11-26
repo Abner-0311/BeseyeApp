@@ -2464,21 +2464,29 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	@Override
 	public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
+		
 		boolean bIsCamOn = isCamPowerOn();
 		super.onCamSetupChanged(strVcamId, lTs, objCamSetup);
 		if(null != strVcamId && strVcamId.equals(mStrVCamID)){
+			if(mbIsLiveMode){
+				if(bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED))
+					closeStreaming();
+				
+				if(isCamPowerOn() && !bIsCamOn){
+					checkPlayState();
+				}
+			}
+			
 			mbIsCamSettingChanged = true;
 			updateAttrByCamObj();
 			applyCamAttr();
 			
 			if(mbIsLiveMode){
 				if(mActivityResume){
-//					if(false == bIsCamDisconnect && isCamPowerDisconnected()){
-//						Toast.makeText(getApplicationContext(), getString(R.string.notify_offline_detect_player), Toast.LENGTH_SHORT).show();
-//					}else 
 					Log.i(TAG, "onCamSetupChanged(), bIsCamOn:"+bIsCamOn+", isCamPowerOn():"+isCamPowerOn());
 					
 					if(bIsCamOn && isCamPowerOff()){
+						setVisibility(mPbLoadingCursor, View.GONE);
 						Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
 					}else if(!bIsCamOn && isCamPowerOn()){
 						mlRetryConnectBeginTs = System.currentTimeMillis();

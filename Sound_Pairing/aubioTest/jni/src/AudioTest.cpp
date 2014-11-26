@@ -57,40 +57,6 @@ int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
 		deleteFile(MONITOR_PROCESS_FLAG);
 		LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG end time_ms:%lld,cmd:[%s] cRet:[%s] .............---------------\n", time_ms(),cmd, cRet);
 		exit (0);
-
-//		pid_system = fork();
-//	    if (pid_system == 0) {
-//	    	//LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG begin pid_system:%d, time_ms:%lld .............+++++++++++++++++\n",pid_system, time_ms());
-//
-//	    	int iRet = system(cmd);
-//	    	char cRet[32]={0};
-//	    	sprintf(cRet, "%d", iRet);
-//	    	saveToFile(MONITOR_PROCESS_RET,cRet);
-//
-//			deleteFile(MONITOR_PROCESS_FLAG);
-//			LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG end time_ms:%lld, cRet:[%s] .............---------------\n", time_ms(), cRet);
-//			exit (0);
-//	    }
-//
-//	    pid_t timeout_pid = fork();
-//	    if (timeout_pid == 0) {
-//	    	//LOGE( "invokeSystem(), timeout time_ms:%lld .............++++\n", time_ms());
-//	        sleep(MAX_TIME_TO_INVOKE_SYSTEM);
-//	        LOGE( "invokeSystem(), timeout time_ms:%lld .............----\n", time_ms());
-//	        exit(0);
-//	    }
-//
-//	    pid_t exited_pid = wait(NULL);
-//	    if (exited_pid == pid_system) {
-//	    	LOGE( "invokeSystem(), kill timeout_pid, time_ms:%lld .............\n", time_ms());
-//	        kill(timeout_pid, SIGKILL);
-//	    } else {
-//	    	LOGE( "invokeSystem(), kill pid_system, time_ms:%lld .............\n", time_ms());
-//	        kill(pid_system, SIGKILL); // Or something less violent if you prefer
-//	        deleteFile(MONITOR_PROCESS_FLAG);
-//	    }
-//	    wait(NULL); // Collect the other process
-//	    exit(0); // Or some more informative status
 	}
 
 	LOGE( "invokeSystem(), intermediate_pid:%d \n", intermediate_pid);
@@ -220,6 +186,53 @@ int checkSpEnabled(){
 	return iRet;
 }
 
+static ArrayRef<short> shortsRecBuf=NULL;
+static int iCurIdx = 0;
+
+static timespec sleepValue = {0};
+static msec_t lTsRec = 0;
+static int iAudioFrameSize = 4;
+static const int MAX_TRIAL = 1;//10;
+
+
+//Check audio activity
+static long  ANALYSIS_THRESHHOLD_MONITOR			=0;
+static int 	 ANALYSIS_THRESHHOLD_MONITOR_CNT		=0;
+
+static const short ANALYSIS_MAX_AUDIO_VALUE_G25 	= 2000;//audio max value for gain =25
+static const short ANALYSIS_START_THRESHHOLD_MIN_G25= 450;//audio value
+static const short ANALYSIS_START_THRESHHOLD_MAX_G25= 1400;//audio value
+
+static const short ANALYSIS_MAX_AUDIO_VALUE_G35 	= 5500;//audio max value for gain =35
+static const short ANALYSIS_START_THRESHHOLD_MIN_G35= 900;//audio value
+static const short ANALYSIS_START_THRESHHOLD_MAX_G35= 3500;//audio value
+
+static short ANALYSIS_MAX_AUDIO_VALUE 				= ANALYSIS_MAX_AUDIO_VALUE_G35;//audio max value
+static short ANALYSIS_START_THRESHHOLD_MIN 			= ANALYSIS_START_THRESHHOLD_MIN_G35;//audio value
+static short ANALYSIS_START_THRESHHOLD_MAX 			= ANALYSIS_START_THRESHHOLD_MAX_G35;//audio value
+
+static short ANALYSIS_START_THRESHHOLD 				= 15000;//audio value
+static short ANALYSIS_END_THRESHHOLD   				= 15000;//audio value
+
+//after detect prefix
+static long  ANALYSIS_THRESHHOLD_MONITOR_DETECT		= 0;
+static int 	 ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT	= 0;
+static short ANALYSIS_END_THRESHHOLD_DETECT	   		= -1;//audio value
+
+static const int   ANALYSIS_THRESHHOLD_CK_LEN 		= 1600;//sample size , about 0.1 sec
+static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT 	= 8;
+static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 	= 3;
+
+static short sMaxValue = 0;
+static int siAboveThreshHoldCount = 0;
+static int siUnderThreshHoldCount = 0;
+static int siRefCount = 0;
+
+static const int   ANALYSIS_LED_UPDATE_PERIOD = 8000;//sample size , about 0.5 sec
+static bool sbLEDOn = false;
+
+static msec_t lLastTimeToBufRec = 0;
+
 //Check Network and token
 static const msec_t TIME_TO_CHECK_TOKEN = 30000;//30 seconds
 static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 6000000;//600 seconds
@@ -229,6 +242,32 @@ static msec_t slLastTimeCheckToken = -1;
 static const char* LOG_SOURCE = "/tmp/beseye_boot.log";
 static const char* LOG_DEST = "%s/sp_failed_%s.log";
 static const char* LOG_DIR = "/beseye/sp_log";
+
+static const char* RAYLIOS_VER_ENV	= "RAYLIOS_VER";
+static const char* RAYLIOS_VER_18	= "1.0-rc18";
+static const char* GAIN_25 			= "25";
+static const char* GAIN_35 			= "35";//after rc-18
+static int siRayliosVerAbove18 = -1;//-1:unknown, 0:no, 1:yes
+
+const char* getSPGain(){
+	if(-1 == siRayliosVerAbove18){
+		siRayliosVerAbove18 = 0;
+		ANALYSIS_MAX_AUDIO_VALUE 		= ANALYSIS_MAX_AUDIO_VALUE_G25;
+		ANALYSIS_START_THRESHHOLD_MIN 	= ANALYSIS_START_THRESHHOLD_MIN_G25;
+		ANALYSIS_START_THRESHHOLD_MAX 	= ANALYSIS_START_THRESHHOLD_MAX_G25;
+
+		char * raylios_ver = getenv(RAYLIOS_VER_ENV);
+		LOGI( "raylios_ver:[%s]\n", raylios_ver?raylios_ver:"");
+		if(raylios_ver && strcmp(raylios_ver, RAYLIOS_VER_18) >= 0){
+			siRayliosVerAbove18 = 1;
+			ANALYSIS_MAX_AUDIO_VALUE 		= ANALYSIS_MAX_AUDIO_VALUE_G35;
+			ANALYSIS_START_THRESHHOLD_MIN 	= ANALYSIS_START_THRESHHOLD_MIN_G35;
+			ANALYSIS_START_THRESHHOLD_MAX 	= ANALYSIS_START_THRESHHOLD_MAX_G35;
+		}
+	}
+
+	return (1 <= siRayliosVerAbove18)?GAIN_35:GAIN_25;
+}
 
 int setMicrophoneGain(const char* gain){
 	char jsonData[BUF_SIZE]={0};
@@ -245,7 +284,7 @@ int setMicrophoneGain(const char* gain){
 
 int checkSPEnv(){
 	char jsonData[BUF_SIZE]={0};
-	int iRet = setMicrophoneGain("25");
+	int iRet = setMicrophoneGain(getSPGain());
 
 	if(RET_CODE_OK == getEventByName(jsonData, "mEvent")){
 		memset(jsonData, 0 , BUF_SIZE);
@@ -1073,46 +1112,6 @@ bool AudioTest::getDetectStartFlag(){
 	return mbDetectStartFlag;
 }
 
-
-static ArrayRef<short> shortsRecBuf=NULL;
-static int iCurIdx = 0;
-
-static timespec sleepValue = {0};
-static msec_t lTsRec = 0;
-static int iAudioFrameSize = 4;
-static const int MAX_TRIAL = 1;//10;
-
-
-//Check audio activity
-static long  ANALYSIS_THRESHHOLD_MONITOR			=0;
-static int 	 ANALYSIS_THRESHHOLD_MONITOR_CNT		=0;
-
-static const short ANALYSIS_MAX_AUDIO_VALUE 		= 2000;//audio max value for gain =25
-static const short ANALYSIS_START_THRESHHOLD_MIN 	= 450;//audio value
-static const short ANALYSIS_START_THRESHHOLD_MAX 	= 1400;//audio value
-
-static short ANALYSIS_START_THRESHHOLD 				= 15000;//audio value
-static short ANALYSIS_END_THRESHHOLD   				= 15000;//audio value
-
-//after detect prefix
-static long  ANALYSIS_THRESHHOLD_MONITOR_DETECT		= 0;
-static int 	 ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT	= 0;
-static short ANALYSIS_END_THRESHHOLD_DETECT	   		= -1;//audio value
-
-static const int   ANALYSIS_THRESHHOLD_CK_LEN 		= 1600;//sample size , about 0.1 sec
-static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT 	= 8;
-static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 	= 3;
-
-static short sMaxValue = 0;
-static int siAboveThreshHoldCount = 0;
-static int siUnderThreshHoldCount = 0;
-static int siRefCount = 0;
-
-static const int   ANALYSIS_LED_UPDATE_PERIOD = 8000;//sample size , about 0.5 sec
-static bool sbLEDOn = false;
-
-static msec_t lLastTimeToBufRec = 0;
-
 typedef enum{
 	PAIRING_NONE,
 	PAIRING_INIT				,
@@ -1242,43 +1241,23 @@ void* AudioTest::verifyToken(void* userdata){
 				//}
 			}
 			slLastTimeCheckToken = time_ms();
+
+			char WifiLinkInfo[BUF_SIZE]={0};
+			int iTrials = 0, iRet = RET_CODE_OK;
+			do{
+				iRet = getWiFiStatus(WifiLinkInfo);
+				if(RET_CODE_OK == iRet){
+					LOGE( "WifiLinkInfo:[%s]\n", WifiLinkInfo);
+				}
+			}while(RET_CODE_OK != iRet && iTrials++ < 3);
 		}
 
 
 		if(AudioTest::getInstance()->isPairingAnalysisMode()){
-//			//LOGW("sPairingMode is %d-----\n", sPairingMode);
-//			if(false == sbLEDOn){
-//				if(PAIRING_INIT == sPairingMode){
-//					setLedLight(0,1,1);
-//				}else if(PAIRING_WAITING == sPairingMode){
-//					setLedLight(0,1,0);
-//				}else if(PAIRING_ANALYSIS == sPairingMode){
-//					setLedLight(0,0,1);
-//				}else if(PAIRING_ERROR == sPairingMode){
-//					setLedLight(1,0,0);
-//				}else if(PAIRING_DONE == sPairingMode){
-//					setLedLight(0,1,0);
-//				}
-//			}
-//			else if(sPairingMode != PAIRING_DONE && PAIRING_INIT != sPairingMode){
-//				setLedLight(0,0,0);
-//			}
-
 			if(PAIRING_ERROR == sPairingMode){
 				sCurLEDCnt++;
 				checkLEDByMode();
-//				if(sPairingErrType == PAIRING_ERR_MAC_NOT_FOUND){
-//					if(0 == sCurLEDCnt%2){
-//						setLedLight(0,0,1);
-//					}else{
-//						setLedLight(1,0,0);
-//					}
-//				}
-//				sbLEDOn = false;
 			}
-//			else{
-//				sbLEDOn = !sbLEDOn;
-//			}
 		}
 
 		if(0 < lTImeToSaveErrorLog && lTImeToSaveErrorLog < time_ms()){
@@ -1463,9 +1442,11 @@ void writeBuf(unsigned char* charBuf, int iLen){
 					if(ANALYSIS_MAX_AUDIO_VALUE < sMaxValue){
 						LOGW("-------------------------------------------------------->ANALYSIS_MAX_AUDIO_VALUE:%d < sMaxValue:%d, set mic gain\n", ANALYSIS_MAX_AUDIO_VALUE, sMaxValue);
 						//system("/beseye/cam_main/cam-handler -setgain 25") >> 8;
-						setMicrophoneGain("25");
+						setMicrophoneGain(getSPGain());
 						saveLogFile("/beseye/sp-gain-set");
 					}
+
+					//LOGW("-------------------------------------------------------->sMaxValue:%d\n", sMaxValue);
 
 					if(PAIRING_INIT == sPairingMode){
 						ANALYSIS_THRESHHOLD_MONITOR = ((ANALYSIS_THRESHHOLD_MONITOR*(ANALYSIS_THRESHHOLD_MONITOR_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_CNT);
@@ -2108,9 +2089,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
 						if(0 == iRet){
 							LOGE("Cam attach OK\n");
-
-							iRet = invokeSystem("/beseye/cam_main/beseye_token_check") >> 8;
-
+							invokeSystem("/beseye/cam_main/beseye_token_check");
 							AudioTest::getInstance()->setPairingReturnCode(0);
 						}else{
 							LOGE("Cam attach failed\n");
