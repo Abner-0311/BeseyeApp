@@ -532,23 +532,24 @@ public class RemoteGifImageView extends RemoteImageView {
 				}else{
 					Log.i(TAG, "get http image failed, code:"+httpConn.getResponseCode());
 				}
-			}else if(uri.startsWith(S3_FILE_PREFIX)){
-				int iBucketPos = S3_FILE_PREFIX.length();
-				int iFilePos = uri.indexOf("/", iBucketPos);
-				if(iFilePos > iBucketPos){
-					String strBucket = uri.substring(iBucketPos, iFilePos);
-					String strPath = uri.substring(iFilePos+1);
-					AmazonS3Client s3Client = new AmazonS3Client(myCredentials);
-					S3Object object = s3Client.getObject(new GetObjectRequest(strBucket, strPath));
-					//S3Object object = s3Client.getObject(new GetObjectRequest("2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser", "thumbnail/400x225/2014/05-22/09/{sEnd}1400751551309_{dur}10426_{r}1400750317346_{th}1400751550883.jpg"));
-					inputStream = new BufferedInputStream(object.getObjectContent()); //
-					if (inputStream != null) {
-						BitmapFactory.Options options = new BitmapFactory.Options();
-						options.inSampleSize = iSample;
-						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-					}
-				}
 			}
+//			else if(uri.startsWith(S3_FILE_PREFIX)){
+//				int iBucketPos = S3_FILE_PREFIX.length();
+//				int iFilePos = uri.indexOf("/", iBucketPos);
+//				if(iFilePos > iBucketPos){
+//					String strBucket = uri.substring(iBucketPos, iFilePos);
+//					String strPath = uri.substring(iFilePos+1);
+//					AmazonS3Client s3Client = new AmazonS3Client(myCredentials);
+//					S3Object object = s3Client.getObject(new GetObjectRequest(strBucket, strPath));
+//					//S3Object object = s3Client.getObject(new GetObjectRequest("2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser", "thumbnail/400x225/2014/05-22/09/{sEnd}1400751551309_{dur}10426_{r}1400750317346_{th}1400751550883.jpg"));
+//					inputStream = new BufferedInputStream(object.getObjectContent()); //
+//					if (inputStream != null) {
+//						BitmapFactory.Options options = new BitmapFactory.Options();
+//						options.inSampleSize = iSample;
+//						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+//					}
+//				}
+//			}
 		} catch (Exception e) {
 			Log.e(TAG, "Http Get image fail: " + e);
 		} finally {

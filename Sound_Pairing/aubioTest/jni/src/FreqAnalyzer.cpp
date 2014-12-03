@@ -267,12 +267,15 @@ void FreqAnalyzer::triggerTimeout(){
 					int iIndex = (iPosPostfix - iPossiblePrefix);
 
 					LOGE("triggerTimeout(), to check result, iIndex:[%d]+++++++++++++++++++++++++++++++++++++++++++++++++++++\n", iIndex);
-					if(0 <= iIndex && iIndex < strPossibleDecode.length()){
+					if(0 <= iIndex && iIndex <= strPossibleDecode.length()){
 						checkResult(strPossibleDecode, optimizeDecodeString(iIndex, strPossibleDecode));
 						mFreqRecordList.clear();
 					}else{
-						LOGE("triggerTimeout(), invalid iIndex:%d, strDecodeCheck.length():%d \n", iIndex, strDecodeCheck.length());
+						LOGE("triggerTimeout(), invalid iIndex:%d, strPossibleDecode.length():%d \n", iIndex, strPossibleDecode.length());
+						mIFreqAnalyzeResultCBListener->onTimeout(this, !mbNeedToAutoCorrection, mprevMatchRet);
 					}
+				}else{
+					mIFreqAnalyzeResultCBListener->onTimeout(this, !mbNeedToAutoCorrection, mprevMatchRet);
 				}
 			}
 		}else{
@@ -413,6 +416,8 @@ void FreqAnalyzer::pickWithSeesion(){
 	Ref<CodeRecord> rec = Ref<CodeRecord>(new CodeRecord(sesFreqList, mLastAbandant));
 	mLastCheckToneTs = rec->lEndTs;
 	appendRet(rec);
+
+	checkCodeRecordShift();
 }
 
 void FreqAnalyzer::pickWithoutSession(int iCheckIndex){
@@ -608,6 +613,114 @@ void FreqAnalyzer::appendRet(Ref<CodeRecord> rec){
 		}
 	}
 	appendRet(rec->strCdoe);
+}
+
+static const int SHIFT_TRIGGER_CNT = 2;
+
+void FreqAnalyzer::checkCodeRecordShift(){
+	int iSize = mCodeRecordList.size();
+	CodeRecord::Tone_Shift_Status tsStatusLastRec = (0 < iSize)?mCodeRecordList[iSize-1]->getToneShiftStatus():CodeRecord::TS_NONE;
+	LOGE("tsStatusLastRec: [%d] , iSize:[%d]\n", tsStatusLastRec, iSize);
+	if(CodeRecord::TS_NONE != tsStatusLastRec){
+		int iSameShiftCnt = 1;
+		for(int idx = iSize -2; idx >=0;idx--){
+			Ref<CodeRecord> chkRec = mCodeRecordList[idx];
+			if(chkRec){
+				CodeRecord::Tone_Shift_Status tsStatus = chkRec->getToneShiftStatus();
+				LOGE("tsStatus: [%d], iSameShiftCnt:[%d] \n", tsStatus, iSameShiftCnt);
+				if(tsStatusLastRec != tsStatus){
+					return;
+				}else{
+					if(++iSameShiftCnt == SHIFT_TRIGGER_CNT){
+						LOGE("detect Tone_Shift_Status: [%d] for %d straight times\n", tsStatusLastRec, SHIFT_TRIGGER_CNT);
+						if(CodeRecord::TS_FORWARD == tsStatusLastRec){
+							Ref<FreqRecord> frFstRec, frSndRec;
+							string strToChange = "";
+							for(int idx = iSize-2; ((iSize-1) - idx) < SHIFT_TRIGGER_CNT;idx--){
+								Ref<CodeRecord> fstRec = mCodeRecordList[idx];
+								Ref<CodeRecord> sndRec = mCodeRecordList[idx+1];
+								if(fstRec && sndRec){
+									frFstRec = fstRec->popTailRec();
+									frSndRec = sndRec->popTailRec();
+									if(frFstRec && frSndRec){
+										LOGE("frFstRec: [%s]\n", frFstRec->toString().c_str());
+										LOGE("frSndRec: [%s]\n", frSndRec->toString().c_str());
+
+										if(idx == (iSize-2)){ //Begin case
+											mFreqRecordList.insert(mFreqRecordList.begin(), frSndRec);
+										}
+										sndRec->pushToHead(frFstRec);
+										strToChange = sndRec->strCdoe + strToChange;
+										LOGE("strToChange: [%s]\n", strToChange.c_str());
+									}
+								}else{
+									LOGE("fstRec: [%d] or %d sndRec: [%d] is null\n", (NULL != fstRec), (NULL != sndRec));
+								}
+							}
+
+							if(0 < strToChange.length()){
+								mSessionBeginTs-=SoundPair_Config::FRAME_TS;
+								string strDecodeOld(msbDecode.str());
+								if(0 < strDecodeOld.length() && strToChange.length() <= strDecodeOld.length() ){
+									msbDecode.str("");
+									msbDecode.clear();
+									msbDecode << strDecodeOld.substr(0, strDecodeOld.length() - strToChange.length());
+									msbDecode << strToChange;
+
+									LOGE("change msbDecode from [%s] "
+										 "                   to [%s] \n", strDecodeOld.c_str(), msbDecode.str().c_str());
+
+								}
+							}
+						}else{
+							Ref<FreqRecord> frFstRec, frSndRec;
+							string strToChange = "";
+							for(int idx = (iSize - SHIFT_TRIGGER_CNT);  idx < (iSize-1) ;idx++){
+								Ref<CodeRecord> fstRec = mCodeRecordList[idx];
+								Ref<CodeRecord> sndRec = mCodeRecordList[idx+1];
+								if(fstRec && sndRec){
+									frFstRec = fstRec->popHeadRec();
+									frSndRec = sndRec->popHeadRec();
+									if(frFstRec && frSndRec){
+										LOGE("frFstRec: [%s]\n", frFstRec->toString().c_str());
+										LOGE("frSndRec: [%s]\n", frSndRec->toString().c_str());
+
+										fstRec->pushToTail(frSndRec);
+										strToChange = strToChange + fstRec->strCdoe;
+										LOGE("strToChange: [%s]\n", strToChange.c_str());
+
+										if(idx == (iSize-2)){ //End case
+											mFreqRecordList.insert(mFreqRecordList.begin(), sndRec->popTailRec());
+											mFreqRecordList.insert(mFreqRecordList.begin(), sndRec->popHeadRec());
+										}
+									}
+								}else{
+									LOGE("fstRec: [%d] or %d sndRec: [%d] is null\n", (NULL != fstRec), (NULL != sndRec));
+								}
+							}
+
+							if(0 < strToChange.length()){
+								mSessionBeginTs+=SoundPair_Config::FRAME_TS;
+								string strDecodeOld(msbDecode.str());
+								if(0 < strDecodeOld.length() && strToChange.length() <= strDecodeOld.length() ){
+									msbDecode.str("");
+									msbDecode.clear();
+									msbDecode << strDecodeOld.substr(0, strDecodeOld.length() - (strToChange.length()+1));
+									msbDecode << strToChange;
+
+									LOGE("change msbDecode from [%s] "
+										 "                   to [%s] \n", strDecodeOld.c_str(), msbDecode.str().c_str());
+
+								}
+							}
+						}
+						return;
+					}
+				}
+			}
+		}
+	}
+
 }
 
 void FreqAnalyzer::appendRet(string strCode){
@@ -1541,7 +1654,7 @@ void FreqAnalyzer::autoCorrection(MatchRetSet* prevMatchRet){
 		}else{
 			//if not get one result, force to timeout
 			if(NULL != selfFreqAnalyzer->mIFreqAnalyzeResultCBListener){
-				LOGE("autoCorrection(), selfFreqAnalyzer->mbStartAppend = false, trigger timeout" );
+				LOGE("selfFreqAnalyzer->mbStartAppend = false, trigger timeout\n" );
 				selfFreqAnalyzer->triggerTimeout();
 			}
 		}

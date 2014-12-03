@@ -1066,6 +1066,23 @@ ERR:
 	return iRet;
 }
 
+static const unsigned long MIN_TIME_TO_WAIT_ATTACH = 60000; //1 min
+
+unsigned long FreqGenerator::getSoundPairingDuration(const char* ssid, const char* wifiKey, bool bSSIDHash){//in milliseconds
+	unsigned int iNumWords= (bSSIDHash?8:(ssid?strlen(ssid):0))*2+
+							(wifiKey?strlen(wifiKey):0)*2+
+							2+//SSID len
+							4+//user temp id
+							6+//purpose
+							6;//prefix+postfix+divider
+
+	unsigned long lTimeToWait = iNumWords*4*100 + 45*1000;
+	if(MIN_TIME_TO_WAIT_ATTACH > lTimeToWait){
+		lTimeToWait = MIN_TIME_TO_WAIT_ATTACH;
+	}
+	return lTimeToWait;
+}
+
 EncodeItm::EncodeItm(string strCodeInputASCII, string strCodeInput, string strECCode, string strEncodeMark, string strEncode) {
 	//LOGE("EncodeItm(), strCodeInput:%s,\n %s,\n %s,\n %s\n", strCodeInput.c_str(), strECCode.c_str(), strEncodeMark.c_str(), strEncode.c_str());
 	this->strCodeInputAscii = strCodeInputASCII;

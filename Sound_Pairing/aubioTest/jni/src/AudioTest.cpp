@@ -203,7 +203,7 @@ static const short ANALYSIS_MAX_AUDIO_VALUE_G25 	= 2000;//audio max value for ga
 static const short ANALYSIS_START_THRESHHOLD_MIN_G25= 450;//audio value
 static const short ANALYSIS_START_THRESHHOLD_MAX_G25= 1400;//audio value
 
-static const short ANALYSIS_MAX_AUDIO_VALUE_G35 	= 5500;//audio max value for gain =35
+static const short ANALYSIS_MAX_AUDIO_VALUE_G35 	= 6000;//audio max value for gain =35
 static const short ANALYSIS_START_THRESHHOLD_MIN_G35= 900;//audio value
 static const short ANALYSIS_START_THRESHHOLD_MAX_G35= 3500;//audio value
 
@@ -1611,7 +1611,7 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 	Delegate_CloseAudioRecordDevice();
 #else
 
-	int iRet = checkSPEnv();//system("/beseye/cam_main/cam-handler -setspenv 25") >> 8;
+	int iRet = checkSPEnv();
 	LOGE("runAudioBufRecord(), check sp env, iRet:%d\n", iRet);
 	if(CMD_RET_CODE_NEED_REBOOT == iRet){
 		LOGE("runAudioBufRecord(), need to reboot due to change config\n");
@@ -1891,7 +1891,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	}else{
 		int iRetLen = strCode.length();
 		if(iRetLen < (SSID_MIN_LEN + TOKEN_LEN + PURPOSE_LEN /*+ MIN_PW_LEN +2*/)){
-			LOGE("iRetLen:[%d] < min len\n",iRetLen, (SSID_MIN_LEN + TOKEN_LEN + PURPOSE_LEN/*+ MIN_PW_LEN +2*/));
+			LOGE("iRetLen:[%d] < min len [%d]\n",iRetLen, (SSID_MIN_LEN + TOKEN_LEN + PURPOSE_LEN/*+ MIN_PW_LEN +2*/));
 			return;
 		}
 
@@ -2028,6 +2028,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			int iTrials = 0;
 			msec_t lTimeToChkNetwork = time_ms();
 			msec_t lTimeDelta = 0;
+			const int iTotalTrialCount = (bGuess)?15:25;
 
 			LOGE("wifi connection check begin.............\n");
 			do{
@@ -2045,8 +2046,8 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.alibaba.com.cn") >> 8;
 
 				lTimeDelta = time_ms() - lTimeToChkNetwork;
-				LOGE("wifi connection check, trial: %d ,iNetworkRet:%d, lTimeDelta:%lld\n", iTrials, iNetworkRet, lTimeDelta);
-			}while((iTrials < 15 && lTimeDelta < 40000L) && 0 != iNetworkRet);
+				LOGE("wifi connection check, trial: [%d/%d] ,iNetworkRet:%d, lTimeDelta:%lld\n", iTrials, iTotalTrialCount, iNetworkRet, lTimeDelta);
+			}while((iTrials < iTotalTrialCount && lTimeDelta < 40000L) && 0 != iNetworkRet);
 
 				//LOGE("wifi check ret:%d, iTrials:%ld\n", iNetworkRet, iTrials));
 			//}while( (15 > iTrials) && (iNetworkRet != 0));
@@ -2167,11 +2168,15 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							Delegate_FeedbackMatchResult(curCode, curECCode, curEncodeMark, strCode, strDecodeUnmark, strDecodeMark, DESC_MATCH_EC, bFromAutoCorrection);
 						}
 					}else if(0 > miPairingReturnCode){
-						MatchRetSet* matchRet = new MatchRetSet(DESC_MATCH_EC, strDecodeMark, strDecodeUnmark, strCode);
-						tmpRet.str("");
-						tmpRet.clear();
-						FreqAnalyzer::getInstance()->performAutoCorrection(matchRet);
-						return;
+						if(0 != strCode.find("error")){
+							changePairingMode(PAIRING_ERROR);
+						}else{
+							MatchRetSet* matchRet = new MatchRetSet(DESC_MATCH_EC, strDecodeMark, strDecodeUnmark, strCode);
+							tmpRet.str("");
+							tmpRet.clear();
+							FreqAnalyzer::getInstance()->performAutoCorrection(matchRet);
+							return;
+						}
 					}
 				}
 			}else{
@@ -2192,11 +2197,15 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							Delegate_FeedbackMatchResult(curCode, curECCode, curEncodeMark, strCode, strDecodeUnmark, strDecodeMark, DESC_MATCH_MSG, bFromAutoCorrection);
 						}
 					}else if(0 > miPairingReturnCode){
-						MatchRetSet* matchRet = new MatchRetSet(DESC_MATCH_MSG, strDecodeMark, strDecodeUnmark, strCode);
-						tmpRet.str("");
-						tmpRet.clear();
-						FreqAnalyzer::getInstance()->performAutoCorrection(matchRet);
-						return;
+						if(0 != strCode.find("error")){
+							changePairingMode(PAIRING_ERROR);
+						}else{
+							MatchRetSet* matchRet = new MatchRetSet(DESC_MATCH_MSG, strDecodeMark, strDecodeUnmark, strCode);
+							tmpRet.str("");
+							tmpRet.clear();
+							FreqAnalyzer::getInstance()->performAutoCorrection(matchRet);
+							return;
+						}
 					}
 				}else{
 					strLog <<"runAutoTest(), Case 4 ===>>> Detection mismatch, bFromAutoCorrection:"<<bFromAutoCorrection<<"\n" <<
@@ -2215,11 +2224,15 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							Delegate_FeedbackMatchResult(curCode, curECCode, curEncodeMark, strCode, strDecodeUnmark, strDecodeMark, DESC_MISMATCH, bFromAutoCorrection);
 						}
 					}else if(0 > miPairingReturnCode){
-						MatchRetSet* matchRet = new MatchRetSet(DESC_MISMATCH, strDecodeMark, strDecodeUnmark, strCode);
-						tmpRet.str("");
-						tmpRet.clear();
-						FreqAnalyzer::getInstance()->performAutoCorrection(matchRet);
-						return;
+						if(0 != strCode.find("error")){
+							changePairingMode(PAIRING_ERROR);
+						}else{
+							MatchRetSet* matchRet = new MatchRetSet(DESC_MISMATCH, strDecodeMark, strDecodeUnmark, strCode);
+							tmpRet.str("");
+							tmpRet.clear();
+							FreqAnalyzer::getInstance()->performAutoCorrection(matchRet);
+							return;
+						}
 					}
 				}
 			}
@@ -2340,7 +2353,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 			}
 		}else{
 			//if end point is detected, the path will be redirect to onSetResult() callback
-			LOGE("onTimeout(), checkEndPoint is true, bFromAutoCorrection:%d", bFromAutoCorrection);
+			LOGE("onTimeout(), checkEndPoint is true, bFromAutoCorrection:%d\n", bFromAutoCorrection);
 			if(bFromAutoCorrection){
 				deinitTestRound();
 				if(0 > miPairingReturnCode){

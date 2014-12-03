@@ -78,6 +78,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private native int playSSIDHashPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
 	private native String getSSIDHashValue(String strSSID);
 	
+	private native long getSoundPairingDuration(String strSSID, String strKey, boolean bSSIDHash);
+	
 	private native void finishPlayCode();
 	private native void swTest();
 	
@@ -319,17 +321,17 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 //						2+//purpose
 //						6;//prefix+postfix+divider
 				
-				int iNumWords = mChosenWifiAPInfo.SSID.getBytes().length*2+
-						mChosenWifiAPInfo.password.length()*2+
-						4+//user temp id
-						6+//purpose
-						6;//prefix+postfix+divider
+//				int iNumWords = mChosenWifiAPInfo.SSID.getBytes().length*2+
+//						mChosenWifiAPInfo.password.length()*2+
+//						4+//user temp id
+//						6+//purpose
+//						6;//prefix+postfix+divider
 		
-				long lTimeToWait = iNumWords*6*100 + 24*1000;
-				if(MIN_TIME_TO_WAIT_ATTACH > lTimeToWait){
-					lTimeToWait = MIN_TIME_TO_WAIT_ATTACH;
-				}
-				
+				long lTimeToWait = getSoundPairingDuration(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password, (null != mChosenWifiAPInfo.BSSID && 0 < mChosenWifiAPInfo.BSSID.length()));//iNumWords*6*100 + 24*1000;
+//				if(MIN_TIME_TO_WAIT_ATTACH > lTimeToWait){
+//					lTimeToWait = MIN_TIME_TO_WAIT_ATTACH;
+//				}
+//				
 				mPairingCounter = new PairingCounter(lTimeToWait, SoundPairingActivity.this);
 				if(null != mPairingCounter){
 					mPairingCounter.start();

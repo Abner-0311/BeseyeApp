@@ -109,7 +109,16 @@ public:
 	//For client
 	void setOnPlayToneCallback(void(* playToneCB)(void* userdata, Play_Tone_Status status, const char *msg, unsigned int type) , void* userData);
 
-	//WiFi AP BSSID
+	/*Play pairing tone*/
+	//macAddr => Hex values without ':' in lower case (ex. ef01cd45ab89)
+	//wifiKey => ASCII values (for WEP: 5 or 13 digits; WPA/WPA2: more than 8 digits)
+	//secType => 0:none; 1:WEP; 2:WPA; 3:WPA2
+	//tmpUserToken => temp user token from Account BE
+
+	unsigned long getSoundPairingDuration(const char* ssid, const char* wifiKey, bool bSSIDHash);//in milliseconds
+
+	//WiFi AP BSSID (deprecated)
+	//unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken);
 	unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken);
 	unsigned int playPairingCodeWithPurpose(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken, unsigned char cPurpose);//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
 
@@ -122,12 +131,6 @@ public:
 	char* getSSIDStringHashValue(const char* ssid);//Need to release
 	unsigned int playSSIDHashPairingCode(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken);
 	unsigned int playSSIDHashPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, unsigned char cPurpose);//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
-
-	//unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken);
-	//macAddr => Hex values without ':' in lower case (ex. ef01cd45ab89)
-	//wifiKey => ASCII values (for WEP: 5 or 13 digits; WPA/WPA2: more than 8 digits)
-	//secType => 0:none; 1:WEP; 2:WPA; 3:WPA2
-	//tmpUserToken => temp user token from Account BE
 };
 
 #endif

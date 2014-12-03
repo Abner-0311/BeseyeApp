@@ -8,7 +8,7 @@ std::vector<string> SoundPair_Config::sCodeTable;
 Ref<GenericGF> SoundPair_Config::gf = GenericGF::QR_CODE_FIELD_256;
 
 float SoundPair_Config::AMP_BASE_RATIO[] = {1.00f, 1.00f, 1.10f, 1.10f,  // 1093.75, 1187.50, 1781.25, 1968.75,
-											1.04f, 1.00f, 1.00f, 1.05f,  // 1281.25, 1468.75, 1593.75, 1687.5,
+											1.04f, 1.00f, 1.00f, 1.00f,  // 1281.25, 1468.75, 1593.75, 1687.5,
 											0.60f, 0.98f, 1.02f, 1.00f,  // 2843.75, 2093.75, 2187.50, 2375.0,
 											1.00f, 0.90f, 0.80f, 0.68f,  // 2468.75, 2562.50, 2656.25, 2750.0,
 											0.80f, 1.00f, 0.80f, 1.00f}; // 1406.25, 2281.25, 3218.75, 7775.00
@@ -148,8 +148,8 @@ void SoundPair_Config::init(){
 
 					1281.25,
 					1468.75,
-					1593.75,
-					1687.5,
+					1000.00,//3125.00,//1593.75,
+					1687.50,
 
 					2843.75,//1875.0,
 					2093.75,
@@ -428,7 +428,7 @@ string FreqRecord::toString() {
 	return s.str();
 }
 
-CodeRecord::CodeRecord() {
+CodeRecord::CodeRecord():mTSStatus(CodeRecord::TS_NONE) {
 }
 
 CodeRecord::CodeRecord(std::vector<Ref<FreqRecord> > lstFreqRec, string strReplaced){
@@ -458,6 +458,48 @@ CodeRecord::~CodeRecord(){
 	mlstFreqRec.clear();
 }
 
+CodeRecord::Tone_Shift_Status CodeRecord::getToneShiftStatus(){
+	return mTSStatus;
+}
+
+string CodeRecord::getHeadTone(){
+	int iSize = mlstFreqRec.size();
+	return (0 < iSize)?mlstFreqRec[0]->mstrCode:"";
+}
+
+string CodeRecord::getTailTone(){
+	int iSize = mlstFreqRec.size();
+	return (0 < iSize)?mlstFreqRec[iSize-1]->mstrCode:"";
+}
+
+Ref<FreqRecord> CodeRecord::popHeadRec(){
+	int iSize = mlstFreqRec.size();
+	Ref<FreqRecord> fr = (0 < iSize)?mlstFreqRec.front():Ref<FreqRecord>(NULL);
+	if(fr){
+		mlstFreqRec.erase(mlstFreqRec.begin());
+	}
+	return fr;
+}
+
+Ref<FreqRecord> CodeRecord::popTailRec(){
+	int iSize = mlstFreqRec.size();
+	Ref<FreqRecord> fr = (0 < iSize)?mlstFreqRec.back():Ref<FreqRecord>(NULL);
+	if(fr){
+		mlstFreqRec.pop_back();
+	}
+	return fr;
+}
+
+void CodeRecord::pushToHead(Ref<FreqRecord> fr){
+	mlstFreqRec.insert(mlstFreqRec.begin(), fr);
+	inferFreq();
+}
+
+void CodeRecord::pushToTail(Ref<FreqRecord> fr){
+	mlstFreqRec.push_back(fr);
+	inferFreq();
+}
+
 void CodeRecord::setParameters(msec_t lStartTs, msec_t lEndTs, string strCdoe){
 	this->lStartTs = lStartTs;
 	this->lEndTs = lEndTs;
@@ -465,14 +507,15 @@ void CodeRecord::setParameters(msec_t lStartTs, msec_t lEndTs, string strCdoe){
 }
 
 void CodeRecord::inferFreq(){
+	mTSStatus = CodeRecord::TS_NONE;
 	if(0 == mlstFreqRec.size()){
 		LOGE("inferFreq()**, NULL mlstFreqRec");
 		return;
 	}
 	int iSize = mlstFreqRec.size();
-	for(int i =0; i< iSize;i++){
-
-	}
+//	for(int i =0; i< iSize;i++){
+//
+//	}
 	Ref<FreqRecord> frFirst = mlstFreqRec[0];
 	Ref<FreqRecord> frLast = mlstFreqRec[iSize-1];
 
@@ -498,53 +541,63 @@ void CodeRecord::inferFreq(){
 
 	if(false == bDiff){
 		if(0!=SoundPair_Config::MISSING_CHAR.compare(*curCode)){
-			LOGD("inferFreq()**, all the same, code = [%s] ", curCode->c_str());
+			LOGI("inferFreq()**, all the same, code = [%s]\n", curCode->c_str());
 			setParameters(frFirst->mlTs, frLast->mlTs, *curCode);
 		}else{
-			LOGD("inferFreq()**, all the same, code = [%s], replace it", curCode->c_str());
+			LOGI("inferFreq()**, all the same, code = [%s], replace it\n", curCode->c_str());
 			setParameters(frFirst->mlTs, frLast->mlTs, strReplaced);
 		}
 	}else{
 		int iMedIdx = iSize/2;
+
 		Ref<FreqRecord> frMiddle = mlstFreqRec[iMedIdx];
 		if(0 != SoundPair_Config::MISSING_CHAR.compare(frMiddle->mstrCode)){
 			//Check back-half items first
 			bDiff = false;
 			curCode = strLastCheck = &frMiddle->mstrCode;
 
-			for(int idx = iMedIdx +1; idx < iSize; idx++){
+			//LOGI(" iMedIdx = [%d], iSize:[%d], frMiddle->mstrCode:[%s]\n", iMedIdx, iSize, frMiddle->mstrCode.c_str());
+
+			for(int idx = iMedIdx+1; idx < iSize; idx++){
 				curCode = &mlstFreqRec[idx]->mstrCode;
-				if(!strLastCheck && (0!=curCode->compare(*strLastCheck))){
+				//LOGI("inferFreq()**1, curCode = [%s], strLastCheck:[%s]\n", curCode->c_str(), strLastCheck->c_str());
+				if(strLastCheck && (0!=curCode->compare(*strLastCheck))){
 					bDiff = true;
 				}
 				strLastCheck = curCode;
 			}
 
-			if(false == bDiff && !curCode && (0!=SoundPair_Config::MISSING_CHAR.compare(*curCode))){
-				LOGD("inferFreq()**, all the same of back-half, code = [%s]", curCode->c_str());
+			//LOGI("inferFreq()**1, bDiff = [%d], curCode:[%d], [%d]\n", bDiff, !curCode, (0!=SoundPair_Config::MISSING_CHAR.compare(*curCode)));
+
+			if(false == bDiff && curCode && (0!=SoundPair_Config::MISSING_CHAR.compare(*curCode))){
+				LOGI("inferFreq()**, all the same of back-half, code = [%s]\n", curCode->c_str());
 				setParameters(frFirst->mlTs, frLast->mlTs, *curCode);
+				mTSStatus = CodeRecord::TS_BACKWARD;
 			}else{
 				//Check front-half items
 				bDiff = false;
 				curCode = strLastCheck = &frMiddle->mstrCode;
 
-				for(int idx = iMedIdx -1; idx >= 0; idx--){
+				for(int idx = iMedIdx-1; idx >= 0; idx--){
 					curCode = &mlstFreqRec[idx]->mstrCode;
-					if(!strLastCheck && !strLastCheck && (0!=curCode->compare(*strLastCheck))){
+					//LOGI("inferFreq()**2, curCode = [%s], strLastCheck:[%s]\n", curCode->c_str(), strLastCheck->c_str());
+					if(strLastCheck && (0!=curCode->compare(*strLastCheck))){
 						bDiff = true;
+
 					}
 					strLastCheck = curCode;
 				}
 
-				if(false == bDiff && !curCode && (0!=SoundPair_Config::MISSING_CHAR.compare(*curCode))){
-					LOGD("inferFreq()**, all the same of first-half, code = [%s]", curCode->c_str());
+				if(false == bDiff && curCode && (0!=SoundPair_Config::MISSING_CHAR.compare(*curCode))){
+					LOGI("inferFreq()**, all the same of first-half, code = [%s]\n", curCode->c_str());
 					setParameters(frFirst->mlTs, frLast->mlTs, *curCode);
+					mTSStatus = CodeRecord::TS_FORWARD;
 				}else{
 					if((0==mlstFreqRec[0]->mstrCode.compare(mlstFreqRec[iSize-1]->mstrCode)) && (0!=mlstFreqRec[0]->mstrCode.compare(SoundPair_Config::MISSING_CHAR))){
-						LOGD("inferFreq()**, pick side items, code = [%s] ", mlstFreqRec[0]->mstrCode.c_str());
+						LOGI("inferFreq()**, pick side items, code = [%s] \n", mlstFreqRec[0]->mstrCode.c_str());
 						setParameters(frFirst->mlTs, frLast->mlTs, mlstFreqRec[0]->mstrCode);
 					}else{
-						LOGD("inferFreq()**, pick middle items, code = [%s] ", frMiddle->mstrCode.c_str());
+						LOGI("inferFreq()**, pick middle items, code = [%s] \n", frMiddle->mstrCode.c_str());
 						setParameters(frFirst->mlTs, frLast->mlTs, frMiddle->mstrCode);
 					}
 				}
@@ -559,7 +612,7 @@ void CodeRecord::inferFreq(){
 					break;
 				}
 			}
-			LOGD("inferFreq()**, pick non MISSING_CHAR one, code = [%s]", strCodeInfer->c_str());
+			LOGD("inferFreq()**, pick non MISSING_CHAR one, code = [%s]\n", strCodeInfer->c_str());
 			setParameters(frFirst->mlTs, frLast->mlTs, (NULL == strCodeInfer)?strReplaced:*strCodeInfer);
 		}
 	}

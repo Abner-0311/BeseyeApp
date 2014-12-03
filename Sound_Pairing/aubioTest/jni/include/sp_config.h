@@ -201,20 +201,29 @@ public:
 };
 
 class CodeRecord : public Counted{
-private:
-	msec_t lStartTs;
-	msec_t lEndTs;
-	string strCdoe;
-	string strReplaced;
-	std::vector<Ref<FreqRecord> > mlstFreqRec;
-	friend class FreqAnalyzer;
-
 public:
+	enum Tone_Shift_Status{
+		TS_NONE,
+		TS_FORWARD,
+		TS_BACKWARD,
+		TS_TYPE_COUNT
+	};
+
 	CodeRecord();
 	CodeRecord(std::vector<Ref<FreqRecord> > lstFreqRec, string strReplaced);
 	CodeRecord(msec_t lStartTs, msec_t lEndTs, string strCdoe);
 	CodeRecord(msec_t lStartTs, msec_t lEndTs, string strCode, std::vector<Ref<FreqRecord> > lstFreqRec);
 	virtual ~CodeRecord();
+
+	Tone_Shift_Status getToneShiftStatus();
+	string getHeadTone();
+	string getTailTone();
+
+	Ref<FreqRecord> popHeadRec();
+	Ref<FreqRecord> popTailRec();
+
+	void pushToHead(Ref<FreqRecord> fr);
+	void pushToTail(Ref<FreqRecord> fr);
 
 	static Ref<CodeRecord> combineNewCodeRecord(Ref<CodeRecord> cr1, Ref<CodeRecord> cr2, int iOffset, int iLastTone);
 private:
@@ -222,6 +231,14 @@ private:
 	void inferFreq();
 	string toString();
 	bool isSameCode();
+
+	msec_t lStartTs;
+	msec_t lEndTs;
+	string strCdoe;
+	string strReplaced;
+	std::vector<Ref<FreqRecord> > mlstFreqRec;
+	friend class FreqAnalyzer;
+	Tone_Shift_Status mTSStatus;
 };
 #endif
 

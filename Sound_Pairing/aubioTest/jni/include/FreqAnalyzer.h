@@ -131,6 +131,8 @@ private:
 
 	void normalAnalysis(int iIndex);
 
+	void checkCodeRecordShift();
+
 	static int sSampleRate;
 	static int sFrameSize;
 	static int sHalfFrameSize;
