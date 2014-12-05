@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <exception>
 #include <curl/curl.h>
+#include "time_utils.h"
 #include "simple_websocket_mgr.h"
 #include "delegate/account_mgr.h"
 #include "delegate/cam_controller.h"
@@ -23,7 +24,7 @@ void sighandler(int sig){
 }
 
 int main(int argc, char** argv) {
-	LOGE("+++++\n");
+	LOGE( "SoundPairnig version:[2014/12/05 11]...................., ts:[%lld]\n", time_ms());
 	signal(SIGINT, sighandler);
 
 	curl_global_init(CURL_GLOBAL_SSL);
