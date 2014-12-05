@@ -114,23 +114,27 @@ public:
 	//wifiKey => ASCII values (for WEP: 5 or 13 digits; WPA/WPA2: more than 8 digits)
 	//secType => 0:none; 1:WEP; 2:WPA; 3:WPA2
 	//tmpUserToken => temp user token from Account BE
+	//cPurpose: 0=> pairing, 1:change wifi, 2:restore token
+	//cRegId: number of Region (VPC)
 
 	unsigned long getSoundPairingDuration(const char* ssid, const char* wifiKey, bool bSSIDHash);//in milliseconds
 
 	//WiFi AP BSSID (deprecated)
 	//unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken);
 	unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken);
-	unsigned int playPairingCodeWithPurpose(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken, unsigned char cPurpose);//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+	unsigned int playPairingCodeWithPurpose(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken, BEE_PURPOSE cPurpose);
 
 	//WiFi AP SSID
 	unsigned int playSSIDPairingCode(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken);
-	unsigned int playSSIDPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, unsigned char cPurpose);//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+	unsigned int playSSIDPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose);
+	unsigned int playSSIDPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId);
 
 	//WiFi AP SSID Hash
 	uint64 getSSIDHashValue(const char* ssid);
 	char* getSSIDStringHashValue(const char* ssid);//Need to release
 	unsigned int playSSIDHashPairingCode(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken);
-	unsigned int playSSIDHashPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, unsigned char cPurpose);//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+	unsigned int playSSIDHashPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose);
+	unsigned int playSSIDHashPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId);
 };
 
 #endif

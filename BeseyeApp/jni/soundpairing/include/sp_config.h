@@ -31,6 +31,13 @@ enum PAIRING_SEC_TYPE{
 	PAIRING_SEC_UNKNOWN = 0xf
 };
 
+enum BEE_PURPOSE{
+	BEE_ATTACH			= 0x0,
+	BEE_CHANGE_WIFI		= 0x1,
+	BEE_RESTORE_TOKEN	= 0x2,
+	BEE_TYPE_COUNT		= 0x3,
+};
+
 class FreqRangeData : public Counted{
 private:
 	double mdValue;

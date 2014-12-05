@@ -75,7 +75,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private native int playPairingCode(String strMac, String strKey, int iSecType, short sUserToken);
 	private native int playPairingCodeWithPurpose(String strMac, String strKey, int iSecType, short sUserToken, char cPurpose);
 	private native int playSSIDPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
+	private native int playSSIDPairingCodeWithPurposeAndRegion(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose, int cRegId);
 	private native int playSSIDHashPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
+	private native int playSSIDHashPairingCodeWithPurposeAndRegion(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose, int cRegId);
 	private native String getSSIDHashValue(String strSSID);
 	
 	private native long getSoundPairingDuration(String strSSID, String strKey, boolean bSSIDHash);
@@ -294,7 +296,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					if(null == mChosenWifiAPInfo.BSSID || 0 == mChosenWifiAPInfo.BSSID.length()){
 						iRet = playSSIDPairingCodeWithPurpose(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose);
 					}else{
-						iRet = playSSIDHashPairingCodeWithPurpose(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose);
+						iRet = playSSIDHashPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose,196);
 					}
 					
 					if(iRet != 0)

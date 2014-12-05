@@ -1846,7 +1846,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	const int SSID_HASH_LEN = 8;
 	const int SSID_MAX_LEN = 32*2;
 	const int TOKEN_LEN = 4;
-	const int PURPOSE_LEN = 6;
+	const int PURPOSE_LEN = 8;
 	const int MIN_PW_LEN = 0;
 
 	string /*strMAC*/strSSID, strSSIDHash, strUserNum, strPurposeSeg, strPW;
@@ -1854,6 +1854,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	stringstream retSSID, retPW;
 	unsigned char cPurpose = 0;
 	unsigned char cSecType = 0;
+	unsigned char cRegId = 0;
 	unsigned int iReserved = 0;
 	uint64 lSSIDHash = 0;
 	bool bGuess = false;
@@ -1998,7 +1999,10 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		int iLenPurpose = strPurposeSeg.length();///iMultiply;
 		cPurpose =SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(0, 1).c_str());
 		cSecType =SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(1, 1).c_str());
-		for(int i =2;i < iLenPurpose;i++){
+		cRegId = (SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(2, 1).c_str())<< iPower) +
+				  SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(3, 1).c_str());
+
+		for(int i =4;i < iLenPurpose;i++){
 			iReserved << iPower;
 			int iVal = SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(i, 1).c_str());
 			iReserved+=iVal;
@@ -2010,7 +2014,13 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 //			}
 		}
 
-		LOGE("cPurpose:%u, cSecType:%u, iReserved:%d, strPurposeSeg:[%s]\n", cPurpose, cSecType, iReserved, strPurposeSeg.c_str());
+		LOGE("cPurpose:%u, cSecType:%u, cRegId:%u, iReserved:%d, strPurposeSeg:[%s]\n", cPurpose, cSecType, cRegId, iReserved, strPurposeSeg.c_str());
+
+		if(0 != saveRegionId(cRegId)){
+			LOGE("Failed to save cRegId:[%d]\n", cRegId);
+		}else{
+			//call script
+		}
 
 		char cmd[BUF_SIZE]={0};
 //		sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", strMAC.c_str(), retPW.str().c_str());
@@ -2053,9 +2063,6 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				LOGE("wifi connection check, trial: [%d/%d] ,iNetworkRet:%d, lTimeDelta:%lld\n", iTrials, iTotalTrialCount, iNetworkRet, lTimeDelta);
 			}while((iTrials < iTotalTrialCount && lTimeDelta < 40000L) && 0 != iNetworkRet);
 
-				//LOGE("wifi check ret:%d, iTrials:%ld\n", iNetworkRet, iTrials));
-			//}while( (15 > iTrials) && (iNetworkRet != 0));
-
 			LOGE("network checking complete, iNetworkRet:%d, iTrials:%ld\n", iNetworkRet, iTrials);
 
 			if(0 == iNetworkRet){
@@ -2072,16 +2079,20 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						if(0 == iRet){
 							LOGE("Tmp User Token verification OK\n");
 							invokeSystem("/beseye/cam_main/beseye_token_check");
+							deleteOldWiFiFile();
+							removeOldRegionId();
 							AudioTest::getInstance()->setPairingReturnCode(0);
 						}else{
 							LOGE("Tmp User Token verification failed\n");
 							//roll back wifi settings
-							iRet = restoreWifi();//system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
+							iRet = restoreWifi();
+							restoreRegionId();
 						}
 					}else{
 						LOGE("Wrong cPurpose\n");
 						//roll back wifi settings
-						iRet = restoreWifi();//system("/beseye/cam_main/cam-handler -restoreWifi") >> 8;
+						iRet = restoreWifi();
+						restoreRegionId();
 					}
 
 				}else{
@@ -2096,19 +2107,24 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						if(0 == iRet){
 							LOGE("Cam attach OK\n");
 							invokeSystem("/beseye/cam_main/beseye_token_check");
+							deleteOldWiFiFile();
+							removeOldRegionId();
 							AudioTest::getInstance()->setPairingReturnCode(0);
 						}else{
 							LOGE("Cam attach failed\n");
 							iRet = restoreWifi();
+							restoreRegionId();
 						}
 					}else{
 						LOGE("Wrong cPurpose for attach\n");
 						iRet = restoreWifi();
+						restoreRegionId();
 					}
 				}
 			}else{
 				LOGE("network disconnected\n");
 				iRet = restoreWifi();
+				restoreRegionId();
 			}
 		}else{
 			LOGE("wifi set failed, iRet = &d\n", CMD_RET_CODE_MAC_NOT_FOUND);
@@ -2117,6 +2133,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			}
 		}
 	}
+
 #endif
 }
 

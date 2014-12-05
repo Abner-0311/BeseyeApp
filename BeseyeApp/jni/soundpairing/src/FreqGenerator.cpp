@@ -831,10 +831,10 @@ char* FreqGenerator::getSSIDStringHashValue(const char* ssid){
 }
 
 unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken){
-	return playPairingCodeWithPurpose(macAddr, wifiKey, tmpUserToken, (unsigned char) 0);
+	return playPairingCodeWithPurpose(macAddr, wifiKey, tmpUserToken, BEE_ATTACH);
 }
 
-unsigned int FreqGenerator::playPairingCodeWithPurpose(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken, unsigned char cPurpose){//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+unsigned int FreqGenerator::playPairingCodeWithPurpose(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken, BEE_PURPOSE cPurpose){//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
 	unsigned int iRet = R_OK;
 	stringstream sstrWifiKey;
 	stringstream sstrToken;
@@ -906,10 +906,14 @@ ERR:
 //}
 
 unsigned int FreqGenerator::playSSIDPairingCode(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken){
-	return playSSIDPairingCodeWithPurpose(ssid, wifiKey, secType, tmpUserToken, (unsigned char) 0);
+	return playSSIDPairingCodeWithPurpose(ssid, wifiKey, secType, tmpUserToken, BEE_ATTACH);
 }
 
-unsigned int FreqGenerator::playSSIDPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, unsigned char cPurpose){//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+unsigned int FreqGenerator::playSSIDPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose){
+	return playSSIDPairingCodeWithPurposeAndRegion(ssid, wifiKey, secType, tmpUserToken, cPurpose, (unsigned char) 1);
+}
+
+unsigned int FreqGenerator::playSSIDPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId){
 	unsigned int iRet = R_OK;
 	stringstream sstrSsid;
 	stringstream sstrWifiKey;
@@ -918,6 +922,11 @@ unsigned int FreqGenerator::playSSIDPairingCodeWithPurpose(const char* ssid, con
 	int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
 	int iPower = SoundPair_Config::getPowerByFFTYPE();
 	int iLen = 0;
+
+	if(BEE_TYPE_COUNT <= cPurpose){
+		iRet = E_FE_MOD_SP_INVALID_PURPOSE;
+		goto ERR;
+	}
 
 	if(!ssid ){
 		iRet = E_FE_MOD_SP_INVALID_SSID;
@@ -953,6 +962,7 @@ unsigned int FreqGenerator::playSSIDPairingCodeWithPurpose(const char* ssid, con
 				//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
 			}
 
+
 			//Attach Token
 			sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0xf000)>>12);
 			sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x0f00)>>8);
@@ -962,6 +972,8 @@ unsigned int FreqGenerator::playSSIDPairingCodeWithPurpose(const char* ssid, con
 			//sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0xf0)>>4);
 			sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0x0f));
 			sstrToken<<SoundPair_Config::sCodeTable.at((secType  & 0x0f));
+			sstrToken<<SoundPair_Config::sCodeTable.at((iRegId   & 0xf0)>>4);
+			sstrToken<<SoundPair_Config::sCodeTable.at((iRegId   & 0x0f));
 
 			//Reserved
 			sstrToken<<SoundPair_Config::sCodeTable.at(0);
@@ -981,10 +993,14 @@ ERR:
 }
 
 unsigned int FreqGenerator::playSSIDHashPairingCode(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken){
-	return playSSIDHashPairingCodeWithPurpose(ssid, wifiKey, secType, tmpUserToken, (unsigned char) 0);
+	return playSSIDHashPairingCodeWithPurpose(ssid, wifiKey, secType, tmpUserToken, BEE_ATTACH);
 }
 
-unsigned int FreqGenerator::playSSIDHashPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, unsigned char cPurpose){//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+unsigned int FreqGenerator::playSSIDHashPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose){//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+	return playSSIDHashPairingCodeWithPurposeAndRegion(ssid, wifiKey, secType, tmpUserToken, cPurpose, (unsigned char) 1);
+}
+
+unsigned int FreqGenerator::playSSIDHashPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId){
 	unsigned int iRet = R_OK;
 	stringstream sstrSsid;
 	stringstream sstrWifiKey;
@@ -993,6 +1009,11 @@ unsigned int FreqGenerator::playSSIDHashPairingCodeWithPurpose(const char* ssid,
 	int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
 	int iPower = SoundPair_Config::getPowerByFFTYPE();
 	int iLen = 0;
+
+	if(BEE_TYPE_COUNT <= cPurpose){
+		iRet = E_FE_MOD_SP_INVALID_PURPOSE;
+		goto ERR;
+	}
 
 	if(!ssid ){
 		iRet = E_FE_MOD_SP_INVALID_SSID;
@@ -1011,14 +1032,6 @@ unsigned int FreqGenerator::playSSIDHashPairingCodeWithPurpose(const char* ssid,
 
 			uint64 ihash = getSSIDHashValue(ssid);
 
-//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0xf000000000000000) >> 60);
-//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0f00000000000000) >> 56);
-//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00f0000000000000) >> 52);
-//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000f000000000000) >> 48);
-//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0000f00000000000) >> 44);
-//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00000f0000000000) >> 40);
-//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000000f000000000) >> 36);
-//				sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0000000f00000000) >> 32);
 			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00000000f0000000) >> 28);
 			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000000000f000000) >> 24);
 			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0000000000f00000) >> 20);
@@ -1048,6 +1061,8 @@ unsigned int FreqGenerator::playSSIDHashPairingCodeWithPurpose(const char* ssid,
 			//sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0xf0)>>4);
 			sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0x0f));
 			sstrToken<<SoundPair_Config::sCodeTable.at((secType  & 0x0f));
+			sstrToken<<SoundPair_Config::sCodeTable.at((iRegId   & 0xf0)>>4);
+			sstrToken<<SoundPair_Config::sCodeTable.at((iRegId   & 0x0f));
 
 			//Reserved
 			sstrToken<<SoundPair_Config::sCodeTable.at(0);
