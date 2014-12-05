@@ -1730,8 +1730,12 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 																					 tester->mbNeedToResetFFT,
 																					 FreqAnalyzer::getInstance()->getLastDetectedToneIdx(buf->mlTs),
 																					 buf->miFFTValues);
-					LOGD("runAudioBufAnalysis(), iFFTValues=[%d,%d,%d,%d,%d]", buf->miFFTValues[0], buf->miFFTValues[1], buf->miFFTValues[2], buf->miFFTValues[3], buf->miFFTValues[4]);
+					LOGD("runAudioBufAnalysis(), iFFTValues=[%d,%d,%d,%d,%d]\n", buf->miFFTValues[0], buf->miFFTValues[1], buf->miFFTValues[2], buf->miFFTValues[3], buf->miFFTValues[4]);
 					msec_t lTs = buf->mlTs;
+
+//					float retKiss = FreqAnalyzer::getInstance()->analyzeAudioViaKiss(bufShort, bufShort->size(), NULL);
+//
+//					LOGE("[%f, %f]\n", ret, retKiss);
 
 					FreqAnalyzer::getInstance()->analyze(lTs, ret, buf->miIndex, buf->miFFTValues);
 					//LOGE("runAudioBufAnalysis(), analyze out\n");
@@ -1968,7 +1972,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				string strTmp = strSSIDHash.substr(i, 1);
 				int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
 				lSSIDHash |= iVal;
-				LOGE("strTmp:[%s], iVal:[%d], lSSIDHash:[%llu]\n",strTmp.c_str(), iVal, lSSIDHash);
+				//LOGE("strTmp:[%s], iVal:[%d], lSSIDHash:[%llu]\n",strTmp.c_str(), iVal, lSSIDHash);
 			}
 
 			strAPIChk = ultostr(lSSIDHash);
@@ -2067,6 +2071,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
 						if(0 == iRet){
 							LOGE("Tmp User Token verification OK\n");
+							invokeSystem("/beseye/cam_main/beseye_token_check");
 							AudioTest::getInstance()->setPairingReturnCode(0);
 						}else{
 							LOGE("Tmp User Token verification failed\n");

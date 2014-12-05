@@ -197,6 +197,8 @@ public:
     bool canPerformAutoCorrection();
     bool performAutoCorrection(MatchRetSet* prevMatchRet);
 
+    float analyzeAudioViaKiss(ArrayRef<short> array, int iBufSize, int* iFFTValues);
+
 	float analyzeAudioViaAudacity(ArrayRef<short> array, int iBufSize, bool bReset ,int iLastDetect, int* iFFTValues);
 	float analyzeAudioViaAudacityAC(ArrayRef<short> array, int iBufSize, bool bReset ,int iLastDetect, int* iFFTValues);
 

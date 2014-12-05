@@ -2241,6 +2241,86 @@ void FreqAnalyzer::performWindowFunc(float *winBuf){
 		WindowFunc(windowFunc, sFrameSize, winBuf);
 	}
 }
+#define FIXED_POINT
+#include <kiss_fft.h>
+
+struct KissFFT{
+    kiss_fft_cfg forwardConfig;
+    kiss_fft_cpx* spectrumIn;
+    kiss_fft_cpx* spectrumOut;
+    int numSamples;
+    int spectrumSize;
+};
+
+static KissFFT* fft = NULL;
+
+float FreqAnalyzer::analyzeAudioViaKiss(ArrayRef<short> array, int iBufSize, int* iDxValues){
+	if(!fft){
+		LOGE("0\n");
+		fft = new KissFFT();
+		//LOGE("0-1\n");
+
+		//LOGE("0-2\n");
+		fft->numSamples = iBufSize;
+		fft->spectrumSize = iBufSize/2+1;
+
+		fft->forwardConfig = kiss_fft_alloc(iBufSize,0,NULL,NULL);
+
+		fft->spectrumIn = (kiss_fft_cpx*)malloc(sizeof(kiss_fft_cpx) * iBufSize);
+		//LOGE("0-3\n");
+		fft->spectrumOut = (kiss_fft_cpx*)malloc(sizeof(kiss_fft_cpx) * iBufSize);
+		LOGE("0-4\n");
+	}
+
+	//LOGE("1\n");
+	long lTickCount = getTickCount();
+
+	for(int i=0;i<fft->spectrumSize-1;i++) {
+		fft->spectrumIn[i].r = array[2*i];
+		fft->spectrumIn[i].i = array[2*i+1];
+	}
+
+	//LOGE("2\n");
+	kiss_fft(fft->forwardConfig, fft->spectrumIn, fft->spectrumOut);
+
+	//LOGE("3\n");
+
+	int iDx = 0;
+	int iDx2 = 0;
+	int iDx3 = 0;
+	int iDx4 = 0;
+	int iDx5 = 0;
+
+	//LOGE("4\n");
+	int iRet = fft->spectrumOut[0].r*fft->spectrumOut[0].r + fft->spectrumOut[0].i*fft->spectrumOut[0].i;
+	for(int i=1;i<fft->spectrumSize-1;i++) {
+		int iTmp = fft->spectrumOut[i].r*fft->spectrumOut[i].r + fft->spectrumOut[i].i*fft->spectrumOut[i].i;
+		if(iTmp > iRet){
+			//LOGE("analyzeAudioViaAudacity+, fRetTmp[%d] = %f\n", i, fRetTmp);
+			iDx5 = iDx4;
+			iDx4 = iDx3;
+			iDx3 = iDx2;
+			iDx2 = iDx;
+			iDx  = i;
+			iRet = iTmp;
+		}
+	}
+
+	//LOGE("5\n");
+	if(NULL != iDxValues){
+		iDxValues[0] = iDx;
+		iDxValues[1] = iDx2;
+		iDxValues[2] = iDx3;
+		iDxValues[3] = iDx4;
+		iDxValues[4] = iDx5;
+	}
+
+	float fRet = sBinSize*iDx;
+	//long lDelta = (getTickCount() - lTickCount);
+	//LOGE(" takes [%ld] ms, fRet:[%f]\n", lDelta, fRet);
+
+	return fRet;
+}
 
 float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, SpeexPreprocessState** speexPrep, int iLastDet, int* iDxValues){
 	//LOGE("performAudacityFFT+\n");
