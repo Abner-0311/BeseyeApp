@@ -61,7 +61,8 @@
 		   		android:text="@string/about_link"
 		   		android:layout_below="@+id/txt_about_desc"
 		   		android:layout_alignLeft="@+id/txt_about_desc"
-		   		android:layout_marginTop="@dimen/about_link_margin_top"/>
+		   		android:layout_marginTop="@dimen/about_link_margin_top"
+		   		android:paddingBottom="@dimen/about_link_margin_top"/>
 		</RelativeLayout>
 	</ScrollView>
 </RelativeLayout>
