@@ -91,9 +91,8 @@ private:
 
 	static int getToneIdxByCode(string strCode);
 
-	static string findToneCodeByFreq(double dFreq);
-
 	void checkTimeout(msec_t lTs);
+	void checkInvalidAnalysis();
 
 	int getInvalidFreqCount();
 	void fillEmptyCodeRecord(msec_t lCurSesBeginTs);
@@ -172,6 +171,8 @@ public:
 	static Ref<FreqAnalyzer> getInstance();
 	static bool destroyInstance();
 	static void initAnalysisParams(int iSampleRate, int iFrameSize, int iNSIndex, float iAGCLevel, bool bDeverb, float fDeverbDecay, float dDeverbLevel);
+
+	static string findToneCodeByFreq(double dFreq);
 
 	static Ref<ReedSolomonDecoder> rsDecoder;
 	static vector<Ref<CodeRecord> > getLstCodeRecordByOffset(vector<Ref<CodeRecord> > lstCodeRecord, int iOffset);

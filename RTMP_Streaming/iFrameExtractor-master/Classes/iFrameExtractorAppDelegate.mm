@@ -249,7 +249,8 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         //secType => 0:none; 1:WEP; 2:WPA; 3:WPA2
         //tmpUserToken => temp user token from Account BE
         
-        unsigned int iRet =FreqGenerator::getInstance()->playPairingCode("60a44c39fcf8", "0630BesEye", 28645);
+        //unsigned int iRet =FreqGenerator::getInstance()->playPairingCode("60a44c39fcf8", "0630BesEye", 28645);
+        unsigned int iRet =FreqGenerator::getInstance()->playSSIDPairingCodeWithPurposeAndRegion("beseye2G", "0630BesEye", PAIRING_SEC_WPA2, 23456, BEE_ATTACH, 1);
         if(R_OK == iRet){
             //[playToneButton setEnabled:NO];
             

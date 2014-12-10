@@ -35,7 +35,9 @@ long getTickCount()
 msec_t time_ms(void){
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	return (msec_t)tv.tv_sec * 1000 + tv.tv_usec / 1000;
+	msec_t ret = ((msec_t)tv.tv_sec) * 1000LL + tv.tv_usec / 1000;
+	//LOGE("tv.tv_sec = %ld, tv.tv_usec = %ld, ret = %lld\n", tv.tv_sec, tv.tv_usec, ret);
+	return ret;
 }
 
 void getTimeSpecByDelay(struct timespec &outtime, long lDelayInMS){
@@ -50,6 +52,28 @@ void getTimeSpecByDelay(struct timespec &outtime, long lDelayInMS){
 
 #ifndef ANDROID
 static char data[BUF_SIZE] = {0};
+
+bool isFileExist(const char* filePath){
+	bool bRet= false;
+	FILE *fp = NULL;
+	if(filePath){
+		fp=fopen(filePath, "r");
+		if(!fp){
+			LOGE("failed to %s\n", filePath);
+		}else{
+			LOGD("Succeed to %s\n", filePath);
+			bRet = true;
+		}
+	}else{
+		LOGE("invalid params:[%s]",(filePath?filePath:""));
+	}
+
+	if(fp){
+		fclose(fp);
+		fp=NULL;
+	}
+	return bRet;
+}
 
 char* readFromFile(const char* filePath){
 	char* cRet = NULL;
@@ -87,7 +111,7 @@ char* readFromFile(const char* filePath){
 }
 
 int saveToFile(const char* filePath, const char* content){
-	int iRet = 0;
+	int iRet = -1;
 	FILE *fp = NULL;
 	if(filePath && content){
 		fp=fopen(filePath, "wb");
@@ -103,6 +127,7 @@ int saveToFile(const char* filePath, const char* content){
 				fwrite(content, sizeof(content[0]), iLenCpy, fp);
 
 			LOGE("Write [%s] to %s\n", content, filePath);
+			iRet = RET_CODE_OK;
 		}
 	}else{
 		LOGE("invalid params:[%s], content:[%s]", (filePath?filePath:""), (content?content:""));
@@ -182,21 +207,6 @@ int strCmpEndWith(const char* toCmp, const char* strCmp){
 		}
 	}
 	return iRet;
-}
-
-static const char* CAM_BE_HOST_EMV			="CAMURL";
-static char* CAM_BE_URL 					= "http://ns01-dev.beseye.com";
-
-const char* getCamBEUrl(){
-	if(NULL == CAM_BE_URL){
-		char* cam_be= getenv(CAM_BE_HOST_EMV);
-		if(NULL == cam_be){
-			LOGE("failed to get env form %s\n", CAM_BE_HOST_EMV);
-		}else{
-			CAM_BE_URL = cam_be;
-		}
-	}
-	return CAM_BE_URL;
 }
 
 #endif

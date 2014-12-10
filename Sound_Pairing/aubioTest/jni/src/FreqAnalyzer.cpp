@@ -1,5 +1,6 @@
 #include "FreqAnalyzer.h"
 #include "AudioBufferMgr.h"
+#include "time_utils.h"
 #include <climits>
 #include "fftw3.h"
 #include <zxing/common/Array.h>
@@ -116,6 +117,8 @@ void FreqAnalyzer::reset(){
 	LOGI("FreqAnalyzer::reset()\n");
 	mLastCheckToneTs = -1;
 	mbStartAppend = false;
+	msbDecode.str("");
+	msbDecode.clear();
 	mFreqRecordList.clear();
 	mSessionBeginTs = -1;
 	mSessionOffset = 0;
@@ -236,14 +239,14 @@ void FreqAnalyzer::triggerTimeout(){
 //				msbDecode<<strPossibleDecode1;
 
 				int iPossiblePrefix = -1;
-				int iPossibleSndPrefix = strDecodeCheck.rfind(SoundPair_Config::POSTFIX_DECODE_C2, iPosPostfix-1);
+				int iPossibleSndPrefix = strDecodeCheck.rfind(SoundPair_Config::PREFIX_DECODE_C2, iPosPostfix-1);
 				if(0 < iPossibleSndPrefix){
-					LOGE("triggerTimeout(), detect [%s] at %d +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", SoundPair_Config::POSTFIX_DECODE_C2.c_str(), iPossibleSndPrefix);
+					LOGE("triggerTimeout(), detect [%s] at %d +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", SoundPair_Config::PREFIX_DECODE_C2.c_str(), iPossibleSndPrefix);
 					iPossiblePrefix = iPossibleSndPrefix - 1;
 				}else{
-					int iPossibleFstPrefix = strDecodeCheck.rfind(SoundPair_Config::POSTFIX_DECODE_C1, iPosPostfix-1);
+					int iPossibleFstPrefix = strDecodeCheck.rfind(SoundPair_Config::PREFIX_DECODE_C1, iPosPostfix-1);
 					if(0 <= iPossibleFstPrefix){
-						LOGE("triggerTimeout(), detect [%s] at %d +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", SoundPair_Config::POSTFIX_DECODE_C1.c_str(), iPossibleFstPrefix);
+						LOGE("triggerTimeout(), detect [%s] at %d +++++++++++++++++++++++++++++++++++++++++++++++++++++\n", SoundPair_Config::PREFIX_DECODE_C1.c_str(), iPossibleFstPrefix);
 						iPossiblePrefix = iPossibleFstPrefix ;
 					}else{
 						LOGE("triggerTimeout(), can not detect one of prefix +++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -267,7 +270,7 @@ void FreqAnalyzer::triggerTimeout(){
 					int iIndex = (iPosPostfix - iPossiblePrefix);
 
 					LOGE("triggerTimeout(), to check result, iIndex:[%d]+++++++++++++++++++++++++++++++++++++++++++++++++++++\n", iIndex);
-					if(0 <= iIndex && iIndex <= strPossibleDecode.length()){
+					if(0 <= iIndex && iIndex < strPossibleDecode.length()){
 						checkResult(strPossibleDecode, optimizeDecodeString(iIndex, strPossibleDecode));
 						mFreqRecordList.clear();
 					}else{
@@ -321,7 +324,16 @@ void FreqAnalyzer::analyze(msec_t lTs, double dFreq, int iBufIndex, int iFFTValu
 			}else{
 				pickWithoutSession(iCheckIndex);
 			}
+
+			checkInvalidAnalysis();
 		}
+	}
+}
+
+void FreqAnalyzer::checkInvalidAnalysis(){
+	if(msbDecode.str().length() > MAX_ANALYSIS_LEN){
+		LOGE("msbDecode.str().length() [%d] > MAX_ANALYSIS_LEN [%d]\n",msbDecode.str().length() , MAX_ANALYSIS_LEN);
+		triggerTimeout();
 	}
 }
 
@@ -850,6 +862,7 @@ void FreqAnalyzer::normalAnalysis(int iIndex){
 	}
 
 	mFreqRecordList.clear();
+
 }
 
 string FreqAnalyzer::optimizeDecodeString(int iIndex, string strDecodeCheck){

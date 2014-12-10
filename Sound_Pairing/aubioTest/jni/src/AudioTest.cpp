@@ -11,6 +11,7 @@
 
 #ifdef CAM_ENV
 #include "http_cgi.h"
+#include "time_utils.h"
 #endif
 
 #include <dirent.h>
@@ -27,7 +28,7 @@
 #define MONITOR_PROCESS_RET "/tmp/beseye_sp_monitor_process_ret"
 
 static const int  MAX_TIME_TO_INVOKE_SYSTEM = 10;//10 sec
-static int  siTimeoutValue = MAX_TIME_TO_INVOKE_SYSTEM;
+static msec_t siTimeoutValue = MAX_TIME_TO_INVOKE_SYSTEM;
 
 static pid_t pid_system = -1;
 static msec_t lTimeInvodeSystem = 0;
@@ -36,49 +37,52 @@ static pid_t intermediate_pid = -1;
 
 //To avoid system call/fork blocking issue, we need to monitor it and kill it when timeout
 int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
-	siTimeoutValue = MAX_TIME_TO_INVOKE_SYSTEM;
-	if(0 < iTimeoutInSec && iTimeoutInSec < 120){
-		siTimeoutValue = iTimeoutInSec;
-	}
-
-	//return system(cmd);
+	int iTrials = 0;
 	int iRetSystemCall = -1;
-	//LOGE( "invokeSystem(), time_ms:%lld .............++++\n", time_ms());
-	saveToFile(MONITOR_PROCESS_FLAG,"monitor");
-	saveToFile(MONITOR_PROCESS_RET,"-1");
+	do{
+		siTimeoutValue = MAX_TIME_TO_INVOKE_SYSTEM;
+		if(0 < iTimeoutInSec && iTimeoutInSec < 120){
+			siTimeoutValue = iTimeoutInSec;
+		}
 
-	intermediate_pid = fork();
-	if (intermediate_pid == 0) {
-		LOGE( "invokeSystem(), intermediate_pid fork successfully time_ms:%lld .............+++++++++++++++++\n", time_ms());
-		int iRet = system(cmd);
-		char cRet[32]={0};
-		sprintf(cRet, "%d", iRet);
-		saveToFile(MONITOR_PROCESS_RET,cRet);
-		deleteFile(MONITOR_PROCESS_FLAG);
-		LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG end time_ms:%lld,cmd:[%s] cRet:[%s] .............---------------\n", time_ms(),cmd, cRet);
-		exit (0);
-	}
+		//return system(cmd);
+		//LOGE( "invokeSystem(), time_ms:%lld .............++++\n", time_ms());
+		saveToFile(MONITOR_PROCESS_FLAG,"monitor");
+		saveToFile(MONITOR_PROCESS_RET,"-1");
 
-	LOGE( "invokeSystem(), intermediate_pid:%d \n", intermediate_pid);
-	if(0 < intermediate_pid){
-		lTimeInvodeSystem = time_ms();
-		//LOGE( "invokeSystem(), waitpid begin\n");
-		waitpid(intermediate_pid, 0, 0);
-		//LOGE( "invokeSystem(), waitpid end\n");
-		deleteFile(MONITOR_PROCESS_FLAG);
-		intermediate_pid = -1;
-	}else{
-		LOGE( "invokeSystem(), invalid intermediate_pid:%d \n", intermediate_pid);
-	}
+		intermediate_pid = fork();
+		if (intermediate_pid == 0) {
+			LOGE( "invokeSystem(), intermediate_pid fork successfully time_ms:%lld .............+++++++++++++++++\n", time_ms());
+			int iRet = system(cmd);
+			char cRet[32]={0};
+			sprintf(cRet, "%d", iRet);
+			saveToFile(MONITOR_PROCESS_RET,cRet);
+			deleteFile(MONITOR_PROCESS_FLAG);
+			LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG end time_ms:%lld,cmd:[%s] cRet:[%s] .............---------------\n", time_ms(),cmd, cRet);
+			exit (0);
+		}
 
-	char* cRet = readFromFile(MONITOR_PROCESS_RET);
-	if(cRet){
-		iRetSystemCall = atoi(cRet);
-	}
-	FREE(cRet)
-	LOGE( "invokeSystem(), iRetSystemCall:%d, time_ms:%lld .............----\n", iRetSystemCall, time_ms());
+		if(0 < intermediate_pid){
+			lTimeInvodeSystem = time_ms();
+			LOGE( "invokeSystem(), intermediate_pid:%d, siTimeoutValue:[%lld], lTimeInvodeSystem:[%lld] , iTrials:[%d]\n", intermediate_pid, siTimeoutValue, lTimeInvodeSystem, iTrials);
+			//LOGE( "invokeSystem(), waitpid begin\n");
+			waitpid(intermediate_pid, 0, 0);
+			//LOGE( "invokeSystem(), waitpid end\n");
+			deleteFile(MONITOR_PROCESS_FLAG);
+			intermediate_pid = -1;
+		}else{
+			LOGE( "invokeSystem(), invalid intermediate_pid:%d \n", intermediate_pid);
+		}
+
+		char* cRet = readFromFile(MONITOR_PROCESS_RET);
+		if(cRet){
+			iRetSystemCall = atoi(cRet);
+		}
+		FREE(cRet)
+		LOGE( "invokeSystem(), iRetSystemCall:%d, time_ms:%lld .............----\n", iRetSystemCall, time_ms());
+	}while(-1 == iRetSystemCall && 2 > ++iTrials);
+
 	return iRetSystemCall;
-
 }
 
 int invokeSystem(const char* cmd){
@@ -107,13 +111,19 @@ void killSystemProcess(){
 
 void checkSystemProcess(){
 	if(0 < intermediate_pid){
+		msec_t lDelta = (time_ms() - lTimeInvodeSystem);
+		LOGE( "intermediate_pid:[%d], lDelta:[%lld], lTimeInvodeSystem:[%lld], siTimeoutValue:[%lld]\n", intermediate_pid, lDelta, lTimeInvodeSystem, siTimeoutValue);
 		if(isSystemProcessExist()){
-			if((0 != lTimeInvodeSystem) && ((time_ms() - lTimeInvodeSystem) > (siTimeoutValue*1000))){
-				LOGE( "stop monitor flag is on over %d sec\n", siTimeoutValue);
+			if((0 != lTimeInvodeSystem) && (lDelta > (siTimeoutValue*1000))){
+				LOGE( "stop monitor flag is on over %lld sec\n", siTimeoutValue);
 				killSystemProcess();
 			}
 		}else{
 			LOGE( "stop monitor flag is off\n");
+			if((0 != lTimeInvodeSystem) && (lDelta > (siTimeoutValue*1000))){
+				LOGE( "stop monitor flag is on over %lld sec -- \n", siTimeoutValue);
+				killSystemProcess();
+			}
 			lTimeInvodeSystem = 0;
 			intermediate_pid = -1;
 		}
@@ -194,7 +204,6 @@ static msec_t lTsRec = 0;
 static int iAudioFrameSize = 4;
 static const int MAX_TRIAL = 1;//10;
 
-
 //Check audio activity
 static long  ANALYSIS_THRESHHOLD_MONITOR			=0;
 static int 	 ANALYSIS_THRESHHOLD_MONITOR_CNT		=0;
@@ -204,7 +213,7 @@ static const short ANALYSIS_START_THRESHHOLD_MIN_G25= 450;//audio value
 static const short ANALYSIS_START_THRESHHOLD_MAX_G25= 1400;//audio value
 
 static const short ANALYSIS_MAX_AUDIO_VALUE_G35 	= 6000;//audio max value for gain =35
-static const short ANALYSIS_START_THRESHHOLD_MIN_G35= 900;//audio value
+static const short ANALYSIS_START_THRESHHOLD_MIN_G35= 600;//audio value
 static const short ANALYSIS_START_THRESHHOLD_MAX_G35= 3500;//audio value
 
 static short ANALYSIS_MAX_AUDIO_VALUE 				= ANALYSIS_MAX_AUDIO_VALUE_G35;//audio max value
@@ -220,13 +229,48 @@ static int 	 ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT	= 0;
 static short ANALYSIS_END_THRESHHOLD_DETECT	   		= -1;//audio value
 
 static const int   ANALYSIS_THRESHHOLD_CK_LEN 		= 1600;//sample size , about 0.1 sec
-static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT 	= 8;
-static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 	= 3;
+static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT 	= 4;
+static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 	= 6;
 
 static short sMaxValue = 0;
 static int siAboveThreshHoldCount = 0;
 static int siUnderThreshHoldCount = 0;
 static int siRefCount = 0;
+
+static int siBufCount = 0;
+static const int TONE_TO_REC = 4;
+static string sToneRec = "";
+
+static string sArrTonePatterns[] = {"gi",
+									"3g",
+									"g*i",
+									"ggi",
+									"3*i",
+									"3ii",
+									"33i",
+									"3*g",
+									"3**i",
+									"g**i",
+									"3**g"
+};
+
+bool matchTonePattern(){
+	bool bRet = false;
+	const int iLenPatterns = 11;//msArrTonePatterns.length;
+
+	if(0 < sToneRec.length()){
+		LOGI( "sToneRec:[%s]---\n", sToneRec.c_str());
+		for(int idx = 0; idx < iLenPatterns; idx++){
+			int iPos = -1;
+			if(0 <= (iPos = sToneRec.find(sArrTonePatterns[idx]))){
+				bRet = true;
+				LOGI( "Find match [%d] sToneRec:[%s], pattern:[%s]\n", iPos, sToneRec.c_str(), sArrTonePatterns[idx].c_str());
+				break;
+			}
+		}
+	}
+	return bRet;
+}
 
 static const int   ANALYSIS_LED_UPDATE_PERIOD = 8000;//sample size , about 0.5 sec
 static bool sbLEDOn = false;
@@ -1432,7 +1476,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 			shortsRecBuf[iCurIdx] = (((short)charBuf[iAudioFrameSize*i+3])<<8 | (charBuf[iAudioFrameSize*i+2]));
 
 			/*if(AudioTest::getInstance()->isPairingAnalysisMode())*/
-			if(0 == siRefCount%4){
+			if(0 == siRefCount%1){
 				short val = abs(shortsRecBuf[iCurIdx]);
 				if(val > sMaxValue){
 					sMaxValue = val;
@@ -1483,24 +1527,24 @@ void writeBuf(unsigned char* charBuf, int iLen){
 							}
 
 							siAboveThreshHoldCount++;
-							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT && PAIRING_WAITING == sPairingMode){
-								LOGE("trigger analysis-----\n");
-								//trigger analysis
-								if(AudioTest::getInstance()->isPairingAnalysisMode()){
-									AudioTest::getInstance()->setPairingReturnCode(-1);
-									changePairingMode(PAIRING_ANALYSIS);
-									FreqAnalyzer::getInstance()->setDetectLowSound(false);
-									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
-									AudioBufferMgr::getInstance()->setRecordMode(false);
-								}
-								AudioTest::getInstance()->setAboveThresholdFlag(true);
-								siAboveThreshHoldCount = 0;
-							}
-							siUnderThreshHoldCount = 0;
+//							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT && PAIRING_WAITING == sPairingMode){
+//								LOGE("trigger analysis-----\n");
+//								//trigger analysis
+//								if(AudioTest::getInstance()->isPairingAnalysisMode()){
+//									AudioTest::getInstance()->setPairingReturnCode(-1);
+//									changePairingMode(PAIRING_ANALYSIS);
+//									FreqAnalyzer::getInstance()->setDetectLowSound(false);
+//									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
+//									AudioBufferMgr::getInstance()->setRecordMode(false);
+//								}
+//								AudioTest::getInstance()->setAboveThresholdFlag(true);
+//								siAboveThreshHoldCount = 0;
+//							}
+//							siUnderThreshHoldCount = 0;
 						}else if(ANALYSIS_END_THRESHHOLD > sMaxValue || (0 < ANALYSIS_END_THRESHHOLD_DETECT && ANALYSIS_END_THRESHHOLD_DETECT > sMaxValue && PAIRING_WAITING < sPairingMode)){
 							siUnderThreshHoldCount++;
-							if((PAIRING_ANALYSIS ==  sPairingMode/* || AudioTest::getInstance()->getAboveThresholdFlag()*/) && siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
-								LOGE("trigger stop analysis-----\n");
+							if((PAIRING_ANALYSIS ==  sPairingMode || AudioTest::getInstance()->getAboveThresholdFlag()) && siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
+								LOGE("trigger stop analysis-----, siUnderThreshHoldCount:[%d]\n", siUnderThreshHoldCount);
 								//stop analysis
 								if(AudioTest::getInstance()->isPairingAnalysisMode()){
 									AudioBufferMgr::getInstance()->setRecordMode(true);
@@ -1513,7 +1557,6 @@ void writeBuf(unsigned char* charBuf, int iLen){
 									LOGE("miStopAnalysisBufIdx != -1\n");
 								}
 
-								//AudioTest::getInstance()->setAboveThresholdFlag(true);
 								FreqAnalyzer::getInstance()->setDetectLowSound(true);
 
 								siUnderThreshHoldCount = 0;
@@ -1534,6 +1577,36 @@ void writeBuf(unsigned char* charBuf, int iLen){
 			//if(PAIRING_INIT != sPairingMode){
 				if(iCurIdx == shortsRecBuf->size()-1){
 					//LOGE("writeBuf(), add rec buf at %lld, iIdxOffset:%d, iCurIdx:%d, shortsRecBuf->size():%d\n", lTs1, iIdxOffset, iCurIdx, shortsRecBuf->size() );
+					if(PAIRING_WAITING == sPairingMode && 0 == (++siBufCount)%3){
+						string strTone = FreqAnalyzer::getInstance()->findToneCodeByFreq(FreqAnalyzer::getInstance()->analyzeAudioViaAudacityAC(shortsRecBuf, SoundPair_Config::FRAME_SIZE_REC, false, 0, NULL));
+
+						const string strToneSample("3gi");
+						int iPos = -1;
+						sToneRec += (0 == strTone.length() || 0 > (iPos = strToneSample.find(strTone)))?"*":strTone;
+						if(TONE_TO_REC < sToneRec.length()){
+							sToneRec = sToneRec.substr(sToneRec.length() - TONE_TO_REC,  TONE_TO_REC);
+						}
+
+						bool bRet = matchTonePattern();
+						if(bRet){
+							LOGE("strTone:[%s] ==> [%s], bRet:[%d], siAboveThreshHoldCount:%d\n", strTone.c_str(), sToneRec.c_str(), bRet, siAboveThreshHoldCount);
+
+							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT && PAIRING_WAITING == sPairingMode){
+								LOGE("trigger analysis-----\n");
+								//trigger analysis
+								if(AudioTest::getInstance()->isPairingAnalysisMode()){
+									AudioTest::getInstance()->setPairingReturnCode(-1);
+									changePairingMode(PAIRING_ANALYSIS);
+									FreqAnalyzer::getInstance()->setDetectLowSound(false);
+									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
+									AudioBufferMgr::getInstance()->setRecordMode(false);
+								}
+								AudioTest::getInstance()->setAboveThresholdFlag(true);
+								siAboveThreshHoldCount = 0;
+							}
+							siUnderThreshHoldCount = 0;
+						}
+					}
 					AudioBufferMgr::getInstance()->addToDataBuf(lTs1, shortsRecBuf, shortsRecBuf->size());
 					shortsRecBuf = NULL;
 				}
@@ -1583,6 +1656,7 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 	//timespec sleepValue = {0};
 	//sleepValue.tv_nsec = 100000;//0.1 ms
 	Delegate_OpenAudioRecordDevice(SoundPair_Config::SAMPLE_RATE_REC, 0);
+	registerJobCb(checkSystemProcess);
 
 	while(!tester->mbStopBufRecordFlag){
 		msec_t lTs1 = (lTsRec+=SoundPair_Config::FRAME_TS);//System.currentTimeMillis();
@@ -1648,6 +1722,7 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 				}
 			}else{
 				LOGE("sPairingMode is not PAIRING_INIT, wait a while\n");
+				checkSystemProcess();
 				sleep(2);
 			}
 		}while(false == tester->mbStopBufRecordFlag);
@@ -1838,16 +1913,12 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 #ifdef CAM_ENV
 	LOGE("++, strCode:[%s]\n", strCode.c_str());
 
+	//invokeSystem("ping -c 100 www.google.com");
+
 	int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
 	int iPower = SoundPair_Config::getPowerByFFTYPE();
 
 	//const int MAC_LEN = 12;
-	const int SSID_MIN_LEN = 2;
-	const int SSID_HASH_LEN = 8;
-	const int SSID_MAX_LEN = 32*2;
-	const int TOKEN_LEN = 4;
-	const int PURPOSE_LEN = 8;
-	const int MIN_PW_LEN = 0;
 
 	string /*strMAC*/strSSID, strSSIDHash, strUserNum, strPurposeSeg, strPW;
 
@@ -1859,6 +1930,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	uint64 lSSIDHash = 0;
 	bool bGuess = false;
 	int iSSIDLen = 0;
+	int iRotateLen = 0;
 
 	if(0 == strCode.find("error")){
 		LOGE("Error, trying to get pairing code!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
@@ -1877,16 +1949,64 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			if(iSecondDiv > iFirstDiv){
 				//string ssidSeg = strDecodeUnmark.substr(0, iFirstDiv);
 
-				strSSID = strDecodeUnmark.substr(SSID_MIN_LEN, iFirstDiv - SSID_MIN_LEN);
+				string strRotateLen = strDecodeUnmark.substr(0, ROTATE_LEN);
+				for(int idx = 0;idx < ROTATE_LEN;idx++){
+					iRotateLen <<= iPower;
+					string strTmp = strRotateLen.substr(idx, 1);
+					int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+					iRotateLen += (unsigned char) iVal;
+				}
+				LOGI("iRotateLen:[%d]--\n",iRotateLen);
 
-				strPW = strDecodeUnmark.substr(iFirstDiv+1, (iSecondDiv - (iFirstDiv+1)));
+				string strSSIDLen = SoundPair_Config::rotateDecode(strDecodeUnmark.substr(ROTATE_LEN, SSID_LEN), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_1);//strCode.substr(ROTATE_LEN, SSID_MIN_LEN);
+				for(int idx = 0;idx < SSID_LEN;idx++){
+					iSSIDLen <<= iPower;
+					string strTmp = strSSIDLen.substr(idx, 1);
+					int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+					iSSIDLen += (unsigned char) iVal;
+				}
+
+				iSSIDLen*=2;
+
+				LOGI("iSSIDLen:[%d]\n",iSSIDLen);
+
+				if(iSSIDLen > SSID_MAX_LEN){
+					LOGE("iSSIDLen:[%d] > SSID_MAX_LEN:[%d] \n",iSSIDLen, SSID_MAX_LEN);
+					if(iSSIDLen > 2*SSID_MAX_LEN){
+						LOGE("iSSIDLen:[%d] > 2*SSID_MAX_LEN:[%d], return \n",iSSIDLen, 2*SSID_MAX_LEN);
+						return;
+					}else{
+						iSSIDLen -=SSID_MAX_LEN;
+						if((SSID_HASH_LEN+SSID_MIN_LEN) >= iRetLen){
+							LOGE("(SSID_HASH_LEN+SSID_MIN_LEN) >= iRetLen:[%d], return \n",(SSID_HASH_LEN+SSID_MIN_LEN), iRetLen);
+							return;
+						}
+
+						strSSIDHash = SoundPair_Config::rotateDecode(strDecodeUnmark.substr(SSID_MIN_LEN, SSID_HASH_LEN), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_1);
+					}
+				}else if((iSSIDLen+SSID_MIN_LEN) >= iRetLen){
+					LOGE("(iSSIDLen+SSID_MIN_LEN) >= iRetLen:[%d], return \n",(iSSIDLen+SSID_MIN_LEN), iRetLen);
+					return;
+				}
+
+				if(0 == strSSIDHash.length()){
+					strSSID = SoundPair_Config::rotateDecode(strDecodeUnmark.substr(SSID_MIN_LEN, iFirstDiv - SSID_MIN_LEN), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_1);
+					strPW = SoundPair_Config::rotateDecode(strDecodeUnmark.substr(iFirstDiv+1, (iSecondDiv - (iFirstDiv+1))), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_2);
+				}else{
+					strPW = SoundPair_Config::rotateDecode(strDecodeUnmark.substr(iFirstDiv+1, (iSecondDiv - (iFirstDiv+1))), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_2);
+				}
+
+//				strSSID = strDecodeUnmark.substr(SSID_MIN_LEN, iFirstDiv - SSID_MIN_LEN);
+//
+//				strPW = strDecodeUnmark.substr(iFirstDiv+1, (iSecondDiv - (iFirstDiv+1)));
+
 
 				if(iRetLen >= (iSecondDiv+1+TOKEN_LEN)){
-					strUserNum = strDecodeUnmark.substr((iSecondDiv+1), TOKEN_LEN);
+					strUserNum = SoundPair_Config::rotateDecode(strDecodeUnmark.substr((iSecondDiv+1), TOKEN_LEN), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_3);
 				}
 
 				if(iRetLen >= (iSecondDiv+1+TOKEN_LEN +PURPOSE_LEN)){
-					strPurposeSeg = strDecodeUnmark.substr((iSecondDiv+TOKEN_LEN+1), PURPOSE_LEN);
+					strPurposeSeg = SoundPair_Config::rotateDecode(strDecodeUnmark.substr((iSecondDiv+TOKEN_LEN+1), PURPOSE_LEN), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_3);
 				}
 
 				LOGE("possible bundle [%s, %s, %s, %s]\n",strSSID.c_str(),strPW.c_str(),strUserNum.c_str(),strPurposeSeg.c_str());
@@ -1900,8 +2020,18 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			return;
 		}
 
-		string strSSIDLen = strCode.substr(0, SSID_MIN_LEN);
-		for(int idx = 0;idx < SSID_MIN_LEN;idx++){
+		string strRotateLen = strCode.substr(0, ROTATE_LEN);
+		for(int idx = 0;idx < ROTATE_LEN;idx++){
+			iRotateLen <<= iPower;
+			string strTmp = strRotateLen.substr(idx, 1);
+			int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
+			iRotateLen += (unsigned char) iVal;
+		}
+
+		LOGI("iRotateLen:[%d]\n",iRotateLen);
+
+		string strSSIDLen = SoundPair_Config::rotateDecode(strCode.substr(ROTATE_LEN, SSID_LEN), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_1);//strCode.substr(ROTATE_LEN, SSID_MIN_LEN);
+		for(int idx = 0;idx < SSID_LEN;idx++){
 			iSSIDLen <<= iPower;
 			string strTmp = strSSIDLen.substr(idx, 1);
 			int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
@@ -1924,7 +2054,8 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					return;
 				}
 
-				strSSIDHash = strCode.substr(SSID_MIN_LEN, SSID_HASH_LEN);
+				strSSIDHash = SoundPair_Config::rotateDecode(strCode.substr(SSID_MIN_LEN, SSID_HASH_LEN), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_1);
+				//strCode.substr(SSID_MIN_LEN, SSID_HASH_LEN);
 			}
 		}else if((iSSIDLen+SSID_MIN_LEN) >= iRetLen){
 			LOGE("(iSSIDLen+SSID_MIN_LEN) >= iRetLen:[%d], return \n",(iSSIDLen+SSID_MIN_LEN), iRetLen);
@@ -1932,14 +2063,19 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		}
 
 		if(0 == strSSIDHash.length()){
-			strSSID = strCode.substr(SSID_MIN_LEN, iSSIDLen);
-			strPW = strCode.substr((SSID_MIN_LEN+iSSIDLen), ( iRetLen - ((SSID_MIN_LEN+iSSIDLen)+TOKEN_LEN+PURPOSE_LEN)));
+			strSSID = SoundPair_Config::rotateDecode(strCode.substr(SSID_MIN_LEN, iSSIDLen), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_1);
+			//strCode.substr(SSID_MIN_LEN, iSSIDLen);
+			strPW = SoundPair_Config::rotateDecode(strCode.substr((SSID_MIN_LEN+iSSIDLen), ( iRetLen - ((SSID_MIN_LEN+iSSIDLen)+TOKEN_LEN+PURPOSE_LEN))), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_2);
+			//strCode.substr((SSID_MIN_LEN+iSSIDLen), ( iRetLen - ((SSID_MIN_LEN+iSSIDLen)+TOKEN_LEN+PURPOSE_LEN)));
 		}else{
-			strPW = strCode.substr((SSID_MIN_LEN+SSID_HASH_LEN), ( iRetLen - ((SSID_MIN_LEN+SSID_HASH_LEN)+TOKEN_LEN+PURPOSE_LEN)));
+			strPW = SoundPair_Config::rotateDecode(strCode.substr((SSID_MIN_LEN+SSID_HASH_LEN), ( iRetLen - ((SSID_MIN_LEN+SSID_HASH_LEN)+TOKEN_LEN+PURPOSE_LEN))), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_2);
+			//strCode.substr((SSID_MIN_LEN+SSID_HASH_LEN), ( iRetLen - ((SSID_MIN_LEN+SSID_HASH_LEN)+TOKEN_LEN+PURPOSE_LEN)));
 		}
 
-		strUserNum = strCode.substr(iRetLen - (TOKEN_LEN+PURPOSE_LEN), TOKEN_LEN);
-		strPurposeSeg = strCode.substr(iRetLen - (PURPOSE_LEN));
+		strUserNum = SoundPair_Config::rotateDecode(strCode.substr(iRetLen - (TOKEN_LEN+PURPOSE_LEN), TOKEN_LEN), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_3);
+		//strCode.substr(iRetLen - (TOKEN_LEN+PURPOSE_LEN), TOKEN_LEN);
+		strPurposeSeg = SoundPair_Config::rotateDecode(strCode.substr(iRetLen - (PURPOSE_LEN)), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_3);
+		//strCode.substr(iRetLen - (PURPOSE_LEN));
 
 		LOGE("[%s, %s, %s, %s, %s]\n",strSSID.c_str(), strSSIDHash.c_str(), strPW.c_str(),strUserNum.c_str(),strPurposeSeg.c_str());
 	}
@@ -2140,8 +2276,11 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDecodeUnmark, bool bFromAutoCorrection, MatchRetSet* prevMatchRet){
 	LOGI("onSetResult(), strCode:%s, strDecodeMark = %s\n", strCode.c_str(), strDecodeMark.c_str());
 #ifdef CAM_ENV
-	if(mbPairingAnalysisMode && 0 < strCode.length()){
-		checkPairingResult(strCode, strDecodeMark);
+	if(mbPairingAnalysisMode){
+		if( 0 < strCode.length()){
+			checkPairingResult(strCode, strDecodeMark);
+		}
+
 		if(0 <= miPairingReturnCode){
 			LOGE("miPairingReturnCode:[%d], close sp\n",miPairingReturnCode);
 			changePairingMode(PAIRING_DONE);
@@ -2161,7 +2300,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 	if(strCode.length() > 0 || strDecodeMark.length() >0){
 		/*if(false == isSenderMode)*/{
 			if(0 == strCode.compare(curCode)){
-				if(0 == strDecodeUnmark.find(curCode)){
+				if(strCode.length() > 0 && 0 == strDecodeUnmark.find(curCode)){
 					strLog <<"runAutoTest(), Case 1 ===>>> Detection match before error correction, bFromAutoCorrection:"<<bFromAutoCorrection<<"\n" <<
 							"curCode          = ["<<curCode<<"], \n" <<
 							"curECCode        = ["<<curECCode<<"], \n" <<

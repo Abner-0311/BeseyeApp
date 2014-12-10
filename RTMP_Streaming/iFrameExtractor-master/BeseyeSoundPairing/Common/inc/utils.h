@@ -8,6 +8,11 @@ extern "C" {
 #endif
 #include "Common.h"
 
+typedef uint64_t uint64;
+typedef unsigned char byte;
+
+const char* getCamBEUrl();
+
 bool sameValue(double a, double b);
 bool largeThan(double a, double b);
 bool largeEqualThan(double a, double b);
@@ -22,18 +27,30 @@ void getTimeSpecByDelay(struct timespec &spec, long lDelayInMS);
 char* readFromFile(const char* filePath);
 int saveToFile(const char* filePath, const char* content);
 int deleteFile(const char* filePath);
+bool isFileExist(const char* filePath);
+
+int saveRegionId(unsigned char cRegId);
+int saveOldRegionId();
+int restoreRegionId();
+int removeOldRegionId();
+
+int saveLogFile(const char* filePath);
 
 int strCmpEndWith(const char* toCmp, const char* strCmp);
 
-#include <sys/time.h>
-// Used to measure intervals and absolute times
-typedef int64_t msec_t;
+int saveOldWifi();
+int setWifi(const char* macAddr, const char* pw);
+int setWifiBySSID(const char* ssid, const char* pw, const char cSecType);
+int setWifiBySSIDHash(uint64 ssidHash, int iLenOfSSID, const char* pw, const char cSecType);
+int restoreWifi();
 
-typedef unsigned char byte;
+void deleteOldWiFiFile();
 
-// Get current time in milliseconds from the Epoch (Unix)
-// or the time the system started (Windows).
-msec_t time_ms(void);
+char *ultostr(uint64 ulong_value);
+
+
+
+#include "time_utils.h"
 
 //template<typename T, int size>
 //int getArrLength(T(&)[size]){return size;}

@@ -1,5 +1,6 @@
 #include "FreqGenerator.h"
 #include "soundpairing_error.h"
+#include "city.h"
 #include <sys/time.h>
 #include <zxing/common/Array.h>
 
@@ -20,6 +21,8 @@ msec_t FreqGenerator::sTs = 0;;
 
 string FreqGenerator::DEFAULT_BYTE_MODE_ENCODING = "ISO-8859-1";
 Ref<ReedSolomonEncoder> FreqGenerator::rsEncoder = Ref<ReedSolomonEncoder>(new ReedSolomonEncoder(GenericGF::QR_CODE_FIELD_256));
+//Ref<ReedSolomonEncoder> FreqGenerator::rsShiftEncoder = Ref<ReedSolomonEncoder>(new ReedSolomonEncoder(GenericGF::AZTEC_PARAM));
+
 
 FreqGenerator::FreqGenerator():mbStopPlayCodeThread(false),mThreadPlayTone(0), mOnPlayToneCallback(NULL), mPlayToneCB(NULL), mCbUserData(NULL){
 	/* initialize random seed: */
@@ -137,27 +140,38 @@ bool FreqGenerator::playCode2(const string strMacAddr, const string strWifiKey, 
 //	}
 //	string strCodeInput = sstrCodeInput.str();
 //#else
-	string strCodeInput = strMacAddr+strWifiKey+strToken;
+	int iRandSeed = rand()%(SoundPair_Config::getDivisionByFFTYPE()*SoundPair_Config::getDivisionByFFTYPE());
+	string strRotateSeed   = SoundPair_Config::sCodeTable.at((iRandSeed & 0xf0) >> 4)+SoundPair_Config::sCodeTable.at((iRandSeed & 0x0f));
+	string strMacAddrRoate = SoundPair_Config::rotateEncode(strMacAddr, iRandSeed%SoundPair_Config::TONE_ROTATE_SEG_1);
+	string strWifiKeyRoate = SoundPair_Config::rotateEncode(strWifiKey, iRandSeed%SoundPair_Config::TONE_ROTATE_SEG_2);
+	string strTokenRoate   = SoundPair_Config::rotateEncode(strToken  , iRandSeed%SoundPair_Config::TONE_ROTATE_SEG_3);
+
+	string strCodeInput = strRotateSeed+
+						  strMacAddrRoate+
+						  strWifiKeyRoate+
+						  strTokenRoate;
 //#endif
 
-	LOGE("playCode2(), strCodeInput:%s\n", strCodeInput.c_str());
+	LOGE("playCode2(), strCodeInput:[%s]\n"
+	     "                          [%s], iRandSeed:[%d]\n,", strCodeInput.c_str(), (strRotateSeed+strMacAddr+strWifiKey+strToken).c_str(), iRandSeed);
 
 	string strEncode = bNeedEncode?encode(strCodeInput):strCodeInput;
 	const string strECCode = strEncode.substr(strCodeInput.length());
 
 	string strEncodeMark = strEncode;//SoundPair_Config::encodeConsecutiveDigits(strEncode);
 	string strCode = bNeedEncode?
-							("123"+
+							("34543"+
 							  SoundPair_Config::PREFIX_DECODE+
 							  (SoundPair_Config::PRE_EMPTY?"X":"")+
-							  strMacAddr+
+							  strRotateSeed+
+							  strMacAddrRoate+//strMacAddr+
 							  SoundPair_Config::PAIRING_DIVIDER+
-							  strWifiKey+
+							  strWifiKeyRoate+//strWifiKey+
 							  SoundPair_Config::PAIRING_DIVIDER+
-							  strToken+
+							  strTokenRoate+//strToken+
 							  strECCode+
 							  SoundPair_Config::POSTFIX_DECODE+
-							  "789"):
+							  "789XX"):
 							strEncode;
 
 	pthread_mutex_lock(&mSyncObj);
@@ -336,11 +350,11 @@ void FreqGenerator::invokePlayCode2(){
 
 //                        	if(NULL != mOnPlayToneCallback)
 //                        		mOnPlayToneCallback->onCurFreqChanged(dFreq);
-        
+
 		pthread_mutex_unlock(&mSyncObj);
-        
-        if(NULL != mOnPlayToneCallback)
-            mOnPlayToneCallback->onStopGen(itmCode->strCodeInputAscii);
+
+		if(NULL != mOnPlayToneCallback)
+			mOnPlayToneCallback->onStopGen(itmCode->strCodeInputAscii);
         
         if(NULL != mPlayToneCB)
             mPlayToneCB(mCbUserData, PLAY_TONE_END, itmCode->strCodeInputAscii.c_str(), 0);
@@ -540,13 +554,10 @@ void FreqGenerator::invokePlayCode3(){
 
 void FreqGenerator::stopPlay2(){
 	LOGE("stopPlay2()+++");
-    mbStopPlayCodeThread = true;
+	mbStopPlayCodeThread = true;
 	deinitAudioDev();
-    LOGE("stopPlay2()+++1");
 	pthread_mutex_lock(&mSyncObj);
-    LOGE("stopPlay2()+++2");
 	pthread_cond_broadcast(&mSyncObjCond);
-    LOGE("stopPlay2()+++3");
 	pthread_mutex_unlock(&mSyncObj);
 	LOGE("stopPlay2()---");
 }
@@ -752,9 +763,6 @@ void FreqGenerator::writeTone(double sample[], byte generatedSnd[], int iLen){
 #ifndef ANDROID
 	    generatedSnd = (byte*)Delegate_GetAudioBuffer();
 #endif
-    if(mbStopPlayCodeThread){
-        return;
-    }
 		int idx = 0;
 		for (int i =0; i< iLen;i++) {
 			// scale to maximum amplitude
@@ -774,12 +782,72 @@ void FreqGenerator::writeTone(double sample[], byte generatedSnd[], int iLen){
 }
 
 #define LEN_OF_MAC_ADDR 12
+#define LEN_OF_MAX_SSID 32
 
-unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken){
-	return playPairingCodeWithPurpose(macAddr, wifiKey, tmpUserToken, (unsigned char) 0);
+uint64 FreqGenerator::getSSIDHashValue(const char* ssid){
+	uint64 ulRet = 0;
+	if(ssid){
+		ulRet = CityHash32(ssid, strlen(ssid));
+		LOGE("ssid:[%s], ulRet = %llu\n",ssid, ulRet);
+	}
+	return ulRet;
 }
 
-unsigned int FreqGenerator::playPairingCodeWithPurpose(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken, unsigned char cPurpose){//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+char *ultostr(uint64 ulong_value){
+	char * ret = NULL;
+	const int n = snprintf(NULL, 0, "%llu", ulong_value);
+
+	ret = (char*)malloc(n+1);
+	if(ret){
+		memset(ret, 0, n+1);
+		int c = snprintf(ret, n+1, "%llu", ulong_value);
+	}
+	return ret;
+}
+
+char* FreqGenerator::getSSIDStringHashValue(const char* ssid){
+//	char* cRet = (char*)malloc(8+1);
+//	memset(cRet, 0, 8+1);
+
+	uint64 ihash = getSSIDHashValue(ssid);
+
+	char* cRet = ultostr(ihash);
+
+//	LOGE(" ihash = %llu\n", ihash);
+//
+//	sprintf(cRet,
+//			"%s%s%s%s%s%s%s%s",
+//			SoundPair_Config::sCodeTable.at((ihash & 0xf0000000) >> 28).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x0f000000) >> 24).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x00f00000) >> 20).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x000f0000) >> 16).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x0000f000) >> 12).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x00000f00) >> 8).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x000000f0) >> 4).c_str(),
+//			SoundPair_Config::sCodeTable.at((ihash & 0x0000000f)).c_str()
+//			);
+
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0xf0000000) >> 28);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x0f000000) >> 24);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x00f00000) >> 20);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x000f0000) >> 16);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x0000f000) >> 12);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x00000f00) >> 8);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x000000f0) >> 4);
+//	sstrSsidHash << SoundPair_Config::sCodeTable.at((ihash & 0x0000000f) );
+
+//	LOGE(" ihash = %llu --\n", ihash);
+
+//	LOGE("cRet:[%s]\n",cRet);
+
+	return cRet;//strdup(sstrSsidHash.str().c_str());
+}
+
+unsigned int FreqGenerator::playPairingCode(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken){
+	return playPairingCodeWithPurpose(macAddr, wifiKey, tmpUserToken, BEE_ATTACH);
+}
+
+unsigned int FreqGenerator::playPairingCodeWithPurpose(const char* macAddr, const char* wifiKey, unsigned short tmpUserToken, BEE_PURPOSE cPurpose){//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
 	unsigned int iRet = R_OK;
 	stringstream sstrWifiKey;
 	stringstream sstrToken;
@@ -850,6 +918,198 @@ ERR:
 //	return playPairingCode(macAddr, wifiKey, tmpUserToken);
 //}
 
+unsigned int FreqGenerator::playSSIDPairingCode(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken){
+	return playSSIDPairingCodeWithPurpose(ssid, wifiKey, secType, tmpUserToken, BEE_ATTACH);
+}
+
+unsigned int FreqGenerator::playSSIDPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose){
+	return playSSIDPairingCodeWithPurposeAndRegion(ssid, wifiKey, secType, tmpUserToken, cPurpose, (unsigned char) 1);
+}
+
+unsigned int FreqGenerator::playSSIDPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId){
+	unsigned int iRet = R_OK;
+	stringstream sstrSsid;
+	stringstream sstrWifiKey;
+	stringstream sstrToken;
+
+	int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
+	int iPower = SoundPair_Config::getPowerByFFTYPE();
+	int iLen = 0;
+
+	if(BEE_TYPE_COUNT <= cPurpose){
+		iRet = E_FE_MOD_SP_INVALID_PURPOSE;
+		goto ERR;
+	}
+
+	if(!ssid ){
+		iRet = E_FE_MOD_SP_INVALID_SSID;
+		goto ERR;
+	}else{
+		iLen = strlen(ssid);
+		LOGE("ssid length is = %d\n", iLen);
+
+		if(iLen > LEN_OF_MAX_SSID){//mac addr contains 12 hex values
+			iRet = E_FE_MOD_SP_INVALID_SSID;
+			goto ERR;
+		}else{
+			sstrSsid << SoundPair_Config::sCodeTable.at((iLen & 0xf0) >> iPower);
+			sstrSsid << SoundPair_Config::sCodeTable.at(iLen & 0x0f);
+
+			string strSSID(ssid);
+			for(int i = 0; i< iLen;i++){
+				char ch = strSSID.at(i);
+				sstrSsid << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
+				sstrSsid << SoundPair_Config::sCodeTable.at(ch & 0x0f);
+
+				//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
+			}
+
+			string strWifiKey(wifiKey);
+			iLen = strWifiKey.length();
+
+			for(int i = 0; i< iLen;i++){
+				char ch = strWifiKey.at(i);
+				sstrWifiKey << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
+				sstrWifiKey << SoundPair_Config::sCodeTable.at(ch & 0x0f);
+
+				//LOGE("playCode2(), i=%d, ch:%c, 0x%x, (%s, %s)\n",i, ch, ch, SoundPair_Config::sCodeTable.at(ch >> iPower).c_str(), SoundPair_Config::sCodeTable.at(ch & 0x0f).c_str());
+			}
+
+
+			//Attach Token
+			sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0xf000)>>12);
+			sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x0f00)>>8);
+			sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x00f0)>>4);
+			sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x000f));
+
+			//sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0xf0)>>4);
+			sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0x0f));
+			sstrToken<<SoundPair_Config::sCodeTable.at((secType  & 0x0f));
+			sstrToken<<SoundPair_Config::sCodeTable.at((iRegId   & 0xf0)>>4);
+			sstrToken<<SoundPair_Config::sCodeTable.at((iRegId   & 0x0f));
+
+			//Reserved
+			sstrToken<<SoundPair_Config::sCodeTable.at(0);
+			sstrToken<<SoundPair_Config::sCodeTable.at(0);
+			sstrToken<<SoundPair_Config::sCodeTable.at(0);
+			sstrToken<<SoundPair_Config::sCodeTable.at(0);
+		}
+	}
+
+	if(!FreqGenerator::getInstance()->playCode2(sstrSsid.str(), sstrWifiKey.str(), sstrToken.str(), true)){
+		iRet = E_FE_MOD_SP_PLAY_CODE_ERR;
+		goto ERR;
+	}
+ERR:
+	//LOGE("iRet= [0x%x]\n", iRet);
+	return iRet;
+}
+
+unsigned int FreqGenerator::playSSIDHashPairingCode(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken){
+	return playSSIDHashPairingCodeWithPurpose(ssid, wifiKey, secType, tmpUserToken, BEE_ATTACH);
+}
+
+unsigned int FreqGenerator::playSSIDHashPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose){//iPurpose: 0=> pairing, 1:change wifi, 2:restore token
+	return playSSIDHashPairingCodeWithPurposeAndRegion(ssid, wifiKey, secType, tmpUserToken, cPurpose, (unsigned char) 1);
+}
+
+unsigned int FreqGenerator::playSSIDHashPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId){
+	unsigned int iRet = R_OK;
+	stringstream sstrSsid;
+	stringstream sstrWifiKey;
+	stringstream sstrToken;
+
+	int iMultiply = SoundPair_Config::getMultiplyByFFTYPE();
+	int iPower = SoundPair_Config::getPowerByFFTYPE();
+	int iLen = 0;
+
+	if(BEE_TYPE_COUNT <= cPurpose){
+		iRet = E_FE_MOD_SP_INVALID_PURPOSE;
+		goto ERR;
+	}
+
+	if(!ssid ){
+		iRet = E_FE_MOD_SP_INVALID_SSID;
+		goto ERR;
+	}else{
+		iLen = strlen(ssid);
+		LOGE("ssid length is = %d\n", iLen);
+
+		if(iLen > LEN_OF_MAX_SSID){//mac addr contains 12 hex values
+			iRet = E_FE_MOD_SP_INVALID_SSID;
+			goto ERR;
+		}else{
+			iLen+=LEN_OF_MAX_SSID;//Add based on LEN_OF_MAX_SSID for distinguish
+			sstrSsid << SoundPair_Config::sCodeTable.at((iLen & 0xf0) >> iPower);
+			sstrSsid << SoundPair_Config::sCodeTable.at(iLen & 0x0f);
+
+			uint64 ihash = getSSIDHashValue(ssid);
+
+			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00000000f0000000) >> 28);
+			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000000000f000000) >> 24);
+			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0000000000f00000) >> 20);
+			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00000000000f0000) >> 16);
+			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000000000000f000) >> 12);
+			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x0000000000000f00) >> 8);
+			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x00000000000000f0) >> 4);
+			sstrSsid << SoundPair_Config::sCodeTable.at((ihash & 0x000000000000000f) );
+
+			LOGE("sstrSsid = %s\n", sstrSsid.str().c_str());
+
+			string strWifiKey(wifiKey);
+			iLen = strWifiKey.length();
+
+			for(int i = 0; i< iLen;i++){
+				char ch = strWifiKey.at(i);
+				sstrWifiKey << SoundPair_Config::sCodeTable.at((ch & 0xf0) >> iPower);
+				sstrWifiKey << SoundPair_Config::sCodeTable.at(ch & 0x0f);
+			}
+
+			//Attach Token
+			sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0xf000)>>12);
+			sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x0f00)>>8);
+			sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x00f0)>>4);
+			sstrToken<<SoundPair_Config::sCodeTable.at((tmpUserToken & 0x000f));
+
+			//sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0xf0)>>4);
+			sstrToken<<SoundPair_Config::sCodeTable.at((cPurpose & 0x0f));
+			sstrToken<<SoundPair_Config::sCodeTable.at((secType  & 0x0f));
+			sstrToken<<SoundPair_Config::sCodeTable.at((iRegId   & 0xf0)>>4);
+			sstrToken<<SoundPair_Config::sCodeTable.at((iRegId   & 0x0f));
+
+			//Reserved
+			sstrToken<<SoundPair_Config::sCodeTable.at(0);
+			sstrToken<<SoundPair_Config::sCodeTable.at(0);
+			sstrToken<<SoundPair_Config::sCodeTable.at(0);
+			sstrToken<<SoundPair_Config::sCodeTable.at(0);
+		}
+	}
+
+	if(!FreqGenerator::getInstance()->playCode2(sstrSsid.str(), sstrWifiKey.str(), sstrToken.str(), true)){
+		iRet = E_FE_MOD_SP_PLAY_CODE_ERR;
+		goto ERR;
+	}
+ERR:
+	//LOGE("iRet= [0x%x]\n", iRet);
+	return iRet;
+}
+
+static const unsigned long MIN_TIME_TO_WAIT_ATTACH = 60000; //1 min
+
+unsigned long FreqGenerator::getSoundPairingDuration(const char* ssid, const char* wifiKey, bool bSSIDHash){//in milliseconds
+	unsigned int iNumWords= (bSSIDHash?8:(ssid?strlen(ssid):0))*2+
+							(wifiKey?strlen(wifiKey):0)*2+
+							2+//SSID len
+							4+//user temp id
+							6+//purpose
+							6;//prefix+postfix+divider
+
+	unsigned long lTimeToWait = iNumWords*4*100 + 45*1000;
+	if(MIN_TIME_TO_WAIT_ATTACH > lTimeToWait){
+		lTimeToWait = MIN_TIME_TO_WAIT_ATTACH;
+	}
+	return lTimeToWait;
+}
 
 EncodeItm::EncodeItm(string strCodeInputASCII, string strCodeInput, string strECCode, string strEncodeMark, string strEncode) {
 	//LOGE("EncodeItm(), strCodeInput:%s,\n %s,\n %s,\n %s\n", strCodeInput.c_str(), strECCode.c_str(), strEncodeMark.c_str(), strEncode.c_str());

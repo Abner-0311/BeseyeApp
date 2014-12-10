@@ -17,6 +17,7 @@
 		07BC6F15191FC4AC009541A3 /* ReedSolomonEncoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F05191FC4AC009541A3 /* ReedSolomonEncoder.cpp */; };
 		07BC6F16191FC4AC009541A3 /* ReedSolomonException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F07191FC4AC009541A3 /* ReedSolomonException.cpp */; };
 		07BC6F17191FC4AC009541A3 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F09191FC4AC009541A3 /* Exception.cpp */; };
+		07DC2D411A3560060039B6D7 /* city.cc in Sources */ = {isa = PBXBuildFile; fileRef = 07DC2D401A3560060039B6D7 /* city.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,7 +35,7 @@
 /* Begin PBXFileReference section */
 		07776DBC18FD380C00B7033B /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../../Sound_Pairing/aubioTest/jni/include/config.h; sourceTree = "<group>"; };
 		07BC6EEF191FC4AC009541A3 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
-		07BC6EF1191FC4AC009541A3 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
+		07BC6EF1191FC4AC009541A3 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = utils.cpp; path = Common/src/utils.cpp; sourceTree = SOURCE_ROOT; };
 		07BC6EF3191FC4AC009541A3 /* beseye_sound_pairing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = beseye_sound_pairing.h; sourceTree = "<group>"; };
 		07BC6EF4191FC4AC009541A3 /* FreqGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FreqGenerator.h; sourceTree = "<group>"; };
 		07BC6EF5191FC4AC009541A3 /* sp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sp_config.h; sourceTree = "<group>"; };
@@ -60,6 +61,9 @@
 		07BC6F0D191FC4AC009541A3 /* ZXing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZXing.h; sourceTree = "<group>"; };
 		07BC6F18191FC511009541A3 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		07BC6F19191FC53D009541A3 /* error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = error.h; path = Common/inc/error.h; sourceTree = SOURCE_ROOT; };
+		07DC2D3C1A353D460039B6D7 /* time_utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = time_utils.h; path = Common/inc/time_utils.h; sourceTree = SOURCE_ROOT; };
+		07DC2D401A3560060039B6D7 /* city.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = city.cc; sourceTree = "<group>"; };
+		07DC2D421A3560170039B6D7 /* city.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = city.h; sourceTree = "<group>"; };
 		07EC6BE118B4CD4F0018BEA4 /* libBeseyeSoundPairing.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBeseyeSoundPairing.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		07EC6CDC18B59C420018BEA4 /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = begin_code.h; path = "../../SDL2-2.0.1/include/begin_code.h"; sourceTree = SOURCE_ROOT; };
 		07EC6CDD18B59C420018BEA4 /* close_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = close_code.h; path = "../../SDL2-2.0.1/include/close_code.h"; sourceTree = SOURCE_ROOT; };
@@ -161,6 +165,7 @@
 		07BC6EEE191FC4AC009541A3 /* inc */ = {
 			isa = PBXGroup;
 			children = (
+				07DC2D3C1A353D460039B6D7 /* time_utils.h */,
 				07BC6F19191FC53D009541A3 /* error.h */,
 				07BC6F18191FC511009541A3 /* Common.h */,
 				07BC6EEF191FC4AC009541A3 /* utils.h */,
@@ -180,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				07BC6EF3191FC4AC009541A3 /* beseye_sound_pairing.h */,
+				07DC2D421A3560170039B6D7 /* city.h */,
 				07BC6EF4191FC4AC009541A3 /* FreqGenerator.h */,
 				07BC6EF5191FC4AC009541A3 /* sp_config.h */,
 			);
@@ -189,6 +195,7 @@
 		07BC6EF6191FC4AC009541A3 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				07DC2D401A3560060039B6D7 /* city.cc */,
 				07BC6EF7191FC4AC009541A3 /* FreqGenerator.cpp */,
 				07BC6EF8191FC4AC009541A3 /* native_ios.cpp */,
 				07BC6EF9191FC4AC009541A3 /* sp_config.cpp */,
@@ -408,6 +415,7 @@
 				07BC6F11191FC4AC009541A3 /* sp_config.cpp in Sources */,
 				07BC6F15191FC4AC009541A3 /* ReedSolomonEncoder.cpp in Sources */,
 				07BC6F0F191FC4AC009541A3 /* FreqGenerator.cpp in Sources */,
+				07DC2D411A3560060039B6D7 /* city.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,7 +12,9 @@
 #include <zxing/common/reedsolomon/GenericGF.h>
 
 //#if not __has_feature(cxx_constexpr)
+//#ifndef __APPLE__
 #define constexpr
+//#endif
 //#endif
 
 using zxing::Ref;
@@ -20,6 +22,32 @@ using zxing::Counted;
 using zxing::GenericGF;
 
 using namespace std;
+
+static const int ROTATE_LEN = 2;
+static const int SSID_LEN = 2;
+static const int SSID_MIN_LEN = ROTATE_LEN+SSID_LEN;
+static const int SSID_HASH_LEN = 8;
+static const int SSID_MAX_LEN = 32*2;
+static const int TOKEN_LEN = 4;
+static const int PURPOSE_LEN = 8;
+static const int MIN_PW_LEN = 0;
+static const int MAX_PW_LEN = 64*2;
+static const int MAX_ANALYSIS_LEN = (ROTATE_LEN + SSID_MIN_LEN + SSID_MAX_LEN + MAX_PW_LEN + TOKEN_LEN + PURPOSE_LEN +2) *3 /2;
+
+enum PAIRING_SEC_TYPE{
+	PAIRING_SEC_NONE 	= 0x0,
+	PAIRING_SEC_WEP  	= 0x1,
+	PAIRING_SEC_WPA  	= 0x2,
+	PAIRING_SEC_WPA2 	= 0x3,
+	PAIRING_SEC_UNKNOWN = 0xf
+};
+
+enum BEE_PURPOSE{
+	BEE_ATTACH			= 0x0,
+	BEE_CHANGE_WIFI		= 0x1,
+	BEE_RESTORE_TOKEN	= 0x2,
+	BEE_TYPE_COUNT		= 0x3,
+};
 
 class FreqRangeData : public Counted{
 private:
@@ -81,7 +109,7 @@ public:
 	static const bool SEGMENT_OFFSET_FEATURE = true;
 	static const bool AUBIO_FFT = false;
 	static const bool ENABLE_LV_DISPLAY = false;
-	static const int SEG_SES_OFFSET = 5;
+	static const int SEG_SES_OFFSET = 2;
 
 	static const string BT_MSG_ACK;
 	static const string BT_MSG_PURE;
@@ -100,7 +128,7 @@ public:
 	constexpr static const float SILENCE_CRITERIA = 0.002f;
 	static const int SILENCE_DETECTION_SAMPLE = 256;
 
-	static const int SAMPLE_RATE_PLAY = 16000;//44100;
+	static const int SAMPLE_RATE_PLAY = 16000;
 	static const int SAMPLE_RATE_REC  = 16000;
 	static const int FRAME_SIZE_REC   = 512;
 	static const float BIN_SIZE       ;//= 16000.0/512.0;
@@ -113,6 +141,10 @@ public:
 	static const int FFT_ANALYSIS_COUNT= 5;
 	static const int TONE_TYPE = 19;
 
+	static const int TONE_ROTATE_SEG_1 =7;
+	static const int TONE_ROTATE_SEG_2 =11;
+	static const int TONE_ROTATE_SEG_3 =13;
+
 	static const string BT_BINDING_MAC;
 	static const string BT_BINDING_MAC_SENDER;
 	constexpr static const double dStartValue = 2500.0;
@@ -121,9 +153,11 @@ public:
 	static const int MAX_ENCODE_DATA_LEN = 4;//16;//127;
 	constexpr static const double EC_RATIO = 0.25f;
 
-	static const int MIN_PAIRING_MSG_LEN = (((12+2+10+2+4)*3)/2)-2;//-2 due to drop audio issue
+	static const int MIN_PAIRING_MSG_LEN = (((12+1+1+4)*3)/2);//-2 due to drop audio issue
 
 	static string PREFIX_DECODE;
+	static string PREFIX_DECODE_C1;
+	static string PREFIX_DECODE_C2;
 	static string POSTFIX_DECODE;
 	static string POSTFIX_DECODE_C1;
 	static string POSTFIX_DECODE_C2;
@@ -155,6 +189,8 @@ public:
 	static int getMultiplyByFFTYPE();
 	static int getPowerByFFTYPE();
 
+	static string rotateEncode(string strCode, int iShift);
+	static string rotateDecode(string strCode, int iShift);
 	//utils
 	static int findIdxFromCodeTable(string strCode);
 	static Ref<FreqRange> findFreqRange(string strCode);
@@ -197,20 +233,29 @@ public:
 };
 
 class CodeRecord : public Counted{
-private:
-	msec_t lStartTs;
-	msec_t lEndTs;
-	string strCdoe;
-	string strReplaced;
-	std::vector<Ref<FreqRecord> > mlstFreqRec;
-	friend class FreqAnalyzer;
-
 public:
+	enum Tone_Shift_Status{
+		TS_NONE,
+		TS_FORWARD,
+		TS_BACKWARD,
+		TS_TYPE_COUNT
+	};
+
 	CodeRecord();
 	CodeRecord(std::vector<Ref<FreqRecord> > lstFreqRec, string strReplaced);
 	CodeRecord(msec_t lStartTs, msec_t lEndTs, string strCdoe);
 	CodeRecord(msec_t lStartTs, msec_t lEndTs, string strCode, std::vector<Ref<FreqRecord> > lstFreqRec);
 	virtual ~CodeRecord();
+
+	Tone_Shift_Status getToneShiftStatus();
+	string getHeadTone();
+	string getTailTone();
+
+	Ref<FreqRecord> popHeadRec();
+	Ref<FreqRecord> popTailRec();
+
+	void pushToHead(Ref<FreqRecord> fr);
+	void pushToTail(Ref<FreqRecord> fr);
 
 	static Ref<CodeRecord> combineNewCodeRecord(Ref<CodeRecord> cr1, Ref<CodeRecord> cr2, int iOffset, int iLastTone);
 private:
@@ -218,6 +263,14 @@ private:
 	void inferFreq();
 	string toString();
 	bool isSameCode();
+
+	msec_t lStartTs;
+	msec_t lEndTs;
+	string strCdoe;
+	string strReplaced;
+	std::vector<Ref<FreqRecord> > mlstFreqRec;
+	friend class FreqAnalyzer;
+	Tone_Shift_Status mTSStatus;
 };
 #endif
 

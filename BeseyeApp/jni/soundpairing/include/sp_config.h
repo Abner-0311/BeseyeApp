@@ -23,6 +23,17 @@ using zxing::GenericGF;
 
 using namespace std;
 
+static const int ROTATE_LEN = 2;
+static const int SSID_LEN = 2;
+static const int SSID_MIN_LEN = ROTATE_LEN+SSID_LEN;
+static const int SSID_HASH_LEN = 8;
+static const int SSID_MAX_LEN = 32*2;
+static const int TOKEN_LEN = 4;
+static const int PURPOSE_LEN = 8;
+static const int MIN_PW_LEN = 0;
+static const int MAX_PW_LEN = 64*2;
+static const int MAX_ANALYSIS_LEN = (ROTATE_LEN + SSID_MIN_LEN + SSID_MAX_LEN + MAX_PW_LEN + TOKEN_LEN + PURPOSE_LEN +2) *3 /2;
+
 enum PAIRING_SEC_TYPE{
 	PAIRING_SEC_NONE 	= 0x0,
 	PAIRING_SEC_WEP  	= 0x1,
@@ -130,6 +141,10 @@ public:
 	static const int FFT_ANALYSIS_COUNT= 5;
 	static const int TONE_TYPE = 19;
 
+	static const int TONE_ROTATE_SEG_1 =7;
+	static const int TONE_ROTATE_SEG_2 =11;
+	static const int TONE_ROTATE_SEG_3 =13;
+
 	static const string BT_BINDING_MAC;
 	static const string BT_BINDING_MAC_SENDER;
 	constexpr static const double dStartValue = 2500.0;
@@ -174,6 +189,8 @@ public:
 	static int getMultiplyByFFTYPE();
 	static int getPowerByFFTYPE();
 
+	static string rotateEncode(string strCode, int iShift);
+	static string rotateDecode(string strCode, int iShift);
 	//utils
 	static int findIdxFromCodeTable(string strCode);
 	static Ref<FreqRange> findFreqRange(string strCode);
@@ -216,20 +233,29 @@ public:
 };
 
 class CodeRecord : public Counted{
-private:
-	msec_t lStartTs;
-	msec_t lEndTs;
-	string strCdoe;
-	string strReplaced;
-	std::vector<Ref<FreqRecord> > mlstFreqRec;
-	friend class FreqAnalyzer;
-
 public:
+	enum Tone_Shift_Status{
+		TS_NONE,
+		TS_FORWARD,
+		TS_BACKWARD,
+		TS_TYPE_COUNT
+	};
+
 	CodeRecord();
 	CodeRecord(std::vector<Ref<FreqRecord> > lstFreqRec, string strReplaced);
 	CodeRecord(msec_t lStartTs, msec_t lEndTs, string strCdoe);
 	CodeRecord(msec_t lStartTs, msec_t lEndTs, string strCode, std::vector<Ref<FreqRecord> > lstFreqRec);
 	virtual ~CodeRecord();
+
+	Tone_Shift_Status getToneShiftStatus();
+	string getHeadTone();
+	string getTailTone();
+
+	Ref<FreqRecord> popHeadRec();
+	Ref<FreqRecord> popTailRec();
+
+	void pushToHead(Ref<FreqRecord> fr);
+	void pushToTail(Ref<FreqRecord> fr);
 
 	static Ref<CodeRecord> combineNewCodeRecord(Ref<CodeRecord> cr1, Ref<CodeRecord> cr2, int iOffset, int iLastTone);
 private:
@@ -237,6 +263,14 @@ private:
 	void inferFreq();
 	string toString();
 	bool isSameCode();
+
+	msec_t lStartTs;
+	msec_t lEndTs;
+	string strCdoe;
+	string strReplaced;
+	std::vector<Ref<FreqRecord> > mlstFreqRec;
+	friend class FreqAnalyzer;
+	Tone_Shift_Status mTSStatus;
 };
 #endif
 

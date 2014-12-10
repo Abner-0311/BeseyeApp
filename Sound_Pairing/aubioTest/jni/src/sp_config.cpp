@@ -232,6 +232,22 @@ void SoundPair_Config::uninit(){
 	}
 }
 
+string SoundPair_Config::rotateEncode(string strCode, int iShift){
+	string strRet = "";
+	int iLen = strCode.length();
+	const int iRange = getDivisionByFFTYPE();
+	for(int idx = 0; idx < iLen; idx++){
+		int iPos = findIdxFromCodeTable(strCode.substr(idx, 1));
+		strRet += sCodeTable.at((iPos + iShift)%iRange);
+	}
+	return strRet;
+}
+
+string SoundPair_Config::rotateDecode(string strCode, int iShift){
+	const int iRange = getDivisionByFFTYPE();
+	return rotateEncode(strCode, (iRange-iShift)%iRange);
+}
+
 int SoundPair_Config::getDivisionByFFTYPE(){
 	return 16;
 }

@@ -21,6 +21,8 @@ msec_t FreqGenerator::sTs = 0;;
 
 string FreqGenerator::DEFAULT_BYTE_MODE_ENCODING = "ISO-8859-1";
 Ref<ReedSolomonEncoder> FreqGenerator::rsEncoder = Ref<ReedSolomonEncoder>(new ReedSolomonEncoder(GenericGF::QR_CODE_FIELD_256));
+//Ref<ReedSolomonEncoder> FreqGenerator::rsShiftEncoder = Ref<ReedSolomonEncoder>(new ReedSolomonEncoder(GenericGF::AZTEC_PARAM));
+
 
 FreqGenerator::FreqGenerator():mbStopPlayCodeThread(false),mThreadPlayTone(0), mOnPlayToneCallback(NULL), mPlayToneCB(NULL), mCbUserData(NULL){
 	/* initialize random seed: */
@@ -138,24 +140,35 @@ bool FreqGenerator::playCode2(const string strMacAddr, const string strWifiKey, 
 //	}
 //	string strCodeInput = sstrCodeInput.str();
 //#else
-	string strCodeInput = strMacAddr+strWifiKey+strToken;
+	int iRandSeed = rand()%(SoundPair_Config::getDivisionByFFTYPE()*SoundPair_Config::getDivisionByFFTYPE());
+	string strRotateSeed   = SoundPair_Config::sCodeTable.at((iRandSeed & 0xf0) >> 4)+SoundPair_Config::sCodeTable.at((iRandSeed & 0x0f));
+	string strMacAddrRoate = SoundPair_Config::rotateEncode(strMacAddr, iRandSeed%SoundPair_Config::TONE_ROTATE_SEG_1);
+	string strWifiKeyRoate = SoundPair_Config::rotateEncode(strWifiKey, iRandSeed%SoundPair_Config::TONE_ROTATE_SEG_2);
+	string strTokenRoate   = SoundPair_Config::rotateEncode(strToken  , iRandSeed%SoundPair_Config::TONE_ROTATE_SEG_3);
+
+	string strCodeInput = strRotateSeed+
+						  strMacAddrRoate+
+						  strWifiKeyRoate+
+						  strTokenRoate;
 //#endif
 
-	LOGE("playCode2(), strCodeInput:%s\n", strCodeInput.c_str());
+	LOGE("playCode2(), strCodeInput:[%s]\n"
+	     "                          [%s], iRandSeed:[%d]\n,", strCodeInput.c_str(), (strRotateSeed+strMacAddr+strWifiKey+strToken).c_str(), iRandSeed);
 
 	string strEncode = bNeedEncode?encode(strCodeInput):strCodeInput;
 	const string strECCode = strEncode.substr(strCodeInput.length());
 
 	string strEncodeMark = strEncode;//SoundPair_Config::encodeConsecutiveDigits(strEncode);
 	string strCode = bNeedEncode?
-							("123"+
+							("34543"+
 							  SoundPair_Config::PREFIX_DECODE+
 							  (SoundPair_Config::PRE_EMPTY?"X":"")+
-							  strMacAddr+
+							  strRotateSeed+
+							  strMacAddrRoate+//strMacAddr+
 							  SoundPair_Config::PAIRING_DIVIDER+
-							  strWifiKey+
+							  strWifiKeyRoate+//strWifiKey+
 							  SoundPair_Config::PAIRING_DIVIDER+
-							  strToken+
+							  strTokenRoate+//strToken+
 							  strECCode+
 							  SoundPair_Config::POSTFIX_DECODE+
 							  "789XX"):

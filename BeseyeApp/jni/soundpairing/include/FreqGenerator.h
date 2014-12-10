@@ -88,6 +88,7 @@ public:
 	static string genNextRandomData(int iMinDigit);
 
 	static Ref<ReedSolomonEncoder> rsEncoder;
+	//static Ref<ReedSolomonEncoder> rsShiftEncoder;
 
 	virtual ~FreqGenerator();
 

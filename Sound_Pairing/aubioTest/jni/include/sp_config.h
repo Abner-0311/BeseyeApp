@@ -23,6 +23,32 @@ using zxing::GenericGF;
 
 using namespace std;
 
+static const int ROTATE_LEN = 2;
+static const int SSID_LEN = 2;
+static const int SSID_MIN_LEN = ROTATE_LEN+SSID_LEN;
+static const int SSID_HASH_LEN = 8;
+static const int SSID_MAX_LEN = 32*2;
+static const int TOKEN_LEN = 4;
+static const int PURPOSE_LEN = 8;
+static const int MIN_PW_LEN = 0;
+static const int MAX_PW_LEN = 64*2;
+static const int MAX_ANALYSIS_LEN = (ROTATE_LEN + SSID_MIN_LEN + SSID_MAX_LEN + MAX_PW_LEN + TOKEN_LEN + PURPOSE_LEN +2) *3 /2;
+
+enum PAIRING_SEC_TYPE{
+	PAIRING_SEC_NONE 	= 0x0,
+	PAIRING_SEC_WEP  	= 0x1,
+	PAIRING_SEC_WPA  	= 0x2,
+	PAIRING_SEC_WPA2 	= 0x3,
+	PAIRING_SEC_UNKNOWN = 0xf
+};
+
+enum BEE_PURPOSE{
+	BEE_ATTACH			= 0x0,
+	BEE_CHANGE_WIFI		= 0x1,
+	BEE_RESTORE_TOKEN	= 0x2,
+	BEE_TYPE_COUNT		= 0x3,
+};
+
 class FreqRangeData : public Counted{
 private:
 	double mdValue;
@@ -115,6 +141,10 @@ public:
 	static const int FFT_ANALYSIS_COUNT= 5;
 	static const int TONE_TYPE = 19;
 
+	static const int TONE_ROTATE_SEG_1 =7;
+	static const int TONE_ROTATE_SEG_2 =11;
+	static const int TONE_ROTATE_SEG_3 =13;
+
 	static const string BT_BINDING_MAC;
 	static const string BT_BINDING_MAC_SENDER;
 	constexpr static const double dStartValue = 2500.0;
@@ -159,6 +189,8 @@ public:
 	static int getMultiplyByFFTYPE();
 	static int getPowerByFFTYPE();
 
+	static string rotateEncode(string strCode, int iShift);
+	static string rotateDecode(string strCode, int iShift);
 	//utils
 	static int findIdxFromCodeTable(string strCode);
 	static Ref<FreqRange> findFreqRange(string strCode);
