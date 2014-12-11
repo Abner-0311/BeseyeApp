@@ -188,6 +188,7 @@ public class BeseyeAccountTask {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {
+				setVCamIdForPerm(strParams[0]);
 				obj.put(ACC_VCAM_ID, strParams[0]);
 				JSONObject attrObj = new JSONObject();
 				attrObj.put(ACC_NAME, strParams[1]);
@@ -256,44 +257,47 @@ public class BeseyeAccountTask {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {		
-				if(0 < strParams.length){
-					obj.put(ACC_VCAM_ID, strParams[0]);
-				}
+//				if(0 < strParams.length){
+//					setVCamIdForPerm(strParams[0]);
+//					obj.put(ACC_VCAM_ID, strParams[0]);
+//				}
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_GET_VCAM_LST, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			} 
+//			catch (JSONException e) {
+//				e.printStackTrace();
+//			}
 			return null;	
 		}
 	}
 	
-	static public class QueryVCamListTask extends BeseyeHttpTask {	 	
-		public QueryVCamListTask(OnHttpTaskCallback cb) {
-			super(cb);
-			setHttpMethod(HttpPost.METHOD_NAME);
-			//enableHttps();
-		}
- 
-		@Override
-		protected List<JSONObject> doInBackground(String... strParams) {
-			JSONObject obj = new JSONObject();
-			try {		
-				if(0 < strParams.length){
-					obj.put(ACC_VCAM_ID, strParams[0]);
-				}
-				appendDevInfo(obj);
-				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_QUERY_VCAM, obj.toString());
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			return null;	
-		}
-	}
+//	static public class QueryVCamListTask extends BeseyeHttpTask {	 	
+//		public QueryVCamListTask(OnHttpTaskCallback cb) {
+//			super(cb);
+//			setHttpMethod(HttpPost.METHOD_NAME);
+//			//enableHttps();
+//		}
+// 
+//		@Override
+//		protected List<JSONObject> doInBackground(String... strParams) {
+//			JSONObject obj = new JSONObject();
+//			try {		
+//				if(0 < strParams.length){
+//					setVCamIdForPerm(strParams[0]);
+//					obj.put(ACC_VCAM_ID, strParams[0]);
+//				}
+//				appendDevInfo(obj);
+//				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_QUERY_VCAM, obj.toString());
+//			} catch (NumberFormatException e) {
+//				e.printStackTrace();
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//			return null;	
+//		}
+//	}
 	
 	static public class GetCamInfoTask extends BeseyeHttpTask {	 	
 		private boolean mbNeedToLoadCamSetup = true;
@@ -314,7 +318,8 @@ public class BeseyeAccountTask {
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
-			try {		
+			try {	
+				setVCamIdForPerm(strParams[0]);
 				obj.put(ACC_VCAM_ID, strParams[0]);
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_GET_VCAM_INFO, obj.toString());
@@ -337,6 +342,7 @@ public class BeseyeAccountTask {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {
+				setVCamIdForPerm(strParams[0]);
 				obj.put(ACC_VCAM_ID, strParams[0]);
 				appendDevInfo(obj);
 				Log.e(TAG, "obj:"+obj.toString());

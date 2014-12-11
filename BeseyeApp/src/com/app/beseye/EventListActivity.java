@@ -816,7 +816,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				if(0 < iCountToGet){
 					obj.put(BeseyeJSONUtil.MM_EVT_LST, timeLst);
 					Log.e(TAG, "getThumbnailByEventList(), obj:"+obj);
-					monitorAsyncTask((mGetThumbnailByEventListTask = new BeseyeMMBEHttpTask.GetThumbnailByEventListTask(EventListActivity.this, iSeed)).setDialogId(-1), true, "", obj.toString());
+					monitorAsyncTask((mGetThumbnailByEventListTask = new BeseyeMMBEHttpTask.GetThumbnailByEventListTask(EventListActivity.this, iSeed)).setDialogId(-1), true, "", obj.toString(), mStrVCamID);
 				}
 				
 			} catch (JSONException e) {
@@ -870,7 +870,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				if(0 < timeLst.length()){
 					Log.e(TAG, "getThunbnailAtPos(), timeLst="+timeLst.toString());
 					obj.put(BeseyeJSONUtil.MM_EVT_LST, timeLst);
-					monitorAsyncTask((new BeseyeMMBEHttpTask.GetThumbnailByEventListTask(EventListActivity.this, miTaskSeedNum)).setDialogId(-1), true, THUNBNAIL_TASK_EXECUTOR, "", obj.toString());
+					monitorAsyncTask((new BeseyeMMBEHttpTask.GetThumbnailByEventListTask(EventListActivity.this, miTaskSeedNum)).setDialogId(-1), true, THUNBNAIL_TASK_EXECUTOR, "", obj.toString(), mStrVCamID);
 				}
 				
 			} catch (JSONException e) {

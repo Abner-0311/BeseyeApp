@@ -50,6 +50,7 @@ public class BeseyeNotificationBEHttpTask  {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {
+				setVCamIdForPerm(strParams[0]);
 				obj.put(CAM_UUID, strParams[0]);
 				obj.put(DEV_ID, BeseyeUtils.getAndroidUUid());
 				obj.put(SES_TOKEN, SessionMgr.getInstance().getAuthToken());

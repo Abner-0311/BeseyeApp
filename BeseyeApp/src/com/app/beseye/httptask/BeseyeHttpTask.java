@@ -300,6 +300,11 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		return strRet;
 	}
 	
+	protected String mStrVCamIdForPerm = null;
+	protected void setVCamIdForPerm(String strVcamId){
+		mStrVCamIdForPerm = strVcamId;
+	}
+	
 	//customize interface of AsycTask End
 	
 	/**Do real http task within this method
@@ -331,9 +336,17 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 //	    			httpRequest.setHeader("Bes-Dev-Session", strParams[2]);
 //	    		}
 //	    	}else{
-	    		httpRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+	    		if(null != mStrVCamIdForPerm && 0 < mStrVCamIdForPerm.length()){
+	    			httpRequest.addHeader("Bes-VcamPermission-VcamUid", mStrVCamIdForPerm);
+	    		}
+	    		
+	    		if(SessionMgr.getInstance().isTokenValid()){
+	    			httpRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+	    		}
+	    		
 	    		httpRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
 	    		httpRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
+	    		
 	    		httpRequest.addHeader("Content-Type", "application/json");
 	    		httpRequest.addHeader("Accept", "application/json");
 	    		httpRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
@@ -343,7 +356,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    		HttpEntityEnclosingRequestBase request = (HttpEntityEnclosingRequestBase)httpRequest;
 	    		request.setEntity(new StringEntity(strParams[1], HTTP.UTF_8));
 	    	}
-	    	Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl));
+	    	Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl)+", ["+(null != mStrVCamIdForPerm && 0 < mStrVCamIdForPerm.length())+", "+(SessionMgr.getInstance().isTokenValid())+"]");
 	    	
 	    	long startTime = System.currentTimeMillis();
 	        HttpResponse response = httpclient.execute(httpRequest);

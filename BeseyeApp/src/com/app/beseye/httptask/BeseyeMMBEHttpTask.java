@@ -71,6 +71,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			strVcamId = strParams[0];
 			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_LIVE_STREAM_INFO, strParams[0], strParams[1]));
 		}
@@ -83,6 +84,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_DVR_STREAM_INFO, strParams[0], strParams[1], strParams[2]));
 		}
 	}
@@ -107,6 +109,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			if(strParams.length == 5 && strParams[4].equals(EventFilterActivity.DEF_EVENT_FILTER_VALUE+""))
 				return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST, strParams[0], strParams[1], strParams[2], strParams[3]));
 			else
@@ -121,6 +124,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_IMP_EVENT_LIST, strParams[0], strParams[1], strParams[2]));
 		}
 	}
@@ -132,6 +136,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			if(strParams.length == 4 && strParams[3].equals(EventFilterActivity.DEF_EVENT_FILTER_VALUE+""))
 				return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_EVENT_LIST_CNT, strParams[0], strParams[1], strParams[2]));
 			else
@@ -162,6 +167,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			strVcamId = strParams[0];
 			return super.doInBackground(SessionMgr.getInstance().getMMBEHostUrl()+String.format(URL_GET_LATEST_THUMB, strParams[0]));
 		}
@@ -257,6 +263,7 @@ public class BeseyeMMBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[2]);
 			if(isCancelled()){
 				return null;
 			}

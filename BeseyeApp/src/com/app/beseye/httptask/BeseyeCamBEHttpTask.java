@@ -72,6 +72,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			strVcamId = strParams[0];
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SETUP, strParams[0]));
 		}
@@ -84,6 +85,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_STATUS, strParams[0]));
 		}
 	}
@@ -101,6 +103,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				strVcamId = strParams[0];
@@ -122,6 +125,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_LED_STATUS, strParams[0]));
 		}
 	}
@@ -134,6 +138,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(LED_STATUS, Integer.parseInt(strParams[1]));
@@ -154,6 +159,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SPK_STATUS, strParams[0]));
 		}
 	}
@@ -166,6 +172,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(SPEAKER_STATUS, Integer.parseInt(strParams[1]));
@@ -186,6 +193,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SPK_VOLUME, strParams[0]));
 		}
 	}
@@ -198,6 +206,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(SPEAKER_VOLUME, Integer.parseInt(strParams[1]));
@@ -218,6 +227,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_MIC_STATUS, strParams[0]));
 		}
 	}
@@ -230,6 +240,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(MIC_STATUS, Integer.parseInt(strParams[1]));
@@ -250,6 +261,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_MIC_GAIN, strParams[0]));
 		}
 	}
@@ -262,6 +274,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(MIC_GAIN, Integer.parseInt(strParams[1]));
@@ -284,6 +297,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_VIDEO_RES, strParams[0]));
 		}
 	}
@@ -296,6 +310,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(VIDEO_RES, Integer.parseInt(strParams[1]));
@@ -316,6 +331,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_IRCUT_STATUS, strParams[0]));
 		}
 	}
@@ -328,6 +344,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(IRCUT_STATUS, Integer.parseInt(strParams[1]));
@@ -348,6 +365,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_IMG_SETTING, strParams[0]));
 		}
 	}
@@ -360,6 +378,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(IMG_FLIP, Integer.parseInt(strParams[1]));
@@ -388,6 +407,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_RESTART, strParams[0]));
 		}
 	}
@@ -399,6 +419,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_RECONN_MM, strParams[0]));
 		}
 	}
@@ -410,6 +431,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_WIFI_CONFIG, strParams[0]));
 		}
 	}
@@ -422,6 +444,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(WIFI_SSID, strParams[1]);
@@ -445,6 +468,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_WIFI_SSIDLST, strParams[0]));
 		}
 	}
@@ -456,6 +480,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_DATETIME, strParams[0]));
 		}
 	}
@@ -467,6 +492,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SYS_INFO, strParams[0]));
 		}
 	}
@@ -483,6 +509,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			strVcamId = strParams[0];
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SW_UPDATE, strParams[0]));
 		}
@@ -500,6 +527,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			strVcamId = strParams[0];
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SW_UPDATE_STATUS, strParams[0]));
 		}
@@ -512,6 +540,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_TIMEZONE, strParams[0]));
 		}
 	}
@@ -524,6 +553,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(CAM_TZ, strParams[1]);
@@ -542,6 +572,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE_STATUS, strParams[0]));
 		}
 	}
@@ -554,6 +585,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(SCHEDULE_STATUS, Boolean.parseBoolean(strParams[1]));
@@ -573,6 +605,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(LOCATION_LAT, Double.parseDouble(strParams[1]));
@@ -592,6 +625,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_LOCATION_POS, strParams[0]));
 		}
 	}
@@ -604,6 +638,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE, strParams[0]), strParams[1]);
 		}
 	}
@@ -616,6 +651,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE_IDX, strParams[0], strParams[1]), strParams[2]);
 		}
 	}
@@ -628,6 +664,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_CAM_SCHEDULE_IDX, strParams[0], strParams[1]));
 		}
 	}
@@ -639,6 +676,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_NOTIFY_SETTING, strParams[0]));
 		}
 	}
@@ -651,6 +689,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+String.format(URL_NOTIFY_SETTING, strParams[0]), strParams[1]);
 		}
 	}
@@ -663,6 +702,7 @@ public class BeseyeCamBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(CAM_UPSIDE_DOWN, Boolean.valueOf(strParams[1]));
