@@ -347,6 +347,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			audioRecord.startRecording();
 			
 			audioSendThread = new AudioSendThread();
+			//audioSendThread.setPriority(Thread.MIN_PRIORITY);
 			audioSendThread.start();
     	}
     }
@@ -362,6 +363,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     class AudioSendThread extends Thread {
     	@Override
     	public void run(){
+    		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
     		iRefCount = 0;
 		    OutputStream os = null;
 		    Socket socket = null;
@@ -446,20 +448,40 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						    		}else{
 						    			{
 							    			//mFNotifyWSChannel.get().send(buff);
-							    			JSONObject data_obj = new JSONObject();
-							    			JSONArray arr = new JSONArray();
-							    			if(null != arr){
-							    				for(int i = 0;i< len;i++)
-							    					arr.put(buff[i]+128);
-							    			}
-							    			//String data = arr.toString().substring(1, arr.toString().length()-2);
-						    				data_obj.put(WS_ATTR_DATA, arr);//new String(buff,0, len, "UTF-8"));
-						    				String strSent = String.format(WS_CMD_FORMAT, WS_FUNC_BIN_TRANSFER, data_obj.toString());
+						    				long lBeginTime = System.currentTimeMillis();
+						    				StringBuilder strArrayVal = new StringBuilder();
+						    				strArrayVal.append("{\""+WS_ATTR_DATA+"\":[");
+						    				for(int i = 0;i< len;i++){
+						    					strArrayVal.append(buff[i]+128);
+						    					if(len -1 == i){
+						    						strArrayVal.append("]}");
+						    					}else{
+						    						strArrayVal.append(",");
+						    					}
+						    				}
+						    				String strSent = String.format(WS_CMD_FORMAT, WS_FUNC_BIN_TRANSFER, strArrayVal);
+						    				
+//							    			JSONObject data_obj = new JSONObject();
+//							    			JSONArray arr = new JSONArray();
+//							    			if(null != arr){
+//							    				for(int i = 0;i< len;i++)
+//							    					arr.put(buff[i]+128);
+//							    			}
+//							    			//String data = arr.toString().substring(1, arr.toString().length()-2);
+//						    				data_obj.put(WS_ATTR_DATA, arr);//new String(buff,0, len, "UTF-8"));
+//						    				String strSent = String.format(WS_CMD_FORMAT, WS_FUNC_BIN_TRANSFER, data_obj.toString());
+						    				
+						    				//Log.i(TAG, "run(), parse time:"+(System.currentTimeMillis() - lBeginTime));
+						    				//Log.i(TAG, "run(), parse time:"+(System.currentTimeMillis() - lBeginTime)+"\n "+data_obj.toString());
+						    				//lBeginTime = System.currentTimeMillis();
+						    				
 							    			mFNotifyWSChannel.get().send(strSent);	
+							    			//Log.i(TAG, "run(), ts:"+System.currentTimeMillis()+", send time:"+(System.currentTimeMillis() - lBeginTime)+", len:"+len);
 						    			}
 						    			//Log.i(TAG, "run(), len="+len+", strSent=\n"+strSent);
 						    		}
 						    	}
+						    	Thread.sleep(30);
 							    len = uis.read(buff);
 						    }
 			    		} catch (Exception e) {

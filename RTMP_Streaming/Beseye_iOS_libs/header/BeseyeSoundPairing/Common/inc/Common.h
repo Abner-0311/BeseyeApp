@@ -21,6 +21,7 @@ typedef   unsigned int    	U32;
 typedef   int    			S32;
 typedef   unsigned char   	BOOLEAN;
 
+
 enum BoolVal{
   BFALSE,
   BTRUE,
@@ -66,6 +67,7 @@ static char* host = "http://localhost/sray";
                                 __LINE__, __FUNCTION__, ##args); } while (0)
 
 #ifdef ANDROID
+#define GEN_TONE_ONLY //for client side
 #define  LOG_TAG    "BesEye"
 #include <jni.h>
 #include <android/log.h>
@@ -83,6 +85,8 @@ static char* host = "http://localhost/sray";
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include "error.h"
 #define CAM_URL "127.0.0.1"
 
@@ -90,15 +94,15 @@ void showTime();
 
 #define  LOGD(fmt, args...)  //printf(__VA_ARGS__)
 #define  LOGI(fmt, args...)  showTime(); \
-							 printf("[%s][%d][%s()], " fmt, __FILE__, \
+							 printf("[%d][%s][%d][%s()], " fmt, getpid(), __FILE__, \
         					 __LINE__, __FUNCTION__, ##args);
 
 #define  LOGW(fmt, args...)  showTime(); \
-							 printf("[%s][%d][%s()], " fmt, __FILE__, \
+							 printf("[%d][%s][%d][%s()], " fmt, getpid(), __FILE__, \
         					 __LINE__, __FUNCTION__, ##args);
 
 #define  LOGE(fmt, args...)  showTime(); \
-						     printf("[%s][%d][%s()], " fmt, __FILE__, \
+						     printf("[%d][%s][%d][%s()], " fmt, getpid(), __FILE__, \
 		 	 	 	 	 	 __LINE__, __FUNCTION__, ##args);
 //#define  LOGE(fmt, args...)  fprintf(stderr, "[%s][%d][%s()], " fmt, __FILE__, \
 //							 __LINE__, __FUNCTION__, ##args);
@@ -117,8 +121,10 @@ typedef BOOLEAN BOOL;
 #define DEF_UA "Beseye_Cam_Sw"
 
 #define CAM_WS_PORT 5432
-#define CAM_BE_HOST "http://ns01-stage.beseye.com"
-#define NETWORK_CHECK_HOST "http://www.google.com"
+//#define CAM_BE_HOST "http://ns01-stage.beseye.com"
+#define NETWORK_CHECK_HOST "www.beseye.com"
+#define NETWORK_CHECK_HOST2 "www.alibaba.com.cn"
+#define NETWORK_CHECK_HOST3 "www.google.com"
 
 #define CAM_TIME_TRACE 0
 #define CAM_CORRECTION_TRACE 1

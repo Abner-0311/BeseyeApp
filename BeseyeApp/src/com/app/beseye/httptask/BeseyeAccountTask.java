@@ -1,18 +1,7 @@
 package com.app.beseye.httptask;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT_UA;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_CLIENT_UDID;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_EMAIL;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_NAME;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_PAIRING_AP_MAC;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_PAIRING_COUNT;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_PAIRING_TYPE;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_PASSWORD;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_REMEM_ME;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_VCAM_ATTR;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_VCAM_ID;
+import static com.app.beseye.util.BeseyeJSONUtil.*;
 
 import java.util.List;
 
@@ -166,6 +155,8 @@ public class BeseyeAccountTask {
 				obj.put(ACC_PAIRING_TYPE, Integer.parseInt(strParams[0]));
 				obj.put(ACC_PAIRING_COUNT, 1);
 				obj.put(ACC_PAIRING_AP_MAC, strParams[1].replaceAll(":", ""));
+				obj.put(ACC_PAIRING_META_DATA, strParams[1].replaceAll(":", ""));
+				
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_PAIRING, obj.toString());
 			} catch (NumberFormatException e) {

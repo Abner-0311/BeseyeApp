@@ -306,14 +306,13 @@ void FreqAnalyzer::analyze(msec_t lTs, double dFreq, int iBufIndex, int iFFTValu
 				mFreqRecordList.push_back(Ref<FreqRecord>(new FreqRecord(lTs, dFreq, SoundPair_Config::MISSING_CHAR, iBufIndex, iFFTValues)));
 		}
 
+		checkTimeout(lTs);
+
 		int iSize = mFreqRecordList.size();
 		if(false == mbStartAppend && mSessionBeginTs > 0 && (0 < iSize && (lTs - mFreqRecordList[iSize-1]->mlTs) >= 3 * SoundPair_Config::TONE_PERIOD || getInvalidFreqCount() >= 3)){
 			LOGE("analyze(), remove bias\n");
 			reset();
 		}
-
-		checkTimeout(lTs);
-
 	}else{
 		LOGD("analyze(), find code [%s] for freq:%f at %lld, mSessionBeginTs:%lld\n",strCode.c_str() , dFreq, lTs, mSessionBeginTs);
 		mFreqRecordList.push_back(Ref<FreqRecord>(new FreqRecord(lTs, dFreq, strCode, iBufIndex, iFFTValues)));

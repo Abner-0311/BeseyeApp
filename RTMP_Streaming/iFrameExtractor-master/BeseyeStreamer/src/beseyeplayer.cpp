@@ -68,6 +68,7 @@ mVecPendingStreamPaths(NULL),
 iNumOfPendingStreamPaths(0),
 rtmpRef(NULL),
 mdStreamClock(-1.0),
+mdSeekOffset(0.0),
 miRestDVRCount(0){
 	wanted_stream[AVMEDIA_TYPE_AUDIO] = -1;
 	wanted_stream[AVMEDIA_TYPE_VIDEO] = -1;
@@ -399,8 +400,8 @@ void CBeseyePlayer::update_video_pts(VideoState *is, double pts, int64_t pos) {
     is->video_current_pos = pos;
     is->frame_last_pts = pts;
 
-	int iClock = (pts >= 0.0)?(pts+0.0001):0;
-	int iStreamClock = (mdStreamClock >= 0.0)?(mdStreamClock+0.0001):-1;
+	int iClock = ((pts >= 0.0)?(pts+0.0001):0)+mdSeekOffset;
+	int iStreamClock = ((mdStreamClock >= 0.0)?(mdStreamClock+0.0001):-1)+mdSeekOffset;
 	//av_log(NULL, AV_LOG_INFO, "update_video_pts(), clock:%d, mdStreamClock:%d\n", iClock, iStreamClock);
 	if(iClock > iStreamClock){
 		setStreamClock(pts);
@@ -578,6 +579,11 @@ void CBeseyePlayer::setStreamClock(double dClock){
 	mdStreamClock = dClock;
 }
 
+void CBeseyePlayer::setStreamSeekOffset(double dOffset){
+	av_log(NULL, AV_LOG_INFO, "setStreamSeekOffset(), dOffset:%7.2f\n", dOffset);
+	mdSeekOffset = dOffset;
+}
+
 /* allocate a picture (needs to do that in main thread to avoid
    potential locking problems */
 void CBeseyePlayer::alloc_picture(BeseyeAllocEventProps *event_props)
@@ -747,7 +753,7 @@ int CBeseyePlayer::queue_picture(VideoState *is, AVFrame *src_frame, double pts1
 
     while (is->pictq_size >= VIDEO_PICTURE_QUEUE_SIZE &&
            !is->videoq.abort_request) {
-    	av_log(NULL, AV_LOG_ERROR, "queue_picture(), SDL_CondWait\n");
+    	//av_log(NULL, AV_LOG_ERROR, "queue_picture(), SDL_CondWait\n");
         SDL_CondWait(is->pictq_cond, is->pictq_mutex);
     }
     SDL_UnlockMutex(is->pictq_mutex);
@@ -1733,6 +1739,7 @@ int read_thread(void *arg)
     AVDictionaryEntry *t;
     AVDictionary **opts;
     int orig_nb_streams;
+    char* seekTime = (char*)malloc(32);
 
     memset(st_index, -1, sizeof(st_index));
     is->last_video_stream = is->video_stream = -1;
@@ -1756,7 +1763,13 @@ int read_thread(void *arg)
 
     av_dict_set(&format_opts, "holder", (const char*)&holder, 0);
 
-    av_log(NULL, AV_LOG_ERROR, "read_thread(), is:[%d], is->filename:[%s]\n", is, is->filename);
+    int64_t timestamp = player->get_start_time();
+
+    memset(seekTime, 0, 32);
+    sprintf(seekTime, "%d", timestamp);
+    av_dict_set(&format_opts, "seekTime", seekTime, 0);
+
+    av_log(NULL, AV_LOG_ERROR, "read_thread(), is:[%d], is->filename:[%s], seekTime:[%s]\n", is, is->filename, seekTime);
 
     err = avformat_open_input(&ic, is->filename, is->iformat, &format_opts);
     if (err < 0) {
@@ -1789,7 +1802,13 @@ int read_thread(void *arg)
 
     }
 
+
+//    if(0 < timestamp){
+//    	player->setStreamSeekOffset(((double)timestamp)/1000.0);
+//    }
+
     player->setStreamClock(0.0);
+
 //    if ((t = av_dict_get(format_opts, "", NULL, AV_DICT_IGNORE_SUFFIX))) {
 //        av_log(NULL, AV_LOG_ERROR, "Option %s not found.\n", t->key);
 //        if(0!= strcmp(t->key, "holder")){
@@ -1834,27 +1853,27 @@ int read_thread(void *arg)
     	player->set_seek_by_bytes(!!(ic->iformat->flags & AVFMT_TS_DISCONT));
 
     /* if seeking requested, we execute it */
-    if (player->get_start_time()!= AV_NOPTS_VALUE) {
-        int64_t timestamp = 0;
-
-        timestamp = player->get_start_time();
-        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld, AV_NOPTS_VALUE:%lld\n", timestamp, ic->start_time, AV_NOPTS_VALUE);
-
-        /* add the stream start time */
-        if (ic->start_time != AV_NOPTS_VALUE){
-            timestamp += ic->start_time;
-            av_log(NULL, AV_LOG_INFO, "read_thread(), add timestamp:%lld, ic->start_time:%lld\n", timestamp, ic->start_time);
-        }
-        ret = avformat_seek_file(ic, 0, INT64_MIN, timestamp, INT64_MAX, 0);
-        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld\n", timestamp, ic->start_time);
-
-        if (ret < 0) {
-        	av_log(NULL, AV_LOG_ERROR, "%s: could not seek to position %0.3f\n",
-                    is->filename, (double)timestamp / AV_TIME_BASE);
-            fprintf(stderr, "%s: could not seek to position %0.3f\n",
-                    is->filename, (double)timestamp / AV_TIME_BASE);
-        }
-    }
+//    if (player->get_start_time()!= AV_NOPTS_VALUE) {
+//        int64_t timestamp = 0;
+//
+//        timestamp = player->get_start_time();
+//        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld, AV_NOPTS_VALUE:%lld\n", timestamp, ic->start_time, AV_NOPTS_VALUE);
+//
+//        /* add the stream start time */
+//        if (ic->start_time != AV_NOPTS_VALUE){
+//            timestamp += ic->start_time;
+//            av_log(NULL, AV_LOG_INFO, "read_thread(), add timestamp:%lld, ic->start_time:%lld\n", timestamp, ic->start_time);
+//        }
+//        ret = avformat_seek_file(ic, 0, INT64_MIN, timestamp, INT64_MAX, 0);
+//        av_log(NULL, AV_LOG_INFO, "read_thread(),  timestamp:%lld, ic->start_time:%lld\n", timestamp, ic->start_time);
+//
+//        if (ret < 0) {
+//        	av_log(NULL, AV_LOG_ERROR, "%s: could not seek to position %0.3f\n",
+//                    is->filename, (double)timestamp / AV_TIME_BASE);
+//            fprintf(stderr, "%s: could not seek to position %0.3f\n",
+//                    is->filename, (double)timestamp / AV_TIME_BASE);
+//        }
+//    }
 
     for (i = 0; i < ic->nb_streams; i++)
         ic->streams[i]->discard = AVDISCARD_ALL;
@@ -2088,6 +2107,11 @@ int read_thread(void *arg)
     av_dict_set(&format_opts, "holder", NULL, 0);
     av_free(ci);
     av_log(NULL, AV_LOG_INFO, "read_thread()--, is:%d, this:[0x%x]\n", is, player);
+
+    if(seekTime){
+    	free(seekTime);
+    	seekTime = NULL;
+    }
     return 0;
 }
 

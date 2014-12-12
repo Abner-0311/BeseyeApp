@@ -1479,6 +1479,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		mIsStop = false;
        	 	mPlayStreamThread = new Thread(){
             	public void run(){ 
+            		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY);
             		if (TouchSurfaceView.mSDLThread != null) {
                        try {
                        	TouchSurfaceView.mSDLThread.join();

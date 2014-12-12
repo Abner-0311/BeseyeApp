@@ -301,49 +301,16 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
 //                                 //"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin/_definst_/3313916c77ff42cf82f8c7ad9c437442"
 //                                 "rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/2e26ea2bccb34937a65dfa02488e58dc"
 //                                 );
-        player1->createStreaming("rtmps://ss01-edge-stage.beseye.com:443/live-edge/_definst_/{o}ss01-origin-stage.beseye.com/live-origin-record/_definst_/66504a81d02d4a4a83e1a04093b2d8f4");
+        player1->createStreaming("rtmps://ss01-edge-stage.beseye.com:443/live-edge/_definst_/{o}ss01-origin-stage.beseye.com/live-origin-record/_definst_/2e26ea2bccb34937a65dfa02488e58dc");
         
-        const char* path[] = {"mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-                              "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-                              "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4","mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513285325_{dur}3219_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513288382_{dur}3199_{r}1401510902433.mp4",
-            "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513291378_{dur}3174_{r}1401510902433.mp4",
-                              "mp4:amazons3/2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/rec/aac/2014/05-31/05/{sEnd}1401513294505_{dur}3156_{r}1401510902433.mp4"};
+        const char* path[] = {"mp4:amazons3/0-beseyeuser-policy01-us-west-2/rec/2e26ea2bccb34937a65dfa02488e58dc/aac/2014/12-10/08/{sEnd}1418198457942_{dur}10336_{r}1418190829206.mp4",
+                              "mp4:amazons3/0-beseyeuser-policy01-us-west-2/rec/2e26ea2bccb34937a65dfa02488e58dc/aac/2014/12-10/08/{sEnd}1418198468052_{dur}10385_{r}1418190829206.mp4",
+                              "mp4:amazons3/0-beseyeuser-policy01-us-west-2/rec/2e26ea2bccb34937a65dfa02488e58dc/aac/2014/12-10/08/{sEnd}1418198479283_{dur}10347_{r}1418190829206.mp4",
+                              "mp4:amazons3/0-beseyeuser-policy01-us-west-2/rec/2e26ea2bccb34937a65dfa02488e58dc/aac/2014/12-10/08/{sEnd}1418198488772_{dur}10278_{r}1418190829206.mp4",
+                              "mp4:amazons3/0-beseyeuser-policy01-us-west-2/rec/2e26ea2bccb34937a65dfa02488e58dc/aac/2014/12-10/08/{sEnd}1418198498963_{dur}10382_{r}1418190829206.mp4",
+                              "mp4:amazons3/0-beseyeuser-policy01-us-west-2/rec/2e26ea2bccb34937a65dfa02488e58dc/aac/2014/12-10/08/{sEnd}1418198509385_{dur}10342_{r}1418190829206.mp4"};
         
-        player1->createStreaming("rtmp://54.238.191.39:1935/vods3/_definst_/", path, 4, 0);
+        player1->createStreaming("rtmps://ss01-edge-stage.beseye.com:443/vods3/_definst_/", path, 4, 0);
 
         
         //                                 //"rtsp://54.250.149.50:554/live-origin/_definst_/mystream7_aac"

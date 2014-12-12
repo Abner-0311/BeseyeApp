@@ -197,6 +197,7 @@ public class BeseyeJSONUtil {
 	
 	public static final String ACC_PAIRING_COUNT 		= "PairingCnt";
 	public static final String ACC_PAIRING_AP_MAC 		= "PairingWifiRouterMac";
+	public static final String ACC_PAIRING_META_DATA 	= "PairingMetaData";
 	public static final String ACC_PAIRING_TOKEN 		= "PairingToken";
 	
 	

@@ -1,9 +1,11 @@
 package com.app.beseye.widget;
 
+import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class AmplitudeImageView extends ImageView {
@@ -35,6 +37,7 @@ public class AmplitudeImageView extends ImageView {
 		}
 		
 		invalidate();
+    	//Log.i(TAG, "setAmplitudeRatio(), ts"+System.currentTimeMillis());	
 	}
 	
 	@Override
@@ -42,6 +45,7 @@ public class AmplitudeImageView extends ImageView {
 		int iHeight = getHeight();
 		rectF.set(0, iHeight*(1.0f - mfAmplitudeRatio), getWidth(), iHeight);
 		canvas.clipRect(rectF);
-		super.onDraw(canvas);        
+		super.onDraw(canvas);  
+		//Log.i(TAG, "onDraw(), ts"+System.currentTimeMillis());	
 	}
 }
