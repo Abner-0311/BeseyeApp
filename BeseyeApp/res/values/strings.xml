@@ -6,7 +6,6 @@
     <string name="crash_toast_text"></string>
     <string name="camerview_init_date">---.--.----</string>
     <string name="camerview_init_time">--:--:-- --</string>
-    <string name="dialog_dettach_cam">Camera [%s] and its recorded video will be removed, are you sure?</string>
     <string name="dialog_reboot_cam">Are you sure to reboot this cam [%s]?</string>
     
     <string name="news_release_date">2014.7.13</string>
@@ -17,7 +16,6 @@
 	<string name="about_link">www.beseye.com</string>
 	<string name="forget_password_check_mail_address">k******g@beseye.com</string>
 	
-	<string name="cam_setting_title_detach_cam">Remove camera</string>
 	<string name="cam_setting_title_reboot_cam">Reboot cam !!!(Dev)</string>
 	
 	<string name="cam_menu_private_demo_cam">Private cameras</string>
@@ -52,6 +50,9 @@
     <string name="can_power_state_off">The cam is off</string>
     <string name="can_power_state_disconnect">This cam is not connected</string>
 
+    <string name="cam_setting_title_detach_cam">Remove camera</string>
+    <string name="dialog_dettach_cam">Camera [%s] and its recorded video will be removed, are you sure?</string>
+    
     <string name="network_ssid">Network SSID</string>
     <string name="menu_scan">Scan</string>
     <string name="network_avoid_poor_network">Avoid poor internet connection&#8230;</string>
@@ -342,6 +343,15 @@
 	
 	<string name="about_title">About Beseye</string>
 	<string name="about_ver">Beseye Version %s</string>
+	
+	<string name="pull_to_refresh_pull_label">Pull down to refresh&#8230;</string>
+    <string name="pull_to_refresh_release_label">Release to refresh&#8230;</string>
+    <string name="pull_to_refresh_refreshing_label">Updating&#8230;</string>
+
+    <!-- Just use standard Pull Down String when pulling up. These can be set for languages which require it -->
+    <string name="pull_to_refresh_from_bottom_pull_label">Pull up to refresh&#8230;</string>
+    <string name="pull_to_refresh_from_bottom_release_label">@string/pull_to_refresh_release_label</string>
+    <string name="pull_to_refresh_from_bottom_refreshing_label">@string/pull_to_refresh_refreshing_label</string>
 	
 	<!-- Timezone definition begin -->
 	<string name="tz_us_eastern">US	– Eastern</string>
