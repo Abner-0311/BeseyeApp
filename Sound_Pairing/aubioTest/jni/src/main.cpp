@@ -25,7 +25,6 @@ void sighandler(int sig){
 
 int main(int argc, char** argv) {
 	LOGE( "SoundPairnig version:[2014/12/05 11]...................., ts:[%lld]\n", time_ms());
-
 	signal(SIGINT, sighandler);
 
 	curl_global_init(CURL_GLOBAL_SSL);
