@@ -440,6 +440,8 @@
 	
 	<string name="about_title">About Beseye</string>
 	<string name="about_ver">Beseye Version %s</string>
+	<string name="about_desc">The name Beseye was created with the Ancient Egyptian goddess, Bes, protector of households and a symbol of family blessing.\n\nBes is an Ancient Egyptian deity worshipped as a protector of households, and in particular, of mothers and children and childbirth. Bes later came to be regarded as the defender of everything good and the enemy of all that is bad.\n\nBes Eye Cloud Security Co., in the name of "via Bes’ eye," is dedicated to home and family care. With the up-to-date cloud and monitor hardware manufacturing technology, we are committed to a smarter and safer life for household users.\n\nWant to be free from anxiety and home security risks? Want to stay with your babies as they getting older day by day, and never miss any precious moments? We propose a cloud solution to protect your loved ones and guard your home.\n\nAll you need to do is pick up your Beseye camera! Enjoy your family time!</string>
+	
 	
 	<!-- descriptions of pull to refresh listview-->
 	<string name="loading_latest_update">Last update&#160;%s</string>
