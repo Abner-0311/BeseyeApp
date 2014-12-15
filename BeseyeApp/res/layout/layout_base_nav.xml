@@ -12,8 +12,7 @@
     <ImageView
         android:id="@+id/iv_nav_left_btn"
 	    android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:text="@string/title_wifi"
+	    android:layout_height="wrap_content"
 		android:src="@drawable/sl_nav_back_btn"
     	android:layout_toRightOf="@+id/vw_margin_left"
     	android:layout_centerVertical="true">

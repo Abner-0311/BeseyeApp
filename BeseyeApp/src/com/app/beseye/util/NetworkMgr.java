@@ -38,7 +38,6 @@ import android.util.Log;
 import com.app.beseye.R;
 import com.app.beseye.receiver.NetworkChangeReceiver;
 import com.app.beseye.receiver.WifiStateChangeReceiver;
-import com.app.beseye.setting.TimezoneListActivity.BeseyeTimeZone;
 
 public class NetworkMgr {
 	public static final int NUM_WEP_KEY_IDX = 4;
@@ -182,6 +181,7 @@ public class NetworkMgr {
 	public List<WifiConfiguration> getAllWifiConfiguration(){
 		if(null != mWifiManager){
 			return mWifiManager.getConfiguredNetworks();
+			
 		}
 		return null;
 	}
@@ -194,6 +194,7 @@ public class NetworkMgr {
 				config = c;
 				Log.i(TAG, "getWifiConfigurationByBSSID(), SSID:<"+c.SSID+
 						  ">, BSSID:<"+c.BSSID+
+						  ">, hiddenSSID:<"+c.hiddenSSID+
 						  ">, wepTxKeyIndex:<"+c.wepTxKeyIndex+
 						  ">, wepKeys:<"+c.wepKeys[c.wepTxKeyIndex]+
 						  ">, status:<"+c.status+
@@ -206,6 +207,33 @@ public class NetworkMgr {
 				break;
 			}
 		}
+		return config;
+	}
+	
+	public WifiConfiguration getWifiConfigurationByBSSID(String BSSID){
+		WifiConfiguration config = null;
+		if(null != BSSID){
+			List<WifiConfiguration> configs = getAllWifiConfiguration();
+			for(WifiConfiguration c : configs){
+				if(null != c && null != c.BSSID && c.BSSID.equalsIgnoreCase("\"" + BSSID + "\"")){
+					config = c;
+					Log.i(TAG, "getWifiConfigurationByBSSID(), SSID:<"+c.SSID+
+							  ">, BSSID:<"+c.BSSID+
+							  ">, hiddenSSID:<"+c.hiddenSSID+
+							  ">, wepTxKeyIndex:<"+c.wepTxKeyIndex+
+							  ">, wepKeys:<"+c.wepKeys[c.wepTxKeyIndex]+
+							  ">, status:<"+c.status+
+							  ">, allowedAuthAlgorithms:<"+c.allowedAuthAlgorithms+
+							  ">, allowedGroupCiphers:<"+c.allowedGroupCiphers+
+							  ">, allowedKeyManagement:<"+c.allowedKeyManagement+
+							  ">, allowedPairwiseCiphers:<"+c.allowedPairwiseCiphers+
+							  ">, allowedProtocols:<"+c.allowedProtocols+
+							  ">, preSharedKey:<"+c.preSharedKey+">");
+					break;
+				}
+			}
+		}
+		
 		return config;
 	}
 	
@@ -669,6 +697,7 @@ public class NetworkMgr {
 		public int frequency;
 		public boolean bActiveConn;
 		public boolean bIsOther = false;
+		public boolean bIsHiddenSSID = false;
 		
 		public WifiAPInfo() {
 			bIsOther = false;
@@ -699,6 +728,7 @@ public class NetworkMgr {
 			frequency = in.readInt();
 			bActiveConn = in.readInt()>0?true:false;
 			bIsOther = in.readInt()>0?true:false; 
+			bIsHiddenSSID = in.readInt()>0?true:false; 
 		}
 		
 		public String getCipher(){ return cipher;}
@@ -720,6 +750,8 @@ public class NetworkMgr {
 			dest.writeInt(frequency);
 			dest.writeInt(bActiveConn?1:0);
 			dest.writeInt(bIsOther?1:0);
+			dest.writeInt(bIsHiddenSSID?1:0);
+			
 		}
 		
 		public static final Parcelable.Creator<WifiAPInfo> CREATOR = new Parcelable.Creator<WifiAPInfo>() {
@@ -917,6 +949,12 @@ public class NetworkMgr {
 			retInfo.BSSID = ret.BSSID;
 			retInfo.bActiveConn = ret.BSSID.equals(activeSSID);
 			retInfo.frequency = ret.frequency;
+			WifiConfiguration wifiConfig = getWifiConfigurationBySSID(retInfo.SSID);
+			if(null != wifiConfig){
+				retInfo.bIsHiddenSSID = wifiConfig.hiddenSSID;
+			}else{
+				Log.e(TAG, "transformFromScanResult(), can not find config for ret.SSID "+retInfo.SSID);
+			}
 			retInfo.signalLevel = WifiManager.calculateSignalLevel(ret.level, WifiAPInfo.MAX_SIGNAL_LEVEL);
 			
 			retInfo.iCipherIdx = 0;

@@ -12,7 +12,6 @@
         android:id="@+id/txt_wifi_title"
 	    android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:text="@string/title_wifi"
     	android:textColor="@color/wifi_list_title_color"
     	android:textSize="@dimen/liveview_navbar_font_size_large"
     	android:layout_toRightOf="@+id/vw_margin_left"

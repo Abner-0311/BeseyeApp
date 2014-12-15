@@ -72,7 +72,7 @@
 	        android:id="@+id/tv_no_account"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="@string/account_new"
+	        android:text="@string/hint_to_create_account"
 	        android:textColor="@color/word_gray"
 	        android:textSize="@dimen/login_fontSmall" />
         <TextView
