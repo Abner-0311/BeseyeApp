@@ -160,7 +160,7 @@ bool FreqGenerator::playCode2(const string strMacAddr, const string strWifiKey, 
 
 	string strEncodeMark = strEncode;//SoundPair_Config::encodeConsecutiveDigits(strEncode);
 	string strCode = bNeedEncode?
-							("34543"+
+							("34678j"+
 							  SoundPair_Config::PREFIX_DECODE+
 							  (SoundPair_Config::PRE_EMPTY?"X":"")+
 							  strRotateSeed+
@@ -1096,7 +1096,9 @@ ERR:
 
 static const unsigned long MIN_TIME_TO_WAIT_ATTACH = 60000; //1 min
 
-unsigned long FreqGenerator::getSoundPairingDuration(const char* ssid, const char* wifiKey, bool bSSIDHash){//in milliseconds
+unsigned long FreqGenerator::getSoundPairingDuration(const char* ssid, const char* wifiKey, bool bSSIDHash, bool bUnknownSecType = true){//in milliseconds
+	LOGI("bSSIDHash: %d, bUnknownSecType = %d\n", bSSIDHash, bUnknownSecType);
+
 	unsigned int iNumWords= (bSSIDHash?8:(ssid?strlen(ssid):0))*2+
 							(wifiKey?strlen(wifiKey):0)*2+
 							2+//SSID len
@@ -1107,6 +1109,10 @@ unsigned long FreqGenerator::getSoundPairingDuration(const char* ssid, const cha
 	unsigned long lTimeToWait = iNumWords*4*100 + 45*1000;
 	if(MIN_TIME_TO_WAIT_ATTACH > lTimeToWait){
 		lTimeToWait = MIN_TIME_TO_WAIT_ATTACH;
+	}
+
+	if(bUnknownSecType){
+		lTimeToWait=(lTimeToWait*3)/2;
 	}
 	return lTimeToWait;
 }

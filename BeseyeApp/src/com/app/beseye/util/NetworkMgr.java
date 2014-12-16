@@ -667,7 +667,7 @@ public class NetworkMgr {
 	static public class WifiAPInfo implements Parcelable{
 		@Override
 		public String toString() {
-			return "WifiAPInfo [SSID=" + SSID + ", BSSID=" + BSSID
+			return "WifiAPInfo [SSID=" + SSID + ", BSSID=" + BSSID+", bIsHiddenSSID="+bIsHiddenSSID
 					+ ", cipher=" + cipher + ", password=" + password
 					+ ", wepkeyIdx=" + wepkeyIdx + ", signalLevel="
 					+ signalLevel + ", frequency=" + frequency

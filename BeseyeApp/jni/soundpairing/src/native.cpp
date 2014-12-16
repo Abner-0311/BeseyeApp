@@ -392,7 +392,7 @@ JNIEXPORT jlong JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_getSoun
 	char *ssid = (char *)jni_env->GetStringUTFChars(strSSID, 0);
 	char *password = (char *)jni_env->GetStringUTFChars(strKey, 0);
 
-	return FreqGenerator::getInstance()->getSoundPairingDuration(ssid, password, bSSIDHash);
+	return FreqGenerator::getInstance()->getSoundPairingDuration(ssid, password, bSSIDHash, false);
 }
 
 JNIEXPORT jstring JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_getSSIDHashValue(JNIEnv * env, jobject thisObj, jstring strSSID){
