@@ -516,7 +516,7 @@
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/include\"",
 				);
 				INFOPLIST_FILE = "iFrameExtractor-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../../RTMP_Streaming/rtmpdump-2.3_2/lib",
@@ -548,7 +548,7 @@
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/include\"",
 				);
 				INFOPLIST_FILE = "iFrameExtractor-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../../RTMP_Streaming/rtmpdump-2.3_2/lib",

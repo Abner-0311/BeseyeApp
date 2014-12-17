@@ -109,25 +109,35 @@ void killSystemProcess(){
 	}
 }
 
-void checkSystemProcess(){
-	if(0 < intermediate_pid){
-		msec_t lDelta = (time_ms() - lTimeInvodeSystem);
-		LOGE( "intermediate_pid:[%d], lDelta:[%lld], lTimeInvodeSystem:[%lld], siTimeoutValue:[%lld]\n", intermediate_pid, lDelta, lTimeInvodeSystem, siTimeoutValue);
-		if(isSystemProcessExist()){
-			if((0 != lTimeInvodeSystem) && (lDelta > (siTimeoutValue*1000))){
-				LOGE( "stop monitor flag is on over %lld sec\n", siTimeoutValue);
-				killSystemProcess();
+static const msec_t PERIOD_TO_CHECK_SYS_PROC = 1000;
+static msec_t slTimeToCheckSysProcess = 0;
+
+void checkSystemProcess(bool bFromLC){
+	if(0 == slTimeToCheckSysProcess || (time_ms() - slTimeToCheckSysProcess) > PERIOD_TO_CHECK_SYS_PROC){
+		slTimeToCheckSysProcess = time_ms();
+		if(0 < intermediate_pid){
+			msec_t lDelta = (time_ms() - lTimeInvodeSystem);
+			LOGE( "intermediate_pid:[%d], lDelta:[%lld], lTimeInvodeSystem:[%lld], siTimeoutValue:[%lld], bFromLC:[%d]\n", intermediate_pid, lDelta, lTimeInvodeSystem, siTimeoutValue, bFromLC);
+			if(isSystemProcessExist()){
+				if((0 != lTimeInvodeSystem) && (lDelta > (siTimeoutValue*1000))){
+					LOGE( "stop monitor flag is on over %lld sec\n", siTimeoutValue);
+					killSystemProcess();
+				}
+			}else{
+				LOGE( "stop monitor flag is off\n");
+				if((0 != lTimeInvodeSystem) && (lDelta > (siTimeoutValue*1000))){
+					LOGE( "stop monitor flag is on over %lld sec -- \n", siTimeoutValue);
+					killSystemProcess();
+				}
+				lTimeInvodeSystem = 0;
+				intermediate_pid = -1;
 			}
-		}else{
-			LOGE( "stop monitor flag is off\n");
-			if((0 != lTimeInvodeSystem) && (lDelta > (siTimeoutValue*1000))){
-				LOGE( "stop monitor flag is on over %lld sec -- \n", siTimeoutValue);
-				killSystemProcess();
-			}
-			lTimeInvodeSystem = 0;
-			intermediate_pid = -1;
 		}
 	}
+}
+
+void healthCheck(){
+	checkSystemProcess(true);
 }
 
 static const char* SP_ENABLED_FLAG			= "/beseye/config/sp_enabled";
@@ -229,8 +239,8 @@ static int 	 ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT	= 0;
 static short ANALYSIS_END_THRESHHOLD_DETECT	   		= -1;//audio value
 
 static const int   ANALYSIS_THRESHHOLD_CK_LEN 		= 1600;//sample size , about 0.1 sec
-static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT 	= 4;
-static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 	= 6;
+static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT 	= 2;
+static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 	= 10;
 
 static short sMaxValue = 0;
 static int siAboveThreshHoldCount = 0;
@@ -242,16 +252,16 @@ static const int TONE_TO_REC = 4;
 static string sToneRec = "";
 
 static string sArrTonePatterns[] = {"gi",
-									"3g",
+									"jg",
 									"g*i",
 									"ggi",
-									"3*i",
-									"3ii",
-									"33i",
-									"3*g",
-									"3**i",
+									"j*i",
+									"jii",
+									"jji",
+									"j*g",
+									"j**i",
 									"g**i",
-									"3**g"
+									"j**g"
 };
 
 bool matchTonePattern(){
@@ -278,20 +288,20 @@ static bool sbLEDOn = false;
 static msec_t lLastTimeToBufRec = 0;
 
 //Check Network and token
-static const msec_t TIME_TO_CHECK_TOKEN = 30000;//30 seconds
+static const msec_t TIME_TO_CHECK_TOKEN 				= 30000;//30 seconds
 static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 6000000;//600 seconds
-static const long TIME_TO_CHECK_LED = 1;//1 seconds
-static msec_t slLastTimeCheckToken = -1;
+static const long TIME_TO_CHECK_LED 					= 1;//1 seconds
+static msec_t slLastTimeCheckToken 						= -1;
 
 static const char* LOG_SOURCE = "/tmp/beseye_boot.log";
 static const char* LOG_DEST = "%s/sp_failed_%s.log";
 static const char* LOG_DIR = "/beseye/sp_log";
 
-static const char* RAYLIOS_VER_ENV	= "RAYLIOS_VER";
+
 static const char* RAYLIOS_VER_18	= "1.0-rc18";
 static const char* GAIN_25 			= "25";
 static const char* GAIN_35 			= "35";//after rc-18
-static int siRayliosVerAbove18 = -1;//-1:unknown, 0:no, 1:yes
+static int siRayliosVerAbove18 		= -1;//-1:unknown, 0:no, 1:yes
 
 const char* getSPGain(){
 	if(-1 == siRayliosVerAbove18){
@@ -300,9 +310,7 @@ const char* getSPGain(){
 		ANALYSIS_START_THRESHHOLD_MIN 	= ANALYSIS_START_THRESHHOLD_MIN_G25;
 		ANALYSIS_START_THRESHHOLD_MAX 	= ANALYSIS_START_THRESHHOLD_MAX_G25;
 
-		char * raylios_ver = getenv(RAYLIOS_VER_ENV);
-		LOGI( "raylios_ver:[%s]\n", raylios_ver?raylios_ver:"");
-		if(raylios_ver && strcmp(raylios_ver, RAYLIOS_VER_18) >= 0){
+		if(compareRayliosVersion(RAYLIOS_VER_18) >= 0){
 			siRayliosVerAbove18 = 1;
 			ANALYSIS_MAX_AUDIO_VALUE 		= ANALYSIS_MAX_AUDIO_VALUE_G35;
 			ANALYSIS_START_THRESHHOLD_MIN 	= ANALYSIS_START_THRESHHOLD_MIN_G35;
@@ -1394,7 +1402,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 	 }
 #endif
 
-	checkSystemProcess();
+	checkSystemProcess(false);
 
 	if(!AudioTest::getInstance()->isPairingAnalysisMode() && !AudioTest::getInstance()->isAutoTestBeginAnalyzeOnReceiver()){
 		return;
@@ -1506,17 +1514,35 @@ void writeBuf(unsigned char* charBuf, int iLen){
 							//sPairingMode = PAIRING_WAITING;
 							changePairingMode(PAIRING_WAITING);
 							ANALYSIS_END_THRESHHOLD_DETECT = -1;
+							ANALYSIS_THRESHHOLD_MONITOR_CNT = 0;
+							ANALYSIS_THRESHHOLD_MONITOR = 0;
 						}
 					}else{
 						if(0 > ANALYSIS_END_THRESHHOLD_DETECT && AudioTest::getInstance()->getDetectStartFlag()){
 							ANALYSIS_THRESHHOLD_MONITOR_DETECT = ((ANALYSIS_THRESHHOLD_MONITOR_DETECT*(ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT);
-							if(ANALYSIS_THRESHHOLD_MONITOR_CNT >= 25){
+							if(ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT >= 25){
 								if(ANALYSIS_THRESHHOLD_MONITOR_DETECT > ANALYSIS_END_THRESHHOLD){
 									ANALYSIS_END_THRESHHOLD_DETECT = ANALYSIS_THRESHHOLD_MONITOR_DETECT;
 								}else{
 									ANALYSIS_END_THRESHHOLD_DETECT = 0;
 								}
 								LOGW("-------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR_DETECT:%d, ANALYSIS_END_THRESHHOLD_DETECT:%d\n", ANALYSIS_THRESHHOLD_MONITOR_DETECT, ANALYSIS_END_THRESHHOLD_DETECT);
+							}
+						}
+
+						if(PAIRING_WAITING == sPairingMode){
+							ANALYSIS_THRESHHOLD_MONITOR = ((ANALYSIS_THRESHHOLD_MONITOR*(ANALYSIS_THRESHHOLD_MONITOR_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_CNT);
+							//LOGW("-------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR:%d, ANALYSIS_THRESHHOLD_MONITOR_CNT:%d\n", ANALYSIS_THRESHHOLD_MONITOR, ANALYSIS_THRESHHOLD_MONITOR_CNT);
+							if(ANALYSIS_THRESHHOLD_MONITOR_CNT >= 50){
+								if(ANALYSIS_THRESHHOLD_MONITOR < ANALYSIS_START_THRESHHOLD_MIN){
+									ANALYSIS_START_THRESHHOLD = ANALYSIS_START_THRESHHOLD_MIN;
+								}else{
+									ANALYSIS_START_THRESHHOLD = ((ANALYSIS_THRESHHOLD_MONITOR) < ANALYSIS_START_THRESHHOLD_MAX)?(ANALYSIS_THRESHHOLD_MONITOR):ANALYSIS_START_THRESHHOLD_MAX;
+								}
+								ANALYSIS_END_THRESHHOLD = (ANALYSIS_THRESHHOLD_MONITOR + ANALYSIS_START_THRESHHOLD)/2;
+								LOGW("-------------------------------------------------------->ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, in PAIRING_WAITING\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD);
+								ANALYSIS_THRESHHOLD_MONITOR_CNT = 0;
+								ANALYSIS_THRESHHOLD_MONITOR = 0;
 							}
 						}
 
@@ -1561,8 +1587,14 @@ void writeBuf(unsigned char* charBuf, int iLen){
 
 								siUnderThreshHoldCount = 0;
 							}
+							if(0 < siAboveThreshHoldCount){
+								LOGW("--------------------------------------------------------> check, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
+							}
 							siAboveThreshHoldCount = 0;
 						}else{
+							if(0 < siAboveThreshHoldCount){
+								LOGW("--------------------------------------------------------> check2, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
+							}
 							siUnderThreshHoldCount = 0;
 							siAboveThreshHoldCount = 0;
 						}
@@ -1580,7 +1612,8 @@ void writeBuf(unsigned char* charBuf, int iLen){
 					if(PAIRING_WAITING == sPairingMode && 0 == (++siBufCount)%3){
 						string strTone = FreqAnalyzer::getInstance()->findToneCodeByFreq(FreqAnalyzer::getInstance()->analyzeAudioViaAudacityAC(shortsRecBuf, SoundPair_Config::FRAME_SIZE_REC, false, 0, NULL));
 
-						const string strToneSample("3gi");
+						//const string strToneSample("3gi");
+						const string strToneSample("jgi");
 						int iPos = -1;
 						sToneRec += (0 == strTone.length() || 0 > (iPos = strToneSample.find(strTone)))?"*":strTone;
 						if(TONE_TO_REC < sToneRec.length()){
@@ -1656,7 +1689,7 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 	//timespec sleepValue = {0};
 	//sleepValue.tv_nsec = 100000;//0.1 ms
 	Delegate_OpenAudioRecordDevice(SoundPair_Config::SAMPLE_RATE_REC, 0);
-	registerJobCb(checkSystemProcess);
+	registerJobCb(healthCheck);
 
 	while(!tester->mbStopBufRecordFlag){
 		msec_t lTs1 = (lTsRec+=SoundPair_Config::FRAME_TS);//System.currentTimeMillis();
@@ -1722,7 +1755,7 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 				}
 			}else{
 				LOGE("sPairingMode is not PAIRING_INIT, wait a while\n");
-				checkSystemProcess();
+				checkSystemProcess(false);
 				sleep(2);
 			}
 		}while(false == tester->mbStopBufRecordFlag);
@@ -1908,6 +1941,48 @@ void AudioTest::onAppendResult(string strCode){
 #define CAM_ENV
 #endif
 
+static int onSPFailed(){
+	int iRet = 0;
+	iRet = restoreWifi();
+	iRet = invokeSystem("\"$RESTORE_REGION_INFO_PROGRAM\"");
+	if(0 != iRet){
+		LOGE("Failed to invoke RESTORE_REGION_INFO_PROGRAM :[%d]\n", iRet);
+	}
+	//iRet = restoreRegionId();
+	return iRet;
+}
+
+static int onSPSuccess(){
+	int iRet = 0;
+	iRet = invokeSystem("/beseye/cam_main/beseye_token_check");
+	deleteOldWiFiFile();
+	//removeOldRegionId();
+//	iRet = invokeSystem("\"$BACKUP_REGION_INFO_PROGRAM\"");
+//	if(0 != iRet){
+//		LOGE("Failed to invoke RESTORE_REGION_INFO_PROGRAM :[%d]\n", iRet);
+//	}
+	AudioTest::getInstance()->setPairingReturnCode(0);
+	return iRet;
+}
+
+static int applyRegionId(unsigned char cRegId){
+	int iRet = 0;
+//	if(0 != saveRegionId(cRegId)){
+//		LOGE("Failed to save cRegId:[%d]\n", cRegId);
+//	}else{
+		//call script
+		char cmd[BUF_SIZE]={0};
+		sprintf(cmd, "\"$GEN_EXPORT_SVR_URL_SCRIPT_PROGRAM\" --vpc_id %d", cRegId);
+		iRet = invokeSystem(cmd);
+		if(0 != iRet){
+			LOGE("Failed to set vpc_id:[%d]\n", iRet);
+		}else{
+			iRet = parseEnvFile();
+		}
+//	}
+	return iRet;
+}
+
 //#include "delegate/account_mgr.h"
 void checkPairingResult(string strCode, string strDecodeUnmark){
 #ifdef CAM_ENV
@@ -1925,10 +2000,12 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	stringstream retSSID, retPW;
 	unsigned char cPurpose = 0;
 	unsigned char cSecType = 0;
+	unsigned char cSecTypeGuess = 0;
 	unsigned char cRegId = 0;
 	unsigned int iReserved = 0;
 	uint64 lSSIDHash = 0;
 	bool bGuess = false;
+	bool bUnknownSecType = false;
 	int iSSIDLen = 0;
 	int iRotateLen = 0;
 
@@ -2150,13 +2227,9 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 //			}
 		}
 
-		LOGE("cPurpose:%u, cSecType:%u, cRegId:%u, iReserved:%d, strPurposeSeg:[%s]\n", cPurpose, cSecType, cRegId, iReserved, strPurposeSeg.c_str());
+		bUnknownSecType = (cSecType == PAIRING_SEC_UNKNOWN) && (false == bGuess) && (0 == strSSIDHash.length());
 
-		if(0 != saveRegionId(cRegId)){
-			LOGE("Failed to save cRegId:[%d]\n", cRegId);
-		}else{
-			//call script
-		}
+		LOGE("cPurpose:%u, cSecType:%u, cRegId:%u, iReserved:%d, strPurposeSeg:[%s], bUnknownSecType:%d\n", cPurpose, cSecType, cRegId, iReserved, strPurposeSeg.c_str(), bUnknownSecType);
 
 		char cmd[BUF_SIZE]={0};
 //		sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", strMAC.c_str(), retPW.str().c_str());
@@ -2164,6 +2237,16 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		int iRet = 0;
 
 		if(0 == strSSIDHash.length()){
+			if(bUnknownSecType){
+				if((0 < retPW.str().length())){
+					cSecType = (cSecTypeGuess = PAIRING_SEC_WPA2);
+				}else{
+					cSecType = (cSecTypeGuess = PAIRING_SEC_NONE);
+				}
+			}else if(cSecType == PAIRING_SEC_UNKNOWN){
+				LOGE("Guess cSecType:[PAIRING_SEC_WPA2]\n");
+				cSecType = PAIRING_SEC_WPA2;
+			}
 			iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
 		}else{
 			iRet = setWifiBySSIDHash(lSSIDHash, iSSIDLen/2, (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
@@ -2182,85 +2265,105 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 			LOGE("wifi connection check begin.............\n");
 			do{
-				if(0 < iTrials){
-					//LOGE("wifi connection check , trial %d failed, ret:%d, sleep.............\n", iTrials, iNetworkRet);
-					sleep(1);
+				do{
+					if(0 < iTrials){
+						//LOGE("wifi connection check , trial %d failed, ret:%d, sleep.............\n", iTrials, iNetworkRet);
+						sleep(1);
+					}
+					++iTrials;
+					LOGE("wifi connection check , trial %d.............\n", iTrials);
+					//iNetworkRet = checkInternetStatus(NETWORK_CHECK_HOST);
+
+					iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.beseye.com") >> 8;
+
+					if(iNetworkRet != 0)
+						iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.alibaba.com.cn") >> 8;
+
+					lTimeDelta = time_ms() - lTimeToChkNetwork;
+					LOGE("wifi connection check, trial: [%d/%d] ,iNetworkRet:%d, lTimeDelta:%lld\n", iTrials, iTotalTrialCount, iNetworkRet, lTimeDelta);
+				}while((iTrials < iTotalTrialCount && lTimeDelta < 40000L) && 0 != iNetworkRet);
+
+				if(0 != iNetworkRet){
+					if(cSecTypeGuess == PAIRING_SEC_NONE){
+						break;
+					}
+					if(bUnknownSecType){
+						cSecTypeGuess -=1;
+						LOGE("try cSecTypeGuess: %d.............\n", cSecTypeGuess);
+						restoreWifi();
+						iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecTypeGuess);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
+						if(0 != iRet){
+							LOGE("failed to setWiFi for cSecTypeGuess: %d.............\n", cSecTypeGuess);
+							break;
+						}
+
+						iTrials = 0;
+					}
 				}
-				++iTrials;
-				LOGE("wifi connection check , trial %d.............\n", iTrials);
-				//iNetworkRet = checkInternetStatus(NETWORK_CHECK_HOST);
-
-				iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.beseye.com") >> 8;
-
-				if(iNetworkRet != 0)
-					iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.alibaba.com.cn") >> 8;
-
-				lTimeDelta = time_ms() - lTimeToChkNetwork;
-				LOGE("wifi connection check, trial: [%d/%d] ,iNetworkRet:%d, lTimeDelta:%lld\n", iTrials, iTotalTrialCount, iNetworkRet, lTimeDelta);
-			}while((iTrials < iTotalTrialCount && lTimeDelta < 40000L) && 0 != iNetworkRet);
+			}while(0 != iNetworkRet && (bUnknownSecType && cSecTypeGuess >= PAIRING_SEC_NONE));
 
 			LOGE("network checking complete, iNetworkRet:%d, iTrials:%ld\n", iNetworkRet, iTrials);
+
+			bool bHaveOldToken = readFromFile(SES_TOKEN_PATH);
 
 			if(0 == iNetworkRet){
 				LOGE("network connected\n");
 				iRet = invokeSystem("/beseye/cam_main/beseye_token_check") >> 8;
-				//iRet = checkTokenValid();
 				if(0 == iRet){
 					LOGE("Token is already existed, check tmp token\n");
 					if(1 == cPurpose){
-						sprintf(cmd, "/beseye/cam_main/cam-util -verToken \"%s\" %s", strAPIChk.c_str(), strUserNum.c_str());
-						LOGE("verToken cmd:[%s]\n", cmd);
-						iRet = invokeSystem(cmd) >> 8;
-						//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
+						iRet = applyRegionId(cRegId);
 						if(0 == iRet){
-							LOGE("Tmp User Token verification OK\n");
-							invokeSystem("/beseye/cam_main/beseye_token_check");
-							deleteOldWiFiFile();
-							removeOldRegionId();
-							AudioTest::getInstance()->setPairingReturnCode(0);
+							sprintf(cmd, "/beseye/cam_main/cam-util -verToken \"%s\" %s", strAPIChk.c_str(), strUserNum.c_str());
+							LOGE("verToken cmd:[%s]\n", cmd);
+							iRet = invokeSystem(cmd) >> 8;
+							//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
+							if(0 == iRet){
+								LOGE("Tmp User Token verification OK\n");
+								onSPSuccess();
+							}else{
+								LOGE("Tmp User Token verification failed\n");
+								//roll back wifi settings
+								onSPFailed();
+							}
 						}else{
-							LOGE("Tmp User Token verification failed\n");
-							//roll back wifi settings
-							iRet = restoreWifi();
-							restoreRegionId();
+							LOGE("Failed to apply cRegId : [%d]\n", cRegId);
+							onSPFailed();
 						}
 					}else{
 						LOGE("Wrong cPurpose\n");
 						//roll back wifi settings
-						iRet = restoreWifi();
-						restoreRegionId();
+						onSPFailed();
 					}
-
 				}else{
 					if(0 == cPurpose){
-						LOGE("Token is invalid, try to attach\n");
-
-						sprintf(cmd, "/beseye/cam_main/cam-util -attach \"%s\" %s", strAPIChk.c_str(), strUserNum.c_str());
-						LOGE("attach cmd:[%s]\n", cmd);
-						iRet = invokeSystem(cmd) >> 8;
-
-						//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
+						iRet = applyRegionId(cRegId);
 						if(0 == iRet){
-							LOGE("Cam attach OK\n");
-							invokeSystem("/beseye/cam_main/beseye_token_check");
-							deleteOldWiFiFile();
-							removeOldRegionId();
-							AudioTest::getInstance()->setPairingReturnCode(0);
+							LOGE("Token is invalid, try to attach\n");
+							sprintf(cmd, "/beseye/cam_main/cam-util -attach \"%s\" %s", strAPIChk.c_str(), strUserNum.c_str());
+							LOGE("attach cmd:[%s]\n", cmd);
+							iRet = invokeSystemWithTimeout(cmd, 15) >> 8;
+
+							//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
+							if(0 == iRet){
+								LOGE("Cam attach OK\n");
+								onSPSuccess();
+							}else{
+								LOGE("Cam attach failed\n");
+								onSPFailed();
+							}
 						}else{
-							LOGE("Cam attach failed\n");
-							iRet = restoreWifi();
-							restoreRegionId();
+							LOGE("Failed to apply cRegId : [%d]\n", cRegId);
+							onSPFailed();
 						}
 					}else{
 						LOGE("Wrong cPurpose for attach\n");
-						iRet = restoreWifi();
-						restoreRegionId();
+						onSPFailed();
 					}
 				}
 			}else{
 				LOGE("network disconnected\n");
-				iRet = restoreWifi();
-				restoreRegionId();
+				onSPFailed();
 			}
 		}else{
 			LOGE("wifi set failed, iRet = &d\n", CMD_RET_CODE_MAC_NOT_FOUND);

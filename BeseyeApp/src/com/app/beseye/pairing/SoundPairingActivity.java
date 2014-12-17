@@ -296,7 +296,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					if(null == mChosenWifiAPInfo.BSSID || 0 == mChosenWifiAPInfo.BSSID.length() || mChosenWifiAPInfo.bIsHiddenSSID){
 						iRet = playSSIDPairingCodeWithPurpose(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose);
 					}else{
-						iRet = playSSIDHashPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose,196);
+						iRet = playSSIDHashPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose,115);
 					}
 					
 					if(iRet != 0)

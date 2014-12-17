@@ -118,7 +118,7 @@ public:
 	//cPurpose: 0=> pairing, 1:change wifi, 2:restore token
 	//cRegId: number of Region (VPC)
 
-	unsigned long getSoundPairingDuration(const char* ssid, const char* wifiKey, bool bSSIDHash);//in milliseconds
+	unsigned long getSoundPairingDuration(const char* ssid, const char* wifiKey, bool bSSIDHash, bool bUnknownSecType);//in milliseconds
 
 	//WiFi AP BSSID (deprecated)
 	//unsigned int playPairingCode(const char* macAddr, const char* wifiKey, unsigned int secType, unsigned short tmpUserToken);

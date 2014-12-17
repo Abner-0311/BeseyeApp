@@ -630,6 +630,10 @@ static const int SHIFT_TRIGGER_CNT = 2;
 
 void FreqAnalyzer::checkCodeRecordShift(){
 	int iSize = mCodeRecordList.size();
+	if(iSize <= 2){
+		LOGE("iSize:[%d], return\n", iSize);
+		return;
+	}
 	CodeRecord::Tone_Shift_Status tsStatusLastRec = (0 < iSize)?mCodeRecordList[iSize-1]->getToneShiftStatus():CodeRecord::TS_NONE;
 	LOGE("tsStatusLastRec: [%d] , iSize:[%d]\n", tsStatusLastRec, iSize);
 	if(CodeRecord::TS_NONE != tsStatusLastRec){
@@ -697,7 +701,7 @@ void FreqAnalyzer::checkCodeRecordShift(){
 										LOGE("frSndRec: [%s]\n", frSndRec->toString().c_str());
 
 										fstRec->pushToTail(frSndRec);
-										strToChange = strToChange + fstRec->strCdoe;
+										strToChange = fstRec->strCdoe + strToChange;
 										LOGE("strToChange: [%s]\n", strToChange.c_str());
 
 										if(idx == (iSize-2)){ //End case
