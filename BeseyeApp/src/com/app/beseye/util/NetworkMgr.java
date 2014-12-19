@@ -990,7 +990,7 @@ public class NetworkMgr {
 			retInfo = new WifiAPInfo();
 			retInfo.SSID = BeseyeJSONUtil.getJSONString(ret, BeseyeJSONUtil.WIFI_SSIDLST_ID);
 			retInfo.BSSID = BeseyeJSONUtil.getJSONString(ret, BeseyeJSONUtil.WIFI_SSIDLST_BSSID);
-			retInfo.bActiveConn = retInfo.SSID.equals(activeSSID) && ((null == activeBSSID || 0 == activeBSSID.length()) || activeBSSID.equals(retInfo.BSSID));
+			retInfo.bActiveConn = retInfo.SSID.equals(activeSSID) && ((null == activeBSSID || 0 == activeBSSID.length()) || activeBSSID.equalsIgnoreCase(retInfo.BSSID));
 			
 			//retInfo.frequency = ret.frequency;
 			retInfo.signalLevel = WifiManager.calculateSignalLevel(BeseyeJSONUtil.getJSONInt(ret, BeseyeJSONUtil.WIFI_SSIDLST_SGL), WifiAPInfo.MAX_SIGNAL_LEVEL);

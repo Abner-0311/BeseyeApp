@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -218,7 +220,12 @@ public class BeseyeUtils {
 	
 	static public boolean canUpdateFromHockeyApp(){
 		String strProcessName = BeseyeApplication.getProcessName();
-		return (null != strProcessName && 0 < strProcessName.length() && strProcessName.startsWith("com.app.beseye.")) || (DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal());
+		return (null != strProcessName && 0 < strProcessName.length() && strProcessName.startsWith("com.app.beseye.") && !isProductionVersion()) || (DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal());
+	}
+	
+	static public boolean isProductionVersion(){
+		String strProcessName = BeseyeApplication.getProcessName();
+		return (null != strProcessName && 0 < strProcessName.length() && strProcessName.equals("com.app.beseye.production"));
 	}
 	
 	static public String getAndroidUUid(){
@@ -447,5 +454,10 @@ public class BeseyeUtils {
 			}
 			
 		}
+	}
+	
+	static CharsetEncoder asciiEncoder = Charset.forName("US-ASCII").newEncoder(); // or "ISO-8859-1" for ISO Latin 1
+	public static boolean isPureAscii(String v) {
+		return null != v && asciiEncoder.canEncode(v);
 	}
 }

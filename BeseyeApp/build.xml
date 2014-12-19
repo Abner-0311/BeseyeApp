@@ -26,8 +26,9 @@
          application and should be checked into Version Control Systems.
 
          -->
-    <property file="ant.properties" />
 
+	<loadproperties srcFile="ant.properties" />
+	
     <!-- if sdk.dir was not set from one of the property file, then
          get it from the ANDROID_HOME env var.
          This must be done before we load project.properties since
@@ -89,7 +90,7 @@
     
     <property name="alpha.package" value="com.app.beseye.alpha" />
     <property name="beta.package" value="com.app.beseye.beta" />
-    <property name="live.package" value="com.app.beseye" />
+    <property name="live.package" value="com.app.beseye.production" />
     <property name="config-target-dir-path" value="com/app/beseye/util" />
     
     <target name="-increase-version">
@@ -177,16 +178,20 @@
 	            <if condition="${Is_Beta}">
 		        	<then>
 		            	<antcall target="-release-beta"></antcall>
+		            	
+		            	<property name="key.store" value="beseye.release.keystore" />
 		            	<property name="key.alias" value="beseye-release-key" />
 		        	</then>
 		        	<else>
 		        	    <if condition="${Is_Alpha}">
 				        	<then>
 				            	<antcall target="-release-alpha"></antcall>
+				            	<property name="key.store" value="beseye.release.keystore" />
 				            	<property name="key.alias" value="androiddebugkey" />
 				        	</then>
 				        	<else>
 				        	    <antcall target="-release-public"></antcall>
+				        	    <property name="key.store" value="beseye.release.keystore" />
 				        	    <property name="key.alias" value="beseye-release-key" />
 			            	</else>
 			            </if>
@@ -194,6 +199,7 @@
 	            </if>
 	        </else>
 	    </if>
+	    <echo>key.store: ${key.store} and ${key.alias}</echo>
     </target>
     
     <target name="switch-config">
@@ -202,8 +208,16 @@
         <echo>Saving original Config...</echo>
 	    <copy file="${config-target-path}/BeseyeConfig.java" tofile="BeseyeConfig.java.bak" />
         <copy file="${config.filename}" todir="${config-target-path}" overwrite="true" encoding="utf-8"/>
+        
+        <echo>Saving original key.store...</echo>
         <delete file="beseye.release.keystore" quiet="true" />
         <copy file="${keystore.filename}" tofile="beseye.release.keystore" overwrite="true"/>
+        
+        <echo>Saving original ant prop...</echo>
+        <delete file="ant.properties" quiet="true" />
+        <copy file="${ant.prop.filename}" tofile="ant.properties" overwrite="true"/>
+        
+        <loadproperties srcFile="ant.properties" />
     </target>
     
     <target name="-release-alpha">
@@ -211,6 +225,7 @@
         <antcall target="switch-config">
             <param name="config.filename" value="config_alpha/BeseyeConfig.java" />
             <param name="keystore.filename" value="config_alpha/beseye.release.keystore" />
+            <param name="ant.prop.filename" value="config_alpha/ant.properties" />
         </antcall>
         
     </target>
@@ -219,7 +234,8 @@
         <echo>Selected developer configuration -release-beta</echo>
         <antcall target="switch-config">
             <param name="config.filename" value="config_beta/BeseyeConfig.java"/>
-            <param name="keystore.filename" value="config_beta/beseye.release.keystore"  />
+            <param name="keystore.filename" value="config_beta/beseye.release.keystore"/>
+            <param name="ant.prop.filename" value="config_beta/ant.properties"/>
         </antcall>
         
     </target>
@@ -229,6 +245,7 @@
         <antcall target="switch-config">
             <param name="config.filename" value="config_release/BeseyeConfig.java"/>
             <param name="keystore.filename" value="config_release/beseye.release.keystore"  />
+            <param name="ant.prop.filename" value="config_release/ant.properties"/>
         </antcall>
     </target>
     

@@ -556,7 +556,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 								public void afterTextChanged(Editable editable) {
 									btnConnect.setEnabled(editable.length() >= iMinPasswordLength);
 									mWifiApPassword = etPassword.getText().toString();
-									Log.i(TAG, "afterTextChanged(), mWifiApPassword=>"+mWifiApPassword);
+									//Log.i(TAG, "afterTextChanged(), mWifiApPassword=>"+mWifiApPassword);
 
 									//password.matches("[0-9A-Fa-f]*")
 								}

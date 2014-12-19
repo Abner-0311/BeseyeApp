@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.CrashManagerListener;
 import net.hockeyapp.android.UpdateManager;
+import net.hockeyapp.android.UpdateManagerListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -242,9 +244,26 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private void checkForUpdates() {
 	    // Remove this for store builds!
-		if(BeseyeUtils.canUpdateFromHockeyApp())
-			UpdateManager.register(this, HOCKEY_APP_ID);
+		if(BeseyeUtils.canUpdateFromHockeyApp()){
+			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener);
+		}else if(BeseyeUtils.isProductionVersion()){
+			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener);
+		}
 	}
+	
+	private UpdateManagerListener mUpdateManagerListener = new UpdateManagerListener(){
+		@Override
+		public void onUpdateAvailable() {
+			super.onUpdateAvailable();
+			UpdateManager.unregister();
+			
+			final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+			try {
+			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+			} catch (android.content.ActivityNotFoundException anfe) {
+			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+			}
+		}}; 
 	
 	static public final String KEY_WARNING_TITLE = "KEY_WARNING_TITLE";
 	static public final String KEY_WARNING_TEXT  = "KEY_WARNING_TEXT";

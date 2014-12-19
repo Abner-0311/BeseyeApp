@@ -269,7 +269,9 @@ bool matchTonePattern(){
 	const int iLenPatterns = 11;//msArrTonePatterns.length;
 
 	if(0 < sToneRec.length()){
-		LOGI( "sToneRec:[%s]---\n", sToneRec.c_str());
+		if(CAM_CORRECTION_TRACE){
+			LOGI( "sToneRec:[%s]---\n", sToneRec.c_str());
+		}
 		for(int idx = 0; idx < iLenPatterns; idx++){
 			int iPos = -1;
 			if(0 <= (iPos = sToneRec.find(sArrTonePatterns[idx]))){

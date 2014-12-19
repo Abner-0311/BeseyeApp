@@ -753,7 +753,7 @@ int CBeseyePlayer::queue_picture(VideoState *is, AVFrame *src_frame, double pts1
 
     while (is->pictq_size >= VIDEO_PICTURE_QUEUE_SIZE &&
            !is->videoq.abort_request) {
-    	av_log(NULL, AV_LOG_ERROR, "queue_picture(), SDL_CondWait\n");
+    	//av_log(NULL, AV_LOG_ERROR, "queue_picture(), SDL_CondWait\n");
         SDL_CondWait(is->pictq_cond, is->pictq_mutex);
     }
     SDL_UnlockMutex(is->pictq_mutex);
