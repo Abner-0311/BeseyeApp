@@ -880,6 +880,8 @@ bool AudioTest::startPairingAnalysis(){
 		if(bRet){
 			//checkLogFiles();
 			//setInvalidWifi();
+
+			checkWiFiRec();
 			deleteFile(MONITOR_PROCESS_FLAG);
 
 			int iRet = checkSpEnabled();//system("/beseye/cam_main/cam-handler -chk_sp_enabled") >> 8;
@@ -1958,6 +1960,7 @@ static int onSPSuccess(){
 	int iRet = 0;
 	iRet = invokeSystem("/beseye/cam_main/beseye_token_check");
 	deleteOldWiFiFile();
+	saveWiFiRec();
 	//removeOldRegionId();
 //	iRet = invokeSystem("\"$BACKUP_REGION_INFO_PROGRAM\"");
 //	if(0 != iRet){
@@ -2263,14 +2266,14 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			int iTrials = 0;
 			msec_t lTimeToChkNetwork = time_ms();
 			msec_t lTimeDelta = 0;
-			const int iTotalTrialCount = (bGuess)?15:25;
+			const int iTotalTrialCount = (bGuess)?9:15;
 
 			LOGE("wifi connection check begin.............\n");
 			do{
 				do{
 					if(0 < iTrials){
 						//LOGE("wifi connection check , trial %d failed, ret:%d, sleep.............\n", iTrials, iNetworkRet);
-						sleep(1);
+						sleep(3);
 					}
 					++iTrials;
 					LOGE("wifi connection check , trial %d.............\n", iTrials);

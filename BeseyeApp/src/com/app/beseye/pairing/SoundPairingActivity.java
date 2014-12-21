@@ -148,7 +148,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	}
 	
 	private boolean isSSIDPiaringCase(){
-		return null == mChosenWifiAPInfo.BSSID || 0 == mChosenWifiAPInfo.BSSID.length() || mChosenWifiAPInfo.bIsHiddenSSID || !BeseyeUtils.isPureAscii(mChosenWifiAPInfo.SSID);
+		return null == mChosenWifiAPInfo.BSSID || 0 == mChosenWifiAPInfo.BSSID.length() || mChosenWifiAPInfo.bIsHiddenSSID;// || !BeseyeUtils.isPureAscii(mChosenWifiAPInfo.SSID);
 	}
 	
 	@Override
