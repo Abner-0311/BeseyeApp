@@ -245,9 +245,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	private void checkForUpdates() {
 	    // Remove this for store builds!
 		if(BeseyeUtils.canUpdateFromHockeyApp()){
-			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener);
+			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, false);
 		}else if(BeseyeUtils.isProductionVersion()){
-			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener);
+			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, false);
 		}
 	}
 	
