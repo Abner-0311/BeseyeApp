@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -65,6 +66,16 @@ public class BeseyeCamInfoSyncMgr {
 			objRet= mMapCamInfo.get(strVcamId);
 		}
 		return objRet;
+	}
+	
+	synchronized public void removeCamInfoByVCamId(String strVcamId){
+		if(null != strVcamId && 0 < strVcamId.length() && null != mMapCamInfo){
+			mMapCamInfo.remove(strVcamId);
+		}
+	}
+	
+	synchronized public Set<String> getVCamIdList(){
+		return (null != mMapCamInfo)?mMapCamInfo.keySet():null;
 	}
 	
 	synchronized public void updateCamInfo(final String strVcamId, final JSONObject objCamSetup){

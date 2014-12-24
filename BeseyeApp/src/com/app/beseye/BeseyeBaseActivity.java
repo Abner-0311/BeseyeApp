@@ -10,6 +10,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import net.hockeyapp.android.CrashManager;
@@ -169,6 +170,28 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
+	}
+	
+	private AsyncTask mGetCamListTask = null; 
+	private AsyncTask mCheckCamListVersionTask = null; 
+	
+	private void getCamListAndCheckCamUpdateVersions(){
+		Set<String> setVcamList = null;
+		if(false == this instanceof CameraListActivity || (null == ( setVcamList = BeseyeCamInfoSyncMgr.getInstance().getVCamIdList()) || 0 == setVcamList.size())){
+			if(null != mGetCamListTask && false == mGetCamListTask.isCancelled()){
+				mGetCamListTask.cancel(true);
+			}
+			monitorAsyncTask(mGetCamListTask = new BeseyeAccountTask.GetVCamListTask(this).setDialogId(-1), true);
+		}else{
+			
+		}
+	}
+	
+	private void queryCamUpdateVersions(JSONArray arrVcamIdList){
+		if(null != mCheckCamListVersionTask && false == mCheckCamListVersionTask.isCancelled()){
+			mCheckCamListVersionTask.cancel(true);
+		}
+		monitorAsyncTask(mCheckCamListVersionTask = new BeseyeCamBEHttpTask.CheckCamUpdateStatusTask(this).setDialogId(-1), true);
 	}
 	
 	private boolean checkSession(){
@@ -726,6 +749,31 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					//Log.i(TAG, "onPostExecute(), "+result.toString());
 					onSessionInvalid();
 				}
+			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
+				if(task == mGetCamListTask){
+					JSONObject objVCamList = result.get(0);
+					Log.d(TAG, "mGetCamListTask(), objVCamList="+objVCamList.toString());
+					
+					JSONArray arrVcamIdList = new JSONArray();
+					int iVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_VCAM_CNT);
+					if(0 < iVcamCnt){
+						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(objVCamList, BeseyeJSONUtil.ACC_VCAM_LST);
+						for(int i = 0;i< iVcamCnt;i++){
+							try {
+								JSONObject camObj = VcamList.getJSONObject(i);
+								if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+									arrVcamIdList.put(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID));
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+						
+						if(0 < arrVcamIdList.length()){
+							
+						}
+					}
+				}
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					if(DEBUG)
@@ -838,6 +886,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					}
 				} 
 			}
+		}
+		
+		if(task == mGetCamListTask){
+			mGetCamListTask = null;
 		}
 		
 		if(null != mMapCurAsyncTasks){
@@ -1374,6 +1426,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     				launchDelegateActivity(CameraListActivity.class.getName());
     				Toast.makeText(this, String.format(getString(R.string.toast_cam_deactivated), BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME)), Toast.LENGTH_SHORT).show();
     			}
+    			BeseyeCamInfoSyncMgr.getInstance().removeCamInfoByVCamId(strCamUID);
     			return true;
     		}
 		}

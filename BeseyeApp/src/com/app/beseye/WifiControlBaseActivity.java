@@ -662,6 +662,9 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				mEtSSID = (EditText)vgApInfo.findViewById(R.id.et_ssid_value);
 				if(null != mEtSSID){
 					mEtSSID.setText(mChosenWifiAPInfo.SSID);
+					if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
+						mEtSSID.setText("¶³¦uÅ@´ú¸Õ¶³¦uÅ@´ú¸Õ");
+					}
 					mEtSSID.addTextChangedListener(new TextWatcher(){
 						@Override
 						public void afterTextChanged(Editable editable) {
@@ -725,7 +728,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 					final EditText etPassword = (EditText)mVgPassordHolder.findViewById(R.id.et_password_value);
 					if(null != etPassword){
 						if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-							etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"":"12345678"):"");
+							etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"":"asdfghjkl!@#$%^7*()"):"");
 						}
 						mWifiApPassword = etPassword.getText().toString();
 						etPassword.addTextChangedListener(new TextWatcher(){
