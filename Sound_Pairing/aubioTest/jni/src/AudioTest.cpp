@@ -35,6 +35,35 @@ static msec_t lTimeInvodeSystem = 0;
 static pid_t intermediate_pid = -1;
 //static int iRetSystemCall = 0;
 
+static bool sbNetworkConnectedChecked = false;
+static bool sbNetworkConnected = false;
+static bool sbTokenExisted = false;
+static const char* SES_TOKEN_PATH 			= "/beseye/config/ses_token";
+void setLedLight(int bRedOn, int bGreenOn, int bBlueOn);
+
+typedef enum{
+	PAIRING_NONE,
+	PAIRING_INIT				,
+    PAIRING_WAITING 			,
+    PAIRING_ANALYSIS 			,
+    PAIRING_ERROR				,
+    PAIRING_DONE
+}Pairing_Mode;
+
+typedef enum{
+	PAIRING_ERR_BASE,
+	PAIRING_ERR_MAC_NOT_FOUND,
+	PAIRING_ERR_COUNT
+}Pairing_Err_Type;
+
+static Pairing_Mode sPairingMode = PAIRING_INIT;
+static Pairing_Mode sPedningPairingMode = PAIRING_INIT;
+static Pairing_Err_Type sPairingErrType = PAIRING_ERR_BASE;
+static const int ERROR_LED_PERIOD = 10;
+static bool sbNeedToInitBuf = false;
+static int sCurLEDCnt = 0;
+static msec_t lTImeToSaveErrorLog = 0;
+
 //To avoid system call/fork blocking issue, we need to monitor it and kill it when timeout
 int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
 	int iTrials = 0;
@@ -138,6 +167,40 @@ void checkSystemProcess(bool bFromLC){
 
 void healthCheck(){
 	checkSystemProcess(true);
+}
+
+void turnOnWiFiModule(){
+	int iRet = -1;
+	int iTrials = 0;
+	do{
+		if(0 < iTrials){
+			sleep(1);
+		}
+
+		iRet = invokeSystemWithTimeout("camera init net", 5);
+		if(0 != iRet){
+			LOGE( "turnOnWiFiModule failed, iRet = %d........................\n", iRet);
+		}else{
+			LOGE(", done.............\n");
+		}
+	}while(0 != iRet && 3 > ++iTrials);
+}
+
+void turnOffWiFiModule(){
+	int iRet = -1;
+	int iTrials = 0;
+	do{
+		if(0 < iTrials){
+			sleep(1);
+		}
+
+		iRet = invokeSystemWithTimeout("camera destroy net", 5);
+		if(0 != iRet){
+			LOGE( "turnOffWiFiModule failed, iRet = %d........................\n", iRet);
+		}else{
+			LOGE(", done.............\n");
+		}
+	}while(0 != iRet && 3 > ++iTrials);
 }
 
 static const char* SP_ENABLED_FLAG			= "/beseye/config/sp_enabled";
@@ -289,8 +352,9 @@ static bool sbLEDOn = false;
 
 static msec_t lLastTimeToBufRec = 0;
 
+
 //Check Network and token
-static const msec_t TIME_TO_CHECK_TOKEN 				= 30000;//30 seconds
+static const msec_t TIME_TO_CHECK_TOKEN 				= 600000;//600 seconds
 static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 6000000;//600 seconds
 static const long TIME_TO_CHECK_LED 					= 1;//1 seconds
 static msec_t slLastTimeCheckToken 						= -1;
@@ -875,23 +939,54 @@ bool AudioTest::startPairingAnalysis(){
 		sForceDisabledSp = false;
 		sSpErrLogEnabled = false;
 
+		//checkLogFiles();
+		//setInvalidWifi();
+
+		checkWiFiRec();
+		deleteFile(MONITOR_PROCESS_FLAG);
+		int iRet = checkSpEnabled();//system("/beseye/cam_main/cam-handler -chk_sp_enabled") >> 8;
+		LOGE("startPairingAnalysis(),chk_sp_enabled, iRet:%d\n", iRet);
+		if(CMD_RET_CODE_SP_DISABLED == iRet){
+			sForceDisabledSp = true;
+			LOGE("startPairingAnalysis(), chk_sp_enabled, disabled SP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+		}
+
+		sSpErrLogEnabled = isFileExist("/beseye/config/sp_error_enabled");
+
+		registerJobCb(healthCheck);
+
+		if(false == sbNetworkConnectedChecked){
+			if(sbTokenExisted = readFromFile(SES_TOKEN_PATH)){//Have token
+				LOGE( "Need to check existed token.\n");
+				msec_t lTimeToBeginNetworkChk = time_ms();
+				do{
+					if(0 == (invokeSystem("/beseye/cam_main/beseye_network_check") >> 8)){
+						if(0 == (invokeSystemWithTimeout("/beseye/cam_main/beseye_token_check", 40) >> 8)){
+							AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
+							setLedLight(0,1,0);
+							AudioTest::getInstance()->stopAutoTest();
+							sbTokenExisted = true;
+							LOGE( "CMD_RET_CODE_TOKEN_STILL_VALID-------------\n");
+							return true;
+						}
+						sbNetworkConnected = true;
+						break;
+					}
+					sleep(3);
+					LOGE( "Network is disconnected.\n");
+				}while((time_ms() - lTimeToBeginNetworkChk) <= 75000);
+				LOGE( "Token validation failed ............\n");
+			}else if(0 == (invokeSystem("/beseye/cam_main/beseye_network_check") >> 8)){
+				sbNetworkConnected = true;
+			}
+
+			LOGE( "sbNetworkConnected:[%d]-------------\n", sbNetworkConnected);
+			sbNetworkConnectedChecked = true;
+		}
+
 		bRet = startAnalyzeTone();
 #ifndef ANDROID
 		if(bRet){
-			//checkLogFiles();
-			//setInvalidWifi();
-
-			checkWiFiRec();
-			deleteFile(MONITOR_PROCESS_FLAG);
-
-			int iRet = checkSpEnabled();//system("/beseye/cam_main/cam-handler -chk_sp_enabled") >> 8;
-			LOGE("startPairingAnalysis(),chk_sp_enabled, iRet:%d\n", iRet);
-			if(CMD_RET_CODE_SP_DISABLED == iRet){
-				sForceDisabledSp = true;
-				LOGE("startPairingAnalysis(), chk_sp_enabled, disabled SP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-			}
-
-			sSpErrLogEnabled = isFileExist("/beseye/config/sp_error_enabled");
 
 			miPairingReturnCode = -1;
 			slLastTimeCheckToken = time_ms();
@@ -910,6 +1005,7 @@ bool AudioTest::startPairingAnalysis(){
 #endif
 	}
 
+	turnOnWiFiModule();
 	LOGE("startPairingAnalysis()--\n");
 	return bRet;
 }
@@ -1168,29 +1264,6 @@ bool AudioTest::getDetectStartFlag(){
 	return mbDetectStartFlag;
 }
 
-typedef enum{
-	PAIRING_NONE,
-	PAIRING_INIT				,
-    PAIRING_WAITING 			,
-    PAIRING_ANALYSIS 			,
-    PAIRING_ERROR				,
-    PAIRING_DONE
-}Pairing_Mode;
-
-typedef enum{
-	PAIRING_ERR_BASE,
-	PAIRING_ERR_MAC_NOT_FOUND,
-	PAIRING_ERR_COUNT
-}Pairing_Err_Type;
-
-static Pairing_Mode sPairingMode = PAIRING_INIT;
-static Pairing_Mode sPedningPairingMode = PAIRING_INIT;
-static Pairing_Err_Type sPairingErrType = PAIRING_ERR_BASE;
-static const int ERROR_LED_PERIOD = 10;
-static bool sbNeedToInitBuf = false;
-static int sCurLEDCnt = 0;
-static msec_t lTImeToSaveErrorLog = 0;
-
 void changePairingMode(Pairing_Mode mode){
 	if(sPairingMode != mode)
 		LOGW("sPairingMode:%d, mode:%d\n", sPairingMode, mode);
@@ -1276,25 +1349,37 @@ void setLedLight(int bRedOn, int bGreenOn, int bBlueOn){
 #endif
 }
 
-static const char* SES_TOKEN_PATH 			= "/beseye/config/ses_token";
+
 static pthread_t sThreadVerifyToken;
 
 void* AudioTest::verifyToken(void* userdata){
 	LOGE("+\n");
+
 	AudioTest* tester = (AudioTest*)userdata;
 	while(!tester->mbStopAnalysisThreadFlag){
 		msec_t lDelta = time_ms() - slLastTimeCheckToken;
 		if((PAIRING_ANALYSIS != sPairingMode && lDelta > TIME_TO_CHECK_TOKEN)/* || (PAIRING_ANALYSIS == sPairingMode && lDelta >TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD)*/){
-			if(readFromFile(SES_TOKEN_PATH)){
-				//if(0 == (system("/beseye/cam_main/beseye_network_check") >> 8)){
-					if(0 == (invokeSystemWithTimeout("/beseye/cam_main/beseye_token_check", 40) >> 8)){
-					//if(0 == checkTokenValid()){
-						AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
-						setLedLight(0,1,0);
-						AudioTest::getInstance()->stopAutoTest();
-						exit(0);
+			if(sbTokenExisted = readFromFile(SES_TOKEN_PATH)){
+				turnOnWiFiModule();
+				msec_t lTimeToBeginNetworkChk = time_ms();
+				LOGE("try to check token.\n");
+				do{
+					if(0 == (invokeSystem("/beseye/cam_main/beseye_network_check") >> 8)){
+						if(0 == (invokeSystemWithTimeout("/beseye/cam_main/beseye_token_check", 40) >> 8)){
+							AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
+							setLedLight(0,1,0);
+							AudioTest::getInstance()->stopAutoTest();
+							sbTokenExisted = true;
+							exit(0);
+						}else{
+							break;
+						}
 					}
-				//}
+					sleep(3);
+					LOGE( "Network is disconnected.\n");
+				}while((time_ms() - lTimeToBeginNetworkChk) <= 60000 && PAIRING_ANALYSIS != sPairingMode);
+				LOGE( "Token validation failed....\n");
+				turnOffWiFiModule();
 			}
 			slLastTimeCheckToken = time_ms();
 
@@ -1307,7 +1392,6 @@ void* AudioTest::verifyToken(void* userdata){
 				}
 			}while(RET_CODE_OK != iRet && iTrials++ < 3);
 		}
-
 
 		if(AudioTest::getInstance()->isPairingAnalysisMode()){
 			if(PAIRING_ERROR == sPairingMode){
@@ -1573,9 +1657,10 @@ void writeBuf(unsigned char* charBuf, int iLen){
 //							siUnderThreshHoldCount = 0;
 						}else if(ANALYSIS_END_THRESHHOLD > sMaxValue || (0 < ANALYSIS_END_THRESHHOLD_DETECT && ANALYSIS_END_THRESHHOLD_DETECT > sMaxValue && PAIRING_WAITING < sPairingMode)){
 							siUnderThreshHoldCount++;
-							if((PAIRING_ANALYSIS ==  sPairingMode || AudioTest::getInstance()->getAboveThresholdFlag()) && siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
+							if((PAIRING_ANALYSIS ==  sPairingMode && (AudioTest::getInstance()->getAboveThresholdFlag())) && siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
 								LOGE("trigger stop analysis-----, siUnderThreshHoldCount:[%d]\n", siUnderThreshHoldCount);
 								//stop analysis
+
 								if(AudioTest::getInstance()->isPairingAnalysisMode()){
 									AudioBufferMgr::getInstance()->setRecordMode(true);
 								}
@@ -1583,6 +1668,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 								if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
 									AudioTest::getInstance()->setStopAnalysisBufIdx(iStopAnalysisIdx);
 									LOGE("miStopAnalysisBufIdx:%d\n",iStopAnalysisIdx);
+									stopReceiveAudioBuf();
 								}else{
 									LOGE("miStopAnalysisBufIdx != -1\n");
 								}
@@ -1638,6 +1724,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
 									AudioBufferMgr::getInstance()->setRecordMode(false);
 								}
+
 								AudioTest::getInstance()->setAboveThresholdFlag(true);
 								siAboveThreshHoldCount = 0;
 							}
@@ -1673,11 +1760,13 @@ void AudioTest::setAboveThresholdFlag(bool flag){
 	}
 	releaseThresholdCtrlObj();
 	LOGI("setAboveThresholdFlag()--\n");
-
 }
+
 bool AudioTest::getAboveThresholdFlag(){
 	return mbAboveThreshold;
 }
+
+static bool sbInAudioBufLoop = true;
 
 void* AudioTest::runAudioBufRecord(void* userdata){
 	LOGE("runAudioBufRecord()+\n");
@@ -1693,7 +1782,6 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 	//timespec sleepValue = {0};
 	//sleepValue.tv_nsec = 100000;//0.1 ms
 	Delegate_OpenAudioRecordDevice(SoundPair_Config::SAMPLE_RATE_REC, 0);
-	registerJobCb(healthCheck);
 
 	while(!tester->mbStopBufRecordFlag){
 		msec_t lTs1 = (lTsRec+=SoundPair_Config::FRAME_TS);//System.currentTimeMillis();
@@ -1734,6 +1822,8 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 		//char* session = "0e4bba41bef24f009337727ce44008cd";//[SESSION_SIZE];
 		do{
 			if(sPairingMode == PAIRING_INIT){
+				turnOffWiFiModule();
+
 				char session[SESSION_SIZE];
 				memset(session, 0, sizeof(session));
 				int iTrial = 0;
@@ -1753,7 +1843,9 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 					LOGE("runAudioBufRecord(), begin to GetAudioBufCGI\n");
 					changePairingMode(PAIRING_INIT);
 
+					sbInAudioBufLoop = true;
 					int res = GetAudioBufCGI(HOST_NAME_AUDIO, "receiveRaw", session, writeBuf);
+					sbInAudioBufLoop = false;
 					LOGE("GetAudioBufCGI:res(%d), mbStopBufRecordFlag:%d\n",res, tester->mbStopBufRecordFlag);
 					//Delegate_CloseAudioDevice2();
 				}
@@ -1857,25 +1949,33 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 			AudioBufferMgr::getInstance()->addToAvailableBuf(buf);
 
 			//to avoid blocking buf record thread
-			if(-1 != AudioTest::getInstance()->getStopAnalysisBufIdx()){
-				yieldtime.tv_nsec = 30000000;//30 ms
-				nanosleep(&yieldtime, NULL);
+			if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
+//				if(false == sbNetworkConnected){
+//					LOGI("runAudioBufAnalysis(), sleep 0.025 sec\n");
+//					yieldtime.tv_nsec = 25000000;//25 ms
+//					nanosleep(&yieldtime, NULL);
+//				}else{
+					yieldtime.tv_nsec = 30000000;//30 ms
+					nanosleep(&yieldtime, NULL);
+//				}
 			}else{
-				msec_t lDleta = time_ms() - lLastTimeToBufRec;
-				if(lDleta >= 5000){
-					LOGI("runAudioBufAnalysis(), lDleta > 5000\n");
-					yieldtime.tv_nsec = 10000000;//10 ms
-					nanosleep(&yieldtime, NULL);
-				}else if(lDleta >= 3000){
-					LOGI("runAudioBufAnalysis(), lDleta > 3000\n");
-					yieldtime.tv_nsec = 5000000;//5 msO
-					nanosleep(&yieldtime, NULL);
-				}else if(lDleta >= 1000){
-					LOGI("runAudioBufAnalysis(), lDleta > 1000\n");
-					yieldtime.tv_nsec = 2000000;//2 ms
-					nanosleep(&yieldtime, NULL);
-				}else{
-					//yieldtime.tv_nsec = 1000000;//1 ms
+				if(sbInAudioBufLoop){
+					msec_t lDleta = time_ms() - lLastTimeToBufRec;
+					if(lDleta >= 5000){
+						LOGI("runAudioBufAnalysis(), lDleta > 5000\n");
+						yieldtime.tv_nsec = 100000000;//100 ms
+						nanosleep(&yieldtime, NULL);
+					}else if(lDleta >= 3000){
+						LOGI("runAudioBufAnalysis(), lDleta > 3000\n");
+						yieldtime.tv_nsec = 50000000;//50 ms
+						nanosleep(&yieldtime, NULL);
+					}else if(lDleta >= 1000){
+						LOGI("runAudioBufAnalysis(), lDleta > 1000\n");
+						yieldtime.tv_nsec = 30000000;//30 ms
+						nanosleep(&yieldtime, NULL);
+					}else{
+						//yieldtime.tv_nsec = 1000000;//1 ms
+					}
 				}
 			}
 		}
@@ -1899,6 +1999,7 @@ Ref<BufRecord> AudioTest::getBuf(int iNumToRest){
 
 		AudioBufferMgr::getInstance()->waitForDataBuf(2000);//2 seconds
 	}
+
 	return buf;
 }
 
@@ -1951,21 +2052,31 @@ static int onSPFailed(){
 	iRet = invokeSystem("\"$RESTORE_REGION_INFO_PROGRAM\"");
 	if(0 != iRet){
 		LOGE("Failed to invoke RESTORE_REGION_INFO_PROGRAM :[%d]\n", iRet);
+	}else{
+		iRet = parseEnvFile();
 	}
+	turnOffWiFiModule();
 	//iRet = restoreRegionId();
 	return iRet;
 }
 
 static int onSPSuccess(){
 	int iRet = 0;
-	iRet = invokeSystem("/beseye/cam_main/beseye_token_check");
+	int iTrials = 0;
+	do{
+		iRet = invokeSystem("/beseye/cam_main/beseye_token_check");
+	}while(0 != iRet && 3 > ++iTrials);
+
 	deleteOldWiFiFile();
 	saveWiFiRec();
 	//removeOldRegionId();
-//	iRet = invokeSystem("\"$BACKUP_REGION_INFO_PROGRAM\"");
-//	if(0 != iRet){
-//		LOGE("Failed to invoke RESTORE_REGION_INFO_PROGRAM :[%d]\n", iRet);
-//	}
+	iTrials = 0;
+	do{
+		iRet = invokeSystem("\"$BACKUP_REGION_INFO_PROGRAM\"");
+		if(0 != iRet){
+			LOGE("Failed to invoke RESTORE_REGION_INFO_PROGRAM :[%d]\n", iRet);
+		}
+	}while(0 != iRet && 3 > ++iTrials);
 	AudioTest::getInstance()->setPairingReturnCode(0);
 	return iRet;
 }
@@ -1978,12 +2089,18 @@ static int applyRegionId(unsigned char cRegId){
 		//call script
 		char cmd[BUF_SIZE]={0};
 		sprintf(cmd, "\"$GEN_EXPORT_SVR_URL_SCRIPT_PROGRAM\" --vpc_id %d", cRegId);
-		iRet = invokeSystem(cmd);
-		if(0 != iRet){
-			LOGE("Failed to set vpc_id:[%d]\n", iRet);
-		}else{
-			iRet = parseEnvFile();
-		}
+		int iTrials = 0;
+		do{
+			iRet = invokeSystem(cmd);
+			if(0 != iRet){
+				LOGE("Failed to set vpc_id:[%d]\n", iRet);
+			}else{
+				iTrials = 0;
+				do{
+					iRet = parseEnvFile();
+				}while(0 != iRet && 3 > ++iTrials);
+			}
+		}while(0 != iRet && 3 > ++iTrials);
 //	}
 	return iRet;
 }
@@ -2013,6 +2130,8 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	bool bUnknownSecType = false;
 	int iSSIDLen = 0;
 	int iRotateLen = 0;
+
+	turnOnWiFiModule();
 
 	if(0 == strCode.find("error")){
 		LOGE("Error, trying to get pairing code!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
@@ -2315,6 +2434,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				LOGE("network connected\n");
 				iRet = invokeSystem("/beseye/cam_main/beseye_token_check") >> 8;
 				if(0 == iRet){
+					sbTokenExisted = true;
 					LOGE("Token is already existed, check tmp token\n");
 					if(1 == cPurpose){
 						iRet = applyRegionId(cRegId);

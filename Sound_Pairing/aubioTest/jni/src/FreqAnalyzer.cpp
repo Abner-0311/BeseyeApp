@@ -1624,6 +1624,9 @@ void FreqAnalyzer::autoCorrection(MatchRetSet* prevMatchRet){
 		selfFreqAnalyzer->setSessionOffset(iOffset);
 
 		bool bFirstTime = true;
+		struct timespec yieldtime = {0};
+		yieldtime.tv_sec  = 0;
+		yieldtime.tv_nsec = 10000000;//10 ms
 
 		for(int idx = 0; idx < iSize ;idx++){
 			Ref<CodeRecord> rec = mCodeRecordList[idx];
@@ -1659,6 +1662,8 @@ void FreqAnalyzer::autoCorrection(MatchRetSet* prevMatchRet){
 				LOGE("autoCorrection(), break due to trace end\n");
 				break;
 			}
+
+			nanosleep(&yieldtime, NULL);
 		}
 
 		//to simulate timeout case
