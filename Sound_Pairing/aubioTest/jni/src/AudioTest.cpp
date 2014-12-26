@@ -169,7 +169,13 @@ void healthCheck(){
 	checkSystemProcess(true);
 }
 
+static bool sbIsLANPortUsed = false;
+
 void turnOnWiFiModule(){
+	if(sbIsLANPortUsed){
+		return;
+	}
+
 	int iRet = -1;
 	int iTrials = 0;
 	do{
@@ -187,6 +193,10 @@ void turnOnWiFiModule(){
 }
 
 void turnOffWiFiModule(){
+	if(sbIsLANPortUsed){
+		return;
+	}
+
 	int iRet = -1;
 	int iTrials = 0;
 	do{
@@ -941,6 +951,9 @@ bool AudioTest::startPairingAnalysis(){
 
 		//checkLogFiles();
 		//setInvalidWifi();
+
+		sbIsLANPortUsed = isLANPortUsed();
+		LOGE("sbIsLANPortUsed:%d\n", sbIsLANPortUsed);
 
 		checkWiFiRec();
 		deleteFile(MONITOR_PROCESS_FLAG);

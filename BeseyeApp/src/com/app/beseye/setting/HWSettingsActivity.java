@@ -158,9 +158,9 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 		mVgViewUpDown = (ViewGroup)findViewById(R.id.vg_video_upside_down);
 		if(null != mVgViewUpDown){
 			mVgViewUpDown.setOnClickListener(this);
-			if(BeseyeUtils.isHiddenFeature()){
-				BeseyeUtils.setVisibility(mVgViewUpDown, View.GONE);
-			}
+//			if(BeseyeUtils.isHiddenFeature()){
+//				BeseyeUtils.setVisibility(mVgViewUpDown, View.GONE);
+//			}
 		}
 		
 		mIvViewUpDownCheck = (ImageView)findViewById(R.id.iv_video_upside_down_check);
