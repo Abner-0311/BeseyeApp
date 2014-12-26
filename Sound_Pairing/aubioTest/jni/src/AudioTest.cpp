@@ -1429,6 +1429,8 @@ static FILE *fp = NULL;
 static unsigned char* charBufTmp = NULL;
 #endif
 
+static int siRestBufCntToStop = -1;
+
 //static int iOldLen = 0;
 void writeBuf(unsigned char* charBuf, int iLen){
 
@@ -1517,6 +1519,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 		siAboveThreshHoldCount = 0;
 		siUnderThreshHoldCount = 0;
 		sbNeedToInitBuf = false;
+		siRestBufCntToStop = -1;
 	}
 
 	int iIdxOffset = -iCurIdx;
@@ -1668,7 +1671,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 								if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
 									AudioTest::getInstance()->setStopAnalysisBufIdx(iStopAnalysisIdx);
 									LOGE("miStopAnalysisBufIdx:%d\n",iStopAnalysisIdx);
-									stopReceiveAudioBuf();
+									siRestBufCntToStop = 15;
 								}else{
 									LOGE("miStopAnalysisBufIdx != -1\n");
 								}
@@ -1723,6 +1726,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 									FreqAnalyzer::getInstance()->setDetectLowSound(false);
 									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
 									AudioBufferMgr::getInstance()->setRecordMode(false);
+									siRestBufCntToStop = -1;
 								}
 
 								AudioTest::getInstance()->setAboveThresholdFlag(true);
@@ -1731,8 +1735,16 @@ void writeBuf(unsigned char* charBuf, int iLen){
 							siUnderThreshHoldCount = 0;
 						}
 					}
+
 					AudioBufferMgr::getInstance()->addToDataBuf(lTs1, shortsRecBuf, shortsRecBuf->size());
 					shortsRecBuf = NULL;
+
+					if(0 < siRestBufCntToStop){
+						LOGI("count down siRestBufCntToStop:[%d]\n", siRestBufCntToStop);
+						if(0 == --siRestBufCntToStop){
+							stopReceiveAudioBuf();
+						}
+					}
 				}
 			//}
 		}else{
@@ -1950,14 +1962,15 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 
 			//to avoid blocking buf record thread
 			if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
-//				if(false == sbNetworkConnected){
-//					LOGI("runAudioBufAnalysis(), sleep 0.025 sec\n");
-//					yieldtime.tv_nsec = 25000000;//25 ms
-//					nanosleep(&yieldtime, NULL);
-//				}else{
-					yieldtime.tv_nsec = 30000000;//30 ms
+				msec_t lDleta = time_ms() - lLastTimeToBufRec;
+				if(lDleta >= 1000){
+					LOGI("runAudioBufAnalysis()..., lDleta > 1000\n");
+					yieldtime.tv_nsec = 100000000;//100 ms
 					nanosleep(&yieldtime, NULL);
-//				}
+				}else{
+					yieldtime.tv_nsec = 35000000;//35 ms
+					nanosleep(&yieldtime, NULL);
+				}
 			}else{
 				if(sbInAudioBufLoop){
 					msec_t lDleta = time_ms() - lLastTimeToBufRec;
@@ -2070,13 +2083,15 @@ static int onSPSuccess(){
 	deleteOldWiFiFile();
 	saveWiFiRec();
 	//removeOldRegionId();
-	iTrials = 0;
-	do{
-		iRet = invokeSystem("\"$BACKUP_REGION_INFO_PROGRAM\"");
-		if(0 != iRet){
-			LOGE("Failed to invoke RESTORE_REGION_INFO_PROGRAM :[%d]\n", iRet);
-		}
-	}while(0 != iRet && 3 > ++iTrials);
+
+	//Mark Single Entry
+//	iTrials = 0;
+//	do{
+//		iRet = invokeSystem("\"$BACKUP_REGION_INFO_PROGRAM\"");
+//		if(0 != iRet){
+//			LOGE("Failed to invoke RESTORE_REGION_INFO_PROGRAM :[%d]\n", iRet);
+//		}
+//	}while(0 != iRet && 3 > ++iTrials);
 	AudioTest::getInstance()->setPairingReturnCode(0);
 	return iRet;
 }
@@ -2634,6 +2649,9 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 	LOGE("onTimeout(), bFromAutoCorrection:%d\n", bFromAutoCorrection);
 	FreqAnalyzer* freqAnalyzer = (FreqAnalyzer*)freqAnalyzerRef;
 	stringstream strLog;
+
+	stopReceiveAudioBuf();
+
 	/*if(NULL == getDecodeRet())*/{
 		if(false == freqAnalyzer->checkEndPoint()){
 			string strDecodeUnmark = SoundPair_Config::decodeConsecutiveDigits(tmpRet.str());

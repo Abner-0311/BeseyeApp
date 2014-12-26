@@ -322,6 +322,7 @@ void FreqAnalyzer::analyze(msec_t lTs, double dFreq, int iBufIndex, int iFFTValu
 				pickWithSeesion();
 			}else{
 				pickWithoutSession(iCheckIndex);
+				checkTimeout(lTs);
 			}
 
 			checkInvalidAnalysis();
