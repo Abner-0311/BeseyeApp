@@ -51,6 +51,8 @@ public:
 	void addToAvailableBuf(Ref<BufRecord> buf);
 	void trimAvailableBuf(unsigned int iRestCount);
 
+	int getIndexFromPosition(int iPosIdx, int iShift);
+
 	void recycleAllBuffer();
 	void waitForDataBuf(long lWaitTime);
 

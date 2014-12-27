@@ -288,37 +288,45 @@ static int iAudioFrameSize = 4;
 static const int MAX_TRIAL = 1;//10;
 
 //Check audio activity
-static long  ANALYSIS_THRESHHOLD_MONITOR			=0;
-static int 	 ANALYSIS_THRESHHOLD_MONITOR_CNT		=0;
+static long  ANALYSIS_THRESHHOLD_MONITOR				=0;
+static int 	 ANALYSIS_THRESHHOLD_MONITOR_CNT			=0;
 
-static const short ANALYSIS_MAX_AUDIO_VALUE_G25 	= 2000;//audio max value for gain =25
-static const short ANALYSIS_START_THRESHHOLD_MIN_G25= 450;//audio value
-static const short ANALYSIS_START_THRESHHOLD_MAX_G25= 1400;//audio value
+static const short ANALYSIS_MAX_AUDIO_VALUE_G25 		= 2000;//audio max value for gain =25
+static const short ANALYSIS_START_THRESHHOLD_MIN_G25	= 450;//audio value
+static const short ANALYSIS_START_THRESHHOLD_MAX_G25	= 1400;//audio value
 
-static const short ANALYSIS_MAX_AUDIO_VALUE_G35 	= 6000;//audio max value for gain =35
-static const short ANALYSIS_START_THRESHHOLD_MIN_G35= 600;//audio value
-static const short ANALYSIS_START_THRESHHOLD_MAX_G35= 3500;//audio value
+static const short ANALYSIS_MAX_AUDIO_VALUE_G35 		= 6000;//audio max value for gain =35
+static const short ANALYSIS_START_THRESHHOLD_MIN_G35	= 600;//audio value
+static const short ANALYSIS_START_THRESHHOLD_MAX_G35	= 3500;//audio value
 
-static short ANALYSIS_MAX_AUDIO_VALUE 				= ANALYSIS_MAX_AUDIO_VALUE_G35;//audio max value
-static short ANALYSIS_START_THRESHHOLD_MIN 			= ANALYSIS_START_THRESHHOLD_MIN_G35;//audio value
-static short ANALYSIS_START_THRESHHOLD_MAX 			= ANALYSIS_START_THRESHHOLD_MAX_G35;//audio value
+static short ANALYSIS_MAX_AUDIO_VALUE 					= ANALYSIS_MAX_AUDIO_VALUE_G35;//audio max value
+static short ANALYSIS_START_THRESHHOLD_MIN 				= ANALYSIS_START_THRESHHOLD_MIN_G35;//audio value
+static short ANALYSIS_START_THRESHHOLD_MAX 				= ANALYSIS_START_THRESHHOLD_MAX_G35;//audio value
 
-static short ANALYSIS_START_THRESHHOLD 				= 15000;//audio value
-static short ANALYSIS_END_THRESHHOLD   				= 15000;//audio value
+static short ANALYSIS_START_THRESHHOLD 					= 15000;//audio value
+static short ANALYSIS_END_THRESHHOLD   					= 15000;//audio value
 
 //after detect prefix
-static long  ANALYSIS_THRESHHOLD_MONITOR_DETECT		= 0;
-static int 	 ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT	= 0;
-static short ANALYSIS_END_THRESHHOLD_DETECT	   		= -1;//audio value
+static long  ANALYSIS_THRESHHOLD_MONITOR_DETECT			= 0;
+static int 	 ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT		= 0;
+static short ANALYSIS_END_THRESHHOLD_DETECT	   			= -1;//audio value
 
-static const int   ANALYSIS_THRESHHOLD_CK_LEN 		= 1600;//sample size , about 0.1 sec
-static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT 	= 2;
-static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 	= 10;
+static const int   ANALYSIS_THRESHHOLD_CK_LEN 			= 1600;//sample size , about 0.1 sec
+static const int   ANALYSIS_AB_THRESHHOLD_TOL_MISS_CNT 	= 2;
+static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT 		= 2;
+static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 		= 10;
 
 static short sMaxValue = 0;
 static int siAboveThreshHoldCount = 0;
 static int siUnderThreshHoldCount = 0;
 static int siRefCount = 0;
+static int siRefCountToCheckMaxVol = 0;
+static int siLastCntToAboveThreshhold = -1;
+
+static msec_t lTsTriggerAnalysis = 0;
+static const msec_t MAX_TIME_TO_RECEIVE_ANALYSIS_BUF = 40000;//40 ms
+
+static int siRestBufCntToStop = -1;
 
 static int siBufCount = 0;
 static const int TONE_TO_REC = 4;
@@ -1442,7 +1450,21 @@ static FILE *fp = NULL;
 static unsigned char* charBufTmp = NULL;
 #endif
 
-static int siRestBufCntToStop = -1;
+static void triggerAnalysis(){
+	LOGE("trigger analysis-----\n");
+	//trigger analysis
+	if(AudioTest::getInstance()->isPairingAnalysisMode()){
+		AudioTest::getInstance()->setPairingReturnCode(-1);
+		changePairingMode(PAIRING_ANALYSIS);
+		FreqAnalyzer::getInstance()->setDetectLowSound(false);
+		AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
+		AudioBufferMgr::getInstance()->setRecordMode(false);
+		siRestBufCntToStop = -1;
+	}
+
+	AudioTest::getInstance()->setAboveThresholdFlag(true);
+	siAboveThreshHoldCount = 0;
+}
 
 //static int iOldLen = 0;
 void writeBuf(unsigned char* charBuf, int iLen){
@@ -1533,6 +1555,10 @@ void writeBuf(unsigned char* charBuf, int iLen){
 		siUnderThreshHoldCount = 0;
 		sbNeedToInitBuf = false;
 		siRestBufCntToStop = -1;
+		siRefCount = 0;
+		siRefCountToCheckMaxVol = 0;
+		siLastCntToAboveThreshhold = -1;
+		lTsTriggerAnalysis = 0;
 	}
 
 	int iIdxOffset = -iCurIdx;
@@ -1560,6 +1586,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 						if(-1 != iStopAnalysisIdx){
 							AudioTest::getInstance()->setStopAnalysisBufIdx(iStopAnalysisIdx);
 							LOGE("miStopAnalysisBufIdx:%d\n",iStopAnalysisIdx);
+							siRestBufCntToStop = 20;
 						}else{
 							LOGE("reset because miStopAnalysisBufIdx:%d\n",iStopAnalysisIdx);
 							AudioTest::getInstance()->deinitTestRound();
@@ -1613,7 +1640,13 @@ void writeBuf(unsigned char* charBuf, int iLen){
 							}else{
 								ANALYSIS_START_THRESHHOLD = ((ANALYSIS_THRESHHOLD_MONITOR) < ANALYSIS_START_THRESHHOLD_MAX)?(ANALYSIS_THRESHHOLD_MONITOR):ANALYSIS_START_THRESHHOLD_MAX;
 							}
-							ANALYSIS_END_THRESHHOLD = (ANALYSIS_THRESHHOLD_MONITOR + ANALYSIS_START_THRESHHOLD)/2;
+
+							if(ANALYSIS_START_THRESHHOLD_MIN == ANALYSIS_END_THRESHHOLD){
+								ANALYSIS_END_THRESHHOLD -= 100;
+							}else{
+								ANALYSIS_END_THRESHHOLD = (ANALYSIS_THRESHHOLD_MONITOR + ANALYSIS_START_THRESHHOLD)/2;
+							}
+
 							LOGW("-------------------------------------------------------->ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD);
 							//sPairingMode = PAIRING_WAITING;
 							changePairingMode(PAIRING_WAITING);
@@ -1626,7 +1659,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 							ANALYSIS_THRESHHOLD_MONITOR_DETECT = ((ANALYSIS_THRESHHOLD_MONITOR_DETECT*(ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT);
 							if(ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT >= 25){
 								if(ANALYSIS_THRESHHOLD_MONITOR_DETECT > ANALYSIS_END_THRESHHOLD){
-									ANALYSIS_END_THRESHHOLD_DETECT = ANALYSIS_THRESHHOLD_MONITOR_DETECT;
+									ANALYSIS_END_THRESHHOLD_DETECT = ANALYSIS_THRESHHOLD_MONITOR_DETECT -100;
 								}else{
 									ANALYSIS_END_THRESHHOLD_DETECT = 0;
 								}
@@ -1651,12 +1684,14 @@ void writeBuf(unsigned char* charBuf, int iLen){
 						}
 
 						if(ANALYSIS_START_THRESHHOLD < sMaxValue){
-							LOGW("-------------------------------------------------------->sMaxValue:%d, siAboveThreshHoldCount:%d, siUnderThreshHoldCount:%d\n", sMaxValue, siAboveThreshHoldCount, siUnderThreshHoldCount);
 							if(0 == siAboveThreshHoldCount){
 								FreqAnalyzer::getInstance()->setSessionOffsetForAmp(-iCurIdx);
 							}
 
 							siAboveThreshHoldCount++;
+							siLastCntToAboveThreshhold = siRefCountToCheckMaxVol;
+							LOGW("-------------------------------------------------------->sMaxValue:%d, siAboveThreshHoldCount:%d, siUnderThreshHoldCount:%d, siRefCountToCheckMaxVol:%d\n", sMaxValue, siAboveThreshHoldCount, siUnderThreshHoldCount, siRefCountToCheckMaxVol);
+
 //							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT && PAIRING_WAITING == sPairingMode){
 //								LOGE("trigger analysis-----\n");
 //								//trigger analysis
@@ -1670,21 +1705,34 @@ void writeBuf(unsigned char* charBuf, int iLen){
 //								AudioTest::getInstance()->setAboveThresholdFlag(true);
 //								siAboveThreshHoldCount = 0;
 //							}
-//							siUnderThreshHoldCount = 0;
+							siUnderThreshHoldCount = 0;
 						}else if(ANALYSIS_END_THRESHHOLD > sMaxValue || (0 < ANALYSIS_END_THRESHHOLD_DETECT && ANALYSIS_END_THRESHHOLD_DETECT > sMaxValue && PAIRING_WAITING < sPairingMode)){
 							siUnderThreshHoldCount++;
-							if((PAIRING_ANALYSIS ==  sPairingMode && (AudioTest::getInstance()->getAboveThresholdFlag())) && siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT){
-								LOGE("trigger stop analysis-----, siUnderThreshHoldCount:[%d]\n", siUnderThreshHoldCount);
+
+							if(AudioTest::getInstance()->getDetectStartFlag()){
+								LOGE("trigger stop analysis-----, (%d, %d), siUnderThreshHoldCount:[%d], sMaxValue:[%d]\n",ANALYSIS_END_THRESHHOLD, ANALYSIS_END_THRESHHOLD_DETECT, siUnderThreshHoldCount, sMaxValue);
+							}
+
+							msec_t lDelta = (0 < lTsTriggerAnalysis)?(time_ms() - lTsTriggerAnalysis):0;
+
+							if((PAIRING_ANALYSIS ==  sPairingMode && (AudioTest::getInstance()->getAboveThresholdFlag())) && (siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT || (0 < lDelta && lDelta > MAX_TIME_TO_RECEIVE_ANALYSIS_BUF))){
+								LOGE("trigger stop analysis-----, siUnderThreshHoldCount:[%d], lDelta:[%lld]\n", siUnderThreshHoldCount, lDelta);
 								//stop analysis
 
 								if(AudioTest::getInstance()->isPairingAnalysisMode()){
 									AudioBufferMgr::getInstance()->setRecordMode(true);
 								}
+
+								int iCountToFurtherChk = 25;
+								if(false == AudioTest::getInstance()->getDetectStartFlag()){
+									iCountToFurtherChk = 10;
+								}
+
 								int iStopAnalysisIdx = AudioBufferMgr::getInstance()->getBufIndex(shortsRecBuf);
 								if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
-									AudioTest::getInstance()->setStopAnalysisBufIdx(iStopAnalysisIdx);
-									LOGE("miStopAnalysisBufIdx:%d\n",iStopAnalysisIdx);
-									siRestBufCntToStop = 15;
+									AudioTest::getInstance()->setStopAnalysisBufIdx(AudioBufferMgr::getInstance()->getIndexFromPosition(iStopAnalysisIdx, iCountToFurtherChk));
+									LOGE("miStopAnalysisBufIdx:[%d], iCountToFurtherChk:[%d]\n",iStopAnalysisIdx, iCountToFurtherChk);
+									siRestBufCntToStop = iCountToFurtherChk+10;
 								}else{
 									LOGE("miStopAnalysisBufIdx != -1\n");
 								}
@@ -1696,17 +1744,23 @@ void writeBuf(unsigned char* charBuf, int iLen){
 							if(0 < siAboveThreshHoldCount){
 								LOGW("--------------------------------------------------------> check, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
 							}
-							siAboveThreshHoldCount = 0;
+
+							if(-1 < siLastCntToAboveThreshhold && ANALYSIS_AB_THRESHHOLD_TOL_MISS_CNT < (siRefCountToCheckMaxVol - siLastCntToAboveThreshhold)){
+								siAboveThreshHoldCount = 0;
+							}
 						}else{
 							if(0 < siAboveThreshHoldCount){
 								LOGW("--------------------------------------------------------> check2, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
 							}
 							siUnderThreshHoldCount = 0;
-							siAboveThreshHoldCount = 0;
+
+							if(-1 < siLastCntToAboveThreshhold && ANALYSIS_AB_THRESHHOLD_TOL_MISS_CNT <= (siRefCountToCheckMaxVol - siLastCntToAboveThreshhold)){
+								siAboveThreshHoldCount = 0;
+							}
 						}
 					}
 
-					//siRefCount = 0;
+					siRefCountToCheckMaxVol++;
 					sMaxValue = 0;
 				}
 			}
@@ -1730,20 +1784,11 @@ void writeBuf(unsigned char* charBuf, int iLen){
 						if(bRet){
 							LOGE("strTone:[%s] ==> [%s], bRet:[%d], siAboveThreshHoldCount:%d\n", strTone.c_str(), sToneRec.c_str(), bRet, siAboveThreshHoldCount);
 
-							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT && PAIRING_WAITING == sPairingMode){
-								LOGE("trigger analysis-----\n");
-								//trigger analysis
-								if(AudioTest::getInstance()->isPairingAnalysisMode()){
-									AudioTest::getInstance()->setPairingReturnCode(-1);
-									changePairingMode(PAIRING_ANALYSIS);
-									FreqAnalyzer::getInstance()->setDetectLowSound(false);
-									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
-									AudioBufferMgr::getInstance()->setRecordMode(false);
-									siRestBufCntToStop = -1;
+							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && PAIRING_WAITING == sPairingMode){
+								if(siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
+									triggerAnalysis();
+									lTsTriggerAnalysis = time_ms();
 								}
-
-								AudioTest::getInstance()->setAboveThresholdFlag(true);
-								siAboveThreshHoldCount = 0;
 							}
 							siUnderThreshHoldCount = 0;
 						}

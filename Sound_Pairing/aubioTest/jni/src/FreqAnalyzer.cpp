@@ -135,12 +135,14 @@ void FreqAnalyzer::setSenderMode(bool bIsSenderMode){
 	mbInSenderMode = bIsSenderMode;
 }
 
+
 void FreqAnalyzer::beginToTrace(string strCode){
 	mstrCodeTrace = strCode;
 	mlTraceTs = time_ms();
 	mlMaxWaitingTime = (0 == strCode.length())?60000:(strCode.length()*400+4000);
 	LOGW("beginToTrace(), mlTraceTs:%lld, mlMaxWaitingTime: %lld\n", mlTraceTs, mlMaxWaitingTime);
 }
+
 
 void FreqAnalyzer::endToTrace(){
 	mlTraceTs = 0;
@@ -306,7 +308,7 @@ void FreqAnalyzer::analyze(msec_t lTs, double dFreq, int iBufIndex, int iFFTValu
 				mFreqRecordList.push_back(Ref<FreqRecord>(new FreqRecord(lTs, dFreq, SoundPair_Config::MISSING_CHAR, iBufIndex, iFFTValues)));
 		}
 
-		checkTimeout(lTs);
+
 
 		int iSize = mFreqRecordList.size();
 		if(false == mbStartAppend && mSessionBeginTs > 0 && (0 < iSize && (lTs - mFreqRecordList[iSize-1]->mlTs) >= 3 * SoundPair_Config::TONE_PERIOD || getInvalidFreqCount() >= 3)){
@@ -322,12 +324,13 @@ void FreqAnalyzer::analyze(msec_t lTs, double dFreq, int iBufIndex, int iFFTValu
 				pickWithSeesion();
 			}else{
 				pickWithoutSession(iCheckIndex);
-				checkTimeout(lTs);
 			}
 
 			checkInvalidAnalysis();
 		}
 	}
+
+	checkTimeout(lTs);
 }
 
 void FreqAnalyzer::checkInvalidAnalysis(){
@@ -348,7 +351,9 @@ int FreqAnalyzer::getInvalidFreqCount(){
 			break;
 		}
 	}
-	LOGE("getInvalidFreqCount(), iRet:%d\n", iRet);
+	if(0 < iRet){
+		LOGE("getInvalidFreqCount(), iRet:%d\n", iRet);
+	}
 	return iRet;
 }
 
@@ -1246,7 +1251,7 @@ string FreqAnalyzer::replaceInvalidChar(string strDecode){
 
 	//Remove 2 dividers
 	int iLenNoDivider = iLen - 2;
-	int iPosSndDividerShouldBe = (iLenNoDivider*2/3)-10;//minus (token len + purpose + sec + reserved)
+	int iPosSndDividerShouldBe = (iLenNoDivider*2/3)-12;//minus (token len + purpose + sec + reserved)
 
 	LOGE("replaceInvalidChar(), iLenNoDivider is %d, iPosSndDividerShouldBe = %d\n", iLenNoDivider, iPosSndDividerShouldBe);
 
@@ -1254,8 +1259,8 @@ string FreqAnalyzer::replaceInvalidChar(string strDecode){
 	int iPosSndDivider = -1;
 	LOGE("replaceInvalidChar(), iPosFstDivider is at %d, strDecode = %s\n", iPosFstDivider, strDecode.c_str());
 	if(0 <= iPosFstDivider){
-		iPosSndDivider = strDecode.find(SoundPair_Config::PAIRING_DIVIDER, iPosFstDivider+1);
-
+		//iPosSndDivider = strDecode.find(SoundPair_Config::PAIRING_DIVIDER, iPosFstDivider+1);
+		iPosSndDivider = strDecode.rfind(SoundPair_Config::PAIRING_DIVIDER);
 
 //		int iPosFstDividerDelta = iPosFstDivider-POS_FST_DIVIDER;
 //

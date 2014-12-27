@@ -246,6 +246,17 @@ int AudioBufferMgr::getLastDataBufIndex(){
 	return iRet;
 }
 
+int AudioBufferMgr::getIndexFromPosition(int iPosIdx, int iShift){
+	int iRet = iPosIdx + iShift;
+	if(AudioBufferMgr::MAX_QUEUE_SIZE <= iRet){
+		iRet -= AudioBufferMgr::MAX_QUEUE_SIZE;
+	}else if(0 > iRet){
+		iRet += AudioBufferMgr::MAX_QUEUE_SIZE;
+	}
+	LOGI("iPosIdx:[%d]->iShift:[%d] = iRet:[%d]\n", iPosIdx, iShift, iRet);
+	return iRet;
+}
+
 void AudioBufferMgr::trimAvailableBuf(unsigned int iRestCount){
 	//LOGI("trimAvailableBuf(), iRestCount:%d\n", iRestCount);
 
