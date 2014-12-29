@@ -758,7 +758,9 @@ void FreqAnalyzer::appendRet(string strCode){
 				msbDecode.clear();
 				if(mIFreqAnalyzeResultCBListener){
 					mIFreqAnalyzeResultCBListener->onDetectStart();
-					mIFreqAnalyzeResultCBListener->onSetResult("", "", "", !mbNeedToAutoCorrection, mprevMatchRet);
+					if(mbNeedToAutoCorrection){
+						mIFreqAnalyzeResultCBListener->onSetResult("", "", "", !mbNeedToAutoCorrection, mprevMatchRet);
+					}
 				}
 
 				Ref<CodeRecord> lastTwoRec = mCodeRecordList[mCodeRecordList.size()-2];

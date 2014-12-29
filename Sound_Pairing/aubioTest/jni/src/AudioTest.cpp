@@ -314,7 +314,7 @@ static short ANALYSIS_END_THRESHHOLD_DETECT	   			= -1;//audio value
 static const int   ANALYSIS_THRESHHOLD_CK_LEN 			= 1600;//sample size , about 0.1 sec
 static const int   ANALYSIS_AB_THRESHHOLD_TOL_MISS_CNT 	= 2;
 static const int   ANALYSIS_AB_THRESHHOLD_CK_CNT 		= 2;
-static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 		= 10;
+static const int   ANALYSIS_UN_THRESHHOLD_CK_CNT 		= 15;
 
 static short sMaxValue = 0;
 static int siAboveThreshHoldCount = 0;
@@ -2131,6 +2131,7 @@ static int onSPFailed(){
 	return iRet;
 }
 
+
 static int onSPSuccess(){
 	int iRet = 0;
 	int iTrials = 0;
@@ -2143,13 +2144,13 @@ static int onSPSuccess(){
 	//removeOldRegionId();
 
 	//Mark Single Entry
-//	iTrials = 0;
-//	do{
-//		iRet = invokeSystem("\"$BACKUP_REGION_INFO_PROGRAM\"");
-//		if(0 != iRet){
-//			LOGE("Failed to invoke RESTORE_REGION_INFO_PROGRAM :[%d]\n", iRet);
-//		}
-//	}while(0 != iRet && 3 > ++iTrials);
+	iTrials = 0;
+	do{
+		iRet = invokeSystem("\"$BACKUP_REGION_INFO_PROGRAM\"");
+		if(0 != iRet){
+			LOGE("Failed to invoke RESTORE_REGION_INFO_PROGRAM :[%d]\n", iRet);
+		}
+	}while(0 != iRet && 3 > ++iTrials);
 	AudioTest::getInstance()->setPairingReturnCode(0);
 	return iRet;
 }

@@ -62,49 +62,49 @@ public class SessionMgr {
 	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
 	static private final String[] ACCOUNT_BE_URL = {"https://tokyo-p1-dev-api-1.beseye.com/acc",
 													"https://acc-dev.beseye.com", 
-													"https://acc-stage.beseye.com",
+													"https://oregon-p1-stage-api-1.beseye.com/acc",
 													"https://tokyo-acc-stage.beseye.com",
 													"https://acc-stage.beseye.com"}; 
 	
 	static private final String[] MM_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/mm/",
 												"https://mm-dev.beseye.com/",
-												"https://mm-stage.beseye.com/",
+												"https://oregon-p1-stage-api-1.beseye.com/mm/",
 												"https://tokyo-mm-stage.beseye.com/",
 												"https://mm-stage.beseye.com/"}; 
 
 	static private final String[] CAM_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/cam/",
 												 "https://ns-dev.beseye.com/",
-												 "https://ns-stage.beseye.com/",
+												 "https://oregon-p1-stage-api-1.beseye.com/cam/",
 												 "https://tokyo-ns-stage.beseye.com/",
 												 "https://ns-stage.beseye.com/"}; 
 	
 	static private final String[] NS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/ns/",
 												"https://ns-dev.beseye.com/",
-												"https://ns-stage.beseye.com/",
+												"https://oregon-p1-stage-api-1.beseye.com/ns/",
 												"https://tokyo-ns-stage.beseye.com/",
 												"https://ns-stage.beseye.com/"}; 
 	
 	static private final String[] CAM_WS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/ws/",
 													"https://ns-dev.beseye.com/",
-													"https://ns-stage.beseye.com/",
+													"https://oregon-p1-stage-api-1.beseye.com/ws/",
 													"https://tokyo-ns-stage.beseye.com/",
 													"https://ns-stage.beseye.com/"}; 
 	
 	static private final String[] WS_BE_URL = { "https://tokyo-p1-dev-ws-1.beseye.com/",
 												"https://ws-dev.beseye.com/", 
-												"https://ws-stage.beseye.com/",
+												"https://oregon-p1-stage-ws-1.beseye.com/",
 												"https://tokyo-ws-stage.beseye.com/",
 												"https://ws-stage.beseye.com/"}; 
 	
 	static private final String[] WSA_BE_URL = { "https://tokyo-p1-dev-wsa-1.beseye.com/",
 												 "https://wsa-dev.beseye.com/", 
-												 "https://wsa-stage.beseye.com/",
+												 "https://oregon-p1-stage-wsa-1.beseye.com/",
 												 "https://tokyo-wsa-stage.beseye.com/",
 												 "https://wsa-stage.beseye.com/"}; 
 	
 	static private final String[] NEWS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/news/",
 												  "https://news-dev.beseye.com/", 
-												  "https://news-stage.beseye.com/",
+												  "https://oregon-p1-stage-api-1.beseye.com/news/",
 												  "https://tokyo-news-stage.beseye.com/",
 												  "https://news-stage.beseye.com/"}; 
 	

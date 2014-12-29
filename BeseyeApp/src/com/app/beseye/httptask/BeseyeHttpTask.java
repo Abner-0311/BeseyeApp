@@ -463,8 +463,9 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		JSONObject jsonRet = null;
 		if(ERR_TYPE_NO_ERR == miErrType){
 			try {
-		    	if(null != entity)
+		    	if(null != entity){
 		    		result = EntityUtils.toString(entity);
+		    	}
 			} catch (ParseException e1) {
 				miErrType = ERR_TYPE_INVALID_DATA;
 				e1.printStackTrace();
