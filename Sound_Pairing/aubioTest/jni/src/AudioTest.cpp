@@ -169,10 +169,13 @@ void healthCheck(){
 	checkSystemProcess(true);
 }
 
+//Check if SoundPairing is disabled
+static bool sForceDisabledSp = false;
+
 static bool sbIsLANPortUsed = false;
 
 void turnOnWiFiModule(){
-	if(sbIsLANPortUsed){
+	if(sbIsLANPortUsed || sForceDisabledSp){
 		return;
 	}
 
@@ -193,7 +196,7 @@ void turnOnWiFiModule(){
 }
 
 void turnOffWiFiModule(){
-	if(sbIsLANPortUsed){
+	if(sbIsLANPortUsed || sForceDisabledSp){
 		return;
 	}
 
@@ -233,47 +236,56 @@ static const char* SP_ENABLED_FLAG			= "/beseye/config/sp_enabled";
 
 int checkSpEnabled(){
 	int iRet = RET_CODE_OK;
-	BOOL sp_enabled = isFileExist(SP_ENABLED_FLAG);
+	//BOOL sp_enabled = isFileExist(SP_ENABLED_FLAG);
+	BOOL bIsLANPortUsed = isLANPortUsed();
 
-	if(FALSE == sp_enabled){
-		char wifiInfo[BUF_SIZE]={0};
-		int iTrials = 0;
-		do{
-			if(0 < iTrials){
-				sleep(1);
-			}
-			iRet = getWiFiSetting(wifiInfo);
-		}while(iTrials++ > 3 && RET_CODE_OK != iRet);
+	if(FALSE == bIsLANPortUsed){
+		char* curIP = getCurrentIP();
+		if(curIP){
+			LOGE( "curIP:[%s]\n", curIP?curIP:"");
+			char wifiInfo[BUF_SIZE]={0};
+			int iTrials = 0;
+			do{
+				if(0 < iTrials){
+					sleep(1);
+				}
+				iRet = getWiFiSetting(wifiInfo);
+			}while(iTrials++ > 3 && RET_CODE_OK != iRet);
 
-		if(RET_CODE_OK == iRet){
-			//LOGE( "wifiInfo:%s\n", wifiInfo?wifiInfo:"");
-			struct json_object *wifi_obj = json_tokener_parse(wifiInfo);
-			if(!is_error(wifi_obj)){
-				json_object *Data_obj = json_object_object_get(wifi_obj, WS_ATTR_INTERNAL_DATA);
-				if(!is_error(Data_obj)){
-					json_object *ssid_obj = json_object_object_get(Data_obj, API_PARAM_SSID);
-					if(!is_error(ssid_obj)){
-						const char *ssid = json_object_to_json_string(ssid_obj);
-						//LOGE( "ssid:[%s]\n", ssid?ssid:"");
-						if(ssid && 0 == strcmp(ssid, "\"beseye_ap1_cam\"")){
-							//LOGE( "ssid is matched\n");
-							json_object *pw_obj = json_object_object_get(Data_obj, API_PARAM_KEY);
-							if(!is_error(pw_obj)){
-								const char *pw = json_object_to_json_string(pw_obj);
-								//LOGE( "pw:[%s]\n", pw?pw:"");
-								if(pw && 0 == strcmp(pw, "\"12345678\"")){
-									//LOGE( "Found match AP info........................\n");
-									iRet = CMD_RET_CODE_SP_DISABLED;
+			if(RET_CODE_OK == iRet){
+				//LOGE( "wifiInfo:%s\n", wifiInfo?wifiInfo:"");
+				struct json_object *wifi_obj = json_tokener_parse(wifiInfo);
+				if(!is_error(wifi_obj)){
+					json_object *Data_obj = json_object_object_get(wifi_obj, WS_ATTR_INTERNAL_DATA);
+					if(!is_error(Data_obj)){
+						json_object *ssid_obj = json_object_object_get(Data_obj, API_PARAM_SSID);
+						if(!is_error(ssid_obj)){
+							const char *ssid = json_object_to_json_string(ssid_obj);
+							//LOGE( "ssid:[%s]\n", ssid?ssid:"");
+							if(ssid && 0 == strcmp(ssid, "\"beseye_ap1_cam\"")){
+								//LOGE( "ssid is matched\n");
+								json_object *pw_obj = json_object_object_get(Data_obj, API_PARAM_KEY);
+								if(!is_error(pw_obj)){
+									const char *pw = json_object_to_json_string(pw_obj);
+									//LOGE( "pw:[%s]\n", pw?pw:"");
+									if(pw && 0 == strcmp(pw, "\"12345678\"")){
+										LOGE( "Found match AP info........................\n");
+										iRet = CMD_RET_CODE_SP_DISABLED;
+									}
 								}
 							}
 						}
 					}
+					FREE_JSON_OBJ(wifi_obj)
 				}
-				FREE_JSON_OBJ(wifi_obj)
 			}
+			FREE(curIP)
+		}else{
+			LOGE( "ip is null........................\n");
 		}
+
 	}else{
-		LOGE( "sp_enabled is on........................\n");
+		LOGE( "isLANPortUsed is true........................\n");
 	}
 
 	return iRet;
@@ -587,9 +599,6 @@ static void copyLogFile(){
 	fclose(source);
 	fclose(target);
 }
-
-//Check if SoundPairing is disabled
-static bool sForceDisabledSp = false;
 
 //Check if SoundPairing Error log is enabled
 static bool sSpErrLogEnabled = false;
@@ -960,17 +969,19 @@ bool AudioTest::startPairingAnalysis(){
 		//checkLogFiles();
 		//setInvalidWifi();
 
-		sbIsLANPortUsed = isLANPortUsed();
-		LOGE("sbIsLANPortUsed:%d\n", sbIsLANPortUsed);
-
-		checkWiFiRec();
 		deleteFile(MONITOR_PROCESS_FLAG);
 		int iRet = checkSpEnabled();//system("/beseye/cam_main/cam-handler -chk_sp_enabled") >> 8;
 		LOGE("startPairingAnalysis(),chk_sp_enabled, iRet:%d\n", iRet);
 		if(CMD_RET_CODE_SP_DISABLED == iRet){
 			sForceDisabledSp = true;
+			setLEDMode(LED_MODE_SOLID_GB);
 			LOGE("startPairingAnalysis(), chk_sp_enabled, disabled SP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+		}else{
+			checkWiFiRec();
 		}
+
+		sbIsLANPortUsed = isLANPortUsed();
+		LOGE("sbIsLANPortUsed:%d\n", sbIsLANPortUsed);
 
 		sSpErrLogEnabled = isFileExist("/beseye/config/sp_error_enabled");
 
@@ -1469,6 +1480,10 @@ static void triggerAnalysis(){
 //static int iOldLen = 0;
 void writeBuf(unsigned char* charBuf, int iLen){
 
+	if(sForceDisabledSp){
+		return;
+	}
+
 #ifdef SEG_PROFILE
 	if(0 == lTsToTest){
 		lTsToTest = time_ms();
@@ -1655,152 +1670,157 @@ void writeBuf(unsigned char* charBuf, int iLen){
 							ANALYSIS_THRESHHOLD_MONITOR = 0;
 						}
 					}else{
-						if(0 > ANALYSIS_END_THRESHHOLD_DETECT && AudioTest::getInstance()->getDetectStartFlag()){
-							ANALYSIS_THRESHHOLD_MONITOR_DETECT = ((ANALYSIS_THRESHHOLD_MONITOR_DETECT*(ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT);
-							if(ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT >= 25){
-								if(ANALYSIS_THRESHHOLD_MONITOR_DETECT > ANALYSIS_END_THRESHHOLD){
-									ANALYSIS_END_THRESHHOLD_DETECT = ANALYSIS_THRESHHOLD_MONITOR_DETECT -100;
-								}else{
-									ANALYSIS_END_THRESHHOLD_DETECT = 0;
+						if(false == sForceDisabledSp){
+							if(0 > ANALYSIS_END_THRESHHOLD_DETECT && AudioTest::getInstance()->getDetectStartFlag()){
+								ANALYSIS_THRESHHOLD_MONITOR_DETECT = ((ANALYSIS_THRESHHOLD_MONITOR_DETECT*(ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT);
+								if(ANALYSIS_THRESHHOLD_MONITOR_DETECT_CNT >= 25){
+									if(ANALYSIS_THRESHHOLD_MONITOR_DETECT > ANALYSIS_END_THRESHHOLD){
+										ANALYSIS_END_THRESHHOLD_DETECT = ANALYSIS_THRESHHOLD_MONITOR_DETECT -100;
+									}else{
+										ANALYSIS_END_THRESHHOLD_DETECT = 0;
+									}
+									LOGW("-------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR_DETECT:%d, ANALYSIS_END_THRESHHOLD_DETECT:%d\n", ANALYSIS_THRESHHOLD_MONITOR_DETECT, ANALYSIS_END_THRESHHOLD_DETECT);
 								}
-								LOGW("-------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR_DETECT:%d, ANALYSIS_END_THRESHHOLD_DETECT:%d\n", ANALYSIS_THRESHHOLD_MONITOR_DETECT, ANALYSIS_END_THRESHHOLD_DETECT);
-							}
-						}
-
-						if(PAIRING_WAITING == sPairingMode){
-							ANALYSIS_THRESHHOLD_MONITOR = ((ANALYSIS_THRESHHOLD_MONITOR*(ANALYSIS_THRESHHOLD_MONITOR_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_CNT);
-							//LOGW("-------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR:%d, ANALYSIS_THRESHHOLD_MONITOR_CNT:%d\n", ANALYSIS_THRESHHOLD_MONITOR, ANALYSIS_THRESHHOLD_MONITOR_CNT);
-							if(ANALYSIS_THRESHHOLD_MONITOR_CNT >= 50){
-								if(ANALYSIS_THRESHHOLD_MONITOR < ANALYSIS_START_THRESHHOLD_MIN){
-									ANALYSIS_START_THRESHHOLD = ANALYSIS_START_THRESHHOLD_MIN;
-								}else{
-									ANALYSIS_START_THRESHHOLD = ((ANALYSIS_THRESHHOLD_MONITOR) < ANALYSIS_START_THRESHHOLD_MAX)?(ANALYSIS_THRESHHOLD_MONITOR):ANALYSIS_START_THRESHHOLD_MAX;
-								}
-								ANALYSIS_END_THRESHHOLD = (ANALYSIS_THRESHHOLD_MONITOR + ANALYSIS_START_THRESHHOLD)/2;
-								LOGW("-------------------------------------------------------->ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, in PAIRING_WAITING\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD);
-								ANALYSIS_THRESHHOLD_MONITOR_CNT = 0;
-								ANALYSIS_THRESHHOLD_MONITOR = 0;
-							}
-						}
-
-						if(ANALYSIS_START_THRESHHOLD < sMaxValue){
-							if(0 == siAboveThreshHoldCount){
-								FreqAnalyzer::getInstance()->setSessionOffsetForAmp(-iCurIdx);
 							}
 
-							siAboveThreshHoldCount++;
-							siLastCntToAboveThreshhold = siRefCountToCheckMaxVol;
-							LOGW("-------------------------------------------------------->sMaxValue:%d, siAboveThreshHoldCount:%d, siUnderThreshHoldCount:%d, siRefCountToCheckMaxVol:%d\n", sMaxValue, siAboveThreshHoldCount, siUnderThreshHoldCount, siRefCountToCheckMaxVol);
-
-//							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT && PAIRING_WAITING == sPairingMode){
-//								LOGE("trigger analysis-----\n");
-//								//trigger analysis
-//								if(AudioTest::getInstance()->isPairingAnalysisMode()){
-//									AudioTest::getInstance()->setPairingReturnCode(-1);
-//									changePairingMode(PAIRING_ANALYSIS);
-//									FreqAnalyzer::getInstance()->setDetectLowSound(false);
-//									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
-//									AudioBufferMgr::getInstance()->setRecordMode(false);
-//								}
-//								AudioTest::getInstance()->setAboveThresholdFlag(true);
-//								siAboveThreshHoldCount = 0;
-//							}
-							siUnderThreshHoldCount = 0;
-						}else if(ANALYSIS_END_THRESHHOLD > sMaxValue || (0 < ANALYSIS_END_THRESHHOLD_DETECT && ANALYSIS_END_THRESHHOLD_DETECT > sMaxValue && PAIRING_WAITING < sPairingMode)){
-							siUnderThreshHoldCount++;
-
-							if(AudioTest::getInstance()->getDetectStartFlag()){
-								LOGE("trigger stop analysis-----, (%d, %d), siUnderThreshHoldCount:[%d], sMaxValue:[%d]\n",ANALYSIS_END_THRESHHOLD, ANALYSIS_END_THRESHHOLD_DETECT, siUnderThreshHoldCount, sMaxValue);
+							if(PAIRING_WAITING == sPairingMode){
+								ANALYSIS_THRESHHOLD_MONITOR = ((ANALYSIS_THRESHHOLD_MONITOR*(ANALYSIS_THRESHHOLD_MONITOR_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_CNT);
+								//LOGW("-------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR:%d, ANALYSIS_THRESHHOLD_MONITOR_CNT:%d\n", ANALYSIS_THRESHHOLD_MONITOR, ANALYSIS_THRESHHOLD_MONITOR_CNT);
+								if(ANALYSIS_THRESHHOLD_MONITOR_CNT >= 50){
+									if(ANALYSIS_THRESHHOLD_MONITOR < ANALYSIS_START_THRESHHOLD_MIN){
+										ANALYSIS_START_THRESHHOLD = ANALYSIS_START_THRESHHOLD_MIN;
+									}else{
+										ANALYSIS_START_THRESHHOLD = ((ANALYSIS_THRESHHOLD_MONITOR) < ANALYSIS_START_THRESHHOLD_MAX)?(ANALYSIS_THRESHHOLD_MONITOR):ANALYSIS_START_THRESHHOLD_MAX;
+									}
+									ANALYSIS_END_THRESHHOLD = (ANALYSIS_THRESHHOLD_MONITOR + ANALYSIS_START_THRESHHOLD)/2;
+									LOGW("-------------------------------------------------------->ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, in PAIRING_WAITING\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD);
+									ANALYSIS_THRESHHOLD_MONITOR_CNT = 0;
+									ANALYSIS_THRESHHOLD_MONITOR = 0;
+								}
 							}
 
-							msec_t lDelta = (0 < lTsTriggerAnalysis)?(time_ms() - lTsTriggerAnalysis):0;
-
-							if((PAIRING_ANALYSIS ==  sPairingMode && (AudioTest::getInstance()->getAboveThresholdFlag())) && (siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT || (0 < lDelta && lDelta > MAX_TIME_TO_RECEIVE_ANALYSIS_BUF))){
-								LOGE("trigger stop analysis-----, siUnderThreshHoldCount:[%d], lDelta:[%lld]\n", siUnderThreshHoldCount, lDelta);
-								//stop analysis
-
-								if(AudioTest::getInstance()->isPairingAnalysisMode()){
-									AudioBufferMgr::getInstance()->setRecordMode(true);
+							if(ANALYSIS_START_THRESHHOLD < sMaxValue){
+								if(0 == siAboveThreshHoldCount){
+									FreqAnalyzer::getInstance()->setSessionOffsetForAmp(-iCurIdx);
 								}
 
-								int iCountToFurtherChk = 25;
-								if(false == AudioTest::getInstance()->getDetectStartFlag()){
-									iCountToFurtherChk = 10;
-								}
+								siAboveThreshHoldCount++;
+								siLastCntToAboveThreshhold = siRefCountToCheckMaxVol;
+								LOGW("-------------------------------------------------------->sMaxValue:%d, siAboveThreshHoldCount:%d, siUnderThreshHoldCount:%d, siRefCountToCheckMaxVol:%d\n", sMaxValue, siAboveThreshHoldCount, siUnderThreshHoldCount, siRefCountToCheckMaxVol);
 
-								int iStopAnalysisIdx = AudioBufferMgr::getInstance()->getBufIndex(shortsRecBuf);
-								if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
-									AudioTest::getInstance()->setStopAnalysisBufIdx(AudioBufferMgr::getInstance()->getIndexFromPosition(iStopAnalysisIdx, iCountToFurtherChk));
-									LOGE("miStopAnalysisBufIdx:[%d], iCountToFurtherChk:[%d]\n",iStopAnalysisIdx, iCountToFurtherChk);
-									siRestBufCntToStop = iCountToFurtherChk+10;
-								}else{
-									LOGE("miStopAnalysisBufIdx != -1\n");
-								}
-
-								FreqAnalyzer::getInstance()->setDetectLowSound(true);
-
+	//							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT && PAIRING_WAITING == sPairingMode){
+	//								LOGE("trigger analysis-----\n");
+	//								//trigger analysis
+	//								if(AudioTest::getInstance()->isPairingAnalysisMode()){
+	//									AudioTest::getInstance()->setPairingReturnCode(-1);
+	//									changePairingMode(PAIRING_ANALYSIS);
+	//									FreqAnalyzer::getInstance()->setDetectLowSound(false);
+	//									AudioBufferMgr::getInstance()->trimAvailableBuf((((ANALYSIS_THRESHHOLD_CK_LEN*ANALYSIS_AB_THRESHHOLD_CK_CNT)/SoundPair_Config::FRAME_SIZE_REC)*2));
+	//									AudioBufferMgr::getInstance()->setRecordMode(false);
+	//								}
+	//								AudioTest::getInstance()->setAboveThresholdFlag(true);
+	//								siAboveThreshHoldCount = 0;
+	//							}
 								siUnderThreshHoldCount = 0;
-							}
-							if(0 < siAboveThreshHoldCount){
-								LOGW("--------------------------------------------------------> check, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
-							}
+							}else if(ANALYSIS_END_THRESHHOLD > sMaxValue || (0 < ANALYSIS_END_THRESHHOLD_DETECT && ANALYSIS_END_THRESHHOLD_DETECT > sMaxValue && PAIRING_WAITING < sPairingMode)){
+								siUnderThreshHoldCount++;
 
-							if(-1 < siLastCntToAboveThreshhold && ANALYSIS_AB_THRESHHOLD_TOL_MISS_CNT < (siRefCountToCheckMaxVol - siLastCntToAboveThreshhold)){
-								siAboveThreshHoldCount = 0;
-							}
-						}else{
-							if(0 < siAboveThreshHoldCount){
-								LOGW("--------------------------------------------------------> check2, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
-							}
-							siUnderThreshHoldCount = 0;
+								if(AudioTest::getInstance()->getDetectStartFlag()){
+									LOGE("trigger stop analysis-----, (%d, %d), siUnderThreshHoldCount:[%d], sMaxValue:[%d]\n",ANALYSIS_END_THRESHHOLD, ANALYSIS_END_THRESHHOLD_DETECT, siUnderThreshHoldCount, sMaxValue);
+								}
 
-							if(-1 < siLastCntToAboveThreshhold && ANALYSIS_AB_THRESHHOLD_TOL_MISS_CNT <= (siRefCountToCheckMaxVol - siLastCntToAboveThreshhold)){
-								siAboveThreshHoldCount = 0;
+								msec_t lDelta = (0 < lTsTriggerAnalysis)?(time_ms() - lTsTriggerAnalysis):0;
+
+								if((PAIRING_ANALYSIS ==  sPairingMode && (AudioTest::getInstance()->getAboveThresholdFlag())) && (siUnderThreshHoldCount >= ANALYSIS_UN_THRESHHOLD_CK_CNT || (0 < lDelta && lDelta > MAX_TIME_TO_RECEIVE_ANALYSIS_BUF))){
+									LOGE("trigger stop analysis-----, siUnderThreshHoldCount:[%d], lDelta:[%lld]\n", siUnderThreshHoldCount, lDelta);
+									//stop analysis
+
+									if(AudioTest::getInstance()->isPairingAnalysisMode()){
+										AudioBufferMgr::getInstance()->setRecordMode(true);
+									}
+
+									int iCountToFurtherChk = 25;
+									if(false == AudioTest::getInstance()->getDetectStartFlag()){
+										iCountToFurtherChk = 10;
+									}
+
+									int iStopAnalysisIdx = AudioBufferMgr::getInstance()->getBufIndex(shortsRecBuf);
+									if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
+										AudioTest::getInstance()->setStopAnalysisBufIdx(AudioBufferMgr::getInstance()->getIndexFromPosition(iStopAnalysisIdx, iCountToFurtherChk));
+										LOGE("miStopAnalysisBufIdx:[%d], iCountToFurtherChk:[%d]\n",iStopAnalysisIdx, iCountToFurtherChk);
+										siRestBufCntToStop = iCountToFurtherChk+10;
+									}else{
+										LOGE("miStopAnalysisBufIdx != -1\n");
+									}
+
+									FreqAnalyzer::getInstance()->setDetectLowSound(true);
+
+									siUnderThreshHoldCount = 0;
+								}
+								if(0 < siAboveThreshHoldCount){
+									LOGW("--------------------------------------------------------> check, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
+								}
+
+								if(-1 < siLastCntToAboveThreshhold && ANALYSIS_AB_THRESHHOLD_TOL_MISS_CNT < (siRefCountToCheckMaxVol - siLastCntToAboveThreshhold)){
+									siAboveThreshHoldCount = 0;
+								}
+							}else{
+								if(0 < siAboveThreshHoldCount){
+									LOGW("--------------------------------------------------------> check2, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
+								}
+								siUnderThreshHoldCount = 0;
+
+								if(-1 < siLastCntToAboveThreshhold && ANALYSIS_AB_THRESHHOLD_TOL_MISS_CNT <= (siRefCountToCheckMaxVol - siLastCntToAboveThreshhold)){
+									siAboveThreshHoldCount = 0;
+								}
 							}
 						}
-					}
 
-					siRefCountToCheckMaxVol++;
-					sMaxValue = 0;
+						siRefCountToCheckMaxVol++;
+						sMaxValue = 0;
+					}
 				}
 			}
 			siRefCount++;
 
 			//if(PAIRING_INIT != sPairingMode){
 				if(iCurIdx == shortsRecBuf->size()-1){
-					//LOGE("writeBuf(), add rec buf at %lld, iIdxOffset:%d, iCurIdx:%d, shortsRecBuf->size():%d\n", lTs1, iIdxOffset, iCurIdx, shortsRecBuf->size() );
-					if(PAIRING_WAITING == sPairingMode && 0 == (++siBufCount)%3){
-						string strTone = FreqAnalyzer::getInstance()->findToneCodeByFreq(FreqAnalyzer::getInstance()->analyzeAudioViaAudacityAC(shortsRecBuf, SoundPair_Config::FRAME_SIZE_REC, false, 0, NULL));
+					if(false == sForceDisabledSp){
 
-						//const string strToneSample("3gi");
-						const string strToneSample("jgi");
-						int iPos = -1;
-						sToneRec += (0 == strTone.length() || 0 > (iPos = strToneSample.find(strTone)))?"*":strTone;
-						if(TONE_TO_REC < sToneRec.length()){
-							sToneRec = sToneRec.substr(sToneRec.length() - TONE_TO_REC,  TONE_TO_REC);
-						}
+						//LOGE("writeBuf(), add rec buf at %lld, iIdxOffset:%d, iCurIdx:%d, shortsRecBuf->size():%d\n", lTs1, iIdxOffset, iCurIdx, shortsRecBuf->size() );
+						if(PAIRING_WAITING == sPairingMode && 0 == (++siBufCount)%3){
+							string strTone = FreqAnalyzer::getInstance()->findToneCodeByFreq(FreqAnalyzer::getInstance()->analyzeAudioViaAudacityAC(shortsRecBuf, SoundPair_Config::FRAME_SIZE_REC, false, 0, NULL));
 
-						bool bRet = matchTonePattern();
-						if(bRet){
-							LOGE("strTone:[%s] ==> [%s], bRet:[%d], siAboveThreshHoldCount:%d\n", strTone.c_str(), sToneRec.c_str(), bRet, siAboveThreshHoldCount);
-
-							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && PAIRING_WAITING == sPairingMode){
-								if(siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
-									triggerAnalysis();
-									lTsTriggerAnalysis = time_ms();
-								}
+							//const string strToneSample("3gi");
+							const string strToneSample("jgi");
+							int iPos = -1;
+							sToneRec += (0 == strTone.length() || 0 > (iPos = strToneSample.find(strTone)))?"*":strTone;
+							if(TONE_TO_REC < sToneRec.length()){
+								sToneRec = sToneRec.substr(sToneRec.length() - TONE_TO_REC,  TONE_TO_REC);
 							}
-							siUnderThreshHoldCount = 0;
+
+							bool bRet = matchTonePattern();
+							if(bRet){
+								LOGE("strTone:[%s] ==> [%s], bRet:[%d], siAboveThreshHoldCount:%d\n", strTone.c_str(), sToneRec.c_str(), bRet, siAboveThreshHoldCount);
+
+								if(false == AudioTest::getInstance()->getAboveThresholdFlag() && PAIRING_WAITING == sPairingMode){
+									if(siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
+										triggerAnalysis();
+										lTsTriggerAnalysis = time_ms();
+									}
+								}
+								siUnderThreshHoldCount = 0;
+							}
 						}
-					}
 
-					AudioBufferMgr::getInstance()->addToDataBuf(lTs1, shortsRecBuf, shortsRecBuf->size());
-					shortsRecBuf = NULL;
+						AudioBufferMgr::getInstance()->addToDataBuf(lTs1, shortsRecBuf, shortsRecBuf->size());
+						shortsRecBuf = NULL;
 
-					if(0 < siRestBufCntToStop){
-						LOGI("count down siRestBufCntToStop:[%d]\n", siRestBufCntToStop);
-						if(0 == --siRestBufCntToStop){
-							stopReceiveAudioBuf();
+						if(0 < siRestBufCntToStop){
+							LOGI("count down siRestBufCntToStop:[%d]\n", siRestBufCntToStop);
+							if(0 == --siRestBufCntToStop){
+								stopReceiveAudioBuf();
+							}
 						}
 					}
 				}
