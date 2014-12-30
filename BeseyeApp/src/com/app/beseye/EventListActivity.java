@@ -207,6 +207,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				mMainListView.getRefreshableView().setAdapter(mEventListAdapter);
 				mVgIndicator.updateToNow(true);
 				mVgIndicator.updateDateTime(new Date().getTime());
+				mEventListAdapter.setVcamId(mStrVCamID);
         	}
 		}
 	}

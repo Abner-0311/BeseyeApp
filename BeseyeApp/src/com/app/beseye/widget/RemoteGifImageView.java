@@ -34,6 +34,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.app.beseye.adapter.EventListAdapter.IListViewScrollListenser;
+import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.util.BeseyeUtils;
 
 public class RemoteGifImageView extends RemoteImageView {
 	private String[] mCachePath;
@@ -94,10 +96,10 @@ public class RemoteGifImageView extends RemoteImageView {
 	}
 
 	public void setURI(String[] uri, int defaultImage) {
-		setURI(uri, null, defaultImage);
+		setURI(uri, null, defaultImage, null);
 	}
 
-	public void setURI(String[] uri, String[] uriCache, int defaultImage) {
+	public void setURI(String[] uri, String[] uriCache, int defaultImage, String strVCamId) {
 		mbIsInitPage = true;
 		if(null != mURI && null != uri && mURI.length == uri.length){
 			boolean bDiff = false;
@@ -115,6 +117,7 @@ public class RemoteGifImageView extends RemoteImageView {
 				return;
 			}
 		}
+		mStrVCamId = strVCamId;
 		mbIsSameList = false;
 		mURI = uri;
 		mDefaultImage = defaultImage;
@@ -290,7 +293,7 @@ public class RemoteGifImageView extends RemoteImageView {
 		}
 		
 		if(null != mURI && miCurDisplayIdx < mURI.length && null != mURI[miCurDisplayIdx] && 0 < mURI[miCurDisplayIdx].length()){
-			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath[miCurDisplayIdx] , mURI[miCurDisplayIdx] , mIsPreload, false, false));
+			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath[miCurDisplayIdx] , mURI[miCurDisplayIdx] , mIsPreload, false, false, mStrVCamId));
 		}
 	}
 	
@@ -322,14 +325,16 @@ public class RemoteGifImageView extends RemoteImageView {
 		private String mLocal;
 		private String mLocalSample, mLocalSampleHQ;
 		private String mRemote;
+		private String mStrVCamId = null;
 		private boolean mIsPreload, mbIsPhoto, mbIsPhotoViewMode;
 
-		public LoadImageRunnable(String local, String remote, boolean isPreload, boolean bIsPhoto, boolean bIsPhotoViewMode) {
+		public LoadImageRunnable(String local, String remote, boolean isPreload, boolean bIsPhoto, boolean bIsPhotoViewMode, String strVCamId) {
 			mLocal = local;
 			mRemote = remote;
 			mIsPreload = isPreload;
 			mbIsPhoto = bIsPhoto;
 			mbIsPhotoViewMode = bIsPhotoViewMode;
+			mStrVCamId =strVCamId;
 			
 			mLocalSample = mLocal+(mbIsPhoto?CACHE_POSTFIX_SAMPLE_1:CACHE_POSTFIX_SAMPLE_2);
 			mLocalSampleHQ = mbIsPhotoViewMode?(mLocalSample+CACHE_POSTFIX_HIGH_RES):null;
@@ -416,7 +421,7 @@ public class RemoteGifImageView extends RemoteImageView {
 								// HTTP get image
 								int retryCount = 0;
 								while (true) {
-									if ((downloadBitmap = imageHTTPTask(mRemote, mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?2:2))) != null) {
+									if ((downloadBitmap = imageHTTPTask(mRemote, mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?2:2), mStrVCamId)) != null) {
 										break;
 									}
 									if (++retryCount >= 3
@@ -503,7 +508,7 @@ public class RemoteGifImageView extends RemoteImageView {
 		}
 	}
 
-	static public Bitmap imageHTTPTask(String uri, int iSample) {
+	static public Bitmap imageHTTPTask(String uri, int iSample, String strVcamId) {
 //		if(DEBUG)
 //			Log.i(TAG, "imageHTTPTask(), iSample: " + iSample);
 		
@@ -518,6 +523,13 @@ public class RemoteGifImageView extends RemoteImageView {
 				URL url = new URL(uri);
 				URLConnection conn = url.openConnection();
 				HttpURLConnection httpConn = (HttpURLConnection) conn;
+				httpConn.setRequestProperty("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+				httpConn.setRequestProperty("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
+				httpConn.setRequestProperty("Bes-User-Agent", BeseyeUtils.getUserAgent());
+				httpConn.setRequestProperty("User-Agent", BeseyeUtils.getUserAgent());
+				if(null != strVcamId)
+					httpConn.setRequestProperty("Bes-VcamPermission-VcamUid", strVcamId);
+				
 				httpConn.setRequestMethod("GET");
 				httpConn.connect();
 				if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {

@@ -42,6 +42,11 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		mStrMotionDetect = context.getResources().getString(R.string.event_list_motion_detected);
 		mStrEventDetect = context.getResources().getString(R.string.event_list_unknown_detected);
 	}
+	
+	private String mStrVCamID;
+	public void setVcamId(String VCamId){
+		mStrVCamID = VCamId;
+	}
 
 	static public class EventListItmHolder{
 		public TextView mTxtEventType;
@@ -160,7 +165,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 						}
 						
 						holder.mImgThumbnail.setIListViewScrollListenser(mIListViewScrollListenser);
-						holder.mImgThumbnail.setURI(path, pathCache, R.drawable.eventlist_s_eventview_noview_bg);
+						holder.mImgThumbnail.setURI(path, pathCache, R.drawable.eventlist_s_eventview_noview_bg, mStrVCamID);
 						holder.mImgThumbnail.loadImage(true);
 //						String[] path = {"s3://2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser/thumbnail/400x225/2014/05-23/15/{sEnd}1400858859902_{dur}10351_{r}1400850536594_{th}1400858859551.jpg",
 //								"s3://beseye-thumbnail/taiwan_Taipei-101.jpg",

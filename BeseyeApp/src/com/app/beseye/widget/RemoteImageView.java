@@ -37,7 +37,9 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.app.beseye.R;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeStorageAgent;
+import com.app.beseye.util.BeseyeUtils;
 
 public class RemoteImageView extends ImageView {
 	final protected static int EMPTY_DEFAULT_IMAGE = -1;
@@ -60,7 +62,7 @@ public class RemoteImageView extends ImageView {
 	protected boolean mbIsPhotoViewMode = false;
 	protected boolean mbIsLoaded = false;
 	
-	private String mStrVCamId = null;
+	protected String mStrVCamId = null;
 	private String mStrVCamIdLoad = null;
 	
 	static public final String CACHE_POSTFIX_SAMPLE_1 = "_s1";//set sample as 1
@@ -525,7 +527,7 @@ public class RemoteImageView extends ImageView {
 								// HTTP get image
 								int retryCount = 0;
 								while (true) {
-									if ((downloadBitmap = imageHTTPTask(mRemote, 1/*mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:2)*/)) != null) {
+									if ((downloadBitmap = imageHTTPTask(mRemote, 1, mStrVCamId/*mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:2)*/)) != null) {
 										break;
 									}
 									if (++retryCount >= 3
@@ -615,7 +617,7 @@ public class RemoteImageView extends ImageView {
 		}
 	}
 
-	static public Bitmap imageHTTPTask(String uri, int iSample) {
+	static public Bitmap imageHTTPTask(String uri, int iSample, String strVcamId) {
 //		if(DEBUG)
 //			Log.i(TAG, "imageHTTPTask(), iSample: " + iSample);
 		
@@ -630,6 +632,12 @@ public class RemoteImageView extends ImageView {
 				URL url = new URL(uri);
 				URLConnection conn = url.openConnection();
 				HttpURLConnection httpConn = (HttpURLConnection) conn;
+				httpConn.setRequestProperty("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+				httpConn.setRequestProperty("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
+				httpConn.setRequestProperty("Bes-User-Agent", BeseyeUtils.getUserAgent());
+				httpConn.setRequestProperty("User-Agent", BeseyeUtils.getUserAgent());
+				if(null != strVcamId)
+					httpConn.setRequestProperty("Bes-VcamPermission-VcamUid", strVcamId);
 				httpConn.setRequestMethod("GET");
 				httpConn.connect();
 				if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
