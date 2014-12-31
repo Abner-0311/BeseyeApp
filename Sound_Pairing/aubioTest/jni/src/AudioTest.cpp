@@ -99,6 +99,7 @@ int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
 			//LOGE( "invokeSystem(), waitpid end\n");
 			deleteFile(MONITOR_PROCESS_FLAG);
 			intermediate_pid = -1;
+			lTimeInvodeSystem = 0;
 		}else{
 			LOGE( "invokeSystem(), invalid intermediate_pid:%d \n", intermediate_pid);
 		}
@@ -382,7 +383,6 @@ static bool sbLEDOn = false;
 
 static msec_t lLastTimeToBufRec = 0;
 
-
 //Check Network and token
 static const msec_t TIME_TO_CHECK_TOKEN 				= 600000;//600 seconds
 static const msec_t TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD = 6000000;//600 seconds
@@ -392,7 +392,6 @@ static msec_t slLastTimeCheckToken 						= -1;
 static const char* LOG_SOURCE = "/tmp/beseye_boot.log";
 static const char* LOG_DEST = "%s/sp_failed_%s.log";
 static const char* LOG_DIR = "/beseye/sp_log";
-
 
 static const char* RAYLIOS_VER_18	= "1.0-rc18";
 static const char* GAIN_25 			= "25";
@@ -413,7 +412,6 @@ const char* getSPGain(){
 			ANALYSIS_START_THRESHHOLD_MAX 	= ANALYSIS_START_THRESHHOLD_MAX_G35;
 		}
 	}
-
 	return (1 <= siRayliosVerAbove18)?GAIN_35:GAIN_25;
 }
 
@@ -957,6 +955,7 @@ bool AudioTest::startAutoTest(string strInitCode, int iDigitalToTest){
 	LOGE("startAutoTest()--\n");
 	return bRet;
 }
+static string replaceQuote(string input);
 
 bool AudioTest::startPairingAnalysis(){
 	deinitTestRound();
@@ -966,6 +965,7 @@ bool AudioTest::startPairingAnalysis(){
 		sForceDisabledSp = false;
 		sSpErrLogEnabled = false;
 
+		//replaceQuote("'ab'c'");
 		//checkLogFiles();
 		//setInvalidWifi();
 
@@ -1006,7 +1006,7 @@ bool AudioTest::startPairingAnalysis(){
 					}
 					sleep(3);
 					LOGE( "Network is disconnected.\n");
-				}while((time_ms() - lTimeToBeginNetworkChk) <= 75000);
+				}while((time_ms() - lTimeToBeginNetworkChk) <= 60000);
 				LOGE( "Token validation failed ............\n");
 			}else if(0 == (invokeSystem("/beseye/cam_main/beseye_network_check") >> 8)){
 				sbNetworkConnected = true;
@@ -1394,7 +1394,18 @@ void* AudioTest::verifyToken(void* userdata){
 			if(sbTokenExisted = readFromFile(SES_TOKEN_PATH)){
 				turnOnWiFiModule();
 				msec_t lTimeToBeginNetworkChk = time_ms();
-				LOGE("try to check token.\n");
+				LOGE("try to check token., TIME_TO_CHECK_TOKEN:%d\n", TIME_TO_CHECK_TOKEN);
+				//Workaround to trigger to get WiFi IP
+				char jsonData[BUF_SIZE]={0};
+				int iTrial = 0;
+				int iRet = -1;
+				do{
+					if(0 < iTrial){
+						sleep(1);
+					}
+					iRet = scanWiFiSSID(jsonData);
+				}while(0 != iRet && 3 >++iTrial);
+
 				do{
 					if(0 == (invokeSystem("/beseye/cam_main/beseye_network_check") >> 8)){
 						if(0 == (invokeSystemWithTimeout("/beseye/cam_main/beseye_token_check", 40) >> 8)){
@@ -2199,6 +2210,21 @@ static int applyRegionId(unsigned char cRegId){
 	return iRet;
 }
 
+static string replaceQuote(string input){
+	int iLen = input.length();
+
+	int iDx = iLen-1;
+	int iFound = -1;
+	LOGE("++, input:[%s]\n", input.c_str());
+	while(0 <= iDx && 0 <= (iFound = input.rfind("'", iDx))){
+		input = input.replace(iFound, 1, "'\"'\"'");
+		iDx = iFound -1;
+	}
+
+	LOGE("--, input:[%s]\n", input.c_str());
+	return input;
+}
+
 //#include "delegate/account_mgr.h"
 void checkPairingResult(string strCode, string strDecodeUnmark){
 #ifdef CAM_ENV
@@ -2533,7 +2559,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					if(1 == cPurpose){
 						iRet = applyRegionId(cRegId);
 						if(0 == iRet){
-							sprintf(cmd, "/beseye/cam_main/cam-util -verToken \"%s\" %s", strAPIChk.c_str(), strUserNum.c_str());
+							sprintf(cmd, "/beseye/cam_main/cam-util -verToken '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
 							LOGE("verToken cmd:[%s]\n", cmd);
 							iRet = invokeSystem(cmd) >> 8;
 							//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
@@ -2559,7 +2585,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						iRet = applyRegionId(cRegId);
 						if(0 == iRet){
 							LOGE("Token is invalid, try to attach\n");
-							sprintf(cmd, "/beseye/cam_main/cam-util -attach \"%s\" %s", strAPIChk.c_str(), strUserNum.c_str());
+							sprintf(cmd, "/beseye/cam_main/cam-util -attach '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
 							LOGE("attach cmd:[%s]\n", cmd);
 							iRet = invokeSystemWithTimeout(cmd, 15) >> 8;
 
