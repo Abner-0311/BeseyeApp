@@ -68,10 +68,15 @@ static msec_t lTImeToSaveErrorLog = 0;
 int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
 	int iTrials = 0;
 	int iRetSystemCall = -1;
+	int iTotalTrials = 3;
 	do{
 		siTimeoutValue = MAX_TIME_TO_INVOKE_SYSTEM;
 		if(0 < iTimeoutInSec && iTimeoutInSec < 120){
 			siTimeoutValue = iTimeoutInSec;
+		}
+
+		if(siTimeoutValue > 20){
+			iTotalTrials = 2;
 		}
 
 		//return system(cmd);
@@ -93,7 +98,7 @@ int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
 
 		if(0 < intermediate_pid){
 			lTimeInvodeSystem = time_ms();
-			LOGE( "invokeSystem(), intermediate_pid:%d, siTimeoutValue:[%lld], lTimeInvodeSystem:[%lld] , iTrials:[%d]\n", intermediate_pid, siTimeoutValue, lTimeInvodeSystem, iTrials);
+			LOGE( "invokeSystem(), intermediate_pid:%d, siTimeoutValue:[%lld], lTimeInvodeSystem:[%lld] , iTrials:[%d/%d]\n", intermediate_pid, siTimeoutValue, lTimeInvodeSystem, iTrials, iTotalTrials);
 			//LOGE( "invokeSystem(), waitpid begin\n");
 			waitpid(intermediate_pid, 0, 0);
 			//LOGE( "invokeSystem(), waitpid end\n");
@@ -110,7 +115,7 @@ int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
 		}
 		FREE(cRet)
 		LOGE( "invokeSystem(), iRetSystemCall:%d, time_ms:%lld .............----\n", iRetSystemCall, time_ms());
-	}while(-1 == iRetSystemCall && 2 > ++iTrials);
+	}while(-1 == iRetSystemCall && iTotalTrials > ++iTrials);
 
 	return iRetSystemCall;
 }

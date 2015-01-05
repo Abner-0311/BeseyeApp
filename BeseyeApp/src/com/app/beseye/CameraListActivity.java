@@ -681,10 +681,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					}
 					miShowMoreCount = 0;
 					miShowMoreCountMenu = 0;
-				}else if( miShowMoreCount == 2){
-					startSoundPairingProcess("", true);
-					miShowMoreCount = 0;
 				}
+//				else if( miShowMoreCount == 2){
+//					startSoundPairingProcess("", true);
+//					miShowMoreCount = 0;
+//				}
 			}
 		}else
 			super.onClick(view);
