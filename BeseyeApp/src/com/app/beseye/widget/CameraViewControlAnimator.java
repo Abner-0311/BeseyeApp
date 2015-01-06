@@ -105,6 +105,9 @@ public class CameraViewControlAnimator {
 				m_vgToolbarLayout.addView((Configuration.ORIENTATION_PORTRAIT == miOrientation)?mVgToolbarPortrait:mVgToolbarLandscape, LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
 				syncToolbarLayoutItmProperty();
 			}
+			
+			setControlVisibility(View.VISIBLE);
+			extendHideControl();
 		}
 	}
 	
@@ -427,15 +430,16 @@ public class CameraViewControlAnimator {
 				Animation animation = null;
 				CameraViewActivity act = mCameraViewActivity.get();
 				if(View.VISIBLE == m_vgHeaderLayout.getVisibility()){
-					
-					animation = m_aniHeaderFadeOut;
-					m_vgHeaderLayout.startAnimation(animation);
-					
-					if(null != act){
-						act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-						act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+					if(Configuration.ORIENTATION_PORTRAIT != miOrientation){
+						animation = m_aniHeaderFadeOut;
+						m_vgHeaderLayout.startAnimation(animation);
+						
+						if(null != act){
+							act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+							act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+						}
+						cancelHideControl();
 					}
-					cancelHideControl();
 				}else{
 					//animation = m_aniHeaderFadeIn;
 					m_vgHeaderLayout.bringToFront();
@@ -459,9 +463,11 @@ public class CameraViewControlAnimator {
 			if(null != m_vgToolbarLayout){
 				Animation animation = null;
 				if(View.VISIBLE == m_vgToolbarLayout.getVisibility()){
-					animation = m_aniToolbarFadeOut;
-					m_vgToolbarLayout.startAnimation(animation);
-					cancelHideControl();
+					if(Configuration.ORIENTATION_PORTRAIT != miOrientation){
+						animation = m_aniToolbarFadeOut;
+						m_vgToolbarLayout.startAnimation(animation);
+						cancelHideControl();
+					}
 				}else if(!mbP2PMode){
 					//animation = m_aniToolbarFadeIn;
 					m_vgToolbarLayout.bringToFront();
@@ -533,7 +539,9 @@ public class CameraViewControlAnimator {
 	}
 	
 	public void hideControl(){
-		setControlVisibility(View.GONE);
+		if(Configuration.ORIENTATION_PORTRAIT != miOrientation){
+			setControlVisibility(View.GONE);
+		}
 		
 //		CameraViewActivity act = mCameraViewActivity.get();
 //		if(null != act){

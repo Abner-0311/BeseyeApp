@@ -96,9 +96,9 @@
   <!-- Message of dialog when key(password) of wifi ap is wrong -->
   <string name="dialog_wifi_incorrect_password">您輸入的網路密碼不正確，請重新輸入。</string>
   <!-- Message of dialog when key(password) of wifi ap is wrong for WEP secuity type-->
-  <string name="dialog_wifi_incorrect_password_wep">因為不正確之密碼或網路問題導致無法連線。\ n是否要再試一次？</string>
+  <string name="dialog_wifi_incorrect_password_wep">因為不正確之密碼或網路問題導致無法連線。\n是否要再試一次？</string>
   <!-- Message of dialog when failing to connect to specific wifi ap -->
-  <string name="dialog_wifi_fail_to_connect">無法連接到無線網路裝置AP[%s]。\ n請檢查它是否可建立連線。</string>
+  <string name="dialog_wifi_fail_to_connect">無法連接到無線網路裝置AP[%s]。\n請檢查它是否可建立連線。</string>
   <!-- Message of dialog when no network connectivity via specific wifi ap-->
   <string name="dialog_wifi_invalid_connectivity">無法連接上無線網路裝置%s，請選擇其他無線上網裝置或再試一次。</string>
   <!-- description of wifi signal strength-->
@@ -276,7 +276,7 @@
   <string name="signup_try_again_description_3">安裝指南</string>
   <string name="signup_try_again_btn">好，再試一次</string>
   <!-- Hint Message after pairing is done and ask user to assign cam name-->
-  <string name="signup_name_camera">就快設定完成了，\ n 幫您的Beseye 取個好認的名字吧</string>
+  <string name="signup_name_camera">就快設定完成了，\n 幫您的Beseye 取個好認的名字吧</string>
   <!-- Congratulation Message in live player page after pairing-->
   <string name="signup_paring_done">攝影機設定已完成！\n 現在您可以拔掉插座將之安裝在您想要的位置上，所有設定會自動在您插上電之後回復。現在就開始享用您的Beseye Pro 服務吧!</string>
   <string name="datetime_month">月</string>
@@ -325,7 +325,7 @@
   <string name="forget_password_btn_submit">送出</string>
   <string name="forget_password_instruction">不用擔心！只需填寫您的電子郵件地址，我們將送給您重設密碼說明。</string>
   <string name="forget_password_check_mail_summary">Beseye 已經將密碼重設步驟發送到以下郵件地址：</string>
-  <string name="forget_password_check_mail_note">提醒：該電子郵件將從no-reply@support.beseye.com 發出\ n 如果您沒有在幾分鐘內收到該電子郵件，\ n 請檢查您的垃圾郵件。</string>
+  <string name="forget_password_check_mail_note">提醒：該電子郵件將從no-reply@support.beseye.com 發出\n 如果您沒有在幾分鐘內收到該電子郵件，\n 請檢查您的垃圾郵件。</string>
   <!-- Toast message when new camera is complete to pair and connected-->
   <string name="toast_new_cam_activated">新加入的攝影機已連線，請刷新您的攝影機列表。</string>
   <!-- Toast message when camera is connected after cam wifi changed-->

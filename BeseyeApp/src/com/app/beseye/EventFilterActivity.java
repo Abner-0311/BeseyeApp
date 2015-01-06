@@ -50,7 +50,7 @@ public class EventFilterActivity extends BeseyeBaseActivity{
 									 BeseyeMMBEHttpTask.EVENT_FILTER_SOUND};
 	
 	
-	private boolean[] mbEnabledLst = {true, true, false, true};
+	private boolean[] mbEnabledLst = {true, true, false, false};
 	
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;

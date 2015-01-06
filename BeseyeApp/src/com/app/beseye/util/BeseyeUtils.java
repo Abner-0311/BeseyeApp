@@ -9,8 +9,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.text.SimpleDateFormat;
@@ -233,11 +235,16 @@ public class BeseyeUtils {
 	}
 	
 	static public String getUserAgent(){
-		return ("{"+Build.MANUFACTURER+"}_{"+Build.MODEL+"}").replaceAll(" ", "_");
+		return ("{"+Build.MANUFACTURER+"}_{"+Build.MODEL+"}");
 	}
 	
 	static public String getStreamSecInfo(){
-		return String.format("?ua=%s&se=%s&dd=%s", getUserAgent(), SessionMgr.getInstance().getAuthToken(), getAndroidUUid());
+		try {
+			return String.format("?ua=%s&se=%s&dd=%s", URLEncoder.encode(getUserAgent(), "utf-8"), SessionMgr.getInstance().getAuthToken(), getAndroidUUid());
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	static public String getProcessName(Context context, int pID){
