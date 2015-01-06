@@ -268,7 +268,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	private void checkForUpdates() {
 	    // Remove this for store builds!
 		if(BeseyeUtils.canUpdateFromHockeyApp()){
-			UpdateManager.register(this, HOCKEY_APP_ID, false);
+			UpdateManager.register(this, HOCKEY_APP_ID, true);
 		}else if(BeseyeUtils.isProductionVersion()){
 			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, false);
 		}
@@ -298,6 +298,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_WARNING = 2;
 	static public final int DIALOG_ID_SYNCING = 3; 
 	static public final int DIALOG_ID_INFO 	  = 4;
+	static public final int DIALOG_ID_SETTING = 5;
 	
 	static public final int DIALOG_ID_WIFI_BASE 			= 0x1000; 
 	static public final int DIALOG_ID_TURN_ON_WIFI 			= DIALOG_ID_WIFI_BASE+1; 
@@ -413,6 +414,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}
 			case DIALOG_ID_SYNCING:{
 				dialog = ProgressDialog.show(this, "", getString(R.string.dialog_syncing), true, true);
+				dialog.setCancelable(false);
+				//TODO: avoid this dialog infinite showing
+				break;
+			}
+			case DIALOG_ID_SETTING:{
+				dialog = ProgressDialog.show(this, "", getString(R.string.dialog_setting), true, true);
 				dialog.setCancelable(false);
 				//TODO: avoid this dialog infinite showing
 				break;

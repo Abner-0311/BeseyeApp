@@ -1,501 +1,396 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    
-    <string name="app_name">Beseye</string>
-    <!-- action to connect to a wifi -->
-    <string name="connect">Connect</string>
-    <string name="cancel">Cancel</string>
-    <string name="done">Done</string>
-    <string name="ok">OK</string>
-    <string name="yes">Yes</string>
-    <string name="select">Select</string>
-    <string name="password">Password</string>
-    <!-- hint to unveil password mask -->
-    <string name="show_password">Show password</string>
-    <string name="forget_password">Forget password</string>
-    <string name="username">E-mail</string>
-    
-    <!-- hint to create new account -->
-    <string name="hint_to_create_account">Don\'t have an account?</string>
-    <string name="account_create">Create account</string>
-    <string name="login">Login</string>  
-    <string name="remove">Remove</string>  
-	<string name="cont">Continue</string> 
-	
-	<!-- Title of sound remind page -->
-    <string name="watch_out_sound">Sound reminder</string> 
-    
-    <!-- hint of password length -->
-    <string name="password_hint">6 characters with letter and number</string> 
-    <string name="action_settings">Settings</string>
-    
-    <!-- entry to event list page -->
-    <string name="event_cam_view">Event</string>
-    
-    <!-- entry to live streaming page -->
-    <string name="event_go_live">Go Live</string>
-    
-    <!-- Item name to live streaming page in events page  -->
-    <string name="event_itm_live">Live</string>
-    
-    <!-- Camera status: live streaming is off  -->
-    <string name="can_power_state_off">The cam is off</string>
-    
-    <!-- Camera status: live streaming is off and the connection to camera is down-->
-    <string name="can_power_state_disconnect">This cam is not connected</string>
-    
-    <string name="cam_setting_title_detach_cam">Remove camera</string>
-    <!-- Warning message for removing camera -->
-    <string name="dialog_dettach_cam">Camera [%s] and its recorded video will be removed, are you sure?</string>
-    
-    <string name="network_ssid">Network SSID</string>
-    
-    <!-- action to scan wifi ap -->
-    <string name="menu_scan">Scan</string>
-    
-    <!-- scanning wifi ap -->
-    <string name="network_scanning">Scanning&#8230;</string>
-    
-    <!-- Title of dialog for adding hidden SSID network -->
-    <string name="title_add_network">Add Network</string>
-    
-    <!-- dscription of wifi ap security type-->
-    <string name="network_secure_with">Secured with %s </string>
-    
-    <!-- status of wifi ap : poor connection-->
-    <string name="network_avoid_poor_network">Avoid poor internet connection&#8230;</string>
-    <!-- status of wifi ap : authenticating-->
-    <string name="network_authenticating">Authenticating&#8230;</string>
-    <!-- status of wifi ap : obtain ip from wifi ap-->
-    <string name="network_obtaining_ip">Obtaining IP address&#8230;</string>
-    <!-- status of wifi ap : connecting to wifi ap-->
-    <string name="network_connecting">Connecting&#8230;</string>
-    <!-- status of wifi ap : connected to wifi ap-->
-    <string name="network_connected">Connected</string>
-    <!-- status of wifi ap : disconnecting to wifi ap-->
-    <string name="network_disconnecting">Disconnecting&#8230;</string>
-    <!-- status of wifi ap : disconnected to wifi ap-->
-    <string name="network_disconnected">Disconnected</string>
-    <!-- status of wifi ap : wifi ap is suspended-->
-    <string name="network_suspended">Suspended</string>
-    <!-- status of wifi ap : wifi ap is failed to connect-->
-    <string name="network_failed">Failed</string>
-    <!-- status of wifi ap : wifi ap is idle-->
-    <string name="network_idle">Idle</string>
-    <!-- status of wifi ap : wifi ap is blocked to connect-->
-    <string name="network_blocked">Blocked</string>
-    
-    
-    <!-- Title of timezone select page-->
-    <string name="title_timezone">Select Time Zone</string>
-    <string name="zone_list_menu_sort_alphabetically">Sort alphabetically</string>
-    <string name="zone_list_menu_sort_by_timezone">Sort by timezone</string>
-    
-    <!-- Title of warning dialog-->
-    <string name="dialog_title_warning">Warning</string>
-    
-    <!-- Title of info dialog-->
-    <string name="dialog_title_info">Info</string>
-    
-    <!-- Message of dialog when no network connection-->
-    <string name="dialog_no_connectivity">Please check out your network connection.</string>
-    
-    <!-- Title of loading dialog-->
-    <string name="dialog_loading">Loading&#8230;</string>
-    
-    <!-- Title of synchronizing dialog-->
-    <string name="dialog_syncing">Syncing&#8230;</string>
-    
-    <!-- Message of dialog when turning on wifi on phone-->
-    <string name="dialog_wifi_turning_on">Turning on Wifi&#8230;</string>
-    
-    <!-- Message of dialog when scanning wifi ap -->
-    <string name="dialog_wifi_scanning">Wifi scanning&#8230;</string>
-    
-    <!-- Message of dialog when setting up a wifi ap -->
-    <string name="dialog_wifi_setting">Wifi setting&#8230;</string>
-    
-    <!-- Message of dialog when failing to turn on phone wifi -->
-    <string name="dialog_wifi_fail_on">Cannot turn on wifi, please check wifi status on your device.</string>
-    
-    <!-- Message of dialog when failing to scan wifi ap -->
-    <string name="dialog_wifi_fail_scan">Cannot scan wifi, please check wifi status on your device.</string>
-    
-    <!-- Message of dialog when key(password) of wifi ap is wrong -->
-    <string name="dialog_wifi_incorrect_password">The network password you typed is incorrect. Please try again.</string>
-    
-    <!-- Message of dialog when key(password) of wifi ap is wrong for WEP secuity type-->
-    <string name="dialog_wifi_incorrect_password_wep">Unable to connect due to an incorrect password or network issues.\nWould you like to try again?</string>
-    
-    <!-- Message of dialog when failing to connect to specific wifi ap -->
-    <string name="dialog_wifi_fail_to_connect">Cannot connect to Wifi AP [%s].\nPlease check if it is available.</string>
-    
-    <!-- Message of dialog when no network connectivity via specific wifi ap-->
-    <string name="dialog_wifi_invalid_connectivity">Wifi AP %s has connectivity issue. Please choose another Wifi AP or try again.</string>
-    
-    <!-- description of wifi signal strength-->
-    <string name="dialog_wifi_ap_signal">Signal strength</string>
-    <string name="dialog_wifi_ap_signal_Excellent">Excellent</string>
-    <string name="dialog_wifi_ap_signal_Good">Good</string>
-    <string name="dialog_wifi_ap_signal_Fair">Fair</string>
-    <string name="dialog_wifi_ap_signal_Poor">Poor</string>
-    
-    <!-- description of wifi WEP security key index-->
-    <string name="dialog_wifi_ap_key_index">Key index</string>
-    
-    <!-- description of wifi Security type-->
-    <string name="dialog_wifi_ap_security">Security</string>
-    
-    <!-- wifi Security type: None security protected-->
-    <string name="dialog_wifi_ap_security_none">None</string>
-    
-    <!-- Title of Event type filter-->
-    <string name="title_event_filter">Event filter</string>
-    
-    <!-- Event filter type: People-->
-	<string name="notification_event_people">People</string>
-	<!-- Event filter type: Motion-->
-	<string name="notification_event_motion">Motion</string>
-	<!-- Event filter type: Fire-->
-	<string name="notification_event_fire">Fire</string>
-	<!-- Event filter type: Sound-->
-	<string name="notification_event_sound">Sound</string>
-    
-	
-	<!-- Title of setting page-->
-    <string name="cam_setting_title">Settings</string>
-    <string name="cam_hardware_setting_title">Hardware settings</string>
-    <string name="cam_setting_title_power_setting">Power settings</string>
-	<string name="cam_setting_title_power">Camera power</string>
-	<string name="cam_setting_title_power_time">Power schedule</string>
-	
-	<string name="cam_setting_title_Location_aware">Location aware</string>
-	<string name="cam_setting_title_location">Location aware</string>
-	<string name="cam_setting_title_setlocation">Set location</string>
-	
-	<string name="cam_setting_title_notification_setting">Notification settings</string>
-	<string name="cam_setting_title_notification_event">Notification events</string>
-	<string name="cam_setting_title_family_recognition">Family recognition</string>
-	<string name="cam_setting_title_hardware_setting">Hardware settings</string>
-	<string name="cam_setting_title_hardware_setting_inf">Hardware settings</string>
-	<string name="cam_setting_title_special_functions">Misc function</string>
-	<string name="cam_setting_title_emergency_siren">Emergency siren</string>
-	<string name="cam_setting_title_camera_inf">Camera information</string>
-	
-	<!-- short description of camera status-->
-	<string name="cam_setting_title_power_on">on</string>
-	<string name="cam_setting_title_power_off">off</string>
-	<string name="cam_setting_title_power_disconnected">disconnected</string>
-	
-	<!-- options in notification setting page-->
-	<string name="cam_setting_title_notification_event_notify_me">Notify me</string>
-	<string name="cam_setting_title_notification_event_people_detect">People detected</string>
-	<string name="cam_setting_title_notification_event_motion_detect">Motion detected</string>
-	<string name="cam_setting_title_notification_event_fire_detect">Fire detected</string>
-	<string name="cam_setting_title_notification_event_sound_detect">Sound detected</string>
-	<string name="cam_setting_title_notification_event_offline_detect">Offline</string>
-	
-	<!-- Warning Message of dialog when failed to change cam status-->
-	<string name="cam_setting_fail_to_update_cam_status">Fail to update camera status. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to change video upload quality-->
-	<string name="cam_setting_fail_to_update_hd_quality">Fail to update video upload quality. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to change notification settings-->
-	<string name="cam_setting_fail_to_update_notify_setting">Fail to update notification settings. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to change status light-->
-	<string name="cam_setting_fail_to_update_led_status">Fail to update status light. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to change status of Camera microphone-->
-	<string name="cam_setting_fail_to_update_mic_status">Fail to update Camera microphone. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to change microphone sensitivity-->
-	<string name="cam_setting_fail_to_update_mic_sensitivity">Fail to update microphone status. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to change camera Wifi-->
-	<string name="cam_setting_fail_to_update_wifi_setting">Fail to update WiFi setting. Please try again later.</string>
-	
-	<!-- Warning Message of dialog when failed to change timezone-->
-	<string name="cam_setting_fail_to_update_timezone">Fail to update timezone. Please try again later.</string>
-	
-	<!-- Warning Message of dialog when failed to change night vision status-->
-	<string name="cam_setting_fail_to_update_night_vision">Fail to update night vision. Please try again later.</string>
-	
-	<!-- Warning Message of dialog when failed to change video upside-down-->
-	<string name="cam_setting_fail_to_update_video_upside_down">Fail to update video upside-down. Please try again later.</string>
-	
-	<!-- Warning Message of dialog when failed to get camera info-->
-	<string name="cam_setting_fail_to_get_cam_info">Fail to get camera info. Please try again later.</string>
-	
-	<!-- Warning Message of dialog when failed to change schedule on/off status-->
-	<string name="cam_setting_fail_to_update_schdule_status">Fail to update schedule. Please try again later.</string>
-	
-	<!-- Message of dialog when adding a new schedule-->
-	<string name="cam_setting_schedule_add">Add&#8230;</string>
-	
-	<!-- Warning Message of dialog when failed to add schedule-->
-	<string name="cam_setting_fail_to_add_schdule">Fail to add schedule. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to update schedule-->
-	<string name="cam_setting_fail_to_update_schdule">Fail to update schedule. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to delete schedule-->
-	<string name="cam_setting_fail_to_del_schdule">Fail to delete schedule. Please try again later.</string>
-	
-	<!-- Message of dialog when changing camera wifi-->
-	<string name="cam_setting_wifi_setting_apply">WiFi config is applying. Please wait for a while.</string>
-	<!-- Message of dialog when failed to change camera wifi-->
-	<string name="cam_setting_fail_to_apply_wifi_setting">Cannot apply to new WiFi.</string>
-	<!-- Message of dialog when changing camera wifi successfully-->
-	<string name="cam_setting_succeed_to_apply_wifi_setting">Apply to new WiFi.</string>
-	
-	<!-- Warning Message of dialog when failed to get wifi ap scan list from camera -->
-	<string name="cam_setting_fail_to_get_wifi_list">Fail to get WiFi list from camera. Please try again later.</string>
-	
-	<string name="cam_setting_hw_mic_sensitivity_title">Camera microphone</string>
-	<string name="cam_setting_hw_status_light_title">Status light</string>
-	
-	<!-- options in night vision setting page-->
-	<string name="cam_setting_hw_night_vision_title">Night vision</string>
-	<string name="cam_setting_hw_night_vision_auto">Auto</string>
-	<string name="cam_setting_hw_night_vision_on">On</string>
-	<string name="cam_setting_hw_night_vision_off">Off</string>
-	
-	<string name="cam_setting_hw_timezone_title">Time zone</string>
-	<string name="cam_setting_title_video_upside_down">Video upside-down</string>
-	<string name="cam_setting_title_wifi_setting">Wifi setting</string>
-	<string name="cam_setting_title_cam_info">Camera information</string>
-	
-	<!-- Warning Message of dialog when new camera name is empty -->
-	<string name="cam_setting_empty_name_warning">Camera name can not be empty!</string>
-	
-	<string name="cam_info_cam_name">Camera name</string>
-	<string name="cam_info_sw_ver">Software version</string>
-	<string name="cam_info_sn">Serial number</string>
-	<string name="cam_info_mac">MAC address</string>
-	<string name="unknown">N/A</string>
-	
-	<!-- Warning Message of dialog when network or server error in player page -->
-	<string name="server_error">Network or server error. Please try again later.</string>
-	
-	<!-- Warning Message of dialog when can not get valid DVR path -->
-	<string name="streaming_invalid_dvr">Invalid DVR streaming path. Please try again later.</string>
-	
-	<!-- Warning Message of dialog when out of DVR clip -->
-	<string name="streaming_no_more_dvr">There is no more DVR clip to play.</string>
-	
-	<!-- Warning Message of dialog when can not get valid live streaming path -->
-	<string name="streaming_playing_error">Invalid streaming path or server error. Please try again later.</string>
-	
-	<!-- Warning Message of dialog when network connectivity is not good -->
-	<string name="streaming_error_no_network">Please check out your network connection.</string>
-	
-	<!-- Warning Message of dialog when error occurred and it cant be identified-->
-	<string name="streaming_error_unknown">Unknown error. Please try again later.</string>
-	
-	<!-- Warning Message of dialog when app is out of memory and ask user to relaunch it-->
-	<string name="streaming_error_low_mem">App is unstable due to low memory. Please relaunch it again.</string>
-	
-	<!-- Description of sound pairing page-->
-	<string name="signup_paring_title_1">Waking up camera by Let it bee™</string>
-	<string name="signup_paring_title_2">Please hold on</string>
-	
-	<!-- Warning Message of dialog when failed to Sign up-->
-	<string name="msg_signup_error">Signup failed. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to login-->
-	<string name="msg_login_error">Login failed. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to pairing-->
-	<string name="msg_pairing_error">Pairing failed. Please try again later.</string>
-	<!-- Warning Message of dialog when failed to set new camera name-->
-	<string name="msg_set_cam_name_fail">Set camera name failed. Please try again later.</string>
-	<!-- Warning Message of dialog when email format is invalid-->
-	<string name="msg_invalid_account_format">Invalid email format.</string>
-	<!-- Warning Message of dialog when password format is invalid-->
-	<string name="msg_pw_length_error">Invalid password format. Must contain one number and one letter. And password length should be between 6 and 32. </string>
-	<!-- Warning Message of dialog when password is too short-->
-	<string name="msg_pw_too_short">Your password is too short.</string>
-	<!-- Warning Message of dialog when registration email is used-->
-	<string name="msg_signup_err_email_used">Email was used. Please specify another one.</string>
-	<!-- Warning Message of dialog when wrong password to login-->
-	<string name="msg_login_wrong_password">Wrong password. Please check it again.</string>
-	<!-- Warning Message of dialog when the email to login is not found in server-->
-	<string name="msg_account_not_found">This email account is not used. Please check it again.</string>
-	
-	<!-- Hint Message of dialog when pairing is processing-->
-	<string name="toast_pairing_wait">Pairing is processing. Please wait for a while.</string>
-	<string name="toast_pairing_enter_cam_name">Please assign the camera name.</string>
-	
-	<string name="dialog_msg_signup">Sign up&#8230;</string>
-	<string name="dialog_msg_login">Log in&#8230;</string>
-	<string name="dialog_msg_logiout">Log out&#8230;</string>
-	
-	<string name="signup_title_before_setup">Before setup</string>
-	<string name="signup_title_create_account">Create account</string>
-	<string name="signup_title_cam_wifi_settings">Camera WiFi Settings</string>
-	<string name="signup_title_cam_pair_fail">Please try again</string>
-	<string name="signup_title_wifi_list">WiFi List</string>
-	<string name="signup_learn_more">Learn more about</string>
-	<string name="signup_beseye">Beseye</string>
-	<string name="signup_bottom_login">Log in</string>
-	<string name="signup_bottom_signup">Setup camera and Sign up</string>
-	<string name="signup_before_setup_start">Start</string>
-	
-	<!-- Hint Message in before setup page-->
-	<string name="signup_before_setup_description">Please plug in your camera, and wait until green light is blinking, and place it to within 30 centimeters distance of you</string>
-	<string name="signup_sound_reminder_description">To wake up camera, your smart device will start beeping in next step!</string>
-	
-	<!-- Hint Message for TOS and privacy policy-->
-	<string name="signup_createAccount_description_title">By continuing, I agree to Beseye\'s</string>
-	<string name="signup_createAccount_description_terms">Terms of service</string>
-	<string name="signup_createAccount_description_and">and</string>
-	<string name="signup_createAccount_description_policy">Privacy Policy</string>
-	
-	<!-- Hint Message in pairing failed page-->
-	<string name="signup_try_again_description_1">Please plug in your camera and place it to within 30 centimeters of you.  Also make sure your WiFi password is correct.</string>
-	<string name="signup_try_again_description_2">Still have problems? Refer to our</string>
-	<string name="signup_try_again_description_3">Setup Guidelines</string>
-	<string name="signup_try_again_btn">Ok, let\'s go</string>
-	
-	<!-- Hint Message after pairing is done and ask user to assign cam name-->
-	<string name="signup_name_camera">Camera is almost ready, \nplease name your camera</string>
-	
-	<!-- Congratulation Message in live player page after pairing-->
-	<string name="signup_paring_done">Congratulations! \nYour camera is ready! \nUnplug your camera and set it anywhere to see your place on the go, all settings can be recovered when power on.</string>
-	
-	<string name="datetime_month">Month</string>
-	<string name="datetime_day">Day</string>
-	<string name="datetime_hour">Hour</string>
-	<string name="datetime_min">Minute</string>
-	<string name="event_list_now">Now</string>
-	<string name="event_list_family_detected">Family recognized</string>
-	<string name="event_list_people_detected">People dectected</string>
-	<string name="event_list_sound_detected">Sound dectected</string>
-	<string name="event_list_fire_detected">Fire dectected</string>
-	<string name="event_list_motion_detected">Motion dectected</string>
-	<string name="event_list_unknown_detected">event detected</string>
-	
-	<!-- Notification Messages for events-->
-	
-	<string name="notify_motion_detect">Motion detected by %s. Go and check it up.</string>
-	<string name="notify_people_detect">People detected by %s. Go and check it up.</string>
-	<string name="notify_offline_detect">%s: WiFi disconnected.</string>
-	
-	<string name="camera_list_off">This camera is off</string>
-	<string name="camera_list_disconected">This camera is disconnected</string>
-	
-	<!-- Hint message in camera list item when the cam is disconnected-->
-	<string name="camera_list_more">Click for more</string>
-	
-	<!-- Hint message in camera list item when there is no camera-->
-	<string name="camera_list_add">You can add a new camera here.\nor you can check out our featured cameras.</string>
-	
-	<!-- Hint message in camera list item when servers are down or network issue-->
-	<string name="camera_list_failed_title">Failed to connect with your camera.</string>
-	<string name="camera_list_failed_content">Please check network on mobile device and camera,then try again.</string>
-	
-	<string name="cam_list_tilte">My cameras</string>
-	
-	<!-- Menu items on camera list page-->
-	<string name="cam_menu_demo_cam">Demo cameras</string>
-	<string name="cam_menu_news">News</string>
-	<string name="cam_menu_about">About</string>
-	<string name="cam_menu_support">Support</string>
-	<string name="cam_menu_logout">Logout</string>
-	
-	<string name="update_title">Camera update</string>
-	<!-- Action to update cam SW -->
-	<string name="update_now">Update now</string>
-	<string name="cam_update_progress">Cameras updating&#8230; %s</string>
-	<string name="cam_update_title">Beseye camera firmware %s is available now</string>
-	<string name="cam_update_success">Update cameras successfully.</string>
-	
-	<string name="cam_update_timeout">Update cameras timeout. Please try again later.</string>
-	<string name="cam_update_failed">Fail to update cameras. Please try again later.</string>
-	<!-- Warning Message when all cameras are disconnected now and can not to update-->
-	<string name="cam_update_no_valid_cam">There is no online camera to update.</string>
-	
-	
-	<!-- Title of forget password page -->
-	<string name="forget_password_check_title">Check your email</string>
-	<string name="forget_password_btn_submit">Submit</string>
-	<string name="forget_password_instruction">Don’t worry! Just fill in your email address and we’ll sent you password reset instructions.</string>
-	<string name="forget_password_check_mail_summary">We’ve sent you password reset instructions to the following address:</string>
-	<string name="forget_password_check_mail_note">Note: The email will be coming from reset-password@beseye.com. If you don’t get the email within a few minutes, please check your spam filter.</string>
-	
-	<!-- Toast message when new camera is complete to pair and connected-->
-	<string name="toast_new_cam_activated">New camera is online. Please refresh your camera list.</string>
-	<!-- Toast message when camera is connected after cam wifi changed-->
-	<string name="toast_cam_change_wifi_done">Camera %s is online. Please refresh your camera list.</string>
-	
-	<!-- Toast message when user password is changed by other devices-->
-	<string name="toast_password_changed">Your password is changed. Please login again.</string>
-	
-	<!-- Toast message when user session is invalid or expired-->
-	<string name="toast_session_invalid">Your session is invalid. Please login again.</string>
-	
-	<!-- Toast message when camera is removed from camera list -->
-	<string name="toast_cam_deactivated">%s is deactivated. Please refresh your camera list.</string>
-	
-	<!-- Toast message when camera is disconnected due to network issue-->
-	<string name="notify_offline_detect_player">Camera is offline. Please check your network connection.</string>
-	
-	<!-- Toast message when camera is disconnected due to network issue in player page-->
-	<string name="notify_cam_off_detect_player">Camera turns off.</string>
-	
-	<!-- Toast message when camera is disconnected due to network issue in camera list page-->
-	<string name="notify_cam_off_detect_cam_list">Camera %s turns off.</string>
-	
-	<string name="about_title">About Beseye</string>
-	<string name="about_ver">Beseye Version %s</string>
-	<string name="about_desc">The name Beseye was created with the Ancient Egyptian goddess, Bes, protector of households and a symbol of family blessing.\n\nBes is an Ancient Egyptian deity worshipped as a protector of households, and in particular, of mothers and children and childbirth. Bes later came to be regarded as the defender of everything good and the enemy of all that is bad.\n\nBes Eye Cloud Security Co., in the name of "via Bes’ eye," is dedicated to home and family care. With the up-to-date cloud and monitor hardware manufacturing technology, we are committed to a smarter and safer life for household users.\n\nWant to be free from anxiety and home security risks? Want to stay with your babies as they getting older day by day, and never miss any precious moments? We propose a cloud solution to protect your loved ones and guard your home.\n\nAll you need to do is pick up your Beseye camera! Enjoy your family time!</string>
-	
-	
-	<!-- descriptions of pull to refresh listview-->
-	<string name="loading_latest_update">Last update&#160;%s</string>
-	<string name="pull_to_refresh_pull_label">Pull down to refresh&#8230;</string>
-    <string name="pull_to_refresh_release_label">Release to refresh&#8230;</string>
-    <string name="pull_to_refresh_refreshing_label">Updating&#8230;</string>
-    <string name="pull_to_refresh_from_bottom_pull_label">Pull up to refresh&#8230;</string>
-	
-	<!-- Timezone definition begin -->
-	<string name="tz_us_eastern">US	– Eastern</string>
-	<string name="tz_us_central">US	– Central</string>
-	<string name="tz_us_pacific">US	– Pacific</string>
-	<string name="tz_us_mountain">US – Mountain</string>
-	<string name="tz_us_alaska">US – Alaska</string>
-	<string name="tz_us_hawaii">US – Hawaii</string>
-	<string name="tz_us_arizona">US – Arizona</string>
-	
-	<string name="tz_can_atlantic">Canada – Atlantic</string>
-	<string name="tz_can_newfoundland">Canada – Newfoundland</string>
-	<string name="tz_can_eastern">Canada – Eastern</string>
-	<string name="tz_can_central">Canada – Central</string>
-	<string name="tz_can_mountain">Canada – Mountain</string>
-	<string name="tz_can_pacific">Canada – Pacific</string>
-	
-	<string name="tz_asia_taiwan">Taiwan</string>
-	<string name="tz_asia_china">China</string>
-	<string name="tz_asia_japan">Japan</string>
-	<string name="tz_asia_hk">Hong Kong</string>
-	<string name="tz_asia_korea">Korea</string>
-	<string name="tz_asia_singpore">Singapore</string>
-	
-	<string name="tz_new_zealand">New Zealand</string>
-	
-	<string name="tz_aus_eastern">Australian – Eastern</string>
-	<string name="tz_aus_western">Australian – Western</string>
-	<string name="tz_aus_central">Australian – Central</string>
-	
-	<string name="tz_euro_denmark">Denmark</string>
-	<string name="tz_euro_iceland">Iceland</string>
-	<string name="tz_euro_greece">Greece</string>
-	<string name="tz_euro_poland">Poland</string>
-	<string name="tz_euro_france">France</string>
-	<string name="tz_euro_finland">Finland</string>
-	<string name="tz_euro_uk">UK</string>
-	<string name="tz_euro_norway">Norway</string>
-	<string name="tz_euro_czech">Czech</string>
-	<string name="tz_euro_holland">Netherlands</string>
-	<string name="tz_euro_swiss">Switzerland</string>
-	<string name="tz_euro_sweden">Sweden</string>
-	<string name="tz_euro_germany">Germany</string>
-	<string name="tz_euro_belgium">Belgium</string>
-	<string name="tz_euro_hungary">Hungary</string>
-	<string name="tz_euro_spain">Spain</string>
-	<string name="tz_euro_austria">Austria</string>
-	<string name="tz_euro_italy">Italy</string>
-	<!-- Timezone definition end -->
+<?xml version="1.0" encoding="UTF-8"?><resources>
+  <string name="app_name">Beseye</string>
+  <!-- action to connect to a wifi -->
+  <string name="connect">Connect</string>
+  <string name="cancel">Cancel</string>
+  <string name="done">Done</string>
+  <string name="ok">OK</string>
+  <string name="yes">Yes</string>
+  <string name="select">Select</string>
+  <string name="password">Password</string>
+  <!-- hint to unveil password mask -->
+  <string name="show_password">Show password</string>
+  <string name="forget_password">Forget password</string>
+  <string name="username">E-mail</string>
+  <!-- hint to create new account -->
+  <string name="hint_to_create_account">Don\'t  have an account?</string>
+  <string name="account_create">Create account</string>
+  <string name="login">Login</string>
+  <string name="remove">Remove</string>
+  <string name="cont">Continue</string>
+  <!-- Title of sound remind page -->
+  <string name="watch_out_sound">Sound reminder</string>
+  <!-- hint of password length -->
+  <string name="password_hint">6 characters include letters and numbers</string>
+  <string name="action_settings">Settings</string>
+  <!-- entry to event list page -->
+  <string name="event_cam_view">Event</string>
+  <!-- entry to live streaming page -->
+  <string name="event_go_live">Go Live</string>
+  <!-- Item name to live streaming page in events page  -->
+  <string name="event_itm_live">Live</string>
+  <!-- Camera status: live streaming is off  -->
+  <string name="can_power_state_off">The cam is off</string>
+  <!-- Camera status: live streaming is off and the connection to camera is down-->
+  <string name="can_power_state_disconnect">This cam is not connected</string>
+  <string name="cam_setting_title_detach_cam">Remove camera</string>
+  <!-- Warning message for removing camera -->
+  <string name="dialog_dettach_cam">Camera [%s] and its recorded video will be removed, are you sure?</string>
+  <string name="network_ssid">Network SSID</string>
+  <string name="network_other">Other...</string>
+  <!-- action to scan wifi ap -->
+  <string name="menu_scan">Scan</string>
+  <!-- scanning wifi ap -->
+  <string name="network_scanning">Scanning…</string>
+  <!-- Title of dialog for adding hidden SSID network -->
+  <string name="title_add_network">Add Network Connections</string>
+  <!-- dscription of wifi ap security type-->
+  <string name="network_secure_with">Secured with %s </string>
+  <!-- status of wifi ap : poor connection-->
+  <string name="network_avoid_poor_network">Avoid poor internet connection…</string>
+  <!-- status of wifi ap : authenticating-->
+  <string name="network_authenticating">Authenticating…</string>
+  <!-- status of wifi ap : obtain ip from wifi ap-->
+  <string name="network_obtaining_ip">Obtaining IP address…</string>
+  <!-- status of wifi ap : connecting to wifi ap-->
+  <string name="network_connecting">Connecting…</string>
+  <!-- status of wifi ap : connected to wifi ap-->
+  <string name="network_connected">Connected</string>
+  <!-- status of wifi ap : disconnecting to wifi ap-->
+  <string name="network_disconnecting">Disconnecting…</string>
+  <!-- status of wifi ap : disconnected to wifi ap-->
+  <string name="network_disconnected">Disconnected</string>
+  <!-- status of wifi ap : wifi ap is suspended-->
+  <string name="network_suspended">Suspended</string>
+  <!-- status of wifi ap : wifi ap is failed to connect-->
+  <string name="network_failed">Failed</string>
+  <!-- status of wifi ap : wifi ap is idle-->
+  <string name="network_idle">Idle</string>
+  <!-- status of wifi ap : wifi ap is blocked to connect-->
+  <string name="network_blocked">Blocked</string>
+  <!-- Title of timezone select page-->
+  <string name="title_timezone">Select Time Zone</string>
+  <string name="zone_list_menu_sort_alphabetically">Sort alphabetically</string>
+  <string name="zone_list_menu_sort_by_timezone">Sort by timezone</string>
+  <!-- Title of warning dialog-->
+  <string name="dialog_title_warning">Warning</string>
+  <!-- Title of info dialog-->
+  <string name="dialog_title_info">Info</string>
+  <!-- Message of dialog when no network connection-->
+  <string name="dialog_no_connectivity">Please check (out) your network connection.</string>
+  <!-- Title of loading dialog-->
+  <string name="dialog_loading">Loading…</string>
+  <string name="dialog_setting">Setting…</string>
+  <!-- Title of synchronizing dialog-->
+  <string name="dialog_syncing">Syncing…</string>
+  <!-- Message of dialog when turning on wifi on phone-->
+  <string name="dialog_wifi_turning_on">Turning on Wifi…</string>
+  <!-- Message of dialog when scanning wifi ap -->
+  <string name="dialog_wifi_scanning">Scanning Wifi AP…</string>
+  <!-- Message of dialog when setting up a wifi ap -->
+  <string name="dialog_wifi_setting">Setting up Wifi AP…</string>
+  <!-- Message of dialog when failing to turn on phone wifi -->
+  <string name="dialog_wifi_fail_on">Cannot turn on wifi, please check wifi status on your device.</string>
+  <!-- Message of dialog when failing to scan wifi ap -->
+  <string name="dialog_wifi_fail_scan">Cannot scan wifi, please check wifi status on your device.</string>
+  <!-- Message of dialog when key(password) of wifi ap is wrong -->
+  <string name="dialog_wifi_incorrect_password">The network password you typed is incorrect. Please try again.</string>
+  <!-- Message of dialog when key(password) of wifi ap is wrong for WEP secuity type-->
+  <string name="dialog_wifi_incorrect_password_wep">Unable to connect due to an incorrect password or network issues.\nWould you like to try again?</string>
+  <!-- Message of dialog when failing to connect to specific wifi ap -->
+  <string name="dialog_wifi_fail_to_connect">Cannot connect to Wifi AP [%s].\nPlease check if it is available.</string>
+  <!-- Message of dialog when no network connectivity via specific wifi ap-->
+  <string name="dialog_wifi_invalid_connectivity">Wifi AP %s has connection issues. Please choose another Wifi AP or try again.</string>
+  <!-- description of wifi signal strength-->
+  <string name="dialog_wifi_ap_signal">Signal strength</string>
+  <string name="dialog_wifi_ap_signal_Excellent">Excellent</string>
+  <string name="dialog_wifi_ap_signal_Good">Good</string>
+  <string name="dialog_wifi_ap_signal_Fair">Fair</string>
+  <string name="dialog_wifi_ap_signal_Poor">Poor</string>
+  <!-- description of wifi WEP security key index-->
+  <string name="dialog_wifi_ap_key_index">Key index</string>
+  <!-- description of wifi Security type-->
+  <string name="dialog_wifi_ap_security">Security</string>
+  <!-- wifi Security type: None security protected-->
+  <string name="dialog_wifi_ap_security_none">None</string>
+  <!-- Title of Event type filter-->
+  <string name="title_event_filter">Event filter</string>
+  <!-- Event filter type: People-->
+  <string name="notification_event_people">People</string>
+  <!-- Event filter type: Motion-->
+  <string name="notification_event_motion">Motion</string>
+  <!-- Event filter type: Fire-->
+  <string name="notification_event_fire">Fire</string>
+  <!-- Event filter type: Sound-->
+  <string name="notification_event_sound">Sound</string>
+  <!-- Title of setting page-->
+  <string name="cam_setting_title">Settings</string>
+  <string name="cam_hardware_setting_title">Hardware settings</string>
+  <string name="cam_setting_title_power_setting">Power settings</string>
+  <string name="cam_setting_title_power">Camera power</string>
+  <string name="cam_setting_title_power_time">Power schedule</string>
+  <string name="cam_setting_title_Location_aware">Location awareness</string>
+  <string name="cam_setting_title_location">Location awareness</string>
+  <string name="cam_setting_title_setlocation">Set location</string>
+  <string name="cam_setting_title_notification_setting">Notification settings</string>
+  <string name="cam_setting_title_notification_event">Notification events</string>
+  <string name="cam_setting_title_family_recognition">Family recognition</string>
+  <string name="cam_setting_title_hardware_setting">Hardware settings</string>
+  <string name="cam_setting_title_hardware_setting_inf">Hardware settings</string>
+  <string name="cam_setting_title_special_functions">Misc function</string>
+  <string name="cam_setting_title_emergency_siren">Emergency siren</string>
+  <string name="cam_setting_title_camera_inf">Camera information</string>
+  <!-- short description of camera status-->
+  <string name="cam_setting_title_power_on">on</string>
+  <string name="cam_setting_title_power_off">off</string>
+  <string name="cam_setting_title_power_disconnected">disconnected</string>
+  <!-- options in notification setting page-->
+  <string name="cam_setting_title_notification_event_notify_me">Notify me</string>
+  <string name="cam_setting_title_notification_event_people_detect">People detected</string>
+  <string name="cam_setting_title_notification_event_motion_detect">Motion detected</string>
+  <string name="cam_setting_title_notification_event_fire_detect">Fire detected</string>
+  <string name="cam_setting_title_notification_event_sound_detect">Sound detected</string>
+  <string name="cam_setting_title_notification_event_offline_detect">Offline</string>
+  <!-- Warning Message of dialog when failed to change cam status-->
+  <string name="cam_setting_fail_to_update_cam_status">Fail to update camera status. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change video upload quality-->
+  <string name="cam_setting_fail_to_update_hd_quality">Fail to update video upload quality. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change notification settings-->
+  <string name="cam_setting_fail_to_update_notify_setting">Fail to update notification settings. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change status light-->
+  <string name="cam_setting_fail_to_update_led_status">Fail to update status light. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change status of Camera microphone-->
+  <string name="cam_setting_fail_to_update_mic_status">Fail to update Camera microphone. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change microphone sensitivity-->
+  <string name="cam_setting_fail_to_update_mic_sensitivity">Fail to update microphone status. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change camera Wifi-->
+  <string name="cam_setting_fail_to_update_wifi_setting">Fail to update WiFi setting. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change timezone-->
+  <string name="cam_setting_fail_to_update_timezone">Fail to update timezone. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change night vision status-->
+  <string name="cam_setting_fail_to_update_night_vision">Fail to update night vision. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change video upside-down-->
+  <string name="cam_setting_fail_to_update_video_upside_down">Fail to update video upside-down. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to get camera info-->
+  <string name="cam_setting_fail_to_get_cam_info">Fail to get camera info. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change schedule on/off status-->
+  <string name="cam_setting_fail_to_update_schdule_status">Fail to update schedule. Please try again later.</string>
+  <!-- Message of dialog when adding a new schedule-->
+  <string name="cam_setting_schedule_add">Create..</string>
+  <!-- Warning Message of dialog when failed to add schedule-->
+  <string name="cam_setting_fail_to_add_schdule">Fail to create schedule. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to update schedule-->
+  <string name="cam_setting_fail_to_update_schdule">Fail to update schedule. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to delete schedule-->
+  <string name="cam_setting_fail_to_del_schdule">Fail to delete schedule. Please try again later.</string>
+  <!-- Message of dialog when changing camera wifi-->
+  <string name="cam_setting_wifi_setting_apply">WiFi config is applying. Please wait for a while.</string>
+  <!-- Message of dialog when failed to change camera wifi-->
+  <string name="cam_setting_fail_to_apply_wifi_setting">Cannot apply to new WiFi.</string>
+  <!-- Message of dialog when changing camera wifi successfully-->
+  <string name="cam_setting_succeed_to_apply_wifi_setting">Apply to new WiFi.</string>
+  <!-- Warning Message of dialog when failed to get wifi ap scan list from camera -->
+  <string name="cam_setting_fail_to_get_wifi_list">Fail to get WiFi list from camera. Please try again later.</string>
+  <string name="cam_setting_hw_mic_sensitivity_title">Camera microphone</string>
+  <string name="cam_setting_hw_status_light_title">Status light</string>
+  <!-- options in night vision setting page-->
+  <string name="cam_setting_hw_night_vision_title">Night vision</string>
+  <string name="cam_setting_hw_night_vision_auto">Auto</string>
+  <string name="cam_setting_hw_night_vision_on">On</string>
+  <string name="cam_setting_hw_night_vision_off">Off</string>
+  <string name="cam_setting_hw_timezone_title">Time zone</string>
+  <string name="cam_setting_title_video_upside_down">Video upside-down</string>
+  <string name="cam_setting_title_wifi_setting">Wifi setting</string>
+  <string name="cam_setting_title_cam_info">Camera information</string>
+  <!-- Warning Message of dialog when new camera name is empty -->
+  <string name="cam_setting_empty_name_warning">You can\'t leave camera name empty.</string>
+  <string name="cam_info_cam_name">Camera name</string>
+  <string name="cam_info_sw_ver">Software version</string>
+  <string name="cam_info_sn">Serial number</string>
+  <string name="cam_info_mac">MAC address</string>
+  <string name="unknown">N/A</string>
+  <!-- Warning Message of dialog when network or server error in player page -->
+  <string name="server_error">Network or server error. Please try again later.</string>
+  <!-- Warning Message of dialog when can not get valid DVR path -->
+  <string name="streaming_invalid_dvr">The REC video does not exist.</string>
+  <!-- Warning Message of dialog when out of REC video -->
+  <string name="streaming_no_more_dvr">There is no more REC video to play.</string>
+  <!-- Warning Message of dialog when can not get valid live streaming path -->
+  <string name="streaming_playing_error">Invalid streaming path or server error. Please try again later.</string>
+  <!-- Warning Message of dialog when network connectivity is not good -->
+  <string name="streaming_error_no_network">Please check out your network connection.</string>
+  <!-- Warning Message of dialog when error occurred and it cant be identified-->
+  <string name="streaming_error_unknown">Unknown error. Please try again later.</string>
+  <!-- Warning Message of dialog when app is out of memory and ask user to relaunch it-->
+  <string name="streaming_error_low_mem">App is unstable due to low memory. Please relaunch it again.</string>
+  <!-- Description of sound pairing page-->
+  <string name="signup_paring_title_1">Waking up camera by Let it bee™</string>
+  <string name="signup_paring_title_2">Please hold on</string>
+  <!-- Warning Message of dialog when failed to Sign up-->
+  <string name="msg_signup_error">Signup failed. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to login-->
+  <string name="msg_login_error">Login failed. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to pairing-->
+  <string name="msg_pairing_error">Pairing failed. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to set new camera name-->
+  <string name="msg_set_cam_name_fail">Assigning camera name failed. Please try again later.</string>
+  <!-- Warning Message of dialog when email format is invalid-->
+  <string name="msg_invalid_account_format">Invalid email format.</string>
+  <!-- Warning Message of dialog when password format is invalid-->
+  <string name="msg_pw_length_error">Invalid password format. Password must  be between 6-32 characters, and include letters and numbers.</string>
+  <!-- Warning Message of dialog when password is too short-->
+  <string name="msg_pw_too_short">Your password is too short.</string>
+  <!-- Warning Message of dialog when registration email is used-->
+  <string name="msg_signup_err_email_used">The email is already in use. Please use a  different email address.</string>
+  <!-- Warning Message of dialog when wrong password to login-->
+  <string name="msg_login_wrong_password">Wrong password. Please check it again.</string>
+  <!-- Warning Message of dialog when the email to login is not found in server-->
+  <string name="msg_account_not_found">Invaild email account. Please check it again.</string>
+  <!-- Hint Message of dialog when pairing is processing-->
+  <string name="toast_pairing_wait">Pairing is processing. Please wait for a while.</string>
+  <string name="toast_pairing_enter_cam_name">Please assign the camera name.</string>
+  <string name="dialog_msg_signup">Sign up…</string>
+  <string name="dialog_msg_login">Log in…</string>
+  <string name="dialog_msg_logiout">Log out…</string>
+  <string name="signup_title_before_setup">Before setup</string>
+  <string name="signup_title_create_account">Create account</string>
+  <string name="signup_title_cam_wifi_settings">Camera WiFi Settings</string>
+  <string name="signup_title_cam_pair_fail">Please try again</string>
+  <string name="signup_title_wifi_list">WiFi List</string>
+  <string name="signup_learn_more">Learn more about</string>
+  <string name="signup_beseye">Beseye</string>
+  <string name="signup_bottom_login">Log in</string>
+  <string name="signup_bottom_signup">Setup camera and Sign up</string>
+  <string name="signup_before_setup_start">Start</string>
+  <!-- Hint Message in before setup page-->
+  <string name="signup_before_setup_description">Please plug in your camera, and wait until green light is blinking, and place it (to) within 30 centimeters (distance) of you</string>
+  <string name="signup_sound_reminder_description">To wake up camera, your (smart) device will start beeping in next step!</string>
+  <!-- Hint Message for TOS and privacy policy-->
+  <string name="signup_createAccount_description_title">By continuing, I agree to Beseye\'s</string>
+  <string name="signup_createAccount_description_terms">Terms of service</string>
+  <string name="signup_createAccount_description_and">and</string>
+  <string name="signup_createAccount_description_policy">Privacy Policy</string>
+  <!-- Hint Message in pairing failed page-->
+  <string name="signup_try_again_description_1">Please plug in your camera and place it (to) within 30 centimeters of you.  Also make sure your WiFi password is correct.</string>
+  <string name="signup_try_again_description_2">Still have problems? Refer to our</string>
+  <string name="signup_try_again_description_3">Setup Guidelines</string>
+  <string name="signup_try_again_btn">Ok, let\'s go</string>
+  <!-- Hint Message after pairing is done and ask user to assign cam name-->
+  <string name="signup_name_camera">Camera is almost ready, \nplease assign your camera name.</string>
+  <!-- Congratulation Message in live player page after pairing-->
+  <string name="signup_paring_done">Congratulations! \nYour camera is ready! \nUnplug your camera and set it anywhere to see your place on the go, all settings can be recovered when power on.</string>
+  <string name="datetime_month">Month</string>
+  <string name="datetime_day">Day</string>
+  <string name="datetime_hour">Hour</string>
+  <string name="datetime_min">Minute</string>
+  <string name="event_list_now">Now</string>
+  <string name="event_list_family_detected">Family recognized</string>
+  <string name="event_list_people_detected">People detected</string>
+  <string name="event_list_sound_detected">Sound detected</string>
+  <string name="event_list_fire_detected">Fire detected</string>
+  <string name="event_list_motion_detected">Motion detected</string>
+  <string name="event_list_unknown_detected">event detected</string>
+  <!-- Notification Messages for events-->
+  <string name="notify_motion_detect">Motion detected by %s. Go and check it up.</string>
+  <string name="notify_people_detect">People detected by %s. Go and check it up.</string>
+  <string name="notify_offline_detect">%s: WiFi disconnected.</string>
+  <string name="camera_list_off">This camera is off</string>
+  <string name="camera_list_disconected">This camera is disconnected</string>
+  <!-- Hint message in camera list item when the cam is disconnected-->
+  <string name="camera_list_more">Click for more</string>
+  <!-- Hint message in camera list item when there is no camera-->
+  <string name="camera_list_add">You can add a new camera here.\nor you can check out our featured cameras.</string>
+  <!-- Hint message in camera list item when servers are down or network issue-->
+  <string name="camera_list_failed_title">Failed to connect with your camera.</string>
+  <string name="camera_list_failed_content">Please check network on mobile device and camera,then try again.</string>
+  <string name="cam_list_tilte">My cameras</string>
+  <!-- Menu items on camera list page-->
+  <string name="cam_menu_demo_cam">Demo cameras</string>
+  <string name="cam_menu_news">News</string>
+  <string name="cam_menu_about">About</string>
+  <string name="cam_menu_support">Support</string>
+  <string name="cam_menu_logout">Logout</string>
+  <string name="update_title">Camera update</string>
+  <!-- Action to update cam SW -->
+  <string name="update_now">Update now</string>
+  <string name="cam_update_progress">Cameras updating… %s</string>
+  <string name="cam_update_title">Beseye camera firmware %s is available now</string>
+  <string name="cam_update_success">Update cameras successfully.</string>
+  <string name="cam_update_timeout">Update cameras timeout. Please try again later.</string>
+  <string name="cam_update_failed">Fail to update cameras. Please try again later.</string>
+  <!-- Warning Message when all cameras are disconnected now and can not to update-->
+  <string name="cam_update_no_valid_cam">There is no online camera to update.</string>
+  <!-- Title of forget password page -->
+  <string name="forget_password_check_title">Check your email</string>
+  <string name="forget_password_btn_submit">Submit</string>
+  <string name="forget_password_instruction">Don’t worry! Just fill in your email address and we’ll sent you password reset instructions.</string>
+  <string name="forget_password_check_mail_summary">We’ve sent you password reset instructions to the following address:</string>
+  <string name="forget_password_check_mail_note">Note: The email will be coming from reset-password@beseye.com. If you don’t get the email within a few minutes, please check your spam filter.</string>
+  <!-- Toast message when new camera is complete to pair and connected-->
+  <string name="toast_new_cam_activated">New camera is online. Please refresh your camera list.</string>
+  <!-- Toast message when camera is connected after cam wifi changed-->
+  <string name="toast_cam_change_wifi_done">Camera %s is online. Please refresh your camera list.</string>
+  <!-- Toast message when user password is changed by other devices-->
+  <string name="toast_password_changed">Your password is changed. Please login again.</string>
+  <!-- Toast message when user session is invalid or expired-->
+  <string name="toast_session_invalid">Your session is invalid. Please login again.</string>
+  <!-- Toast message when camera is removed from camera list -->
+  <string name="toast_cam_deactivated">%s is deactivated. Please refresh your camera list.</string>
+  <!-- Toast message when camera is disconnected due to network issue-->
+  <string name="notify_offline_detect_player">Camera is offline. Please check your network connection.</string>
+  <!-- Toast message when camera is disconnected due to network issue in player page-->
+  <string name="notify_cam_off_detect_player">Camera turns off.</string>
+  <!-- Toast message when camera is disconnected due to network issue in camera list page-->
+  <string name="notify_cam_off_detect_cam_list">Camera %s turns off.</string>
+  <string name="about_title">About Beseye</string>
+  <string name="about_ver">Beseye Version %s</string>
+  <string name="about_desc">The name Beseye was created with the Ancient Egyptian goddess, Bes, a protector of households and a symbol of family blessing.\n\nBes is an Ancient Egyptian deity worshipped as a protector of households, and in particular, of mothers and children and childbirth. Bes later came to be regarded as the defender of everything good and the enemy of all that is bad.\n\nBes Eye Cloud Security Co., in the name of "via Bes’ eye," is dedicated to home and family care. With the up-to-date cloud and monitor hardware manufacturing technology, we are committed to a smarter and safer life for household users.\n\nWant to be free from anxiety and home security risks? Want to stay with your babies as they getting older day by day, and never miss any precious moments? We propose a cloud solution to protect your loved ones and guard your home.\n\nAll you need to do is picking up your Beseye camera! Enjoy your family time!</string>
+  <!-- descriptions of pull to refresh listview-->
+  <string name="loading_latest_update">Last update %s</string>
+  <string name="pull_to_refresh_pull_label">Pull down to refresh…</string>
+  <string name="pull_to_refresh_release_label">Release to refresh…</string>
+  <string name="pull_to_refresh_refreshing_label">Updating…</string>
+  <string name="pull_to_refresh_from_bottom_pull_label">Pull up to refresh…</string>
+  <!-- Timezone definition begin -->
+  <string name="tz_us_eastern">US – Eastern</string>
+  <string name="tz_us_central">US – Central</string>
+  <string name="tz_us_pacific">US – Pacific</string>
+  <string name="tz_us_mountain">US – Mountain</string>
+  <string name="tz_us_alaska">US – Alaska</string>
+  <string name="tz_us_hawaii">US – Hawaii</string>
+  <string name="tz_us_arizona">US – Arizona</string>
+  <string name="tz_can_atlantic">Canada – Atlantic</string>
+  <string name="tz_can_newfoundland">Canada – Newfoundland</string>
+  <string name="tz_can_eastern">Canada – Eastern</string>
+  <string name="tz_can_central">Canada – Central</string>
+  <string name="tz_can_mountain">Canada – Mountain</string>
+  <string name="tz_can_pacific">Canada – Pacific</string>
+  <string name="tz_asia_taiwan">Taiwan</string>
+  <string name="tz_asia_china">China</string>
+  <string name="tz_asia_japan">Japan</string>
+  <string name="tz_asia_hk">Hong Kong</string>
+  <string name="tz_asia_korea">Korea</string>
+  <string name="tz_asia_singpore">Singapore</string>
+  <string name="tz_new_zealand">New Zealand</string>
+  <string name="tz_aus_eastern">Australia – Eastern</string>
+  <string name="tz_aus_western">Australia – Western</string>
+  <string name="tz_aus_central">Australia – Central</string>
+  <string name="tz_euro_denmark">Denmark</string>
+  <string name="tz_euro_iceland">Iceland</string>
+  <string name="tz_euro_greece">Greece</string>
+  <string name="tz_euro_poland">Poland</string>
+  <string name="tz_euro_france">France</string>
+  <string name="tz_euro_finland">Finland</string>
+  <string name="tz_euro_uk">UK</string>
+  <string name="tz_euro_norway">Norway</string>
+  <string name="tz_euro_czech">Czech Republic</string>
+  <string name="tz_euro_holland">Netherlands</string>
+  <string name="tz_euro_swiss">Switzerland</string>
+  <string name="tz_euro_sweden">Sweden</string>
+  <string name="tz_euro_germany">Germany</string>
+  <string name="tz_euro_belgium">Belgium</string>
+  <string name="tz_euro_hungary">Hungary</string>
+  <string name="tz_euro_spain">Spain</string>
+  <string name="tz_euro_austria">Austria</string>
+  <string name="tz_euro_italy">Italy</string>
 </resources>

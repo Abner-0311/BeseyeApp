@@ -229,7 +229,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 
 	@Override
 	public void onSwitchBtnStateChanged(SwitchState state, View view) {
-		monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
+		monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
 		updatePowerDesc(state);
 	}
 

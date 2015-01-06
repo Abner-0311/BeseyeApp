@@ -233,7 +233,11 @@ public class BeseyeUtils {
 	}
 	
 	static public String getUserAgent(){
-		return "{"+Build.MANUFACTURER+"}_{"+Build.MODEL+"}";
+		return ("{"+Build.MANUFACTURER+"}_{"+Build.MODEL+"}").replaceAll(" ", "_");
+	}
+	
+	static public String getStreamSecInfo(){
+		return String.format("?ua=%s&se=%s&dd=%s", getUserAgent(), SessionMgr.getInstance().getAuthToken(), getAndroidUUid());
 	}
 	
 	static public String getProcessName(Context context, int pID){

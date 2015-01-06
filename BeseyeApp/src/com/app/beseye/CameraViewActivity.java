@@ -1537,7 +1537,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	   								}
 	   	         				}
 	   	         				Log.i(TAG, "open stream for idx:"+miStreamIdx);
-	   	         				iRetCreateStreaming = openStreaming(miStreamIdx, getNativeSurface(), streamFullPath, 0);
+	   	         				iRetCreateStreaming = openStreaming(miStreamIdx, getNativeSurface(), streamFullPath+BeseyeUtils.getStreamSecInfo(), 0);
 	   	         			}while(iRetCreateStreaming < 0 && iTrial < 8);
 	   	         			
 	   	         			if(miStreamIdx >= 10){
@@ -1581,7 +1581,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
                     					Log.i(TAG, "mlDVRFirstSegmentStartTs:"+mlDVRFirstSegmentStartTs+" > mlDVRCurrentStartTs:"+mlDVRCurrentStartTs+", lOffset:"+lOffset);
                 					}
                 					for(int i = 0;i< iLen;i++){
-                						streamList[i] = BeseyeJSONUtil.getJSONString(mstrPendingStreamPathList.get(i), BeseyeJSONUtil.MM_STREAM);
+                						streamList[i] = BeseyeJSONUtil.getJSONString(mstrPendingStreamPathList.get(i), BeseyeJSONUtil.MM_STREAM)+BeseyeUtils.getStreamSecInfo();
                 					}
                 				}
                 			

@@ -120,7 +120,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 					int iEndPos = view.getProgress();
 					if(iEndPos != iStartPos){
 						miBeginPosOfMicGain = iStartPos;
-						monitorAsyncTask(new BeseyeCamBEHttpTask.SetMicGainTask(HWSettingsActivity.this), true, mStrVCamID,""+(iEndPos));
+						monitorAsyncTask(new BeseyeCamBEHttpTask.SetMicGainTask(HWSettingsActivity.this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID,""+(iEndPos));
 					}
 				}});
 		}
@@ -226,7 +226,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			case R.id.iv_video_upside_down_check_bg:{
 				if(null != mIvViewUpDownCheck){
 					mIvViewUpDownCheck.setVisibility((View.VISIBLE == mIvViewUpDownCheck.getVisibility())?View.INVISIBLE:View.VISIBLE);
-					monitorAsyncTask(new BeseyeCamBEHttpTask.SetVideoUpsideDownTask(this), true, mStrVCamID,new Boolean((View.VISIBLE == mIvViewUpDownCheck.getVisibility())).toString());
+					monitorAsyncTask(new BeseyeCamBEHttpTask.SetVideoUpsideDownTask(this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID,new Boolean((View.VISIBLE == mIvViewUpDownCheck.getVisibility())).toString());
 					
 //					BeseyeJSONUtil.setJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, (View.VISIBLE == mIvViewUpDownCheck.getVisibility())?1:0);
 //					setActivityResultWithCamObj();
@@ -268,15 +268,15 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	public void onSwitchBtnStateChanged(SwitchState state, View view) {
 		switch(view.getId()){
 			case R.id.sb_hd_switch:{
-				monitorAsyncTask(new BeseyeCamBEHttpTask.SetVideoResTask(this), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
+				monitorAsyncTask(new BeseyeCamBEHttpTask.SetVideoResTask(this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
 				break;
 			}
 			case R.id.sb_mic_sensitivity_switch:{
-				monitorAsyncTask(new BeseyeCamBEHttpTask.SetMicStatusTask(this), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
+				monitorAsyncTask(new BeseyeCamBEHttpTask.SetMicStatusTask(this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
 				break;
 			}
 			case R.id.sb_status_light_switch:{
-				monitorAsyncTask(new BeseyeCamBEHttpTask.SetLEDStatusTask(this), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
+				monitorAsyncTask(new BeseyeCamBEHttpTask.SetLEDStatusTask(this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID,SwitchState.SWITCH_ON.equals(state)?"1":"0");
 				break;
 			}
 			default:{
@@ -359,7 +359,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 						removeMyDialog(DIALOG_ID_CAM_NIGHT_VISION);
 						for(int idx = 0; idx < NUM_NIGHT_VISION_MODE;idx++){
 							if(vgKeyIdx[idx] == view){
-								monitorAsyncTask(new BeseyeCamBEHttpTask.SetIRCutStatusTask(HWSettingsActivity.this), true, mStrVCamID, ""+idx);
+								monitorAsyncTask(new BeseyeCamBEHttpTask.SetIRCutStatusTask(HWSettingsActivity.this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID, ""+idx);
 								break;
 							}
 						}
@@ -386,14 +386,14 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				String strTimeZoneId = intent.getStringExtra(TIME_ZONE_INFO);
 				mTimeZoneCandidate = TimeZone.getTimeZone(strTimeZoneId);
 				if(!mTimeZoneCandidate.equals(mTimeZone)){
-					monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamTimezoneTask(this), true, mStrVCamID, mTimeZoneCandidate.getID());
+					monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamTimezoneTask(this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID, mTimeZoneCandidate.getID());
 				}	
 			}
 		}else if(REQUEST_WIFI_SETTING_CHANGED== requestCode){
 			if(resultCode == RESULT_OK){
 				WifiAPInfo chosenWifiAPInfo = intent.getParcelableExtra(SoundPairingActivity.KEY_WIFI_INFO);
 				if(null != chosenWifiAPInfo){
-					monitorAsyncTask(new BeseyeCamBEHttpTask.SetWiFiConfigTask(this), true, mStrVCamID, chosenWifiAPInfo.SSID, chosenWifiAPInfo.password, ""+chosenWifiAPInfo.iCipherIdx);
+					monitorAsyncTask(new BeseyeCamBEHttpTask.SetWiFiConfigTask(this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID, chosenWifiAPInfo.SSID, chosenWifiAPInfo.password, ""+chosenWifiAPInfo.iCipherIdx);
 				}
 				//mbIsWifiSettingChanged = true;
 			}

@@ -13,7 +13,7 @@
 	   		android:paddingLeft="@dimen/wifi_list_item_horizontal_padding" 
 	   		android:textColor="@color/wifi_info_dialog_title_font_color"
 	   		android:textSize="@dimen/wifi_ap_info_dialog_title_font_size"
-	   		android:text="@string/dialog_wifi_ap_key_index"
+	   		android:text="@string/dialog_wifi_ap_security"
 	   		android:layout_centerVertical="true"/>
    	</RelativeLayout>
 

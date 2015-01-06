@@ -758,7 +758,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	public void onSwitchBtnStateChanged(SwitchState state, View view) {
 		if(view.getTag() instanceof CameraListItmHolder){
 			JSONObject cam_obj = ((CameraListItmHolder)view.getTag()).mObjCam;
-			monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this), true, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID), SwitchState.SWITCH_ON.equals(state)?"1":"0");
+			monitorAsyncTask(new BeseyeCamBEHttpTask.SetCamStatusTask(this).setDialogId(DIALOG_ID_SETTING), true, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID), SwitchState.SWITCH_ON.equals(state)?"1":"0");
 		}
 	}
 	

@@ -22,6 +22,7 @@ public class WifiInfoAdapter extends BaseAdapter {
 	protected OnClickListener mItemOnClickListener = null;
 	protected int miLayoutId;
 	protected String strSecure;
+	protected String strOther;
 	private boolean mbCamWifiList = false;
 	
 	private List<WifiAPInfo> mlstScanResult;
@@ -35,6 +36,7 @@ public class WifiInfoAdapter extends BaseAdapter {
 		if(null != mContext){
 			mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			strSecure = context.getResources().getString(R.string.network_secure_with);
+			strOther = context.getResources().getString(R.string.network_other);
 		}
 	}
 	
@@ -103,7 +105,7 @@ public class WifiInfoAdapter extends BaseAdapter {
 						if(false == sRet.bIsOther){
 							holder.mtxtSSID.setText(sRet.SSID/*+", "+sRet.BSSID+", "+sRet.frequency*/);
 						}else{
-							holder.mtxtSSID.setText("Other...");
+							holder.mtxtSSID.setText(strOther);
 						}
 					}
 					
