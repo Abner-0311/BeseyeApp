@@ -251,7 +251,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	protected int miOriginalVcamCnt = -1;
 	
 	private void fillVCamList(JSONObject objVCamList){
-		Log.d(TAG, "fillVCamList(), objVCamList="+objVCamList.toString());
+		//Log.d(TAG, "fillVCamList(), objVCamList="+objVCamList.toString());
+		mObjVCamList = objVCamList;
+		
 		JSONArray arrCamListOld = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
 		
 		JSONArray arrCamList = new JSONArray();
@@ -266,6 +268,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						JSONObject camObj = VcamList.getJSONObject(i);
 						if(/*!DEMO_CAM_ID.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID)) && */BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
 							arrCamList.put(camObj);
+							String strVcamId = BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID);
+							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(strVcamId, camObj);
 						}
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -364,6 +368,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			postToLvRreshComplete();
 			miCurUpdateIdx = 0;
 			updateCamItm(++miTaskSeedNum);
+		}
+		
+		if(isAppVersionChecked()){
+			getCamUpdateCandidateList(mObjVCamList);
+			mObjVCamList = null;
 		}
 	}
 	

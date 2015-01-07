@@ -11,6 +11,7 @@ public class PairingWatchOutActivity extends BeseyeAccountBaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		//Log.d(TAG, "PairingRemindActivity::onCreate()");
 		super.onCreate(savedInstanceState);
+		mbIgnoreCamVerCheck = true;
 		
 		if(null != mTxtNavTitle){
 			mTxtNavTitle.setText(R.string.watch_out_sound);

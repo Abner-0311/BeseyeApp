@@ -537,8 +537,18 @@ public class BeseyeCamBEHttpTask  {
 	
 	public static class CheckCamUpdateStatusTask extends BeseyeHttpTask{
 		private String strVcamId = null;
+		private JSONObject mObjCam = null;
+		
 		public CheckCamUpdateStatusTask(OnHttpTaskCallback cb) {
 			super(cb);
+		}
+		
+		public void setCamObj(JSONObject obj){
+			mObjCam = obj;
+		}
+		
+		public JSONObject getCamObj(){
+			return mObjCam;
 		}
 		
 		public String getVcamId(){

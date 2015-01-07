@@ -36,6 +36,7 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mbIgnoreCamVerCheck = true;
 		getSupportActionBar().hide();
 		
 		try {

@@ -1,15 +1,26 @@
 package com.app.beseye.util;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class BeseyeCamInfoSyncMgr {
+import android.os.AsyncTask;
+import android.util.Log;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
+
+public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
 	static private BeseyeCamInfoSyncMgr sBeseyeCamInfoSyncMgr;
 	
 	static public BeseyeCamInfoSyncMgr getInstance(){
@@ -60,6 +71,21 @@ public class BeseyeCamInfoSyncMgr {
 		return ret;
 	} 
 	
+	private WeakReference<OnCamUpdateVersionCheckListener> mOnCamUpdateVersionCheckListener;
+	
+	static public interface OnCamUpdateVersionCheckListener{
+		public void onCamUpdateList(JSONArray arrUpdateCandidate);
+	}
+	
+	synchronized public void registerOnCamUpdateVersionCheckListener(OnCamUpdateVersionCheckListener listener){
+		mOnCamUpdateVersionCheckListener = new WeakReference<OnCamUpdateVersionCheckListener>(listener);
+	}
+	
+	synchronized public void unregisterOnCamUpdateVersionCheckListener(OnCamUpdateVersionCheckListener listener){
+		mOnCamUpdateVersionCheckListener = null;
+	}
+	
+	
 	synchronized public JSONObject getCamInfoByVCamId(String strVcamId){
 		JSONObject objRet = null;
 		if(null != strVcamId && 0 < strVcamId.length() && null != mMapCamInfo){
@@ -99,5 +125,103 @@ public class BeseyeCamInfoSyncMgr {
 					}
 				}
 			}}, 0);
+	}
+	
+	private static ExecutorService SINGLE_TASK_EXECUTOR; 
+	static {  
+		SINGLE_TASK_EXECUTOR = (ExecutorService) Executors.newSingleThreadExecutor();  
+    }; 
+    
+	private AsyncTask<String, Double, List<JSONObject>> mCheckCamListVersionTask = null; 
+	private JSONArray mArrVcamList = null;
+	private int miCurCheckIdx = 0;
+	private JSONArray mLstUpdateCandidate = new JSONArray();
+	
+	public void queryCamUpdateVersions(JSONArray arrVcamIdList){
+		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK){
+			return;
+		}
+		
+		if(null != mCheckCamListVersionTask && false == mCheckCamListVersionTask.isCancelled()){
+			Log.i(TAG, "queryCamUpdateVersions(), mCheckCamListVersionTask is ongoing");
+			return;
+		}
+		
+		mArrVcamList = arrVcamIdList;
+		miCurCheckIdx = 0;
+		mLstUpdateCandidate = new JSONArray();
+		checkVersionByIdx();
+	}
+	
+	private void checkVersionByIdx(){
+		if(null != mArrVcamList){
+			if(miCurCheckIdx == mArrVcamList.length()){
+				//report
+				Log.i(TAG, "checkVersionByIdx(), mLstUpdateCandidate="+mLstUpdateCandidate.toString());
+				OnCamUpdateVersionCheckListener listener = (null != mOnCamUpdateVersionCheckListener)?mOnCamUpdateVersionCheckListener.get():null;
+				if(null != mLstUpdateCandidate && 0 < mLstUpdateCandidate.length() && null != listener){
+					listener.onCamUpdateList(mLstUpdateCandidate);
+				}
+			}else{
+				mCheckCamListVersionTask = new BeseyeCamBEHttpTask.CheckCamUpdateStatusTask(this).setDialogId(-1);
+				if(null != mCheckCamListVersionTask){
+					JSONObject camObj = mArrVcamList.optJSONObject(miCurCheckIdx++);
+					((BeseyeCamBEHttpTask.CheckCamUpdateStatusTask)mCheckCamListVersionTask).setCamObj(camObj);
+					mCheckCamListVersionTask.executeOnExecutor(SINGLE_TASK_EXECUTOR, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID));
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+		if(task instanceof BeseyeCamBEHttpTask.CheckCamUpdateStatusTask){
+			//final String strVcamId = ((BeseyeCamBEHttpTask.CheckCamUpdateStatusTask)task).getVcamId();
+			if(0 == iRetCode){
+				if(DEBUG)
+					Log.i(TAG, "onPostExecute(), "+result.toString());
+				
+				if(BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.UPDATE_CAN_GO)){
+					if(null != mLstUpdateCandidate){
+						mLstUpdateCandidate.put(((BeseyeCamBEHttpTask.CheckCamUpdateStatusTask)task).getCamObj());
+					}
+				}			
+			}
+			
+			checkVersionByIdx();
+		}
+		
+		mCheckCamListVersionTask = null;
+	}
+	
+	@Override
+	public void onShowDialog(AsyncTask task, int iDialogId, int iTitleRes,
+			int iMsgRes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDismissDialog(AsyncTask task, int iDialogId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onToastShow(AsyncTask task, String strMsg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
+		// TODO Auto-generated method stub
+		
 	}
 }

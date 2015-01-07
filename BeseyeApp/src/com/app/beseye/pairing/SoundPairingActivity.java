@@ -93,6 +93,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mbIgnoreCamVerCheck = true;
 		
 		//miOriginalVCamCnt = getIntent().getIntExtra(KEY_ORIGINAL_VCAM_CNT, -1);
 		try {
@@ -172,6 +173,10 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		}
 		
 		if(false == sbFinishToPlay){
+			if(null != mPairingCounter){
+				mPairingCounter.cancel();
+				mPairingCounter = null;
+			}
 			onPairingFailed();
 		}
 		

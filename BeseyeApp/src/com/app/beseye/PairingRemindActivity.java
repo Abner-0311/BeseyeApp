@@ -17,6 +17,7 @@ public class PairingRemindActivity extends BeseyeAccountBaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		//Log.d(TAG, "PairingRemindActivity::onCreate()");
 		super.onCreate(savedInstanceState);
+		mbIgnoreCamVerCheck = true;
 		
 		mBtnStart = (Button)findViewById(R.id.button_start);
 		if(null != mBtnStart){

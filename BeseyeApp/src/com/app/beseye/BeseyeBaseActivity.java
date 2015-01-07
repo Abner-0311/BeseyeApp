@@ -37,6 +37,7 @@ import com.app.beseye.pairing.SoundPairingNamingActivity;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.HWSettingsActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
+import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
@@ -81,6 +82,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected boolean mActivityDestroy = false;
 	protected boolean mActivityResume = false;
 	protected boolean mbIgnoreSessionCheck = false;
+	protected boolean mbIgnoreCamVerCheck = false;
+	private boolean mbHaveCheckAppVer = false;
 	
 	protected String mStrVCamID = null;
 	protected String mStrVCamName = null;
@@ -173,25 +176,19 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	private AsyncTask mGetCamListTask = null; 
-	private AsyncTask mCheckCamListVersionTask = null; 
 	
 	private void getCamListAndCheckCamUpdateVersions(){
-		Set<String> setVcamList = null;
-		if(false == this instanceof CameraListActivity || (null == ( setVcamList = BeseyeCamInfoSyncMgr.getInstance().getVCamIdList()) || 0 == setVcamList.size())){
+		//Set<String> setVcamList = null;
+		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK){
+			return;
+		}
+		
+		if(false == this instanceof CameraListActivity /*|| (null == ( setVcamList = BeseyeCamInfoSyncMgr.getInstance().getVCamIdList()) || 0 == setVcamList.size())*/){
 			if(null != mGetCamListTask && false == mGetCamListTask.isCancelled()){
 				mGetCamListTask.cancel(true);
 			}
 			monitorAsyncTask(mGetCamListTask = new BeseyeAccountTask.GetVCamListTask(this).setDialogId(-1), true);
-		}else{
-			
 		}
-	}
-	
-	private void queryCamUpdateVersions(JSONArray arrVcamIdList){
-		if(null != mCheckCamListVersionTask && false == mCheckCamListVersionTask.isCancelled()){
-			mCheckCamListVersionTask.cancel(true);
-		}
-		monitorAsyncTask(mCheckCamListVersionTask = new BeseyeCamBEHttpTask.CheckCamUpdateStatusTask(this).setDialogId(-1), true);
 	}
 	
 	private boolean checkSession(){
@@ -267,14 +264,23 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private void checkForUpdates() {
 	    // Remove this for store builds!
+		mbHaveCheckAppVer = false;
 		if(BeseyeUtils.canUpdateFromHockeyApp()){
-			UpdateManager.register(this, HOCKEY_APP_ID, true);
+			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
 		}else if(BeseyeUtils.isProductionVersion()){
-			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, false);
+			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListenerForProduction, false);
 		}
 	}
 	
 	private UpdateManagerListener mUpdateManagerListener = new UpdateManagerListener(){
+		@Override
+		public void onNoUpdateAvailable() {
+			super.onNoUpdateAvailable();
+			onAppUpdateNotAvailable();
+		}
+	}; 
+	
+	private UpdateManagerListener mUpdateManagerListenerForProduction = new UpdateManagerListener(){
 		@Override
 		public void onUpdateAvailable() {
 			super.onUpdateAvailable();
@@ -286,7 +292,28 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			} catch (android.content.ActivityNotFoundException anfe) {
 			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
 			}
-		}}; 
+		}
+
+		@Override
+		public void onNoUpdateAvailable() {
+			super.onNoUpdateAvailable();
+			onAppUpdateNotAvailable();
+		}
+	}; 
+	
+	private void onAppUpdateNotAvailable(){
+		if(BeseyeBaseActivity.this instanceof CameraListActivity && null != mObjVCamList){
+			getCamUpdateCandidateList(mObjVCamList);
+		}
+		
+		mbHaveCheckAppVer = true;
+		if(false == mbIgnoreCamVerCheck)
+			getCamListAndCheckCamUpdateVersions();
+	}
+	
+	protected boolean isAppVersionChecked(){
+		return mbHaveCheckAppVer;
+	}
 	
 	static public final String KEY_WARNING_TITLE = "KEY_WARNING_TITLE";
 	static public final String KEY_WARNING_TEXT  = "KEY_WARNING_TEXT";
@@ -759,27 +786,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(task == mGetCamListTask){
 					JSONObject objVCamList = result.get(0);
-					Log.d(TAG, "mGetCamListTask(), objVCamList="+objVCamList.toString());
-					
-					JSONArray arrVcamIdList = new JSONArray();
-					int iVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_VCAM_CNT);
-					if(0 < iVcamCnt){
-						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(objVCamList, BeseyeJSONUtil.ACC_VCAM_LST);
-						for(int i = 0;i< iVcamCnt;i++){
-							try {
-								JSONObject camObj = VcamList.getJSONObject(i);
-								if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
-									arrVcamIdList.put(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID));
-								}
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-						}
-						
-						if(0 < arrVcamIdList.length()){
-							
-						}
-					}
+					getCamUpdateCandidateList(objVCamList);
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
@@ -901,6 +908,34 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		
 		if(null != mMapCurAsyncTasks){
 			mMapCurAsyncTasks.remove(task);
+		}
+	}
+	
+	protected void getCamUpdateCandidateList(JSONObject objVCamList){
+		//Log.i(TAG, "mGetCamListTask(), objVCamList="+objVCamList.toString());
+		
+		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK){
+			return;
+		}
+		
+		JSONArray arrVcamIdList = new JSONArray();
+		int iVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_VCAM_CNT);
+		if(0 < iVcamCnt){
+			JSONArray VcamList = BeseyeJSONUtil.getJSONArray(objVCamList, BeseyeJSONUtil.ACC_VCAM_LST);
+			for(int i = 0;i< iVcamCnt;i++){
+				try {
+					JSONObject camObj = VcamList.getJSONObject(i);
+					if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+						arrVcamIdList.put(camObj);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(0 < arrVcamIdList.length()){
+				BeseyeCamInfoSyncMgr.getInstance().queryCamUpdateVersions(arrVcamIdList);
+			}
 		}
 	}
 
@@ -1506,6 +1541,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}
     }
     
+    public void onCamUpdateList(JSONArray arrUpdateCandidate){
+    	triggerCamUpdate(arrUpdateCandidate, true);
+    }
+    
     protected void updateUICallback(){}
     
     protected void setActivityResultWithCamObj(){
@@ -1525,6 +1564,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	private int miUpdateCamNum = 0;
 	private int miCurUpdateCamStatusIdx = 0;
 	private JSONArray mVcamUpdateList = null;
+	protected JSONObject mObjVCamList = null; //for cam list
 	
 	private String findCamNameFromVcamUpdateList(String strVCamId){
 		String strRet = "";
@@ -1542,7 +1582,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return strRet;
 	}
 	
-	protected void triggerCamUpdate(JSONArray VcamList){
+	protected void triggerCamUpdate(JSONArray VcamList, boolean bSilent){
 		int iVcamNum = (null != VcamList)?VcamList.length():0;
 		if(0 < iVcamNum){
 			mVcamUpdateList = VcamList;
@@ -1560,7 +1600,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				}
 			}
 			
-			monitorAsyncTask(new BeseyeCamBEHttpTask.UpdateCamSWTask(this), true, mLstUpdateCandidate.get(miCheckUpdateCamIdx++));
+			monitorAsyncTask(new BeseyeCamBEHttpTask.UpdateCamSWTask(this).setDialogId(bSilent?-1:DIALOG_ID_LOADING), true, mLstUpdateCandidate.get(miCheckUpdateCamIdx++));
 		}else{
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override

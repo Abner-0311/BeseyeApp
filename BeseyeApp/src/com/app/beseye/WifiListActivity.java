@@ -75,6 +75,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 		Log.d(TAG, "WifiListActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
+		mbIgnoreCamVerCheck = true;
 		
 		if(mbChangeWifi){
 			try {

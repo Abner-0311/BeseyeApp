@@ -132,6 +132,8 @@ public class BeseyeJSONUtil {
 	public static final String UPDATE_PROGRESS 			= "progress";
 	public static final String UPDATE_FINAL_STAUS 		= "finalStatus";
 	public static final String UPDATE_DETAIL_STAUS 		= "detailStatus";
+	public static final String UPDATE_CAN_GO 			= "update";
+	public static final String UPDATE_VERSION_LATEST 	= "latestVersion";
 		
 	//WS BE service
 	public static final String CAM_UUID 				= "camUuid";

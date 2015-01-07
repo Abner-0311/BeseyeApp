@@ -418,6 +418,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private Runnable mCloseWsRunnable = null;
     
 	private Map<String, Integer> mMapNotificationId = new HashMap<String, Integer>();
+	private Map<String, Integer> mMapNCode = new HashMap<String, Integer>();
 	
     @Override
     public void onCreate() {
@@ -907,98 +908,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}
 	}
 	
-//	private void showFirstUnreadNotification(){
-//		if(null != mArrRet && 0 < mArrRet.length()){
-//			JSONObject obj = null;
-////			int iNotifyTypes = iKalaSettingsMgr.getInstance().getPushNotifyTypes();
-////			
-////			//get first unread itm
-////			if(null != mArrRet && 0 < iNotifyTypes){
-////	    		int iSize = mArrRet.length();
-////	    		for(int iIndex = 0 ; iIndex < iSize ; iIndex++){
-////	    			try {
-////	    				obj = (JSONObject) mArrRet.get(iIndex);
-////	    				if(null != obj && BeseyeJSONUtil.getJSONBoolean(obj, UNREAD)){
-////	    					JSONObject notifyObj = obj;//iKalaJSONUtil.getJSONObject(obj, NOTIFY_DATA);
-////    						if(null != notifyObj){
-////    							if(null != mLastNotifyId){
-////    								if(mLastNotifyUpdateTime > BeseyeJSONUtil.getJSONLong(notifyObj, UPDATE_TIME))
-////    									return;
-////    								
-////    								if(mLastNotifyId.equals(BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_ID)))
-////    									continue;
-////    							}
-////    							String strNotifyType = BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_TYPE);
-////    							if(null != strNotifyType){
-////    								JSONObject fromObj = BeseyeJSONUtil.getJSONObject(notifyObj, FROM);
-////    								if(null != fromObj){
-////    									if(NOTIFY_T_FRIEND_INVITE.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_INVITE_CHORUS.value())){
-////    										showNotification(NOTIFICATION_TYPE_INFO, 
-////    														 createDelegateIntent(getApplicationContext(),createIntent(getApplicationContext(), iChannelSocialListActivity.class.getName()).putExtra("QuerySocialType", QuerySocialType.FRIEND.toString())), 
-////    														 getForegroundSpanText(this, getFriendInviteNotifyString(getApplicationContext(), fromObj),BeseyeJSONUtil.getJSONString(fromObj, USER_NAME)), 
-////    														 notifyObj);
-////    										return;
-////    									}
-////    									
-////    									
-////    									JSONObject workObj = BeseyeJSONUtil.getJSONObject(notifyObj, WORK_DATA);
-////    									String sWorktrType = null;
-////    									if(null != workObj){
-////    										sWorktrType = BeseyeJSONUtil.getJSONString(workObj, WORK_TYPE);
-////    										if(NOTIFY_T_CREATE.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_WORK_CMNT.value())){
-////    											showNotification(NOTIFICATION_TYPE_INFO, 
-////    															 createDelegateIntent(getApplicationContext(),createIntentToPlayer(getApplicationContext(), fromObj, workObj)), 
-////    															 getForegroundSpanText(this, getCreateNotifyString(getApplicationContext(), workObj, fromObj, sWorktrType),BeseyeJSONUtil.getJSONString(fromObj, USER_NAME), BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
-////    															 notifyObj);
-////    											return;
-////    										}
-////    										else if(NOTIFY_T_COMMENT.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_WORK_CMNT.value())){
-////    											showNotification(NOTIFICATION_TYPE_MSG, 
-////    															 createDelegateIntent(getApplicationContext(),createIntentToStatusMsgPage(getApplicationContext(), fromObj, workObj)), 
-////    															 getForegroundSpanText(this, getCommentNotifyString(getApplicationContext(), fromObj, workObj, sWorktrType), BeseyeJSONUtil.getJSONString(fromObj, USER_NAME),BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
-////    															 notifyObj);
-////    											return;
-////    										}
-////    										else if(NOTIFY_T_COMMENT_REPLY.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_WORK_CMNT.value())){
-////    											showNotification(NOTIFICATION_TYPE_MSG, 
-////    															 createDelegateIntent(getApplicationContext(),createIntentToStatusMsgPage(getApplicationContext(), fromObj, workObj)), 
-////    															 getForegroundSpanText(this, getMsgReplyNotifyString(getApplicationContext(), fromObj), BeseyeJSONUtil.getJSONString(fromObj, USER_NAME)), 
-////    															 notifyObj);
-////    											return;
-////    										}
-////    										else if(NOTIFY_T_CHO_INVITE.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_INVITE_CHORUS.value())){
-////    											showNotification(NOTIFICATION_TYPE_INFO, null, 
-////    															 iKalaNotificationUtil.getForegroundSpanText(this, getChrorusInviteNotifyString(getApplicationContext(), fromObj, workObj),  BeseyeJSONUtil.getJSONString(fromObj, USER_NAME),BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
-////    															 notifyObj);
-////    											return;
-////    										}
-////    										else if(NOTIFY_T_CHO_COMMIT.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_INVITE_CHORUS.value())){
-////    											showNotification(NOTIFICATION_TYPE_INFO, null, 
-////    															 iKalaNotificationUtil.getForegroundSpanText(this, getChrorusCommitNotifyString(getApplicationContext(), fromObj, workObj),  BeseyeJSONUtil.getJSONString(fromObj, USER_NAME),BeseyeJSONUtil.getJSONString(workObj, WORK_NAME)), 
-////    															 notifyObj);
-////    											return;
-////    										}
-////    										else if(NOTIFY_T_MSG.equals(strNotifyType) && 0 < (iNotifyTypes&iKalaSettingsMgr.PushNotifType.TYPE_NEW_MSG.value())){
-////        										showNotification(NOTIFICATION_TYPE_MSG, 
-////        														 createDelegateIntent(getApplicationContext(),createIntentToConversationPage(getApplicationContext(), fromObj, workObj)),
-////        														 getForegroundSpanText(this, getSendMsgNotifyString(getApplicationContext(), fromObj), BeseyeJSONUtil.getJSONString(fromObj, USER_NAME)), 
-////        														 notifyObj);      									
-////        										return;
-////        									}
-////    										else 
-////    											Log.e(TAG, "setupItem(), invalid type "+strNotifyType);
-////    									}
-////    								}
-////    							}
-////    						}
-////	    				}
-////	    			} catch (JSONException e) {
-////	    				e.printStackTrace();
-////	    			}
-////	    		}
-////	    	}
-//		}
-//	}
+
 	static int sRequestCode = (int) (System.currentTimeMillis()%100000);
 	
 	private void showNotification(int iNotifyId, Intent intent, CharSequence charSequence, CharSequence text, long lTs) {
@@ -1173,6 +1083,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					}
 				}
 				mMapNotificationId.clear();
+			}
+			
+			if(0 < mMapNCode.size()){
+				mMapNCode.clear();
 			}
 		}
 	}
@@ -1455,6 +1369,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 							mNotificationManager.cancel(mMapNotificationId.get(strVCamId));
 						}
 						mMapNotificationId.remove(strVCamId);
+						mMapNCode.remove(strVCamId);
 					}
 					
 					BeseyeStorageAgent.doDeleteCacheByFolder(BeseyeNotificationService.this.getApplicationContext(), strVCamId);
@@ -1503,6 +1418,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						iNotifyType = NOTIFICATION_TYPE_INFO+((null != strVCamId)?strVCamId.hashCode():0);
 						if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
 							mMapNotificationId.put(strVCamId, iNotifyType);
+							mMapNCode.put(strVCamId, iNCode);
 						}
 						
 						if(NCODE_OFFLINE_DETECT != iNCode){

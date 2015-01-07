@@ -15,6 +15,7 @@ public class PairingFailActivity extends BeseyeAccountBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mbIgnoreCamVerCheck = true;
 		//getSupportActionBar().hide();
 		
 		if(null != mTxtNavTitle){
