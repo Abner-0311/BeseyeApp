@@ -37,6 +37,7 @@ import com.app.beseye.pairing.SoundPairingNamingActivity;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.HWSettingsActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamUpdateVersionCheckListener;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeStorageAgent;
@@ -75,7 +76,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 																			  OnHttpTaskCallback, 
 																			  ISessionUpdateCallback,
 																			  BeseyeAppStateChangeListener,
-																			  OnCamInfoChangedListener{
+																			  OnCamInfoChangedListener,
+																			  OnCamUpdateVersionCheckListener{
 	static public final String KEY_FROM_ACTIVITY					= "KEY_FROM_ACTIVITY";
 	
 	protected boolean mbFirstResume = true;
@@ -265,6 +267,11 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	private void checkForUpdates() {
 	    // Remove this for store builds!
 		mbHaveCheckAppVer = false;
+		
+		if(false == mbIgnoreCamVerCheck){
+			BeseyeCamInfoSyncMgr.getInstance().registerOnCamUpdateVersionCheckListener(this);
+		}
+		
 		if(BeseyeUtils.canUpdateFromHockeyApp()){
 			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
 		}else if(BeseyeUtils.isProductionVersion()){
@@ -823,7 +830,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						mLstUpdateCandidate.remove(strVcamId);
 						miCheckUpdateCamIdx--;
 						
-						if(iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST){
+						if(iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST && !BeseyeUtils.isProductionVersion()){
 							BeseyeUtils.postRunnable(new Runnable(){
 
 								@Override
@@ -850,20 +857,21 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						
 						monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++));
 					}else{
-						BeseyeUtils.postRunnable(new Runnable(){
-							@Override
-							public void run() {
-								Bundle b = new Bundle();
-								b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_update_no_valid_cam));
-								showMyDialog(DIALOG_ID_WARNING, b);
-							}}, 0);
+						if(!mbSilentUpdate){
+							BeseyeUtils.postRunnable(new Runnable(){
+								@Override
+								public void run() {
+									Bundle b = new Bundle();
+									b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_update_no_valid_cam));
+									showMyDialog(DIALOG_ID_WARNING, b);
+								}}, 0);
+						}	
 						SessionMgr.getInstance().setCamUpdateTimestamp(0);
-						Log.e(TAG, "onPostExecute(), there is no valid camera to update");
+						Log.e(TAG, "onPostExecute(), there is no valid camera to update");	
 					}
 					
 				}else{
-					
-					monitorAsyncTask(new BeseyeCamBEHttpTask.UpdateCamSWTask(this), true, mLstUpdateCandidate.get(miCheckUpdateCamIdx++));
+					monitorAsyncTask(new BeseyeCamBEHttpTask.UpdateCamSWTask(this).setDialogId(mbSilentUpdate?-1:DIALOG_ID_LOADING), true, mLstUpdateCandidate.get(miCheckUpdateCamIdx++));
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamUpdateStatusTask){
 				String strVcamId = ((BeseyeCamBEHttpTask.GetCamUpdateStatusTask)task).getVcamId();
@@ -1582,9 +1590,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return strRet;
 	}
 	
+	protected boolean mbSilentUpdate = true;
+	
 	protected void triggerCamUpdate(JSONArray VcamList, boolean bSilent){
 		int iVcamNum = (null != VcamList)?VcamList.length():0;
 		if(0 < iVcamNum){
+			mbSilentUpdate = bSilent;
 			mVcamUpdateList = VcamList;
 			miCheckUpdateCamIdx = 0;
 			mUpdateVcamList = new JSONObject();
@@ -1602,13 +1613,15 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			
 			monitorAsyncTask(new BeseyeCamBEHttpTask.UpdateCamSWTask(this).setDialogId(bSilent?-1:DIALOG_ID_LOADING), true, mLstUpdateCandidate.get(miCheckUpdateCamIdx++));
 		}else{
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_update_no_valid_cam));
-					showMyDialog(DIALOG_ID_WARNING, b);
-				}}, 0);
+			if(!mbSilentUpdate){
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						Bundle b = new Bundle();
+						b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_update_no_valid_cam));
+						showMyDialog(DIALOG_ID_WARNING, b);
+					}}, 0);
+			}
 			
 			Log.e(TAG, "triggerCamUpdate(), there is no valid camera to update");
 		}
