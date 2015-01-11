@@ -309,12 +309,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}; 
 	
 	private void onAppUpdateNotAvailable(){
-		if(BeseyeBaseActivity.this instanceof CameraListActivity && null != mObjVCamList){
+		if(this instanceof CameraListActivity && !checkCamUpdateValid() && !isCamUpdating() && null != mObjVCamList){
 			getCamUpdateCandidateList(mObjVCamList);
 		}
 		
 		mbHaveCheckAppVer = true;
-		if(false == mbIgnoreCamVerCheck)
+		if(false == this instanceof CameraListActivity && false == mbIgnoreCamVerCheck && !checkCamUpdateValid() && !isCamUpdating())
 			getCamListAndCheckCamUpdateVersions();
 	}
 	
@@ -818,7 +818,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				final String strVcamId = ((BeseyeCamBEHttpTask.UpdateCamSWTask)task).getVcamId();
 				if(0 == iRetCode){
 					if(DEBUG)
-						Log.i(TAG, "onPostExecute(), "+result.toString());
+						Log.i(TAG, "onPostExecute(), "+result.toString()+", strVcamId:"+strVcamId);
 					
 					if(null != mLstUpdateCandidate){
 						if(mLstUpdateCandidate.contains(strVcamId)){
@@ -830,23 +830,27 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						mLstUpdateCandidate.remove(strVcamId);
 						miCheckUpdateCamIdx--;
 						
-						if(iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST && !BeseyeUtils.isProductionVersion()){
+						if((iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST && iRetCode != BeseyeError.E_WEBSOCKET_CONN_NOT_EXIST) && !BeseyeUtils.isProductionVersion()){
 							BeseyeUtils.postRunnable(new Runnable(){
-
 								@Override
 								public void run() {
-									String strMsg = (0 < result.size())?BeseyeJSONUtil.getJSONString(result.get(0), "exceptionMessage"):"";
-									Bundle b = new Bundle();
-		        					b.putString(KEY_INFO_TITLE, "Cam update failed");
-		        					b.putString(KEY_INFO_TEXT, String.format("Msg:[%s]\nerrCode:[0x%x]\nCamName:[%s]\nVcam_id:[%s]", strMsg, iRetCode, findCamNameFromVcamUpdateList(strVcamId), strVcamId));
-		        					showMyDialog(DIALOG_ID_INFO, b);
+									if(BeseyeBaseActivity.this.mActivityResume){
+										String strMsg = (0 < result.size())?BeseyeJSONUtil.getJSONString(result.get(0), "exceptionMessage"):"";
+										Bundle b = new Bundle();
+			        					b.putString(KEY_INFO_TITLE, "Cam update failed");
+			        					b.putString(KEY_INFO_TEXT, String.format("Msg:[%s]\nerrCode:[0x%x]\nCamName:[%s]\nVcam_id:[%s]", strMsg, iRetCode, findCamNameFromVcamUpdateList(strVcamId), strVcamId));
+			        					showMyDialog(DIALOG_ID_INFO, b);
+									}
 								}}, 200);
 							
 						}
 					}
 				}
 				
+				Log.i(TAG, "miCheckUpdateCamIdx:"+miCheckUpdateCamIdx+", mLstUpdateCandidate.size():"+mLstUpdateCandidate.size());
+				
 				if(miCheckUpdateCamIdx == mLstUpdateCandidate.size()){
+					Log.e(TAG, "onPostExecute(), Check point..., size:"+mLstUpdateCandidate.size());	
 					if(0 < mLstUpdateCandidate.size()){
 						miUpdateCamNum = mLstUpdateCandidate.size();
 						miCurUpdateCamStatusIdx = 0;
@@ -866,7 +870,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 									showMyDialog(DIALOG_ID_WARNING, b);
 								}}, 0);
 						}	
-						SessionMgr.getInstance().setCamUpdateTimestamp(0);
+						initUpdateItems();
 						Log.e(TAG, "onPostExecute(), there is no valid camera to update");	
 					}
 					
@@ -883,9 +887,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					miUpdateCamNum-=1;		
 				}
 				
-				if(isCamUpdateFinish() || 0 == miUpdateCamNum){
+				if(isCamUpdatingCompleted() || 0 == miUpdateCamNum){
 					removeMyDialog(DIALOG_ID_CAM_UPDATE);
-					SessionMgr.getInstance().setCamUpdateTimestamp(0);
+					initUpdateItems();
 					Log.e(TAG, "onPostExecute(), Camera update finish...");
 				}else{
 					if(miCurUpdateCamStatusIdx >= miUpdateCamNum){
@@ -893,7 +897,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						BeseyeUtils.postRunnable(new Runnable(){
 							@Override
 							public void run() {
-								if(checkCamUpdateFlag()){
+								if(checkCamUpdateValid()){
 									monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(BeseyeBaseActivity.this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++%miUpdateCamNum));
 								}else{
 									Bundle b = new Bundle();
@@ -901,7 +905,6 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 									showMyDialog(DIALOG_ID_WARNING, b);
 									removeMyDialog(DIALOG_ID_CAM_UPDATE);
 								}
-								
 							}}, 5000);
 					}else{
 						monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(BeseyeBaseActivity.this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++%miUpdateCamNum));
@@ -924,6 +927,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		
 		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK){
 			return;
+		}
+		
+		if(checkCamUpdateValid()){
+			return ;
 		}
 		
 		JSONArray arrVcamIdList = new JSONArray();
@@ -1590,16 +1597,30 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return strRet;
 	}
 	
+	private void initUpdateItems(){
+		Log.i(TAG, "initUpdateItems()+++");
+
+		mbSilentUpdate = false;
+		mVcamUpdateList = null;
+		miCheckUpdateCamIdx = 0;
+		mUpdateVcamList = new JSONObject();
+		mLstUpdateCandidate = new ArrayList<String>();
+		SessionMgr.getInstance().setCamUpdateTimestamp(0);
+	}
+	
 	protected boolean mbSilentUpdate = true;
 	
 	protected void triggerCamUpdate(JSONArray VcamList, boolean bSilent){
+		if(isCamUpdating()){
+			Log.i(TAG, "triggerCamUpdate(), isCamUpdating... return");
+			return;
+		}
+		
 		int iVcamNum = (null != VcamList)?VcamList.length():0;
 		if(0 < iVcamNum){
+			initUpdateItems();
 			mbSilentUpdate = bSilent;
 			mVcamUpdateList = VcamList;
-			miCheckUpdateCamIdx = 0;
-			mUpdateVcamList = new JSONObject();
-			mLstUpdateCandidate = new ArrayList<String>();
 			//mMapUpdateStatus = new LinkedHashMap<String, JSONObject>();
 			for(int idx = 0; idx < iVcamNum;idx++){
 				try {
@@ -1622,7 +1643,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						showMyDialog(DIALOG_ID_WARNING, b);
 					}}, 0);
 			}
-			
+			initUpdateItems();
 			Log.e(TAG, "triggerCamUpdate(), there is no valid camera to update");
 		}
 		
@@ -1637,14 +1658,17 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	protected void resumeCamUpdate(JSONArray VcamList){
+		if(isCamUpdating()){
+			Log.i(TAG, "resumeCamUpdate(), isCamUpdating... return");
+			return;
+		}
+		
 		String[] strCamUpdate = SessionMgr.getInstance().getCamUpdateList().split(";");
 		if(null != strCamUpdate){
 			int iNum = strCamUpdate.length;
 			int iVcamNum = (null != VcamList)?VcamList.length():0;
 			if(0 < iVcamNum){
-				mUpdateVcamList = new JSONObject();
-				mLstUpdateCandidate = new ArrayList<String>();
-				miCurUpdateCamStatusIdx=0;
+				initUpdateItems();
 				for(int idx = 0; idx < iNum; idx++){
 					for(int idx2 = 0; idx2 < iVcamNum;idx2++){
 						try {
@@ -1666,6 +1690,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++));
 				}else{
 					Log.i(TAG, "resumeCamUpdate(), there is no cam to update");
+					initUpdateItems();
 				}
 			}
 		}
@@ -1695,7 +1720,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		int iCompleteNum = 0;
 		int iNumOfDone = 0;
 		int iNumOfFail = 0;
-		for(int idx = 0; idx < miUpdateCamNum; idx++){
+		for(int idx = 0; idx < miUpdateCamNum && idx < mLstUpdateCandidate.size(); idx++){
 			String strVCamId = mLstUpdateCandidate.get(idx);
 			JSONObject objCamUpdateStatus = BeseyeJSONUtil.getJSONObject(mUpdateVcamList, strVCamId);
 			if(null != objCamUpdateStatus){
@@ -1734,19 +1759,22 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			
 			b.putString(KEY_INFO_TEXT, strRet);
 			showMyDialog(DIALOG_ID_INFO, b);
+			initUpdateItems();
 			Log.i(TAG, "updateCamUpdateProgress(), Update SW successfully");
 		}	
 	}
 	
-	private boolean isCamUpdateFinish(){
+	protected boolean isCamUpdating(){
+		return (null != mLstUpdateCandidate && 0 < mLstUpdateCandidate.size());
+	}
+	
+	private boolean isCamUpdatingCompleted(){
 		boolean bRet = true;
-		
-		for(int idx = 0; idx < miUpdateCamNum; idx++){
+		for(int idx = 0; idx < miUpdateCamNum && idx < mLstUpdateCandidate.size(); idx++){
 			String strVCamId = mLstUpdateCandidate.get(idx);
 			JSONObject objCamUpdateStatus = BeseyeJSONUtil.getJSONObject(mUpdateVcamList, strVCamId);
 			if(null != objCamUpdateStatus){
 				int iFinalStatus = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_FINAL_STAUS, -1);
-				
 				Log.i(TAG, "isCamUpdateFinish(), "+objCamUpdateStatus+", strVcamId:"+strVCamId+", iFinalStatus="+iFinalStatus);
 				if(-1 == iFinalStatus){
 					bRet = false;
@@ -1758,14 +1786,18 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return bRet;
 	}
 	
-	protected boolean checkCamUpdateFlag(){
+	protected boolean checkCamUpdateDone(){
+		return SessionMgr.getInstance().getCamUpdateTimestamp() == 0;
+	}
+	
+	protected boolean checkCamUpdateValid(){
 		boolean  bRet = true;
 		long lDelta = System.currentTimeMillis() - SessionMgr.getInstance().getCamUpdateTimestamp();
-		if(lDelta > 30*60*1000){
+		if(lDelta > 10*60*1000){
 			SessionMgr.getInstance().setCamUpdateTimestamp(0);
 			bRet = false;
 		}
-		Log.i(TAG, "checkCamUpdateFlag(), lDelta:"+lDelta+", bRet:"+bRet);
+		Log.i(TAG, "checkCamUpdateValid(), lDelta:"+lDelta+", bRet:"+bRet);
 		return bRet;
 	}
 	

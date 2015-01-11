@@ -492,12 +492,12 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 						setResult(RESULT_OK);
 					}
 				}
-			}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
+			}/*else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					onToastShow(task, "Notify SW Update Successfully.");
 				}
-			}else if(task instanceof BeseyeAccountTask.CamDettachTask){
+			}*/else if(task instanceof BeseyeAccountTask.CamDettachTask){
 				if(0 == iRetCode){
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 					onToastShow(task, "Detach  Successfully.");

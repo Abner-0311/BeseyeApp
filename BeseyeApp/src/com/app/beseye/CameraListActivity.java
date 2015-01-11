@@ -279,7 +279,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				mBundleDemo.putString(KEY_DEMO_CAM_INFO, objVCamList.toString());
 				mBundlePrivate.putString(KEY_DEMO_CAM_INFO, objVCamList.toString());
 				
-				if(checkCamUpdateFlag()){
+				if(checkCamUpdateValid()){
 					resumeCamUpdate(arrCamList);
 				}
 			}else{
@@ -370,7 +370,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			updateCamItm(++miTaskSeedNum);
 		}
 		
-		if(isAppVersionChecked()){
+		if(isAppVersionChecked() && !isCamUpdating()){
 			getCamUpdateCandidateList(mObjVCamList);
 			mObjVCamList = null;
 		}

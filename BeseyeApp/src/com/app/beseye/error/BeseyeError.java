@@ -38,5 +38,6 @@ public class BeseyeError {
 	static public final int E_BE_ACC_SESSION_CLIENT_USR_AGENT_NOT_MATCH  = 0x0001200a;
 	
 	//# OTA related
-	static public final int E_OTA_SW_ALRADY_LATEST  = 0x00500202;
+	static public final int E_OTA_SW_ALRADY_LATEST  	= 0x00500202;
+	static public final int E_WEBSOCKET_CONN_NOT_EXIST  = 0x00500401;
 }

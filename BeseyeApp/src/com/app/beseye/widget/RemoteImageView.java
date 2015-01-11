@@ -348,7 +348,7 @@ public class RemoteImageView extends ImageView {
 	public void setImageBitmap(Bitmap bm, String strVcamId) {
 		mStrVCamIdLoad = strVcamId;
 		if(DEBUG)
-			Log.d(TAG, "setImageBitmap(), mStrVCamIdLoad:["+mStrVCamIdLoad+"], this:"+this);
+			Log.d(TAG, "setImageBitmap(), mStrVCamIdLoad:["+mStrVCamIdLoad+"], id:"+this.getId());
 		setImageBitmap(bm);
 	}
 
@@ -365,6 +365,7 @@ public class RemoteImageView extends ImageView {
 			mFuture.cancel(true);
 			mFuture = null;
 		}
+		
 		if(null != mURI && 0 < mURI.length()){
 			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath, mURI, mIsPreload, mbIsPhoto, mbIsPhotoViewMode, mStrVCamId));
 		}

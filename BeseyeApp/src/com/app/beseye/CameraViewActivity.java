@@ -729,9 +729,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				NetworkMgr.getInstance().unregisterNetworkChangeCallback(act);
 				act.mCameraViewControlAnimator.cancelHideControl();
 				
-				if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
-					AudioWebSocketsMgr.getInstance().destroyWSChannel();
-				}
+				act.destroyAudioChannel();
 			}
 		}
 	}
@@ -969,8 +967,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(mbIsLiveMode){
 				if(null == mLiveStreamTask){
 					monitorAsyncTask(mLiveStreamTask = new BeseyeMMBEHttpTask.GetLiveStreamTask(this, -1).setDialogId(bShowDialog?DIALOG_ID_LOADING:-1), true, mStrVCamID, "false");
-					if(isCamPowerOn() && mbIsLiveMode)
+					if(isCamPowerOn() && mbIsLiveMode){
 						setVisibility(mPbLoadingCursor, View.VISIBLE);
+						openAudioChannel();
+					}
 				}
 			}else{
 				if(null == mDVRStreamTask){
@@ -1052,6 +1052,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			Log.w(TAG, "CameraViewActivity::releaseWakelock(), wakelock wasn't acquired yet");
 		}
 	}
+	
+	private void destroyAudioChannel(){
+		if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
+			AudioWebSocketsMgr.getInstance().destroyWSChannel();
+		}
+	}
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
@@ -1064,7 +1070,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					try {
 						AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
 						AudioWebSocketsMgr.getInstance().setAudioWSServerIP("http://"+arr.getString(arr.length()-1));
-						AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+						//AudioWebSocketsMgr.getInstance().setSienceFlag(false);
 						AudioWebSocketsMgr.getInstance().constructWSChannel();
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -1161,8 +1167,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					boolean bIsCamOn = isCamPowerOn();
 					super.onPostExecute(task, result, iRetCode);
 					if(mbIsLiveMode){
-						if(bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED))
+						if(bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED)){
 							closeStreaming();
+							destroyAudioChannel();
+						}
 						
 						if(isCamPowerOn() && !bIsCamOn){
 							checkPlayState();
@@ -2341,7 +2349,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     			}else{
     				AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
 					AudioWebSocketsMgr.getInstance().setAudioWSServerIP(SessionMgr.getInstance().getWSAHostUrl());
-					AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+					//AudioWebSocketsMgr.getInstance().setSienceFlag(false);
 					
 					if(null == mAudioOpenThread){
 						mAudioOpenThread = new Thread(new Runnable(){
@@ -2357,10 +2365,26 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     			Log.i(TAG, "openAudioChannel(), mGetAudioWSServerTask isn't null");
 		}else{
 			//Toast.makeText(CameraViewActivity.this, "Talk now", Toast.LENGTH_SHORT).show();
-			AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+			//AudioWebSocketsMgr.getInstance().setSienceFlag(false);
 		}
     	
     	setInHoldToTalkMode(true);
+    }
+    
+    public void pressToTalk(){
+    	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
+    		AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+    	}else{
+    		openAudioChannel();
+    	}
+    }
+    
+    public void releaseTalkMode(){
+    	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
+    		AudioWebSocketsMgr.getInstance().setSienceFlag(true);
+    	}else{
+    		openAudioChannel();
+    	}
     }
     
     public void closeAudioChannel(boolean bImmediateClose){

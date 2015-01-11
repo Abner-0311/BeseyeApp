@@ -121,7 +121,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	}
 	
 	public void setAudioWSServerIP(String ip){
-		AUDIO_WS_ADDR = String.format("%s/websocket", ip);//"54.238.255.56");
+		AUDIO_WS_ADDR = String.format("%swebsocket", ip);//"54.238.255.56");
 		Log.i(TAG, "AudioWebSocketsMgr::setAudioWSServerIP()...AUDIO_WS_ADDR:"+AUDIO_WS_ADDR);
 	}
 	
@@ -227,6 +227,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 									}else if(null != mStrAudioConnJobId && mStrAudioConnJobId.equals(strJobID) && 0 == iRetCode){
 										Log.i(TAG, "onStringAvailable(), Audio Conn OK -----------------------");
 										transferAudioBuf();
+									}else{
+										Log.i(TAG, "onStringAvailable(), not handle ack: dataObj:"+dataObj.toString());
 									}
 								}
 							}else if(WS_CB_REMOTE_BIN_CONN.equals(strCmd)){
@@ -707,7 +709,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			if(0 == iRetCode){
 				JSONObject obj = result.get(0);
 				Log.i(TAG, "onPostExecute(), obj = "+obj.toString());
-				
+			}else{
+				Log.e(TAG, "onPostExecute(), failed to RequestAudioWSOnCamTask, iRetCode = "+iRetCode);
 			}
 		}
 	}
