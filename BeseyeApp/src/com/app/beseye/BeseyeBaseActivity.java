@@ -870,7 +870,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 									showMyDialog(DIALOG_ID_WARNING, b);
 								}}, 0);
 						}	
-						initUpdateItems();
+						initUpdateItems(false);
 						Log.e(TAG, "onPostExecute(), there is no valid camera to update");	
 					}
 					
@@ -889,7 +889,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				
 				if(isCamUpdatingCompleted() || 0 == miUpdateCamNum){
 					removeMyDialog(DIALOG_ID_CAM_UPDATE);
-					initUpdateItems();
+					initUpdateItems(false);
 					Log.e(TAG, "onPostExecute(), Camera update finish...");
 				}else{
 					if(miCurUpdateCamStatusIdx >= miUpdateCamNum){
@@ -1597,7 +1597,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return strRet;
 	}
 	
-	private void initUpdateItems(){
+	private void initUpdateItems(boolean bResumeCase){
 		Log.i(TAG, "initUpdateItems()+++");
 
 		mbSilentUpdate = false;
@@ -1605,7 +1605,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		miCheckUpdateCamIdx = 0;
 		mUpdateVcamList = new JSONObject();
 		mLstUpdateCandidate = new ArrayList<String>();
-		SessionMgr.getInstance().setCamUpdateTimestamp(0);
+		if(false == bResumeCase){
+			SessionMgr.getInstance().setCamUpdateTimestamp(0);
+		}
 	}
 	
 	protected boolean mbSilentUpdate = true;
@@ -1616,9 +1618,14 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			return;
 		}
 		
+		if(false == mActivityResume){
+			Log.i(TAG, "triggerCamUpdate(), mActivityResume is false... return");
+			return;
+		}
+		
 		int iVcamNum = (null != VcamList)?VcamList.length():0;
 		if(0 < iVcamNum){
-			initUpdateItems();
+			initUpdateItems(false);
 			mbSilentUpdate = bSilent;
 			mVcamUpdateList = VcamList;
 			//mMapUpdateStatus = new LinkedHashMap<String, JSONObject>();
@@ -1643,7 +1650,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						showMyDialog(DIALOG_ID_WARNING, b);
 					}}, 0);
 			}
-			initUpdateItems();
+			initUpdateItems(false);
 			Log.e(TAG, "triggerCamUpdate(), there is no valid camera to update");
 		}
 		
@@ -1668,7 +1675,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			int iNum = strCamUpdate.length;
 			int iVcamNum = (null != VcamList)?VcamList.length():0;
 			if(0 < iVcamNum){
-				initUpdateItems();
+				initUpdateItems(true);
 				for(int idx = 0; idx < iNum; idx++){
 					for(int idx2 = 0; idx2 < iVcamNum;idx2++){
 						try {
@@ -1690,7 +1697,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++));
 				}else{
 					Log.i(TAG, "resumeCamUpdate(), there is no cam to update");
-					initUpdateItems();
+					initUpdateItems(false);
 				}
 			}
 		}
@@ -1759,7 +1766,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			
 			b.putString(KEY_INFO_TEXT, strRet);
 			showMyDialog(DIALOG_ID_INFO, b);
-			initUpdateItems();
+			initUpdateItems(false);
 			Log.i(TAG, "updateCamUpdateProgress(), Update SW successfully");
 		}	
 	}
