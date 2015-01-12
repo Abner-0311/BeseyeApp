@@ -1,5 +1,6 @@
 package com.app.beseye.setting;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
 
@@ -38,7 +39,6 @@ public class NightVisionActivity extends BeseyeBaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "NightVisionActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		
@@ -146,7 +146,8 @@ public class NightVisionActivity extends BeseyeBaseActivity {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.SetIRCutStatusTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					miIRCutStatus = BeseyeJSONUtil.getJSONInt(result.get(0), IRCUT_STATUS);
 					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), IRCUT_STATUS, miIRCutStatus);
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));

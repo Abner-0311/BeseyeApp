@@ -25,13 +25,17 @@ Stream_Status CBeseyeRTMPObserver::get_Stream_Status(){
 }
 
 void CBeseyeRTMPObserver::set_Stream_Status(Stream_Status status){
-	av_log(NULL, AV_LOG_INFO,"set_Stream_Status(), status:%d\n", status);
+	if(isDebugMode()){
+		av_log(NULL, AV_LOG_INFO,"set_Stream_Status(), status:%d\n", status);
+	}
 	mStream_Status = status;
 }
 
 void CBeseyeRTMPObserver::registerCallback(void(* cb)(CBeseyeRTMPObserver *, CBeseyeRTMPObserver::Player_Callback, const char *, int, int) ){
 	if(NULL != mPlayCB){
-		av_log(NULL, AV_LOG_WARNING, "registerCallback(), remove previous mPlayCB:%d\n", mPlayCB);
+		if(isDebugMode()){
+			av_log(NULL, AV_LOG_WARNING, "registerCallback(), remove previous mPlayCB:%d\n", mPlayCB);
+		}
 	}
 	mPlayCB = cb;
 }
@@ -58,7 +62,9 @@ void CBeseyeRTMPObserver::registerRtmpCallback(AVFormatContext *pFCtx){
 		if(NULL != ioCtx){
 			URLContext* urlCtx = (URLContext*)ioCtx->opaque;
 			if(NULL != urlCtx){
-				av_log(NULL, AV_LOG_INFO,"registerRtmpCallback(), called\n");
+				if(isDebugMode()){
+					av_log(NULL, AV_LOG_INFO,"registerRtmpCallback(), called\n");
+				}
 				register_librtmp_CB(urlCtx, rtmpStreamMethodCallback, rtmpStatusCallback, rtmpErrorCallback, this);
 			}else{
 				av_log(NULL, AV_LOG_ERROR,"registerRtmpCallback(), urlCtx is null\n");
@@ -77,7 +83,9 @@ void CBeseyeRTMPObserver::unregisterRtmpCallback(AVFormatContext *pFCtx){
 		if(NULL != ioCtx){
 			URLContext* urlCtx = (URLContext*)ioCtx->opaque;
 			if(NULL != urlCtx){
-				av_log(NULL, AV_LOG_INFO,"unregisterRtmpCallback(), called\n");
+				if(isDebugMode()){
+					av_log(NULL, AV_LOG_INFO,"unregisterRtmpCallback(), called\n");
+				}
 				register_librtmp_CB(urlCtx, NULL, NULL, NULL,NULL);
 			}else{
 				av_log(NULL, AV_LOG_ERROR,"unregisterRtmpCallback(), urlCtx is null\n");

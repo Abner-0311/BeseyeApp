@@ -1,5 +1,6 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.List;
@@ -143,12 +144,14 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 			Log.i(TAG, "updateBtnByScanResult(), no Wifi ap was scanned");	
 			BeseyeUtils.setEnabled(mBtnUseConnected, false);
 		}else{
-			Log.i(TAG, "Scan List:"+mlstScanResult.toString());	
+			if(DEBUG)
+				Log.i(TAG, "Scan List:"+mlstScanResult.toString());	
 			mChosenWifiAPInfo = null;
 			for(WifiAPInfo info : mlstScanResult){
 				if(null != info && info.bActiveConn){
 					mChosenWifiAPInfo = info;
-					Log.i(TAG, "updateBtnByScanResult(), get connected ap:["+mChosenWifiAPInfo.toString()+"]");	
+					if(DEBUG)
+						Log.i(TAG, "updateBtnByScanResult(), get connected ap:["+mChosenWifiAPInfo.toString()+"]");	
 					break;
 				}
 			}
@@ -165,7 +168,8 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 					JSONArray arrCamList = new JSONArray();
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
 					//miOriginalVcamCnt = iVcamCnt;
-					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
+					if(DEBUG)
+						Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 					if(0 < iVcamCnt){
 						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
 						for(int i = 0;i< iVcamCnt;i++){
@@ -180,7 +184,8 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 						}
 						miOriginalVcamCnt = arrCamList.length();
 					}
-					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
+					if(DEBUG)
+						Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 				}
 			}else 
 				super.onPostExecute(task, result, iRetCode);

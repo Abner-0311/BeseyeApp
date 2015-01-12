@@ -1,5 +1,6 @@
 package com.app.beseye.widget;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.lang.ref.WeakReference;
@@ -184,7 +185,8 @@ public class CameraListMenuAnimator {
 				Animation animation = null;
 				Animation animationBg = null;
 				//CameraListActivity act = mCameraListActivity.get();
-				Log.d(TAG, "performMenuAnimation(), m_vgMenu.getVisibility():"+m_vgMenu.getVisibility());
+				if(DEBUG)
+					Log.d(TAG, "performMenuAnimation(), m_vgMenu.getVisibility():"+m_vgMenu.getVisibility());
 				if(View.VISIBLE == m_vgMenu.getVisibility()){
 					animation = m_aniMenuFadeOut;
 					animationBg = m_aniMenuBgFadeOut;
@@ -232,7 +234,8 @@ public class CameraListMenuAnimator {
 				m_vgMenu.setEnabled(true);
 			}
 			m_bInMenuAnimation = false;
-			Log.d(TAG, "mMenuFadeOutListener::onAnimationEnd()");
+			if(DEBUG)
+				Log.d(TAG, "mMenuFadeOutListener::onAnimationEnd()");
 		}
 
 		public void onAnimationRepeat(Animation animation) {
@@ -244,7 +247,8 @@ public class CameraListMenuAnimator {
 			}
 			m_bInMenuAnimation = true;
 			
-			Log.d(TAG, "mMenuFadeInListener::onAnimationStart()");
+			if(DEBUG)
+				Log.d(TAG, "mMenuFadeInListener::onAnimationStart()");
 		}
 	};
 	
@@ -260,7 +264,8 @@ public class CameraListMenuAnimator {
 			}
 			
 			m_bInMenuAnimation = false;
-			Log.d(TAG, "mMenuFadeOutListener::onAnimationEnd()");
+			if(DEBUG)
+				Log.d(TAG, "mMenuFadeOutListener::onAnimationEnd()");
 		}
 
 		public void onAnimationRepeat(Animation animation) {
@@ -268,7 +273,8 @@ public class CameraListMenuAnimator {
 
 		public void onAnimationStart(Animation animation) {
 			m_bInMenuAnimation = true;
-			Log.d(TAG, "mMenuFadeOutListener::onAnimationStart()");
+			if(DEBUG)
+				Log.d(TAG, "mMenuFadeOutListener::onAnimationStart()");
 		}
 	};
 	
@@ -279,7 +285,8 @@ public class CameraListMenuAnimator {
 				m_vMenuHolderBg.setEnabled(true);
 			}
 			m_bInMenuBgAnimation = false;
-			Log.d(TAG, "mMenuBgFadeInListener::onAnimationEnd()");
+			if(DEBUG)
+				Log.d(TAG, "mMenuBgFadeInListener::onAnimationEnd()");
 		}
 
 		public void onAnimationRepeat(Animation animation) {
@@ -291,7 +298,8 @@ public class CameraListMenuAnimator {
 			}
 			m_bInMenuBgAnimation = true;
 			
-			Log.d(TAG, "mMenuBgFadeInListener::onAnimationStart()");
+			if(DEBUG)
+				Log.d(TAG, "mMenuBgFadeInListener::onAnimationStart()");
 		}
 	};
 	
@@ -303,7 +311,8 @@ public class CameraListMenuAnimator {
 			}
 			
 			m_bInMenuBgAnimation = false;
-			Log.d(TAG, "mMenuBgFadeOutListener::onAnimationEnd()");
+			if(DEBUG)
+				Log.d(TAG, "mMenuBgFadeOutListener::onAnimationEnd()");
 		}
 
 		public void onAnimationRepeat(Animation animation) {
@@ -311,7 +320,8 @@ public class CameraListMenuAnimator {
 
 		public void onAnimationStart(Animation animation) {
 			m_bInMenuBgAnimation = true;
-			Log.d(TAG, "mMenuBgFadeOutListener::onAnimationStart()");
+			if(DEBUG)
+				Log.d(TAG, "mMenuBgFadeOutListener::onAnimationStart()");
 		}
 	};
 }

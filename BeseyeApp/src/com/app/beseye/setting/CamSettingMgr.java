@@ -1,5 +1,6 @@
 package com.app.beseye.setting;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.lang.ref.WeakReference;
@@ -88,7 +89,8 @@ public class CamSettingMgr {
 	}
 	
 	public void setVideoUpsideDown(String id, int iVideoUpsideDown){
-		Log.i(TAG, "setVideoUpsideDown(), ------------------------------------------------iVideoUpsideDown="+iVideoUpsideDown);
+		if(DEBUG)
+			Log.i(TAG, "setVideoUpsideDown(), ------------------------------------------------iVideoUpsideDown="+iVideoUpsideDown);
 		CamSettingData data = mSettingDataMap.get(id);
 		if(null != data){
 			data.setVideoUpsideDown(iVideoUpsideDown);

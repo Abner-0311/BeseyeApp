@@ -2,6 +2,7 @@ package com.app.beseye.widget;
 
 
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.lang.ref.WeakReference;
@@ -567,7 +568,8 @@ public class CameraViewControlAnimator {
 			}
 			m_bInHeaderAnimation = false;
 			startHideControlRunnable();
-			Log.d(TAG, "mHeaderFadeOutListener::onAnimationEnd()");
+			if(DEBUG)
+				Log.d(TAG, "mHeaderFadeOutListener::onAnimationEnd()");
 		}
 
 		public void onAnimationRepeat(Animation animation) {
@@ -576,7 +578,8 @@ public class CameraViewControlAnimator {
 		public void onAnimationStart(Animation animation) {
 			m_vgHeaderLayout.bringToFront();
 			m_bInHeaderAnimation = true;
-			Log.d(TAG, "mHeaderFadeInListener::onAnimationStart()");
+			if(DEBUG)
+				Log.d(TAG, "mHeaderFadeInListener::onAnimationStart()");
 		}
 	};
 	
@@ -587,7 +590,8 @@ public class CameraViewControlAnimator {
 			}
 			
 			m_bInHeaderAnimation = false;
-			Log.d(TAG, "mHeaderFadeOutListener::onAnimationEnd()");
+			if(DEBUG)
+				Log.d(TAG, "mHeaderFadeOutListener::onAnimationEnd()");
 			
 //			BeseyeUtils.postRunnable(new Runnable(){
 //				@Override
@@ -605,7 +609,8 @@ public class CameraViewControlAnimator {
 
 		public void onAnimationStart(Animation animation) {
 			m_bInHeaderAnimation = true;
-			Log.d(TAG, "mHeaderFadeOutListener::onAnimationStart()");
+			if(DEBUG)
+				Log.d(TAG, "mHeaderFadeOutListener::onAnimationStart()");
 		}
 	};
 	
@@ -615,7 +620,8 @@ public class CameraViewControlAnimator {
 				m_vgToolbarLayout.setVisibility(mbP2PMode?View.INVISIBLE:View.VISIBLE);
 			}
 			m_bInToolbarAnimation = false;
-			Log.d(TAG, "mToolbarFadeInListener::onAnimationEnd()");
+			if(DEBUG)
+				Log.d(TAG, "mToolbarFadeInListener::onAnimationEnd()");
 		}
 
 		public void onAnimationRepeat(Animation animation) {
@@ -625,7 +631,8 @@ public class CameraViewControlAnimator {
 			if(!mbP2PMode)
 				m_vgToolbarLayout.bringToFront();
 			m_bInToolbarAnimation = true;
-			Log.d(TAG, "mToolbarFadeInListener::onAnimationStart()");
+			if(DEBUG)
+				Log.d(TAG, "mToolbarFadeInListener::onAnimationStart()");
 		}
 	};
 	
@@ -636,7 +643,8 @@ public class CameraViewControlAnimator {
 			}
 			
 			m_bInToolbarAnimation = false;
-			Log.d(TAG, "mToolbarFadeOutListener::onAnimationEnd()");
+			if(DEBUG)
+				Log.d(TAG, "mToolbarFadeOutListener::onAnimationEnd()");
 		}
 
 		public void onAnimationRepeat(Animation animation) {
@@ -644,7 +652,8 @@ public class CameraViewControlAnimator {
 
 		public void onAnimationStart(Animation animation) {
 			m_bInToolbarAnimation = true;
-			Log.d(TAG, "mToolbarFadeOutListener::onAnimationStart()");
+			if(DEBUG)
+				Log.d(TAG, "mToolbarFadeOutListener::onAnimationStart()");
 		}
 	};
 	
@@ -654,7 +663,8 @@ public class CameraViewControlAnimator {
 				mVgHoldToTalk.setVisibility(mbP2PMode?View.INVISIBLE:View.VISIBLE);
 			}
 			m_bInHoldToTalkAnimation = false;
-			Log.d(TAG, "mHoldToTalkFadeInListener::onAnimationEnd()");
+			if(DEBUG)
+				Log.d(TAG, "mHoldToTalkFadeInListener::onAnimationEnd()");
 			
 			checkHoldToTalkBtnStatus();
 		}
@@ -666,7 +676,8 @@ public class CameraViewControlAnimator {
 			if(!mbP2PMode)
 				mVgHoldToTalk.bringToFront();
 			m_bInHoldToTalkAnimation = true;
-			Log.d(TAG, "mHoldToTalkFadeInListener::onAnimationStart()");
+			if(DEBUG)
+				Log.d(TAG, "mHoldToTalkFadeInListener::onAnimationStart()");
 		}
 	};
 	
@@ -677,7 +688,8 @@ public class CameraViewControlAnimator {
 			}
 			
 			m_bInHoldToTalkAnimation = false;
-			Log.d(TAG, "mHoldToTalkFadeOutListener::onAnimationEnd()");
+			if(DEBUG)
+				Log.d(TAG, "mHoldToTalkFadeOutListener::onAnimationEnd()");
 			checkHoldToTalkBtnStatus();
 		}
 
@@ -686,7 +698,8 @@ public class CameraViewControlAnimator {
 
 		public void onAnimationStart(Animation animation) {
 			m_bInHoldToTalkAnimation = true;
-			Log.d(TAG, "mHoldToTalkFadeOutListener::onAnimationStart()");
+			if(DEBUG)
+				Log.d(TAG, "mHoldToTalkFadeOutListener::onAnimationStart()");
 		}
 	};
 	
@@ -701,7 +714,8 @@ public class CameraViewControlAnimator {
 	}
 	
 	private void onTalkBtnPressed(View view){
-		Log.i(TAG, "onTalkBtnPressed()");
+		if(DEBUG)
+			Log.i(TAG, "onTalkBtnPressed()");
 		if(null == mRectTalkBtn){
 			mRectTalkBtn = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
 	        cancelHideControl();
@@ -716,7 +730,8 @@ public class CameraViewControlAnimator {
 	}
 	
 	private void onTalkBtnReleased(){
-		Log.i(TAG, "onTalkBtnReleased()");
+		if(DEBUG)
+			Log.i(TAG, "onTalkBtnReleased()");
 		if(null != mRectTalkBtn){
         	startHideControlRunnable();
         	performHoldToTalkAnimation();
@@ -731,7 +746,8 @@ public class CameraViewControlAnimator {
 	}
 	
 	public void terminateTalkMode(){
-		Log.i(TAG, "terminateTalkMode()");
+		if(DEBUG)
+			Log.i(TAG, "terminateTalkMode()");
 		onTalkBtnReleased();
 	}
 	

@@ -1,5 +1,6 @@
 package com.app.beseye.setting;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
 import static com.app.beseye.util.BeseyeJSONUtil.SCHED_LIST;
@@ -48,7 +49,8 @@ public class LocationAwareSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "LocationAwareSettingActivity::onCreate()");
+		if(DEBUG)
+			Log.i(TAG, "LocationAwareSettingActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 
 		getSupportActionBar().setDisplayOptions(0);
@@ -105,13 +107,15 @@ public class LocationAwareSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void onSessionComplete(){
-		Log.i(TAG, "onSessionComplete()");	
+		if(DEBUG)
+			Log.i(TAG, "onSessionComplete()");	
 		super.onSessionComplete();
 	}
 	
 	@Override
 	protected void onResume() {
-		Log.i(TAG, "LocationAwareSettingActivity::onResume()");
+		if(DEBUG)
+			Log.i(TAG, "LocationAwareSettingActivity::onResume()");
 		super.onResume();
 		if(!mbFirstResume){
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
@@ -174,7 +178,8 @@ public class LocationAwareSettingActivity extends BeseyeBaseActivity
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if(REQUEST_TURNOFF_AROUND == requestCode && resultCode == RESULT_OK){
 			try{
-				Log.e("LOCATION", "catch change location action");
+				if(DEBUG)
+					Log.e("LOCATION", "catch change location action");
 				JSONObject locale_obj = new JSONObject(intent.getStringExtra(LocateOnGoogleMap.KEY_LOCALE_OBJ));
 				if(null != mCam_obj){
 					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);

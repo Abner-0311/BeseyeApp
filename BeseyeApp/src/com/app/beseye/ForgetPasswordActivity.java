@@ -99,11 +99,13 @@ public class ForgetPasswordActivity extends BeseyeAccountBaseActivity {
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
-		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		if(DEBUG)
+			Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.SendForgetPWTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					Bundle bundle= new Bundle();
 					bundle.putString(BeseyeJSONUtil.ACC_EMAIL, mEtUserEmail.getText().toString());
 					launchActivityByClassName(ForgetPWConfirmActivity.class.getName(), bundle);

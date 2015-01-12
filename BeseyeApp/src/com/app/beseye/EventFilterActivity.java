@@ -1,5 +1,6 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import android.content.Intent;
@@ -164,7 +165,8 @@ public class EventFilterActivity extends BeseyeBaseActivity{
 				iRet++;
 			}
 		}
-		Log.i(TAG, "getNumOfChecked(), iRet:"+iRet);
+		if(DEBUG)
+			Log.i(TAG, "getNumOfChecked(), iRet:"+iRet);
 		return iRet;
 	}
 	

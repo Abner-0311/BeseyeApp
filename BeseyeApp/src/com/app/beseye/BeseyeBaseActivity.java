@@ -1,8 +1,6 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.DEBUG;
-import static com.app.beseye.util.BeseyeConfig.HOCKEY_APP_ID;
-import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
 
@@ -10,7 +8,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import net.hockeyapp.android.CrashManager;
@@ -541,7 +538,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		@Override
 		public void run() {
 			if(false == mActivityDestroy && 0 <= miLastDialog){
-				Log.d(TAG, "removeDialog(), iDialogId="+miLastDialog);
+				if(DEBUG)
+					Log.d(TAG, "removeDialog(), iDialogId="+miLastDialog);
 				removeDialog(miLastDialog);
 			}
 			mbCompleted = true;
@@ -551,11 +549,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	public boolean showMyDialog(int iDialogId, Bundle bundle){
 		if(false == mActivityDestroy && 0 <= iDialogId){
 			if(null != mRemoveDialogRunnable && false == mRemoveDialogRunnable.mbCompleted && mRemoveDialogRunnable.miLastDialog == iDialogId){
-				Log.d(TAG, "showMyDialog(), remove mRemoveDialogRunnable, iDialogId="+iDialogId);
+				if(DEBUG)
+					Log.d(TAG, "showMyDialog(), remove mRemoveDialogRunnable, iDialogId="+iDialogId);
 				mHandler.removeCallbacks(mRemoveDialogRunnable);
 				return true;
 			}
-			Log.d(TAG, "showMyDialog(), iDialogId="+iDialogId);
+			if(DEBUG)
+				Log.d(TAG, "showMyDialog(), iDialogId="+iDialogId);
 			return showDialog(iDialogId, bundle);
 		}
 		return false;
@@ -847,10 +847,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					}
 				}
 				
-				Log.i(TAG, "miCheckUpdateCamIdx:"+miCheckUpdateCamIdx+", mLstUpdateCandidate.size():"+mLstUpdateCandidate.size());
+				if(DEBUG)
+					Log.i(TAG, "miCheckUpdateCamIdx:"+miCheckUpdateCamIdx+", mLstUpdateCandidate.size():"+mLstUpdateCandidate.size());
 				
 				if(miCheckUpdateCamIdx == mLstUpdateCandidate.size()){
-					Log.e(TAG, "onPostExecute(), Check point..., size:"+mLstUpdateCandidate.size());	
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), Check point..., size:"+mLstUpdateCandidate.size());	
+					
 					if(0 < mLstUpdateCandidate.size()){
 						miUpdateCamNum = mLstUpdateCandidate.size();
 						miCurUpdateCamStatusIdx = 0;
@@ -890,7 +893,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				if(isCamUpdatingCompleted() || 0 == miUpdateCamNum){
 					removeMyDialog(DIALOG_ID_CAM_UPDATE);
 					initUpdateItems(false);
-					Log.e(TAG, "onPostExecute(), Camera update finish...");
+					Log.i(TAG, "onPostExecute(), Camera update finish...");
 				}else{
 					if(miCurUpdateCamStatusIdx >= miUpdateCamNum){
 						miCurUpdateCamStatusIdx = 0;
@@ -1395,7 +1398,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     protected OnResumeUpdateCamInfoRunnable mOnResumeUpdateCamInfoRunnable = null;
     protected void setOnResumeUpdateCamInfoRunnable(OnResumeUpdateCamInfoRunnable run){
-    	Log.i(TAG, "setOnResumeUpdateCamInfoRunnable()");
+    	if(DEBUG)
+    		Log.i(TAG, "setOnResumeUpdateCamInfoRunnable()");
     	mOnResumeUpdateCamInfoRunnable = run;
     }
     
@@ -1405,7 +1409,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     private void checkOnResumeUpdateCamInfoRunnable(){
     	if(null != mOnResumeUpdateCamInfoRunnable){
-    		Log.i(TAG, "checkOnResumeUpdateCamInfoRunnable(), trigger...");
+    		if(DEBUG)
+    			Log.i(TAG, "checkOnResumeUpdateCamInfoRunnable(), trigger...");
     		BeseyeUtils.postRunnable(mOnResumeUpdateCamInfoRunnable, 0);
     		mOnResumeUpdateCamInfoRunnable = null;
     	}
@@ -1547,7 +1552,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
 		if(null != strVcamId && strVcamId.equals(mStrVCamID)){
 			long lTsOldTs = BeseyeJSONUtil.getJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP);
-			Log.i(TAG, getClass().getSimpleName()+"::onCamSetupChanged(),  lTs = "+lTs+", lTsOldTs="+lTsOldTs);
+			if(DEBUG)
+				Log.i(TAG, getClass().getSimpleName()+"::onCamSetupChanged(),  lTs = "+lTs+", lTsOldTs="+lTsOldTs);
 			if(lTs >= lTsOldTs){
 				mCam_obj = objCamSetup;
 				mOnResumeUpdateCamInfoRunnable = null;
@@ -1614,12 +1620,14 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	protected void triggerCamUpdate(JSONArray VcamList, boolean bSilent){
 		if(isCamUpdating()){
-			Log.i(TAG, "triggerCamUpdate(), isCamUpdating... return");
+			if(DEBUG)
+				Log.i(TAG, "triggerCamUpdate(), isCamUpdating... return");
 			return;
 		}
 		
 		if(false == mActivityResume){
-			Log.i(TAG, "triggerCamUpdate(), mActivityResume is false... return");
+			if(DEBUG)
+				Log.i(TAG, "triggerCamUpdate(), mActivityResume is false... return");
 			return;
 		}
 		
@@ -1633,7 +1641,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				try {
 					String strVCamId = BeseyeJSONUtil.getJSONString(VcamList.getJSONObject(idx), BeseyeJSONUtil.ACC_ID);
 					mLstUpdateCandidate.add(strVCamId);
-					Log.i(TAG, "triggerCamUpdate(), strVcamId:"+strVCamId);
+					if(DEBUG)
+						Log.i(TAG, "triggerCamUpdate(), strVcamId:"+strVCamId);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -1651,7 +1660,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					}}, 0);
 			}
 			initUpdateItems(false);
-			Log.e(TAG, "triggerCamUpdate(), there is no valid camera to update");
+			Log.i(TAG, "triggerCamUpdate(), there is no valid camera to update");
 		}
 		
 //		mUpdateVcamList = new JSONObject();
@@ -1666,7 +1675,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	protected void resumeCamUpdate(JSONArray VcamList){
 		if(isCamUpdating()){
-			Log.i(TAG, "resumeCamUpdate(), isCamUpdating... return");
+			if(DEBUG)
+				Log.i(TAG, "resumeCamUpdate(), isCamUpdating... return");
 			return;
 		}
 		
@@ -1681,7 +1691,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						try {
 							if(strCamUpdate[idx].equals(BeseyeJSONUtil.getJSONString(VcamList.getJSONObject(idx2), BeseyeJSONUtil.ACC_ID))){
 								mLstUpdateCandidate.add(strCamUpdate[idx]);
-								Log.i(TAG, "resumeCamUpdate(), strCamUpdate[idx]:"+strCamUpdate[idx]);
+								if(DEBUG)
+									Log.i(TAG, "resumeCamUpdate(), strCamUpdate[idx]:"+strCamUpdate[idx]);
 								break;
 							}
 							
@@ -1733,7 +1744,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			if(null != objCamUpdateStatus){
 				int iFinalStatus = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_FINAL_STAUS, -1);
 				
-				Log.i(TAG, "updateCamUpdateProgress(), "+objCamUpdateStatus+", strVcamId:"+strVCamId+", iFinalStatus="+iFinalStatus);
+				if(DEBUG)
+					Log.i(TAG, "updateCamUpdateProgress(), "+objCamUpdateStatus+", strVcamId:"+strVCamId+", iFinalStatus="+iFinalStatus);
 				
 				if(-1 !=  iFinalStatus){
 					iCompleteNum++;
@@ -1782,7 +1794,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			JSONObject objCamUpdateStatus = BeseyeJSONUtil.getJSONObject(mUpdateVcamList, strVCamId);
 			if(null != objCamUpdateStatus){
 				int iFinalStatus = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_FINAL_STAUS, -1);
-				Log.i(TAG, "isCamUpdateFinish(), "+objCamUpdateStatus+", strVcamId:"+strVCamId+", iFinalStatus="+iFinalStatus);
+				if(DEBUG)
+					Log.i(TAG, "isCamUpdateFinish(), "+objCamUpdateStatus+", strVcamId:"+strVCamId+", iFinalStatus="+iFinalStatus);
 				if(-1 == iFinalStatus){
 					bRet = false;
 					break;
@@ -1804,7 +1817,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			SessionMgr.getInstance().setCamUpdateTimestamp(0);
 			bRet = false;
 		}
-		Log.i(TAG, "checkCamUpdateValid(), lDelta:"+lDelta+", bRet:"+bRet);
+		if(DEBUG)
+			Log.i(TAG, "checkCamUpdateValid(), lDelta:"+lDelta+", bRet:"+bRet);
 		return bRet;
 	}
 	
@@ -1814,7 +1828,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		for(int idx = 0; idx < iNum; idx++){
 			strRet += ((0 == idx)?"":";")+lstUpdateCandidate.get(idx);
 		}
-		Log.i(TAG, "arrayToString(), strRet:"+strRet);
+		if(DEBUG)
+			Log.i(TAG, "arrayToString(), strRet:"+strRet);
 		return strRet;
 	}
 	

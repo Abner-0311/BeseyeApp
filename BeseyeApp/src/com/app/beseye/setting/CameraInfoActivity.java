@@ -1,5 +1,6 @@
 package com.app.beseye.setting;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
 
@@ -52,7 +53,8 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "CameraInfoActivity::onCreate()");
+		if(DEBUG)
+			Log.i(TAG, "CameraInfoActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 
 		getSupportActionBar().setDisplayOptions(0);
@@ -120,7 +122,9 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	
 	@Override
 	protected void onResume() {
-		Log.i(TAG, "CameraSettingActivity::onResume()");
+		if(DEBUG)
+			Log.i(TAG, "CameraSettingActivity::onResume()");
+		
 		super.onResume();
 		if(!mbFirstResume){
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
@@ -176,7 +180,9 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 				if(0 == iRetCode){
 					JSONObject obj = result.get(0);
 					if(null != obj){
-						Log.i(TAG, "onPostExecute(), "+obj.toString());
+						if(DEBUG)
+							Log.i(TAG, "onPostExecute(), "+obj.toString());
+						
 						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
 						if(null != dataObj){
 							mStrVCamSN = BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.CAM_SN);
@@ -197,8 +203,10 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 				}
 			}else if(task instanceof BeseyeAccountTask.SetCamAttrTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-					onToastShow(task, "Change cam name Successfully.");
+					if(DEBUG){
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+						onToastShow(task, getString(R.string.cam_name_update_success));
+					}
 					
 					mStrVCamName = mStrNameCandidate;
 					if(null != mTxtCamName){
@@ -218,7 +226,8 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		Log.d(TAG, "CameraSettingActivity::onCreateDialog()");
+		if(DEBUG)
+			Log.d(TAG, "CameraSettingActivity::onCreateDialog()");
 		Dialog dialog;
 		switch(id){
 			case DIALOG_ID_CAM_INFO:{
@@ -239,7 +248,8 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 						public void onDismiss(DialogInterface dialog) {
 							EditText etCamName = (EditText)((Dialog)dialog).findViewById(R.id.et_cam_name);
 							if(null != etCamName){
-								Log.i(TAG, "onDismiss(), cam name is "+etCamName.getText().toString());
+								if(DEBUG)
+									Log.i(TAG, "onDismiss(), cam name is "+etCamName.getText().toString());
 								mStrNameCandidate = etCamName.getText().toString();
 								if(null != mStrNameCandidate && 0 < mStrNameCandidate.length()){
 									/*if(ASSIGN_ST_PATH){

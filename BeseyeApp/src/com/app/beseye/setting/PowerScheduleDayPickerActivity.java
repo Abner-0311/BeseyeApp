@@ -37,7 +37,6 @@ public class PowerScheduleDayPickerActivity extends BeseyeBaseActivity{
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "PowerScheduleDayPickerActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 
 		getSupportActionBar().setDisplayOptions(0);

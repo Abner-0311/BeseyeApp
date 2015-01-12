@@ -1,5 +1,6 @@
 package com.app.beseye.receiver;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import android.content.Context;
 import android.util.Log;
 
@@ -11,12 +12,14 @@ public class BeseyeGCMBroadcastReceiver extends GCMBroadcastReceiver {
 	
 	public BeseyeGCMBroadcastReceiver() {
         super();
-		Log.e(BeseyeConfig.TAG, "BeseyeGCMBroadcastReceiver::BeseyeGCMBroadcastReceiver()");
+        if(DEBUG)
+        	Log.e(BeseyeConfig.TAG, "BeseyeGCMBroadcastReceiver::BeseyeGCMBroadcastReceiver()");
     }
 	
 	@Override
 	protected String getGCMIntentServiceClassName(Context context){
-		Log.e(BeseyeConfig.TAG, "BeseyeGCMBroadcastReceiver::getGCMIntentServiceClassName(), GCMIntentService.class.getName():"+GCMIntentService.class.getName());
-	    return GCMIntentService.class.getName();
+		if(DEBUG)
+			Log.e(BeseyeConfig.TAG, "BeseyeGCMBroadcastReceiver::getGCMIntentServiceClassName(), GCMIntentService.class.getName():"+GCMIntentService.class.getName());
+		return GCMIntentService.class.getName();
 	}
 }

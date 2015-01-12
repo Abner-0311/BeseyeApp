@@ -1,5 +1,6 @@
 package com.app.beseye.widget;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeUtils.isSameDay;
 
@@ -235,7 +236,8 @@ public class BeseyeDatetimePickerDialog extends Dialog implements OnClickListene
 		
 		mEndDate.add(Calendar.DAY_OF_YEAR, miPeriodInDay);
 		
-		Log.i(TAG, "updatePicker(), \nstartDate=["+mStartDate.toString()+"], \nendDate  =["+mEndDate.toString()+"]"); 
+		if(DEBUG)
+			Log.i(TAG, "updatePicker(), \nstartDate=["+mStartDate.toString()+"], \nendDate  =["+mEndDate.toString()+"]"); 
 		
 		int iStartMonth = mStartDate.get(Calendar.MONTH)+1;
 		int iEndMonth = mEndDate.get(Calendar.MONTH)+1;

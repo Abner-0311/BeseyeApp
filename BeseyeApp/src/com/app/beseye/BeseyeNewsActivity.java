@@ -1,5 +1,6 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.List;
@@ -46,7 +47,8 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "BeseyeNewsActivity::onCreate()");
+		if(DEBUG)
+			Log.d(TAG, "BeseyeNewsActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		
@@ -91,7 +93,6 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 			mMainListView.setOnRefreshListener(new OnRefreshListener() {
     			@Override
     			public void onRefresh() {
-    				Log.i(TAG, "onRefresh()");	
     				monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(BeseyeNewsActivity.this), true, "-1", ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
     				mbRefreshCase = true;
     			}
@@ -177,16 +178,6 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	}
 	
 	@Override
-	protected void onResume() {
-		Log.i(TAG, "onResume()");
-		super.onResume();
-//		if(!mbFirstResume){
-//			monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(this), true, "-1", ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
-//			mbRefreshCase = true;
-//		}
-	}
-	
-	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
 		if(task instanceof BeseyeNewsBEHttpTask.GetNewsListTask){
 			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
@@ -202,7 +193,9 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
-		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		if(DEBUG)
+			Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeNewsBEHttpTask.GetNewsListTask){
 				if(mbRefreshCase){
@@ -215,7 +208,8 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 					mMainListView.dettachFooterLoadMoreView();
 					
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					JSONArray arrNews = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.NEWS_LIST);
 					int iCountNew = (null != arrNews)?arrNews.length():0;
 					
@@ -272,7 +266,8 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 		static int siShowInd = -1;
 		
 		static void showValues(){
-			Log.i(TAG, "showValues(), ("+siMaxNewsId+", "+siMaxTouchNewsId+", "+siShowInd+")");
+			if(DEBUG)
+				Log.i(TAG, "showValues(), ("+siMaxNewsId+", "+siMaxTouchNewsId+", "+siShowInd+")");
 		}
 		
 		synchronized static public void init(){

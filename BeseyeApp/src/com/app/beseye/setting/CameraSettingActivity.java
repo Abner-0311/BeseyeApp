@@ -1,5 +1,6 @@
 package com.app.beseye.setting;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import static com.app.beseye.util.BeseyeJSONUtil.*;
@@ -53,7 +54,8 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "CameraSettingActivity::onCreate()");
+		if(DEBUG)
+			Log.i(TAG, "CameraSettingActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 
 		getSupportActionBar().setDisplayOptions(0);
@@ -161,7 +163,8 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void onResume() {
-		Log.i(TAG, "CameraSettingActivity::onResume()");
+		if(DEBUG)
+			Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
 		if(!mbFirstResume){
 			updateSettingState();
@@ -315,7 +318,8 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	private boolean mbTriggerDetachAfterReboot = false;
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		Log.d(TAG, "CameraSettingActivity::onCreateDialog()");
+		if(DEBUG)
+			Log.d(TAG, "CameraSettingActivity::onCreateDialog()");
 		Dialog dialog;
 		switch(id){
 			case DIALOG_ID_CAM_DETTACH_CONFIRM:{
@@ -425,9 +429,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
 			String strMsg) {
-		if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
+		/*if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 			onToastShow(task, "Notify SW Update Failed.");
-		}else if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask){
+		}else */
+		if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
@@ -482,7 +487,8 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						BeseyeJSONUtil.setVCamConnStatus(mCam_obj, (BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.CAM_STATUS)==1)?CAM_CONN_STATUS.CAM_ON:CAM_CONN_STATUS.CAM_OFF);
@@ -499,7 +505,8 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}
 			}*/else if(task instanceof BeseyeAccountTask.CamDettachTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					onToastShow(task, "Detach  Successfully.");
 //					if(BeseyeConfig.COMPUTEX_PAIRING){
 //						//invokeLogout();
@@ -512,22 +519,28 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}
 			}else if(task instanceof BeseyeAccountTask.SetCamAttrTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
-					onToastShow(task, "Change cam name Successfully.");
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+					//onToastShow(task, "Change cam name Successfully.");
 					mStrVCamName = mstrNameCandidate;
 					BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, mstrNameCandidate);
 					setActivityResultWithCamObj();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetImageSettingTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+				if(0 == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+				}
 			}else if(task instanceof BeseyeCamBEHttpTask.GetImageSettingTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+				if(0 == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+				}
 			}else if(task instanceof BeseyeCamBEHttpTask.RestartCamTask){
 				if(0 == iRetCode){
 					onToastShow(task, "Reboot cam Successfully.");
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 				}else{
 					onToastShow(task, "Reboot cam failed.");
 				}
@@ -538,8 +551,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}
 				
 			}else if(task instanceof BeseyeCamBEHttpTask.ReconnectMMTask){
-				if(0 == iRetCode)
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+				if(0 == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);
 			}
@@ -548,7 +563,8 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		Log.i(TAG, "onConfigurationChanged(), "+newConfig.toString());
+		if(DEBUG)
+			Log.i(TAG, "onConfigurationChanged(), "+newConfig.toString());
 		super.onConfigurationChanged(newConfig);
 		
 		// Checks the orientation of the screen
@@ -563,7 +579,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		Log.w(TAG, "CameraSettingActivity::onActivityResult(), requestCode:"+requestCode+", resultCode:"+resultCode);
+		if(DEBUG)
+			Log.w(TAG, "CameraSettingActivity::onActivityResult(), requestCode:"+requestCode+", resultCode:"+resultCode);
+		
 		if(REQUEST_CAM_INFO_CHANGED == requestCode && resultCode == RESULT_OK){
 			try {
 				mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));

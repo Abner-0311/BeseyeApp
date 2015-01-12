@@ -1,5 +1,6 @@
 package com.app.beseye.setting;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
 import static com.app.beseye.util.BeseyeJSONUtil.OBJ_TIMESTAMP;
@@ -55,7 +56,6 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "PowerScheduleActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 
 		getSupportActionBar().setDisplayOptions(0);
@@ -166,7 +166,6 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void onResume() {
-		Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
 		if(!mbFirstResume){
 			updateScheduleStatus();
@@ -255,7 +254,8 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetScheduleStatusTask){
 				if(0 == iRetCode){
-					Log.e(TAG, "PowerScheduleActivity::onPostExecute(), result.get(0)="+result.get(0).toString());
+					if(DEBUG)
+						Log.e(TAG, "PowerScheduleActivity::onPostExecute(), result.get(0)="+result.get(0).toString());
 					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
 					if(null != dataObj){
 						JSONObject schedObj = BeseyeJSONUtil.getJSONObject(dataObj, SCHED_OBJ);

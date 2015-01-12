@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.app.beseye.widget;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -319,7 +320,8 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout {
 	}
 	
 	private void checkLvHeaderCbState(){
-		Log.d(TAG, "checkLvHeaderCbState()");
+		if(DEBUG)
+			Log.d(TAG, "checkLvHeaderCbState()");
 		
 		if(true == mbOnLvHeaderShowTriggerred){
 			if(null != mOnLvHeaderListener)

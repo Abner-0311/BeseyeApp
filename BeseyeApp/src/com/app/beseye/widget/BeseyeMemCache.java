@@ -1,5 +1,6 @@
 package com.app.beseye.widget;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -19,8 +20,9 @@ public class BeseyeMemCache {
 
 	    // Use 1/8th of the available memory for this memory cache.
 	    final int cacheSize = 1024 * 1024 * sMemClass / 6;
-	    Log.i(TAG, "BeseyeMemCache::init(), cacheSize, = "+cacheSize);
-	    
+	    if(DEBUG)
+	    	Log.i(TAG, "BeseyeMemCache::init(), cacheSize, = "+cacheSize);
+	    	
 	    sMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
 	        @Override
 	        protected int sizeOf(String key, Bitmap bitmap) {
@@ -59,7 +61,8 @@ public class BeseyeMemCache {
 					option.inJustDecodeBounds = true;
 					BitmapFactory.decodeResource(context.getResources(), iResId, option);
 					if(option.outWidth > iDeisreWidth &&  option.outHeight > iDesireHeight){
-						Log.i(TAG, "getBmpByResId(), downDample, ("+option.outWidth+", "+option.outHeight+"), desire:("+iDeisreWidth+", "+iDesireHeight+")");
+						if(DEBUG)
+							Log.i(TAG, "getBmpByResId(), downDample, ("+option.outWidth+", "+option.outHeight+"), desire:("+iDeisreWidth+", "+iDesireHeight+")");
 						option.inSampleSize = 2;
 					}
 					option.inJustDecodeBounds = false;

@@ -393,4 +393,6 @@
   <string name="tz_euro_spain">Spain</string>
   <string name="tz_euro_austria">Austria</string>
   <string name="tz_euro_italy">Italy</string>
+  
+  <string name="cam_name_update_success">Update camera name successfully.</string>
 </resources>

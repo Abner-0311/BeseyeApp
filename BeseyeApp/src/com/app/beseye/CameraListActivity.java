@@ -1,6 +1,7 @@
 package com.app.beseye;
 
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
 
@@ -33,7 +34,6 @@ import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.pairing.SoundPairingActivity;
-import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -176,7 +176,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 		
 		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false)){
-			Log.i(TAG, "handle pairing done case");	
+			if(BeseyeConfig.DEBUG)
+				Log.i(TAG, "handle pairing done case");	
 			Bundle b = new Bundle(getIntent().getExtras());
 			launchActivityByClassName(CameraViewActivity.class.getName(), b);
 			getIntent().putExtra(CameraViewActivity.KEY_PAIRING_DONE, false);
@@ -200,11 +201,13 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	protected void onResume() {
 		super.onResume();
 		if(null != mOnResumeUpdateCamListRunnable){
-    		Log.i(TAG, "onResume(), mOnResumeUpdateCamListRunnable trigger...");
+			if(BeseyeConfig.DEBUG)
+				Log.i(TAG, "onResume(), mOnResumeUpdateCamListRunnable trigger...");
     		BeseyeUtils.postRunnable(mOnResumeUpdateCamListRunnable, 0);
     		mOnResumeUpdateCamListRunnable = null;
     	}else if(0 <= miLastTaskSeedNum){
-			Log.i(TAG, "onResume(), resume task , miLastTaskSeedNum="+miLastTaskSeedNum);	
+    		if(BeseyeConfig.DEBUG)
+    			Log.i(TAG, "onResume(), resume task , miLastTaskSeedNum="+miLastTaskSeedNum);	
 			updateCamItm(miLastTaskSeedNum);
 			miLastTaskSeedNum = -1;
 		}
@@ -237,7 +240,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	protected void onSessionComplete(){
-		Log.i(TAG, "onSessionComplete()");	
+		if(BeseyeConfig.DEBUG)
+			Log.i(TAG, "onSessionComplete()");	
 		super.onSessionComplete();
 		if((!mbIsDemoCamMode && !mbIsPrivateCamMode)|| null == mVCamListInfoObj){
 			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
@@ -259,7 +263,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		JSONArray arrCamList = new JSONArray();
 		int iVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_VCAM_CNT);
 		//miOriginalVcamCnt = iVcamCnt;
-		Log.e(TAG, "fillVCamList(), miOriginalVcamCnt="+miOriginalVcamCnt);
+		if(BeseyeConfig.DEBUG)
+			Log.e(TAG, "fillVCamList(), miOriginalVcamCnt="+miOriginalVcamCnt);
+		
 		if(0 < iVcamCnt){
 			JSONArray VcamList = BeseyeJSONUtil.getJSONArray(objVCamList, BeseyeJSONUtil.ACC_VCAM_LST);
 			if(!mbIsDemoCamMode && !mbIsPrivateCamMode){
@@ -378,7 +384,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
-		Log.d(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		if(BeseyeConfig.DEBUG)
+			Log.d(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
@@ -437,7 +445,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					}
 					
 					if(0 > iSeedNum && null != mOnResumeUpdateCamInfoRunnable && mOnResumeUpdateCamInfoRunnable.isSameVCamId(strVcamId)){
-						Log.e(TAG, "onPostExecute(), remove mOnResumeUpdateCamInfoRunnable due to strVcamId ="+strVcamId);
+						if(DEBUG)
+							Log.e(TAG, "onPostExecute(), remove mOnResumeUpdateCamInfoRunnable due to strVcamId ="+strVcamId);
 						mOnResumeUpdateCamInfoRunnable = null;
 					}
 				}
@@ -496,7 +505,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				if(0 == iRetCode){
 					int iLatestNewId = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.NEWS_NEWS_ID);
 					int iCurLatestReadNewId = BeseyeNewsActivity.BeseyeNewsHistoryMgr.getMaxReadIdx();
-					Log.e(TAG, "onPostExecute(), iLatestNewId:"+iLatestNewId+"=> iCurLatestReadNewId = "+iCurLatestReadNewId);
+					if(DEBUG)
+						Log.e(TAG, "onPostExecute(), iLatestNewId:"+iLatestNewId+"=> iCurLatestReadNewId = "+iCurLatestReadNewId);
 					BeseyeNewsActivity.BeseyeNewsHistoryMgr.setMaxNewId(iLatestNewId);
 					checkLatestNew();
 				}
@@ -589,7 +599,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		b.putBoolean(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, null != strVcamId && 0 < strVcamId.length());
 		b.putBoolean(SoundPairingActivity.KEY_FAKE_PROCESS, bFakeProcess);
 		if(null != strVcamId && 0 < strVcamId.length()){
-			Log.e(TAG, "startSoundPairingProcess(), strVcamId="+strVcamId);
+			if(BeseyeConfig.DEBUG)
+				Log.e(TAG, "startSoundPairingProcess(), strVcamId="+strVcamId);
 			b.putString(SoundPairingActivity.KEY_CHANGE_WIFI_VCAM, strVcamId);
 		}
 		launchActivityByClassName(PairingRemindActivity.class.getName(), b);
@@ -782,8 +793,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			try {
 				JSONObject camObj = arrCamList.getJSONObject(i);
 				if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
+					if(BeseyeConfig.DEBUG)
+						Log.i(TAG, "CameraListActivity::onCamSetupChanged(),  lTs = "+lTs+", objCamSetup="+objCamSetup.toString());
 					
-					Log.i(TAG, "CameraListActivity::onCamSetupChanged(),  lTs = "+lTs+", objCamSetup="+objCamSetup.toString());
 					if(lTs >= BeseyeJSONUtil.getJSONLong(camObj, BeseyeJSONUtil.OBJ_TIMESTAMP)){
 						
 						arrCamList.put(i,objCamSetup);
@@ -795,7 +807,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						refreshList();
 						
 						if(null != mOnResumeUpdateCamInfoRunnable && mOnResumeUpdateCamInfoRunnable.isSameVCamId(strVcamId)){
-							Log.e(TAG, "CameraListActivity::onCamSetupChanged(), remove mOnResumeUpdateCamInfoRunnable due to strVcamId ="+strVcamId);
+							if(BeseyeConfig.DEBUG)
+								Log.e(TAG, "CameraListActivity::onCamSetupChanged(), remove mOnResumeUpdateCamInfoRunnable due to strVcamId ="+strVcamId);
 							mOnResumeUpdateCamInfoRunnable = null;
 						}
 						break;
@@ -852,7 +865,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     }
 	
     protected boolean onCameraOnline(JSONObject msgObj){
-    	Log.i(TAG, getClass().getSimpleName()+"::onCameraOnline(),  msgObj = "+msgObj);
+    	if(BeseyeConfig.DEBUG)
+    		Log.i(TAG, getClass().getSimpleName()+"::onCameraOnline(),  msgObj = "+msgObj);
 		if(null != msgObj){
     		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
     		if(null != objCus){
@@ -882,7 +896,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     }
     
     protected boolean onCameraOffline(JSONObject msgObj){
-    	Log.i(TAG, getClass().getSimpleName()+"::onCameraOffline(),  msgObj = "+msgObj);
+    	if(BeseyeConfig.DEBUG)
+    		Log.i(TAG, getClass().getSimpleName()+"::onCameraOffline(),  msgObj = "+msgObj);
 		if(null != msgObj){
     		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
     		if(null != objCus){
@@ -912,7 +927,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     }
     
     private boolean onCameraEventTrigger(JSONObject msgObj){
-    	Log.i(TAG, getClass().getSimpleName()+"::onCameraEventTrigger(msgObj);(),  msgObj = "+msgObj);
+    	if(BeseyeConfig.DEBUG)
+    		Log.i(TAG, getClass().getSimpleName()+"::onCameraEventTrigger(msgObj);(),  msgObj = "+msgObj);
 		if(null != msgObj){
     		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
     		if(null != objCus){
@@ -938,13 +954,15 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	private Runnable mOnResumeUpdateCamListRunnable = null;
 	private void setOnResumeUpdateCamListRunnable(Runnable run){
-    	Log.i(TAG, "setOnResumeUpdateCamListRunnable()");
+		if(BeseyeConfig.DEBUG)
+			Log.i(TAG, "setOnResumeUpdateCamListRunnable()");
     	mOnResumeUpdateCamListRunnable = run;
     }
 	
 	@Override
     protected boolean onCameraActivated(JSONObject msgObj){
-		Log.i(TAG, getClass().getSimpleName()+"::onCameraActivated(),  msgObj = "+msgObj);
+		if(BeseyeConfig.DEBUG)
+			Log.i(TAG, getClass().getSimpleName()+"::onCameraActivated(),  msgObj = "+msgObj);
 		if(null != msgObj){
     		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
     		if(null != objCus){
@@ -967,7 +985,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	@Override
 	protected boolean onCameraDeactivated(JSONObject msgObj){
-		Log.i(TAG, getClass().getSimpleName()+"::onCameraDeactivated(),  msgObj = "+msgObj);
+		if(BeseyeConfig.DEBUG)
+			Log.i(TAG, getClass().getSimpleName()+"::onCameraDeactivated(),  msgObj = "+msgObj);
 		if(null != msgObj){
 			JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
 			if(null != objCus){

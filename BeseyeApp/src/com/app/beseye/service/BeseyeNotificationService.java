@@ -161,7 +161,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						msgObj = new JSONObject((String)msg.obj);
 						JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
 	            		if(null != objCus){
-	            			Log.i(TAG, "MSG_CAM_SETTING_UPDATED,  objCus = "+objCus.toString());
+	            			if(DEBUG)
+	            				Log.i(TAG, "MSG_CAM_SETTING_UPDATED,  objCus = "+objCus.toString());
 	            			int iConfigReport = BeseyeJSONUtil.getJSONInt(objCus, BeseyeJSONUtil.PS_WIFI_CONFIG_REPORT);
 	            			Toast.makeText(BeseyeNotificationService.this, getString(0 == iConfigReport?R.string.cam_setting_succeed_to_apply_wifi_setting:R.string.cam_setting_fail_to_apply_wifi_setting), Toast.LENGTH_LONG).show();
 	            		}	
@@ -223,7 +224,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 }
                 case MSG_APP_TO_FOREGROUND:{
                 	if(mbAppInBackground){
-                		Log.i(TAG, "BG service detects MSG_APP_TO_FOREGROUND()");
+                		if(DEBUG)
+                			Log.i(TAG, "BG service detects MSG_APP_TO_FOREGROUND()");
                 		mbAppInBackground = false;
                 		beginToCheckWebSocketState();
                 	}
@@ -237,7 +239,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 }
                 case MSG_APP_TO_BACKGROUND:{
                 	if(!mbAppInBackground){
-                		Log.i(TAG, "BG service detects MSG_APP_TO_BACKGROUND()");
+                		if(DEBUG)
+                			Log.i(TAG, "BG service detects MSG_APP_TO_BACKGROUND()");
 //                		if(null != mMsgInfoTask){
 //                			mMsgInfoTask.cancel(true);
 //                		}
@@ -258,7 +261,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 		SessionMgr.getInstance().setSessionData(sessionData);
                 		//If logout
                 		if(bLoginBefore && (!SessionMgr.getInstance().isUseridValid() || null == SessionMgr.getInstance().getAccount() || SessionMgr.getInstance().getAccount().length() == 0)){
-                			Log.i(TAG, "BG service detects MSG_UPDATE_SESSION_DATA() and reset");
+                			if(DEBUG)
+                				Log.i(TAG, "BG service detects MSG_UPDATE_SESSION_DATA() and reset");
+                			
 //                			mNotifyInfo = null;
 //                			mMsgInfo = null;
                 			sendMessage(Message.obtain(null,MSG_SET_NEWS_NUM,0,0));
@@ -296,7 +301,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	final Bundle bundle = msg.getData();
                 	long lTimeToExtend = bundle.getLong(MSG_WS_EXTEND);
                 	if(lTimeToExtend > 0){
-                		Log.i(TAG, "MSG_EXTEND_WS_CONN, lTimeToExtend : "+lTimeToExtend);
+                		if(DEBUG)
+                			Log.i(TAG, "MSG_EXTEND_WS_CONN, lTimeToExtend : "+lTimeToExtend);
+                		
                 		mlTimeToCloseWs = System.currentTimeMillis() + lTimeToExtend;
                 		postToCloseWs(lTimeToExtend);
                 	}
@@ -325,7 +332,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	final Bundle bundle = msg.getData();
                 	String data = bundle.getString(PS_REGULAR_DATA);
                 	String dataCus = bundle.getString(PS_CUSTOM_DATA);
-                	Log.i(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
+                	if(DEBUG)
+                		Log.d(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
+                	
                 	if(SessionMgr.getInstance().getServerMode().ordinal() < SessionMgr.SERVER_MODE.MODE_STAGING.ordinal())
                 		Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
                 	handleGCMEvents(data, dataCus);
@@ -340,7 +349,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_UPDATE_PLAYER_VCAM:{
                 	final Bundle bundle = msg.getData();
                 	mStrFocusVCamId = bundle.getString("VCAMID");
-                	Log.i(TAG, "mStrFocusVCamId : "+mStrFocusVCamId);
+                	if(DEBUG)
+                		Log.i(TAG, "mStrFocusVCamId : "+mStrFocusVCamId);
                 	break;
                 }
                 default:
@@ -370,7 +380,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     			lRet = Math.abs(((60*60*(24+CACHE_CHECK_TIME-iHour))-(60*iMin+iSec))*1000L);
     		}
     	}
-    	Log.i(TAG, "getTimeToCheck(), lRet : "+lRet);
+    	if(DEBUG)
+    		Log.i(TAG, "getTimeToCheck(), lRet : "+lRet);
     	return lRet;
     }
     
@@ -480,7 +491,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     private String sStrVcamName = "Meeting Room";
     
     private void checkUserLoginState(){
-    	Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
+    	if(DEBUG)
+    		Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
+    	
     	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() /*&& SessionMgr.getInstance().getIsCertificated()*/){
     		if(NetworkMgr.getInstance().isNetworkConnected()){
     			if(false == WebsocketsMgr.getInstance().isWSChannelAlive()){
@@ -492,7 +505,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         				WebsocketsMgr.getInstance().constructWSChannel();
     				}
     			}else if(true ==  WebsocketsMgr.getInstance().checkLastTimeToGetKeepAlive()){
-    				Log.i(TAG, "Too long to receive keepalive");
+    				Log.e(TAG, "Too long to receive keepalive");
     				WebsocketsMgr.getInstance().destroyWSChannel();
     			}
     		}
@@ -504,7 +517,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
     
     private void postToCloseWs(final long lTimeToClose){
-		Log.i(TAG, "postToCloseWs(), lTimeToClose= "+lTimeToClose);
+    	if(DEBUG)
+    		Log.i(TAG, "postToCloseWs(), lTimeToClose= "+lTimeToClose);
 
     	if(null != mCloseWsRunnable){
     		BeseyeUtils.removeRunnable(mCloseWsRunnable);
@@ -580,7 +594,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					        PLAY_SERVICES_RESOLUTION_REQUEST).send();
 				} catch (CanceledException e) {
 					e.printStackTrace();
-					Log.i(TAG, "This device is not supported.e:"+e.toString());
+					Log.e(TAG, "This device is not supported.e:"+e.toString());
 				}
 //                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
 //                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
@@ -652,7 +666,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 
 	@Override
 	public void onDestroy() {
-		Log.i(TAG, "###########################  BeseyeNotificationService::onDestroy(), this:"+this);
+		if(DEBUG)
+			Log.d(TAG, "###########################  BeseyeNotificationService::onDestroy(), this:"+this);
 		if (mRegisterPushServerTask != null) {
 			mRegisterPushServerTask.cancel(true);
         }
@@ -686,7 +701,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    final SharedPreferences prefs = getGCMPreferences(context);
 	    String registrationId = prefs.getString(PROPERTY_REG_ID, "");
 	    if (registrationId.isEmpty()) {
-	        Log.i(TAG, "Registration not found.");
+	        Log.d(TAG, "Registration not found.");
 	        return "";
 	    }
 	    // Check if app was updated; if so, it must clear the registration ID
@@ -695,7 +710,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
 	    int currentVersion = getAppVersion(context);
 	    if (registeredVersion != currentVersion) {
-	        Log.i(TAG, "App version changed.");
+	        Log.d(TAG, "App version changed.");
 	        return "";
 	    }
 	    return registrationId;
@@ -744,7 +759,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private void storeRegistrationId(Context context, String regId) {
 	    final SharedPreferences prefs = getGCMPreferences(context);
 	    int appVersion = getAppVersion(context);
-	    Log.i(TAG, "Saving regId on app version " + appVersion);
+	    if(DEBUG)
+	    	Log.d(TAG, "Saving regId on app version " + appVersion);
 	    SharedPreferences.Editor editor = prefs.edit();
 	    editor.putString(PROPERTY_REG_ID, regId);
 	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
@@ -755,8 +771,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	GCMIntentService.updateSenderId(strSenderId);
     	try{
 	    	final String regId = getRegistrationId(BeseyeNotificationService.this);//GCMRegistrar.getRegistrationId(getApplicationContext());
-	    	Log.i(TAG, "registerGCM(), regId: "+regId);
-	        if (regId.equals("")) {
+	    	if(DEBUG)
+	    		Log.d(TAG, "registerGCM(), regId: "+regId);
+	        
+	    	if (regId.equals("")) {
 	        	// Log.i(TAG, "registerGCM(), strSenderId "+strSenderId);
 	            // Automatically registers application on startup.
 	        	registerInBackground(strSenderId);
@@ -764,7 +782,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	        	registerPushServer(regId);
 	        }
 	    }catch (UnsupportedOperationException e) {
-			Log.i(TAG, "registerGCM(), e: "+e.toString());
+			Log.e(TAG, "registerGCM(), e: "+e.toString());
 	    }
     }
     
@@ -790,12 +808,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					}
 	            	mRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.AddRegisterIDTask(this).execute(obj.toString());
 	            	//showRegIdNotification();
-	            	Log.e(TAG, "registerPushServer(), regId: "+regId+", obj:"+obj.toString());
+	            	if(DEBUG)
+	            		Log.d(TAG, "registerPushServer(), regId: "+regId+", obj:"+obj.toString());
 	            }else{
 	            	mbRegisterGCM = true;
 	            }
 	    	}else{
-	    		Log.e(TAG, "registerPushServer(), invalid regId or mdid "+SessionMgr.getInstance().getUserid());
+	    		if(DEBUG)
+	    			Log.e(TAG, "registerPushServer(), invalid regId or mdid "+SessionMgr.getInstance().getUserid());
 	    	}
 	    }catch (UnsupportedOperationException e) {
 			Log.i(TAG, "registerPushServer(), e: "+e.toString());
@@ -825,7 +845,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         public void onReceive(Context context, Intent intent) {
             String action = intent.getExtras().getString(GCMIntentService.FORWARD_ACTION_TYPE);
             Message msg = null;
-            Log.i(TAG, "onReceive(), action "+action+", data:"+intent.getExtras().getString(BeseyeJSONUtil.PS_REGULAR_DATA));
+            if(DEBUG)
+            	Log.i(TAG, "onReceive(), action "+action+", data:"+intent.getExtras().getString(BeseyeJSONUtil.PS_REGULAR_DATA));
             
             if(GCMIntentService.FORWARD_ACTION_TYPE_REG.equals(action)){	
             	msg = Message.obtain(null,MSG_GSM_REGISTER,0,0);
@@ -866,12 +887,16 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		boolean bRet = false;
 		if(null != eventObj){
 			if(null != mLastEventObj){
-				Log.i(TAG, "isNewEvent(), mLastEventObj: ("+mLastEventObj+")\n" +
-						   "	              eventObj: ("+eventObj+")");
+				if(DEBUG){
+					Log.i(TAG, "isNewEvent(), mLastEventObj: ("+mLastEventObj+")\n" +
+							"	              eventObj: ("+eventObj+")");
+				}
+				
 				long lLastEventStartTime = BeseyeJSONUtil.getJSONLong(mLastEventObj, BeseyeJSONUtil.MM_START_TIME);
 				long lNewEventStartTime = BeseyeJSONUtil.getJSONLong(eventObj, BeseyeJSONUtil.MM_START_TIME);
 				if(lLastEventStartTime < lNewEventStartTime){
-					Log.i(TAG, "isNewEvent(), lLastEventStartTime("+lLastEventStartTime+") < lNewEventStartTime ("+lNewEventStartTime+")");
+					if(DEBUG)
+						Log.d(TAG, "isNewEvent(), lLastEventStartTime("+lLastEventStartTime+") < lNewEventStartTime ("+lNewEventStartTime+")");
 					return true;
 				}/*else if(lLastEventStartTime == lNewEventStartTime){
 					
@@ -898,11 +923,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	private void setLastEventItem(JSONObject eventObj){
 		if(null != eventObj){
-			Log.i(TAG, "setLastEventItem(), eventObj:"+eventObj.toString());
+			if(DEBUG)
+				Log.i(TAG, "setLastEventItem(), eventObj:"+eventObj.toString());
+			
 			BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_LAST_EVENT, eventObj.toString());
 			mLastEventObj = eventObj;
 		}else{
-			Log.i(TAG, "setLastEventItem(), eventObj:"+null);
+			Log.d(TAG, "setLastEventItem(), eventObj:"+null);
 			mLastEventObj = null;
 			BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_LAST_EVENT, "");
 		}
@@ -1129,7 +1156,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			if(task instanceof BeseyePushServiceTask.GetProjectIDTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
 					String senderId = BeseyeJSONUtil.getJSONString(result.get(0), PS_PORJ_NUM);
-					Log.i(TAG, "onPostExecute(), senderId "+senderId);
+					
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), senderId "+senderId);
+					
 					if(0 < senderId.length()){
 						registerGCM(senderId);
 					}else{
@@ -1138,12 +1168,16 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 			}else if(task instanceof BeseyePushServiceTask.AddRegisterIDTask){
 				if(0 == iRetCode || 2 == iRetCode && null != result && 0 < result.size()){
-					Log.i(TAG, "onPostExecute(), AddRegisterIDTask OK");
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), AddRegisterIDTask OK");
+					
 					mbRegisterGCM = true;
 				}
 			}else if(task instanceof BeseyePushServiceTask.DelRegisterIDTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
-					Log.i(TAG, "onPostExecute(), DelRegisterIDTask OK");
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), DelRegisterIDTask OK");
+					
 					storeRegistrationId(this, "");
 				}
 			}else if(task instanceof BeseyeNotificationBEHttpTask.GetWSServerTask){
@@ -1160,7 +1194,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 			}else if(task instanceof BeseyeMMBEHttpTask.GetIMPEventListTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
-					Log.i(TAG, "onPostExecute(), GetIMPEventListTask "+result.get(0).toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), GetIMPEventListTask "+result.get(0).toString());
+					
 					int miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
 					if(0 < miEventCount){
 						JSONArray EntList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_OBJ_LST);
@@ -1172,7 +1208,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 								
 								long lNewEventStartTime = BeseyeJSONUtil.getJSONLong(obj, BeseyeJSONUtil.MM_START_TIME);
 								if(lNewEventStartTime < lLastEventStartTime){
-									Log.d(TAG, "no new events, break");
+									if(DEBUG)
+										Log.d(TAG, "no new events, break");
 									break;
 								}
 								
@@ -1256,17 +1293,20 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	@Override
 	public void onChannelConnecting() {
-		Log.i(TAG, "onChannelConnecting()---");
+		if(DEBUG)
+			Log.i(TAG, "onChannelConnecting()---");
 	}
 	
 	@Override
 	public void onAuthfailed(){
-		Log.w(TAG, "onAuthfailed()---");
+		if(DEBUG)
+			Log.w(TAG, "onAuthfailed()---");
 	}
 
 	@Override
 	public void onChannelConnected() {
-		Log.i(TAG, "onChannelConnected()---");
+		if(DEBUG)
+			Log.i(TAG, "onChannelConnected()---");
 		miWSDisconnectRetry = 0;
 	}
 
@@ -1282,9 +1322,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 
 	@Override
 	public void onChannelClosed() {
-		Log.i(TAG, "onChannelCloased()---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		if(DEBUG)
+			Log.i(TAG, "onChannelClosed()---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		
 		if(/*miWSDisconnectRetry < MAX_WS_RETRY_TIME && */false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() /*&& NetworkMgr.getInstance().isNetworkConnected()*/){
-			Log.i(TAG, "onChannelCloased(), abnormal close, retry-----");
+			Log.e(TAG, "onChannelClosed(), abnormal close, retry-----");
 			long lTimeToWait = (miWSDisconnectRetry++)*1000;
 			if(lTimeToWait > 10000){
 				lTimeToWait = 10000;
@@ -1314,13 +1356,17 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		if(!SessionMgr.getInstance().isTokenValid()){
 			return true;
 		}
-		Log.i(TAG, "handleNotificationEvent(),msgObj="+msgObj.toString());	
+		if(DEBUG)
+			Log.i(TAG, "handleNotificationEvent(),msgObj="+msgObj.toString());	
+		
 		boolean bRet = true;
 		JSONObject objReg = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA);
 		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
 		if(null != objReg){
 			int iNCode = BeseyeJSONUtil.getJSONInt(objReg, BeseyeJSONUtil.PS_NCODE);
-			Log.i(TAG, "handleNotificationEvent(),iNCode="+iNCode);	
+			if(DEBUG)
+				Log.i(TAG, "handleNotificationEvent(),iNCode="+iNCode);	
+			
 			int iMsgType = -1;
 			String strNotifyMsg = null;
 			String strNotifyTitle = null;
@@ -1449,7 +1495,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 								intent.putExtra(OpeningPage.KEY_EVENT_FLAG, true);
 							}else{
 								strNotifyMsg = null;
-								Log.i(TAG, "handleNotificationEvent(),match mStrFocusVCamId="+mStrFocusVCamId);	
+								if(DEBUG)
+									Log.i(TAG, "handleNotificationEvent(),match mStrFocusVCamId="+mStrFocusVCamId);	
 							}
 						}
 					//}
@@ -1482,7 +1529,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}
     	if(null != dataObj){
 			final int iCmd = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_COMM);
-			Log.i(TAG, "handleWSEvent(),iCmd="+iCmd);	
+			if(DEBUG)
+				Log.i(TAG, "handleWSEvent(),iCmd="+iCmd);	
 //			//String strCamUID = null;
 //			//long lTs = -1;
 			final JSONObject DataObj = BeseyeJSONUtil.getJSONObject(dataObj, WS_ATTR_INTERNAL_DATA);

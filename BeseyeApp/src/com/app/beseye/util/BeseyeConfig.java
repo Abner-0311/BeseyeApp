@@ -6,7 +6,7 @@ public class BeseyeConfig {
 	static public final String TAG = "BesEye";
 	public static final String HOCKEY_APP_ID = ""; //"3f241ef5b7fb32623b970d296f90fcb4"; 
 	
-	static public final boolean DEBUG = true;
+	static public final boolean DEBUG = false;
 	static public boolean ALPHA_VER = false;
 	static public boolean BETA_VER = false;
 	static public boolean PRODUCTION_VER = false;

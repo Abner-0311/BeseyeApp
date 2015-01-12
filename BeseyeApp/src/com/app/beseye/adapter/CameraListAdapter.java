@@ -1,5 +1,6 @@
 package com.app.beseye.adapter;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import org.json.JSONArray;
@@ -32,10 +33,13 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 			OnClickListener itemOnClickListener, OnSwitchBtnStateChangedListener onSwitchBtnStateChangedListener) {
 		super(context, list, iLayoutId, itemOnClickListener);
 		mOnSwitchBtnStateChangedListener = onSwitchBtnStateChangedListener;
-		Log.i(TAG, "context.getResources().getDimension(R.dimen.cameralist_videoblock_margin):"+context.getResources().getDimension(R.dimen.cameralist_videoblock_margin));
-		Log.i(TAG, "context.getResources().getDimension(cameralist_videoblock_thunmbnail_padding):"+context.getResources().getDimension(R.dimen.cameralist_videoblock_thunmbnail_padding));
+		if(DEBUG){
+			Log.i(TAG, "context.getResources().getDimension(R.dimen.cameralist_videoblock_margin):"+context.getResources().getDimension(R.dimen.cameralist_videoblock_margin));
+			Log.i(TAG, "context.getResources().getDimension(cameralist_videoblock_thunmbnail_padding):"+context.getResources().getDimension(R.dimen.cameralist_videoblock_thunmbnail_padding));
+		}
 		miThumbnailWidth = (int) (BeseyeUtils.getDeviceWidth((Activity)context) - (context.getResources().getDimension(R.dimen.cameralist_videoblock_margin)+context.getResources().getDimension(R.dimen.cameralist_videoblock_thunmbnail_padding))*2); 
-		Log.i(TAG, "miThumbnailWidth:"+miThumbnailWidth);
+		if(DEBUG)
+			Log.i(TAG, "miThumbnailWidth:"+miThumbnailWidth);
 	}
 
 	static public class CameraListItmHolder{

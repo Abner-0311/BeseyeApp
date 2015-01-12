@@ -5,6 +5,7 @@ import static com.app.beseye.TouchSurfaceView.State.DRAG;
 import static com.app.beseye.TouchSurfaceView.State.FLING;
 import static com.app.beseye.TouchSurfaceView.State.NONE;
 import static com.app.beseye.TouchSurfaceView.State.ZOOM;
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -91,13 +92,16 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		Log.i(TAG, "surfaceCreated()......");
+		if(DEBUG)
+			Log.i(TAG, "surfaceCreated()......");
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 	}
 	
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-		Log.i(TAG, "surfaceChanged()......");
+		if(DEBUG)
+			Log.i(TAG, "surfaceChanged()......");
+		
         int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
         switch (format) {
         case PixelFormat.A_8:
@@ -156,7 +160,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         
         Log.i(TAG, "surfaceChanged(), mWidth:"+mSurfaceWidth+", mHeight:"+mSurfaceHeight+", displayWidth:"+displayWidth+", displayHeight:"+displayHeight);
         //SDLActivity.onNativeResize(width, height, sdlFormat);
-        Log.v(TAG, "Window size:" + width + "x"+height);
+        if(DEBUG)
+        	Log.v(TAG, "Window size:" + width + "x"+height);
         
         mfPaddingTop = this.getContext().getResources().getDimension(R.dimen.liveview_navbar_height_landscape);
         mfPaddingBottom = this.getContext().getResources().getDimension(R.dimen.liveview_toolbar_height_landscape);
@@ -171,7 +176,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
-				Log.i(TAG, "Trigger onMeasure()......, matrix="+matrix);
+				if(DEBUG)
+					Log.i(TAG, "Trigger onMeasure()......, matrix="+matrix);
 				//fixScaleTrans();
 				prevMatrix.setValues(m);
 		        prevMatchViewHeight = matchViewHeight;
@@ -189,7 +195,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         synchronized(this){
         	mIsSurfaceReady = false;
         }
-		Log.i(TAG, "surfaceDestroyed()......");
+        if(DEBUG)
+        	Log.i(TAG, "surfaceDestroyed()......");
 	}
 	
 	static{
@@ -236,7 +243,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 	}
 	
     private void sharedConstructing(Context context) {
-    	Log.i(TAG, "sharedConstructing()");
+    	if(DEBUG)
+    		Log.i(TAG, "sharedConstructing()");
         super.setClickable(true);
         getHolder().addCallback(this);	
         
@@ -272,7 +280,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 		bundle.putInt("viewHeight", viewHeight);
 		matrix.getValues(m);
 		bundle.putFloatArray("matrix", m);
-		Log.i(TAG, "onSaveInstanceState(), matrix="+matrix);
+		if(DEBUG)
+			Log.i(TAG, "onSaveInstanceState(), matrix="+matrix);
 		return bundle;
     }
 
@@ -288,7 +297,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 	        prevViewHeight = bundle.getInt("viewHeight");
 	        prevViewWidth = bundle.getInt("viewWidth");
 	        super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
-	        Log.i(TAG, "onRestoreInstanceState(), prevMatrix="+prevMatrix);
+	        if(DEBUG)
+	        	Log.i(TAG, "onRestoreInstanceState(), prevMatrix="+prevMatrix);
 	        return;
       	}
 
@@ -308,7 +318,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         prevMatchViewWidth = matchViewWidth;
         prevViewHeight = viewHeight;
         prevViewWidth = viewWidth;
-        Log.i(TAG, "restoreDisplayAttr()....., prevMatrix="+prevMatrix);
+        if(DEBUG)
+        	Log.i(TAG, "restoreDisplayAttr()....., prevMatrix="+prevMatrix);
         drawStreamBitmap();
     }
 
@@ -586,23 +597,22 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
     	
         @Override
-        public boolean onSingleTapConfirmed(MotionEvent e)
-        {
+        public boolean onSingleTapConfirmed(MotionEvent e){
         	//Log.i(TAG, "onSingleTapConfirmed()");
         	triggermSingleTapCallback();
         	return performClick();
         }
         
         @Override
-        public void onLongPress(MotionEvent e)
-        {
+        public void onLongPress(MotionEvent e){
+        	if(DEBUG)
         	Log.i(TAG, "onLongPress()");
         	performLongClick();
         }
         
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-        {
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
+        	if(DEBUG)
         	Log.i(TAG, "onFling()");
         	if (fling != null) {
         		//
@@ -618,7 +628,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-        	Log.i(TAG, "onDoubleTap()");
+        	if(DEBUG)
+        		Log.i(TAG, "onDoubleTap()");
         	boolean consumed = false;
         	if (state == NONE) {
         		triggermDoubleTapCallback();
@@ -697,7 +708,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-        	Log.i(TAG, "onScaleBegin()");
+        	if(DEBUG)
+        		Log.i(TAG, "onScaleBegin()");
         	triggermZoomBeginCallback();
             setState(ZOOM);
             return true;
@@ -705,14 +717,16 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-        	Log.i(TAG, "onScale()");
+        	if(DEBUG)
+        		Log.i(TAG, "onScale()");
         	scaleImage(detector.getScaleFactor(), detector.getFocusX(), detector.getFocusY(), true);
             return true;
         }
         
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
-        	Log.i(TAG, "onScaleEnd()");
+        	if(DEBUG)
+        		Log.i(TAG, "onScaleEnd()");
         	super.onScaleEnd(detector);
         	setState(NONE);
         	boolean animateToZoomBoundary = false;
@@ -982,7 +996,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     
     private void printMatrixInfo() {
     	matrix.getValues(m);
-    	Log.i(TAG, "Scale: " + m[Matrix.MSCALE_X] + " TransX: " + m[Matrix.MTRANS_X] + " TransY: " + m[Matrix.MTRANS_Y]);
+    	if(DEBUG)
+    		Log.i(TAG, "Scale: " + m[Matrix.MSCALE_X] + " TransX: " + m[Matrix.MTRANS_X] + " TransY: " + m[Matrix.MTRANS_Y]);
     }
     
     //Abner Add Begin
@@ -1043,7 +1058,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     public Bitmap getBitmapBySize(int iWidth, int iHeight){
-    	Log.i(TAG, "getBitmapBySize(), iWidth:"+iWidth+", iHeight:"+iHeight);
+    	if(DEBUG)
+    		Log.i(TAG, "getBitmapBySize(), iWidth:"+iWidth+", iHeight:"+iHeight);
+    	
     	if(null != mStreamBitmap && (mStreamBitmap.getWidth() != iWidth || mStreamBitmap.getHeight() != iHeight) && false == mStreamBitmap.isRecycled()){
     		mStreamBitmap.recycle();
     		mStreamBitmap = null;
@@ -1056,9 +1073,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             float scaleY = mSurfaceHeight / (float) iHeight ;
             scale = Math.min(scaleX, scaleY);
             //scale = (mbUpsideDown)?-scale:scale;
-            //c
-            
-            Log.i(TAG, "getBitmapBySize(), scale:"+scale+", scaleX:"+scaleX+", scaleY:"+scaleY);
+
+            if(DEBUG)
+            	Log.i(TAG, "getBitmapBySize(), scale:"+scale+", scaleX:"+scaleX+", scaleY:"+scaleY);
     		
             redundantXSpace = mSurfaceWidth - iWidth*scale;
             redundantYSpace = mSurfaceHeight - iHeight*scale;

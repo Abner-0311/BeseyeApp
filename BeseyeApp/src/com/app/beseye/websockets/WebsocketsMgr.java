@@ -1,5 +1,6 @@
 package com.app.beseye.websockets;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CODE;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_DATA;
@@ -95,12 +96,14 @@ public class WebsocketsMgr {
 	}
 	
 	public void setWSServerIP(String ip){
-		Log.i(TAG, "setWSServerIP(), ip="+ip);
+		if(DEBUG)
+			Log.i(TAG, "setWSServerIP(), ip="+ip);
 		NOTIFY_WS_ADDR = String.format("%s/websocket", ip);//"54.238.255.56");
 	}
 	
 	public boolean constructWSChannel(){
-		Log.i(TAG, "constructWSChannel(), ++");
+		if(DEBUG)
+			Log.i(TAG, "constructWSChannel(), ++");
 		boolean bRet = false;
 		try {
 			//printNotifyWSChannelState();
@@ -119,9 +122,11 @@ public class WebsocketsMgr {
 					listener.onChannelConnecting();
 				}
 				
-				Log.i(TAG, "constructWSChannel()-----");
+				if(DEBUG)
+					Log.i(TAG, "constructWSChannel()-----");
 				mFNotifyWSChannel = AsyncHttpClient.getDefaultInstance().websocket(getWSPath(), getWSProtocol(), getWebSocketConnectCallback());
-				Log.i(TAG, "constructWSChannel(), path =>"+getWSPath());
+				if(DEBUG)
+					Log.i(TAG, "constructWSChannel(), path =>"+getWSPath());
 				WebSocket ws = mFNotifyWSChannel.get();
 				Log.i(TAG, "constructWSChannel(), ws is null =>"+(null == ws));
 				if(null == ws){
@@ -179,13 +184,15 @@ public class WebsocketsMgr {
 	}
 	
 	public boolean destroyWSChannel(){
-		Log.i(TAG, "destroyWSChannel(), ++");
+		if(DEBUG)
+			Log.i(TAG, "destroyWSChannel(), ++");
 		boolean bRet = false;
 		printNotifyWSChannelState();
 		
 		synchronized(this){
 			try {
-				Log.i(TAG, "destroyWSChannel(), check");
+				if(DEBUG)
+					Log.i(TAG, "destroyWSChannel(), check");
 				WebSocket ws = null;
 				if(null != mFNotifyWSChannel){
 					if(mBConstructingNotifyWSChannel){
@@ -237,7 +244,8 @@ public class WebsocketsMgr {
 		@Override
 		public void run() {
 			if(-1 != mlLastTimeToGetKeepAlive){
-				Log.i(TAG, "Need to reconnect webSocket !!!!!!!!!!!!!!!!!!!!!");
+				if(DEBUG)
+					Log.i(TAG, "Need to reconnect webSocket !!!!!!!!!!!!!!!!!!!!!");
 				if(WebsocketsMgr.getInstance().isWSChannelAlive()){
 					WebsocketsMgr.getInstance().destroyWSChannel();
 					mlLastTimeToGetKeepAlive = -1;
@@ -248,7 +256,8 @@ public class WebsocketsMgr {
 	private WebSocketConnectCallback mWebSocketConnectCallback = new WebSocketConnectCallback() {
         @Override
         public void onCompleted(Exception ex, final WebSocket webSocket) {
-        	Log.i(TAG, "onCompleted()...");
+        	if(DEBUG)
+        		Log.i(TAG, "onCompleted()...");
         	
         	if(null == webSocket){
         		Log.e(TAG, "onCompleted(), webSocket is null...");
@@ -280,14 +289,17 @@ public class WebsocketsMgr {
                 			String strCmd = arrNew.getString(0);
                 			String strBody = arrNew.getString(1);
 							if(WS_CB_CLIENT_CONNECTION.equals(strCmd)){
-								Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
+								if(DEBUG)
+									Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_CONNECTED, wrapWSBaseMsg().toString()));
 								JSONObject authObj = BeseyeWebsocketsUtil.genAuthMsg();
 								if(null != authObj){
 									webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_AUTH, authObj.toString()));
-									Log.i(TAG, "onStringAvailable(), authObj="+authObj.toString());
+									if(DEBUG)
+										Log.i(TAG, "onStringAvailable(), authObj="+authObj.toString());
 									mStrAuthJobId = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(authObj, WS_ATTR_DATA),WS_ATTR_JOB_ID); 
-									Log.i(TAG, "onStringAvailable(), strAuthJobId="+mStrAuthJobId);
+									if(DEBUG)
+										Log.i(TAG, "onStringAvailable(), strAuthJobId="+mStrAuthJobId);
 								}
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_KEEP_ALIVE, wrapWSBaseMsg().toString()));
 								updateLastTimeToGetKeepAlive();
@@ -311,14 +323,16 @@ public class WebsocketsMgr {
 									}
 								}
 							}else if(WS_CB_EVT.equals(strCmd)){
-								Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
+								if(DEBUG)
+									Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
 								JSONObject dataObj = BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.newJSONObject(strBody),WS_ATTR_DATA),WS_ATTR_DATA);
 								OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 								if(null != listener){
 									listener.onMessageReceived(dataObj.toString());
 								}
 							}else{
-								Log.w(TAG, "onStringAvailable(), not handle cmd=["+strCmd+"], strBody"+strBody);
+								if(DEBUG)
+									Log.w(TAG, "onStringAvailable(), not handle cmd=["+strCmd+"], strBody"+strBody);
 //								OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 //								if(null != listener){
 //									listener.onMessageReceived(s);
@@ -338,7 +352,8 @@ public class WebsocketsMgr {
 				@Override
 				public void onDataAvailable(DataEmitter emitter,
 						ByteBufferList bb) {
-					Log.i(TAG, "onDataAvailable()...");						
+					if(DEBUG)
+						Log.i(TAG, "onDataAvailable()...");						
 				}});
             
             webSocket.setClosedCallback(new CompletedCallback(){
@@ -374,7 +389,8 @@ public class WebsocketsMgr {
             webSocket.setWriteableCallback(new WritableCallback(){
 				@Override
 				public void onWriteable() {
-					Log.i(TAG, "onWriteable()...");	
+					if(DEBUG)
+						Log.i(TAG, "onWriteable()...");	
 				}});
            
         }

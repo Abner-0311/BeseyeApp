@@ -1,5 +1,6 @@
 package com.app.beseye.widget;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.text.SimpleDateFormat;
@@ -95,7 +96,8 @@ public class BeseyeClockIndicator extends LinearLayout {
 			miTotalHeight = (miItmCount*miItmHeight >= miHolderHeight)?miItmCount*miItmHeight - miHolderHeight:(miItmCount*miItmHeight);
 			miIndHeight = getHeight();
 			miIndRange = iHolderHeight - miIndHeight;
-			Log.i(TAG, "calculateTotalLvHeight(), [ "+miItmHeight+", "+miHolderHeight+", "+miTotalHeight+", "+miIndHeight+", "+miIndRange+"]");	
+			if(DEBUG)
+				Log.i(TAG, "calculateTotalLvHeight(), [ "+miItmHeight+", "+miHolderHeight+", "+miTotalHeight+", "+miIndHeight+", "+miIndRange+"]");	
 		}
 	}
 	
@@ -114,7 +116,8 @@ public class BeseyeClockIndicator extends LinearLayout {
 	
 	public int getIndPosByItmPos(int iPosItm){
 		int iRet = (((miHolderHeight - miIndHeight)*(iPosItm*miItmHeight))/miTotalHeight);//+(miIndHeight/2)-5;
-		Log.i(TAG, "getIndPosByItmPos(), iRet:"+iRet);	
+		if(DEBUG)
+			Log.i(TAG, "getIndPosByItmPos(), iRet:"+iRet);	
 		return iRet;
 	}
 	
