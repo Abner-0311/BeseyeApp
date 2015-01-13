@@ -35,6 +35,7 @@ import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeAccountFilter;
+import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.DeviceUuidFactory;
@@ -181,7 +182,11 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 				return;
 			}
 			
-			monitorAsyncTask(new BeseyeAccountTask.RegisterTask(this), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
+			if(BeseyeFeatureConfig.VPC_NUM_QUERY){
+				monitorAsyncTask(new BeseyeAccountTask.GetVPCNoHttpTask(this), true, mEtUserName.getText().toString());
+			}else{
+				monitorAsyncTask(new BeseyeAccountTask.RegisterTask(this), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
+			}
 		}
 	}
 	
@@ -248,6 +253,16 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 					
 					if(null != mEtPassword){
 						mEtPassword.setText("");
+					}
+				}
+			}else if(task instanceof BeseyeAccountTask.GetVPCNoHttpTask){
+				if(0 == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+					JSONObject obj = result.get(0);
+					if(null != obj){
+						SessionMgr.getInstance().setVPCNumber(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.ACC_VPC_NO));
+						monitorAsyncTask(new BeseyeAccountTask.RegisterTask(this), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
 					}
 				}
 			}else{

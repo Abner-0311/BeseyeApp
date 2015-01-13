@@ -291,9 +291,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				public void run() {
 					int iRet = 0;
 					if(isSSIDPiaringCase()){
-						iRet = playSSIDPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose, 1);
+						iRet = playSSIDPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose, SessionMgr.getInstance().getVPCNumber());
 					}else{
-						iRet = playSSIDHashPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose,1);
+						iRet = playSSIDHashPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose,SessionMgr.getInstance().getVPCNumber());
 					}
 					
 					if(iRet != 0){

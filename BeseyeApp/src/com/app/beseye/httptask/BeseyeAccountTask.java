@@ -28,6 +28,7 @@ public class BeseyeAccountTask {
 	public static final String URL_GET_INFO			="user/info";
 	public static final String URL_GET_VCAM_INFO	="user/vcam/info";
 	public static final String URL_FORGET_PW		="user/password_forget";
+	public static final String URL_VPC_QUERY		="user/query";
 	
 	public static final String URL_CAM_ATTACH		="vcam/attach";
 	public static final String URL_CAM_DEATTACH		="user/vcam/detach";
@@ -66,6 +67,29 @@ public class BeseyeAccountTask {
 				obj.put(ACC_REMEM_ME, true);
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_LOGIN, obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+	
+	static public class GetVPCNoHttpTask extends BeseyeHttpTask {	 
+		public GetVPCNoHttpTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(ACC_EMAIL, strParams[0]);
+				//obj.put(ACC_VPC_NO, Integer.parseInt(strParams[1]));
+				appendDevInfo(obj);
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_VPC_QUERY, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {

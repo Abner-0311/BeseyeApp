@@ -60,51 +60,58 @@ public class SessionMgr {
 	static public final SERVER_MODE DEFAULT_SERVER_MODE = SERVER_MODE.MODE_STAGING;
 	
 	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
-	static private final String[] ACCOUNT_BE_URL = {"https://tokyo-p1-dev-api-1.beseye.com/acc",
+	
+	static private final String[] ACC_VPC_BE_URL = {"https://tokyo-p1-dev-api-1.beseye.com/acc",
 													"https://acc-dev.beseye.com", 
 													"https://oregon-p1-stage-api-1.beseye.com/acc",
 													"https://tokyo-acc-stage.beseye.com",
 													"https://acc-stage.beseye.com"}; 
 	
+	static private final String[] ACCOUNT_BE_URL = {"https://tokyo-p1-dev-api-1.beseye.com/acc",
+													"https://acc-dev.beseye.com", 
+													"https://oregon-p1-stage-api-%d.beseye.com/acc",
+													"https://tokyo-acc-stage.beseye.com",
+													"https://acc-stage.beseye.com"}; 
+	
 	static private final String[] MM_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/mm/",
 												"https://mm-dev.beseye.com/",
-												"https://oregon-p1-stage-api-1.beseye.com/mm/",
+												"https://oregon-p1-stage-api-%d.beseye.com/mm/",
 												"https://tokyo-mm-stage.beseye.com/",
 												"https://mm-stage.beseye.com/"}; 
 
 	static private final String[] CAM_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/cam/",
 												 "https://ns-dev.beseye.com/",
-												 "https://oregon-p1-stage-api-1.beseye.com/cam/",
+												 "https://oregon-p1-stage-api-%d.beseye.com/cam/",
 												 "https://tokyo-ns-stage.beseye.com/",
 												 "https://ns-stage.beseye.com/"}; 
 	
 	static private final String[] NS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/ns/",
 												"https://ns-dev.beseye.com/",
-												"https://oregon-p1-stage-api-1.beseye.com/ns/",
+												"https://oregon-p1-stage-api-%d.beseye.com/ns/",
 												"https://tokyo-ns-stage.beseye.com/",
 												"https://ns-stage.beseye.com/"}; 
 	
 	static private final String[] CAM_WS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/ws/",
 													"https://ns-dev.beseye.com/",
-													"https://oregon-p1-stage-api-1.beseye.com/ws/",
+													"https://oregon-p1-stage-api-%d.beseye.com/ws/",
 													"https://tokyo-ns-stage.beseye.com/",
 													"https://ns-stage.beseye.com/"}; 
 	
 	static private final String[] WS_BE_URL = { "https://tokyo-p1-dev-ws-1.beseye.com/",
 												"https://ws-dev.beseye.com/", 
-												"https://oregon-p1-stage-ws-1.beseye.com/",
+												"https://oregon-p1-stage-ws-%d.beseye.com/",
 												"https://tokyo-ws-stage.beseye.com/",
 												"https://ws-stage.beseye.com/"}; 
 	
 	static private final String[] WSA_BE_URL = { "https://tokyo-p1-dev-wsa-1.beseye.com/",
 												 "https://wsa-dev.beseye.com/", 
-												 "https://oregon-p1-stage-wsa-1.beseye.com/",
+												 "https://oregon-p1-stage-wsa-%d.beseye.com/",
 												 "https://tokyo-wsa-stage.beseye.com/",
 												 "https://wsa-stage.beseye.com/"}; 
 	
 	static private final String[] NEWS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/news/",
 												  "https://news-dev.beseye.com/", 
-												  "https://oregon-p1-stage-api-1.beseye.com/news/",
+												  "https://oregon-p1-stage-api-%d.beseye.com/news/",
 												  "https://tokyo-news-stage.beseye.com/",
 												  "https://news-stage.beseye.com/"}; 
 	
@@ -117,6 +124,7 @@ public class SessionMgr {
 	static private final String SESSION_ACCOUNT				= "beseye_account";
 	static private final String SESSION_ACC_CERTIFICATED	= "beseye_certificated";
 	static private final String SESSION_OWNER_INFO			= "beseye_owner_data";
+	static private final String SESSION_OWNER_VPC_NUM		= "beseye_owner_vpc_no";
 	
 	static private final String SESSION_UPDATE_TS			= "beseye_cam_update_ts";
 	static private final String SESSION_UPDATE_CAMS			= "beseye_cam_update_list";
@@ -164,6 +172,8 @@ public class SessionMgr {
 				
 				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
 				mSessionData.setCamUpdateList(getPrefStringValue(mPref, SESSION_UPDATE_CAMS));
+				
+				mSessionData.setVPCNumber(getPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, 1));
 			}
 		}
 	}
@@ -178,6 +188,7 @@ public class SessionMgr {
 		setAccount("");
 		setOwnerInfo("");
 		setIsCertificated(false);
+		setVPCNumber(1);
 		setNewsHistory("");
 		BeseyeNewsHistoryMgr.deinit();
 		//setOwnerChannelInfo(null);
@@ -187,6 +198,7 @@ public class SessionMgr {
 	
 	public void cleanHostUrls(){
 		setAccountBEHostUrl("");
+		setVPCAccountBEHostUrl("");
 		setMMBEHostUrl("");
 		setCamBEHostUrl("");
 		setNSBEHostUrl("");
@@ -230,6 +242,7 @@ public class SessionMgr {
 	
 	public void setBEHostUrl(SERVER_MODE mode){
 		setAccountBEHostUrl(mode);
+		setVPCAccountBEHostUrl(mode);
 		setMMBEHostUrl(mode);
 		setCamBEHostUrl(mode);
 		setNSBEHostUrl(mode);
@@ -239,16 +252,40 @@ public class SessionMgr {
 		setNewsBEHostUrl(mode);
 	}
 	
+	public int getVPCNumber(){
+		return mSessionData.getVPCNumber();
+	}
+	
+	public void setVPCNumber(int iVPCno){
+		mSessionData.setVPCNumber(iVPCno);
+		setPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, mSessionData.getVPCNumber());
+		setBEHostUrl(getServerMode());
+		notifySessionUpdate();
+	}
+	
 	public String getAccountBEHostUrl(){
 		return mSessionData.getAccountBEHostUrl();
 	}
 	
 	public void setAccountBEHostUrl(SERVER_MODE mode){
-		setAccountBEHostUrl(String.format(ACCOUNT_URL_FORMAT, ACCOUNT_BE_URL[mode.ordinal()]));
+		setAccountBEHostUrl(String.format(ACCOUNT_URL_FORMAT, String.format(ACCOUNT_BE_URL[mode.ordinal()], getVPCNumber())));
 	}
 	
 	synchronized public void setAccountBEHostUrl(String strURL){
 		mSessionData.setAccountBEHostUrl(strURL);
+		notifySessionUpdate();
+	}
+	
+	public String getVPCAccountBEHostUrl(){
+		return mSessionData.getVPCAccountBEHostUrl();
+	}
+	
+	public void setVPCAccountBEHostUrl(SERVER_MODE mode){
+		setVPCAccountBEHostUrl(String.format(ACCOUNT_URL_FORMAT, ACC_VPC_BE_URL[mode.ordinal()]));
+	}
+	
+	synchronized public void setVPCAccountBEHostUrl(String strURL){
+		mSessionData.setVPCAccountBEHostUrl(strURL);
 		notifySessionUpdate();
 	}
 	
@@ -257,7 +294,7 @@ public class SessionMgr {
 	}
 	
 	public void setMMBEHostUrl(SERVER_MODE mode){
-		setMMBEHostUrl(MM_BE_URL[mode.ordinal()]);
+		setMMBEHostUrl(String.format(MM_BE_URL[mode.ordinal()], getVPCNumber()));
 	}
 	
 	synchronized public void setMMBEHostUrl(String strURL){
@@ -270,7 +307,7 @@ public class SessionMgr {
 	}
 	
 	public void setCamBEHostUrl(SERVER_MODE mode){
-		setCamBEHostUrl(CAM_BE_URL[mode.ordinal()]);
+		setCamBEHostUrl(String.format(CAM_BE_URL[mode.ordinal()], getVPCNumber()));
 	}
 	
 	synchronized public void setCamBEHostUrl(String strURL){
@@ -283,7 +320,7 @@ public class SessionMgr {
 	}
 	
 	public void setNSBEHostUrl(SERVER_MODE mode){
-		setNSBEHostUrl(NS_BE_URL[mode.ordinal()]);
+		setNSBEHostUrl(String.format(NS_BE_URL[mode.ordinal()], getVPCNumber()));
 	}
 	
 	synchronized public void setNSBEHostUrl(String strURL){
@@ -296,7 +333,7 @@ public class SessionMgr {
 	}
 	
 	public void setCamWSBEHostUrl(SERVER_MODE mode){
-		setCamWSBEHostUrl(CAM_WS_BE_URL[mode.ordinal()]);
+		setCamWSBEHostUrl(String.format(CAM_WS_BE_URL[mode.ordinal()], getVPCNumber()));
 	}
 	
 	synchronized public void setCamWSBEHostUrl(String strURL){
@@ -314,7 +351,7 @@ public class SessionMgr {
 	}
 	
 	public void setWSBEHostUrl(SERVER_MODE mode){
-		setWSHostUrl(WS_BE_URL[mode.ordinal()]);
+		setWSHostUrl(String.format(WS_BE_URL[mode.ordinal()], getVPCNumber()));
 	}
 	
 	public String getWSAHostUrl(){
@@ -327,7 +364,7 @@ public class SessionMgr {
 	}
 	
 	public void setWSABEHostUrl(SERVER_MODE mode){
-		setWSAHostUrl(WSA_BE_URL[mode.ordinal()]);
+		setWSAHostUrl(String.format(WSA_BE_URL[mode.ordinal()], getVPCNumber()));
 	}
 	
 	public String getNewsHostUrl(){
@@ -340,7 +377,7 @@ public class SessionMgr {
 	}
 	
 	public void setNewsBEHostUrl(SERVER_MODE mode){
-		setNewsHostUrl(NEWS_BE_URL[mode.ordinal()]);
+		setNewsHostUrl(String.format(NEWS_BE_URL[mode.ordinal()], getVPCNumber()));
 	}
 	
 	public String getUserid(){
@@ -483,14 +520,16 @@ public class SessionMgr {
 	}
 	
 	public static class SessionData implements Parcelable{
-		private String mStrHostUrl, mStrMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
+		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
 		private boolean mbIsCertificated;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
 		private String mStrCamUpdateList;
+		private int miVPCno;
 		
 		public SessionData() {
 			mStrHostUrl = "";
+			mStrVPCHostUrl = "";
 			mStrMMHostUrl = "";
 			mStrCamHostUrl = "";
 			mStrNSHostUrl = "";
@@ -509,6 +548,8 @@ public class SessionMgr {
 			
 			mlCamUpdateTs = 0;
 			mStrCamUpdateList = "";
+			
+			miVPCno = 1;
 		}
 		
 		public String getAccountBEHostUrl(){
@@ -517,6 +558,14 @@ public class SessionMgr {
 		
 		synchronized public void setAccountBEHostUrl(String strURL){
 			mStrHostUrl = strURL;
+		}
+		
+		public String getVPCAccountBEHostUrl(){
+			return mStrVPCHostUrl;
+		}
+		
+		synchronized public void setVPCAccountBEHostUrl(String strURL){
+			mStrVPCHostUrl = strURL;
 		}
 		
 		public String getMMBEHostUrl(){
@@ -669,6 +718,14 @@ public class SessionMgr {
 		synchronized public void setCamUpdateList(String strCamUpdateList){
 			mStrCamUpdateList = strCamUpdateList;
 		}
+		
+		public int getVPCNumber(){
+			return miVPCno;
+		}
+		
+		synchronized public void setVPCNumber(int iVPCno){
+			miVPCno = (0 >= iVPCno)?1:iVPCno;
+		}
 	
 		@Override
 		public void writeToParcel(Parcel dest, int flags) {
@@ -677,6 +734,7 @@ public class SessionMgr {
 			// parcel. When we read from parcel, they
 			// will come back in the same order
 			dest.writeString(mStrHostUrl);
+			dest.writeString(mStrVPCHostUrl);
 			dest.writeString(mStrMMHostUrl);
 			dest.writeString(mStrCamHostUrl);
 			dest.writeString(mStrNSHostUrl);
@@ -697,6 +755,8 @@ public class SessionMgr {
 			
 			dest.writeLong(mlCamUpdateTs);
 			dest.writeString(mStrCamUpdateList);
+			
+			dest.writeInt(miVPCno);
 		}
 		
 		private SessionData(Parcel in) {
@@ -716,6 +776,7 @@ public class SessionMgr {
 			// field in the order that it was
 			// written to the parcel
 			mStrHostUrl = in.readString();
+			mStrVPCHostUrl = in.readString();
 			mStrMMHostUrl = in.readString();
 			mStrCamHostUrl = in.readString();
 			mStrNSHostUrl = in.readString();
@@ -736,6 +797,8 @@ public class SessionMgr {
 			
 			mlCamUpdateTs = in.readLong();
 			mStrCamUpdateList = in.readString();
+			
+			miVPCno = in.readInt();
 		}
 		
 		public static final Parcelable.Creator<SessionData> CREATOR = new Parcelable.Creator<SessionData>() {

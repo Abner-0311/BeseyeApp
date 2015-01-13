@@ -176,6 +176,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_CLIENT_UA 			= "ClientUserAgent";
 	public static final String ACC_CLIENT_LOC 			= "ClientLocation";
 	public static final String ACC_CLIENT_IP 			= "ClientIp";
+	public static final String ACC_VPC_NO 				= "Number";
 	
 	public static final String ACC_USER 				= "User";
 	public static final String ACC_ID 					= "Uid";
