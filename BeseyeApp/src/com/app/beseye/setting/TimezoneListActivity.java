@@ -52,7 +52,6 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "TimezoneListActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		

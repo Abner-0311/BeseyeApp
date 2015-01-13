@@ -128,7 +128,9 @@ void FreqAnalyzer::reset(){
 
 void FreqAnalyzer::setSessionOffsetForAmp(int iOffset){
 	mSessionOffsetForAmp = iOffset;
-	LOGI("setSessionOffsetForAmp(), mSessionOffsetForAmp:%d\n", mSessionOffsetForAmp);
+	if(DEBUG_MODE){
+		LOGI("setSessionOffsetForAmp(), mSessionOffsetForAmp:%d\n", mSessionOffsetForAmp);
+	}
 }
 
 void FreqAnalyzer::setSenderMode(bool bIsSenderMode){
@@ -140,8 +142,9 @@ void FreqAnalyzer::beginToTrace(string strCode){
 	mstrCodeTrace = strCode;
 	mlTraceTs = time_ms();
 	mlMaxWaitingTime = (0 == strCode.length())?90000:(strCode.length()*400+4000);
-	LOGW("beginToTrace(), mlTraceTs:%lld, mlMaxWaitingTime: %lld\n", mlTraceTs, mlMaxWaitingTime);
-
+	if(DEBUG_MODE){
+		LOGW("beginToTrace(), mlTraceTs:%lld, mlMaxWaitingTime: %lld\n", mlTraceTs, mlMaxWaitingTime);
+	}
 }
 
 
@@ -317,7 +320,9 @@ void FreqAnalyzer::analyze(msec_t lTs, double dFreq, int iBufIndex, int iFFTValu
 			reset();
 		}
 	}else{
-		LOGD("analyze(), find code [%s] for freq:%f at %lld, mSessionBeginTs:%lld\n",strCode.c_str() , dFreq, lTs, mSessionBeginTs);
+		if(DEBUG_MODE){
+			LOGD("analyze(), find code [%s] for freq:%f at %lld, mSessionBeginTs:%lld\n",strCode.c_str() , dFreq, lTs, mSessionBeginTs);
+		}
 		mFreqRecordList.push_back(Ref<FreqRecord>(new FreqRecord(lTs, dFreq, strCode, iBufIndex, iFFTValues)));
 		int iCheckIndex = exceedToneCheckPeriod();
 		if(-1 < iCheckIndex){
@@ -388,7 +393,9 @@ void FreqAnalyzer::pickWithSeesion(){
 	msec_t lSesEndTs = mSessionBeginTs+SoundPair_Config::TONE_PERIOD*(lSesIdx+1);
 
 	if(CAM_CORRECTION_TRACE){
-		LOGI("pickWithSeesion()**, ====>>>> (lSesBeginTs, lSesEndTs): (%lld, %lld)\n", lSesBeginTs, lSesEndTs);
+		if(DEBUG_MODE){
+			LOGI("pickWithSeesion()**, ====>>>> (lSesBeginTs, lSesEndTs): (%lld, %lld)\n", lSesBeginTs, lSesEndTs);
+		}
 	}
 
 	fillEmptyCodeRecord(lSesBeginTs);
@@ -407,14 +414,18 @@ void FreqAnalyzer::pickWithSeesion(){
 	//LOGI("analyze(), ====>>>> sesFreqList:"+sesFreqList.toString());
 
 	if(CAM_CORRECTION_TRACE){
-		for(int i = 0;i<sesFreqList.size();i++){
-			LOGI("pickWithSeesion()**, sesFreqList[%d]:%s\n", i, sesFreqList[i]->toString().c_str());
+		if(DEBUG_MODE){
+			for(int i = 0;i<sesFreqList.size();i++){
+				LOGI("pickWithSeesion()**, sesFreqList[%d]:%s\n", i, sesFreqList[i]->toString().c_str());
+			}
 		}
 	}
 
 	//Fill the missing items
 	if(sesFreqList.size() == 0){
-		LOGI("pickWithSeesion()**, ====>>>> no items in sesFreqList\n");
+		if(DEBUG_MODE){
+			LOGI("pickWithSeesion()**, ====>>>> no items in sesFreqList\n");
+		}
 		for(int idx = 0; idx < SoundPair_Config::TONE_FRAME_COUNT; idx++){
 			sesFreqList.insert(sesFreqList.begin(), Ref<FreqRecord>(new FreqRecord(lSesBeginTs + idx*SoundPair_Config::FRAME_TS, -1.0f, SoundPair_Config::MISSING_CHAR, -1, NULL)));
 		}
@@ -444,7 +455,9 @@ void FreqAnalyzer::pickWithoutSession(int iCheckIndex){
 	for(int i =0; i <= iCheckIndex;i++){
 		Ref<FreqRecord> fr = mFreqRecordList[i];
 		codeList.push_back(fr);
-		LOGI("pickWithoutSession(), ====>>>> sFreqRecordList[%d]: %s\n", i, fr->toString().c_str());
+		if(DEBUG_MODE){
+			LOGI("pickWithoutSession(), ====>>>> sFreqRecordList[%d]: %s\n", i, fr->toString().c_str());
+		}
 	}
 
 	//Criteria 1: all the same code
@@ -483,7 +496,9 @@ void FreqAnalyzer::pickWithoutSession(int iCheckIndex){
 	if(false == bDiff){
 		checkEmptySlot();
 
-		LOGI("pickWithoutSession(), all the same, code = [%s]\n", mFreqRecordList.front()->mstrCode.c_str());
+		if(DEBUG_MODE){
+			LOGI("pickWithoutSession(), all the same, code = [%s]\n", mFreqRecordList.front()->mstrCode.c_str());
+		}
 
 		msec_t lFirstTs = mFreqRecordList.front()->mlTs;
 
@@ -506,7 +521,9 @@ void FreqAnalyzer::pickWithoutSession(int iCheckIndex){
 
 		checkEmptySlot();
 
-		LOGI("pickWithoutSession(), first itm happens over 50 %, code = [%s]\n", mFreqRecordList.front()->mstrCode.c_str());
+		if(DEBUG_MODE){
+			LOGI("pickWithoutSession(), first itm happens over 50 %, code = [%s]\n", mFreqRecordList.front()->mstrCode.c_str());
+		}
 		msec_t lFirstTs = mFreqRecordList.front()->mlTs;
 
 		msec_t lStartTs = mFreqRecordList.front()->mlTs;
@@ -522,11 +539,15 @@ void FreqAnalyzer::pickWithoutSession(int iCheckIndex){
 		}
 		appendRet(Ref<CodeRecord>(new CodeRecord(lStartTs, mLastCheckToneTs, strFirstCode, sesFreqList)));
 	}else if(0 == iNumSameFst){
-		LOGI("pickWithoutSession(), remove first noise = [%s], sLastCheckToneTs=%lld\n", strFirstCode.c_str(), mLastCheckToneTs);
+		if(DEBUG_MODE){
+			LOGI("pickWithoutSession(), remove first noise = [%s], sLastCheckToneTs=%lld\n", strFirstCode.c_str(), mLastCheckToneTs);
+		}
 		if(true == mbStartAppend){
 			Ref<FreqRecord> rec = mFreqRecordList.front();
 			if((SoundPair_Config::TONE_PERIOD*SoundPair_Config::RANDUDANT_RATIO) <= (mFreqRecordList[1]->mlTs - mLastCheckToneTs)){
-				LOGW("analyze(), -> Add first noise = [%s]\n", strFirstCode.c_str());
+				if(DEBUG_MODE){
+					LOGW("analyze(), -> Add first noise = [%s]\n", strFirstCode.c_str());
+				}
 				mLastCheckToneTs = mFreqRecordList.front()->mlTs+SoundPair_Config::TONE_PERIOD/2;
 				appendRet(Ref<CodeRecord>(new CodeRecord( mLastCheckToneTs-SoundPair_Config::TONE_PERIOD,
 										  mLastCheckToneTs,
@@ -539,11 +560,15 @@ void FreqAnalyzer::pickWithoutSession(int iCheckIndex){
 		}else
 			mFreqRecordList.erase(mFreqRecordList.begin());
 	}else if(2 <= iCheckIndex){
-		LOGI("pickWithoutSession(), else case -> remove first noise = [%s], sLastCheckToneTs=%lld\n", strFirstCode.c_str(), mLastCheckToneTs);
+		if(DEBUG_MODE){
+			LOGI("pickWithoutSession(), else case -> remove first noise = [%s], sLastCheckToneTs=%lld\n", strFirstCode.c_str(), mLastCheckToneTs);
+		}
 		if(true == mbStartAppend){
 			Ref<FreqRecord> rec = mFreqRecordList.front();
 			if((SoundPair_Config::TONE_PERIOD*SoundPair_Config::RANDUDANT_RATIO) <= (mFreqRecordList[1]->mlTs - mLastCheckToneTs)){
-				LOGI("analyze(), else case -> Add first noise = [%s]\n", strFirstCode.c_str());
+				if(DEBUG_MODE){
+					LOGI("analyze(), else case -> Add first noise = [%s]\n", strFirstCode.c_str());
+				}
 
 				mLastCheckToneTs = rec->mlTs+SoundPair_Config::TONE_PERIOD/2;
 				appendRet(Ref<CodeRecord>(new CodeRecord( mLastCheckToneTs-SoundPair_Config::TONE_PERIOD,
@@ -584,7 +609,9 @@ void FreqAnalyzer::checkEmptySlot(){
 void FreqAnalyzer::appendRet(Ref<CodeRecord> rec){
 	msbDecode<<rec->strCdoe;
 	string strDecodeCheck(msbDecode.str());
-	LOGE("appendRet(), msbDecode:%s, mbStartAppend:%d\n", strDecodeCheck.c_str(), mbStartAppend);
+	if(DEBUG_MODE){
+		LOGE("appendRet(), msbDecode:%s, mbStartAppend:%d\n", strDecodeCheck.c_str(), mbStartAppend);
+	}
 	if(true == mbStartAppend){
 		Ref<CodeRecord> lastItm = (0 < mCodeRecordList.size())?mCodeRecordList.back():Ref<CodeRecord>(NULL);
 		if(NULL != lastItm && (0==lastItm->strCdoe.compare(rec->strCdoe)) && (SoundPair_Config::TONE_PERIOD >= (rec->lEndTs - lastItm->lStartTs))){
@@ -605,7 +632,9 @@ void FreqAnalyzer::appendRet(Ref<CodeRecord> rec){
 			//if First Char is detected already
 			if(-1 < mSessionBeginTs){
 				if((rec->lStartTs - mSessionBeginTs) > SoundPair_Config::TONE_PERIOD && 0 < rec->mlstFreqRec.size()){
-					LOGE("appendRet(), lStartTs - sSessionBeginTs > SoundPair_Config::TONE_PERIOD ==> recover and recheck\n");
+					if(DEBUG_MODE){
+						LOGE("appendRet(), lStartTs - sSessionBeginTs > SoundPair_Config::TONE_PERIOD ==> recover and recheck\n");
+					}
 					for(int i = rec->mlstFreqRec.size() -1; i >= 0;i--){
 						Ref<FreqRecord> fr = rec->mlstFreqRec[i];
 						if((0!=fr->mstrCode.compare(SoundPair_Config::MISSING_CHAR))){
@@ -622,7 +651,9 @@ void FreqAnalyzer::appendRet(Ref<CodeRecord> rec){
 					pickWithoutSession(exceedToneCheckPeriod());
 					return;
 				}else{
-					LOGE("appendRet(), lStartTs - sSessionBeginTs == SoundPair_Config::TONE_PERIOD ==> no need to move\n");
+					if(DEBUG_MODE){
+						LOGE("appendRet(), lStartTs - sSessionBeginTs == SoundPair_Config::TONE_PERIOD ==> no need to move\n");
+					}
 					checkFirstCharOfPrefix(rec);
 				}
 			}else{
@@ -642,14 +673,20 @@ void FreqAnalyzer::checkCodeRecordShift(){
 		return;
 	}
 	CodeRecord::Tone_Shift_Status tsStatusLastRec = (0 < iSize)?mCodeRecordList[iSize-1]->getToneShiftStatus():CodeRecord::TS_NONE;
-	LOGE("tsStatusLastRec: [%d] , iSize:[%d]\n", tsStatusLastRec, iSize);
+	if(DEBUG_MODE){
+		LOGE("tsStatusLastRec: [%d] , iSize:[%d]\n", tsStatusLastRec, iSize);
+	}
 	if(CodeRecord::TS_NONE != tsStatusLastRec){
 		int iSameShiftCnt = 1;
 		for(int idx = iSize -2; idx >=0;idx--){
 			Ref<CodeRecord> chkRec = mCodeRecordList[idx];
 			if(chkRec){
 				CodeRecord::Tone_Shift_Status tsStatus = chkRec->getToneShiftStatus();
-				LOGE("tsStatus: [%d], iSameShiftCnt:[%d] \n", tsStatus, iSameShiftCnt);
+
+				if(DEBUG_MODE){
+					LOGE("tsStatus: [%d], iSameShiftCnt:[%d] \n", tsStatus, iSameShiftCnt);
+				}
+
 				if(tsStatusLastRec != tsStatus){
 					return;
 				}else{
@@ -665,15 +702,19 @@ void FreqAnalyzer::checkCodeRecordShift(){
 									frFstRec = fstRec->popTailRec();
 									frSndRec = sndRec->popTailRec();
 									if(frFstRec && frSndRec){
-										LOGE("frFstRec: [%s]\n", frFstRec->toString().c_str());
-										LOGE("frSndRec: [%s]\n", frSndRec->toString().c_str());
+										if(DEBUG_MODE){
+											LOGE("frFstRec: [%s]\n", frFstRec->toString().c_str());
+											LOGE("frSndRec: [%s]\n", frSndRec->toString().c_str());
+										}
 
 										if(idx == (iSize-2)){ //Begin case
 											mFreqRecordList.insert(mFreqRecordList.begin(), frSndRec);
 										}
 										sndRec->pushToHead(frFstRec);
 										strToChange = sndRec->strCdoe + strToChange;
-										LOGE("strToChange: [%s]\n", strToChange.c_str());
+										if(DEBUG_MODE){
+											LOGE("strToChange: [%s]\n", strToChange.c_str());
+										}
 									}
 								}else{
 									LOGE("fstRec: [%d] or %d sndRec: [%d] is null\n", (NULL != fstRec), (NULL != sndRec));
@@ -704,12 +745,16 @@ void FreqAnalyzer::checkCodeRecordShift(){
 									frFstRec = fstRec->popHeadRec();
 									frSndRec = sndRec->popHeadRec();
 									if(frFstRec && frSndRec){
-										LOGE("frFstRec: [%s]\n", frFstRec->toString().c_str());
-										LOGE("frSndRec: [%s]\n", frSndRec->toString().c_str());
+										if(DEBUG_MODE){
+											LOGE("frFstRec: [%s]\n", frFstRec->toString().c_str());
+											LOGE("frSndRec: [%s]\n", frSndRec->toString().c_str());
+										}
 
 										fstRec->pushToTail(frSndRec);
 										strToChange = fstRec->strCdoe + strToChange;
-										LOGE("strToChange: [%s]\n", strToChange.c_str());
+										if(DEBUG_MODE){
+											LOGE("strToChange: [%s]\n", strToChange.c_str());
+										}
 
 										if(idx == (iSize-2)){ //End case
 											mFreqRecordList.insert(mFreqRecordList.begin(), sndRec->popTailRec());
@@ -742,7 +787,6 @@ void FreqAnalyzer::checkCodeRecordShift(){
 			}
 		}
 	}
-
 }
 
 void FreqAnalyzer::appendRet(string strCode){
@@ -750,7 +794,9 @@ void FreqAnalyzer::appendRet(string strCode){
 	if(false == mbInSenderMode){
 		if(false == mbStartAppend){
 			int iPox = strDecodeCheck.rfind(SoundPair_Config::PREFIX_DECODE);
-			LOGE("appendRet(),SoundPair_Config::PREFIX_DECODE:%s , strCode:%s, mbInSenderMode:%d, iPox:%d\n", SoundPair_Config::PREFIX_DECODE.c_str(), strCode.c_str(), mbInSenderMode, iPox);
+			if(DEBUG_MODE){
+				LOGE("appendRet(),SoundPair_Config::PREFIX_DECODE:%s , strCode:%s, mbInSenderMode:%d, iPox:%d\n", SoundPair_Config::PREFIX_DECODE.c_str(), strCode.c_str(), mbInSenderMode, iPox);
+			}
 			if(-1 < iPox){
 				LOGE("appendRet(), detect SoundPair_Config::PREFIX_DECODE ------------------------------------------------------\n");
 				mbStartAppend = true;
@@ -765,14 +811,20 @@ void FreqAnalyzer::appendRet(string strCode){
 				}
 
 				Ref<CodeRecord> lastTwoRec = mCodeRecordList[mCodeRecordList.size()-2];
-				LOGE("appendRet(), lastTwoRec:%s\n", (lastTwoRec)?lastTwoRec->toString().c_str():"null");
+				if(DEBUG_MODE){
+					LOGE("appendRet(), lastTwoRec:%s\n", (lastTwoRec)?lastTwoRec->toString().c_str():"null");
+				}
 				Ref<CodeRecord> lastRec = mCodeRecordList.back();
-				LOGE("appendRet(), lastRec:%s\n", (lastRec)?lastRec->toString().c_str():"null");
+				if(DEBUG_MODE){
+					LOGE("appendRet(), lastRec:%s\n", (lastRec)?lastRec->toString().c_str():"null");
+				}
 
 				mCodeRecordList.clear();
 				mCodeRecordList.push_back(lastTwoRec);
 				mCodeRecordList.push_back(lastRec);
-				LOGE("appendRet(), lastRec:%s\n", (lastRec)?lastRec->toString().c_str():"null");
+				if(DEBUG_MODE){
+					LOGE("appendRet(), lastRec:%s\n", (lastRec)?lastRec->toString().c_str():"null");
+				}
 
 				beginToTrace("");
 
@@ -815,7 +867,9 @@ void FreqAnalyzer::normalAnalysis(int iIndex){
 	string strDecodeCheck(msbDecode.str());
 	int iFirstDiv = strDecodeCheck.find(SoundPair_Config::PAIRING_DIVIDER);
 
-	LOGE("normalAnalysis(), index = %d, iFirstDiv=%d\n",iIndex,iFirstDiv);
+	if(DEBUG_MODE){
+		LOGE("normalAnalysis(), index = %d, iFirstDiv=%d\n",iIndex,iFirstDiv);
+	}
 
 	if(0 > iIndex/* || iFirstDiv != MAC_LEN*/){
 //		int iShift = checkFrameBySessionAndAutoCorrection();
@@ -864,7 +918,9 @@ void FreqAnalyzer::normalAnalysis(int iIndex){
 //		}
 	}
 
-	LOGE("normalAnalysis(), iIndex = %d,  strDecodeCheck.length()=%d\n",iIndex, strDecodeCheck.length());
+	if(DEBUG_MODE){
+		LOGE("normalAnalysis(), iIndex = %d,  strDecodeCheck.length()=%d\n",iIndex, strDecodeCheck.length());
+	}
 
 	if(0 <= iIndex && iIndex < strDecodeCheck.length()){
 		string strDecodeChk = strDecodeCheck.substr(0, iIndex);
@@ -933,7 +989,9 @@ string FreqAnalyzer::optimizeDecodeString(int iIndex, string strDecodeCheck){
 }
 
 int FreqAnalyzer::checkPostfix(){
-	LOGD("checkPostfix()++\n");
+	if(DEBUG_MODE){
+		LOGD("checkPostfix()++\n");
+	}
 	string strDecodeCheck(msbDecode.str());
 	int iRet = strDecodeCheck.rfind(SoundPair_Config::POSTFIX_DECODE);
 	if(-1 >= iRet){
@@ -959,18 +1017,26 @@ int FreqAnalyzer::checkPostfix(){
 			}
 		}
 	}
-	LOGD("checkPostfix()--\n");
+	if(DEBUG_MODE){
+		LOGD("checkPostfix()--\n");
+	}
 	return iRet;
 }
 
 void FreqAnalyzer::checkFirstCharOfPrefix(Ref<CodeRecord> rec){
-	LOGE("checkFirstCharOfPrefix()+\n");
+	if(DEBUG_MODE){
+		LOGE("checkFirstCharOfPrefix()+\n");
+	}
 	mSessionBeginTs = rec->lStartTs;
-	LOGE("checkFirstCharOfPrefix(), mSessionBeginTs=%lld\n", mSessionBeginTs);
+	if(DEBUG_MODE){
+		LOGE("checkFirstCharOfPrefix(), mSessionBeginTs=%lld\n", mSessionBeginTs);
+	}
 	mSessionBeginBufIdx = rec->mlstFreqRec.front()->miBufIndex;
 	//mSessionOffset = segmentCheckOnFirst(false);
 
-	LOGE("checkFirstCharOfPrefix(), sSessionBeginTs:%lld, sSessionBeginBufIdx:%d,\n sesFreqList:XXX\n", mSessionBeginTs, mSessionBeginBufIdx/*, rec->mlstFreqRec*/);
+	if(DEBUG_MODE){
+		LOGE("checkFirstCharOfPrefix(), sSessionBeginTs:%lld, sSessionBeginBufIdx:%d,\n sesFreqList:XXX\n", mSessionBeginTs, mSessionBeginBufIdx/*, rec->mlstFreqRec*/);
+	}
 	//check next char
 	if( 0 < mFreqRecordList.size()){
 		Ref<FreqRecord> fr = mFreqRecordList.front();
@@ -1046,7 +1112,9 @@ int FreqAnalyzer::segmentCheckOnFirst(bool bForcePerform){
 		bool bCapture = false;
 		int idxFirstDetect = -1, idxLastDetect = -1, iSilenceSample = 0;
 
-		LOGE("segmentCheckOnFirst(), on iBufIndex:%d-------------------------------------\n", iBufIdxTOCheck);
+		if(DEBUG_MODE){
+			LOGE("segmentCheckOnFirst(), on iBufIndex:%d-------------------------------------\n", iBufIdxTOCheck);
+		}
 		AudioBufferMgr::getInstance()->getBufByIndex(iBufIdxTOCheck, 0, bufSegment);
 		for(int idx =0; idx< SoundPair_Config::FRAME_SIZE_REC;idx++){
 			if(sSilence < std::abs(bufSegment[idx])){
@@ -1073,7 +1141,9 @@ int FreqAnalyzer::segmentCheckOnFirst(bool bForcePerform){
 		}
 
 		if(-1 < idxFirstDetect && (SoundPair_Config::FRAME_SIZE_REC - idxFirstDetect) < SoundPair_Config::SILENCE_DETECTION_SAMPLE){
-			LOGE("segmentCheckOnFirst(), continue to check iBufIndex:%d-------------------------------------\n", (iBufIdxTOCheck+1));
+			if(DEBUG_MODE){
+				LOGE("segmentCheckOnFirst(), continue to check iBufIndex:%d-------------------------------------\n", (iBufIdxTOCheck+1));
+			}
 			AudioBufferMgr::getInstance()->getBufByIndex(iBufIdxTOCheck+1, 0, bufSegment);
 
 			for(int idx = 0; idx < SoundPair_Config::FRAME_SIZE_REC; idx++){
@@ -1114,7 +1184,9 @@ int FreqAnalyzer::segmentCheckOnFirst(bool bForcePerform){
 		}
 
 		if(bCapture == false){
-			LOGE("segmentCheckOnFirst(), on iBufIndex:%d-------------------------------------\n", (iBufIdxTOCheck+1));
+			if(DEBUG_MODE){
+				LOGE("segmentCheckOnFirst(), on iBufIndex:%d-------------------------------------\n", (iBufIdxTOCheck+1));
+			}
 			AudioBufferMgr::getInstance()->getBufByIndex(iBufIdxTOCheck+1, 0, bufSegment);
 			idxFirstDetect = -1;
 			idxLastDetect = -1;
@@ -1167,7 +1239,9 @@ int FreqAnalyzer::segmentCheck(bool bForcePerform){
 	if(SoundPair_Config::SEGMENT_OFFSET_FEATURE || bForcePerform){
 //		msec_t lTsBegin = time_ms();
 		Ref<FreqRange> firstFR = SoundPair_Config::findFreqRange(SoundPair_Config::PREFIX_DECODE_C1);
-		LOGE("segmentCheck(), mCodeRecordList.size():%d\n", mCodeRecordList.size());
+		if(DEBUG_MODE){
+			LOGE("segmentCheck(), mCodeRecordList.size():%d\n", mCodeRecordList.size());
+		}
 		if(0 < mCodeRecordList.size()){
 			Ref<CodeRecord> rec = mCodeRecordList.front();
 
@@ -1206,7 +1280,9 @@ int FreqAnalyzer::segmentCheck(bool bForcePerform){
 				if(mIFreqAnalyzeResultCBListener){
 					float freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, 0 == i, NULL);
 					freq = mIFreqAnalyzeResultCBListener->onBufCheck(bufSegment, 0, 0, NULL);
-					LOGE("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d\n",iBufIdxTOCheck,freq, iOffset);
+					if(DEBUG_MODE){
+						LOGE("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d\n",iBufIdxTOCheck,freq, iOffset);
+					}
 					if(0.0 >= freq || false == firstFR->withinFreqRange(freq)){
 						iRet= iOffset - SoundPair_Config::SEG_SES_OFFSET*iPart;//Math.max(iOffset - 3*iPart, 0)+(bWithinSecondRange?SoundPair_Config::FRAME_SIZE_REC:0);//fmin(iOffset + iPart, 0);
 						LOGE("segmentCheck(), iBufIdxTOCheck:%d, freq:%f, iOffset:%d, iRet:[%d]\n",iBufIdxTOCheck, freq, iOffset, iRet);
@@ -1486,7 +1562,9 @@ void FreqAnalyzer::checkResult(string strDecode, string strDecodeUnmark){
 //			}
 		int iSize = mCodeRecordList.size();
 		for(int idx = 0;idx < iSize;idx++){
-			LOGI("checkResult(),===========>>>>>>>>>>>>>> rec= %s\n", mCodeRecordList[idx]->toString().c_str());
+			if(DEBUG_MODE){
+				LOGI("checkResult(),===========>>>>>>>>>>>>>> rec= %s\n", mCodeRecordList[idx]->toString().c_str());
+			}
 		}
 	}
 
@@ -1537,7 +1615,9 @@ int FreqAnalyzer::checkFrameBySessionAndAutoCorrection(){
 
 		if(iNumOfBiasShiftBackward <= iNumOfBiasShiftForward){
 			if(iNumOfBiasShiftBackward< iNumOfBias){
-				LOGE("checkFrameBySessionAndAutoCorrection(), pick lstCodeRecordBackward **********************************************\n");
+				if(DEBUG_MODE){
+					LOGE("checkFrameBySessionAndAutoCorrection(), pick lstCodeRecordBackward **********************************************\n");
+				}
 				mCodeRecordList.clear();
 				mCodeRecordList.insert(mCodeRecordList.begin(),lstCodeRecordBackward.begin(), lstCodeRecordBackward.end());
 				regenDecode();
@@ -1547,7 +1627,9 @@ int FreqAnalyzer::checkFrameBySessionAndAutoCorrection(){
 			}
 		}else{
 			if(iNumOfBiasShiftForward< iNumOfBias){
-				LOGE("checkFrameBySessionAndAutoCorrection(), pick lstCodeRecordForward ***************************************************\n");
+				if(DEBUG_MODE){
+					LOGE("checkFrameBySessionAndAutoCorrection(), pick lstCodeRecordForward ***************************************************\n");
+				}
 				mCodeRecordList.clear();
 				mCodeRecordList.insert(mCodeRecordList.begin(),lstCodeRecordForward.begin(), lstCodeRecordForward.end());
 				regenDecode();
@@ -1571,9 +1653,13 @@ void FreqAnalyzer::regenDecode(){
 
 vector<Ref<CodeRecord> > FreqAnalyzer::getLstCodeRecordByOffset(vector<Ref<CodeRecord> > lstCodeRecord, int iOffset){
 	vector<Ref<CodeRecord> > retLst;
-	LOGD("getLstCodeRecordByOffset(), iOffset:%d\n", iOffset);
+	if(DEBUG_MODE){
+		LOGD("getLstCodeRecordByOffset(), iOffset:%d\n", iOffset);
+	}
 	int iSize = lstCodeRecord.size();
-	LOGD("getLstCodeRecordByOffset(),iSize:%d\n", iSize);
+	if(DEBUG_MODE){
+		LOGD("getLstCodeRecordByOffset(),iSize:%d\n", iSize);
+	}
 	for(int idx = 0; idx + 1 < iSize;idx++){
 		int iCurSize = retLst.size();
 		LOGD("getLstCodeRecordByOffset(), idx:%d, iCurSize:%d, iSize:%d\n", idx, iCurSize, iSize);
@@ -1715,7 +1801,9 @@ string FreqAnalyzer::removeDividerAndUnmark(string strDecode){
 }
 
 string FreqAnalyzer::correctErrByDelta(int iDelta){
-	LOGI("correctErrByDelta(),===========>>>>>>>>>>>>>>iDelta = %d\n",iDelta);
+	if(DEBUG_MODE){
+		LOGI("correctErrByDelta(),===========>>>>>>>>>>>>>>iDelta = %d\n",iDelta);
+	}
 	stringstream strRet;
 //	if(0 < iDelta){
 //		int iTime = iDelta;
@@ -1953,7 +2041,9 @@ string FreqAnalyzer::decodeRSEC(string content){
 
 	stringstream ret;
 	int numDataBytes = content.length();
-	LOGI("decodeRSEC(),===========>>>>>>>>>>>>>> content= %s, numDataBytes=%d\n", content.c_str(), numDataBytes );
+	if(DEBUG_MODE){
+		LOGI("decodeRSEC(),===========>>>>>>>>>>>>>> content= %s, numDataBytes=%d\n", content.c_str(), numDataBytes );
+	}
 
 	int numMsgBytes= getMsgLength(numDataBytes);//(int) Math.ceil((2*numDataBytes-3)/3.0f);
 	if(0 > numMsgBytes){
@@ -1962,7 +2052,9 @@ string FreqAnalyzer::decodeRSEC(string content){
 
 	int numEcBytesInBlock = (1 == iMultiply)?(numDataBytes - numMsgBytes):((numDataBytes - numMsgBytes + 1)/iMultiply)*iMultiply;
 
-	LOGI("decodeRSEC(), ===========>>>>>>>>>>>>>> numMsgBytes=%d , numEcBytesInBlock= %d\n",numMsgBytes ,numEcBytesInBlock );
+	if(DEBUG_MODE){
+		LOGI("decodeRSEC(), ===========>>>>>>>>>>>>>> numMsgBytes=%d , numEcBytesInBlock= %d\n",numMsgBytes ,numEcBytesInBlock );
+	}
 
 	//int* toDecode = NULL;
 	int toDecodeSize = 0;
@@ -1998,7 +2090,9 @@ string FreqAnalyzer::decodeRSEC(string content){
 					}
 				}
 			}
-			LOGD("decodeRSEC(), toDecode[%d] = %d\n",i,toDecode[i]);
+			if(DEBUG_MODE){
+				LOGD("decodeRSEC(), toDecode[%d] = %d\n",i,toDecode[i]);
+			}
 		}
 //	}
 
@@ -2095,7 +2189,9 @@ void FreqAnalyzer::initAnalysisParams(int iSampleRate, int iFrameSize, int iNSIn
 
 	initAudacity();
 
-	LOGE("startRecord()+, sSampleRate:%d, sFrameSize:%d, sLowPassIndex:%d, sHighPassIndex:%d, sBinSize:%f\n", sSampleRate, sFrameSize, sLowPassIndex, sHighPassIndex, sBinSize);
+	if(DEBUG_MODE){
+		LOGE("startRecord()+, sSampleRate:%d, sFrameSize:%d, sLowPassIndex:%d, sHighPassIndex:%d, sBinSize:%f\n", sSampleRate, sFrameSize, sLowPassIndex, sHighPassIndex, sBinSize);
+	}
 }
 
 void FreqAnalyzer::setSpeexPreprocess(SpeexPreprocessState* sps){
@@ -2152,12 +2248,16 @@ void FreqAnalyzer::performSpeexPreprocess(short * bytes, bool bReset, SpeexPrepr
 }
 
 void FreqAnalyzer::runAudioPreprocess(short * array, bool bReset){
-	LOGD("runAudioPreprocess+\n");
+	if(DEBUG_MODE){
+		LOGD("runAudioPreprocess+\n");
+	}
 	performSpeexPreprocess(array, bReset, &stPreprocess);
 }
 
 void FreqAnalyzer::runAudioPreprocessAC(short * array, bool bReset){
-	LOGD("runAudioPreprocessAC+\n");
+	if(DEBUG_MODE){
+		LOGD("runAudioPreprocessAC+\n");
+	}
 	performSpeexPreprocess(array, bReset, &stPreprocessAC);
 }
 
@@ -2179,7 +2279,9 @@ static fftwf_plan plan_forward;
 #endif
 
 void FreqAnalyzer::initAudacity(){
-	LOGD("initAudacity(), ++\n");
+	if(DEBUG_MODE){
+		LOGD("initAudacity(), ++\n");
+	}
 	if(NULL == inBuffer){
 		inBuffer = (float*)malloc(sFrameSize*sizeof(float));
 	}
@@ -2227,7 +2329,9 @@ void FreqAnalyzer::initAudacity(){
 	pthread_mutex_init(&sSyncFFTObj, NULL);
 
 
-	LOGD("initAudacity(), --\n");
+	if(DEBUG_MODE){
+		LOGD("initAudacity(), --\n");
+	}
 }
 
 void FreqAnalyzer::deinitAudacity(){
@@ -2286,7 +2390,9 @@ static KissFFT* fft = NULL;
 
 float FreqAnalyzer::analyzeAudioViaKiss(ArrayRef<short> array, int iBufSize, int* iDxValues){
 	if(!fft){
-		LOGE("0\n");
+		if(DEBUG_MODE){
+			LOGE("0\n");
+		}
 		fft = new KissFFT();
 		//LOGE("0-1\n");
 
@@ -2299,7 +2405,9 @@ float FreqAnalyzer::analyzeAudioViaKiss(ArrayRef<short> array, int iBufSize, int
 		fft->spectrumIn = (kiss_fft_cpx*)malloc(sizeof(kiss_fft_cpx) * iBufSize);
 		//LOGE("0-3\n");
 		fft->spectrumOut = (kiss_fft_cpx*)malloc(sizeof(kiss_fft_cpx) * iBufSize);
-		LOGE("0-4\n");
+		if(DEBUG_MODE){
+			LOGE("0-4\n");
+		}
 	}
 
 	//LOGE("1\n");
@@ -2451,7 +2559,9 @@ float FreqAnalyzer::performAudacityFFT(ArrayRef<short> bytes, bool bReset, Speex
 
 #endif
 		if(CAM_TIME_TRACE){
-			LOGE("performAudacityFFT(), Spectrum and Preprocess takes [%ld, %ld, %ld, %ld, %ld] ms average\n", sTotalTime1/lCount, sTotalTime2_1/lCount, sTotalTime2/lCount, sTotalTime2_2/lCount, lTotalTime/(lCount));
+			if(DEBUG_MODE){
+				LOGE("performAudacityFFT(), Spectrum and Preprocess takes [%ld, %ld, %ld, %ld, %ld] ms average\n", sTotalTime1/lCount, sTotalTime2_1/lCount, sTotalTime2/lCount, sTotalTime2_2/lCount, lTotalTime/(lCount));
+			}
 		}
 
 		lCount++;

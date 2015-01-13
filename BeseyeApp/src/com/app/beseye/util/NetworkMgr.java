@@ -217,18 +217,20 @@ public class NetworkMgr {
 			for(WifiConfiguration c : configs){
 				if(null != c && null != c.BSSID && c.BSSID.equalsIgnoreCase("\"" + BSSID + "\"")){
 					config = c;
-					Log.i(TAG, "getWifiConfigurationByBSSID(), SSID:<"+c.SSID+
-							  ">, BSSID:<"+c.BSSID+
-							  ">, hiddenSSID:<"+c.hiddenSSID+
-							  ">, wepTxKeyIndex:<"+c.wepTxKeyIndex+
-							  ">, wepKeys:<"+c.wepKeys[c.wepTxKeyIndex]+
-							  ">, status:<"+c.status+
-							  ">, allowedAuthAlgorithms:<"+c.allowedAuthAlgorithms+
-							  ">, allowedGroupCiphers:<"+c.allowedGroupCiphers+
-							  ">, allowedKeyManagement:<"+c.allowedKeyManagement+
-							  ">, allowedPairwiseCiphers:<"+c.allowedPairwiseCiphers+
-							  ">, allowedProtocols:<"+c.allowedProtocols+
-							  ">, preSharedKey:<"+c.preSharedKey+">");
+					if(DEBUG){
+						Log.i(TAG, "getWifiConfigurationByBSSID(), SSID:<"+c.SSID+
+								  ">, BSSID:<"+c.BSSID+
+								  ">, hiddenSSID:<"+c.hiddenSSID+
+								  ">, wepTxKeyIndex:<"+c.wepTxKeyIndex+
+								  ">, wepKeys:<"+c.wepKeys[c.wepTxKeyIndex]+
+								  ">, status:<"+c.status+
+								  ">, allowedAuthAlgorithms:<"+c.allowedAuthAlgorithms+
+								  ">, allowedGroupCiphers:<"+c.allowedGroupCiphers+
+								  ">, allowedKeyManagement:<"+c.allowedKeyManagement+
+								  ">, allowedPairwiseCiphers:<"+c.allowedPairwiseCiphers+
+								  ">, allowedProtocols:<"+c.allowedProtocols+
+								  ">, preSharedKey:<"+c.preSharedKey+">");
+					}
 					break;
 				}
 			}
@@ -264,7 +266,8 @@ public class NetworkMgr {
 		
 		WifiConfiguration wifiConfig = getWifiConfigurationBySSID(wifiApinfo.SSID);
 		if(null == wifiConfig){
-			Log.i(TAG, "connectWifi(), can't find matched wifi config");
+			if(DEBUG)
+				Log.i(TAG, "connectWifi(), can't find matched wifi config");
 			wifiConfig = new WifiConfiguration();
 			wifiConfig.SSID = String.format("\"%s\"", wifiApinfo.SSID);	
 			if(wifiApinfo.bIsOther){
@@ -274,8 +277,8 @@ public class NetworkMgr {
 		}else{
 			netId = wifiConfig.networkId;
 		}
-		
-		Log.i(TAG, "connectWifi(), wifiConfig:"+wifiConfig.networkId);
+		if(DEBUG)
+			Log.i(TAG, "connectWifi(), wifiConfig:"+wifiConfig.networkId);
 		
 		if(RELAY_AP_SSID.equals(wifiApinfo.SSID)){
 			wifiConfig.priority = 1;
@@ -294,7 +297,8 @@ public class NetworkMgr {
 		}else if(wifiApinfo.cipher.contains(WifiAPInfo.AUTHNICATION_WPA) || wifiApinfo.iCipherIdx > 1){
 			wifiConfig.preSharedKey = String.format("\"%s\"", password);
 			wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-			Log.i(TAG, "connectWifi(), wifiConfig.preSharedKey:"+wifiConfig.preSharedKey);
+			if(DEBUG)
+				Log.i(TAG, "connectWifi(), wifiConfig.preSharedKey:"+wifiConfig.preSharedKey);
 		}else if(wifiApinfo.cipher.contains(WifiAPInfo.AUTHNICATION_WEP) || wifiApinfo.iCipherIdx == 1){
 			wifiConfig.wepTxKeyIndex = wifiApinfo.wepkeyIdx;
 			for(int i = 0; i<4;i++){
@@ -303,7 +307,8 @@ public class NetworkMgr {
 				else
 					wifiConfig.wepKeys[i] = null;
 			}
-			Log.e(TAG, "connectWifi(), AUTHNICATION_WEP, wifiConfig.wepTxKeyIndex="+wifiConfig.wepTxKeyIndex);
+			if(DEBUG)
+				Log.e(TAG, "connectWifi(), AUTHNICATION_WEP, wifiConfig.wepTxKeyIndex="+wifiConfig.wepTxKeyIndex);
 			//wifiConfig.hiddenSSID = false;
 			
 			wifiConfig.allowedAuthAlgorithms.clear();
@@ -327,25 +332,31 @@ public class NetworkMgr {
 		}
 		
 		if(0 < wifiConfig.networkId){
-			Log.e(TAG, "connectWifi(), removeNetwork wifi with netId :"+wifiConfig.networkId);
+			if(DEBUG)
+				Log.e(TAG, "connectWifi(), removeNetwork wifi with netId :"+wifiConfig.networkId);
 			if(!mWifiManager.removeNetwork(wifiConfig.networkId))
-				Log.e(TAG, "connectWifi(), cannot removeNetwork wifi with netId :"+wifiConfig.networkId);
+				if(DEBUG)
+					Log.e(TAG, "connectWifi(), cannot removeNetwork wifi with netId :"+wifiConfig.networkId);
 			
 			if(!mWifiManager.saveConfiguration()){
-				Log.e(TAG, "connectWifi(), cannot saveConfiguration");
+				if(DEBUG)
+					Log.e(TAG, "connectWifi(), cannot saveConfiguration");
 			}
 		}
 		
 		netId = mWifiManager.addNetwork(wifiConfig);
-		Log.d(TAG, "connectWifi(), netId:"+netId);
+		if(DEBUG)
+			Log.d(TAG, "connectWifi(), netId:"+netId);
 		
 		if(bRet = mWifiManager.disconnect()){
 			if(bRet = mWifiManager.enableNetwork(netId, true)){
 				if(false == (bRet = mWifiManager.reconnect())){
-					Log.e(TAG, "connectWifi(), cannot reconnect wifi with netId :"+netId);
+					if(DEBUG)
+						Log.e(TAG, "connectWifi(), cannot reconnect wifi with netId :"+netId);
 				}
 			}else{
-				Log.e(TAG, "connectWifi(), cannot enable wifi with netId :"+netId);
+				if(DEBUG)
+					Log.e(TAG, "connectWifi(), cannot enable wifi with netId :"+netId);
 			}
 		}else{
 			Log.e(TAG, "connectWifi(), cannot disconnect wifi");
@@ -387,7 +398,8 @@ public class NetworkMgr {
 			for(WeakReference<OnNetworkChangeCallback> wrListener : mOnNetworkChangeCallbackListeners){
 				OnNetworkChangeCallback checkListener = wrListener.get();
 				if(checkListener == listerner){
-					Log.i(TAG, "registerNetworkChangeCallback(), same listener detected :"+listerner.getClass().getSimpleName());
+					if(DEBUG)
+						Log.i(TAG, "registerNetworkChangeCallback(), same listener detected :"+listerner.getClass().getSimpleName());
 					return;
 				}
 			}
@@ -421,7 +433,8 @@ public class NetworkMgr {
 				public void run() {
 					boolean bLatestConnectedState = isNetworkConnected();
 					if(mbIsNetworkConnected != bLatestConnectedState){
-						Log.i(TAG, "notifyNetworkStatusChanged(), connectivity change to "+bLatestConnectedState);
+						if(DEBUG)
+							Log.i(TAG, "notifyNetworkStatusChanged(), connectivity change to "+bLatestConnectedState);
 						for(WeakReference<OnNetworkChangeCallback> wrListener : mOnNetworkChangeCallbackListeners){
 							OnNetworkChangeCallback checkListener = wrListener.get();
 							if(null != checkListener){
@@ -440,11 +453,13 @@ public class NetworkMgr {
 				for(WeakReference<OnWifiStatusChangeCallback> wrListener : mOnWifiStatusChangeCallbackListeners){
 					OnWifiStatusChangeCallback checkListener = wrListener.get();
 					if(checkListener == listerner){
-						Log.i(TAG, "registerWifiStatusChangeCallback(), same listener detected :"+listerner.getClass().getSimpleName());
+						if(DEBUG)
+							Log.i(TAG, "registerWifiStatusChangeCallback(), same listener detected :"+listerner.getClass().getSimpleName());
 						return;
 					}
 				}
-				Log.i(TAG, "registerWifiStatusChangeCallback(), listener:"+listerner.getClass().getSimpleName());
+				if(DEBUG)
+					Log.i(TAG, "registerWifiStatusChangeCallback(), listener:"+listerner.getClass().getSimpleName());
 				mOnWifiStatusChangeCallbackListeners.add(new WeakReference<OnWifiStatusChangeCallback>(listerner));
 			}else{
 				Log.e(TAG, "registerWifiStatusChangeCallback(), invalid params, mOnWifiStatusChangeCallbackListeners="+mOnWifiStatusChangeCallbackListeners);
@@ -465,7 +480,8 @@ public class NetworkMgr {
 				}
 				
 				if(null != targetListener){
-					Log.i(TAG, "unregisterWifiStatusChangeCallback(), listener:"+listerner.getClass().getSimpleName());
+					if(DEBUG)
+						Log.i(TAG, "unregisterWifiStatusChangeCallback(), listener:"+listerner.getClass().getSimpleName());
 					mOnWifiStatusChangeCallbackListeners.remove(targetListener);
 				}else{
 					Log.i(TAG, "unregisterWifiStatusChangeCallback(), can't find same listener:"+listerner.getClass().getSimpleName());
@@ -479,7 +495,8 @@ public class NetworkMgr {
 			sHandler.post(new Runnable(){
 				@Override
 				public void run() {
-					Log.i(TAG, "notifyWifiStatusChanged(), wifi status change from "+miWifiState+" to "+iLatestWifiStatus);
+					if(DEBUG)
+						Log.i(TAG, "notifyWifiStatusChanged(), wifi status change from "+miWifiState+" to "+iLatestWifiStatus);
 					if(miWifiState != iLatestWifiStatus){
 						synchronized(mOnWifiStatusChangeCallbackListeners){
 							for(WeakReference<OnWifiStatusChangeCallback> wrListener : mOnWifiStatusChangeCallbackListeners){
@@ -500,7 +517,8 @@ public class NetworkMgr {
 			sHandler.post(new Runnable(){
 				@Override
 				public void run() {
-					Log.i(TAG, "notifyWifiNetworkStatusChanged(), wifi ("+getActiveWifiBSSID()+")status change from "+miWifiNetworkState+" to "+iLatestWifiStatus);
+					if(DEBUG)
+						Log.i(TAG, "notifyWifiNetworkStatusChanged(), wifi ("+getActiveWifiBSSID()+")status change from "+miWifiNetworkState+" to "+iLatestWifiStatus);
 					
 					//if(miWifiNetworkState != iLatestWifiStatus){
 					synchronized(mOnWifiStatusChangeCallbackListeners){
@@ -508,7 +526,8 @@ public class NetworkMgr {
 						for(int i = 0; i < mOnWifiStatusChangeCallbackListeners.size();i++){
 							OnWifiStatusChangeCallback checkListener = mOnWifiStatusChangeCallbackListeners.get(i).get();
 							if(null != checkListener){
-								Log.i(TAG, "notifyWifiNetworkStatusChanged(), checkListener="+checkListener.getClass().getSimpleName());
+								if(DEBUG)
+									Log.i(TAG, "notifyWifiNetworkStatusChanged(), checkListener="+checkListener.getClass().getSimpleName());
 								checkListener.onWifiNetworkStateChanged(iLatestWifiStatus, miWifiNetworkState);
 							}
 						}
@@ -542,7 +561,8 @@ public class NetworkMgr {
 				@Override
 				public void run() {
 					String curSSID = getActiveWifiBSSID();
-					Log.i(TAG, "notifyOnSupplicantStatusChangeCallback(), supplicant ("+curSSID+")state change from <"+mSupplicantState+"> to <"+iLatestSupplicantState+">");
+					if(DEBUG)
+						Log.i(TAG, "notifyOnSupplicantStatusChangeCallback(), supplicant ("+curSSID+")state change from <"+mSupplicantState+"> to <"+iLatestSupplicantState+">");
 					if(mSupplicantState != iLatestSupplicantState){
 						OnSupplicantStatusChangeCallback checkListener = (null != mOnSupplicantStatusChangeCallbackListeners)?mOnSupplicantStatusChangeCallbackListeners.get():null;
 						if(null != checkListener){
@@ -552,7 +572,8 @@ public class NetworkMgr {
 					mSupplicantState = iLatestSupplicantState;
 					
 					if(null != curSSID && !curSSID.equals(mPreviousActiveSSID)){
-						Log.i(TAG, "notifyOnSupplicantStatusChangeCallback(), SSID change from <"+mPreviousActiveSSID+"> to <"+curSSID+">");
+						if(DEBUG)
+							Log.i(TAG, "notifyOnSupplicantStatusChangeCallback(), SSID change from <"+mPreviousActiveSSID+"> to <"+curSSID+">");
 						mPreviousActiveSSID = curSSID;
 					}
 				}});
@@ -565,7 +586,8 @@ public class NetworkMgr {
 				@Override
 				public void run() {
 					//String SSID = NetworkMgr.getInstance().getActiveWifiSSID();
-					Log.w(TAG, "notifyOnSuppicantAuthenticationError()!!!!!!!!!!!!!, ssid:"+mPreviousActiveSSID);
+					if(DEBUG)
+						Log.w(TAG, "notifyOnSuppicantAuthenticationError()!!!!!!!!!!!!!, ssid:"+mPreviousActiveSSID);
 					OnSupplicantStatusChangeCallback checkListener = (null != mOnSupplicantStatusChangeCallbackListeners)?mOnSupplicantStatusChangeCallbackListeners.get():null;
 					if(null != checkListener){
 						checkListener.onAuthenticationError(mPreviousActiveSSID);
@@ -599,7 +621,8 @@ public class NetworkMgr {
 	public boolean scanWifiList(OnWifiScanResultAvailableCallback listerner){
 		boolean bRet = false;
 		if(null != mWifiManager){
-			Log.i(TAG, "scanWifiList()");
+			if(DEBUG)
+				Log.i(TAG, "scanWifiList()");
 			registerOnWifiScanResultAvailableCallbackListener(listerner);
 			Context context = mWrContext.get();
 			if(null != context)
@@ -612,7 +635,8 @@ public class NetworkMgr {
 	public boolean cancelScanWifiList(OnWifiScanResultAvailableCallback listerner){
 		boolean bRet = false;
 		if(null != mWifiManager){
-			Log.i(TAG, "cancelScanWifiList()");
+			if(DEBUG)
+				Log.i(TAG, "cancelScanWifiList()");
 			unregisterOnWifiScanResultAvailableCallbackListener(listerner);
 		}
 		return bRet;
@@ -620,7 +644,8 @@ public class NetworkMgr {
 	
 	public void registerOnWifiScanResultAvailableCallbackListener(OnWifiScanResultAvailableCallback listerner){
 		if(null != listerner){
-			Log.i(TAG, "registerOnWifiScanResultAvailableCallbackListener()");
+			if(DEBUG)
+				Log.i(TAG, "registerOnWifiScanResultAvailableCallbackListener()");
 			mOnWifiScanResultAvailableCallbackListener = new WeakReference<OnWifiScanResultAvailableCallback>(listerner);
 		}
 	}
@@ -641,7 +666,8 @@ public class NetworkMgr {
 			sHandler.post(new Runnable(){
 				@Override
 				public void run() {
-					Log.i(TAG, "notifyWifiScanResultAvailable()");
+					if(DEBUG)
+						Log.i(TAG, "notifyWifiScanResultAvailable()");
 					if(null != mOnWifiScanResultAvailableCallbackListener ){
 						OnWifiScanResultAvailableCallback checkListener = mOnWifiScanResultAvailableCallbackListener.get();
 						if(null != checkListener){
@@ -667,11 +693,11 @@ public class NetworkMgr {
 	static public class WifiAPInfo implements Parcelable{
 		@Override
 		public String toString() {
-			return "WifiAPInfo [SSID=" + SSID + ", BSSID=" + BSSID+", bIsHiddenSSID="+bIsHiddenSSID
+			return (DEBUG)?("WifiAPInfo [SSID=" + SSID + ", BSSID=" + BSSID+", bIsHiddenSSID="+bIsHiddenSSID
 					+ ", cipher=" + cipher + ", password=" + password
 					+ ", wepkeyIdx=" + wepkeyIdx + ", signalLevel="
 					+ signalLevel + ", frequency=" + frequency
-					+ ", bActiveConn=" + bActiveConn + "]";
+					+ ", bActiveConn=" + bActiveConn + "]"):"";
 		}
 
 		static final public int MAX_SIGNAL_LEVEL = 4;
@@ -842,7 +868,8 @@ public class NetworkMgr {
 		if(null != dest){
 			dest.clear();
 			String strAciveBSSID = NetworkMgr.getInstance().getActiveWifiBSSID();
-			Log.i(TAG, "filterWifiAPInfo(), strAciveBSSID = "+strAciveBSSID);
+			if(DEBUG)
+				Log.i(TAG, "filterWifiAPInfo(), strAciveBSSID = "+strAciveBSSID);
 			if(null != src){
 				for(ScanResult ret : src){
 					if(null != ret){
@@ -871,7 +898,8 @@ public class NetworkMgr {
 		if(null != dest){
 			dest.clear();
 			//String strAciveBSSID = NetworkMgr.getInstance().getActiveWifiBSSID();
-			Log.i(TAG, "filterWifiAPInfo(), strAciveSSID = "+strAciveSSID+", strAciveBSSID = "+strAciveBSSID);
+			if(DEBUG)
+				Log.i(TAG, "filterWifiAPInfo(), strAciveSSID = "+strAciveSSID+", strAciveBSSID = "+strAciveBSSID);
 			if(null != src){
 				int iCount = src.length();
 				for(int idx = 0;idx< iCount;idx++){
@@ -953,7 +981,9 @@ public class NetworkMgr {
 			if(null != wifiConfig){
 				retInfo.bIsHiddenSSID = wifiConfig.hiddenSSID;
 			}else{
-				Log.e(TAG, "transformFromScanResult(), can not find config for ret.SSID "+retInfo.SSID);
+				if(DEBUG){
+					Log.e(TAG, "transformFromScanResult(), can not find config for ret.SSID "+retInfo.SSID);
+				}
 			}
 			retInfo.signalLevel = WifiManager.calculateSignalLevel(ret.level, WifiAPInfo.MAX_SIGNAL_LEVEL);
 			
@@ -1110,7 +1140,8 @@ public class NetworkMgr {
         protected String doInBackground(String... params) {  
             String s = "";  
             s = Ping("tw.yahoo.com");  
-            Log.i(TAG, "NetPing::doInBackground(), ret:"+s);  
+            if(DEBUG)
+            	Log.i(TAG, "NetPing::doInBackground(), ret:"+s);  
             OnPingCallback cb = (null != mOnPingCallback)?mOnPingCallback.get():null;
             if(null != cb){
             	cb.onPingResultCallback(this, "success".equals(s));

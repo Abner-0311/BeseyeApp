@@ -143,7 +143,8 @@ public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
 		}
 		
 		if(null != mCheckCamListVersionTask && false == mCheckCamListVersionTask.isCancelled()){
-			Log.i(TAG, "queryCamUpdateVersions(), mCheckCamListVersionTask is ongoing");
+			if(DEBUG)
+				Log.i(TAG, "queryCamUpdateVersions(), mCheckCamListVersionTask is ongoing");
 			return;
 		}
 		
@@ -157,7 +158,8 @@ public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
 		if(null != mArrVcamList){
 			if(miCurCheckIdx == mArrVcamList.length()){
 				//report
-				Log.i(TAG, "checkVersionByIdx(), mLstUpdateCandidate="+mLstUpdateCandidate.toString());
+				if(DEBUG)
+					Log.i(TAG, "checkVersionByIdx(), mLstUpdateCandidate="+mLstUpdateCandidate.toString());
 				OnCamUpdateVersionCheckListener listener = (null != mOnCamUpdateVersionCheckListener)?mOnCamUpdateVersionCheckListener.get():null;
 				if(null != mLstUpdateCandidate && 0 < mLstUpdateCandidate.length() && null != listener){
 					listener.onCamUpdateList(mLstUpdateCandidate);

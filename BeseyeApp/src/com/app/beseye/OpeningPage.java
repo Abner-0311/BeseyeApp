@@ -48,16 +48,19 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.i(TAG, "OpeningPage::onCreate()");
+		if(DEBUG)
+			Log.i(TAG, "OpeningPage::onCreate()");
 		//if(sbFirstLaunch)
 		if(getIntent().getBooleanExtra(KEY_HAVE_HANDLED, false)){
-			Log.i(TAG, "OpeningPage::onCreate(), call finish for KEY_HAVE_HANDLED is true ");
+			if(DEBUG)
+				Log.i(TAG, "OpeningPage::onCreate(), call finish for KEY_HAVE_HANDLED is true ");
 			finish();
 			return;
 		}
 		
 		if(null != savedInstanceState && savedInstanceState.getBoolean(KEY_HAVE_HANDLED, false)){
-			Log.i(TAG, "OpeningPage::onCreate(), call finish for KEY_HAVE_HANDLED of savedInstanceState is true ");
+			if(DEBUG)
+				Log.i(TAG, "OpeningPage::onCreate(), call finish for KEY_HAVE_HANDLED of savedInstanceState is true ");
 			finish();
 			return;
 		}
@@ -68,7 +71,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		if(getIntent().getBooleanExtra(ACTION_BRING_FRONT, false)){
-			Log.i(TAG, "OpeningPage::onCreate(), call finish for ACTION_BRING_FRONT");
+			if(DEBUG)
+				Log.i(TAG, "OpeningPage::onCreate(), call finish for ACTION_BRING_FRONT");
 			finish();
 			return;
 		}
@@ -110,10 +114,12 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 
 	@Override
 	protected void onResume() {
-		Log.i(TAG, "OpeningPage::onResume()");
+		if(DEBUG)
+			Log.i(TAG, "OpeningPage::onResume()");
 		super.onResume();
 		if(false == m_bLaunchForDelegate && null == mGetUserInfoTask){
-			Log.i(TAG, "OpeningPage::onResume(), call finish");
+			if(DEBUG)
+				Log.i(TAG, "OpeningPage::onResume(), call finish");
 			finish();
 		}
 		m_bLaunchForDelegate = false;
@@ -122,7 +128,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	
 	@Override
 	protected void onPause() {
-		Log.i(TAG, "OpeningPage::onPause()");
+		if(DEBUG)
+			Log.i(TAG, "OpeningPage::onPause()");
 		if(null != mGetUserInfoTask){
 			mGetUserInfoTask.cancel(true);
 		}
@@ -137,10 +144,12 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 
 	@Override
 	protected void onDestroy() {
-		Log.i(TAG, "OpeningPage::onDestroy()");
+		if(DEBUG)
+			Log.i(TAG, "OpeningPage::onDestroy()");
 		super.onDestroy();
 		if(intentRelaunch != null){
-			Log.i(TAG, "OpeningPage::onDestroy(), invoke intentRelaunch");
+			if(DEBUG)
+				Log.i(TAG, "OpeningPage::onDestroy(), invoke intentRelaunch");
 			startActivity(intentRelaunch);
 		}
 	}
@@ -222,7 +231,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	        
 	        if(intent.getBooleanExtra(KEY_EVENT_FLAG, false) ){
 	        	if(false == intent.getBooleanExtra(KEY_EVENT_RELAUNCH_FLAG, false) && BeseyeBaseActivity.getActiveActivityCount() == 0){
-	        		Log.i(TAG, "OpeningPage::launchActivityByIntent(), relaunch");
+	        		if(DEBUG)
+	        			Log.i(TAG, "OpeningPage::launchActivityByIntent(), relaunch");
 	        		intentRelaunch = new Intent();
 	        		intentRelaunch.setClassName(this, OpeningPage.class.getName());
 	        		intentRelaunch.setAction("android.intent.action.MAIN"); 
@@ -235,7 +245,9 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	        		finish();
 	        		return;
 	        	}else if(intent.getBooleanExtra(KEY_EVENT_RELAUNCH_FLAG, false)){
-	        		Log.i(TAG, "OpeningPage::launchActivityByIntent(), reach relaunch case");
+	        		if(DEBUG)
+	        			Log.i(TAG, "OpeningPage::launchActivityByIntent(), reach relaunch case");
+	        		
 	        		Intent intentCameraList = new Intent();
 		        	intentCameraList.setClassName(this, FIRST_PAGE);
 		        	intentCameraList.putExtra(KEY_EVENT_FLAG, true);
@@ -250,7 +262,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		}
 		
 		String strTsInfo = intentLanuch.getStringExtra(CameraViewActivity.KEY_TIMELINE_INFO);
-		Log.i(TAG, "OpeningPage::launchActivityByIntent(), strTsInfo:"+strTsInfo);
+		if(DEBUG)
+			Log.i(TAG, "OpeningPage::launchActivityByIntent(), strTsInfo:"+strTsInfo);
 		
 		//intentLanuch.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		if(sbFirstLaunch || (!SessionMgr.getInstance().getIsCertificated() && !intent.getBooleanExtra(KEY_IGNORE_ACTIVATED_FLAG, false))){
@@ -296,7 +309,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 				if(0 == iRetCode){
 					JSONObject obj = result.get(0);
 					if(null != obj){
-						Log.i(TAG, "OpeningPage::onPostExecute(), obj "+obj);
+						if(DEBUG)
+							Log.i(TAG, "OpeningPage::onPostExecute(), obj "+obj);
 						JSONObject objUser = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_USER);
 						if(null != objUser){
 							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
@@ -311,11 +325,13 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 					SessionMgr.getInstance().cleanSession();
 				}
 				startActivity(intentLanuch);
-				Log.i(TAG, "OpeningPage::onPostExecute(), call finish");
+				if(DEBUG)
+					Log.i(TAG, "OpeningPage::onPostExecute(), call finish");
 				finish();
 			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
-					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
+					if(DEBUG)
+						Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
 					if(0 == iVcamCnt){
 						SessionMgr.getInstance().setIsCertificated(false);

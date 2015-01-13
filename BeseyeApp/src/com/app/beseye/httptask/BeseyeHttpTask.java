@@ -1,4 +1,5 @@
 package com.app.beseye.httptask;
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.io.IOException;
@@ -356,7 +357,9 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    		HttpEntityEnclosingRequestBase request = (HttpEntityEnclosingRequestBase)httpRequest;
 	    		request.setEntity(new StringEntity(strParams[1], HTTP.UTF_8));
 	    	}
-	    	Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl)+", ["+(null != mStrVCamIdForPerm && 0 < mStrVCamIdForPerm.length())+", "+(SessionMgr.getInstance().isTokenValid())+"]");
+	    	
+	    	if(DEBUG)
+	    		Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl)+", ["+(null != mStrVCamIdForPerm && 0 < mStrVCamIdForPerm.length())+", "+(SessionMgr.getInstance().isTokenValid())+"]");
 	    	
 	    	long startTime = System.currentTimeMillis();
 	        HttpResponse response = httpclient.execute(httpRequest);
@@ -364,11 +367,12 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	        int statusCode = statusLine.getStatusCode();
 	        if (statusCode == 200) {
 	        	 entity = response.getEntity();
-	             Log.i(TAG, "Receive Http Request:"+(System.currentTimeMillis()-startTime)+"ms");
+	        	 if(DEBUG)
+	        		 Log.i(TAG, "Receive Http Request:"+(System.currentTimeMillis()-startTime)+"ms");
 	             //is = entity.getContent();
 	        }
 	        else{
-	        	Log.e(TAG, "statusCode:"+statusCode+", url = "+filterPrivacyData(strUrl));
+	        	 Log.e(TAG, "statusCode:"+statusCode+", url = "+filterPrivacyData(strUrl));
 	        	 if(null != httpRequest){
 	             	httpRequest.abort();
 	             }
@@ -660,7 +664,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	     return generateChecksum("MD5", stringToHash);
 	}
 	
-	static private final String IKALA_SHA1_TOKEN = "ikala53342456";
+	static private final String IKALA_SHA1_TOKEN = "beseye54325265";
 	static public String getSHA1Checksum(){
 		String stringToHash = android.os.Build.MANUFACTURER+android.os.Build.MODEL+SessionMgr.getInstance().getAuthToken()+IKALA_SHA1_TOKEN;
 		String checkSum = generateSHA1Checksum(stringToHash);

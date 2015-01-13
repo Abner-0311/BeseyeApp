@@ -1,5 +1,6 @@
 package com.app.beseye.audio;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -16,8 +17,8 @@ public class AudioChannelMgr {
         int channelConfig = isStereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO : AudioFormat.CHANNEL_CONFIGURATION_MONO;
         int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT : AudioFormat.ENCODING_PCM_8BIT;
         int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
-        
-        Log.i(TAG, "audioInit(), SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (is16Bit ? "16-bit" : "8-bit") + " " + (sampleRate / 1000f) + "kHz, " + desiredFrames + " frames buffer");
+        if(DEBUG)
+        	Log.i(TAG, "audioInit(), SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (is16Bit ? "16-bit" : "8-bit") + " " + (sampleRate / 1000f) + "kHz, " + desiredFrames + " frames buffer");
         
         // Let the user pick a larger buffer if they really want -- but ye
         // gods they probably shouldn't, the minimums are horrifyingly high
@@ -50,7 +51,8 @@ public class AudioChannelMgr {
         sChannelConfig = channelConfig;
         sAudioFormat = audioFormat;
        
-        Log.v(TAG, "audioInit(), SDL audio: got " + ((sAudioTrack.getChannelCount() >= 2) ? "stereo" : "mono") + " " + ((sAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit" : "8-bit") + " " + (sAudioTrack.getSampleRate() / 1000f) + "kHz, " + desiredFrames + " frames buffer");
+        if(DEBUG)
+        	Log.v(TAG, "audioInit(), SDL audio: got " + ((sAudioTrack.getChannelCount() >= 2) ? "stereo" : "mono") + " " + ((sAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit" : "8-bit") + " " + (sAudioTrack.getSampleRate() / 1000f) + "kHz, " + desiredFrames + " frames buffer");
         
         return 0;
     }

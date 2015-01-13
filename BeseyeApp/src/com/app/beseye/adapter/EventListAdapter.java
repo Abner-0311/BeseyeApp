@@ -1,5 +1,6 @@
 package com.app.beseye.adapter;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import org.json.JSONArray;
@@ -134,7 +135,8 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 							
 							JSONArray arrCache = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_THUMBNAIL_PATH_CACHE);
 							if(null != arrCache && 0 < arrCache.length()){
-								Log.d(TAG, "setupItem(), reuse MM_THUMBNAIL_PATH_CACHE");	
+								if(DEBUG)
+									Log.d(TAG, "setupItem(), reuse MM_THUMBNAIL_PATH_CACHE");	
 								pathCache = new String[arrCache.length()];
 								for(int i = 0;i<arrCache.length();i++){
 									try {
@@ -144,7 +146,8 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 									}
 								}	
 							}else{
-								Log.d(TAG, "setupItem(), create MM_THUMBNAIL_PATH_CACHE");	
+								if(DEBUG)
+									Log.d(TAG, "setupItem(), create MM_THUMBNAIL_PATH_CACHE");	
 								pathCache = RemoteImageView.getCachePaths(mContext, path);
 								JSONArray arrToCache = new JSONArray();
 								for(String toCache:pathCache){
@@ -158,10 +161,11 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 									e.printStackTrace();
 								}
 							}
-							
-							Log.i(TAG, "setupItem(), path="+((null != path)?path.length:"null")+" at "+iPosition);	
+							if(DEBUG)
+								Log.i(TAG, "setupItem(), path="+((null != path)?path.length:"null")+" at "+iPosition);	
 						}else{
-							Log.e(TAG, "setupItem(), no thumbnail path at "+iPosition);	
+							if(DEBUG)
+								Log.e(TAG, "setupItem(), no thumbnail path at "+iPosition);	
 						}
 						
 						holder.mImgThumbnail.setIListViewScrollListenser(mIListViewScrollListenser);

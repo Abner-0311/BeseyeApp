@@ -1,5 +1,6 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.ArrayList;
@@ -29,8 +30,8 @@ public class HockeySender implements ReportSender {
 	    String log = createCrashLog(report);
 	    String url = BASE_URL + ACRA.getConfig().formKey() + CRASHES_PATH;
 	    //String url = BASE_URL + Configuration.HOCKEY_APP_ID + CRASHES_PATH;
-	    
-	    Log.e(TAG, "***STACK_TRACE***\n"+report.get(ReportField.STACK_TRACE));
+	    if(DEBUG)
+	    	Log.e(TAG, "***STACK_TRACE***\n"+report.get(ReportField.STACK_TRACE));
 
 	    try {
 	      DefaultHttpClient httpClient = new DefaultHttpClient(); 

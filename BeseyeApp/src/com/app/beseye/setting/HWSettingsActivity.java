@@ -1,5 +1,6 @@
 package com.app.beseye.setting;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.*;
 
@@ -65,7 +66,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "HWSettingsActivity::onCreate()");
+		if(DEBUG)
+			Log.i(TAG, "HWSettingsActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 
 		getSupportActionBar().setDisplayOptions(0);
@@ -197,7 +199,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	@Override
 	protected void onResume() {
-		Log.i(TAG, "CameraSettingActivity::onResume()");
+		if(DEBUG)
+			Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
 		if(!mbFirstResume){
 			updateHWSettingState();
@@ -287,7 +290,6 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		Log.d(TAG, "WifiListActivity::onCreateDialog()");
 		Dialog dialog;
 		switch(id){
 			case DIALOG_ID_CAM_NIGHT_VISION:{
@@ -586,7 +588,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetLEDStatusTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), LED_STATUS, BeseyeJSONUtil.getJSONInt(result.get(0), LED_STATUS));
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
@@ -594,7 +597,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetVideoResTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());				
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());				
 					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), VIDEO_RES, BeseyeJSONUtil.getJSONInt(result.get(0), VIDEO_RES));
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
@@ -602,7 +606,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetMicStatusTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), MIC_STATUS, BeseyeJSONUtil.getJSONInt(result.get(0), MIC_STATUS));
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
@@ -611,7 +616,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetMicGainTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), MIC_GAIN, BeseyeJSONUtil.getJSONInt(result.get(0), MIC_GAIN));
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
@@ -620,7 +626,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetIRCutStatusTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					miIRCutStatus = BeseyeJSONUtil.getJSONInt(result.get(0), IRCUT_STATUS);
 					BeseyeJSONUtil.setJSONInt(getJSONObject(mCam_obj, ACC_DATA), IRCUT_STATUS, miIRCutStatus);
 					if(null != mTxtNightVision){
@@ -644,7 +651,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetVideoUpsideDownTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
 					if(null != dataObj){
 						JSONObject imageObj = BeseyeJSONUtil.getJSONObject(dataObj, IMG_OBJ);
@@ -657,15 +665,16 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					setActivityResultWithCamObj();	
 				}
-			}else if(task instanceof BeseyeCamBEHttpTask.SetImageSettingTask){
+			}/*else if(task instanceof BeseyeCamBEHttpTask.SetImageSettingTask){
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());
 			}else if(task instanceof BeseyeCamBEHttpTask.GetImageSettingTask){
 				if(0 == iRetCode)
 					Log.i(TAG, "onPostExecute(), "+result.toString());
-			}else if(task instanceof BeseyeCamBEHttpTask.SetWiFiConfigTask){
+			}*/else if(task instanceof BeseyeCamBEHttpTask.SetWiFiConfigTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					showMyDialog(DIALOG_ID_WIFI_AP_APPLY);
 				}
 			}else{

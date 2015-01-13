@@ -1,5 +1,6 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -17,7 +18,8 @@ public abstract class BeseyeAccountBaseActivity extends BeseyeBaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "PairingRemindActivity::onCreate()");
+		if(DEBUG)
+			Log.d(TAG, "BeseyeAccountBaseActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		getSupportActionBar().setDisplayOptions(0);

@@ -1,5 +1,6 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.RELAY_AP_SSID;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
@@ -72,7 +73,8 @@ public class WifiListActivity extends WifiControlBaseActivity
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "WifiListActivity::onCreate()");
+		if(DEBUG)
+			Log.d(TAG, "WifiListActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		mbIgnoreCamVerCheck = true;
@@ -117,7 +119,6 @@ public class WifiListActivity extends WifiControlBaseActivity
 			mlvWifiList.setOnRefreshListener(new OnRefreshListener() {
     			@Override
     			public void onRefresh() {
-    				Log.i(TAG, "onRefresh()");	
     				if(mbChangeWifi){
     					loadWifiSSIDListFromCam();
     				}else
@@ -145,7 +146,8 @@ public class WifiListActivity extends WifiControlBaseActivity
 	
 	@Override
 	protected boolean onCameraOffline(JSONObject msgObj){
-    	Log.i(TAG, getClass().getSimpleName()+"::onCameraOffline(),  msgObj = "+msgObj);
+		if(DEBUG)
+			Log.i(TAG, getClass().getSimpleName()+"::onCameraOffline(),  msgObj = "+msgObj);
 		if(mbChangeWifi && null != msgObj){
     		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
     		if(null != objCus){
@@ -161,7 +163,8 @@ public class WifiListActivity extends WifiControlBaseActivity
 	
     @Override
 	protected void onResume() {
-    	Log.d(TAG, "WifiListActivity::onResume()");
+    	if(DEBUG)
+    		Log.d(TAG, "WifiListActivity::onResume()");
 		super.onResume();
 		updateUIByWifiStatus(NetworkMgr.getInstance().getWifiStatus());
 	}
@@ -175,7 +178,8 @@ public class WifiListActivity extends WifiControlBaseActivity
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		Log.d(TAG, "WifiListActivity::onCreateDialog()");
+		if(DEBUG)
+			Log.d(TAG, "WifiListActivity::onCreateDialog()");
 		Dialog dialog;
 		switch(id){
 			case DIALOG_ID_WIFI_AP_KEYINDEX:{
@@ -432,7 +436,8 @@ public class WifiListActivity extends WifiControlBaseActivity
 	}
 	
 	protected void setWifiSettingState(WIFI_SETTING_STATE state){
-		Log.i(TAG, "WifiListActivity::setWifiSettingState(), state:"+state);
+		if(DEBUG)
+			Log.i(TAG, "WifiListActivity::setWifiSettingState(), state:"+state);
 		WIFI_SETTING_STATE prevState = mWifiSettingState;
 		//mWifiSettingState = state;
 		switch(state){
@@ -469,7 +474,8 @@ public class WifiListActivity extends WifiControlBaseActivity
 
 	@Override
 	public void onWifiApSetupStateChanged(WIFI_AP_SETUP_STATE curState, WIFI_AP_SETUP_STATE prevState) {
-		Log.i(TAG, "onWifiApSetupStateChanged(), curState:"+curState+", prevState:"+prevState);
+		if(DEBUG)
+			Log.i(TAG, "onWifiApSetupStateChanged(), curState:"+curState+", prevState:"+prevState);
 		
 		if(curState.equals(WIFI_AP_SETUP_STATE.SETUP_DONE)){
 			setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SET_DONE);
@@ -572,12 +578,14 @@ public class WifiListActivity extends WifiControlBaseActivity
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.GetWiFiSSIDListTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
 						if(null != dataObj){
-							Log.i(TAG, "onPostExecute(), "+dataObj.toString());
+							if(DEBUG)
+								Log.i(TAG, "onPostExecute(), "+dataObj.toString());
 							//JSONArray iLEDStatus = getJSONInt(dataObj, LED_STATUS, 0);
 							JSONArray ssidList = BeseyeJSONUtil.getJSONArray(dataObj, BeseyeJSONUtil.WIFI_SSIDLST);
 							NetworkMgr.getInstance().filterWifiAPInfo(mlstScanResult, ssidList, BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.WIFI_SSIDLST_USED), BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.WIFI_SSIDLST_USED_BSSID));
@@ -590,7 +598,8 @@ public class WifiListActivity extends WifiControlBaseActivity
 					JSONArray arrCamList = new JSONArray();
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
 					//miOriginalVcamCnt = iVcamCnt;
-					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
+					if(DEBUG)
+						Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 					if(0 < iVcamCnt){
 						JSONArray VcamList = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_VCAM_LST);
 						for(int i = 0;i< iVcamCnt;i++){
@@ -606,7 +615,8 @@ public class WifiListActivity extends WifiControlBaseActivity
 						miOriginalVcamArr = arrCamList.toString();
 						miOriginalVcamCnt = arrCamList.length();
 					}
-					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
+					if(DEBUG)
+						Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);

@@ -1,5 +1,6 @@
 package com.app.beseye.setting;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
 import static com.app.beseye.util.BeseyeJSONUtil.NOTIFY_OBJ;
@@ -70,7 +71,6 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "PowerScheduleDayPickerActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 
 		getSupportActionBar().setDisplayOptions(0);
@@ -154,7 +154,6 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void onResume() {
-		Log.i(TAG, "CameraSettingActivity::onResume()");
 		super.onResume();
 		if(!mbFirstResume){
 			updateNotificationTypeState();
@@ -282,7 +281,8 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 				iRet++;
 			}
 		}
-		Log.i(TAG, "getNumOfChecked(), iRet:"+iRet);
+		if(DEBUG)
+			Log.i(TAG, "getNumOfChecked(), iRet:"+iRet);
 		return iRet;
 	}
 	
@@ -327,7 +327,8 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetNotifySettingTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 					JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(result.get(0), NOTIFY_OBJ);
 					BeseyeJSONUtil.setJSONObject(getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ, notify_obj);
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));

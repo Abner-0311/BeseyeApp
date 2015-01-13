@@ -1,5 +1,6 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -66,7 +67,8 @@ public class GCMIntentService extends GCMBaseIntentService{
 	}
 	
 	static void forwardGCMMessage(Context context, String type, String strValue, Intent msg) {
-		Log.i(BeseyeConfig.TAG, "forwardGCMMessage(), type "+type+", strValue = "+strValue);
+		if(DEBUG)
+			Log.i(BeseyeConfig.TAG, "forwardGCMMessage(), type "+type+", strValue = "+strValue);
 		
 //		final String data = msg.getExtras().getString(PS_REGULAR_DATA);
 //    	final String dataCus = msg.getExtras().getString(PS_CUSTOM_DATA);

@@ -1,5 +1,6 @@
 package com.app.beseye.setting;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.SCHED_DAYS;
 import static com.app.beseye.util.BeseyeJSONUtil.SCHED_ENABLE;
@@ -60,7 +61,6 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "PowerScheduleEditActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 
 		getSupportActionBar().setDisplayOptions(0);
@@ -308,7 +308,8 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.AddScheduleTask || task instanceof BeseyeCamBEHttpTask.UpdateScheduleTask){
 				if(0 == iRetCode){
-					Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
 
 					boolean bTurnOffAllDay = (null != mIvTurnoffAllDayCheck && View.VISIBLE == mIvTurnoffAllDayCheck.getVisibility());
 					int iFromTime = BeseyeJSONUtil.getJSONInt(mSched_obj_edit, SCHED_FROM);

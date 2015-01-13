@@ -80,13 +80,15 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	static private String sWiFiPasswordHistory = "";
 	
 	static public void updateWiFiPasswordHistory(String strPW){
-		Log.w(TAG, "updateWiFiPasswordHistory(), strPW:"+strPW);
+		if(DEBUG)
+			Log.w(TAG, "updateWiFiPasswordHistory(), strPW:"+strPW);
 		sWiFiPasswordHistory = strPW;
 	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "WifiControlBaseActivity::onCreate()");
+		if(DEBUG)
+			Log.d(TAG, "WifiControlBaseActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		
 		mbChangeWifi = getIntent().getBooleanExtra(KEY_CHANGE_WIFI_ONLY, false);
@@ -95,12 +97,14 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 			setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
 		
 		miOriginalVcamCnt = getIntent().getIntExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, 0);
-		Log.i(TAG, "WifiControlBaseActivity::onCreate(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
+		if(DEBUG)
+			Log.i(TAG, "WifiControlBaseActivity::onCreate(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
 	}
 	
     @Override
 	protected void onResume() {
-    	Log.d(TAG, "WifiControlBaseActivity::onResume()");
+    	if(DEBUG)
+    		Log.d(TAG, "WifiControlBaseActivity::onResume()");
 		super.onResume();
 		if(false == mbChangeWifi){
 			NetworkMgr.getInstance().registerNetworkChangeCallback(this);
@@ -113,7 +117,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
     
 	@Override
 	protected void onPause() {
-		Log.d(TAG, "WifiControlBaseActivity::onPause()");
+		if(DEBUG)
+			Log.d(TAG, "WifiControlBaseActivity::onPause()");
 		if(false == mbChangeWifi){
 			if(inWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_SCANNING))
 				cancelScanWifi();
@@ -125,7 +130,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		Log.d(TAG, "WifiControlBaseActivity::onCreateDialog()");
+		if(DEBUG)
+			Log.d(TAG, "WifiControlBaseActivity::onCreateDialog()");
 		Dialog dialog;
 		switch(id){
 			case DIALOG_ID_WIFI_AP_INFO:{
@@ -289,11 +295,14 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 
 	@Override
 	public void onConnectivityChanged(boolean onConnectivityChanged) {
-		Log.i(TAG, "onConnectivityChanged(), onConnectivityChanged "+onConnectivityChanged);
+		if(DEBUG)
+			Log.i(TAG, "onConnectivityChanged(), onConnectivityChanged "+onConnectivityChanged);
 	}
 	
 	protected void loadWifiAPList(){
-		Log.i(TAG, "loadWifiAPList()");
+		if(DEBUG)
+			Log.i(TAG, "loadWifiAPList()");
+		
 		if(null != mlstScanResult){
 			NetworkMgr.getInstance().filterWifiAPInfo(mlstScanResult, NetworkMgr.getInstance().getWifiScanList());
 			onWiFiScanComplete();
@@ -347,13 +356,17 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	}
 	
 	protected void setWifiSettingState(WIFI_SETTING_STATE state){
-		Log.i(TAG, "WifiControlBaseActivity::setWifiSettingState(), state:"+state);
+		if(DEBUG)
+			Log.i(TAG, "WifiControlBaseActivity::setWifiSettingState(), state:"+state);
+		
 		WIFI_SETTING_STATE prevState = mWifiSettingState;
 		mWifiSettingState = state;
 		switch(mWifiSettingState){
 			case STATE_INIT:{
 				if(NetworkMgr.getInstance().getWifiStatus() != WifiManager.WIFI_STATE_ENABLED){
-					Log.d(TAG, "WifiControlBaseActivity::setWifiSettingState(), wifi is not enabled");
+					if(DEBUG)
+						Log.d(TAG, "WifiControlBaseActivity::setWifiSettingState(), wifi is not enabled");
+					
 					if(NetworkMgr.getInstance().turnOnWifi()){
 						//mLoadWifiListRunnable = new LoadWifiListRunnable(this);
 						setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_TURNING_ON);
@@ -379,7 +392,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 					removeMyDialog(DIALOG_ID_TURN_ON_WIFI);
 					scanWifi(false);
 				}else{
-					Log.i(TAG, "WifiControlBaseActivity::setWifiSettingState(), can't scan due to wifi off");
+					if(DEBUG)
+						Log.i(TAG, "WifiControlBaseActivity::setWifiSettingState(), can't scan due to wifi off");
 					setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
 				}
 				break;
@@ -526,8 +540,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 								startActivity(intent);
 								setResult(RESULT_OK);
 							}
-							
-							Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
+							if(DEBUG)
+								Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
 						}});
 				}
 
@@ -654,8 +668,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 								startActivity(intent);
 								setResult(RESULT_OK);	
 							}
-							
-							Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
+							if(DEBUG)
+								Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
 						}});
 				}
 				

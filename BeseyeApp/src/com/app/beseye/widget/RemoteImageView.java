@@ -38,6 +38,7 @@ import android.widget.ImageView;
 
 import com.app.beseye.R;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 
@@ -331,7 +332,8 @@ public class RemoteImageView extends ImageView {
 					Log.d(TAG, "loadImage(), have file cache , fileCache:["+fileCache+"]");
 				Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(fileCache);
 				if (cBmpFile != null) {
-					Log.i(TAG, "loadImage(), have file cache in mem");
+					if(DEBUG)
+						Log.i(TAG, "loadImage(), have file cache in mem");
 					setImageBitmap(cBmpFile);
 				}else if(null == mStrVCamIdLoad || !mStrVCamIdLoad.equals(mStrVCamId)){
 					loadDefaultImage();
@@ -469,11 +471,12 @@ public class RemoteImageView extends ImageView {
 					cacheFileName = strCachePath.substring(strCachePath.lastIndexOf("/")+1);
 					
 					if(null != mStrVCamId){
-						
-						Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
+						if(DEBUG)
+							Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
 						vcamidDir = getFirByVCamid(mStrVCamId);
 						String strLastPhoto = findLastPhotoByVCamid(mStrVCamId);
-						Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");
+						if(DEBUG)
+							Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");
 						Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(strLastPhoto);
 						if(null == cBmpFile && fileExist(strLastPhoto)){
 							bitmap = BitmapFactory.decodeFile(strLastPhoto);
@@ -485,7 +488,8 @@ public class RemoteImageView extends ImageView {
 								
 								bitmap = null;
 								
-								Log.i(TAG, "use file cache first");
+								if(DEBUG)
+									Log.i(TAG, "use file cache first");
 							}
 						}
 						bSameFileForVCamid = (null != strLastPhoto)?strLastPhoto.endsWith(strCachePath):false;
@@ -676,7 +680,8 @@ public class RemoteImageView extends ImageView {
 		} finally {
 			closeStream(inputStream);
 		}
-		Log.w(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs));
+		if(BeseyeConfig.DEBUG)
+			Log.w(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs));
 		return bitmap;
 	}
 

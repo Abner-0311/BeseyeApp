@@ -25,6 +25,7 @@
 #import <AVFoundation/AVFoundation.h>
 
 #import "utils.h"
+#import "rt_config.h"
 #import "ffmpeg_ext.h"
 #import "beseyeplayer.h"
 #import "beseye_audio_streamer.h"
@@ -250,6 +251,7 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
         //tmpUserToken => temp user token from Account BE
         
         //unsigned int iRet =FreqGenerator::getInstance()->playPairingCode("60a44c39fcf8", "0630BesEye", 28645);
+        setSPDebugMode(0);
         long ltime = FreqGenerator::getInstance()->getSoundPairingDuration("beseye2G", "0630BesEye",false, true);//in milliseconds
         unsigned int iRet =FreqGenerator::getInstance()->playSSIDPairingCodeWithPurposeAndRegion("beseye2G", "0630BesEye", PAIRING_SEC_WPA2, 23456, BEE_ATTACH, 1);
         if(R_OK == iRet){
@@ -288,6 +290,7 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
 
 - (void)playLive1{
     if(!player1){
+        setDebugMode(0);
         player1 = new CBeseyePlayer(imageView, PIX_FMT_RGB24, 0, 0);
         player1->registerVideoCallback(videoCallback, videoDeinitCallback);
         player1->registerCallback(rtmpStreamStatusCb);
@@ -302,7 +305,7 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
 //                                 //"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin/_definst_/3313916c77ff42cf82f8c7ad9c437442"
 //                                 "rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/2e26ea2bccb34937a65dfa02488e58dc"
 //                                 );
-        player1->createStreaming("rtmps://ss01-edge-stage.beseye.com:443/live-edge/_definst_/{o}ss01-origin-stage.beseye.com/live-origin-record/_definst_/2e26ea2bccb34937a65dfa02488e58dc");
+        player1->createStreaming("rtmps://oregon-p1-stage-ss-edge-1-1.beseye.com:443/live-edge/_definst_/{o}oregon-p1-stage-ss-origin-1-1.beseye.com/live-origin-record/_definst_/28faf4d255e4441496da6276a81b49c0?ua={HTC}_{HTC+Butterfly}&se=5063420bf2a41adcbdbba9fe89e5ef194e2bdf1383032880566998085cc290ffd8582cd28ff1e194cc2b562de4c1d2dc9f37822fe7262c28c1b9bb1d6b240e3d&dd={Mobile}_{Android}_{e1f99958-5995-3b60-a023-461796beb4e4-debug}");
         
         const char* path[] = {"mp4:amazons3/0-beseyeuser-policy01-us-west-2/rec/2e26ea2bccb34937a65dfa02488e58dc/aac/2014/12-10/08/{sEnd}1418198457942_{dur}10336_{r}1418190829206.mp4",
                               "mp4:amazons3/0-beseyeuser-policy01-us-west-2/rec/2e26ea2bccb34937a65dfa02488e58dc/aac/2014/12-10/08/{sEnd}1418198468052_{dur}10385_{r}1418190829206.mp4",

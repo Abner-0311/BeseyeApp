@@ -48,7 +48,7 @@ void deleteOldWiFiFile();
 
 char *ultostr(uint64 ulong_value);
 
-
+#include <rt_config.h>
 
 #include <time_utils.h>
 

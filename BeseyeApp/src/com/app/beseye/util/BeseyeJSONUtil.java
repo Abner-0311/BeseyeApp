@@ -411,7 +411,8 @@ public class BeseyeJSONUtil {
 		try{
 			objRet = new JSONObject(json);
 		} catch (JSONException e) {
-			Log.d(TAG, "newJSONObject(), can't new JSONObject by "+json);
+			if(BeseyeConfig.DEBUG)
+				Log.d(TAG, "newJSONObject(), can't new JSONObject by "+json);
 			objRet = null;
 		}
 		return objRet;
@@ -434,7 +435,8 @@ public class BeseyeJSONUtil {
 			try {
 				objRet = obj.getJSONObject(strKey);
 			} catch (JSONException e) {
-				Log.d(TAG, "getJSONObject(), can't get value by "+strKey);
+				if(BeseyeConfig.DEBUG)
+					Log.d(TAG, "getJSONObject(), can't get value by "+strKey);
 				objRet = null;
 			}
 		}
@@ -447,7 +449,8 @@ public class BeseyeJSONUtil {
 			try {
 				objRet = obj.getJSONArray(strKey);
 			} catch (JSONException e) {
-				Log.d(TAG, "getJSONArray(), can't get value by "+strKey);
+				if(BeseyeConfig.DEBUG)
+					Log.d(TAG, "getJSONArray(), can't get value by "+strKey);
 				objRet = null;
 			}
 		}
@@ -475,7 +478,8 @@ public class BeseyeJSONUtil {
 					strRet = strDefault;
 				}
 			} catch (JSONException e) {
-				Log.d(TAG, "getJSONString(), can't get value by "+strKey);
+				if(BeseyeConfig.DEBUG)
+					Log.d(TAG, "getJSONString(), can't get value by "+strKey);
 				strRet = strDefault;
 			}
 		}else{
@@ -494,7 +498,8 @@ public class BeseyeJSONUtil {
 			try {
 				iRet = obj.getInt(strKey);
 			} catch (JSONException e) {
-				Log.d(TAG, "getJSONInt(), can't get value by "+strKey);
+				if(BeseyeConfig.DEBUG)
+					Log.d(TAG, "getJSONInt(), can't get value by "+strKey);
 			}
 		}
 		return iRet;
@@ -510,7 +515,8 @@ public class BeseyeJSONUtil {
 			try {
 				lRet = obj.getLong(strKey);
 			} catch (JSONException e) {
-				Log.d(TAG, "getJSONLong(), can't get value by "+strKey);
+				if(BeseyeConfig.DEBUG)
+					Log.d(TAG, "getJSONLong(), can't get value by "+strKey);
 				lRet = lDef;
 			}
 		}
@@ -523,7 +529,8 @@ public class BeseyeJSONUtil {
 			try {
 				dRet = obj.getDouble(strKey);
 			} catch (JSONException e) {
-				Log.d(TAG, "getJSONDouble(), can't get value by "+strKey);
+				if(BeseyeConfig.DEBUG)
+					Log.d(TAG, "getJSONDouble(), can't get value by "+strKey);
 				dRet = Double.NaN;
 			}
 		}
@@ -540,7 +547,8 @@ public class BeseyeJSONUtil {
 			try {
 				bRet = obj.getBoolean(strKey);
 			} catch (JSONException e) {
-				Log.d(TAG, "getJSONBoolean(), can't get value by "+strKey);
+				if(BeseyeConfig.DEBUG)
+					Log.d(TAG, "getJSONBoolean(), can't get value by "+strKey);
 			}
 		}
 		return bRet;
@@ -810,7 +818,8 @@ public class BeseyeJSONUtil {
 				}
 				
 			}else{
-				Log.e(TAG, "getVCamConnStatus(), can't find dataObj");
+				if(BeseyeConfig.DEBUG)
+					Log.e(TAG, "getVCamConnStatus(), can't find dataObj");
 			}
 		}
 		//Log.e(TAG, "getVCamConnStatus(), cRet:"+cRet.toString());

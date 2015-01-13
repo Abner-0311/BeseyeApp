@@ -1,5 +1,6 @@
 package com.app.beseye.websockets;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.FAKE_AUDIO_RECEIVER;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WSA_WS_ID;
@@ -122,7 +123,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	
 	public void setAudioWSServerIP(String ip){
 		AUDIO_WS_ADDR = String.format("%swebsocket", ip);//"54.238.255.56");
-		Log.i(TAG, "AudioWebSocketsMgr::setAudioWSServerIP()...AUDIO_WS_ADDR:"+AUDIO_WS_ADDR);
+		if(DEBUG)
+			Log.i(TAG, "AudioWebSocketsMgr::setAudioWSServerIP()...AUDIO_WS_ADDR:"+AUDIO_WS_ADDR);
 	}
 	
 	protected WebSocketConnectCallback getWebSocketConnectCallback(){
@@ -156,7 +158,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	private WebSocketConnectCallback mWebSocketConnectCallback = new WebSocketConnectCallback() {
         @Override
         public void onCompleted(Exception ex, final WebSocket webSocket) {
-        	Log.i(TAG, "AudioWebSocketsMgr::onCompleted()...AUDIO_WS_ADDR:"+AUDIO_WS_ADDR);
+        	if(DEBUG)
+        		Log.i(TAG, "AudioWebSocketsMgr::onCompleted()...AUDIO_WS_ADDR:"+AUDIO_WS_ADDR);
         	if(null == webSocket){
         		Log.i(TAG, "AudioWebSocketsMgr::onCompleted(), connect to "+AUDIO_WS_ADDR+"failed, ex:"+ex.toString());
         		return;
@@ -187,15 +190,18 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
                 			JSONArray arrNew = arrPkt.getJSONArray(0);
                 			String strCmd = arrNew.getString(0);
                 			String strBody = arrNew.getString(1);
-							Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
+                			if(DEBUG)
+                				Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
 							if(WS_CB_CLIENT_CONNECTION.equals(strCmd)){
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_CONNECTED, wrapWSBaseMsg().toString()));
 								JSONObject authObj = BeseyeWebsocketsUtil.genAuthMsg();
 								if(null != authObj){
 									webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_AUTH, authObj.toString()));
-									Log.i(TAG, "onStringAvailable(), authObj="+authObj.toString());
+									if(DEBUG)
+										Log.i(TAG, "onStringAvailable(), authObj="+authObj.toString());
 									mStrAuthJobId = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(authObj, WS_ATTR_DATA),WS_ATTR_JOB_ID); 
-									Log.i(TAG, "onStringAvailable(), strAuthJobId="+mStrAuthJobId);
+									if(DEBUG)
+										Log.i(TAG, "onStringAvailable(), strAuthJobId="+mStrAuthJobId);
 								}
 								webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_KEEP_ALIVE, wrapWSBaseMsg().toString()));
 							}else if(WS_CB_KEEP_ALIVE.equals(strCmd)){
@@ -216,9 +222,11 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 											JSONObject binConnObj = BeseyeWebsocketsUtil.genBinaryConnMsg(strWsId);
 											if(null != binConnObj){
 												webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_BIN_CONN, binConnObj.toString()));
-												Log.i(TAG, "onStringAvailable(), binConnObj="+binConnObj.toString());
+												if(DEBUG)
+													Log.i(TAG, "onStringAvailable(), binConnObj="+binConnObj.toString());
 												mStrAudioConnJobId = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(binConnObj, WS_ATTR_DATA),WS_ATTR_JOB_ID); 
-												Log.i(TAG, "onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
+												if(DEBUG)
+													Log.i(TAG, "onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
 											}
 										}else{
 											new BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask(AudioWebSocketsMgr.this).execute(mStrVCamId);
@@ -228,7 +236,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 										Log.i(TAG, "onStringAvailable(), Audio Conn OK -----------------------");
 										transferAudioBuf();
 									}else{
-										Log.i(TAG, "onStringAvailable(), not handle ack: dataObj:"+dataObj.toString());
+										if(DEBUG)
+											Log.i(TAG, "onStringAvailable(), not handle ack: dataObj:"+dataObj.toString());
 									}
 								}
 							}else if(WS_CB_REMOTE_BIN_CONN.equals(strCmd)){
@@ -239,15 +248,19 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 									JSONObject binConnObj = BeseyeWebsocketsUtil.genBinaryConnMsg(strWsId);
 									if(null != binConnObj){
 										webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_BIN_CONN, binConnObj.toString()));
-										Log.i(TAG, "onStringAvailable(), binConnObj="+binConnObj.toString());
+										if(DEBUG)
+											Log.i(TAG, "onStringAvailable(), binConnObj="+binConnObj.toString());
 										mStrAudioConnJobId = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(binConnObj, WS_ATTR_DATA),WS_ATTR_JOB_ID); 
-										Log.i(TAG, "onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
+										if(DEBUG)
+											Log.i(TAG, "onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
 									}
 								}
 							}else if("wss_binary_transfer".equals(strCmd)){
-								Log.w(TAG, "onStringAvailable(), wss_binary_transfer at="+System.currentTimeMillis());
+								if(DEBUG)
+									Log.w(TAG, "onStringAvailable(), wss_binary_transfer at="+System.currentTimeMillis());
 							}else{
-								Log.w(TAG, "onStringAvailable(), not handle cmd="+strCmd);
+								if(DEBUG)
+									Log.w(TAG, "onStringAvailable(), not handle cmd="+strCmd);
 								OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 								if(null != listener){
 									listener.onMessageReceived(s);
@@ -267,7 +280,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 				@Override
 				public void onDataAvailable(DataEmitter emitter,
 						ByteBufferList bb) {
-					Log.i(TAG, "onDataAvailable()...");
+					if(DEBUG)
+						Log.i(TAG, "onDataAvailable()...");
 					webSocket.send(bb.getAllByteArray());
 				}});
             
@@ -302,7 +316,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
             webSocket.setWriteableCallback(new WritableCallback(){
 				@Override
 				public void onWriteable() {
-					Log.i(TAG, "onWriteable()...");	
+					if(DEBUG)
+						Log.i(TAG, "onWriteable()...");	
 				}});
            
         }
@@ -404,7 +419,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			    }
 		    }
 
-		    Log.i(TAG, "run(), socket connected");	
+		    if(DEBUG)
+		    	Log.i(TAG, "run(), socket connected");	
 		    bufferSizeInBytes = 640;
 		    byte[] audiodata = new byte[bufferSizeInBytes];
 		    int readsize = 0;
@@ -496,7 +512,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    	}
 		    }
 		    
-		    Log.i(TAG, "run(), socket disconnected");	
+		    if(DEBUG)
+		    	Log.i(TAG, "run(), socket disconnected");	
 		
 		    try {
 		    	if(null != os)
@@ -708,7 +725,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		}else if(task instanceof BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask){
 			if(0 == iRetCode){
 				JSONObject obj = result.get(0);
-				Log.i(TAG, "onPostExecute(), obj = "+obj.toString());
+				if(DEBUG)
+					Log.i(TAG, "onPostExecute(), obj = "+obj.toString());
 			}else{
 				Log.e(TAG, "onPostExecute(), failed to RequestAudioWSOnCamTask, iRetCode = "+iRetCode);
 			}

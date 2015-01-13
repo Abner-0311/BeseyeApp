@@ -59,6 +59,8 @@ static JavaVM*   jvm = NULL;
 extern void writeBufToPipe();
 extern void endLoop();
 
+static bool sbIsDebugMode = TRUE;
+
 #define DECLARE_JNIENV_WITHOUT_RETURN() \
 	JNIEnv* jni_env; \
 	if (JNI_OK != jvm->AttachCurrentThread(&jni_env, NULL)) {  return; } \
@@ -73,17 +75,17 @@ void rtmp_log_internal(int level, const char *fmt, va_list args){
 }
 
 void rtmp_log_internal2(int level, const char *msg){
-	if(NULL != msg && level <=RTMP_LOGINFO)
+	if(NULL != msg && (sbIsDebugMode && level <=RTMP_LOGINFO) || (!sbIsDebugMode && level <=RTMP_LOGERROR))
 		LOGE(msg);
 }
 
 void ffmpeg_vlog(void* avcl, int level, const char *fmt, va_list vl){
-	if(NULL != fmt && level <=AV_LOG_INFO)
+	if(NULL != fmt && (sbIsDebugMode && level <=AV_LOG_INFO) || (!sbIsDebugMode && level <=AV_LOG_ERROR))
 		LOGE(fmt, vl);
 }
 
 void ffmpeg_vlog2(void* avcl, int level, const char *msg){
-	if(NULL != msg && level <=AV_LOG_INFO)
+	if(NULL != msg && (sbIsDebugMode && level <=AV_LOG_INFO) || (!sbIsDebugMode && level <=AV_LOG_ERROR))
 		LOGE(msg);
 }
 
@@ -131,7 +133,7 @@ JNIEXPORT void JNICALL Java_com_app_beseye_CameraViewActivity_endRecord(JNIEnv *
 }
 
 static jclass cls;
-static jmethodID  s_getBitmapMethod, s_drawStreamBitmapMethod, s_rtmpStatusCBMethod, s_rtmpErrorCBMethod, s_rtmpClockCBMethod/*, s_updateBitmapMethod = NULL*/;
+static jmethodID  s_getBitmapMethod, s_drawStreamBitmapMethod, s_rtmpStatusCBMethod, s_rtmpErrorCBMethod, s_rtmpClockCBMethod/*, s_updateBitmapMethod = NULL*/, midIsDebugMode;
 
 /* Main activity */
 static jclass mActivityClass = NULL;
@@ -192,6 +194,8 @@ JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_nativeClassIni
 		return 0;
 	}
 
+
+
 	mActivityClass = (jclass)(env->NewGlobalRef(clss));
 
 	midAudioInit = env->GetStaticMethodID(mActivityClass,
@@ -208,6 +212,8 @@ JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_nativeClassIni
 
 	midAudioQuit = env->GetStaticMethodID(mActivityClass,
 								"audioQuit", "()V");
+
+	midIsDebugMode= env->GetStaticMethodID(mActivityClass, "isDebugMode", "()Z");
 
 //	s_updateBitmapMethod = env->GetStaticMethodID(cls, "updateBufferBySize", "([BII)V");
 //	if(NULL == s_updateBitmapMethod){
@@ -249,11 +255,12 @@ JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_nativeClassIni
 
 	LOGE("nativeClassInit()-");
 
-	av_log_set_level(AV_LOG_DEBUG);
+	sbIsDebugMode = env->CallStaticBooleanMethod(mActivityClass, midIsDebugMode);
+	setDebugMode(sbIsDebugMode?1:0);
+	LOGE("nativeClassInit(), sbIsDebugMode:%d", sbIsDebugMode);
+
 	av_log_set_callback2(ffmpeg_vlog2);
 
-
-	RTMP_LogSetLevel(RTMP_LOGINFO);
 //	//RTMP_LogSetCallback(rtmp_log_internal);
 	RTMP_LogSetCallback2(rtmp_log_internal2);
 
@@ -389,7 +396,10 @@ void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_C
 }
 
 void* getWindowByHolder(void* holder, uint32_t iWidth, uint32_t iHeight){
-	LOGE("getWindowByHolder(), [%d, %d]", iWidth, iHeight);
+	if(isDebugMode()){
+		LOGE("getWindowByHolder(), [%d, %d]", iWidth, iHeight);
+	}
+
 	DECLARE_JNIENV_WITH_RETURN()
 	jobject jni_host = jni_env->NewGlobalRef((jobject)holder);
 	jobject bitmap = jni_env->CallObjectMethod(jni_host, s_getBitmapMethod, iWidth, iHeight);
@@ -440,7 +450,9 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreaming(JNIEn
 //								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_5.mp4"};
 //
 //			player[iStreamIdx]->createStreaming("rtmp://54.250.149.50/vods3/_definst_/", streamList, 6, 0);
-			LOGE("openStreaming(), nativeString:[%s]", nativeString);
+			if(isDebugMode()){
+				LOGE("openStreaming(), nativeString:[%s]", nativeString);
+			}
 			player[iStreamIdx]->createStreaming(nativeString, iSeekOffset);
 			jni_env->ReleaseStringUTFChars( path, nativeString);
 
@@ -510,7 +522,9 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_openStreamingList(J
 //								 "mp4:amazons3/wowza2.s3.tokyo/liveorigin/mystream_5.mp4"};
 //
 //
-			LOGE("openStreaming(), streamHost:[%s]", streamHost);
+			if(isDebugMode()){
+				LOGE("openStreaming(), streamHost:[%s]", streamHost);
+			}
 			player[iStreamIdx]->createStreaming(streamHost, (const char **)streamList, streamCount, iSeekOffset);
 			//player[iStreamIdx]->createStreaming(nativeString, 0);
 			jni_env->ReleaseStringUTFChars( host, streamHost);
@@ -647,7 +661,9 @@ int Android_JNI_OpenAudioDevice2(int sampleRate, int is16Bit, int channelCount, 
     audioBufferStereo = channelCount > 1;
 
     audioBufferFrames = desiredBufferFrames = Android_JNI_GetAudioBufferSize(sampleRate);
-    LOGW("audioBufferFrames:%d", audioBufferFrames);
+    if(isDebugMode()){
+    	LOGW("audioBufferFrames:%d", audioBufferFrames);
+    }
 
     if (jni_env->CallStaticIntMethod(mActivityClass, midAudioInit, sampleRate, audioBuffer16Bit, audioBufferStereo, desiredBufferFrames) != 0) {
         /* Error during audio initialization */

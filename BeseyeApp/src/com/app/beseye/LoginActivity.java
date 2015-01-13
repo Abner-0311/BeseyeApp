@@ -161,7 +161,8 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 
 	@Override
 	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
-		Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		if(DEBUG)
+			Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.LoginHttpTask){
 				if(0 == iRetCode){

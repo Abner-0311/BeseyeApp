@@ -1,6 +1,7 @@
 package com.app.beseye;
 
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.HOCKEY_APP_ID;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
@@ -277,7 +278,8 @@ public class BeseyeApplication extends Application {
 	static public void checkServerMode(){
 		SERVER_MODE mode = SessionMgr.getInstance().getServerMode();
 		SessionMgr.getInstance().setBEHostUrl(mode);
-		Log.i(TAG, "checkServerMode(), mode :"+mode);
+		if(DEBUG)
+			Log.i(TAG, "checkServerMode(), mode :"+mode);
 	}
 	
 	private long value(String string) {

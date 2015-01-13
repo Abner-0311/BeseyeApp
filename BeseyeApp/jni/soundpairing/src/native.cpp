@@ -77,6 +77,9 @@ static jmethodID midOnStopGen= NULL;
 static jmethodID midOnFreqChanged= NULL;
 static jmethodID midOnErrCorrectionCode= NULL;
 
+static jmethodID midIsDebugMode= NULL;
+static bool sbIsDebugMode = TRUE;
+
 #ifndef GEN_TONE_ONLY
 static jmethodID midAudioRecordInit= NULL;
 static jmethodID midGetAudioRecordBuf= NULL;
@@ -88,6 +91,7 @@ static jmethodID midResetData= NULL;
 static jmethodID midFeedbackMatchRet= NULL;
 
 static jmethodID midsendBTMsg= NULL;
+
 #endif
 
 //JNIEXPORT jboolean JNICALL Java_com_example_aubiotest_AubioTestActivity_nativeClassInit(JNIEnv *env, jclass jcls)
@@ -138,6 +142,7 @@ JNIEXPORT jboolean JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_nati
 	midAudioRecordQuit = env->GetStaticMethodID(mActivityClass,
 								"audioRecordDeinit", "()V");
 
+
 	SoundPair_Config::init();
 
 //	jclass cls = env->FindClass("com/example/aubiotest/AubioTestActivity");
@@ -177,6 +182,14 @@ JNIEXPORT jboolean JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_nati
 		return 0;
 	}
 #endif
+	midIsDebugMode= env->GetStaticMethodID(mActivityClass, "isSPDebugMode", "()Z");
+	if(NULL == midIsDebugMode){
+		LOGE("midIsDebugMode is empty");
+		return 0;
+	}
+	sbIsDebugMode = env->CallStaticBooleanMethod(mActivityClass, midIsDebugMode);
+	setSPDebugMode(sbIsDebugMode?1:0);
+	LOGE("nativeClassInit(), sbIsDebugMode:%d", sbIsDebugMode);
 
 	LOGE("nativeClassInit()-");
 	return 1;
@@ -381,9 +394,14 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playPair
 	//string curCode(mac);
 	//jni_env->ReleaseStringUTFChars( strCode, code);
 	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
-	LOGW("mac:%s, key:%s", mac, key);
+	if(sbIsDebugMode){
+		LOGW("mac:%s, key:%s", mac, key);
+	}
 	int iRet = FreqGenerator::getInstance()->playPairingCode(mac, key, userToken);
-	LOGW("iRet:%x", iRet);
+
+	if(sbIsDebugMode){
+		LOGW("iRet:%x", iRet);
+	}
 	return iRet;
 }
 
@@ -399,7 +417,9 @@ JNIEXPORT jstring JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_getSS
 	DECLARE_JNIENV_WITH_RETURN()
 	char *ssid = (char *)jni_env->GetStringUTFChars(strSSID, 0);
 	char *ssidHash = FreqGenerator::getInstance()->getSSIDStringHashValue(ssid);
-	LOGW("ssidHash:[%s]", ssidHash);
+	if(sbIsDebugMode){
+		LOGW("ssidHash:[%s]", ssidHash);
+	}
 	jstring ret = (jstring)jni_env->NewStringUTF(ssidHash);
 	//jni_env->DeleteLocalRef(ret);
 	if(ssidHash){
@@ -417,9 +437,13 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playPair
 	//string curCode(mac);
 	//jni_env->ReleaseStringUTFChars( strCode, code);
 	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
-	LOGW("mac:%s, key:%s, cPurpose:%d", mac, key, cPurpose);
+	if(sbIsDebugMode){
+		LOGW("mac:%s, key:%s, cPurpose:%d", mac, key, cPurpose);
+	}
 	int iRet = FreqGenerator::getInstance()->playPairingCodeWithPurpose(mac, key, userToken, (BEE_PURPOSE) cPurpose);
-	LOGW("iRet:%x", iRet);
+	if(sbIsDebugMode){
+		LOGW("iRet:%x", iRet);
+	}
 	return iRet;
 }
 
@@ -431,9 +455,13 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playSSID
 	//string curCode(mac);
 	//jni_env->ReleaseStringUTFChars( strCode, code);
 	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
-	LOGW("ssid:%s, key:%s, cPurpose:%d", ssid, key, cPurpose);
+	if(sbIsDebugMode){
+		LOGW("ssid:%s, key:%s, cPurpose:%d", ssid, key, cPurpose);
+	}
 	int iRet = FreqGenerator::getInstance()->playSSIDPairingCodeWithPurpose(ssid, key, (PAIRING_SEC_TYPE)iSecType, userToken, (BEE_PURPOSE)cPurpose);
-	LOGW("iRet:%x", iRet);
+	if(sbIsDebugMode){
+		LOGW("iRet:%x", iRet);
+	}
 	return iRet;
 }
 
@@ -445,9 +473,13 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playSSID
 	//string curCode(mac);
 	//jni_env->ReleaseStringUTFChars( strCode, code);
 	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
-	LOGW("ssid:%s, key:%s, cPurpose:%d", ssid, key, cPurpose);
+	if(sbIsDebugMode){
+		LOGW("ssid:%s, key:%s, cPurpose:%d", ssid, key, cPurpose);
+	}
 	int iRet = FreqGenerator::getInstance()->playSSIDPairingCodeWithPurposeAndRegion(ssid, key, (PAIRING_SEC_TYPE)iSecType, userToken, (BEE_PURPOSE)cPurpose, cRegId);
-	LOGW("iRet:%x", iRet);
+	if(sbIsDebugMode){
+		LOGW("iRet:%x", iRet);
+	}
 	return iRet;
 }
 
@@ -459,9 +491,13 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playSSID
 	//string curCode(mac);
 	//jni_env->ReleaseStringUTFChars( strCode, code);
 	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
-	LOGW("ssid:%s, key:%s, cPurpose:%d", ssid, key, cPurpose);
+	if(sbIsDebugMode){
+		LOGW("ssid:%s, key:%s, cPurpose:%d", ssid, key, cPurpose);
+	}
 	int iRet = FreqGenerator::getInstance()->playSSIDHashPairingCodeWithPurpose(ssid, key, (PAIRING_SEC_TYPE)iSecType, userToken, (BEE_PURPOSE)cPurpose);
-	LOGW("iRet:%x", iRet);
+	if(sbIsDebugMode){
+		LOGW("iRet:%x", iRet);
+	}
 	return iRet;
 }
 
@@ -473,9 +509,13 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_playSSID
 	//string curCode(mac);
 	//jni_env->ReleaseStringUTFChars( strCode, code);
 	FreqGenerator::getInstance()->setOnPlayToneCallback(sOnPlayToneCallbackReceiver);
-	LOGW("ssid:%s, key:%s, cPurpose:%d", ssid, key, cPurpose);
+	if(sbIsDebugMode){
+		LOGW("ssid:%s, key:%s, cPurpose:%d", ssid, key, cPurpose);
+	}
 	int iRet = FreqGenerator::getInstance()->playSSIDHashPairingCodeWithPurposeAndRegion(ssid, key, (PAIRING_SEC_TYPE)iSecType, userToken, (BEE_PURPOSE)cPurpose, cRegId);
-	LOGW("iRet:%x", iRet);
+	if(sbIsDebugMode){
+		LOGW("iRet:%x", iRet);
+	}
 	return iRet;
 }
 
@@ -579,7 +619,9 @@ void Delegate_FeedbackMatchResult(string strCode, string strECCode, string strEn
 }
 
 void Delegate_SendMsgByBT(string strCode){
-	LOGE("Delegate_SendMsgByBT(), ------------------------------->strCode:%s\n", strCode.c_str());
+	if(sbIsDebugMode){
+		LOGE("Delegate_SendMsgByBT(), ------------------------------->strCode:%s\n", strCode.c_str());
+	}
 	DECLARE_JNIENV_WITHOUT_RETURN()
 	jni_env->CallVoidMethod(mThisObj, midsendBTMsg, str2jstring(strCode));
 }
@@ -657,7 +699,9 @@ JNIEXPORT jint JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_startAut
 	mThisObj = (jobject)(env->NewGlobalRef(thisObj));
 	char *nativeString = (char *)jni_env->GetStringUTFChars( strCurCode, 0);
 	string curCode(nativeString?nativeString:"");
-	LOGE("startAutoTest+, strCurCode:[%s]\n", curCode.c_str());
+	if(sbIsDebugMode){
+		LOGE("startAutoTest+, strCurCode:[%s]\n", curCode.c_str());
+	}
 	jni_env->ReleaseStringUTFChars( strCurCode, nativeString);
 	bool ret = AudioTest::getInstance()->startAutoTest(curCode, iDigitalToTest);
 	return ret;
@@ -731,9 +775,13 @@ JNIEXPORT void JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_startRec
 		}
 	}
 
-	LOGE("startRecord()+, iBufSize:%d, sSampleRate:%d, sFrameSize:%d, sLowPassIndex:%d, sHighPassIndex:%d\n", fd, sSampleRate, sFrameSize, sLowPassIndex, sHighPassIndex);
+	if(sbIsDebugMode){
+		LOGE("startRecord()+, iBufSize:%d, sSampleRate:%d, sFrameSize:%d, sLowPassIndex:%d, sHighPassIndex:%d\n", fd, sSampleRate, sFrameSize, sLowPassIndex, sHighPassIndex);
+	}
 
-	LOGE("startRecord()-");
+	if(sbIsDebugMode){
+		LOGE("startRecord()-");
+	}
 }
 
 //Frame Rate-Independent Low-Pass Filter
@@ -823,7 +871,9 @@ void runSpeexPreprocess(SpeexPreprocessState* sps, jshort *bytes){
 
 JNIEXPORT jfloat JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_recordAudio(JNIEnv * env, jobject thisObj, jshortArray array, int iBufSize, jboolean bReset)
 {
-	LOGD("recordAudio+, iBufSize:%d\n", iBufSize);
+	if(sbIsDebugMode){
+		LOGD("recordAudio+, iBufSize:%d\n", iBufSize);
+	}
 //	DECLARE_JNIENV_WITHOUT_RETURN()
 //	if(bReset){
 //		//LOGI("recordAudio+, bReset Aubio --------------------------------------------------------\n", bReset);
@@ -843,7 +893,9 @@ JNIEXPORT jfloat JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_record
 }
 
 JNIEXPORT jfloat JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_analyzeAudio(JNIEnv * env, jobject thisObj, jshortArray array, int iBufSize, jboolean bReset){
-	LOGD("analyzeAudio+, iBufSize:%d\n", iBufSize);
+	if(sbIsDebugMode){
+		LOGD("analyzeAudio+, iBufSize:%d\n", iBufSize);
+	}
 //	if(bReset){
 //		deinitialAubio2();
 //	}
@@ -876,9 +928,10 @@ void performSpeexPreprocess(JNIEnv * env, jobject thisObj, jshortArray array, jb
 }
 
 static SpeexPreprocessState* stPreprocess;
-JNIEXPORT void JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_runAudioPreprocess(JNIEnv * env, jobject thisObj, jshortArray array, jboolean bReset)
-{
-	LOGD("runAudioPreprocess+\n");
+JNIEXPORT void JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_runAudioPreprocess(JNIEnv * env, jobject thisObj, jshortArray array, jboolean bReset){
+	if(sbIsDebugMode){
+		LOGD("runAudioPreprocess+\n");
+	}
 	DECLARE_JNIENV_WITHOUT_RETURN()
 
 	performSpeexPreprocess(env, thisObj, array, bReset, &stPreprocess);
@@ -1035,7 +1088,9 @@ jfloat performAudacityFFT(JNIEnv * env, jobject thisObj, jshortArray array, jboo
 		if(0 < iLastDet){
 			//LOGE("performAudacityFFT()-------------------------, iLastDetTone = [%.2f]=>%d, iDx0~5 = [%d, %d, %d, %d, %d]\n", iLastDet*sBinSize, iLastDet, iDx, iDx2, iDx3, iDx4, iDx5);
 			if(iDx > 0 && iDx2 >0 && iLastDet > 0 && (iDx - iLastDet <=1 && iDx - iLastDet >= -1) && (iDx - iDx2 >=2 || iDx - iDx2 <= -2)){
-				LOGE("performAudacityFFT()^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^, iLastDetTone=%.2f, change from %.2f to %.2f \n", iLastDet*sBinSize, iDx*sBinSize,  iDx2*sBinSize);
+				if(sbIsDebugMode){
+					LOGE("performAudacityFFT()^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^, iLastDetTone=%.2f, change from %.2f to %.2f \n", iLastDet*sBinSize, iDx*sBinSize,  iDx2*sBinSize);
+				}
 				iDx = iDx2;
 			}
 		}
@@ -1056,7 +1111,9 @@ JNIEXPORT jfloat JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_analyz
 
 JNIEXPORT void JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_endRecord(JNIEnv * env, jobject thisObj)
 {
-	LOGE("endRecord()+");
+	if(sbIsDebugMode){
+		LOGE("endRecord()+");
+	}
 //    del_aubio_pitchdetection(o);
 //    del_fvec(in);
 
@@ -1065,12 +1122,16 @@ JNIEXPORT void JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_endRecor
 	//deinitialAubio();
 	//aubio_cleanup();
 
-	LOGE("endRecord-");
+	if(sbIsDebugMode){
+		LOGE("endRecord-");
+	}
 }
 
 JNIEXPORT void JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_encodeRS(JNIEnv * env, jclass jcls, jintArray array, int iCount, int numECCodewords)
 {
-	LOGE("encodeRS()\n");
+	if(sbIsDebugMode){
+		LOGE("encodeRS()\n");
+	}
 	DECLARE_JNIENV_WITHOUT_RETURN()
 	jint* data = jni_env->GetIntArrayElements(array, NULL);
 
@@ -1086,7 +1147,9 @@ JNIEXPORT void JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_encodeRS
 
 JNIEXPORT void JNICALL Java_com_app_beseye_pairing_SoundPairingActivity_decodeRS(JNIEnv * env, jclass jcls, jintArray array, int iCount, int numECCodewords)
 {
-	LOGE("decodeRS()\n");
+	if(sbIsDebugMode){
+		LOGE("decodeRS()\n");
+	}
 	DECLARE_JNIENV_WITHOUT_RETURN()
 	jint* data = jni_env->GetIntArrayElements(array, NULL);
 

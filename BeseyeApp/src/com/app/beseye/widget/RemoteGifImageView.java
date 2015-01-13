@@ -35,6 +35,7 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.app.beseye.adapter.EventListAdapter.IListViewScrollListenser;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeUtils;
 
 public class RemoteGifImageView extends RemoteImageView {
@@ -214,7 +215,8 @@ public class RemoteGifImageView extends RemoteImageView {
 			for(int i = 0; i< iLen;i++){
 				if(null != BeseyeMemCache.getBitmapFromMemCache(mCachePath[i]) || fileExist(mCachePath[i]+(mbIsPhoto?CACHE_POSTFIX_SAMPLE_1:CACHE_POSTFIX_SAMPLE_2))){
 					miCurDisplayIdx = i;
-					Log.e(TAG, "loadImage(), shift miCurDisplayIdx to "+miCurDisplayIdx);	
+					if(DEBUG)
+						Log.e(TAG, "loadImage(), shift miCurDisplayIdx to "+miCurDisplayIdx);	
 					break;
 				}
 			}
@@ -247,7 +249,8 @@ public class RemoteGifImageView extends RemoteImageView {
 			loadRemoteImage();
 			//mLoadRemoteImageRunnable.run();
 		}else{
-			Log.e(TAG, "loadDefaultImage(), 2");	
+			if(DEBUG)
+				Log.e(TAG, "loadDefaultImage(), 2");	
 			loadDefaultImage();
 		}
 		mbIsInitPage = false;
@@ -567,7 +570,8 @@ public class RemoteGifImageView extends RemoteImageView {
 		} finally {
 			closeStream(inputStream);
 		}
-		Log.d(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs));
+		if(BeseyeConfig.DEBUG)
+			Log.d(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs));
 		return bitmap;
 	}
 

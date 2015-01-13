@@ -1,5 +1,6 @@
 package com.app.beseye.receiver;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import com.app.beseye.service.BeseyeNotificationService;
@@ -15,7 +16,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
 		if(action.equals(Intent.ACTION_BOOT_COMPLETED)) {
-			Log.i(TAG, "*****************BootBroadcastReceiver::onReceive(), ACTION_BOOT_COMPLETED invoked");
+			if(DEBUG)
+				Log.i(TAG, "*****************BootBroadcastReceiver::onReceive(), ACTION_BOOT_COMPLETED invoked");
 			context.startService(new Intent(context,BeseyeNotificationService.class));
 		}
 	}
