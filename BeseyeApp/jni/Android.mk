@@ -21,6 +21,7 @@ LOCAL_SRC_FILES        := $(SOUNDPAIRING_PATH)/zxing/Exception.cpp \
 						  $(SOUNDPAIRING_PATH)/zxing/common/reedsolomon/ReedSolomonEncoder.cpp \
 						  $(SOUNDPAIRING_PATH)/zxing/common/reedsolomon/ReedSolomonException.cpp \
 						  $(AUBIO_SRC_ROOT)/utils.cpp \
+						  $(AUBIO_SRC_ROOT)/rt_config.cpp \
 						  $(AUBIO_SRC_ROOT)/sp_config.cpp \
 						  $(AUBIO_SRC_ROOT)/FreqGenerator.cpp \
 						  $(AUBIO_SRC_ROOT)/native.cpp \

@@ -572,15 +572,17 @@ display:
             av_diff = 0;
             if (is->audio_st && is->video_st)
                 av_diff = get_audio_clock(is) - get_video_clock(is);
-            printf("%7.2f A-V:%7.3f fd=%4d aq=%5dKB vq=%5dKB sq=%5dB f=%"PRId64"/%"PRId64"   \r",
-                   get_master_clock(is),
-                   av_diff,
-                   is->frame_drops_early + is->frame_drops_late,
-                   aqsize / 1024,
-                   vqsize / 1024,
-                   sqsize,
-                   is->video_st ? is->video_st->codec->pts_correction_num_faulty_dts : 0,
-                   is->video_st ? is->video_st->codec->pts_correction_num_faulty_pts : 0);
+            if(isDebugMode()){
+				printf("%7.2f A-V:%7.3f fd=%4d aq=%5dKB vq=%5dKB sq=%5dB f=%"PRId64"/%"PRId64"   \r",
+					   get_master_clock(is),
+					   av_diff,
+					   is->frame_drops_early + is->frame_drops_late,
+					   aqsize / 1024,
+					   vqsize / 1024,
+					   sqsize,
+					   is->video_st ? is->video_st->codec->pts_correction_num_faulty_dts : 0,
+					   is->video_st ? is->video_st->codec->pts_correction_num_faulty_pts : 0);
+            }
             fflush(stdout);
             last_time = cur_time;
 
@@ -770,8 +772,10 @@ int CBeseyePlayer::queue_picture(VideoState *is, AVFrame *src_frame, double pts1
     is->video_clock += frame_delay;
 
 #if defined(DEBUG_SYNC) && 0
-    printf("frame_type=%c clock=%0.3f pts=%0.3f\n",
-           av_get_picture_type_char(src_frame->pict_type), pts, pts1);
+    if(isDebugMode()){
+		printf("frame_type=%c clock=%0.3f pts=%0.3f\n",
+			   av_get_picture_type_char(src_frame->pict_type), pts, pts1);
+    }
 #endif
 
     /* wait until we have space to put a new picture */
@@ -1398,9 +1402,11 @@ int CBeseyePlayer::audio_decode_frame(VideoState *is, double *pts_ptr)
 #ifdef DEBUG
             {
                 static double last_clock;
-                printf("audio: delay=%0.3f clock=%0.3f pts=%0.3f\n",
-                       is->audio_clock - last_clock,
-                       is->audio_clock, pts);
+                if(isDebugMode()){
+					printf("audio: delay=%0.3f clock=%0.3f pts=%0.3f\n",
+						   is->audio_clock - last_clock,
+						   is->audio_clock, pts);
+                }
                 last_clock = is->audio_clock;
             }
 #endif

@@ -48,6 +48,10 @@ msec_t time_ms(void);
 #include <librtmp/log.h>
 
 #define STRMATCH(a1,a2)	(NULL != a1 && NULL != a2 && strlen(a1) == strlen(a2) && !strncmp(a1,a2,strlen(a1)))
+
+void setDebugMode(int iDebug);//0:off, 1:on
+int isDebugMode();
+
 }
 #endif//__cplusplus
 

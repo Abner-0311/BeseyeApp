@@ -38,7 +38,7 @@ static int siDebugMode = 1;
 
 void setDebugMode(int iDebug){//0:off, 1:on
 	siDebugMode = iDebug;
-	LOGI("setDebugMode(), siDebugMode:(%d)", siDebugMode);
+	//LOGI("setDebugMode(), siDebugMode:(%d)", siDebugMode);
 
 	if(siDebugMode){
 		av_log_set_level(AV_LOG_DEBUG);

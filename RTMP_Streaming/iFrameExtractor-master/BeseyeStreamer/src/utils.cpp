@@ -34,6 +34,25 @@ msec_t time_ms(void){
 	return (msec_t)tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
+static int siDebugMode = 1;
+
+void setDebugMode(int iDebug){//0:off, 1:on
+	siDebugMode = iDebug;
+	//LOGI("setDebugMode(), siDebugMode:(%d)", siDebugMode);
+
+	if(siDebugMode){
+		av_log_set_level(AV_LOG_DEBUG);
+		RTMP_LogSetLevel(RTMP_LOGINFO);
+	}else{
+		av_log_set_level(AV_LOG_ERROR);
+		RTMP_LogSetLevel(RTMP_LOGERROR);
+	}
+}
+
+int isDebugMode(){
+	return siDebugMode;
+}
+
 //void getTimeSpecByDelay(struct timespec &outtime, long lDelayInMS){
 //	struct timeval now;
 //	gettimeofday(&now, NULL);

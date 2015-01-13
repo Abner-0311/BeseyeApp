@@ -48,8 +48,7 @@ void deleteOldWiFiFile();
 
 char *ultostr(uint64 ulong_value);
 
-void setSPDebugMode(int iDebug);//0:off, 1:on
-int isSPDebugMode();
+#include <rt_config.h>
 
 #include <time_utils.h>
 

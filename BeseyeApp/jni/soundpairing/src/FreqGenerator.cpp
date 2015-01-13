@@ -1,6 +1,7 @@
 #include "FreqGenerator.h"
 #include "soundpairing_error.h"
 #include "city.h"
+#include "rt_config.h"
 #include <sys/time.h>
 #include <zxing/common/Array.h>
 

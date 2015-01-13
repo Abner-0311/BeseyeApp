@@ -50,17 +50,6 @@ void getTimeSpecByDelay(struct timespec &outtime, long lDelayInMS){
 	//LOGI("getTimeSpecByDelay(), lDelayInMS = %ld ms, (%d, %d) -> (%d, %d)", lDelayInMS, now.tv_sec, now.tv_usec, outtime.tv_sec , outtime.tv_nsec);
 }
 
-static int siDebugMode = 1;
-
-void setSPDebugMode(int iDebug){//0:off, 1:on
-	siDebugMode = iDebug;
-	LOGI("setSPDebugMode(), siDebugMode:(%d)", siDebugMode);
-}
-
-int isSPDebugMode(){
-	return siDebugMode;
-}
-
 #ifndef ANDROID
 static char data[BUF_SIZE] = {0};
 

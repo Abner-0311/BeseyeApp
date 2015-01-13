@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07AB6B581A63D61E008F4A21 /* rt_config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07AB6B571A63D61E008F4A21 /* rt_config.cpp */; };
 		07BC6F0E191FC4AC009541A3 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6EF1191FC4AC009541A3 /* utils.cpp */; };
 		07BC6F0F191FC4AC009541A3 /* FreqGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6EF7191FC4AC009541A3 /* FreqGenerator.cpp */; };
 		07BC6F10191FC4AC009541A3 /* native_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6EF8191FC4AC009541A3 /* native_ios.cpp */; };
@@ -34,6 +35,8 @@
 
 /* Begin PBXFileReference section */
 		07776DBC18FD380C00B7033B /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../../Sound_Pairing/aubioTest/jni/include/config.h; sourceTree = "<group>"; };
+		07AB6B561A63D5FA008F4A21 /* rt_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rt_config.h; sourceTree = "<group>"; };
+		07AB6B571A63D61E008F4A21 /* rt_config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rt_config.cpp; sourceTree = "<group>"; };
 		07BC6EEF191FC4AC009541A3 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
 		07BC6EF1191FC4AC009541A3 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = utils.cpp; path = Common/src/utils.cpp; sourceTree = SOURCE_ROOT; };
 		07BC6EF3191FC4AC009541A3 /* beseye_sound_pairing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = beseye_sound_pairing.h; sourceTree = "<group>"; };
@@ -185,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				07BC6EF3191FC4AC009541A3 /* beseye_sound_pairing.h */,
+				07AB6B561A63D5FA008F4A21 /* rt_config.h */,
 				07DC2D421A3560170039B6D7 /* city.h */,
 				07BC6EF4191FC4AC009541A3 /* FreqGenerator.h */,
 				07BC6EF5191FC4AC009541A3 /* sp_config.h */,
@@ -198,6 +202,7 @@
 				07DC2D401A3560060039B6D7 /* city.cc */,
 				07BC6EF7191FC4AC009541A3 /* FreqGenerator.cpp */,
 				07BC6EF8191FC4AC009541A3 /* native_ios.cpp */,
+				07AB6B571A63D61E008F4A21 /* rt_config.cpp */,
 				07BC6EF9191FC4AC009541A3 /* sp_config.cpp */,
 			);
 			path = src;
@@ -406,6 +411,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				07BC6F10191FC4AC009541A3 /* native_ios.cpp in Sources */,
+				07AB6B581A63D61E008F4A21 /* rt_config.cpp in Sources */,
 				07BC6F12191FC4AC009541A3 /* IllegalArgumentException.cpp in Sources */,
 				07BC6F14191FC4AC009541A3 /* GenericGFPoly.cpp in Sources */,
 				07BC6F17191FC4AC009541A3 /* Exception.cpp in Sources */,
