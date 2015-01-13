@@ -1142,7 +1142,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			            					synchronized(CameraViewActivity.this){
 				   	                     		while(0 < mstrPendingStreamPathList.size()){
 				   	                     			String stream =  BeseyeJSONUtil.getJSONString(mstrPendingStreamPathList.get(0), BeseyeJSONUtil.MM_STREAM);
-				   	                     			if(0 > addStreamingPath(0,stream)){
+				   	                     			if(0 > addStreamingPath(0,stream+BeseyeUtils.getStreamSecInfo())){
 				   	                     				Log.i(TAG, "failed to append stream:"+stream);
 				   	                     				mstrPendingStreamPathList.clear();
 				   	                     				break;
