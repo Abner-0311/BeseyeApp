@@ -30,9 +30,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
 import com.app.beseye.adapter.EventListAdapter.IListViewScrollListenser;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeConfig;

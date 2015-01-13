@@ -722,7 +722,7 @@ public class CameraViewControlAnimator {
 	        performHoldToTalkAnimation();
 	        CameraViewActivity act = mCameraViewActivity.get();
 			if(null != act){
-				act.openAudioChannel();
+				act.pressToTalk();
 			}
 		}else{
 			Log.w(TAG, "onTalkBtnPressed(), mRectTalkBtn isn't null");
