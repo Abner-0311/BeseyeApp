@@ -31,6 +31,7 @@ import android.graphics.Region.Op;
 import android.graphics.Xfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -351,16 +352,26 @@ public class RemoteImageView extends ImageView {
 		mStrVCamIdLoad = strVcamId;
 		if(DEBUG)
 			Log.d(TAG, "setImageBitmap(), mStrVCamIdLoad:["+mStrVCamIdLoad+"], id:"+this.getId());
-		setImageBitmap(bm);
+		
+		//setImageBitmap(bm);
+		
+		Drawable[] layers = new Drawable[2];
+		layers[0] = this.getDrawable();
+		layers[1] = new BitmapDrawable(bm);
+
+		TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
+		setImageDrawable(transitionDrawable);
+		transitionDrawable.startTransition(300);
 	}
 
-	@Override
-	public void setImageBitmap(Bitmap bm) {
-		if(mbMatchWidth){
-			
-		}
-		super.setImageBitmap(bm);
-	}
+//	@Override
+//	public void setImageBitmap(Bitmap bm) {
+////		if(mbMatchWidth){
+////			
+////		}
+//		
+//		super.setImageBitmap(bm);
+//	}
 
 	public void loadRemoteImage() {
 		if (null != mFuture) {

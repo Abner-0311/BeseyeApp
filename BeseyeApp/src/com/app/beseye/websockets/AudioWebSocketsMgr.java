@@ -458,7 +458,6 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						    byte buff[] = new byte[320];
 						    int len = uis.read(buff);
 						    while (len > 0) {
-						    	
 						    	if(AUDIO_REC_FILE){
 						    		fos.write(buff, 0, len);
 						    		fos.flush();
@@ -469,7 +468,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						    		}else{
 						    			{
 							    			//mFNotifyWSChannel.get().send(buff);
-						    				long lBeginTime = System.currentTimeMillis();
+						    				//long lBeginTime = System.currentTimeMillis();
 						    				StringBuilder strArrayVal = new StringBuilder();
 						    				strArrayVal.append("{\""+WS_ATTR_DATA+"\":[");
 						    				for(int i = 0;i< len;i++){
@@ -502,7 +501,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						    			//Log.i(TAG, "run(), len="+len+", strSent=\n"+strSent);
 						    		}
 						    	}
-						    	Thread.sleep(30);
+						    	//Thread.sleep(30);
 							    len = uis.read(buff);
 						    }
 			    		} catch (Exception e) {

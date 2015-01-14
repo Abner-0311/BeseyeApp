@@ -15,7 +15,7 @@
     <dimen name="liveview_mic_bg_margin_bottom">22dp</dimen>
     <dimen name="liveview_hold_to_talk_margin_bottom">32dp</dimen>
     
-    <dimen name="liveview_hold_to_talk_margin_right">4dp</dimen><!-- 22dp -->
+    <dimen name="liveview_hold_to_talk_margin_right">22dp</dimen><!-- 4dp -->
     
     <dimen name="liveview_navbar_font_size_large">19sp</dimen>
     
