@@ -142,9 +142,9 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 			}
 			
 			if(BeseyeFeatureConfig.VPC_NUM_QUERY){
-				monitorAsyncTask(new BeseyeAccountTask.GetVPCNoHttpTask(this), true, mEtUserName.getText().toString());
+				monitorAsyncTask(new BeseyeAccountTask.GetVPCNoHttpTask(this).setDialogId(DIALOG_ID_LOGIN), true, mEtUserName.getText().toString());
 			}else{
-				monitorAsyncTask(new BeseyeAccountTask.LoginHttpTask(this), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
+				monitorAsyncTask(new BeseyeAccountTask.LoginHttpTask(this).setDialogId(DIALOG_ID_LOGIN), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
 			}
 		}
 	}
@@ -196,8 +196,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 							launchDelegateActivity(CameraListActivity.class.getName());
 							setResult(RESULT_OK);
 							finish();
-						}
-						
+						}		
 					}
 				}
 			}else if(task instanceof BeseyeAccountTask.GetVPCNoHttpTask){
@@ -207,7 +206,12 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						SessionMgr.getInstance().setVPCNumber(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.ACC_VPC_NO));
-						monitorAsyncTask(new BeseyeAccountTask.LoginHttpTask(this), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
+						BeseyeUtils.postRunnable(new Runnable(){
+							@Override
+							public void run() {
+								monitorAsyncTask(new BeseyeAccountTask.LoginHttpTask(LoginActivity.this).setDialogId(DIALOG_ID_LOGIN), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
+							}}, 100);
+						
 					}
 				}
 			}else{

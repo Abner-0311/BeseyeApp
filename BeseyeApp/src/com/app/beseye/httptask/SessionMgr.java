@@ -257,6 +257,8 @@ public class SessionMgr {
 	}
 	
 	public void setVPCNumber(int iVPCno){
+		Log.e(TAG, "setVPCNumber(), iVPCno:"+iVPCno);
+
 		mSessionData.setVPCNumber(iVPCno);
 		setPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, mSessionData.getVPCNumber());
 		setBEHostUrl(getServerMode());

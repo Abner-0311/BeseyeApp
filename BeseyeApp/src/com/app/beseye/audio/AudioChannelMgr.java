@@ -12,6 +12,7 @@ public class AudioChannelMgr {
     private static int sSampleRate;
     private static int sChannelConfig;
     private static int sAudioFormat;
+    private static boolean sbMute = false;
     
     synchronized public static int audioInit(int sampleRate, boolean is16Bit, boolean isStereo, int desiredFrames) {
         int channelConfig = isStereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO : AudioFormat.CHANNEL_CONFIGURATION_MONO;
@@ -45,6 +46,7 @@ public class AudioChannelMgr {
             }
             
             sAudioTrack.play();
+            sbMute = false;
         }
         
         sSampleRate = sampleRate;
@@ -64,9 +66,17 @@ public class AudioChannelMgr {
     	return iMinBufSize;
     }
     
+    public static void setMute(boolean bMute){
+    	sbMute = bMute;
+    }
+    
     synchronized public static void audioWriteShortBuffer(short[] buffer, int iLen) {
     	if (sAudioTrack == null) {
     		Log.w(TAG, "audioWriteShortBuffer(), sAudioTrack is null");
+    		return;
+    	}
+    	
+    	if(sbMute){
     		return;
     	}
     	
@@ -90,6 +100,10 @@ public class AudioChannelMgr {
     synchronized public static void audioWriteByteBuffer(byte[] buffer) {
     	if (sAudioTrack == null) {
     		Log.w(TAG, "audioWriteByteBuffer(), sAudioTrack is null");
+    		return;
+    	}
+    	
+    	if(sbMute){
     		return;
     	}
     	

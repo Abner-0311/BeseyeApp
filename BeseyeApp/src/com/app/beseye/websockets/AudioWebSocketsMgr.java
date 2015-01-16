@@ -41,6 +41,7 @@ import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
@@ -369,11 +370,20 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     	}
     }
     
+    private long mlTalkStartTs = 0;
+    
     public void setSienceFlag(boolean bSilent){
     	if(bSilent != mbSilent){
 	    	Log.i(TAG, "setSienceFlag(), ...........  mbSilent from "+mbSilent+" to "+bSilent);	
     	}
     	mbSilent = bSilent;
+    	AudioChannelMgr.setMute(!mbSilent);
+    	
+    	if(!mbSilent){
+    		mlTalkStartTs = System.currentTimeMillis();
+    	}else{
+    		mlTalkStartTs = 0;
+    	}
     }
     
     private boolean mbSilent = false;
@@ -433,17 +443,19 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    	//Log.i(TAG, "run(), readsize="+readsize);
 		    	if (AudioRecord.ERROR_INVALID_OPERATION != readsize) {
 		    		if(0 == (iRefCount++)%COUNT_TO_CHECK){
-	    				int iMaxVal = 0;
-	    				for(int idx = 0; idx < readsize/2;idx++){
-	    					//Log.i(TAG, "run(), audiodata[2*idx]:"+audiodata[2*idx]+", audiodata[2*idx+1]:"+ audiodata[2*idx+1]);
-	    					int iVal = Math.abs(audiodata[2*idx+1]<<8 | audiodata[2*idx]);
-	    					if(iMaxVal < iVal){
-	    						iMaxVal = iVal;
-	    					}
-	    				}
-	    				
-	    				//Log.i(TAG, "run(), iMaxVal:"+iMaxVal);
-	    				
+		    			int iMaxVal = 0;
+		    			if(false == mbSilent){
+		    				for(int idx = 0; idx < readsize/2;idx++){
+		    					//Log.i(TAG, "run(), audiodata[2*idx]:"+audiodata[2*idx]+", audiodata[2*idx+1]:"+ audiodata[2*idx+1]);
+		    					int iVal = Math.abs(audiodata[2*idx+1]<<8 | audiodata[2*idx]);
+		    					if(iMaxVal < iVal){
+		    						iMaxVal = iVal;
+		    					}
+		    				}
+		    				
+		    				//Log.i(TAG, "run(), iMaxVal:"+iMaxVal);
+		    			}
+		    			
 	    				OnAudioAmplitudeUpdateListener listener = (null != mOnAudioAmplitudeUpdateListener)?mOnAudioAmplitudeUpdateListener.get():null;
 		    			if(null != listener){
 		    				listener.onAudioAmplitudeUpdate((iMaxVal)/32767.0f);
@@ -451,6 +463,9 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	    			}
 		    		
 		    		if(false == mbSilent){
+		    			if(0 < mlTalkStartTs && (System.currentTimeMillis()- mlTalkStartTs) < 500){
+		    				continue;
+		    			}
 		    			InputStream is = new ByteArrayInputStream(audiodata);
 			    		UlawEncoderInputStream uis=null;
 			    		try {

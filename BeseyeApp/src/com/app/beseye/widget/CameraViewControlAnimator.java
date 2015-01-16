@@ -716,6 +716,7 @@ public class CameraViewControlAnimator {
 	private void onTalkBtnPressed(View view){
 		if(DEBUG)
 			Log.i(TAG, "onTalkBtnPressed()");
+		
 		if(null == mRectTalkBtn){
 			mRectTalkBtn = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
 	        cancelHideControl();
