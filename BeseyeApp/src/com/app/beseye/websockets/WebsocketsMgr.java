@@ -184,6 +184,7 @@ public class WebsocketsMgr {
 	}
 	
 	public boolean destroyWSChannel(){
+		//Thread.dumpStack();
 		if(DEBUG)
 			Log.i(TAG, "destroyWSChannel(), ++");
 		boolean bRet = false;

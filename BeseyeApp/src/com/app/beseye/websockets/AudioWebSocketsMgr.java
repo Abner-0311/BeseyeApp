@@ -440,6 +440,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 
 		    while (AudioWebSocketsMgr.getInstance().isWSChannelAlive() == true){
 		    	readsize = audioRecord.read(audiodata, 0, bufferSizeInBytes);
+		    	
 		    	//Log.i(TAG, "run(), readsize="+readsize);
 		    	if (AudioRecord.ERROR_INVALID_OPERATION != readsize) {
 		    		if(0 == (iRefCount++)%COUNT_TO_CHECK){
@@ -463,9 +464,19 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	    			}
 		    		
 		    		if(false == mbSilent){
+		    			//avoid echo
 		    			if(0 < mlTalkStartTs && (System.currentTimeMillis()- mlTalkStartTs) < 500){
 		    				continue;
 		    			}
+		    			
+//				    	int bufferSizeInShort = bufferSizeInBytes /2 ;
+//				    	for(int i = 0; i < bufferSizeInShort;i++){
+//				    		short sVal = (short) (((short)audiodata[2*i+1] << 8) + audiodata[2*i]); 
+//				    		sVal/=2;
+//				    		audiodata[2*i] = (byte) (sVal & 0xFF);
+//				    		audiodata[2*i+1] = (byte) (sVal >> 8);
+//				    	}
+				    	
 		    			InputStream is = new ByteArrayInputStream(audiodata);
 			    		UlawEncoderInputStream uis=null;
 			    		try {

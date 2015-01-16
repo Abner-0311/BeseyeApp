@@ -2419,7 +2419,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		@Override
 		public void run() {
 			if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
-				AudioWebSocketsMgr.getInstance().destroyWSChannel();
+				if(null != mCameraViewControlAnimator && mCameraViewControlAnimator.isInHoldToTalkMode()){
+					BeseyeUtils.postRunnable(mTerminateAudioChannelRunnable, TIME_TO_TERMINATE_AUDIO);
+				}else{
+					AudioWebSocketsMgr.getInstance().destroyWSChannel();
+				}		
 			}else if(null != mGetAudioWSServerTask){
 				mGetAudioWSServerTask.cancel(true);
 			}
@@ -2466,6 +2470,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     public void pressToTalk(){
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
     		AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+    		BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
     	}else{
     		openAudioChannel();
     	}
@@ -2474,8 +2479,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     public void releaseTalkMode(){
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
     		AudioWebSocketsMgr.getInstance().setSienceFlag(true);
-    	}else{
-    		openAudioChannel();
+    		BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
+    		BeseyeUtils.postRunnable(mTerminateAudioChannelRunnable, TIME_TO_TERMINATE_AUDIO);
     	}
     }
     
