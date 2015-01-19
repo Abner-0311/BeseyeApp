@@ -126,7 +126,7 @@
 				    android:thumb="@drawable/sl_mic_seekbar_thumb"
 				    android:progressDrawable="@drawable/seekbar_progress"
 				    android:maxHeight="7dp"
-				    android:max="80"
+				    android:max="100"
 	        		android:progress="0"
 	        		android:secondaryProgress="0"
 	        		android:visibility="visible"/>

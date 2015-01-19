@@ -46,6 +46,7 @@ import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.koushikdutta.async.AsyncServer;
 import com.koushikdutta.async.ByteBufferList;
 import com.koushikdutta.async.DataEmitter;
@@ -68,6 +69,24 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	static private String AUDIO_WS_ADDR = "ws://192.168.2.4:1314";
 	static private final String AUDIO_WS_ADDR_INTERNAL = "http://localhost:5566/audiowebsocket";//
 	static private AudioWebSocketsMgr sWebsocketsMgr = null;
+	
+	static public interface OnAudioWSChannelStateChangeListener{
+		public void onAudioChannelConnecting();
+		public void onAudioChannelConnected();
+	}
+	
+	protected WeakReference<OnAudioWSChannelStateChangeListener> mOnAudioWSChannelStateChangeListener = null;
+
+	
+	public void registerOnAudioWSChannelStateChangeListener(OnAudioWSChannelStateChangeListener listener){
+		if(null != listener){
+			mOnAudioWSChannelStateChangeListener = new WeakReference<OnAudioWSChannelStateChangeListener>(listener);
+		}
+	}
+	
+	public void unregisterOnAudioWSChannelStateChangeListener(){
+		mOnAudioWSChannelStateChangeListener = null;
+	}
 	
 	AsyncHttpServer httpServer = null;
 	byte[] b =  new byte[1024];
@@ -156,6 +175,9 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		mOnAudioAmplitudeUpdateListener = null;
 	}
 	
+	private BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask mRequestAudioWSOnCamTask = null;
+	private long mlTimeToStartWaitingAudioConn = -1;
+	
 	private WebSocketConnectCallback mWebSocketConnectCallback = new WebSocketConnectCallback() {
         @Override
         public void onCompleted(Exception ex, final WebSocket webSocket) {
@@ -177,6 +199,12 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
         		mbNotifyWSChannelConstructed = true;
 				mBConstructingNotifyWSChannel = false;
 				mlTimeConstrucNotifyWSChannel = 0;
+				mlTimeToStartWaitingAudioConn = -1;
+				
+				if(null != mRequestAudioWSOnCamTask && false == mRequestAudioWSOnCamTask.isCancelled()){
+					mRequestAudioWSOnCamTask.cancel(true);
+				}
+				mRequestAudioWSOnCamTask = null;
 				mlTimeToRequestWSChannelAuth = System.currentTimeMillis();
 			}
 			
@@ -235,6 +263,10 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 										
 									}else if(null != mStrAudioConnJobId && mStrAudioConnJobId.equals(strJobID) && 0 == iRetCode){
 										Log.i(TAG, "onStringAvailable(), Audio Conn OK -----------------------");
+										OnAudioWSChannelStateChangeListener listener = (null != mOnAudioWSChannelStateChangeListener)?mOnAudioWSChannelStateChangeListener.get():null;
+										if(null != listener){
+											listener.onAudioChannelConnected();
+										}
 										transferAudioBuf();
 									}else{
 										if(DEBUG)
@@ -440,7 +472,6 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 
 		    while (AudioWebSocketsMgr.getInstance().isWSChannelAlive() == true){
 		    	readsize = audioRecord.read(audiodata, 0, bufferSizeInBytes);
-		    	
 		    	//Log.i(TAG, "run(), readsize="+readsize);
 		    	if (AudioRecord.ERROR_INVALID_OPERATION != readsize) {
 		    		if(0 == (iRefCount++)%COUNT_TO_CHECK){
@@ -751,12 +782,31 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 				}
 			//}
 		}else if(task instanceof BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask){
-			if(0 == iRetCode){
-				JSONObject obj = result.get(0);
-				if(DEBUG)
-					Log.i(TAG, "onPostExecute(), obj = "+obj.toString());
-			}else{
-				Log.e(TAG, "onPostExecute(), failed to RequestAudioWSOnCamTask, iRetCode = "+iRetCode);
+			boolean bNeedToClose = false;
+			synchronized(this){
+				if(task == mRequestAudioWSOnCamTask){
+					if(0 == iRetCode){
+						JSONObject obj = result.get(0);
+						if(DEBUG)
+							Log.i(TAG, "onPostExecute(), obj = "+obj.toString());
+						
+						mlTimeToStartWaitingAudioConn = System.currentTimeMillis();
+						OnAudioWSChannelStateChangeListener listener = (null != mOnAudioWSChannelStateChangeListener)?mOnAudioWSChannelStateChangeListener.get():null;
+						if(null != listener){
+							listener.onAudioChannelConnecting();
+						}
+						
+					}else{
+						Log.e(TAG, "onPostExecute(), failed to RequestAudioWSOnCamTask, iRetCode = "+iRetCode);
+						bNeedToClose = true;
+						//AudioWebSocketsMgr.getInstance().destroyWSChannel();
+					}
+					mRequestAudioWSOnCamTask = null;
+				}
+			}
+			
+			if(bNeedToClose == true){
+				AudioWebSocketsMgr.getInstance().destroyWSChannel();
 			}
 		}
 	}

@@ -30,6 +30,8 @@ import android.widget.TextView;
 
 import com.app.beseye.CameraViewActivity;
 import com.app.beseye.R;
+import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeUtils;
 
 public class CameraViewControlAnimator {
@@ -165,6 +167,9 @@ public class CameraViewControlAnimator {
 		}
 	}
 	
+	private long mlLastPressDownTs = -1;
+	private boolean mbLongPressMode = false;
+	
 	private void syncToolbarLayoutItmProperty(){
 		ViewGroup vgReference = null;
 		if(Configuration.ORIENTATION_PORTRAIT == miOrientation){
@@ -199,19 +204,32 @@ public class CameraViewControlAnimator {
 				mIbTalk.setOnTouchListener(new OnTouchListener(){
 					@Override
 					public boolean onTouch(View view, MotionEvent event) {
-						//Log.i(TAG, "onTouch(), event.getAction()="+event.getAction());
-
 						if (event.getAction() == MotionEvent.ACTION_DOWN){
+							if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
+								long lCurPressDownTs = System.currentTimeMillis();
+								if(-1 != mlLastPressDownTs && (lCurPressDownTs - mlLastPressDownTs) < 1000L){
+									mbLongPressMode = !mbLongPressMode;
+									mlLastPressDownTs = -1;
+									Log.i(TAG, "mbLongPressMode becomes "+mbLongPressMode);
+	
+								}else{
+									mlLastPressDownTs = lCurPressDownTs;
+								}
+							}
 							onTalkBtnPressed(view);
 						}else if (event.getAction() == MotionEvent.ACTION_MOVE){
 							if(null != mRectTalkBtn && !mRectTalkBtn.contains(view.getLeft() + (int) event.getX(), view.getTop() + (int) event.getY())){
 					            // User moved outside bounds
-								onTalkBtnReleased();
+								if(!BeseyeConfig.DEBUG || false == mbLongPressMode){
+									onTalkBtnReleased();
+								}
 					        }else{
 					        	extendHideControl();
 					        }
 			            }else if (event.getAction() == MotionEvent.ACTION_UP){
-			            	onTalkBtnReleased();
+			            	if(!BeseyeConfig.DEBUG || false == mbLongPressMode){
+								onTalkBtnReleased();
+							}
 			            }
 						return false;
 					}});
@@ -749,6 +767,7 @@ public class CameraViewControlAnimator {
 	public void terminateTalkMode(){
 		if(DEBUG)
 			Log.i(TAG, "terminateTalkMode()");
+		mbLongPressMode = false;
 		onTalkBtnReleased();
 	}
 	

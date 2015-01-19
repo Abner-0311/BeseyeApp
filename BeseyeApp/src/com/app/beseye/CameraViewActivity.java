@@ -68,6 +68,7 @@ import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.websockets.AudioWebSocketsMgr;
 import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioAmplitudeUpdateListener;
+import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioWSChannelStateChangeListener;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.app.beseye.widget.CameraViewControlAnimator;
 
@@ -76,6 +77,7 @@ import com.app.beseye.widget.CameraViewControlAnimator;
 public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSurfaceCallback,
 																	  OnNetworkChangeCallback,
 																	  OnWSChannelStateChangeListener,
+																	  OnAudioWSChannelStateChangeListener,
 																	  OnAudioAmplitudeUpdateListener,
 																	  CameraStatusCallback{
 	static public final String KEY_PAIRING_DONE 	= "KEY_PAIRING_DONE";
@@ -2422,7 +2424,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(null != mCameraViewControlAnimator && mCameraViewControlAnimator.isInHoldToTalkMode()){
 					BeseyeUtils.postRunnable(mTerminateAudioChannelRunnable, TIME_TO_TERMINATE_AUDIO);
 				}else{
-					AudioWebSocketsMgr.getInstance().destroyWSChannel();
+					//if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
+						AudioWebSocketsMgr.getInstance().destroyWSChannel();
+					//}
 				}		
 			}else if(null != mGetAudioWSServerTask){
 				mGetAudioWSServerTask.cancel(true);
@@ -2528,14 +2532,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onChannelConnected() {
 		if(DEBUG)
 			Log.i(TAG, "onChannelConnected()---");
-		BeseyeUtils.postRunnable(new Runnable(){
-			@Override
-			public void run() {
-				checkHoldToTalkMode();
-//				if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
-//					Toast.makeText(CameraViewActivity.this, "Talk now", Toast.LENGTH_SHORT).show();
-//				}
-			}}, 0);
+//		BeseyeUtils.postRunnable(new Runnable(){
+//			@Override
+//			public void run() {
+//				checkHoldToTalkMode();
+////				if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
+////					Toast.makeText(CameraViewActivity.this, "Talk now", Toast.LENGTH_SHORT).show();
+////				}
+//			}}, 0);
 	}
 
 	@Override
@@ -2551,12 +2555,44 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
-				if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK && mActivityResume){
-					openAudioChannel();
+				if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
+					BeseyeUtils.postRunnable(new Runnable(){
+						@Override
+						public void run() {
+							if(mActivityResume){
+								Log.i(TAG, "reopen due to onChannelClosed()---");
+								openAudioChannel();
+							}
+						}}, 5000);
 				}
 				//Toast.makeText(CameraViewActivity.this, "Talk terminated", Toast.LENGTH_SHORT).show();
 			}}, 0);
 		
+	}
+	
+	@Override
+	public void onAudioChannelConnecting() {
+		if(DEBUG)
+			Log.i(TAG, "onAudioChannelConnecting()---");
+//		BeseyeUtils.postRunnable(new Runnable(){
+//			@Override
+//			public void run() {
+//				checkHoldToTalkMode();
+//			}}, 0);
+	}
+
+	@Override
+	public void onAudioChannelConnected() {
+		if(DEBUG)
+			Log.i(TAG, "onAudioChannelConnected()---");
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				checkHoldToTalkMode();
+//				if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
+//					Toast.makeText(CameraViewActivity.this, "Talk now", Toast.LENGTH_SHORT).show();
+//				}
+			}}, 0);
 	}
 	
 	private void checkHoldToTalkMode(){

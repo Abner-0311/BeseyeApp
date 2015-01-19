@@ -28,6 +28,7 @@ import com.app.beseye.receiver.UBTEventBroadcastReciever;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.DeviceUuidFactory;
 import com.app.beseye.util.NetworkMgr;
@@ -56,10 +57,13 @@ public class BeseyeApplication extends Application {
 		sApplication = this;
 		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
 		
-		if(BeseyeConfig.DEBUG)
+		if(BeseyeConfig.DEBUG){
 			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" HOCKEY_APP_ID:"+HOCKEY_APP_ID+", can update:"+BeseyeUtils.canUpdateFromHockeyApp());
-		else 
+			Log.i(TAG, "CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK+", ADV_TWO_WAY_tALK:"+BeseyeFeatureConfig.ADV_TWO_WAY_tALK+", VPC_NUM_QUERY:"+BeseyeFeatureConfig.VPC_NUM_QUERY);
+
+		}else{ 
 			Log.i(TAG, "*****************BeseyeApplication::onCreate(), can update:"+BeseyeUtils.canUpdateFromHockeyApp());
+		}
 
 		ACRA.init(this);
 		ACRA.getErrorReporter().setReportSender(new HockeySender());

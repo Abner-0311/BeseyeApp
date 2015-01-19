@@ -67,7 +67,7 @@ public class BeseyeJSONUtil {
 	public static final String SPEAKER_STATUS 			= "SpeakerStatus";
 	public static final String SPEAKER_VOLUME 			= "SpeakerVolume";
 	public static final String MIC_STATUS 				= "MicStatus";
-	public static final String MIC_GAIN 				= "MicGain";
+	public static final String MIC_GAIN 				= "MicGainPercent";
 	public static final String IRCUT_STATUS 			= "IRStatus";
 	public static final String VIDEO_RES 				= "VideoResolution";
 	public static final String MAC_ADDR 				= "CamMacAddr";
