@@ -17,6 +17,7 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
+		mbIgnoreCamVerCheck = true;
 		getSupportActionBar().hide();
 		findViewById(R.id.iv_signup_top_logo).setOnClickListener(this);
 		mTvSetupAndSignup = (TextView)findViewById(R.id.button_signup);

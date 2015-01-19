@@ -49,6 +49,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
+		mbIgnoreCamVerCheck = true;
 		
 		if(null != mTxtNavTitle){
 			mTxtNavTitle.setText(R.string.signup_title_create_account);

@@ -33,6 +33,8 @@ public class ForgetPasswordActivity extends BeseyeAccountBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mbIgnoreSessionCheck = true;
+		mbIgnoreCamVerCheck = true;
 		
 		if(null != mTxtNavTitle){
 			mTxtNavTitle.setText(R.string.forget_password);

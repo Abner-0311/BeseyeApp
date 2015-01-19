@@ -27,6 +27,8 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
+		mbIgnoreCamVerCheck = true;
+		
 		mRbDemomode = (RadioButton)findViewById(R.id.rbDemo);
 		mRbPairingmode = (RadioButton)findViewById(R.id.rbPairing);
 		mRbP2Pmode = (RadioButton)findViewById(R.id.rbP2P);

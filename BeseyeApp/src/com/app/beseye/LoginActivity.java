@@ -36,6 +36,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
+		mbIgnoreCamVerCheck = true;
 		
 		if(null != mTxtNavTitle){
 			mTxtNavTitle.setText(R.string.signup_bottom_login);
