@@ -241,9 +241,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    				if(null != mCameraViewControlAnimator){
 			    				setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
 		    				}
+		    				
 		    				if(mbIsLiveMode){
 		    					if(null == mCheckVideoBlockRunnable){
 	    		        			mCheckVideoBlockRunnable = new CheckVideoBlockRunnable(CameraViewActivity.this);
+	    		        			Log.e(TAG, "CV_STREAM_PLAYING(), mCheckVideoBlockRunnable+++++++");
 	    		        		}
 	    		        		BeseyeUtils.removeRunnable(mCheckVideoBlockRunnable);
 	    		        		BeseyeUtils.postRunnable(mCheckVideoBlockRunnable, CheckVideoBlockRunnable.EXPIRE_VIDEO_NOT_START);
@@ -333,6 +335,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							BeseyeUtils.postRunnable(mReStartRunnable, 600L);
 							mReStartRunnable = null;
 						}
+		    			
+		    			cancelCheckVideoBlock();
 		    			break;
 		    		}
 		    		default:{
@@ -1056,6 +1060,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(null != mVgPowerState){
 			if(isCamPowerDisconnected()){
 				showInvalidStateMask();
+				mVgPowerState.setVisibility(View.GONE);
 			}else{
 				hideInvalidStateMask();
 				if(isCamPowerOff()){
@@ -1211,6 +1216,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					boolean bIsCamOn = isCamPowerOn();
+					boolean bIsCamDisconnected = isCamPowerDisconnected();
 					super.onPostExecute(task, result, iRetCode);
 					if(mbIsLiveMode){
 						if(bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED)){
@@ -1220,7 +1226,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							}
 						}
 						
-						if(isCamPowerOn() && !bIsCamOn){
+						if((isCamPowerOn() && !bIsCamOn) || (isCamPowerOff() && bIsCamOn) || (bIsCamDisconnected != isCamPowerDisconnected())){
 							checkPlayState();
 						}
 					}
@@ -1608,6 +1614,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	   	         			if(0 <= iRetCreateStreaming){
 	   	             			setCamViewStatus(CameraView_Internal_Status.CV_STREAM_CLOSE);
 	   	                 		mCurCheckCount = 0;
+	   	                 		mlLastTimeDrawBitmap= 0;
 	   	             		}
             			}
             		}else{
@@ -1696,6 +1703,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	       		         			if(0 <= iRetCreateStreaming){
 	       		             			setCamViewStatus(CameraView_Internal_Status.CV_STREAM_CLOSE);
 	       		                 		mCurCheckCount = 0;
+	       		                 		mlLastTimeDrawBitmap= 0;
 	       		             		}
 	       		         			
 	       		         			onDVRThreadFinish();
@@ -1882,6 +1890,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(DEBUG)
 					Log.e(TAG, "CheckVideoBlockRunnable::run(), time to reconnect.............., EXPIRE_VIDEO_BLOCK:"+EXPIRE_VIDEO_BLOCK);
 				
+				if(0 != act.mlLastTimeDrawBitmap && (System.currentTimeMillis() - act.mlLastTimeDrawBitmap) < EXPIRE_VIDEO_BLOCK){
+					Log.e(TAG, "CheckVideoBlockRunnable::run(), (System.currentTimeMillis() - act.mlLastTimeDrawBitmap):"+(System.currentTimeMillis() - act.mlLastTimeDrawBitmap)+" < EXPIRE_VIDEO_BLOCK:"+EXPIRE_VIDEO_BLOCK);
+					return;
+				}
+				
 				act.closeStreaming();
 				act.mReStartRunnable =  new Runnable(){
 					@Override
@@ -1896,6 +1909,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     
     final private static int COUNT_TO_START_CHECK_EXPIRE =30; 
     private int mCurCheckCount = 0;
+    private long mlLastTimeDrawBitmap = 0;
     private CheckVideoBlockRunnable mCheckVideoBlockRunnable;
     
     public void drawStreamBitmap(){
@@ -1907,10 +1921,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		mStreamingView.drawStreamBitmap();
     	
     	if(mbIsLiveMode){
+    		mlLastTimeDrawBitmap = System.currentTimeMillis();
     		mCurCheckCount++;
         	if(mCurCheckCount > COUNT_TO_START_CHECK_EXPIRE){
         		if(null == mCheckVideoBlockRunnable){
         			mCheckVideoBlockRunnable = new CheckVideoBlockRunnable(this);
+        			Log.e(TAG, "drawStreamBitmap(), mCheckVideoBlockRunnable+++++++");
         		}
         		BeseyeUtils.removeRunnable(mCheckVideoBlockRunnable);
         		BeseyeUtils.postRunnable(mCheckVideoBlockRunnable, CheckVideoBlockRunnable.EXPIRE_VIDEO_BLOCK);
@@ -1934,6 +1950,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	    		closeStreaming(miStreamIdx);
 //    		}}.start();
     	mCurCheckCount = 0;
+    	mlLastTimeDrawBitmap = 0;
     	
     	if(DEBUG)
     		Log.e(TAG, "closeStreaming() --");
@@ -2631,13 +2648,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
 		
 		boolean bIsCamOn = isCamPowerOn();
+		boolean bIsCamDisconnected = isCamPowerDisconnected();
 		super.onCamSetupChanged(strVcamId, lTs, objCamSetup);
 		if(null != strVcamId && strVcamId.equals(mStrVCamID)){
 			if(mbIsLiveMode){
 				if(bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED))
 					closeStreaming();
 				
-				if(isCamPowerOn() && !bIsCamOn){
+				if((isCamPowerOn() && !bIsCamOn) || (isCamPowerOff() && bIsCamOn) || (bIsCamDisconnected != isCamPowerDisconnected())){
 					checkPlayState();
 				}
 			}

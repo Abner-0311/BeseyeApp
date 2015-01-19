@@ -450,6 +450,10 @@ public class CameraViewControlAnimator {
 				CameraViewActivity act = mCameraViewActivity.get();
 				if(View.VISIBLE == m_vgHeaderLayout.getVisibility()){
 					if(Configuration.ORIENTATION_PORTRAIT != miOrientation){
+						if(null != mVgHoldToTalk && View.VISIBLE == mVgHoldToTalk.getVisibility()){
+							Thread.dumpStack();
+							return;
+						}
 						animation = m_aniHeaderFadeOut;
 						m_vgHeaderLayout.startAnimation(animation);
 						
