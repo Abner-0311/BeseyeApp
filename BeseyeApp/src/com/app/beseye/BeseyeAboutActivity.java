@@ -82,10 +82,11 @@ public class BeseyeAboutActivity extends BeseyeBaseActivity {
 			}
 			case R.id.txt_nav_title:{
 				//if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal()){
-					if(++miSendLog == 5){
+					if(!BeseyeConfig.PRODUCTION_VER && ++miSendLog == 5){
 						BeseyeUtils.saveLogToFile(this);
 					}
 				//}
+					
 				break;
 			}
 			default:

@@ -67,8 +67,9 @@ public class WebsocketsMgr {
 	
 	static public interface OnWSChannelStateChangeListener{
 		public void onChannelConnecting();
-		public void onAuthfailed();
 		public void onChannelConnected();
+		public void onAuthfailed();
+		public void onAuthComplete();
 		public void onMessageReceived(String msg);
 		public void onChannelClosed();
 	}

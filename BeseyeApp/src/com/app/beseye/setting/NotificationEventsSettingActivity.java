@@ -64,7 +64,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 								   BeseyeJSONUtil.NOTIFY_OFFLINE};
 	
 	
-	private boolean[] mbEnabledLst = {true, true, false, false, true};
+	private boolean[] mbEnabledLst = {false, true, false, false, true};
 	
 	private View mVwNavBar, mVNotifyMe;
 	private ActionBar.LayoutParams mNavBarLayoutParams;

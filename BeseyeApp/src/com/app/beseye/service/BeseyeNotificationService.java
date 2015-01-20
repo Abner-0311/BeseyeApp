@@ -56,6 +56,7 @@ import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
+import com.app.beseye.websockets.AudioWebSocketsMgr;
 import com.app.beseye.websockets.WebsocketsMgr;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 
@@ -1294,19 +1295,24 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	@Override
 	public void onChannelConnecting() {
 		if(DEBUG)
-			Log.i(TAG, "onChannelConnecting()---");
+			Log.i(TAG, "ws onChannelConnecting()---");
 	}
 	
 	@Override
 	public void onAuthfailed(){
 		if(DEBUG)
-			Log.w(TAG, "onAuthfailed()---");
+			Log.w(TAG, "ws onAuthfailed()---");
 	}
 
 	@Override
+	public void onAuthComplete() {
+		if(DEBUG)
+			Log.e(TAG, "ws onAuthComplete()---");		
+	}
+	@Override
 	public void onChannelConnected() {
 		if(DEBUG)
-			Log.i(TAG, "onChannelConnected()---");
+			Log.i(TAG, "ws onChannelConnected()---");
 		miWSDisconnectRetry = 0;
 	}
 
@@ -1316,17 +1322,17 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			JSONObject dataObj = new JSONObject(msg);
 			handleWSEvent(dataObj);
 		} catch (JSONException e) {
-			Log.e(TAG, "onMessageReceived(), failed to parse : "+msg);
+			Log.e(TAG, "ws onMessageReceived(), failed to parse : "+msg);
 		}
 	}
 
 	@Override
 	public void onChannelClosed() {
 		if(DEBUG)
-			Log.i(TAG, "onChannelClosed()---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			Log.i(TAG, "ws onChannelClosed()---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
 		if(/*miWSDisconnectRetry < MAX_WS_RETRY_TIME && */false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() /*&& NetworkMgr.getInstance().isNetworkConnected()*/){
-			Log.e(TAG, "onChannelClosed(), abnormal close, retry-----");
+			Log.e(TAG, "ws onChannelClosed(), abnormal close, retry-----");
 			long lTimeToWait = (miWSDisconnectRetry++)*1000;
 			if(lTimeToWait > 10000){
 				lTimeToWait = 10000;

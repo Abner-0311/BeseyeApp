@@ -33,6 +33,7 @@ import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
@@ -302,7 +303,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			}
 			case R.id.txt_nav_title:{
 				miUnmaskDetachCamHitCount++;
-				if(miUnmaskDetachCamHitCount >=5){
+				if(!BeseyeConfig.PRODUCTION_VER && miUnmaskDetachCamHitCount >=5){
 					BeseyeUtils.setVisibility(mVgRebootCam, View.VISIBLE);
 					BeseyeUtils.setVisibility(mVgDetachCam, View.VISIBLE);
 				}

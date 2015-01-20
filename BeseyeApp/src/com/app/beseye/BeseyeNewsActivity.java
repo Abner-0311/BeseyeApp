@@ -4,6 +4,7 @@ import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -44,12 +45,20 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	private boolean mbRefreshCase = false;
 	protected JSONArray mlstNews;
 	private BeseyeNewsBEHttpTask.GetNewsListTask mGetNewsListTask = null;
+	private String mStrLocale = DEF_NEWS_LANG;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		if(DEBUG)
+		if(DEBUG){
 			Log.d(TAG, "BeseyeNewsActivity::onCreate()");
+			Log.i(TAG, "BeseyeNewsActivity::onCreate(), locale:"+Locale.getDefault());
+		}
 		super.onCreate(savedInstanceState);
+		
+		if(Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE)){
+			mStrLocale = "zh-tw";
+		}
+		
 		mbIgnoreSessionCheck = true;
 		
 		getSupportActionBar().setDisplayOptions(0);
@@ -83,7 +92,7 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 						if(null == mGetNewsListTask || AsyncTask.Status.FINISHED == mGetNewsListTask.getStatus()){
 							int iLastIdx = getLastNewsIdx();
 							if(0 <= iLastIdx){
-								monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(BeseyeNewsActivity.this), true, (iLastIdx)+"" , ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
+								monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(BeseyeNewsActivity.this), true, (iLastIdx)+"" , ""+NUM_NEWS_QUERY, mStrLocale);
 								return;
 							}
 							mMainListView.dettachFooterLoadMoreView();
@@ -93,7 +102,7 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 			mMainListView.setOnRefreshListener(new OnRefreshListener() {
     			@Override
     			public void onRefresh() {
-    				monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(BeseyeNewsActivity.this), true, "-1", ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
+    				monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(BeseyeNewsActivity.this), true, "-1", ""+NUM_NEWS_QUERY, mStrLocale);
     				mbRefreshCase = true;
     			}
 
@@ -174,7 +183,7 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-		monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(this), true, "-1", ""+NUM_NEWS_QUERY, DEF_NEWS_LANG);
+		monitorAsyncTask(mGetNewsListTask = new BeseyeNewsBEHttpTask.GetNewsListTask(this), true, "-1", ""+NUM_NEWS_QUERY, mStrLocale);
 	}
 	
 	@Override

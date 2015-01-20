@@ -384,7 +384,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     			BeseyeUtils.postRunnable(new Runnable(){
     				@Override
     				public void run() {
-    					beginLiveView();
+    					//beginLiveView();
+    					getStreamingInfo(false);
     				}}, iReOpenDelay);
     			
     			if(null != mVgPairingDone){
@@ -479,6 +480,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		
 		AudioWebSocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
+		AudioWebSocketsMgr.getInstance().registerOnAudioWSChannelStateChangeListener(this);
 		AudioWebSocketsMgr.getInstance().registerOnAudioAmplitudeUpdateListener(this);
 	}
 	
@@ -1008,9 +1010,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					monitorAsyncTask(mLiveStreamTask = new BeseyeMMBEHttpTask.GetLiveStreamTask(this, -1).setDialogId(bShowDialog?DIALOG_ID_LOADING:-1), true, mStrVCamID, "false");
 					if(isCamPowerOn() && mbIsLiveMode){
 						setVisibility(mPbLoadingCursor, View.VISIBLE);
-						if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
-							openAudioChannel();
-						}
+						//if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
+							openAudioChannel(true);
+						//}
 					}
 				}
 			}else{
@@ -2433,7 +2435,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	//for SDL end
     
     private static final long TIME_TO_TERMINATE_AUDIO = 20*1000;
-    
     private Runnable mTerminateAudioChannelRunnable = new Runnable(){
 		@Override
 		public void run() {
@@ -2442,7 +2443,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					BeseyeUtils.postRunnable(mTerminateAudioChannelRunnable, TIME_TO_TERMINATE_AUDIO);
 				}else{
 					//if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
-						AudioWebSocketsMgr.getInstance().destroyWSChannel();
+						//AudioWebSocketsMgr.getInstance().destroyWSChannel();
+					setNeedToRequestCamAudioConnected(true);
+					AudioWebSocketsMgr.getInstance().stopAudioSendThread();
 					//}
 				}		
 			}else if(null != mGetAudioWSServerTask){
@@ -2450,10 +2453,20 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
 		}};
 		
+	private boolean mbNeedToRequestCamAudioConnected = true;
+	
+	private void setNeedToRequestCamAudioConnected(boolean bSet){
+		mbNeedToRequestCamAudioConnected = bSet;
+		Log.i(TAG, "setNeedToRequestCamAudioConnected(), mbNeedToRequestCamAudioConnected is "+mbNeedToRequestCamAudioConnected);
+	}
+	
 	private Thread mAudioOpenThread = null;
-    
+    private boolean mbAutoAudioWSConnect = true;
     private BeseyeNotificationBEHttpTask.GetAudioWSServerTask mGetAudioWSServerTask = null;
-    public void openAudioChannel(){
+   
+    public void openAudioChannel(boolean bAutoConnect){
+    	mbAutoAudioWSConnect = bAutoConnect;
+    	
     	BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
     	if(!AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
     		if(null == mGetAudioWSServerTask)
@@ -2474,6 +2487,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 								mAudioOpenThread = null;
 							}}); 
 						mAudioOpenThread.start();
+						setNeedToRequestCamAudioConnected(true);
 					}
     			}
     		else
@@ -2482,6 +2496,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			//Toast.makeText(CameraViewActivity.this, "Talk now", Toast.LENGTH_SHORT).show();
 			if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
 				AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+			}
+			
+			if(mbNeedToRequestCamAudioConnected && false == mbAutoAudioWSConnect){
+				AudioWebSocketsMgr.getInstance().sendRequestCamConnected();
 			}
 		}
     	
@@ -2492,8 +2510,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
     		AudioWebSocketsMgr.getInstance().setSienceFlag(false);
     		BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
+    		
+    		if(mbNeedToRequestCamAudioConnected){
+				AudioWebSocketsMgr.getInstance().sendRequestCamConnected();
+			}
     	}else{
-    		openAudioChannel();
+    		openAudioChannel(false);
     	}
     }
     
@@ -2544,6 +2566,18 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}}, 0);
 		
 	}
+	
+	@Override
+	public void onAuthComplete() {
+		Log.e(TAG, "onAuthComplete()---");
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(false == mbAutoAudioWSConnect){
+					AudioWebSocketsMgr.getInstance().sendRequestCamConnected();
+				}
+			}}, 0);
+	}
 
 	@Override
 	public void onChannelConnected() {
@@ -2569,19 +2603,20 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onChannelClosed() {
 		if(DEBUG)
 			Log.i(TAG, "onChannelClosed()---");
+		setNeedToRequestCamAudioConnected(true);
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
-				if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
+				//if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
 					BeseyeUtils.postRunnable(new Runnable(){
 						@Override
 						public void run() {
 							if(mActivityResume){
 								Log.i(TAG, "reopen due to onChannelClosed()---");
-								openAudioChannel();
+								openAudioChannel(false);
 							}
 						}}, 5000);
-				}
+				//}
 				//Toast.makeText(CameraViewActivity.this, "Talk terminated", Toast.LENGTH_SHORT).show();
 			}}, 0);
 		
@@ -2602,6 +2637,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onAudioChannelConnected() {
 		if(DEBUG)
 			Log.i(TAG, "onAudioChannelConnected()---");
+		setNeedToRequestCamAudioConnected(false);
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
@@ -2611,6 +2647,23 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //				}
 			}}, 0);
 	}
+	
+	@Override
+	public void onAudioThreadExit() {
+		if(DEBUG)
+			Log.i(TAG, "onAudioThreadExit()---");
+		
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(AudioWebSocketsMgr.getInstance().isWSChannelAlive() && !mbNeedToRequestCamAudioConnected ){
+					AudioWebSocketsMgr.getInstance().launchAudioThread();
+				}
+				checkHoldToTalkMode();
+
+			}}, 100);
+	}
+	
 	
 	private void checkHoldToTalkMode(){
 		if(null != mCameraViewControlAnimator && false == mCameraViewControlAnimator.isInHoldToTalkMode()){
@@ -2633,7 +2686,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
-				if(null != mCameraViewControlAnimator){
+				if(null != mCameraViewControlAnimator && !mbNeedToRequestCamAudioConnected){
 					mCameraViewControlAnimator.setAmplitudeRatio(fRatio);
 				}
 			}}, 0);

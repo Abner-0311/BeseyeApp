@@ -73,6 +73,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	static public interface OnAudioWSChannelStateChangeListener{
 		public void onAudioChannelConnecting();
 		public void onAudioChannelConnected();
+		
+		public void onAudioThreadExit();
 	}
 	
 	protected WeakReference<OnAudioWSChannelStateChangeListener> mOnAudioWSChannelStateChangeListener = null;
@@ -258,7 +260,11 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 													Log.i(TAG, "onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
 											}
 										}else{
-											new BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask(AudioWebSocketsMgr.this).execute(mStrVCamId);
+											OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
+											if(null != listener){
+												listener.onAuthComplete();
+											}
+											//sendRequestCamConnected();
 										}
 										
 									}else if(null != mStrAudioConnJobId && mStrAudioConnJobId.equals(strJobID) && 0 == iRetCode){
@@ -356,6 +362,17 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
         }
     };
     
+    public void sendRequestCamConnected(){
+    	synchronized(this){
+			if(null == mRequestAudioWSOnCamTask){
+				(mRequestAudioWSOnCamTask = new BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask(AudioWebSocketsMgr.this)).execute(mStrVCamId);
+			}else{
+				Log.i(TAG, "sendRequestCamConnected(), mRequestAudioWSOnCamTask is ongoing");	
+
+			}
+		}
+    }
+    
     static public class GetSessionTask extends BeseyeHttpTask {	 
 		public GetSessionTask(OnHttpTaskCallback cb) {
 			super(cb);
@@ -388,6 +405,10 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     private AudioSendThread audioSendThread = null;
     
     private void transferAudioBuf(){
+    	launchAudioThread();
+    }
+    
+    public void launchAudioThread(){
     	bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz,
 		channelConfig, audioFormat);
     	bufferSizeInBytes = 6400;
@@ -399,9 +420,17 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			audioSendThread = new AudioSendThread();
 			//audioSendThread.setPriority(Thread.MIN_PRIORITY);
 			audioSendThread.start();
+    	}else{
+	    	Log.i(TAG, "launchAudioThread(), audioRecord is not null");	
     	}
     }
     
+    private boolean mbStopFlag = false;
+	
+	public void stopAudioSendThread(){
+		mbStopFlag = true;
+	}
+	
     private long mlTalkStartTs = 0;
     
     public void setSienceFlag(boolean bSilent){
@@ -422,9 +451,12 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     static public final String WS_CMD_FORMAT_AUDIO 			= "[\"%s\", \"data\":%s]";
     private int iRefCount = 0;
     private static final int COUNT_TO_CHECK = 3;//0.1 second 
+   
     class AudioSendThread extends Thread {
+    	
     	@Override
     	public void run(){
+    		mbStopFlag = false;
     		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
     		iRefCount = 0;
 		    OutputStream os = null;
@@ -470,7 +502,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    byte[] audiodata = new byte[bufferSizeInBytes];
 		    int readsize = 0;
 
-		    while (AudioWebSocketsMgr.getInstance().isWSChannelAlive() == true){
+		    while (!mbStopFlag && AudioWebSocketsMgr.getInstance().isWSChannelAlive() == true && readsize >=0){
 		    	readsize = audioRecord.read(audiodata, 0, bufferSizeInBytes);
 		    	//Log.i(TAG, "run(), readsize="+readsize);
 		    	if (AudioRecord.ERROR_INVALID_OPERATION != readsize) {
@@ -567,12 +599,11 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			    			try {uis.close();} catch (Exception e) {}
 					    }
 		    		}
-		    		
 		    	}
 		    }
 		    
 		    if(DEBUG)
-		    	Log.i(TAG, "run(), socket disconnected");	
+		    	Log.i(TAG, "run(), socket disconnected or invalid readsize:"+readsize+", or mbStopFlag:"+mbStopFlag);	
 		
 		    try {
 		    	if(null != os)
@@ -587,6 +618,15 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			    	audioRecord = null;
 		    	}
 		    } catch (IOException e) {
+		    	Log.i(TAG, "run(), e:"+e);	
+
+		    }finally{
+		    	audioSendThread = null;	
+		    	 
+		    	OnAudioWSChannelStateChangeListener listener = (null != mOnAudioWSChannelStateChangeListener)?mOnAudioWSChannelStateChangeListener.get():null;
+				if(null != listener){
+					listener.onAudioThreadExit();
+				}
 		    }
 		}
     }
