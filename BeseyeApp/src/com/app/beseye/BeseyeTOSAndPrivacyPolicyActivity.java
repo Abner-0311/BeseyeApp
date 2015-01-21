@@ -20,13 +20,13 @@ public class BeseyeTOSAndPrivacyPolicyActivity extends BeseyeAccountBaseActivity
 		mWvContent = new WebView(this);
 		if(null != mWvContent){
 			mWvContent.loadUrl(bIsTOSPage?"https://www.beseye.com/terms_of_use":"https://www.beseye.com/privacy_policy");
-			mWvContent.setWebViewClient(new WebViewClient(){
-				@Override
-				   public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				      view.loadUrl(url);
-				      return true;
-				   }
-			});
+//			mWvContent.setWebViewClient(new WebViewClient(){
+//				@Override
+//				   public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//				      view.loadUrl(url);
+//				      return true;
+//				   }
+//			});
 			LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 			setContentView(mWvContent, params);
 		}

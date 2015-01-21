@@ -24,6 +24,10 @@ public class PairingRemindActivity extends BeseyeAccountBaseActivity {
 		super.onCreate(savedInstanceState);
 		mbIgnoreCamVerCheck = true;
 		
+		if(null != mTxtNavTitle){
+			mTxtNavTitle.setText(R.string.signup_confirm_led_title);
+		}
+		
 		mBtnStart = (Button)findViewById(R.id.button_start);
 		if(null != mBtnStart){
 			mBtnStart.setOnClickListener(this);
