@@ -74,38 +74,44 @@
             android:text="@string/signup_createAccount_description_title"
             android:textColor="@color/signup_font_description_color"
             android:textSize="@dimen/login_fontSmall" />
+        
 
-        <TextView
-            android:id="@+id/tv_bottom_description_terms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+        <RelativeLayout
+            android:layout_centerHorizontal="true"
             android:layout_below="@id/tv_bottom_description_title"
-            android:text="@string/signup_createAccount_description_terms"
-            android:textColor="@color/cl_link_font_color"
-            android:textSize="@dimen/login_fontSmall" />
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content">
+            <TextView
+	            android:id="@+id/tv_bottom_description_terms"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentLeft="true"
+	            
+	            android:text="@string/signup_createAccount_description_terms"
+	            android:textColor="@color/cl_link_font_color"
+	            android:textSize="@dimen/login_fontSmall" />
+	        
+	        <TextView
+	            android:id="@+id/tv_bottom_description_and"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_toRightOf="@id/tv_bottom_description_terms"
+	            android:layout_marginLeft="@dimen/signup_learnMore_margin"
+	            android:layout_marginRight="@dimen/signup_learnMore_margin"
+	            android:text="@string/signup_createAccount_description_and"
+	            android:textColor="@color/signup_font_description_color"
+	            android:textSize="@dimen/login_fontSmall" />
+	        
+	        <TextView
+	            android:id="@+id/tv_bottom_description_policy"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_toRightOf="@id/tv_bottom_description_and"
+	            android:text="@string/signup_createAccount_description_policy"
+	            android:textColor="@color/cl_link_font_color"
+	            android:textSize="@dimen/login_fontSmall" />
+        </RelativeLayout>
         
-        <TextView
-            android:id="@+id/tv_bottom_description_and"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_bottom_description_title"
-            android:layout_toRightOf="@id/tv_bottom_description_terms"
-            android:layout_marginLeft="@dimen/signup_learnMore_margin"
-            android:layout_marginRight="@dimen/signup_learnMore_margin"
-            android:text="@string/signup_createAccount_description_and"
-            android:textColor="@color/signup_font_description_color"
-            android:textSize="@dimen/login_fontSmall" />
-        
-        <TextView
-            android:id="@+id/tv_bottom_description_policy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_bottom_description_title"
-            android:layout_toRightOf="@id/tv_bottom_description_and"
-            android:text="@string/signup_createAccount_description_policy"
-            android:textColor="@color/cl_link_font_color"
-            android:textSize="@dimen/login_fontSmall" />
         
     </RelativeLayout>
 

@@ -20,13 +20,14 @@
 			android:layout_height="0dp"
 			android:layout_weight="74">
 	        <TextView
-			    android:id="@+id/tv_watch_out_description"
+			    android:id="@+id/tv_before_setup_description"
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
 			    android:layout_centerHorizontal="true"
 			    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
 			    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
-			    android:text="@string/signup_watch_out_desc"
+			    android:gravity="center_horizontal"
+			    android:text="@string/signup_plug_in_description"
 			    android:textColor="@color/signup_font_description_color"
 			    android:textSize="@dimen/login_fontNormal" />
 		    
@@ -34,9 +35,10 @@
 		       android:id="@+id/iv_before_setup_top_img"
 		       android:layout_width="fill_parent"
 		       android:layout_height="fill_parent"
-			   android:layout_below="@+id/tv_watch_out_description"
+
+			   android:layout_below="@+id/tv_before_setup_description"
 			   android:layout_marginTop="25dp"
-		       android:src="@drawable/signup_sound_caution" />
+		       android:src="@drawable/signup_blinking_plug_in_cam" />
 	    </RelativeLayout>
 	</LinearLayout>
 		
@@ -53,7 +55,7 @@
 		    android:background="@drawable/sl_account_bottom_btn"
 		    android:paddingBottom="@dimen/login_marginMedium"
 		    android:paddingTop="@dimen/login_marginMedium"
-		    android:text="@string/signup_watch_out_done"
+		    android:text="@string/signup_plug_in_done"
 		    android:textColor="@color/word_white"
 		    android:textColorLink="@color/word_white"
 		    android:textSize="@dimen/login_fontMedium" />

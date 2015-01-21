@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.PairingFailActivity;
+import com.app.beseye.PairingGuidelineActivity;
 import com.app.beseye.R;
 import com.app.beseye.WifiControlBaseActivity;
 import com.app.beseye.audio.AudioChannelMgr;
@@ -68,6 +69,8 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	static private String sStrCamNameCandidate = null;
 	
 	private String mStrChangeWiFiVCamId = null;
+	
+	private static int siPairingFailedTimes = 0;
 	
 	//For Soundpairing feature
 	private native static boolean nativeClassInit();
@@ -186,6 +189,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				mPairingCounter.cancel();
 				mPairingCounter = null;
 			}
+			//siPairingFailedTimes++;
 			onPairingFailed();
 		}
 		
@@ -506,6 +510,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 										b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
 										launchDelegateActivity(SoundPairingNamingActivity.class.getName(), b);
 										WifiControlBaseActivity.updateWiFiPasswordHistory("");
+										siPairingFailedTimes = 0;
 									}
 								} catch (JSONException e) {
 									e.printStackTrace();
@@ -514,6 +519,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 							sStrCamNameCandidate = null;
 						}else{
 							// if pairing failed
+							siPairingFailedTimes++;
 							onPairingFailed();
 						}
 					}
@@ -528,7 +534,12 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	
 	private void onPairingFailed(){
 		WifiControlBaseActivity.updateWiFiPasswordHistory(null != mChosenWifiAPInfo?mChosenWifiAPInfo.password:"");
-		launchActivityByClassName(PairingFailActivity.class.getName(), getIntent().getExtras());
+		if(2 == siPairingFailedTimes){
+			siPairingFailedTimes = 0;
+			launchActivityByClassName(PairingGuidelineActivity.class.getName(), getIntent().getExtras());
+		}else{
+			launchActivityByClassName(PairingFailActivity.class.getName(), getIntent().getExtras());
+		}
 	}
 	
 	@Override
@@ -548,6 +559,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	    				monitorAsyncTask(mGetNewCamTask = new BeseyeAccountTask.GetCamInfoTask(this), false, strCamUID);
 	    				mbFindNewCam = true;
 	    				WifiControlBaseActivity.updateWiFiPasswordHistory("");
+	    				siPairingFailedTimes = 0;
     				}
     				SessionMgr.getInstance().setPairToken("");
     				if(null != mPairingCounter){

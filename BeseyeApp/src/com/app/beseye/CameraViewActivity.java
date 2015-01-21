@@ -81,6 +81,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 																	  OnAudioAmplitudeUpdateListener,
 																	  CameraStatusCallback{
 	static public final String KEY_PAIRING_DONE 	= "KEY_PAIRING_DONE";
+	static public final String KEY_PAIRING_DONE_HANDLED 	= "KEY_PAIRING_DONE_HANDLED";
 	static public final String KEY_TIMELINE_INFO    = "KEY_TIMELINE_INFO";
 	static public final String KEY_DVR_STREAM_MODE  = "KEY_DVR_STREAM_MODE";
 	static public final String KEY_DVR_STREAM_TS    = "KEY_DVR_STREAM_TS";
@@ -1652,6 +1653,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
                     					
                     					if(DEBUG)
                     						Log.i(TAG, "mlDVRFirstSegmentStartTs:"+mlDVRFirstSegmentStartTs+" > mlDVRCurrentStartTs:"+mlDVRCurrentStartTs+", lOffset:"+lOffset);
+                    					
+                    					if(lOffset > 60000){
+                    						Log.i(TAG, "too large lOffset:"+lOffset);
+                    						lOffset = 0;
+                    					}
                 					}
                 					for(int i = 0;i< iLen;i++){
                 						streamList[i] = BeseyeJSONUtil.getJSONString(mstrPendingStreamPathList.get(i), BeseyeJSONUtil.MM_STREAM)+BeseyeUtils.getStreamSecInfo();

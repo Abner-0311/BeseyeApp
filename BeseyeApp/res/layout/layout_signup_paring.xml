@@ -17,7 +17,7 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="@dimen/signup_paring_container" >
 	    
-	    	<TextView
+	    <TextView
 	        android:id="@+id/tv_Let_it_bee"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
@@ -25,7 +25,8 @@
 	        android:layout_centerHorizontal="true"
 	        android:layout_marginTop="@dimen/signup_paring_margin_small"
 	        android:text="@string/signup_paring_title_1"
-	        android:textColor="@color/word_gray" />
+	        android:textColor="@color/word_gray"
+	        android:textSize="@dimen/login_fontNormal" />
 	    
 	    <TextView
 	        android:id="@+id/tv_please_hold_on"

@@ -14,10 +14,10 @@
   <string name="username">電子郵件</string>
   <!-- hint to create new account -->
   <string name="hint_to_create_account">還沒有帳號？</string>
-  <string name="account_create">建立帳號</string>
+  <string name="account_create">註冊新帳號</string>
   <string name="login">登入</string>
   <string name="remove">移除</string>
-  <string name="cont">繼續</string>
+  <string name="cont">下一步</string>
   <!-- Title of sound remind page -->
   <string name="watch_out_sound">聲音提醒</string>
   <!-- hint of password length -->
@@ -255,12 +255,12 @@
   <string name="signup_title_before_setup">安裝之前</string>
   <string name="signup_title_create_account">建立帳號</string>
   <string name="signup_title_cam_wifi_settings">攝影機無線網路設定</string>
-  <string name="signup_title_cam_pair_fail">請再試一次</string>
-  <string name="signup_title_wifi_list">無線網路列表</string>
+  <string name="signup_title_cam_pair_fail">設定失敗</string>
+  <string name="signup_title_wifi_list">選擇Wi-Fi</string>
   <string name="signup_learn_more">了解更多</string>
   <string name="signup_beseye">Beseye</string>
-  <string name="signup_bottom_login">登入</string>
-  <string name="signup_bottom_signup">設定攝影機與註冊</string>
+  <string name="signup_bottom_login">已有帳號，點此登入</string>
+  <string name="signup_bottom_signup">註冊新帳號</string>
   <string name="signup_before_setup_start">開始</string>
   <!-- Hint Message in before setup page-->
   <string name="signup_before_setup_description">請將攝影機插上電源並等待綠燈閃爍，並將行動裝置拿至距離攝影機30 公分左右。</string>
@@ -274,11 +274,11 @@
   <string name="signup_try_again_description_1">請將攝影機插上電源，並將行動裝置拿至距離攝影機30 公分左右，並檢查無線網路密碼是正確的。</string>
   <string name="signup_try_again_description_2">還是有問題？請參閱我們的</string>
   <string name="signup_try_again_description_3">安裝指南</string>
-  <string name="signup_try_again_btn">好，再試一次</string>
+  <string name="signup_try_again_btn">OK，再試一次</string>
   <!-- Hint Message after pairing is done and ask user to assign cam name-->
   <string name="signup_name_camera">就快設定完成了，\n 幫您的Beseye 取個好認的名字吧</string>
   <!-- Congratulation Message in live player page after pairing-->
-  <string name="signup_paring_done">攝影機設定已完成！\n 現在您可以拔掉插座將之安裝在您想要的位置上，所有設定會自動在您插上電之後回復。現在就開始享用您的Beseye Pro 服務吧!</string>
+  <string name="signup_paring_done">攝影機設定已完成！\n現在您可以拔掉插座將之安裝在您想要的位置上，所有設定會自動在您插上電之後回復。現在就開始享用您的Beseye Pro 服務吧!</string>
   <string name="datetime_month">月</string>
   <string name="datetime_day">天</string>
   <string name="datetime_hour">時</string>
@@ -397,4 +397,26 @@
   <string name="tz_euro_spain">西班牙</string>
   <string name="tz_euro_austria">奧地利</string>
   <string name="tz_euro_italy">意大利</string>
+  
+  <string name="cam_name_update_success">成功更新攝影機．</string>
+  
+  <string name="signup_plug_in_description">首先，幫攝影機插上電源插頭．</string>
+  <string name="signup_plug_in_title">連接攝影機電源</string>
+  <string name="signup_plug_in_done">插上電源了，開始設定吧</string>
+  
+  <string name="signup_watch_out_title">注意</string>
+  <string name="signup_watch_out_desc">注意注意，您的手機即將%1$s!\n請將您的%2$s對準鏡頭．\n再按下一步．</string>
+  <string name="signup_watch_out_desc_bebebe">「發出嗶嗶聲」</string>
+  <string name="signup_watch_out_desc_speaker">「手機喇叭」</string>
+  
+  <string name="signup_watch_out_done">手機就位，下一步</string>
+  
+  <string name="signup_confirm_led_title">確認指示燈號</string>
+  <string name="signup_confirm_led_desc">鏡頭指示燈是否顯示為%s呢?\n如果尚未閃爍綠燈，表示攝影機暖機中．\n請靜候數分鐘!</string>
+  <string name="signup_confirm_led_twinkling_green_light">「閃爍綠燈」</string>
+  <string name="signup_confirm_led_done">是，已閃綠燈，下一步</string>
+  
+  <string name="signup_pairing_fail_desc">請你拔掉插頭重新插上，確認鏡頭燈號為「閃爍綠燈」，且手機喇叭距離鏡頭10公分以內，再開始Let it Bee™．</string>
+  
+  <string name="signup_guideline_try_again_btn">OK，再設定一次看看</string>
 </resources>

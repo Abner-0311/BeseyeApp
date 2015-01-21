@@ -256,7 +256,7 @@
   <string name="signup_title_create_account">Create account</string>
   <string name="signup_title_cam_wifi_settings">Camera WiFi Settings</string>
   <string name="signup_title_cam_pair_fail">Please try again</string>
-  <string name="signup_title_wifi_list">WiFi List</string>
+  <string name="signup_title_wifi_list">Choose Wi-Fi</string>
   <string name="signup_learn_more">Learn more about</string>
   <string name="signup_beseye">Beseye</string>
   <string name="signup_bottom_login">Log in</string>
@@ -395,4 +395,23 @@
   <string name="tz_euro_italy">Italy</string>
   
   <string name="cam_name_update_success">Update camera name successfully.</string>
+  <string name="signup_plug_in_description">First, plug in your camera.</string>
+  <string name="signup_plug_in_title">Plug in your camera</string>
+  <string name="signup_plug_in_done">Camera is Plug in, let\'s setup</string>
+  
+  <string name="signup_watch_out_title">Watch out</string>
+  <string name="signup_watch_out_desc">Watch out, you will have %1$s from  your phone!\nPlease put your %2$s clsoe to camera\nThen press next step button</string>
+  <string name="signup_watch_out_desc_bebebe">「bebe sound」</string>
+  <string name="signup_watch_out_desc_speaker">「phone speaker」</string>
+  
+  <string name="signup_watch_out_done">Phone is ready, next step</string>
+  
+  <string name="signup_confirm_led_title">Confirm status light</string>
+  <string name="signup_confirm_led_desc">Do you see %s on camera?\nIf you don\'t, camera is starting up.\nPlease wait for a few minutes.</string>
+  <string name="signup_confirm_led_twinkling_green_light">「twinkling green light」</string>
+  <string name="signup_confirm_led_done">Yes, green led is twinkling, next step</string>
+  
+  <string name="signup_pairing_fail_desc">Please replug in your camera，confirm the led is 「twinkling green light」，and make sure the distance between phone speaker and camera is within 10 cm.\nThen start to Let it Bee™ again．</string>
+  
+  <string name="signup_guideline_try_again_btn">Ok, let\'s go to setup</string>
 </resources>

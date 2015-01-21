@@ -82,7 +82,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	static public void updateWiFiPasswordHistory(String strPW){
 		if(DEBUG)
 			Log.w(TAG, "updateWiFiPasswordHistory(), strPW:"+strPW);
-		sWiFiPasswordHistory = strPW;
+		//sWiFiPasswordHistory = strPW;
 	}
 	
 	@Override
@@ -531,7 +531,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 								setResult(RESULT_OK, intent);
 								finish();
 							}else{
-								intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
+								//intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
+								intent.setClass(WifiControlBaseActivity.this, PairingRemindActivity.class);
 								intent.putExtras(getIntent().getExtras());
 								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
 								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
@@ -661,7 +662,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 //						    	}
 //						    	setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SETTING);
 								
-								intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
+								//intent.setClass(WifiControlBaseActivity.this, SoundPairingActivity.class);
+								intent.setClass(WifiControlBaseActivity.this, PairingRemindActivity.class);
 								intent.putExtra(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, getIntent().getBooleanExtra(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, false));
 								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
 								intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);

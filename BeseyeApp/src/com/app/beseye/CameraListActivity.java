@@ -72,6 +72,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	private Bundle mBundleDemo;
 	private Bundle mBundlePrivate;
 	private CameraListMenuAnimator mCameraListMenuAnimator;
+	private Runnable mPendingRunnableOnCreate = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -175,16 +176,26 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				mCameraListMenuAnimator.showPrivateCam();
 		}
 		
-		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false)){
+		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false) && 
+		   (null == savedInstanceState || !savedInstanceState.getBoolean(CameraViewActivity.KEY_PAIRING_DONE_HANDLED, false))){
+			mPendingRunnableOnCreate = new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle(getIntent().getExtras());
+					launchActivityByClassName(CameraViewActivity.class.getName(), b);
+					getIntent().putExtra(CameraViewActivity.KEY_PAIRING_DONE, false);
+				}};
 			if(BeseyeConfig.DEBUG)
 				Log.i(TAG, "handle pairing done case");	
-			Bundle b = new Bundle(getIntent().getExtras());
-			launchActivityByClassName(CameraViewActivity.class.getName(), b);
-			getIntent().putExtra(CameraViewActivity.KEY_PAIRING_DONE, false);
+			
 		}else if(getIntent().getBooleanExtra(OpeningPage.KEY_EVENT_FLAG, false)){
-			Intent intentEvt = getIntent().getParcelableExtra(OpeningPage.KEY_EVENT_INTENT);
-			launchActivityByIntent(intentEvt);
-			getIntent().putExtra(OpeningPage.KEY_EVENT_FLAG, false);
+			mPendingRunnableOnCreate = new Runnable(){
+				@Override
+				public void run() {
+					Intent intentEvt = getIntent().getParcelableExtra(OpeningPage.KEY_EVENT_INTENT);
+					launchActivityByIntent(intentEvt);
+					getIntent().putExtra(OpeningPage.KEY_EVENT_FLAG, false);
+				}};
 		}
 	}
 	
@@ -227,6 +238,24 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 		
 		checkLatestNew();
+		
+		if(null != mPendingRunnableOnCreate){
+			BeseyeUtils.postRunnable(mPendingRunnableOnCreate, 100);
+			mPendingRunnableOnCreate = null;
+		}
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false)){
+			outState.putBoolean(CameraViewActivity.KEY_PAIRING_DONE_HANDLED, true);
+		}
 	}
 
 	private void refreshList(){
@@ -603,7 +632,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				Log.e(TAG, "startSoundPairingProcess(), strVcamId="+strVcamId);
 			b.putString(SoundPairingActivity.KEY_CHANGE_WIFI_VCAM, strVcamId);
 		}
-		launchActivityByClassName(PairingRemindActivity.class.getName(), b);
+		//launchActivityByClassName(PairingRemindActivity.class.getName(), b);
+		launchActivityByClassName(WifiListActivity.class.getName(), b);
+
 	}
 
 	@Override

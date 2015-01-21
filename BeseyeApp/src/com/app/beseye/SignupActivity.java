@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -52,7 +53,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 		mbIgnoreCamVerCheck = true;
 		
 		if(null != mTxtNavTitle){
-			mTxtNavTitle.setText(R.string.signup_title_create_account);
+			mTxtNavTitle.setText(R.string.account_create);
 		}
 		
 		mEtUserName = (EditText)findViewById(R.id.editText_username);
@@ -129,10 +130,18 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 		switch(view.getId()){
 			case R.id.tv_bottom_description_terms:{
 				//Toast.makeText(this, "TOS click", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent();
+				intent.setClassName(this, BeseyeTOSAndPrivacyPolicyActivity.class.getName());
+				intent.putExtra(BeseyeTOSAndPrivacyPolicyActivity.TOS_PAGE, true);
+				launchActivityByIntent(intent);
 				break;
 			}
 			case R.id.tv_bottom_description_policy:{
 				//Toast.makeText(this, "Privacy Policy click", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent();
+				intent.setClassName(this, BeseyeTOSAndPrivacyPolicyActivity.class.getName());
+				intent.putExtra(BeseyeTOSAndPrivacyPolicyActivity.TOS_PAGE, false);
+				launchActivityByIntent(intent);
 				break;
 			}
 			case R.id.button_continue:{
@@ -245,9 +254,10 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 							}
 						}
 					}
-					Bundle b = new Bundle();
+					//Bundle b = new Bundle();
 					//b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-					launchActivityByClassName(PairingWatchOutActivity.class.getName(), b);
+					launchActivityForResultByClassName(WifiListActivity.class.getName(), getIntent().getExtras(), BeseyeEntryActivity.REQUEST_SIGNUP);
+					//launchActivityByClassName(PairingWatchOutActivity.class.getName(), b);
 					//launchDelegateActivity(WifiSetupGuideActivity.class.getName(), b);
 					//setResult(RESULT_OK);
 					//finish();

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
-    android:versionCode="81"
-    android:versionName="0.1.81" 
+    android:versionCode="82"
+    android:versionName="0.1.82" 
     android:installLocation="auto">
 
     <!-- Android 2.3.3 -->
@@ -256,6 +256,27 @@
         
         <activity
             android:name=".PairingWatchOutActivity"
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name=".PairingPlugPowerActivity"
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name=".PairingGuidelineActivity"
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        
+        <activity
+            android:name=".BeseyeTOSAndPrivacyPolicyActivity"
             android:label="@string/app_name" 
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" >

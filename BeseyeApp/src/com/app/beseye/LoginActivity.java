@@ -39,7 +39,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 		mbIgnoreCamVerCheck = true;
 		
 		if(null != mTxtNavTitle){
-			mTxtNavTitle.setText(R.string.signup_bottom_login);
+			mTxtNavTitle.setText(R.string.login);
 		}
 		
 		mEtUserName = (EditText)findViewById(R.id.editText_username);
@@ -92,7 +92,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 				break;
 			}
 			case R.id.tv_create_account:{
-				launchActivityByClassName(PairingRemindActivity.class.getName());
+				launchActivityByClassName(SignupActivity.class.getName());
 				break;
 			}
 			case R.id.button_login:{

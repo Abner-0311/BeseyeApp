@@ -92,7 +92,7 @@
     
     <dimen name="login_fontMedium">19sp</dimen>
     <dimen name="login_fontRegular">17sp</dimen>
-    <dimen name="login_fontNormal">15sp</dimen>
+    <dimen name="login_fontNormal">16sp</dimen>
     <dimen name="login_fontSmall">13sp</dimen>
     
     <dimen name="signup_paring_nav_margin">10dp</dimen>

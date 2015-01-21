@@ -1,46 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res/com.app.beseye"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/signup_bg_color" >
-
-    <RelativeLayout 
+	<LinearLayout 
 	    android:layout_width="match_parent"
-	    android:layout_height="0dp"
-        android:layout_weight="80">
-	
-		<TextView
-		    android:id="@+id/tv_before_setup_description"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_centerHorizontal="true"
-		    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
-		    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
-		    android:layout_marginTop="@dimen/signup_beforeSetup_img_marginBottom"
-		    android:gravity="center_horizontal"
-		    android:text="@string/signup_before_setup_description"
-		    android:textColor="@color/signup_font_description_color"
-		    android:textSize="@dimen/login_fontNormal" 
-		    android:layout_alignParentBottom="true"/>
+		android:layout_height="0dp"
+		android:layout_weight="4"
+		android:orientation="vertical">
 		
-		<ImageView
-	        android:id="@+id/iv_before_setup_top_img"
-	       	android:layout_width="match_parent"
-		    android:layout_height="match_parent"
-	        android:layout_centerHorizontal="true"
-	        android:layout_alignParentTop="true"
-	        android:layout_marginLeft="16dp"
-		    android:layout_marginRight="16dp"
-	        android:layout_above="@+id/tv_before_setup_description"
-	        android:src="@drawable/signup_blinking_green_01">
-		</ImageView>	
-	</RelativeLayout>
+	    <View 
+	        android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="6"/>
+	    
+	    <RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="0dp"
+	        android:layout_weight="74">
+		
+			<TextView
+			    android:id="@+id/tv_before_setup_description"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_centerHorizontal="true"
+			    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+			    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+			    android:text="@string/signup_confirm_led_desc"
+			    android:textColor="@color/signup_font_description_color"
+			    android:textSize="@dimen/login_fontNormal" />
+			
+			<ImageView
+		        android:id="@+id/iv_before_setup_top_img"
+		       	android:layout_width="fill_parent"
+		       	android:layout_height="fill_parent"
+			   	android:layout_below="@+id/tv_before_setup_description"
+			   	android:layout_marginTop="25dp"
+		        android:src="@drawable/signup_blinking_green_01">
+			</ImageView>	
+		</RelativeLayout>
+	</LinearLayout>
     <RelativeLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="0dp"
-        android:layout_weight="20">
+        android:layout_weight="1">
 	
 		<Button
 		    android:id="@+id/button_start"
@@ -51,7 +55,7 @@
 		    android:background="@drawable/sl_account_bottom_btn"
 		    android:paddingBottom="@dimen/login_marginMedium"
 	        android:paddingTop="@dimen/login_marginMedium"
-		    android:text="@string/signup_before_setup_start"
+		    android:text="@string/signup_confirm_led_done"
 		    android:textColor="@color/word_white"
 		    android:textColorLink="@color/word_white"
 		    android:textSize="@dimen/login_fontMedium" />

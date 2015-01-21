@@ -1,6 +1,7 @@
 package com.app.beseye;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -47,7 +48,8 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_signup:{
-				launchActivityForResultByClassName(PairingRemindActivity.class.getName(), null, REQUEST_SIGNUP);
+				launchActivityForResultByClassName(PairingPlugPowerActivity.class.getName(), null, REQUEST_SIGNUP);
+				//launchActivityForResultByClassName(PairingRemindActivity.class.getName(), null, REQUEST_SIGNUP);
 				break;
 			}
 			case R.id.button_signin:{
@@ -55,6 +57,8 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 				break;
 			}
 			case R.id.tv_bottom_beseye:{
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.beseye.com"));
+				startActivity(browserIntent);
 				break;
 			}
 			case R.id.iv_signup_top_logo:{
