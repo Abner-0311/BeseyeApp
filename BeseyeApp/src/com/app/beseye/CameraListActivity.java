@@ -39,6 +39,7 @@ import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.CameraListMenuAnimator;
@@ -149,6 +150,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     			@Override
     			public void onRefresh() {
     				Log.i(TAG, "onRefresh()");	
+    			
     				monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this), true);
     			}
 
@@ -208,9 +210,26 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			mCameraListMenuAnimator.checkNewsStatus();
 	}
 	
+	private void showNoNetworkDialog(){
+		Bundle b = new Bundle();
+		b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_error_no_network));
+		showMyDialog(DIALOG_ID_WARNING, b);
+		//showInvalidStateMask();
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		Log.i(TAG, "Check network status");
+    	if(NetworkMgr.getInstance().isNetworkConnected()){
+    		Log.i(TAG, "Network connected");
+    	}
+    	else{
+    		Log.i(TAG, "Network disconnected");
+    		showNoNetworkDialog();
+    	}
+		
 		if(null != mOnResumeUpdateCamListRunnable){
 			if(BeseyeConfig.DEBUG)
 				Log.i(TAG, "onResume(), mOnResumeUpdateCamListRunnable trigger...");
