@@ -62,7 +62,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     private float maxScale;
     private float superMinScale;
     private float superMaxScale;
-    private float[] m;
+    private float[] mArrMatrixValues;
     
     private Context context;
     private Fling fling;
@@ -179,7 +179,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 				if(DEBUG)
 					Log.i(TAG, "Trigger onMeasure()......, matrix="+matrix);
 				//fixScaleTrans();
-				prevMatrix.setValues(m);
+				prevMatrix.setValues(mArrMatrixValues);
 		        prevMatchViewHeight = matchViewHeight;
 		        prevMatchViewWidth = matchViewWidth;
 		        prevViewHeight = viewHeight;
@@ -253,7 +253,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         mGestureDetector = new GestureDetector(context, new GestureListener());
         matrix = new Matrix();
         prevMatrix = new Matrix();
-        m = new float[9];
+        mArrMatrixValues = new float[9];
         normalizedScale = 1;
         minScale = 1;
         maxScale = 4;
@@ -278,8 +278,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 		bundle.putFloat("matchViewWidth", matchViewWidth);
 		bundle.putInt("viewWidth", viewWidth);
 		bundle.putInt("viewHeight", viewHeight);
-		matrix.getValues(m);
-		bundle.putFloatArray("matrix", m);
+		matrix.getValues(mArrMatrixValues);
+		bundle.putFloatArray("matrix", mArrMatrixValues);
 		if(DEBUG)
 			Log.i(TAG, "onSaveInstanceState(), matrix="+matrix);
 		return bundle;
@@ -290,8 +290,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
       	if (state instanceof Bundle) {
 	        Bundle bundle = (Bundle) state;
 	        normalizedScale = bundle.getFloat("saveScale");
-	        m = bundle.getFloatArray("matrix");
-	        prevMatrix.setValues(m);
+	        mArrMatrixValues = bundle.getFloatArray("matrix");
+	        prevMatrix.setValues(mArrMatrixValues);
 	        prevMatchViewHeight = bundle.getFloat("matchViewHeight");
 	        prevMatchViewWidth = bundle.getFloat("matchViewWidth");
 	        prevViewHeight = bundle.getInt("viewHeight");
@@ -311,15 +311,17 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     private void restoreDisplayAttr(){
-    	
     	fixScaleTrans();
-    	prevMatrix.setValues(m);
+    	prevMatrix.setValues(mArrMatrixValues);
         prevMatchViewHeight = matchViewHeight;
         prevMatchViewWidth = matchViewWidth;
         prevViewHeight = viewHeight;
         prevViewWidth = viewWidth;
         if(DEBUG)
         	Log.i(TAG, "restoreDisplayAttr()....., prevMatrix="+prevMatrix);
+        
+        //matrix.setValues(mArrMatrixValues);
+        
         drawStreamBitmap();
     }
 
@@ -367,9 +369,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
      * is out of bounds.
      */
     private void fixTrans() {
-        matrix.getValues(m);
-        float transX = m[Matrix.MTRANS_X];
-        float transY = m[Matrix.MTRANS_Y];
+        matrix.getValues(mArrMatrixValues);
+        float transX = mArrMatrixValues[Matrix.MTRANS_X];
+        float transY = mArrMatrixValues[Matrix.MTRANS_Y];
         
         float fixTransX = getFixTrans(transX, viewWidth, getImageWidth());
         float fixTransY = getFixTrans(transY, viewHeight, getImageHeight());
@@ -389,15 +391,16 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
      */
     private void fixScaleTrans() {
     	fixTrans();
-    	matrix.getValues(m);
+    	matrix.getValues(mArrMatrixValues);
     	if (getImageWidth() < viewWidth) {
-    		m[Matrix.MTRANS_X] = (viewWidth - getImageWidth()) / 2;
+    		mArrMatrixValues[Matrix.MTRANS_X] = (viewWidth - getImageWidth()) / 2;
     	}
     	
     	if (getImageHeight() < viewHeight) {
-    		m[Matrix.MTRANS_Y] = (viewHeight - getImageHeight()) / 2;
+    		mArrMatrixValues[Matrix.MTRANS_Y] = (viewHeight - getImageHeight()) / 2;
     	}
-    	matrix.setValues(m);
+    	matrix.setValues(mArrMatrixValues);
+        Log.i(TAG, "fixScaleTrans(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale);
     }
 
     private float getFixTrans(float trans, float viewSize, float contentSize) {
@@ -461,13 +464,13 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     	//
         float scaleX = (float) viewWidth / drawableWidth;
         float scaleY = (float) viewHeight / drawableHeight;
-        float scale = Math.min(scaleX, scaleY);
+        mfScaleRatio = Math.min(scaleX, scaleY);
 
         //
         // Center the image
         //
-        float redundantYSpace = viewHeight - (scale * drawableHeight);
-        float redundantXSpace = viewWidth - (scale * drawableWidth);
+        float redundantYSpace = viewHeight - (mfScaleRatio * drawableHeight);
+        float redundantXSpace = viewWidth - (mfScaleRatio * drawableWidth);
         matchViewWidth = viewWidth - redundantXSpace;
         matchViewHeight = viewHeight - redundantYSpace;
         
@@ -475,23 +478,23 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         	//
         	// Stretch and center image to fit view
         	//
-        	matrix.setScale(scale, scale);
+        	matrix.setScale(mfScaleRatio, mfScaleRatio);
         	matrix.postTranslate(redundantXSpace / 2, redundantYSpace / 2);
         	
         } else {
-        	prevMatrix.getValues(m);
+        	prevMatrix.getValues(mArrMatrixValues);
         	
         	//
         	// Rescale Matrix after rotation
         	//
-        	m[Matrix.MSCALE_X] = matchViewWidth / drawableWidth * normalizedScale;
-        	m[Matrix.MSCALE_Y] = matchViewHeight / drawableHeight * normalizedScale;
+        	mArrMatrixValues[Matrix.MSCALE_X] = matchViewWidth / drawableWidth * normalizedScale;
+        	mArrMatrixValues[Matrix.MSCALE_Y] = matchViewHeight / drawableHeight * normalizedScale;
         	
         	//
         	// TransX and TransY from previous matrix
         	//
-            float transX = m[Matrix.MTRANS_X];
-            float transY = m[Matrix.MTRANS_Y];
+            float transX = mArrMatrixValues[Matrix.MTRANS_X];
+            float transY = mArrMatrixValues[Matrix.MTRANS_Y];
             
             //
             // Width
@@ -510,10 +513,10 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             //
             // Set the matrix to the adjusted scale and translate values.
             //
-            matrix.setValues(m);
+            matrix.setValues(mArrMatrixValues);
         }
         fixTrans();
-        //Log.i(TAG, "onMeasure(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale+", matchViewWidth="+matchViewWidth+", matchViewHeight="+matchViewHeight);
+        Log.i(TAG, "onMeasure(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale+", matchViewWidth="+matchViewWidth+", matchViewHeight="+matchViewHeight);
         //setImageMatrix(matrix);
         drawStreamBitmap();
     }
@@ -565,13 +568,13 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         	//
         	// The width/height of image is less than the view's width/height. Center it.
         	//
-        	m[axis] = (viewSize - (drawableSize * m[Matrix.MSCALE_X])) * 0.5f;
+        	mArrMatrixValues[axis] = (viewSize - (drawableSize * mArrMatrixValues[Matrix.MSCALE_X])) * 0.5f;
         	
         } else if (trans > 0) {
         	//
         	// The image is larger than the view, but was not before rotation. Center it.
         	//
-        	m[axis] = -((imageSize - viewSize) * 0.5f);
+        	mArrMatrixValues[axis] = -((imageSize - viewSize) * 0.5f);
         	
         } else {
         	//
@@ -580,7 +583,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         	// to calculate the trans in the new view width/height.
         	//
         	float percentage = (Math.abs(trans) + (0.5f * prevViewSize)) / prevImageSize;
-        	m[axis] = -((percentage * imageSize) - (viewSize * 0.5f));
+        	mArrMatrixValues[axis] = -((percentage * imageSize) - (viewSize * 0.5f));
         }
     }
     
@@ -769,6 +772,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             deltaScale = lowerScale / origScale;
         }
         
+        mfScaleRatio = deltaScale;
+        
         matrix.postScale(deltaScale, deltaScale, focusX, focusY);
         fixScaleTrans();
     }
@@ -877,11 +882,11 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
      * @return Coordinates of the point touched, in the coordinate system of the original drawable.
      */
     private PointF transformCoordTouchToBitmap(float x, float y, boolean clipToBitmap) {
-         matrix.getValues(m);
+         matrix.getValues(mArrMatrixValues);
          float origW = 1280;//getDrawable().getIntrinsicWidth();
          float origH = 720;//getDrawable().getIntrinsicHeight();
-         float transX = m[Matrix.MTRANS_X];
-         float transY = m[Matrix.MTRANS_Y];
+         float transX = mArrMatrixValues[Matrix.MTRANS_X];
+         float transY = mArrMatrixValues[Matrix.MTRANS_Y];
          float finalX = ((x - transX) * origW) / getImageWidth();
          float finalY = ((y - transY) * origH) / getImageHeight();
          
@@ -901,13 +906,13 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
      * @return Coordinates of the point in the view's coordinate system.
      */
     private PointF transformCoordBitmapToTouch(float bx, float by) {
-        matrix.getValues(m);        
+        matrix.getValues(mArrMatrixValues);        
         float origW = 1280;//getDrawable().getIntrinsicWidth();
         float origH = 720;//getDrawable().getIntrinsicHeight();
         float px = bx / origW;
         float py = by / origH;
-        float finalX = m[Matrix.MTRANS_X] + getImageWidth() * px;
-        float finalY = m[Matrix.MTRANS_Y] + getImageHeight() * py;
+        float finalX = mArrMatrixValues[Matrix.MTRANS_X] + getImageWidth() * px;
+        float finalY = mArrMatrixValues[Matrix.MTRANS_Y] + getImageHeight() * py;
         return new PointF(finalX , finalY);
     }
     
@@ -926,10 +931,10 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     	Fling(int velocityX, int velocityY) {
     		setState(FLING);
     		scroller = new Scroller(context);
-    		matrix.getValues(m);
+    		matrix.getValues(mArrMatrixValues);
     		
-    		int startX = (int) m[Matrix.MTRANS_X];
-    		int startY = (int) m[Matrix.MTRANS_Y];
+    		int startX = (int) mArrMatrixValues[Matrix.MTRANS_X];
+    		int startY = (int) mArrMatrixValues[Matrix.MTRANS_Y];
     		int minX, maxX, minY, maxY;
     		
     		if (getImageWidth() > viewWidth) {
@@ -995,9 +1000,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     private void printMatrixInfo() {
-    	matrix.getValues(m);
+    	matrix.getValues(mArrMatrixValues);
     	if(DEBUG)
-    		Log.i(TAG, "Scale: " + m[Matrix.MSCALE_X] + " TransX: " + m[Matrix.MTRANS_X] + " TransY: " + m[Matrix.MTRANS_Y]);
+    		Log.i(TAG, "Scale: " + mArrMatrixValues[Matrix.MSCALE_X] + " TransX: " + mArrMatrixValues[Matrix.MTRANS_X] + " TransY: " + mArrMatrixValues[Matrix.MTRANS_Y]);
     }
     
     //Abner Add Begin
@@ -1050,7 +1055,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     private boolean mbUpsideDown = false;
     float redundantYSpace;
     float redundantXSpace;
-    float scale;
+    float mfScaleRatio;
     
     public void setUpsideDown(boolean bUpsideDown){
     	mbUpsideDown = bUpsideDown;
@@ -1071,14 +1076,14 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     		
     		float scaleX = mSurfaceWidth / (float) iWidth ;
             float scaleY = mSurfaceHeight / (float) iHeight ;
-            scale = Math.min(scaleX, scaleY);
+            mfScaleRatio = Math.min(scaleX, scaleY);
             //scale = (mbUpsideDown)?-scale:scale;
 
             if(DEBUG)
-            	Log.i(TAG, "getBitmapBySize(), scale:"+scale+", scaleX:"+scaleX+", scaleY:"+scaleY);
+            	Log.i(TAG, "getBitmapBySize(), scale:"+mfScaleRatio+", scaleX:"+scaleX+", scaleY:"+scaleY);
     		
-            redundantXSpace = mSurfaceWidth - iWidth*scale;
-            redundantYSpace = mSurfaceHeight - iHeight*scale;
+            redundantXSpace = mSurfaceWidth - iWidth*mfScaleRatio;
+            redundantYSpace = mSurfaceHeight - iHeight*mfScaleRatio;
             updateMatrix();
     	}
     	
@@ -1086,10 +1091,10 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
     
     private void updateMatrix(){
-    	matrix.setScale(mbUpsideDown?-scale:scale, mbUpsideDown?-scale:scale);
+    	matrix.setScale(mbUpsideDown?-mfScaleRatio:mfScaleRatio, mbUpsideDown?-mfScaleRatio:mfScaleRatio);
     	if(null != mStreamBitmap && false == mStreamBitmap.isRecycled()){
-        	matrix.postTranslate(redundantXSpace / 2+(mbUpsideDown?mStreamBitmap.getWidth()*scale:0), 
-				     redundantYSpace / 2+(mbUpsideDown?mStreamBitmap.getHeight()*scale:0));
+        	matrix.postTranslate(redundantXSpace / 2+(mbUpsideDown?mStreamBitmap.getWidth()*mfScaleRatio:0), 
+				     redundantYSpace / 2+(mbUpsideDown?mStreamBitmap.getHeight()*mfScaleRatio:0));
     	}
     }
     

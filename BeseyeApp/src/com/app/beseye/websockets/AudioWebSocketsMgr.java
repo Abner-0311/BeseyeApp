@@ -433,7 +433,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	
     private long mlTalkStartTs = 0;
     
-    public void setSienceFlag(boolean bSilent){
+    public synchronized void setSienceFlag(boolean bSilent){
     	if(bSilent != mbSilent){
 	    	Log.i(TAG, "setSienceFlag(), ...........  mbSilent from "+mbSilent+" to "+bSilent);	
     	}
@@ -445,6 +445,10 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     	}else{
     		mlTalkStartTs = 0;
     	}
+    }
+    
+    public synchronized boolean isSilent(){
+    	return mbSilent;
     }
     
     private boolean mbSilent = false;

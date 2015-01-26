@@ -416,7 +416,7 @@
   <string name="signup_confirm_led_twinkling_green_light">「閃爍綠燈」</string>
   <string name="signup_confirm_led_done">是，已閃綠燈，下一步</string>
   
-  <string name="signup_pairing_fail_desc">請你拔掉插頭重新插上，確認鏡頭燈號為「閃爍綠燈」，且手機喇叭距離鏡頭10公分以內，再開始Let it Bee™．</string>
+  <string name="signup_pairing_fail_desc">請你拔掉插頭重新插上，確認鏡頭燈號為「閃爍綠燈」，且手機喇叭距離鏡頭10公分，再開始Let it Bee™．</string>
   
   <string name="signup_guideline_try_again_btn">OK，再設定一次看看</string>
 </resources>

@@ -411,7 +411,7 @@
   <string name="signup_confirm_led_twinkling_green_light">「twinkling green light」</string>
   <string name="signup_confirm_led_done">Yes, green led is twinkling, next step</string>
   
-  <string name="signup_pairing_fail_desc">Please replug in your camera，confirm the led is 「twinkling green light」，and make sure the distance between phone speaker and camera is within 10 cm.\nThen start to Let it Bee™ again．</string>
+  <string name="signup_pairing_fail_desc">Please replug in your camera，confirm the led is 「twinkling green light」，and make sure the distance between phone speaker and camera is 10cm.\nThen start to Let it Bee™ again．</string>
   
   <string name="signup_guideline_try_again_btn">Ok, let\'s go to setup</string>
 </resources>

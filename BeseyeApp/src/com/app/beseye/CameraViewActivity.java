@@ -1,12 +1,8 @@
 package com.app.beseye;
 
 
-import static com.app.beseye.util.BeseyeConfig.DEBUG;
-import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeUtils.getStatusBarHeight;
-import static com.app.beseye.util.BeseyeUtils.setEnabled;
-import static com.app.beseye.util.BeseyeUtils.setImageRes;
-import static com.app.beseye.util.BeseyeUtils.setVisibility;
+import static com.app.beseye.util.BeseyeConfig.*;
+import static com.app.beseye.util.BeseyeUtils.*;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -147,7 +143,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
     
     private boolean isCamViewStatus(CameraView_Internal_Status status){
-    	if(DEBUG)
+    	if(DEBUG && mCamViewStatus != status)
     		Log.i(TAG, "isCamViewStatus(), status:" + status+", mCamViewStatus:"+mCamViewStatus);
     	return mCamViewStatus == status;
     }
@@ -284,6 +280,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			if(null != mCameraViewControlAnimator){
 		    				setEnabled(mCameraViewControlAnimator.getPlayPauseView(), false);
 		    			}
+		    			updatePlayPauseBtnByStatus(status);
 		    			break;
 		    		}
 		    		case CV_STREAM_EOF:{
@@ -692,8 +689,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		mlRetryConnectBeginTs = System.currentTimeMillis();
 		
 		//if(false == handleReddotNetwork(false)){
-			if(null != mStreamingView)
-				mStreamingView.setUpsideDown(BeseyeJSONUtil.getJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, 0) == 1);
+//			if(null != mStreamingView)
+//				mStreamingView.setUpsideDown(BeseyeJSONUtil.getJSONInt(mCam_obj, CameraListActivity.KEY_VCAM_UPSIDEDOWN, 0) == 1);
 		//}
 		
 		if(null != mVgCamInvalidState){
@@ -1134,9 +1131,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					try {
 						AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
 						AudioWebSocketsMgr.getInstance().setAudioWSServerIP("http://"+arr.getString(arr.length()-1));
-						if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
-							AudioWebSocketsMgr.getInstance().setSienceFlag(false);
-						}
+//						if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
+//							AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+//						}
 						AudioWebSocketsMgr.getInstance().constructWSChannel();
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -2313,6 +2310,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    	if(false == mbIsLiveMode){
 		    		mlDVRPlayTimeInSec = iTimeInSec;
 		    		mUpdateDateTimeRunnable.updateDateTime(new Date(mlDVRCurrentStartTs+1000*mlDVRPlayTimeInSec));
+		    		
+		    		if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_WAITING_UNPAUSE)){
+		    			setCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING);
+		    		}
 		    	}
 			}}, 0);
     }
@@ -2437,12 +2438,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
     
     public static void audioWriteShortBuffer(short[] buffer) {
-    	if(false == isInHoldToTalkMode())
+    	//if(false == isInHoldToTalkMode())
+    	if(AudioWebSocketsMgr.getInstance().isSilent())
     		AudioChannelMgr.audioWriteShortBuffer(buffer, buffer.length);
     }
     
     public static void audioWriteByteBuffer(byte[] buffer) {
-    	if(false == isInHoldToTalkMode())
+    	//if(false == isInHoldToTalkMode())
+    	if(AudioWebSocketsMgr.getInstance().isSilent())
     		AudioChannelMgr.audioWriteByteBuffer(buffer);
     }
 
@@ -2529,16 +2532,16 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     			Log.i(TAG, "openAudioChannel(), mGetAudioWSServerTask isn't null");
 		}else{
 			//Toast.makeText(CameraViewActivity.this, "Talk now", Toast.LENGTH_SHORT).show();
-			if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
-				AudioWebSocketsMgr.getInstance().setSienceFlag(false);
-			}
+//			if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
+//				AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+//			}
 			
 			if(mbNeedToRequestCamAudioConnected && false == mbAutoAudioWSConnect){
 				AudioWebSocketsMgr.getInstance().sendRequestCamConnected();
 			}
 		}
     	
-    	setInHoldToTalkMode(true);
+    	//setInHoldToTalkMode(true);
     }
     
     public void pressToTalk(){
@@ -2571,7 +2574,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mGetAudioWSServerTask.cancel(true);
 		}
     	
-    	setInHoldToTalkMode(false);
+    	//setInHoldToTalkMode(false);
     	
     	if(null != mCameraViewControlAnimator){
 			mCameraViewControlAnimator.setAmplitudeRatio(0.0f);
@@ -2595,6 +2598,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
+				//setInHoldToTalkMode(false);
 				if(null != mCameraViewControlAnimator && mCameraViewControlAnimator.isInHoldToTalkMode()){
 					mCameraViewControlAnimator.terminateTalkMode();
 				}
@@ -2608,6 +2612,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
+				//setInHoldToTalkMode(false);
 				if(false == mbAutoAudioWSConnect){
 					AudioWebSocketsMgr.getInstance().sendRequestCamConnected();
 				}
@@ -2638,6 +2643,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onChannelClosed() {
 		if(DEBUG)
 			Log.i(TAG, "onChannelClosed()---");
+		//setInHoldToTalkMode(false);
 		setNeedToRequestCamAudioConnected(true);
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
@@ -2706,15 +2712,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 	}
 	
-	private static boolean sbInHoldToTalkMode = false;
+	//private static boolean sbInHoldToTalkMode = false;
 	
-	static private boolean isInHoldToTalkMode(){
-		return sbInHoldToTalkMode;
+	private boolean isInHoldToTalkMode(){
+		return null != mCameraViewControlAnimator && mCameraViewControlAnimator.isInHoldToTalkMode();//sbInHoldToTalkMode;
 	}
 	
-	static private void setInHoldToTalkMode(boolean bInHoldToTalkMode){
-		sbInHoldToTalkMode = bInHoldToTalkMode;
-	}
+//	static private void setInHoldToTalkMode(boolean bInHoldToTalkMode){
+//		sbInHoldToTalkMode = bInHoldToTalkMode;
+//	}
 	
 	@Override
 	public void onAudioAmplitudeUpdate(final float fRatio){
