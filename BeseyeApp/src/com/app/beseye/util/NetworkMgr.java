@@ -141,7 +141,7 @@ public class NetworkMgr {
 			NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
 	        if (null != activeNetwork && activeNetwork.isConnected()) {
 	        	int iNetworkType = activeNetwork.getType();
-	            if(iNetworkType == ConnectivityManager.TYPE_WIFI || iNetworkType == ConnectivityManager.TYPE_MOBILE || iNetworkType == ConnectivityManager.TYPE_WIMAX)
+	            if(iNetworkType == ConnectivityManager.TYPE_WIFI || iNetworkType == ConnectivityManager.TYPE_WIFI || iNetworkType == ConnectivityManager.TYPE_WIMAX || iNetworkType == ConnectivityManager.TYPE_ETHERNET)
 	            	bConnected = true;
 	        } 
 		}

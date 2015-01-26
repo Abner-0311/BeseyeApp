@@ -76,7 +76,7 @@ public class BeseyeAboutActivity extends BeseyeBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.txt_app_link:{
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.beseye.com"));
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.beseye.com/home"));
 				startActivity(browserIntent);
 				break;
 			}

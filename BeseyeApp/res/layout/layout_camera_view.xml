@@ -79,8 +79,7 @@
 	    android:id="@+id/vg_hold_to_talk"
 	    android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:layout_above="@+id/vg_streaming_view_footer"
-    	android:layout_marginBottom="@dimen/liveview_mic_bg_margin_bottom"
+    	android:layout_centerVertical="true"
     	android:layout_alignParentRight="true"
     	android:visibility="invisible">
 	    <ImageView 
