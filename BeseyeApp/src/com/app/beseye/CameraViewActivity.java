@@ -1038,6 +1038,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					monitorAsyncTask(mDVRStreamTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(bShowDialog?DIALOG_ID_LOADING:-1), true, mStrVCamID, (mlDVRCurrentStartTs)+"", (mlLastDurationForDVR = DVR_REQ_TIME)+"");
 					mlDVRFirstSegmentStartTs = -1;
 					setVisibility(mPbLoadingCursor, View.VISIBLE);
+				}else{
+					Log.e(TAG, "CameraViewActivity::getStreamingInfo(), mDVRStreamTask is not null");
 				}
 			}
 		}else{
@@ -1286,7 +1288,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask task, final int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
 			if(task == mLiveStreamTask){
 				mLiveStreamTask = null;
@@ -1338,10 +1340,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
-					b.putBoolean(KEY_WARNING_CLOSE, true);
-					showMyDialog(DIALOG_ID_WARNING, b);
+					if(BeseyeHttpTask.ERR_TYPE_NO_CONNECTION != iErrType){
+						Bundle b = new Bundle();
+						b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
+						b.putBoolean(KEY_WARNING_CLOSE, true);
+						showMyDialog(DIALOG_ID_WARNING, b);
+					}else{
+						showNoNetworkDialog();
+					}
 					updatePlayPauseBtnEnabledStatus();
 					setVisibility(mPbLoadingCursor, View.GONE);
 				}}, 0);
