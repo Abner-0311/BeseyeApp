@@ -34,6 +34,9 @@ import android.widget.TextView;
 import com.app.beseye.adapter.EventListAdapter;
 import com.app.beseye.adapter.EventListAdapter.EventListItmHolder;
 import com.app.beseye.adapter.EventListAdapter.IListViewScrollListenser;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -384,6 +387,17 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		loadEventList();
 	}
 	
+	private void postToLvRreshComplete(){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(null != mMainListView){
+					mMainListView.onRefreshComplete();
+					mMainListView.updateLatestTimestamp();
+				}
+			}}, 0);
+	}
+	
 	private long mlTaskTs = -1;
 	private int miTaskSeedNum = 0;
 	private int miLastTaskSeedNum = -1;
@@ -418,10 +432,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 					
 					mEventListAdapter.updateResultList(EntList);
 					
-					if(null != mMainListView){
-						mMainListView.onRefreshComplete();
-						mMainListView.updateLatestTimestamp();
-					}
+					postToLvRreshComplete();
 					
 					checkClockByTime();
 					mbNeedToCalcu = true;
@@ -619,10 +630,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				}
 				
 				refreshList();
-				if(null != mMainListView){
-					mMainListView.onRefreshComplete();
-					mMainListView.updateLatestTimestamp();
-				}
+				postToLvRreshComplete();
 				checkClockByTime();
 				
 			}else if(task instanceof BeseyeMMBEHttpTask.GetThumbnailByEventListTask){
@@ -700,6 +708,36 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			mGetNewEventListTask = null;
 		}else if(task.equals(mGetEventListCountTask)){
 			mGetEventListCountTask = null;
+		}
+	}
+	
+	
+	@Override
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+		super.onErrorReport(task, iErrType, strTitle, strMsg);
+		postToLvRreshComplete();
+		if(iErrType == BeseyeHttpTask.ERR_TYPE_NO_CONNECTION){
+			onNoNetworkError();
+		}
+		
+		if(task.equals(mGetThumbnailByEventListTask)){
+			mGetThumbnailByEventListTask = null;
+		}else if(task.equals(mGetEventListTask)){
+			mGetEventListTask = null;
+		}else if(task.equals(mGetNewEventListTask)){
+			mGetNewEventListTask = null;
+		}else if(task.equals(mGetEventListCountTask)){
+			mGetEventListCountTask = null;
+		}
+	}
+	
+	private void onNoNetworkError(){
+		LayoutInflater inflater = getLayoutInflater();
+		if(null != inflater){
+			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
+			if(null != mVgEmptyView){
+				mMainListView.setEmptyView(mVgEmptyView);
+			}
 		}
 	}
 	

@@ -53,6 +53,7 @@ import com.app.beseye.BeseyeApplication.BeseyeAppStateChangeListener;
 import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
@@ -70,6 +71,7 @@ import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
+import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 
 
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, 
@@ -77,7 +79,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 																			  ISessionUpdateCallback,
 																			  BeseyeAppStateChangeListener,
 																			  OnCamInfoChangedListener,
-																			  OnCamUpdateVersionCheckListener{
+																			  OnCamUpdateVersionCheckListener, 
+																			  OnNetworkChangeCallback{
 	static public final String KEY_FROM_ACTIVITY					= "KEY_FROM_ACTIVITY";
 	
 	protected boolean mbFirstResume = true;
@@ -125,6 +128,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		NetworkMgr.getInstance().registerNetworkChangeCallback(this);
+		
 		checkForCrashes();
 	    checkForUpdates();
 	    BeseyeApplication.increVisibleCount(this);
@@ -141,6 +147,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected void onPause() {
 		BeseyeApplication.decreVisibleCount(this);
 		mActivityResume = false;
+		
+		NetworkMgr.getInstance().unregisterNetworkChangeCallback(this);
+
 		super.onPause();
 	}
 
@@ -328,13 +337,14 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final String KEY_INFO_TEXT  	 = "KEY_INFO_TEXT";
 	static public final String KEY_WARNING_CLOSE = "KEY_WARNING_CLOSE";
 	
-	static public final int DIALOG_ID_LOADING = 1; 
-	static public final int DIALOG_ID_WARNING = 2;
-	static public final int DIALOG_ID_SYNCING = 3; 
-	static public final int DIALOG_ID_INFO 	  = 4;
-	static public final int DIALOG_ID_SETTING = 5;
-	static public final int DIALOG_ID_LOGIN   = 6; 
-	static public final int DIALOG_ID_SIGNUP  = 7; 
+	static public final int DIALOG_ID_LOADING 	= 1; 
+	static public final int DIALOG_ID_WARNING 	= 2;
+	static public final int DIALOG_ID_SYNCING 	= 3; 
+	static public final int DIALOG_ID_INFO 	  	= 4;
+	static public final int DIALOG_ID_SETTING 	= 5;
+	static public final int DIALOG_ID_LOGIN   	= 6; 
+	static public final int DIALOG_ID_SIGNUP  	= 7; 
+	static public final int DIALOG_ID_NO_NETWORK= 8; 
 	
 	static public final int DIALOG_ID_WIFI_BASE 			= 0x1000; 
 	static public final int DIALOG_ID_TURN_ON_WIFI 			= DIALOG_ID_WIFI_BASE+1; 
@@ -390,6 +400,28 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						    }
 						});
 					}
+				}
+				break;
+			}
+			case DIALOG_ID_NO_NETWORK:{
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            	builder.setTitle(getString(R.string.dialog_title_warning));
+            	builder.setMessage(R.string.streaming_error_no_network);
+				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				    public void onClick(DialogInterface dialog, int item) {
+				    	removeMyDialog(DIALOG_ID_NO_NETWORK);
+				    }
+				});
+				
+				builder.setOnCancelListener(new OnCancelListener(){
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						removeMyDialog(DIALOG_ID_NO_NETWORK);
+					}});
+				
+				dialog = builder.create();
+				if(null != dialog){
+					dialog.setCanceledOnTouchOutside(true);
 				}
 				break;
 			}
@@ -626,30 +658,39 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     }
     
     public void monitorAsyncTask(AsyncTask task, boolean bCancelWhenDestroy, String... strArgs){
-    	Log.i(TAG, "Check network status");
-    	if(NetworkMgr.getInstance().isNetworkConnected()){
-    		Log.i(TAG, "Network connected");
-    	}
-    	else{
-    		Log.i(TAG, "Network disconnected");
-    		showNoNetworkDialog();
-    	}
     	monitorAsyncTask(task, bCancelWhenDestroy, FULL_TASK_EXECUTOR, strArgs);
     }
     
-    private void showNoNetworkDialog(){
-		Bundle b = new Bundle();
-		b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_error_no_network));
-		showMyDialog(DIALOG_ID_WARNING, b);
-		//showInvalidStateMask();
+    protected void showNoNetworkDialog(){
+		showMyDialog(DIALOG_ID_NO_NETWORK);
 	}
+    
+    protected void hideNoNetworkDialog(){
+  		removeMyDialog(DIALOG_ID_NO_NETWORK);
+  	}
+    
+    public void onConnectivityChanged(boolean bNetworkConnected){
+    	if(bNetworkConnected){
+    		hideNoNetworkDialog();
+    		onSessionComplete();
+    	}else{
+    		showNoNetworkDialog();
+    	}
+    }
     
     public void monitorAsyncTask(AsyncTask task, boolean bCancelWhenDestroy, ExecutorService executor , String... strArgs){
     	if(null != task){
-    		if(null != mMapCurAsyncTasks){
-        		mMapCurAsyncTasks.put(task, new AsyncTaskParams(bCancelWhenDestroy, strArgs));
+        	//Log.i(TAG, "Check network status");
+        	if(NetworkMgr.getInstance().isNetworkConnected()){
+        		if(null != mMapCurAsyncTasks){
+            		mMapCurAsyncTasks.put(task, new AsyncTaskParams(bCancelWhenDestroy, strArgs));
+            	}
+        		task.executeOnExecutor(executor, strArgs);
+        	}else{
+        		Log.e(TAG, "Network disconnected");
+        		showNoNetworkDialog();
+        		onErrorReport(task, BeseyeHttpTask.ERR_TYPE_NO_CONNECTION, "", "");
         	}
-    		task.executeOnExecutor(executor, strArgs);
     	}
     }
     

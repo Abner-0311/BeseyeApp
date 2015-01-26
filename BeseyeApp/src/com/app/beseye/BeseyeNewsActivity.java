@@ -19,12 +19,15 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.beseye.adapter.NewsListAdapter;
 import com.app.beseye.adapter.NewsListAdapter.NewsListItmHolder;
+import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -189,15 +192,37 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
 		if(task instanceof BeseyeNewsBEHttpTask.GetNewsListTask){
-			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
-			//finish();
-//			int iErrMsgId = R.string.msg_signup_error;
-//			if(BeseyeError.E_BE_ACC_USER_ALREADY_EXIST == iErrType){
-//				iErrMsgId = R.string.msg_signup_err_email_used;
-//			}
-//			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(iErrMsgId));
+			postToLvRreshComplete();
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
+		
+		if(iErrType == BeseyeHttpTask.ERR_TYPE_NO_CONNECTION){
+			onNoNetworkError();
+		}
+	}
+	
+	private ViewGroup mVgEmptyView;
+	
+	@Override
+	protected void onServerError(){
+		super.onServerError();
+		LayoutInflater inflater = getLayoutInflater();
+		if(null != inflater){
+			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
+			if(null != mVgEmptyView){
+				mMainListView.setEmptyView(mVgEmptyView);
+			}
+		}
+	}
+	
+	private void onNoNetworkError(){
+		LayoutInflater inflater = getLayoutInflater();
+		if(null != inflater){
+			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
+			if(null != mVgEmptyView){
+				mMainListView.setEmptyView(mVgEmptyView);
+			}
+		}
 	}
 
 	@Override

@@ -29,6 +29,7 @@ import com.app.beseye.adapter.CameraListAdapter;
 import com.app.beseye.adapter.CameraListAdapter.CameraListItmHolder;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
@@ -150,7 +151,6 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     			@Override
     			public void onRefresh() {
     				Log.i(TAG, "onRefresh()");	
-    			
     				monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this), true);
     			}
 
@@ -210,25 +210,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			mCameraListMenuAnimator.checkNewsStatus();
 	}
 	
-	private void showNoNetworkDialog(){
-		Bundle b = new Bundle();
-		b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_error_no_network));
-		showMyDialog(DIALOG_ID_WARNING, b);
-		//showInvalidStateMask();
-	}
-	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		Log.i(TAG, "Check network status");
-    	if(NetworkMgr.getInstance().isNetworkConnected()){
-    		Log.i(TAG, "Network connected");
-    	}
-    	else{
-    		Log.i(TAG, "Network disconnected");
-    		showNoNetworkDialog();
-    	}
 		
 		if(null != mOnResumeUpdateCamListRunnable){
 			if(BeseyeConfig.DEBUG)
@@ -241,15 +225,6 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			updateCamItm(miLastTaskSeedNum);
 			miLastTaskSeedNum = -1;
 		}
-		
-//		if(-1 == miLastTaskSeedNum && false == this.mbFirstResume && (null != mCameraListAdapter && 0 < mCameraListAdapter.getCount())){
-//			BeseyeUtils.postRunnable(new Runnable(){
-//				@Override
-//				public void run() {
-//					miCurUpdateIdx = 0;
-//					updateCamItm(++miTaskSeedNum);
-//				}}, 0);
-//		}
 		
 		if(false == mbFirstResume){
 			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this).setDialogId(-1), true);
@@ -566,8 +541,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
-			String strMsg) {
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeAccountTask.GetVCamListTask){
 			postToLvRreshComplete();
 		}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
@@ -580,8 +554,13 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					
 					refreshList();
 				}}, 0);
-		}else
+		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
+		}
+		
+		if(iErrType == BeseyeHttpTask.ERR_TYPE_NO_CONNECTION){
+			onNoNetworkError();
+		}
 	}
 	
 	private int miTaskSeedNum = 0;
@@ -1072,6 +1051,16 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	@Override
 	protected void onServerError(){
 		super.onServerError();
+		LayoutInflater inflater = getLayoutInflater();
+		if(null != inflater){
+			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
+			if(null != mVgEmptyView){
+				mMainListView.setEmptyView(mVgEmptyView);
+			}
+		}
+	}
+	
+	private void onNoNetworkError(){
 		LayoutInflater inflater = getLayoutInflater();
 		if(null != inflater){
 			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);

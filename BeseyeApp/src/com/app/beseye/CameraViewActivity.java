@@ -374,6 +374,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     			mlRetryConnectBeginTs = System.currentTimeMillis();
     		}
     		
+    		if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING)){
+    			if(DEBUG)
+    				Log.i(TAG, "CameraViewActivity::tryToReconnect(), streaming is playing");
+    			return;
+    		}
+    		
     		int iReOpenDelay = 0;
     		if(!isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_WAITING_CLOSE, CameraView_Internal_Status.CV_STREAM_CLOSE) || 
     		   !isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
@@ -854,15 +860,19 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onConnectivityChanged(boolean bNetworkConnected) {
 		if(DEBUG)
 			Log.d(TAG, "CameraViewActivity::onConnectivityChanged(), bNetworkConnected="+bNetworkConnected+", state="+getCamViewStatus());
+		
 		if(false == bNetworkConnected){
 			if(!isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
 				closeStreaming();
-				showNoNetworkDialog();
 			}
+			mbIsRetryAtNextResume = true;
+			showNoNetworkDialog();
 		}else{
 			if(isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
+				mbIsRetryAtNextResume = true;
 				checkPlayState();
 			}
+			hideNoNetworkDialog();
 		}
 	}
 	
@@ -926,10 +936,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		return dialog;
 	}
 
-	private void showNoNetworkDialog(){
-		Bundle b = new Bundle();
-		b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_error_no_network));
-		showMyDialog(DIALOG_ID_WARNING, b);
+	protected void showNoNetworkDialog(){
+		super.showNoNetworkDialog();
 		showInvalidStateMask();
 	}
 	
@@ -964,9 +972,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		boolean bPowerOn = isCamPowerOn();
 		boolean bNetworkConnected = NetworkMgr.getInstance().isNetworkConnected();
 		if(DEBUG)
-			Log.i(TAG, "CameraViewActivity::checkPlayState(), bPowerOn:"+bPowerOn+", bNetworkConnected:"+bNetworkConnected);
+			Log.i(TAG, "CameraViewActivity::checkPlayState(), bPowerOn:"+bPowerOn+", bNetworkConnected:"+bNetworkConnected+", mbIsRetryAtNextResume:"+mbIsRetryAtNextResume);
 		
 		if(bNetworkConnected && bPowerOn && (mbIsFirstLaunch || mbIsPauseWhenPlaying || mbIsCamSettingChanged || mbIsWifiSettingChanged || mbIsRetryAtNextResume)){
+			Log.e(TAG, "CameraViewActivity::checkPlayState(), go to getStreamingInfo");
 			mbIsRetryAtNextResume = false;
 			getStreamingInfo(false);
 		}/*else{
@@ -975,9 +984,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		updatePlayPauseBtnEnabledStatus();
 		
-		if(!bNetworkConnected){
-			showNoNetworkDialog();
-		}
+//		if(!bNetworkConnected){
+//			showNoNetworkDialog();
+//		}
 		
 		updatePowerState();
 		mbIsFirstLaunch = mbIsPauseWhenPlaying = false;
@@ -1015,6 +1024,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							openAudioChannel(true);
 						//}
 					}
+				}else{
+					Log.e(TAG, "CameraViewActivity::getStreamingInfo(), mLiveStreamTask is not null");
 				}
 			}else{
 				if(null == mDVRStreamTask){
@@ -1277,6 +1288,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	@Override
 	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
+			if(task == mLiveStreamTask){
+				mLiveStreamTask = null;
+			}
+			
 			if(mActivityDestroy){
 				return;
 			}
@@ -1341,6 +1356,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}}, 0);
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
+		
+		if(task == mDVRStreamTask){
+			mDVRStreamTask = null;
+		}else if(task == mDVRStreamAppendTask){
+			mDVRStreamAppendTask = null;
+		}else if(task == mGetAudioWSServerTask){
+			mGetAudioWSServerTask = null;
+		}
 	}
 
 	protected int getLayoutId(){
