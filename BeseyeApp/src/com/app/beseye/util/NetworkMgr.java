@@ -181,7 +181,6 @@ public class NetworkMgr {
 	public List<WifiConfiguration> getAllWifiConfiguration(){
 		if(null != mWifiManager){
 			return mWifiManager.getConfiguredNetworks();
-			
 		}
 		return null;
 	}
@@ -189,24 +188,27 @@ public class NetworkMgr {
 	public WifiConfiguration getWifiConfigurationBySSID(String SSID){
 		WifiConfiguration config = null;
 		List<WifiConfiguration> configs = getAllWifiConfiguration();
-		for(WifiConfiguration c : configs){
-			if(null != c && c.SSID.equals("\"" + SSID + "\"")){
-				config = c;
-				Log.i(TAG, "getWifiConfigurationByBSSID(), SSID:<"+c.SSID+
-						  ">, BSSID:<"+c.BSSID+
-						  ">, hiddenSSID:<"+c.hiddenSSID+
-						  ">, wepTxKeyIndex:<"+c.wepTxKeyIndex+
-						  ">, wepKeys:<"+c.wepKeys[c.wepTxKeyIndex]+
-						  ">, status:<"+c.status+
-						  ">, allowedAuthAlgorithms:<"+c.allowedAuthAlgorithms+
-						  ">, allowedGroupCiphers:<"+c.allowedGroupCiphers+
-						  ">, allowedKeyManagement:<"+c.allowedKeyManagement+
-						  ">, allowedPairwiseCiphers:<"+c.allowedPairwiseCiphers+
-						  ">, allowedProtocols:<"+c.allowedProtocols+
-						  ">, preSharedKey:<"+c.preSharedKey+">");
-				break;
+		if(null != configs){
+			for(WifiConfiguration c : configs){
+				if(null != c && c.SSID.equals("\"" + SSID + "\"")){
+					config = c;
+					Log.i(TAG, "getWifiConfigurationByBSSID(), SSID:<"+c.SSID+
+							  ">, BSSID:<"+c.BSSID+
+							  ">, hiddenSSID:<"+c.hiddenSSID+
+							  ">, wepTxKeyIndex:<"+c.wepTxKeyIndex+
+							  ">, wepKeys:<"+c.wepKeys[c.wepTxKeyIndex]+
+							  ">, status:<"+c.status+
+							  ">, allowedAuthAlgorithms:<"+c.allowedAuthAlgorithms+
+							  ">, allowedGroupCiphers:<"+c.allowedGroupCiphers+
+							  ">, allowedKeyManagement:<"+c.allowedKeyManagement+
+							  ">, allowedPairwiseCiphers:<"+c.allowedPairwiseCiphers+
+							  ">, allowedProtocols:<"+c.allowedProtocols+
+							  ">, preSharedKey:<"+c.preSharedKey+">");
+					break;
+				}
 			}
 		}
+		
 		return config;
 	}
 	
@@ -214,24 +216,26 @@ public class NetworkMgr {
 		WifiConfiguration config = null;
 		if(null != BSSID){
 			List<WifiConfiguration> configs = getAllWifiConfiguration();
-			for(WifiConfiguration c : configs){
-				if(null != c && null != c.BSSID && c.BSSID.equalsIgnoreCase("\"" + BSSID + "\"")){
-					config = c;
-					if(DEBUG){
-						Log.i(TAG, "getWifiConfigurationByBSSID(), SSID:<"+c.SSID+
-								  ">, BSSID:<"+c.BSSID+
-								  ">, hiddenSSID:<"+c.hiddenSSID+
-								  ">, wepTxKeyIndex:<"+c.wepTxKeyIndex+
-								  ">, wepKeys:<"+c.wepKeys[c.wepTxKeyIndex]+
-								  ">, status:<"+c.status+
-								  ">, allowedAuthAlgorithms:<"+c.allowedAuthAlgorithms+
-								  ">, allowedGroupCiphers:<"+c.allowedGroupCiphers+
-								  ">, allowedKeyManagement:<"+c.allowedKeyManagement+
-								  ">, allowedPairwiseCiphers:<"+c.allowedPairwiseCiphers+
-								  ">, allowedProtocols:<"+c.allowedProtocols+
-								  ">, preSharedKey:<"+c.preSharedKey+">");
+			if(null != configs){
+				for(WifiConfiguration c : configs){
+					if(null != c && null != c.BSSID && c.BSSID.equalsIgnoreCase("\"" + BSSID + "\"")){
+						config = c;
+						if(DEBUG){
+							Log.i(TAG, "getWifiConfigurationByBSSID(), SSID:<"+c.SSID+
+									  ">, BSSID:<"+c.BSSID+
+									  ">, hiddenSSID:<"+c.hiddenSSID+
+									  ">, wepTxKeyIndex:<"+c.wepTxKeyIndex+
+									  ">, wepKeys:<"+c.wepKeys[c.wepTxKeyIndex]+
+									  ">, status:<"+c.status+
+									  ">, allowedAuthAlgorithms:<"+c.allowedAuthAlgorithms+
+									  ">, allowedGroupCiphers:<"+c.allowedGroupCiphers+
+									  ">, allowedKeyManagement:<"+c.allowedKeyManagement+
+									  ">, allowedPairwiseCiphers:<"+c.allowedPairwiseCiphers+
+									  ">, allowedProtocols:<"+c.allowedProtocols+
+									  ">, preSharedKey:<"+c.preSharedKey+">");
+						}
+						break;
 					}
-					break;
 				}
 			}
 		}

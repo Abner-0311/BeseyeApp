@@ -98,9 +98,9 @@ public class WifiListActivity extends WifiControlBaseActivity
 			mWifiSwitchBtn = (BeseyeSwitchBtn)mVwNavBar.findViewById(R.id.sb_wifi_btn);
 			if(null != mWifiSwitchBtn){
 				mWifiSwitchBtn.setOnSwitchBtnStateChangedListener(this);
-				if(mbChangeWifi){
+				//if(mbChangeWifi){
 					mWifiSwitchBtn.setVisibility(View.GONE);
-				}
+				//}
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
@@ -116,8 +116,9 @@ public class WifiListActivity extends WifiControlBaseActivity
     			public void onRefresh() {
     				if(mbChangeWifi){
     					loadWifiSSIDListFromCam();
-    				}else
+    				}else{
     					scanWifi(true);
+    				}
     			}
 
 				@Override
@@ -423,8 +424,10 @@ public class WifiListActivity extends WifiControlBaseActivity
 	}
 	
 	private void refreshListView(){
-		if(mlvWifiList != null)
+		if(mlvWifiList != null){
 			mlvWifiList.onRefreshComplete();
+			mlvWifiList.updateLatestTimestamp();
+		}
 		
 		if(null != mWifiInfoAdapter)
 			mWifiInfoAdapter.notifyDataSetChanged();

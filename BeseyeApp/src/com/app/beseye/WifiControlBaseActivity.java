@@ -287,10 +287,11 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	@Override
 	public void onWifiNetworkStateChanged(DetailedState iWifiNetworkState, DetailedState iPrevWifiNetworkState) {
 		loadWifiAPList();
-//		if(iWifiNetworkState == DetailedState.CONNECTED){
+		if(false == mbChangeWifi && iWifiNetworkState == DetailedState.DISCONNECTED){
+			setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
 //			if(inWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SETTING))
 //				setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SET_DONE);
-//		}
+		}
 	}
 
 	@Override
@@ -385,6 +386,14 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 //					mLoadWifiListRunnable.run();
 //					mLoadWifiListRunnable = null;
 //				}
+				//Avoid blocking on this state
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						if(NetworkMgr.getInstance().getWifiStatus() != WifiManager.WIFI_STATE_ENABLED){
+							setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+						}
+					}}, 10000);
 				break;
 			}
 			case STATE_WIFI_ON:{
