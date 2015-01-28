@@ -263,6 +263,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         //setImageMatrix(matrix);
         //setScaleType(ScaleType.MATRIX);
         setState(NONE);
+        setLongClickable(false);
         setOnTouchListener(new TouchImageViewListener());
         
         miBackgroundColorLand = context.getResources().getColor(R.color.liveview_background);
@@ -516,7 +517,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             matrix.setValues(mArrMatrixValues);
         }
         fixTrans();
-        Log.i(TAG, "onMeasure(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale+", matchViewWidth="+matchViewWidth+", matchViewHeight="+matchViewHeight);
+        //Log.i(TAG, "onMeasure(), matrix:"+matrix.toString()+", normalizedScale="+normalizedScale+", matchViewWidth="+matchViewWidth+", matchViewHeight="+matchViewHeight);
         //setImageMatrix(matrix);
         drawStreamBitmap();
     }
@@ -663,6 +664,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             mScaleDetector.onTouchEvent(event);
             mGestureDetector.onTouchEvent(event);
             PointF curr = new PointF(event.getX(), event.getY());
+            
+            if(DEBUG)
+        		Log.i(TAG, "onTouch(), state:"+state);
             
             if (state == NONE || state == DRAG || state == FLING) {
 	            switch (event.getAction()) {

@@ -427,6 +427,10 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
         return checkEntity(entity, strParams);
     }
 	
+	public boolean isNetworkTimeoutErr(){
+		return miErrType == ERR_TYPE_CONNECTION_TIMEOUT;
+	}
+	
 	protected JSONObject parseJSON(String strRet){
 		long startTime=System.currentTimeMillis();
 		JSONObject jsonRet = null;

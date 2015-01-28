@@ -127,7 +127,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 	
 	private void checkLoginInfo(){
 		if(null != mEtUserName){
-			mEtUserName.setText((new BeseyeAccountFilter()).filter(mEtUserName.getText(), 0, mEtUserName.length(), null, 0, 0));
+			//mEtUserName.setText((new BeseyeAccountFilter()).filter(mEtUserName.getText(), 0, mEtUserName.length(), null, 0, 0));
 			
 			String strAccount = mEtUserName.getText().toString();
 			if(!BeseyeUtils.validEmail(strAccount)){
@@ -136,8 +136,8 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 			}
 			
 			String strPw 		= (null != mEtPassword)?mEtPassword.getText().toString():null;
-			if(null == strPw || 6 > strPw.length() || 32 < strPw.length()){
-			//if(!BeseyeUtils.validPassword(strPw)){
+			//if(null == strPw || 6 > strPw.length() || 32 < strPw.length()){
+			if(!BeseyeUtils.validPassword(strPw)){
 				onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_pw_length_error));
 				return;
 			}

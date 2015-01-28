@@ -384,17 +384,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     			iReOpenDelay = 500;
     		}
     		
-    		if(mbIsLiveMode && mActivityResume && isCamPowerOn()){
-    			BeseyeUtils.postRunnable(new Runnable(){
-    				@Override
-    				public void run() {
-    					//beginLiveView();
-    					getStreamingInfo(false);
-    				}}, iReOpenDelay);
-    			
-    			if(null != mVgPairingDone){
-        			setVisibility(mPbLoadingCursor, View.VISIBLE);
-        		}
+    		if(mbIsLiveMode && mActivityResume){
+    			checkLiveStreaming(iReOpenDelay);
     		}else if(!mbIsLiveMode && mActivityResume){
     			BeseyeUtils.postRunnable(new Runnable(){
     				@Override
@@ -1254,7 +1245,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							if(DEBUG)
 								Log.i(TAG, "onPostExecute(), bIsCamOn:"+bIsCamOn+", isCamPowerOn():"+isCamPowerOn());
 							
-							if(bIsCamOn && isCamPowerOff()){
+							if(bIsCamOn && (isCamPowerOff() || isCamPowerDisconnected())){
 								setVisibility(mPbLoadingCursor, View.GONE);
 								Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
 							}else if(!bIsCamOn && isCamPowerOn()){
@@ -1284,6 +1275,21 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 	}
 	
+	private void checkLiveStreaming(long lDelay){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				//beginLiveView();
+				if(isCamPowerOn()){
+					getStreamingInfo(false);
+				}
+				
+				if(null != mVgPairingDone){
+					setVisibility(mPbLoadingCursor, isCamPowerOn()?View.VISIBLE:View.GONE);
+				}
+			}}, lDelay);
+	}
+	
 	@Override
 	public void onErrorReport(AsyncTask task, final int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
@@ -1301,11 +1307,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
 			
 			if(/*(null != mVgPairingDone || mbIsCamStatusChanged || mbIsCamSettingChanged) &&*/ (System.currentTimeMillis() - mlRetryConnectBeginTs < 60*1000) && mActivityResume){
-				BeseyeUtils.postRunnable(new Runnable(){
-					@Override
-					public void run() {
-						getStreamingInfo(false);
-					}}, 1000);
+				checkLiveStreaming(1000);
 			}else{
 				mbIsRetryAtNextResume = true;
 				mbIsCamStatusChanged = false;
@@ -1324,11 +1326,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							
 							//Continue load
 							mlRetryConnectBeginTs = System.currentTimeMillis();
-							BeseyeUtils.postRunnable(new Runnable(){
-								@Override
-								public void run() {
-									getStreamingInfo(false);
-								}}, 1000);
+							checkLiveStreaming(1000);
 						}
 					}}, 0);
 			}
@@ -2763,7 +2761,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					if(DEBUG)
 						Log.i(TAG, "onCamSetupChanged(), bIsCamOn:"+bIsCamOn+", isCamPowerOn():"+isCamPowerOn());
 					
-					if(bIsCamOn && isCamPowerOff()){
+					if(bIsCamOn && (isCamPowerOff() || isCamPowerDisconnected())){
 						setVisibility(mPbLoadingCursor, View.GONE);
 						Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
 					}else if(!bIsCamOn && isCamPowerOn()){

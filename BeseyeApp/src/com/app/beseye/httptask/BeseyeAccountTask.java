@@ -87,7 +87,7 @@ public class BeseyeAccountTask {
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(ACC_EMAIL, strParams[0]);
-				//obj.put(ACC_VPC_NO, 2);
+				obj.put(ACC_VPC_NO, 2);
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getVPCAccountBEHostUrl()+URL_VPC_QUERY, obj.toString());
 			} catch (NumberFormatException e) {
@@ -178,8 +178,8 @@ public class BeseyeAccountTask {
 			try {
 				obj.put(ACC_PAIRING_TYPE, Integer.parseInt(strParams[0]));
 				obj.put(ACC_PAIRING_COUNT, 1);
-				obj.put(ACC_PAIRING_AP_MAC, strParams[1].replaceAll(":", ""));
-				obj.put(ACC_PAIRING_META_DATA, strParams[1].replaceAll(":", ""));
+				obj.put(ACC_PAIRING_AP_MAC, strParams[1]/*.replaceAll(":", "")*/);
+				obj.put(ACC_PAIRING_META_DATA, strParams[1]/*.replaceAll(":", "")*/);
 				
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_PAIRING, obj.toString());

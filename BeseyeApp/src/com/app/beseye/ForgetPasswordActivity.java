@@ -73,7 +73,7 @@ public class ForgetPasswordActivity extends BeseyeAccountBaseActivity {
 	
 	private void checkLoginInfo(){
 		if(null != mEtUserEmail){
-			mEtUserEmail.setText((new BeseyeAccountFilter()).filter(mEtUserEmail.getText(), 0, mEtUserEmail.length(), null, 0, 0));
+			//mEtUserEmail.setText((new BeseyeAccountFilter()).filter(mEtUserEmail.getText(), 0, mEtUserEmail.length(), null, 0, 0));
 			
 			String strAccount = mEtUserEmail.getText().toString();
 			if(!BeseyeUtils.validEmail(strAccount)){

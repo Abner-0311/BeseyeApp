@@ -601,6 +601,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				if(DEBUG)
 					Log.d(TAG, "showMyDialog(), remove mRemoveDialogRunnable, iDialogId="+iDialogId);
 				mHandler.removeCallbacks(mRemoveDialogRunnable);
+				mRemoveDialogRunnable = null;
 				return true;
 			}
 			if(DEBUG)
@@ -903,7 +904,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						mLstUpdateCandidate.remove(strVcamId);
 						miCheckUpdateCamIdx--;
 						
-						if((iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST && iRetCode != BeseyeError.E_WEBSOCKET_CONN_NOT_EXIST) && !BeseyeUtils.isProductionVersion()){
+						if((iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST && iRetCode != BeseyeError.E_WEBSOCKET_CONN_NOT_EXIST && !((BeseyeHttpTask)task).isNetworkTimeoutErr()) && !BeseyeUtils.isProductionVersion()){
 							BeseyeUtils.postRunnable(new Runnable(){
 								@Override
 								public void run() {

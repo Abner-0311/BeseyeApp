@@ -33,7 +33,11 @@ public class PairingPlugPowerActivity extends BeseyeAccountBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_continue:{
-				launchActivityByClassName(SignupActivity.class.getName(), getIntent().getExtras());
+				if(getIntent().getBooleanExtra(PairingRemindActivity.KEY_ADD_CAM_FROM_LIST, false)){
+					launchActivityByClassName(WifiListActivity.class.getName(), getIntent().getExtras());
+				}else{
+					launchActivityByClassName(SignupActivity.class.getName(), getIntent().getExtras());
+				}
 				break;
 			}
 			default:

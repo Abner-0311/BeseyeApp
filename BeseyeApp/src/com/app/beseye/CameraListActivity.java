@@ -631,8 +631,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			b.putString(SoundPairingActivity.KEY_CHANGE_WIFI_VCAM, strVcamId);
 		}
 		//launchActivityByClassName(PairingRemindActivity.class.getName(), b);
-		launchActivityByClassName(WifiListActivity.class.getName(), b);
-
+		//launchActivityByClassName(WifiListActivity.class.getName(), b);
+		launchActivityByClassName(PairingPlugPowerActivity.class.getName(), b);
 	}
 
 	@Override

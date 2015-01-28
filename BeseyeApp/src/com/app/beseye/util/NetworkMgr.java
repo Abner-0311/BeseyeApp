@@ -94,7 +94,6 @@ public class NetworkMgr {
 	
 	private NetworkMgr(Context context){
 		if(null != context){
-			
 			mWrContext = new WeakReference<Context>(context);
 			mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			mbIsNetworkConnected = isNetworkConnected();

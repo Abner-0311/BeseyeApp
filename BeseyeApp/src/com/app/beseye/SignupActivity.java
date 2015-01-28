@@ -177,7 +177,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 	
 	private void checkLoginInfo(){
 		if(null != mEtUserName){
-			mEtUserName.setText((new BeseyeAccountFilter()).filter(mEtUserName.getText(), 0, mEtUserName.length(), null, 0, 0));
+			//mEtUserName.setText((new BeseyeAccountFilter()).filter(mEtUserName.getText(), 0, mEtUserName.length(), null, 0, 0));
 			
 			String strAccount = mEtUserName.getText().toString();
 			if(!BeseyeUtils.validEmail(strAccount)){
