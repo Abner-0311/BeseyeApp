@@ -1445,7 +1445,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 				case NCODE_PEOPLE_DETECT:
 				case NCODE_MOTION_DETECT:
-				case NCODE_OFFLINE_DETECT:{
+				/*case NCODE_OFFLINE_DETECT:*/{
 					String strCamName = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME);
 					if(NCODE_PEOPLE_DETECT == iNCode)
 						iMsgType = MSG_CAM_EVENT_PEOPLE;

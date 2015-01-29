@@ -789,6 +789,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}else if(task instanceof BeseyeCamBEHttpTask.GetCamUpdateStatusTask){
 			//removeMyDialog(DIALOG_ID_CAM_UPDATE);
 			//onToastShow(task, "failed to update status");
+		}else{
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					onServerError();
+				}}, 0);	
 		}
 		
 		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){

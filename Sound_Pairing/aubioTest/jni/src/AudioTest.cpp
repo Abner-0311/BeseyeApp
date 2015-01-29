@@ -2775,7 +2775,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 							if(DEBUG_MODE){
 								LOGE("attach cmd:[%s]\n", cmd);
 							}
-							iRet = invokeSystemWithTimeout(cmd, 15) >> 8;
+							iRet = invokeSystemWithTimeout(cmd, 30) >> 8;
 
 							//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
 							if(0 == iRet){
