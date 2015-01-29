@@ -1,7 +1,5 @@
 package com.app.beseye;
 
-import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeUtils;
 

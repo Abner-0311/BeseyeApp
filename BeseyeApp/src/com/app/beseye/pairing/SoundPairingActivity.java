@@ -26,8 +26,6 @@ import android.widget.Toast;
 
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
-import com.app.beseye.PairingFailActivity;
-import com.app.beseye.PairingGuidelineActivity;
 import com.app.beseye.R;
 import com.app.beseye.WifiControlBaseActivity;
 import com.app.beseye.audio.AudioChannelMgr;

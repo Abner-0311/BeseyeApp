@@ -11,6 +11,7 @@ import com.app.beseye.delegator.WifiAPSetupDelegator;
 import com.app.beseye.delegator.WifiAPSetupDelegator.OnWifiApSetupCallback;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.pairing.PairingRemindActivity;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;

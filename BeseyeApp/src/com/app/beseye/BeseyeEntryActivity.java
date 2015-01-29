@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.pairing.PairingPlugPowerActivity;
 import com.app.beseye.util.BeseyeConfig;
 
 public class BeseyeEntryActivity extends BeseyeBaseActivity {

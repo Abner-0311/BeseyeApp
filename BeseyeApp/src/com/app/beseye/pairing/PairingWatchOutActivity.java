@@ -1,6 +1,11 @@
-package com.app.beseye;
+package com.app.beseye.pairing;
 
-import com.app.beseye.pairing.SoundPairingActivity;
+import com.app.beseye.BeseyeAccountBaseActivity;
+import com.app.beseye.R;
+import com.app.beseye.R.color;
+import com.app.beseye.R.id;
+import com.app.beseye.R.layout;
+import com.app.beseye.R.string;
 
 import android.os.Bundle;
 import android.text.Spannable;

@@ -5,7 +5,6 @@ import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.HOCKEY_APP_ID;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
@@ -62,7 +61,7 @@ public class BeseyeApplication extends Application {
 			Log.i(TAG, "CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK+", ADV_TWO_WAY_tALK:"+BeseyeFeatureConfig.ADV_TWO_WAY_tALK+", VPC_NUM_QUERY:"+BeseyeFeatureConfig.VPC_NUM_QUERY);
 
 		}else{ 
-			Log.i(TAG, "*****************BeseyeApplication::onCreate(), can update:"+BeseyeUtils.canUpdateFromHockeyApp());
+			Log.i(TAG, "*****************BeseyeApplication::onCreate(), can update:"+BeseyeUtils.canUpdateFromHockeyApp()+", CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK);
 		}
 
 		ACRA.init(this);

@@ -3,8 +3,6 @@ package com.app.beseye;
 import android.os.Bundle;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
 
 public class BeseyeTOSAndPrivacyPolicyActivity extends BeseyeAccountBaseActivity {
 	private WebView mWvContent;

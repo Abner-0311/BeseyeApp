@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.app.beseye.R;
+import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeUtils;
 
 public class BeseyeAccountTask {
@@ -87,7 +88,9 @@ public class BeseyeAccountTask {
 			JSONObject obj = new JSONObject();
 			try {
 				obj.put(ACC_EMAIL, strParams[0]);
-				obj.put(ACC_VPC_NO, 2);
+				if(BeseyeFeatureConfig.VPC_2_TEST){
+					obj.put(ACC_VPC_NO, 2);
+				}
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getVPCAccountBEHostUrl()+URL_VPC_QUERY, obj.toString());
 			} catch (NumberFormatException e) {

@@ -1,4 +1,13 @@
-package com.app.beseye;
+package com.app.beseye.pairing;
+
+import com.app.beseye.BeseyeAccountBaseActivity;
+import com.app.beseye.BeseyeEntryActivity;
+import com.app.beseye.R;
+import com.app.beseye.SignupActivity;
+import com.app.beseye.WifiListActivity;
+import com.app.beseye.R.id;
+import com.app.beseye.R.layout;
+import com.app.beseye.R.string;
 
 import android.content.Intent;
 import android.os.Bundle;

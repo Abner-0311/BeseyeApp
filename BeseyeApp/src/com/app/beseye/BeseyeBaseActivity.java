@@ -1,8 +1,6 @@
 package com.app.beseye;
 
-import static com.app.beseye.util.BeseyeConfig.DEBUG;
-import static com.app.beseye.util.BeseyeConfig.HOCKEY_APP_ID;
-import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
 
@@ -904,7 +902,11 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						mLstUpdateCandidate.remove(strVcamId);
 						miCheckUpdateCamIdx--;
 						
-						if((iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST && iRetCode != BeseyeError.E_WEBSOCKET_CONN_NOT_EXIST && !((BeseyeHttpTask)task).isNetworkTimeoutErr()) && !BeseyeUtils.isProductionVersion()){
+						if(iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST && 
+						   iRetCode != BeseyeError.E_WEBSOCKET_CONN_NOT_EXIST && 
+						   iRetCode != BeseyeError.E_WEBSOCKET_OPERATION_FAIL && 
+						   !((BeseyeHttpTask)task).isNetworkTimeoutErr() && 
+						   !BeseyeUtils.isProductionVersion()){
 							BeseyeUtils.postRunnable(new Runnable(){
 								@Override
 								public void run() {
@@ -916,7 +918,6 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			        					showMyDialog(DIALOG_ID_INFO, b);
 									}
 								}}, 200);
-							
 						}
 					}
 				}
