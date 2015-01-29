@@ -430,6 +430,9 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 						e.printStackTrace();
 					}
 					
+					BeseyeUtils.setVisibility(mIvCalendar, View.VISIBLE);
+					BeseyeUtils.setVisibility(mVgIndicator, View.VISIBLE);
+					
 					mEventListAdapter.updateResultList(EntList);
 					
 					postToLvRreshComplete();
@@ -717,7 +720,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		super.onErrorReport(task, iErrType, strTitle, strMsg);
 		postToLvRreshComplete();
 		if(iErrType == BeseyeHttpTask.ERR_TYPE_NO_CONNECTION){
-			onNoNetworkError();
+			showNoNetworkUI();
 		}
 		
 		if(task.equals(mGetThumbnailByEventListTask)){
@@ -729,6 +732,23 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		}else if(task.equals(mGetEventListCountTask)){
 			mGetEventListCountTask = null;
 		}
+	}
+	
+	@Override
+	public void onConnectivityChanged(boolean bNetworkConnected){
+		super.onConnectivityChanged(bNetworkConnected);
+		showNoNetworkUI();
+    }
+	
+	private void showNoNetworkUI(){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				mEventListAdapter.updateResultList(null);
+				BeseyeUtils.setVisibility(mIvCalendar, View.GONE);
+				BeseyeUtils.setVisibility(mVgIndicator, View.GONE);
+				onNoNetworkError();
+			}}, 0);
 	}
 	
 	private void onNoNetworkError(){

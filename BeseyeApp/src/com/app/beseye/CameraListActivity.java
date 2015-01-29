@@ -560,7 +560,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
 		
 		if(iErrType == BeseyeHttpTask.ERR_TYPE_NO_CONNECTION){
-			onNoNetworkError();
+			showNoNetworkUI();
 		}
 	}
 	
@@ -1059,6 +1059,21 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				mMainListView.setEmptyView(mVgEmptyView);
 			}
 		}
+	}
+	
+	@Override
+	public void onConnectivityChanged(boolean bNetworkConnected){
+		super.onConnectivityChanged(bNetworkConnected);
+		showNoNetworkUI();
+    }
+	
+	private void showNoNetworkUI(){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				mCameraListAdapter.updateResultList(null);
+				onNoNetworkError();
+			}}, 0);
 	}
 	
 	private void onNoNetworkError(){
