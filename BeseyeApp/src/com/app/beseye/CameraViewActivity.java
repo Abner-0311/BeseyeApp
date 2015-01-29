@@ -1536,8 +1536,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	private void checkAndExtendHideHeader(){
-		if(null != mCameraViewControlAnimator && View.VISIBLE == mCameraViewControlAnimator.getVisibility())
+		if(null != mCameraViewControlAnimator && View.VISIBLE == mCameraViewControlAnimator.getVisibility()){
 			mCameraViewControlAnimator.extendHideControl();
+		}
+	}
+	
+	public boolean isScreenTouched(){
+		return null != mStreamingView && false == mStreamingView.isTouchStateNone();
 	}
 
 	@Override

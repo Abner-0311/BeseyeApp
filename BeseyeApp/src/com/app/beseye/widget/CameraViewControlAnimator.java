@@ -75,8 +75,15 @@ public class CameraViewControlAnimator {
 	private Runnable mHideHeaderRunnable = new Runnable(){
 		@Override
 		public void run() {
-			if(View.VISIBLE == getVisibility() && false == isInAnimation())
-				performControlAnimation();
+			if(View.VISIBLE == getVisibility() && false == isInAnimation()){
+				CameraViewActivity act = mCameraViewActivity.get();
+				if(null != act && act.isScreenTouched()){
+					Log.i(TAG, "isScreenTouched is true, extend...");
+					extendHideControl();
+				}else{
+					performControlAnimation();
+				}
+			}
 		}};
 	
 	

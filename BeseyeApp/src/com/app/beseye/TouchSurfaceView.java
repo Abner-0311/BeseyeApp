@@ -250,7 +250,10 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         
         this.context = context;
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        
         mGestureDetector = new GestureDetector(context, new GestureListener());
+        //mGestureDetector.setIsLongpressEnabled(false);
+        
         matrix = new Matrix();
         prevMatrix = new Matrix();
         mArrMatrixValues = new float[9];
@@ -592,6 +595,10 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     	this.state = state;
     }
     
+    public boolean isTouchStateNone() {
+    	return state == State.NONE;
+    }
+    
     /**
      * Gesture Listener detects a single click or long click and passes that on
      * to the view's listener.
@@ -645,14 +652,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         	return consumed;
         }
     }
-    
-    /**
-     * Responsible for all touch events. Handles the heavy lifting of drag and also sends
-     * touch events to Scale Detector and Gesture Detector.
-     * @author Ortiz
-     *
-     */
-    private class TouchImageViewListener implements OnTouchListener {
+
+	private class TouchImageViewListener implements OnTouchListener {
     	
     	//
         // Remember last point position for dragging
@@ -665,8 +666,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             mGestureDetector.onTouchEvent(event);
             PointF curr = new PointF(event.getX(), event.getY());
             
-            if(DEBUG)
-        		Log.i(TAG, "onTouch(), state:"+state);
+//            if(DEBUG)
+//        		Log.i(TAG, "onTouch(), state:"+state+", event.getAction():"+event.getAction());
             
             if (state == NONE || state == DRAG || state == FLING) {
 	            switch (event.getAction()) {

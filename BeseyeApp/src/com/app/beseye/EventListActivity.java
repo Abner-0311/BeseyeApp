@@ -694,8 +694,8 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 					}}, 500);
 				
 			}else{
-				if(DEBUG)
-					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
+//				if(DEBUG)
+//					Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
 				super.onPostExecute(task, result, iRetCode);
 			}
 		}
