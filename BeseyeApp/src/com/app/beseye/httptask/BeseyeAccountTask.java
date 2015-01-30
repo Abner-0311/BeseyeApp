@@ -30,6 +30,7 @@ public class BeseyeAccountTask {
 	public static final String URL_GET_VCAM_INFO	="user/vcam/info";
 	public static final String URL_FORGET_PW		="user/password_forget";
 	public static final String URL_VPC_QUERY		="user/query";
+	public static final String URL_PTOKEN_QUERY		="user/vcam/pairing_status";
 	
 	public static final String URL_CAM_ATTACH		="vcam/attach";
 	public static final String URL_CAM_DEATTACH		="user/vcam/detach";
@@ -93,6 +94,29 @@ public class BeseyeAccountTask {
 				}
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getVPCAccountBEHostUrl()+URL_VPC_QUERY, obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+	
+	static public class GetPairingStatusHttpTask extends BeseyeHttpTask {	 
+		public GetPairingStatusHttpTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(ACC_PAIRING_TYPE, Integer.parseInt(strParams[0]));
+				obj.put(ACC_PAIRING_TOKEN, strParams[1]);
+				appendDevInfo(obj);
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_PTOKEN_QUERY, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
