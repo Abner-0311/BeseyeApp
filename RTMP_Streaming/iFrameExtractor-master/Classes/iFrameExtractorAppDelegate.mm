@@ -175,6 +175,7 @@ void rtmpStreamStatusCb(CBeseyeRTMPObserver * obj, CBeseyeRTMPObserver::Player_C
             
         }else if(cbType == CBeseyeRTMPObserver::STREAM_CLOCK_CB){
             NSLog(@"rtmpStreamStatusCb(), %s cbType:STREAM_CLOCK_CB, sec:%d",(obj == player1?"player1":"player2"),iMainType);
+            SDL_PauseAudio(1);
         }
     }
 //    else if(obj == &CBeseyeAudioStreamer::getInstance()){

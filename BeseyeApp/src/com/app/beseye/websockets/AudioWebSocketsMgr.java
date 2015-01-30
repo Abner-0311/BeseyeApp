@@ -362,13 +362,14 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
         }
     };
     
-    public void sendRequestCamConnected(){
+    public boolean sendRequestCamConnected(){
     	synchronized(this){
 			if(null == mRequestAudioWSOnCamTask){
 				(mRequestAudioWSOnCamTask = new BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask(AudioWebSocketsMgr.this)).execute(mStrVCamId);
+				return true;
 			}else{
 				Log.i(TAG, "sendRequestCamConnected(), mRequestAudioWSOnCamTask is ongoing");	
-
+				return false;
 			}
 		}
     }

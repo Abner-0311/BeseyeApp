@@ -414,4 +414,6 @@
   <string name="signup_pairing_fail_desc">Please replug in your camera，confirm the led is 「twinkling green light」，and make sure the distance between phone speaker and camera is 10cm.\nThen start to Let it Bee™ again．</string>
   
   <string name="signup_guideline_try_again_btn">Ok, let\'s go to setup</string>
+  
+  <string name="hint_hold_to_talk_poor_network_quality">Network quality is poor.\nPlease initialize the talk again.</string>
 </resources>

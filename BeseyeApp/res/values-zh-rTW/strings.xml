@@ -419,4 +419,6 @@
   <string name="signup_pairing_fail_desc">請你拔掉插頭重新插上，確認鏡頭燈號為「閃爍綠燈」，且手機喇叭距離鏡頭10公分，再開始Let it Bee™．</string>
   
   <string name="signup_guideline_try_again_btn">OK，再設定一次看看</string>
+  
+  <string name="hint_hold_to_talk_poor_network_quality">網路連線不穩定，\n請再次嘗試通話．</string>
 </resources>
