@@ -610,7 +610,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	    				WifiControlBaseActivity.updateWiFiPasswordHistory("");
 	    				siPairingFailedTimes = 0;
     				}
-    				SessionMgr.getInstance().setPairToken("");
+    				//SessionMgr.getInstance().setPairToken("");
     				if(null != mPairingCounter){
     					mPairingCounter.cancel();
     					mPairingCounter = null;
