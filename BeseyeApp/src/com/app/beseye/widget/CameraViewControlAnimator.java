@@ -768,7 +768,7 @@ public class CameraViewControlAnimator {
         	mRectTalkBtn = null;
         	CameraViewActivity act = mCameraViewActivity.get();
 			if(null != act){
-				act.closeAudioChannel(false);
+				act.releaseTalkMode();
 			}
     	}else{
     		Log.w(TAG, "onTalkBtnReleased(), mRectTalkBtn is null");

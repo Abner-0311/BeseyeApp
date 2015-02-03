@@ -2485,7 +2485,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(null != mCameraViewControlAnimator && mCameraViewControlAnimator.isInHoldToTalkMode()){
 					postTerminateAudioChannelRunnable(false);
 					if(mbNeedToRequestCamAudioConnected){
-		    			requestAudioConnection();
+		    			requestAudioConnection(false);
 					}
 				}else{
 					//if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
@@ -2516,7 +2516,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			Toast.makeText(CameraViewActivity.this, getString(R.string.hint_hold_to_talk_poor_network_quality), Toast.LENGTH_SHORT).show();
 			mShowAudioNotConnectedHintRunnable = null;
 			if(mbNeedToRequestCamAudioConnected){
-    			requestAudioConnection();
+    			requestAudioConnection(false);
 			}
 		}
     }
@@ -2555,9 +2555,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	}
     }
     
-    private void requestAudioConnection(){
+    private void requestAudioConnection(boolean bUserTrigger){
     	if(AudioWebSocketsMgr.getInstance().sendRequestCamConnected()){
-			postShowAudioNotConnectedHintRunnable();
+    		if(bUserTrigger){
+        		Log.i(TAG, "bUserTrigger is true");
+    			postShowAudioNotConnectedHintRunnable();
+    		}
 			postTerminateAudioChannelRunnable(false);
 		}
     }
@@ -2597,7 +2600,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //			}
 			
 			if(mbNeedToRequestCamAudioConnected && false == mbAutoAudioWSConnect){
-				requestAudioConnection();
+				requestAudioConnection(!bAutoConnect);
 			}
 		}
     	
@@ -2610,7 +2613,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
     		
     		if(mbNeedToRequestCamAudioConnected){
-    			requestAudioConnection();
+    			requestAudioConnection(true);
 			}
     	}else{
     		openAudioChannel(false);
@@ -2672,7 +2675,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			public void run() {
 				//setInHoldToTalkMode(false);
 				if(false == mbAutoAudioWSConnect){
-					requestAudioConnection();
+					requestAudioConnection(false);
 				}
 			}}, 0);
 	}
