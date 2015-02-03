@@ -453,6 +453,18 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		}
 	}
 	
+	private boolean isValidWiFiPWLength(int iSecType, int iPwLen){
+		boolean bRet = false;
+		if(iSecType == WifiAPInfo.AUTHNICATION_KEY_NONE){
+			bRet = true;
+		}else if(iSecType == WifiAPInfo.AUTHNICATION_KEY_WEP){
+			bRet = (5 == iPwLen) || (13 == iPwLen);
+		}else if(iSecType == WifiAPInfo.AUTHNICATION_KEY_WPA || iSecType == WifiAPInfo.AUTHNICATION_KEY_WPA2){
+			bRet = (8 <= iPwLen) && (iPwLen <= 63);
+		}
+		return bRet;
+	}
+	
 	protected View createWifiAPInfoView(final boolean bPasswordOnly, int iWrongPWId){
 		View vgApInfo = null;
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -563,23 +575,23 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 						mWifiApPassword = "";
 						vgPassord.setVisibility(View.GONE);
 					}else{
-						final int iMinPasswordLength = (mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP)?8:13;
+						final int iMinPasswordLength = 0;//(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP)?8:13;
 						final EditText etPassword = (EditText)vgPassord.findViewById(R.id.et_password_value);
 						if(null != etPassword){
 //							if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 //								etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"0630BesEye":"12345678"):"0630BesEye123");
 //								btnConnect.setEnabled(true);
 //							}else 
-							if(false == getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false) && null != sWiFiPasswordHistory && 0 < sWiFiPasswordHistory.length()){
-								etPassword.setText(sWiFiPasswordHistory);
-								btnConnect.setEnabled(sWiFiPasswordHistory.length() >=iMinPasswordLength);
-							}
+//							if(false == getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false) && null != sWiFiPasswordHistory && 0 < sWiFiPasswordHistory.length()){
+//								etPassword.setText(sWiFiPasswordHistory);
+//								btnConnect.setEnabled(sWiFiPasswordHistory.length() >=iMinPasswordLength);
+//							}
 							
 							mWifiApPassword = etPassword.getText().toString();
 							etPassword.addTextChangedListener(new TextWatcher(){
 								@Override
 								public void afterTextChanged(Editable editable) {
-									btnConnect.setEnabled(editable.length() >= iMinPasswordLength);
+									btnConnect.setEnabled(isValidWiFiPWLength(mChosenWifiAPInfo.iCipherIdx, editable.length())/*editable.length() >= iMinPasswordLength*/);
 									mWifiApPassword = etPassword.getText().toString();
 									//Log.i(TAG, "afterTextChanged(), mWifiApPassword=>"+mWifiApPassword);
 
@@ -694,7 +706,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 					mEtSSID.addTextChangedListener(new TextWatcher(){
 						@Override
 						public void afterTextChanged(Editable editable) {
-							mbtnConnect.setEnabled(mEtSSID.length() > 0 && (null != mWifiApPassword && mWifiApPassword.length() >= iMinPasswordLength));
+							mbtnConnect.setEnabled(mEtSSID.length() > 0 && (null != mWifiApPassword && isValidWiFiPWLength(mChosenWifiAPInfo.iCipherIdx, mWifiApPassword.length())/*mWifiApPassword.length() >= iMinPasswordLength*/));
 						}
 
 						@Override
@@ -760,7 +772,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 						etPassword.addTextChangedListener(new TextWatcher(){
 							@Override
 							public void afterTextChanged(Editable editable) {
-								mbtnConnect.setEnabled(mEtSSID.length() > 0 && editable.length() >= iMinPasswordLength);
+								mbtnConnect.setEnabled(mEtSSID.length() > 0 && isValidWiFiPWLength(mChosenWifiAPInfo.iCipherIdx, editable.length())/*editable.length() >= iMinPasswordLength*/);
 								mWifiApPassword = etPassword.getText().toString();
 								//password.matches("[0-9A-Fa-f]*")
 							}
@@ -810,7 +822,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 			if(null != etPassword){
 				
 				if(null != mbtnConnect){
-					mbtnConnect.setEnabled(mEtSSID.length() > 0 && etPassword.length() >= iMinPasswordLength);
+					mbtnConnect.setEnabled(mEtSSID.length() > 0 && isValidWiFiPWLength(mChosenWifiAPInfo.iCipherIdx, etPassword.length())/*etPassword.length() >= iMinPasswordLength*/);
 				}
 				
 				if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
@@ -821,7 +833,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				etPassword.addTextChangedListener(new TextWatcher(){
 					@Override
 					public void afterTextChanged(Editable editable) {
-						mbtnConnect.setEnabled(editable.length() >= iMinPasswordLength);
+						mbtnConnect.setEnabled(isValidWiFiPWLength(mChosenWifiAPInfo.iCipherIdx, editable.length())/*editable.length() >= iMinPasswordLength*/);
 						mWifiApPassword = etPassword.getText().toString();
 						//password.matches("[0-9A-Fa-f]*")
 					}

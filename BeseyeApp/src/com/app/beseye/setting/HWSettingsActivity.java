@@ -39,6 +39,7 @@ import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.WifiControlBaseActivity;
 import com.app.beseye.WifiListActivity;
+import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.pairing.SoundPairingActivity;
@@ -381,6 +382,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	static public final int REQUEST_WIFI_SETTING_CHANGED 	= 10002;
 	static public final int REQUEST_NIGHT_VISION_CHANGED 	= 10003;
 	
+	private WifiAPInfo mChosenWifiAPInfo = null;
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if(REQUEST_TIMEZONE_CHANGED == requestCode){
@@ -393,9 +396,9 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 		}else if(REQUEST_WIFI_SETTING_CHANGED== requestCode){
 			if(resultCode == RESULT_OK){
-				WifiAPInfo chosenWifiAPInfo = intent.getParcelableExtra(SoundPairingActivity.KEY_WIFI_INFO);
-				if(null != chosenWifiAPInfo){
-					monitorAsyncTask(new BeseyeCamBEHttpTask.SetWiFiConfigTask(this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID, chosenWifiAPInfo.SSID, chosenWifiAPInfo.password, ""+chosenWifiAPInfo.iCipherIdx);
+				mChosenWifiAPInfo = intent.getParcelableExtra(SoundPairingActivity.KEY_WIFI_INFO);
+				if(null != mChosenWifiAPInfo){
+					monitorAsyncTask(new BeseyeCamBEHttpTask.SetWiFiConfigTask(this).setDialogId(DIALOG_ID_SETTING), true, mStrVCamID, mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password, ""+mChosenWifiAPInfo.iCipherIdx);
 				}
 				//mbIsWifiSettingChanged = true;
 			}
@@ -675,7 +678,27 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				if(0 == iRetCode){
 					if(DEBUG)
 						Log.i(TAG, "onPostExecute(), "+result.toString());
-					showMyDialog(DIALOG_ID_WIFI_AP_APPLY);
+					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_DATA);
+					if(null != dataObj){
+						int iErrCode = BeseyeJSONUtil.getJSONInt(dataObj, BeseyeJSONUtil.RET_CODE_CAMBE);
+						if(0 != iErrCode){
+							Bundle b = new Bundle();  
+        					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_wifi_setting_info_error));
+
+							if(BeseyeError.E_CAM_INVALID_WIFI_PW_LENGTH == iErrCode){
+								if(null != mChosenWifiAPInfo){
+									if(mChosenWifiAPInfo.iCipherIdx == 1){
+			        					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_wifi_pw_length_error_wep));
+									}else if(mChosenWifiAPInfo.iCipherIdx >= 2){
+			        					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_wifi_pw_length_error_wpa));
+									}
+								}
+							}
+							showMyDialog(DIALOG_ID_WARNING, b);
+						}else{
+							showMyDialog(DIALOG_ID_WIFI_AP_APPLY);
+						}
+					}
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);

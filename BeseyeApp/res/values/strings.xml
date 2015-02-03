@@ -416,4 +416,9 @@
   <string name="signup_guideline_try_again_btn">Ok, let\'s go to setup</string>
   
   <string name="hint_hold_to_talk_poor_network_quality">Network quality is poor.\nPlease initialize the talk again.</string>
+  
+  <string name="msg_wifi_pw_length_error_wpa">Invalid wifi password length. Password must be between 8-64 characters.</string>
+  <string name="msg_wifi_pw_length_error_wep">Invalid wifi password length. Password must be 5 or 13 characters.</string>
+  <string name="msg_wifi_setting_info_error">Invalid wifi setting info.</string>
+  
 </resources>

@@ -41,4 +41,10 @@ public class BeseyeError {
 	static public final int   E_OTA_SW_ALRADY_LATEST  					   = 0x00500202;
 	static public final int   E_WEBSOCKET_OPERATION_FAIL                   = 0x00500400;
 	static public final int   E_WEBSOCKET_CONN_NOT_EXIST                   = 0x00500401;
+	
+	//# Cam related
+	
+	static public final int   E_CAM_INVALID_WIFI_PW_LENGTH			   	   = 0x00200013;
+	static public final int   E_CAM_INVALID_WIFI_SEC_TYPE 			       = 0x00200014;
+	static public final int   E_CAM_INVALID_WIFI_INFO 				       = 0x00200015;
 }
