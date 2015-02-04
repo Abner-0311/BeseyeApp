@@ -1008,9 +1008,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					monitorAsyncTask(mLiveStreamTask = new BeseyeMMBEHttpTask.GetLiveStreamTask(this, -1).setDialogId(bShowDialog?DIALOG_ID_LOADING:-1), true, mStrVCamID, "false");
 					if(isCamPowerOn() && mbIsLiveMode){
 						setVisibility(mPbLoadingCursor, View.VISIBLE);
-						//if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
-							openAudioChannel(true);
-						//}
+						openAudioChannel(true);
 					}
 				}else{
 					Log.e(TAG, "CameraViewActivity::getStreamingInfo(), mLiveStreamTask is not null");
@@ -1225,9 +1223,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					if(mbIsLiveMode){
 						if(bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED)){
 							closeStreaming();
-							if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
-								destroyAudioChannel();
-							}
+//							if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
+//								destroyAudioChannel();
+//							}
 						}
 						
 						if((isCamPowerOn() && !bIsCamOn) || (isCamPowerOff() && bIsCamOn) || (bIsCamDisconnected != isCamPowerDisconnected())){
@@ -1297,12 +1295,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				mLiveStreamTask = null;
 			}
 			
-			if(mActivityDestroy){
-				return;
-			}
-			
-			if(!mActivityResume){
+			if(!NetworkMgr.getInstance().isNetworkConnected() || mActivityDestroy || !mActivityResume){
 				mbIsRetryAtNextResume = true;
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						setVisibility(mPbLoadingCursor, View.GONE);
+					}}, 0);
 				return;
 			}
 			
@@ -2338,10 +2337,23 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					}else if(Stream_Error.NETWORK_CONNECTION_ERROR.ordinal() <= iMinorType && iMinorType <= Stream_Error.UNKOWN_NETWORK_ERROR.ordinal()){
 						iErrStrId = R.string.streaming_error_no_network;
 					}
+					
+					if(!NetworkMgr.getInstance().isNetworkConnected()){
+						showNoNetworkDialog();
+						closeStreaming();
+						return;
+					}
+					
 				}else if(Player_Major_Error.NO_NETWORK_ERR.ordinal() == iMajorType){
 					Log.w(TAG, "updateRTMPErrorCallback(), NO_NETWORK_ERR");
 					iErrStrId = R.string.streaming_error_no_network;
 					//showInvalidStateMask();
+					
+					if(!NetworkMgr.getInstance().isNetworkConnected()){
+						showNoNetworkDialog();
+						closeStreaming();
+						return;
+					}
 				}else if(Player_Major_Error.NOMEM_CB.ordinal() == iMajorType){
 					iErrStrId = R.string.streaming_error_low_mem;
 				}else if(Player_Major_Error.UNKNOWN_ERR.ordinal() == iMajorType){
@@ -2488,12 +2500,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			requestAudioConnection(false);
 					}
 				}else{
-					//if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
-						//AudioWebSocketsMgr.getInstance().destroyWSChannel();
 					setNeedToRequestCamAudioConnected(true);
 					AudioWebSocketsMgr.getInstance().stopAudioSendThread();
-					//requestAudioConnection();
-					//}
+					if(BeseyeFeatureConfig.ADV_TWO_WAY_TALK){
+						requestAudioConnection(false);
+					}
 				}		
 			}else if(null != mGetAudioWSServerTask){
 				mGetAudioWSServerTask.cancel(true);
@@ -2515,7 +2526,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		public void run() {
 			Toast.makeText(CameraViewActivity.this, getString(R.string.hint_hold_to_talk_poor_network_quality), Toast.LENGTH_SHORT).show();
 			mShowAudioNotConnectedHintRunnable = null;
-			if(mbNeedToRequestCamAudioConnected){
+			if(mActivityResume && mbNeedToRequestCamAudioConnected || BeseyeFeatureConfig.ADV_TWO_WAY_TALK){
     			requestAudioConnection(false);
 			}
 		}
@@ -2531,7 +2542,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	}
     	BeseyeUtils.postRunnable(mShowAudioNotConnectedHintRunnable, 10000);
 		Log.i(TAG, "postShowAudioNotConnectedHintRunnable()");
-
     }
     
     private void removeShowAudioNotConnectedHintRunnable(){
@@ -2556,7 +2566,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
     
     private void requestAudioConnection(boolean bUserTrigger){
-    	if(AudioWebSocketsMgr.getInstance().sendRequestCamConnected()){
+    	if(mActivityResume && AudioWebSocketsMgr.getInstance().sendRequestCamConnected()){
     		if(bUserTrigger){
         		Log.i(TAG, "bUserTrigger is true");
     			postShowAudioNotConnectedHintRunnable();
@@ -2576,9 +2586,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     			}else{
     				AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
 					AudioWebSocketsMgr.getInstance().setAudioWSServerIP(SessionMgr.getInstance().getWSAHostUrl());
-					if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
-						AudioWebSocketsMgr.getInstance().setSienceFlag(false);
-					}
+					AudioWebSocketsMgr.getInstance().setSienceFlag(false);
 					
 					if(null == mAudioOpenThread){
 						mAudioOpenThread = new Thread(new Runnable(){
@@ -2663,6 +2671,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(null != mCameraViewControlAnimator && mCameraViewControlAnimator.isInHoldToTalkMode()){
 					mCameraViewControlAnimator.terminateTalkMode();
 				}
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						if(mActivityResume){
+							Log.i(TAG, "reopen due to onAuthfailed()---");
+							openAudioChannel(false);
+						}
+					}}, 1000);
 			}}, 0);
 		
 	}
@@ -2674,7 +2690,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			@Override
 			public void run() {
 				//setInHoldToTalkMode(false);
-				if(false == mbAutoAudioWSConnect){
+				if(false == mbAutoAudioWSConnect || BeseyeFeatureConfig.ADV_TWO_WAY_TALK){
 					requestAudioConnection(false);
 				}
 			}}, 0);
@@ -2699,28 +2715,30 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(DEBUG)
 			Log.i(TAG, "onMessageReceived()---");
 	}
+	
+	private void reconstructAudioChannel(final long lDelay){
+		setNeedToRequestCamAudioConnected(true);
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						if(mActivityResume && NetworkMgr.getInstance().isNetworkConnected()){
+							Log.i(TAG, "reopen due to onChannelClosed()---");
+							openAudioChannel(false);
+						}
+					}}, lDelay);
+				//Toast.makeText(CameraViewActivity.this, "Talk terminated", Toast.LENGTH_SHORT).show();
+			}}, 0);
+	}
 
 	@Override
 	public void onChannelClosed() {
 		if(DEBUG)
 			Log.i(TAG, "onChannelClosed()---");
-		//setInHoldToTalkMode(false);
-		setNeedToRequestCamAudioConnected(true);
-		BeseyeUtils.postRunnable(new Runnable(){
-			@Override
-			public void run() {
-				//if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
-					BeseyeUtils.postRunnable(new Runnable(){
-						@Override
-						public void run() {
-							if(mActivityResume){
-								Log.i(TAG, "reopen due to onChannelClosed()---");
-								openAudioChannel(false);
-							}
-						}}, 5000);
-				//}
-				//Toast.makeText(CameraViewActivity.this, "Talk terminated", Toast.LENGTH_SHORT).show();
-			}}, 0);
+		
+		reconstructAudioChannel(1000);
 	}
 	
 	@Override
@@ -2753,6 +2771,20 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	@Override
+	public void onAudioChannelRequestFailed() {
+		if(DEBUG)
+			Log.i(TAG, "onAudioChannelRequestFailed()---");
+		reconstructAudioChannel(5000);
+	}
+
+	@Override
+	public void onAudioChannelOccupied() {
+		if(DEBUG)
+			Log.i(TAG, "onAudioChannelOccupied()---");
+		reconstructAudioChannel(5000);
+	}
+	
+	@Override
 	public void onAudioThreadExit() {
 		if(DEBUG)
 			Log.i(TAG, "onAudioThreadExit()---");
@@ -2764,7 +2796,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					AudioWebSocketsMgr.getInstance().launchAudioThread();
 				}
 				checkHoldToTalkMode();
-
 			}}, 100);
 	}
 	

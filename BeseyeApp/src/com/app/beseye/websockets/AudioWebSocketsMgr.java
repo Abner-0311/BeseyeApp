@@ -73,7 +73,8 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	static public interface OnAudioWSChannelStateChangeListener{
 		public void onAudioChannelConnecting();
 		public void onAudioChannelConnected();
-		
+		public void onAudioChannelRequestFailed();
+		public void onAudioChannelOccupied();
 		public void onAudioThreadExit();
 	}
 	
@@ -844,6 +845,11 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 					}else{
 						Log.e(TAG, "onPostExecute(), failed to RequestAudioWSOnCamTask, iRetCode = "+iRetCode);
 						bNeedToClose = true;
+						OnAudioWSChannelStateChangeListener listener = (null != mOnAudioWSChannelStateChangeListener)?mOnAudioWSChannelStateChangeListener.get():null;
+						if(null != listener){
+							listener.onAudioChannelRequestFailed();
+						}
+						
 						//AudioWebSocketsMgr.getInstance().destroyWSChannel();
 					}
 					mRequestAudioWSOnCamTask = null;

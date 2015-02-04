@@ -211,8 +211,8 @@ public class CameraViewControlAnimator {
 				mIbTalk.setOnTouchListener(new OnTouchListener(){
 					@Override
 					public boolean onTouch(View view, MotionEvent event) {
-						if (event.getAction() == MotionEvent.ACTION_DOWN){
-							if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
+						if(event.getAction() == MotionEvent.ACTION_DOWN){
+							if(BeseyeFeatureConfig.TWO_WAY_TALK_LONG_PRESS_SIMU){
 								long lCurPressDownTs = System.currentTimeMillis();
 								if(-1 != mlLastPressDownTs && (lCurPressDownTs - mlLastPressDownTs) < 1000L){
 									mbLongPressMode = !mbLongPressMode;

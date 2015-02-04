@@ -58,7 +58,7 @@ public class BeseyeApplication extends Application {
 		
 		if(BeseyeConfig.DEBUG){
 			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" HOCKEY_APP_ID:"+HOCKEY_APP_ID+", can update:"+BeseyeUtils.canUpdateFromHockeyApp());
-			Log.i(TAG, "CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK+", ADV_TWO_WAY_tALK:"+BeseyeFeatureConfig.ADV_TWO_WAY_tALK+", VPC_NUM_QUERY:"+BeseyeFeatureConfig.VPC_NUM_QUERY);
+			Log.i(TAG, "CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK+", ADV_TWO_WAY_tALK:"+BeseyeFeatureConfig.ADV_TWO_WAY_TALK+", VPC_NUM_QUERY:"+BeseyeFeatureConfig.VPC_NUM_QUERY);
 
 		}else{ 
 			Log.i(TAG, "*****************BeseyeApplication::onCreate(), can update:"+BeseyeUtils.canUpdateFromHockeyApp()+", CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK);

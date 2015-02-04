@@ -276,7 +276,7 @@
   <string name="signup_try_again_description_3">安裝指南</string>
   <string name="signup_try_again_btn">好，再試一次</string>
   <!--Hint Message after pairing is done and ask user to assign cam name-->
-  <string name="signup_name_camera">就快設定完成了，\ n 幫您的Beseye 取個好認的名字吧</string>
+  <string name="signup_name_camera">就快設定完成了，\n幫您的Beseye 取個好認的名字吧</string>
   <!--Congratulation Message in live player page after pairing-->
   <string name="signup_paring_done">攝影機設定已完成！\n 現在您可以拔掉插座將之安裝在您想要的位置上，所有設定會自動在您插上電之後回復。現在就開始享用您的Beseye Pro 服務吧!</string>
   <string name="datetime_month">月</string>
