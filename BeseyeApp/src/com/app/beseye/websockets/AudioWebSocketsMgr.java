@@ -3,21 +3,7 @@ package com.app.beseye.websockets;
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.FAKE_AUDIO_RECEIVER;
 import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WSA_WS_ID;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CODE;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_DATA;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_JOB_ID;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_CB_ACK;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_CB_CLIENT_CONNECTION;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_CB_KEEP_ALIVE;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_CB_REMOTE_BIN_CONN;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_CMD_FORMAT;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_FUNC_AUTH;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_FUNC_BIN_CONN;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_FUNC_BIN_TRANSFER;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_FUNC_CONNECTED;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_FUNC_KEEP_ALIVE;
-import static com.app.beseye.websockets.BeseyeWebsocketsUtil.wrapWSBaseMsg;
+import static com.app.beseye.websockets.BeseyeWebsocketsUtil.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -45,9 +31,8 @@ import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
+import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
-import com.koushikdutta.async.AsyncServer;
 import com.koushikdutta.async.ByteBufferList;
 import com.koushikdutta.async.DataEmitter;
 import com.koushikdutta.async.callback.CompletedCallback;
@@ -56,9 +41,6 @@ import com.koushikdutta.async.callback.WritableCallback;
 import com.koushikdutta.async.http.AsyncHttpClient.WebSocketConnectCallback;
 import com.koushikdutta.async.http.WebSocket;
 import com.koushikdutta.async.http.WebSocket.StringCallback;
-import com.koushikdutta.async.http.libcore.RequestHeaders;
-import com.koushikdutta.async.http.server.AsyncHttpServer;
-import com.koushikdutta.async.http.server.AsyncHttpServer.WebSocketRequestCallback;
 
 public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallback {
 	static final boolean ENABLE_INTERNAL_SERVER = false;
@@ -73,6 +55,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	static public interface OnAudioWSChannelStateChangeListener{
 		public void onAudioChannelConnecting();
 		public void onAudioChannelConnected();
+		public void onAudioChannelDisconnected();
 		public void onAudioChannelRequestFailed();
 		public void onAudioChannelOccupied();
 		public void onAudioThreadExit();
@@ -91,44 +74,44 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		mOnAudioWSChannelStateChangeListener = null;
 	}
 	
-	AsyncHttpServer httpServer = null;
-	byte[] b =  new byte[1024];
+//	AsyncHttpServer httpServer = null;
+//	byte[] b =  new byte[1024];
 	
 	private AudioWebSocketsMgr(){
-		if(null == httpServer && ENABLE_INTERNAL_SERVER){
-			Log.i(TAG, "Launch httpServer...");
-			httpServer = new AsyncHttpServer();
-	        httpServer.setErrorCallback(new CompletedCallback() {
-	            @Override
-	            public void onCompleted(Exception ex) {
-	                //fail();
-	            }
-	        });
-	        httpServer.listen(AsyncServer.getDefault(), 5566);
-	        
-	        httpServer.websocket("/audiowebsocket", new WebSocketRequestCallback() {
-	            @Override
-	            public void onConnected(final WebSocket webSocket, RequestHeaders headers) {
-	            	Log.i(TAG, "httpServer::onConnected()...");
-	            	//webSocket.send("[\"client_connected\", {\"data\":{\"connection_id\":\"e2f3e226bdaba71e0a45\"}]");
-	            	
-	            	webSocket.send("Test2".getBytes());
-	                webSocket.setStringCallback(new StringCallback() {
-	                    @Override
-	                    public void onStringAvailable(String s) {
-	                        webSocket.send(s);
-	                    }
-	                });
-	                
-	                webSocket.setDataCallback(new DataCallback(){
-						@Override
-						public void onDataAvailable(DataEmitter arg0, ByteBufferList arg1) {
-							Log.i(TAG, "httpServer::onDataAvailable()...");
-							webSocket.send(arg1.readString());
-						}});
-	            }
-	        });
-		}
+//		if(null == httpServer && ENABLE_INTERNAL_SERVER){
+//			Log.i(TAG, "Launch httpServer...");
+//			httpServer = new AsyncHttpServer();
+//	        httpServer.setErrorCallback(new CompletedCallback() {
+//	            @Override
+//	            public void onCompleted(Exception ex) {
+//	                //fail();
+//	            }
+//	        });
+//	        httpServer.listen(AsyncServer.getDefault(), 5566);
+//	        
+//	        httpServer.websocket("/audiowebsocket", new WebSocketRequestCallback() {
+//	            @Override
+//	            public void onConnected(final WebSocket webSocket, RequestHeaders headers) {
+//	            	Log.i(TAG, "httpServer::onConnected()...");
+//	            	//webSocket.send("[\"client_connected\", {\"data\":{\"connection_id\":\"e2f3e226bdaba71e0a45\"}]");
+//	            	
+//	            	webSocket.send("Test2".getBytes());
+//	                webSocket.setStringCallback(new StringCallback() {
+//	                    @Override
+//	                    public void onStringAvailable(String s) {
+//	                        webSocket.send(s);
+//	                    }
+//	                });
+//	                
+//	                webSocket.setDataCallback(new DataCallback(){
+//						@Override
+//						public void onDataAvailable(DataEmitter arg0, ByteBufferList arg1) {
+//							Log.i(TAG, "httpServer::onDataAvailable()...");
+//							webSocket.send(arg1.readString());
+//						}});
+//	            }
+//	        });
+//		}
 	}
 	
 	static public AudioWebSocketsMgr getInstance(){
@@ -142,6 +125,12 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	
 	public void setVCamId(String id){
 		mStrVCamId = id;
+	}
+	
+	private boolean mbIsAudioChannelConnected = false;
+	
+	synchronized public boolean isAudioChannelConnected(){
+		return mbIsAudioChannelConnected;
 	}
 	
 	public void setAudioWSServerIP(String ip){
@@ -179,7 +168,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	}
 	
 	private BeseyeNotificationBEHttpTask.RequestAudioWSOnCamTask mRequestAudioWSOnCamTask = null;
-	private long mlTimeToStartWaitingAudioConn = -1;
+	//private long mlTimeToStartWaitingAudioConn = -1;
 	
 	private WebSocketConnectCallback mWebSocketConnectCallback = new WebSocketConnectCallback() {
         @Override
@@ -202,7 +191,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
         		mbNotifyWSChannelConstructed = true;
 				mBConstructingNotifyWSChannel = false;
 				mlTimeConstrucNotifyWSChannel = 0;
-				mlTimeToStartWaitingAudioConn = -1;
+				//mlTimeToStartWaitingAudioConn = -1;
 				
 				if(null != mRequestAudioWSOnCamTask && false == mRequestAudioWSOnCamTask.isCancelled()){
 					mRequestAudioWSOnCamTask.cancel(true);
@@ -270,6 +259,9 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 										
 									}else if(null != mStrAudioConnJobId && mStrAudioConnJobId.equals(strJobID) && 0 == iRetCode){
 										Log.i(TAG, "onStringAvailable(), Audio Conn OK -----------------------");
+										synchronized(AudioWebSocketsMgr.this){
+											mbIsAudioChannelConnected = true;
+										}
 										OnAudioWSChannelStateChangeListener listener = (null != mOnAudioWSChannelStateChangeListener)?mOnAudioWSChannelStateChangeListener.get():null;
 										if(null != listener){
 											listener.onAudioChannelConnected();
@@ -294,6 +286,18 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 										if(DEBUG)
 											Log.i(TAG, "onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
 									}
+								}
+							}else if(WS_CB_REMOTE_BIN_DISCONN.equals(strCmd)){
+								if(DEBUG)
+									Log.w(TAG, "onStringAvailable(), WS_CB_REMOTE_BIN_DISCONN at="+System.currentTimeMillis());
+								
+								synchronized(AudioWebSocketsMgr.this){
+									mbIsAudioChannelConnected = false;
+								}
+								
+								OnAudioWSChannelStateChangeListener listener = (null != mOnAudioWSChannelStateChangeListener)?mOnAudioWSChannelStateChangeListener.get():null;
+								if(null != listener){
+									listener.onAudioChannelDisconnected();
 								}
 							}else if("wss_binary_transfer".equals(strCmd)){
 								if(DEBUG)
@@ -457,6 +461,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     static public final String WS_CMD_FORMAT_AUDIO 			= "[\"%s\", \"data\":%s]";
     private int iRefCount = 0;
     private static final int COUNT_TO_CHECK = 3;//0.1 second 
+    private static long slLastToSentEmpty = 0;
    
     class AudioSendThread extends Thread {
     	
@@ -468,6 +473,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    OutputStream os = null;
 		    Socket socket = null;
 		    FileOutputStream fos = null;
+		    slLastToSentEmpty = 0;
 		    
 		    if(ENABLE_INTERNAL_SERVER){
 		    	try{
@@ -591,6 +597,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						    				//lBeginTime = System.currentTimeMillis();
 						    				
 							    			mFNotifyWSChannel.get().send(strSent);	
+							    			slLastToSentEmpty = System.currentTimeMillis();
 							    			//Log.i(TAG, "run(), ts:"+System.currentTimeMillis()+", send time:"+(System.currentTimeMillis() - lBeginTime)+", len:"+len);
 						    			}
 						    			//Log.i(TAG, "run(), len="+len+", strSent=\n"+strSent);
@@ -604,6 +611,19 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 			    		} finally{
 			    			try {uis.close();} catch (Exception e) {}
 					    }
+		    		}else{
+		    			if(BeseyeFeatureConfig.ADV_TWO_WAY_TALK && (System.currentTimeMillis() - slLastToSentEmpty) > 1000L){
+		    				StringBuilder strArrayVal = new StringBuilder();
+		    				strArrayVal.append("{\""+WS_ATTR_DATA+"\":[0]}");
+		    				String strSent = String.format(WS_CMD_FORMAT, WS_FUNC_BIN_TRANSFER, strArrayVal);
+		    				
+			    			try {
+								mFNotifyWSChannel.get().send(strSent);
+								slLastToSentEmpty = System.currentTimeMillis();
+							} catch (Exception e) {
+				    			Log.i(TAG, "run(), Exception 2:"+e.toString());	
+				    		}
+		    			}
 		    		}
 		    	}
 		    }
@@ -797,21 +817,14 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	@Override
 	public void onShowDialog(AsyncTask task, int iDialogId, int iTitleRes,
 			int iMsgRes) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onDismissDialog(AsyncTask task, int iDialogId) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
-			String strMsg) {
-		// TODO Auto-generated method stub
-		
+	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {
 	}
 
 	private String session;
@@ -836,7 +849,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						if(DEBUG)
 							Log.i(TAG, "onPostExecute(), obj = "+obj.toString());
 						
-						mlTimeToStartWaitingAudioConn = System.currentTimeMillis();
+						//mlTimeToStartWaitingAudioConn = System.currentTimeMillis();
 						OnAudioWSChannelStateChangeListener listener = (null != mOnAudioWSChannelStateChangeListener)?mOnAudioWSChannelStateChangeListener.get():null;
 						if(null != listener){
 							listener.onAudioChannelConnecting();
@@ -864,13 +877,9 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 
 	@Override
 	public void onToastShow(AsyncTask task, String strMsg) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
-		// TODO Auto-generated method stub
-		
 	}
 }

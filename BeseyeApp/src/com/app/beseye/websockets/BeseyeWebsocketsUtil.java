@@ -21,6 +21,7 @@ public class BeseyeWebsocketsUtil {
     static public final String WS_CB_ACK  				= "wss_ack";
     static public final String WS_CB_EVT  				= "wss_evt";
     static public final String WS_CB_REMOTE_BIN_CONN  	= "wss_remote_binary_connected";
+    static public final String WS_CB_REMOTE_BIN_DISCONN = "wss_remote_binary_disconnected";
     
     
     static public final String WS_FUNC_CONNECTED 		= "wsc_connected";
