@@ -306,6 +306,10 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		mStrVCamIdForPerm = strVcamId;
 	}
 	
+	static private boolean canIgnoreUserSession(AsyncTask task){
+		return (task instanceof BeseyeAccountTask.GetVPCNoHttpTask) || (task instanceof BeseyeAccountTask.LoginHttpTask) || (task instanceof BeseyeAccountTask.RegisterTask);
+	}
+	
 	//customize interface of AsycTask End
 	
 	/**Do real http task within this method
@@ -329,6 +333,11 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    	httpRequest = getHttpRequestByType(strUrl);
 	    	if(null == httpRequest){
 	    		Log.e(TAG, "null httpRequest");
+	    		return null;
+	    	}
+	    	
+	    	if(!canIgnoreUserSession(this) && !SessionMgr.getInstance().isTokenValid()){
+	    		Log.e(TAG, "cannot invoke "+this.getClass().getSimpleName() +" without token");
 	    		return null;
 	    	}
 	
