@@ -111,7 +111,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private long mlRetryConnectBeginTs = -1;
 	private TimeZone mTimeZone;
 	
-	
 	private boolean mbIsDemoCam = false;
 	private boolean mbIsFirstLaunch = true;
 	private boolean mbIsRetryAtNextResume = false;
@@ -2576,43 +2575,46 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
     
     public void openAudioChannel(boolean bAutoConnect){
-    	mbAutoAudioWSConnect = bAutoConnect;
-    	
-    	BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
-    	if(!AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
-    		if(null == mGetAudioWSServerTask)
-    			if("".equals(SessionMgr.getInstance().getWSAHostUrl())){
-    				monitorAsyncTask(mGetAudioWSServerTask = (GetAudioWSServerTask) new BeseyeNotificationBEHttpTask.GetAudioWSServerTask(this).setDialogId(-1), true);
-    			}else{
-    				AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
-					AudioWebSocketsMgr.getInstance().setAudioWSServerIP(SessionMgr.getInstance().getWSAHostUrl());
-					AudioWebSocketsMgr.getInstance().setSienceFlag(false);
-					
-					if(null == mAudioOpenThread){
-						mAudioOpenThread = new Thread(new Runnable(){
-							@Override
-							public void run() {
-								AudioWebSocketsMgr.getInstance().constructWSChannel();
-								mAudioOpenThread = null;
-							}}); 
-						mAudioOpenThread.start();
-						setNeedToRequestCamAudioConnected(true);
-					}
+    	if(!mbIsDemoCam){
+        	
+        	mbAutoAudioWSConnect = bAutoConnect;
+        	
+        	BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
+        	if(!AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
+        		if(null == mGetAudioWSServerTask)
+        			if("".equals(SessionMgr.getInstance().getWSAHostUrl())){
+        				monitorAsyncTask(mGetAudioWSServerTask = (GetAudioWSServerTask) new BeseyeNotificationBEHttpTask.GetAudioWSServerTask(this).setDialogId(-1), true);
+        			}else{
+        				AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
+    					AudioWebSocketsMgr.getInstance().setAudioWSServerIP(SessionMgr.getInstance().getWSAHostUrl());
+    					AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+    					
+    					if(null == mAudioOpenThread){
+    						mAudioOpenThread = new Thread(new Runnable(){
+    							@Override
+    							public void run() {
+    								AudioWebSocketsMgr.getInstance().constructWSChannel();
+    								mAudioOpenThread = null;
+    							}}); 
+    						mAudioOpenThread.start();
+    						setNeedToRequestCamAudioConnected(true);
+    					}
+        			}
+        		else
+        			Log.i(TAG, "openAudioChannel(), mGetAudioWSServerTask isn't null");
+    		}else{
+    			//Toast.makeText(CameraViewActivity.this, "Talk now", Toast.LENGTH_SHORT).show();
+//    			if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
+//    				AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+//    			}
+    			
+    			if(mbNeedToRequestCamAudioConnected && false == mbAutoAudioWSConnect){
+    				requestAudioConnection(!bAutoConnect);
     			}
-    		else
-    			Log.i(TAG, "openAudioChannel(), mGetAudioWSServerTask isn't null");
-		}else{
-			//Toast.makeText(CameraViewActivity.this, "Talk now", Toast.LENGTH_SHORT).show();
-//			if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
-//				AudioWebSocketsMgr.getInstance().setSienceFlag(false);
-//			}
-			
-			if(mbNeedToRequestCamAudioConnected && false == mbAutoAudioWSConnect){
-				requestAudioConnection(!bAutoConnect);
-			}
-		}
-    	
-    	//setInHoldToTalkMode(true);
+    		}
+        	
+        	//setInHoldToTalkMode(true);	
+    	}
     }
     
     public void pressToTalk(){
