@@ -16,7 +16,7 @@ public class BeseyeNotificationBEHttpTask  {
 	static private final String URL_WS_SERVER  			= "websocket/get_avaliable_server";
 	static private final String URL_AUDIO_WS_SERVER  	= "websocket_audio/get_avaliable_server";
 	static private final String URL_REQUEST_CAM_CONN  	= "websocket_audio/request_cam_connect";
-	
+	static private final String URL_REQUEST_CAM_DISCONN = "websocket_audio/request_cam_disconnect";
 	
 	public static class GetWSServerTask extends BeseyeHttpTask{
 		public GetWSServerTask(OnHttpTaskCallback cb) {
@@ -40,8 +40,8 @@ public class BeseyeNotificationBEHttpTask  {
 		}
 	}
 	
-	public static class RequestAudioWSOnCamTask extends BeseyeHttpTask{
-		public RequestAudioWSOnCamTask(OnHttpTaskCallback cb) {
+	public static class RequestAudioChannelConnectedTask extends BeseyeHttpTask{
+		public RequestAudioChannelConnectedTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
 		}
@@ -55,6 +55,30 @@ public class BeseyeNotificationBEHttpTask  {
 				obj.put(DEV_ID, BeseyeUtils.getAndroidUUid());
 				obj.put(SES_TOKEN, SessionMgr.getInstance().getAuthToken());
 				return super.doInBackground(SessionMgr.getInstance().getCamWSBEHostUrl()+URL_REQUEST_CAM_CONN, obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+	
+	public static class RequestAudioChannelDisconnectedTask extends BeseyeHttpTask{
+		public RequestAudioChannelDisconnectedTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				setVCamIdForPerm(strParams[0]);
+				obj.put(CAM_UUID, strParams[0]);
+				obj.put(DEV_ID, BeseyeUtils.getAndroidUUid());
+				obj.put(SES_TOKEN, SessionMgr.getInstance().getAuthToken());
+				return super.doInBackground(SessionMgr.getInstance().getCamWSBEHostUrl()+URL_REQUEST_CAM_DISCONN, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
