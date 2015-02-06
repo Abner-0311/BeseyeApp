@@ -43,6 +43,7 @@ import com.app.beseye.CameraViewActivity;
 import com.app.beseye.GCMIntentService;
 import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
+import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
@@ -1166,6 +1167,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					}else{
 						Log.e(TAG, "onPostExecute(), GetProjectIDTask, invalid senderId ");
 					}
+				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_FOUND == iRetCode){
+					Log.i(TAG, "onPostExecute(), E_BE_ACC_SESSION_NOT_FOUND ");
+					SessionMgr.getInstance().cleanSession();
 				}
 			}else if(task instanceof BeseyePushServiceTask.AddRegisterIDTask){
 				if(0 == iRetCode || 2 == iRetCode && null != result && 0 < result.size()){

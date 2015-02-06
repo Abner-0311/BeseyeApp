@@ -960,15 +960,17 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     	boolean bRet = false;
     	if(null != strVcamId){
     		JSONArray arrCamList = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
-        	for(int idx = 0; idx < arrCamList.length();idx++){
-    			JSONObject cmpObj = arrCamList.optJSONObject(idx);
-    			if(null != cmpObj){
-    				String strNewVcamid = BeseyeJSONUtil.getJSONString(cmpObj, BeseyeJSONUtil.ACC_ID);
-    				if(strVcamId.equals(strNewVcamid)){
-    					bRet = true;
-    					break;
-    				}
-    			}
+    		if(null !=  arrCamList){
+    			for(int idx = 0; idx < arrCamList.length();idx++){
+        			JSONObject cmpObj = arrCamList.optJSONObject(idx);
+        			if(null != cmpObj){
+        				String strNewVcamid = BeseyeJSONUtil.getJSONString(cmpObj, BeseyeJSONUtil.ACC_ID);
+        				if(strVcamId.equals(strNewVcamid)){
+        					bRet = true;
+        					break;
+        				}
+        			}
+        		}
     		}
     	}
     	
@@ -976,7 +978,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     }
     
     private boolean onCameraEventTrigger(JSONObject msgObj){
-    	if(BeseyeConfig.DEBUG)
+    	if(BeseyeConfig.DEBUG && msgObj != null)
     		Log.i(TAG, getClass().getSimpleName()+"::onCameraEventTrigger(msgObj);(),  msgObj = "+msgObj);
 		if(null != msgObj){
     		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
