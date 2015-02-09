@@ -713,6 +713,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    int currentVersion = getAppVersion(context);
 	    if (registeredVersion != currentVersion) {
 	        Log.d(TAG, "App version changed.");
+	        storeRegistrationId(this,"");
 	        return "";
 	    }
 	    return registrationId;
@@ -740,7 +741,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	                String regId = mGCMInstance.register(strSenderId);
 	                msg = "Device registered, registration ID=" + regId;
 	                registerPushServer(regId);
-	                storeRegistrationId(BeseyeNotificationService.this, regId);
+	                //storeRegistrationId(BeseyeNotificationService.this, regId);
 	            } catch (IOException ex) {
 	                msg = "Error :" + ex.getMessage();
 	                // If there is an error, don't just keep trying to register.
