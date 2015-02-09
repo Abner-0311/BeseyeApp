@@ -713,6 +713,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    int currentVersion = getAppVersion(context);
 	    if (registeredVersion != currentVersion) {
 	        Log.d(TAG, "App version changed.");
+	        storeRegistrationId(this,"");
 	        return "";
 	    }
 	    return registrationId;
@@ -740,7 +741,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	                String regId = mGCMInstance.register(strSenderId);
 	                msg = "Device registered, registration ID=" + regId;
 	                registerPushServer(regId);
-	                storeRegistrationId(BeseyeNotificationService.this, regId);
+	                //storeRegistrationId(BeseyeNotificationService.this, regId);
 	            } catch (IOException ex) {
 	                msg = "Error :" + ex.getMessage();
 	                // If there is an error, don't just keep trying to register.
@@ -759,14 +760,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	private void storeRegistrationId(Context context, String regId) {
-//	    final SharedPreferences prefs = getGCMPreferences(context);
-//	    int appVersion = getAppVersion(context);
-//	    if(DEBUG)
-//	    	Log.d(TAG, "Saving regId on app version " + appVersion);
-//	    SharedPreferences.Editor editor = prefs.edit();
-//	    editor.putString(PROPERTY_REG_ID, regId);
-//	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
-//	    editor.commit();
+	    final SharedPreferences prefs = getGCMPreferences(context);
+	    int appVersion = getAppVersion(context);
+	    if(DEBUG)
+	    	Log.d(TAG, "Saving regId on app version " + appVersion);
+	    SharedPreferences.Editor editor = prefs.edit();
+	    editor.putString(PROPERTY_REG_ID, regId);
+	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
+	    editor.commit();
 	}
 	
     private void registerGCM(String strSenderId){
