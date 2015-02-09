@@ -1499,8 +1499,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 								intent.setClassName(this, OpeningPage.class.getName());
 								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //								intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-//								intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//								intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+								intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+								intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 								intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);	
 								intent.putExtra(OpeningPage.KEY_EVENT_FLAG, true);
 							}else{
