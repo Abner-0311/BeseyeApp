@@ -184,7 +184,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    				setEnabled(mCameraViewControlAnimator.getPlayPauseView(), false);
 		    			}
 		    			
-		    			if(isCamPowerOn() && mbIsLiveMode)
+		    			if(!mbIsLiveMode || isCamPowerOn())
 		    				setVisibility(mPbLoadingCursor, View.VISIBLE);
 		    			startCheckVideoConn();
 		    			break;
@@ -253,7 +253,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			break;
 		    		}
 		    		case CV_STREAM_WAITING_PAUSE:{
-		    			//if(isCamPowerOn() && mbIsLiveMode)
+		    			//if(!mbIsLiveMode || isCamPowerOn())
 		    				setVisibility(mPbLoadingCursor, View.VISIBLE);
 		    			break;
 		    		}
@@ -285,7 +285,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    		}
 		    		case CV_STREAM_EOF:{
 		    			if(!precCamViewStatus.equals(CameraView_Internal_Status.CV_STREAM_EOF)){
-		    				if(isCamPowerOn() && mbIsLiveMode)
+		    				if(!mbIsLiveMode || isCamPowerOn())
 		    					setVisibility(mPbLoadingCursor, View.VISIBLE);
 			    			stopUpdateTime();
 			    			if(mbIsLiveMode){
@@ -296,6 +296,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 									}}, 0);
 			    			}else{
 			    				closeStreaming();
+				    			setVisibility(mPbLoadingCursor, View.VISIBLE);
+
 				    			if(mbCannotFindFurtherDVR){
 				    				Bundle b = new Bundle();
 		        					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_no_more_dvr));
@@ -316,7 +318,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			break;
 		    		}
 		    		case CV_STREAM_WAITING_CLOSE:{
-		    			if(isCamPowerOn() && mbIsLiveMode)
+		    			if(!mbIsLiveMode || isCamPowerOn())
 		    				setVisibility(mPbLoadingCursor, View.VISIBLE);
 		    			break;
 		    		}
@@ -473,15 +475,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private void switchPlayer(){
 		closeStreaming();
-		setVisibility(mPbLoadingCursor, View.VISIBLE);
 		mbIsSwitchPlayer = true;
 		updateAttrByIntent(getIntent(), true);
 		
-//		BeseyeUtils.postRunnable(new Runnable(){
-//			@Override
-//			public void run() {
-//				
-//			}}, 200L);
+		setVisibility(mPbLoadingCursor, View.VISIBLE);
 	}
 	
 	private boolean isInP2PMode(){
@@ -609,7 +606,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(mActivityResume){
 			mbIsSwitchPlayer = true;
-			triggerPlay();
+			//triggerPlay();
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
 		}
 		
 //		mbIsLiveMode = true;
@@ -1043,7 +1041,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(mbIsLiveMode){
 				if(null == mLiveStreamTask){
 					monitorAsyncTask(mLiveStreamTask = new BeseyeMMBEHttpTask.GetLiveStreamTask(this, -1).setDialogId(bShowDialog?DIALOG_ID_LOADING:-1), true, mStrVCamID, "false");
-					if(isCamPowerOn() && mbIsLiveMode){
+					if(!mbIsLiveMode || isCamPowerOn()){
 						setVisibility(mPbLoadingCursor, View.VISIBLE);
 						openAudioChannel(true);
 					}
@@ -1265,7 +1263,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //							}
 						}
 						
-						if((isCamPowerOn() && !bIsCamOn) || (isCamPowerOff() && bIsCamOn) || (bIsCamDisconnected != isCamPowerDisconnected())){
+						if((isCamPowerOn() && !bIsCamOn) || (isCamPowerOff() && bIsCamOn) || (bIsCamDisconnected != isCamPowerDisconnected()) || mbIsSwitchPlayer){
 							checkPlayState();
 						}
 					}
