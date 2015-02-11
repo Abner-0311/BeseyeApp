@@ -2379,6 +2379,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						return;
 					}
 					
+					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(CameraViewActivity.this), true, mStrVCamID);
+					
 				}else if(Player_Major_Error.NO_NETWORK_ERR.ordinal() == iMajorType){
 					Log.w(TAG, "updateRTMPErrorCallback(), NO_NETWORK_ERR");
 					iErrStrId = R.string.streaming_error_no_network;
