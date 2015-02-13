@@ -307,7 +307,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	}
 	
 	static private boolean canIgnoreUserSession(AsyncTask task){
-		return (task instanceof BeseyeAccountTask.GetVPCNoHttpTask) || (task instanceof BeseyeAccountTask.LoginHttpTask) || (task instanceof BeseyeAccountTask.RegisterTask);
+		return (task instanceof BeseyeAccountTask.GetVPCNoHttpTask) || (task instanceof BeseyeAccountTask.LoginHttpTask) || (task instanceof BeseyeAccountTask.RegisterTask || (task instanceof BeseyeAccountTask.SendForgetPWTask));
 	}
 	
 	//customize interface of AsycTask End

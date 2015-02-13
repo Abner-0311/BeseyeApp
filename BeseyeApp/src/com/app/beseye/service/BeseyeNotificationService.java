@@ -713,6 +713,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    int currentVersion = getAppVersion(context);
 	    if (registeredVersion != currentVersion) {
 	        Log.d(TAG, "App version changed.");
+	        storeRegistrationId(this,"");
 	        return "";
 	    }
 	    return registrationId;
@@ -740,7 +741,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	                String regId = mGCMInstance.register(strSenderId);
 	                msg = "Device registered, registration ID=" + regId;
 	                registerPushServer(regId);
-	                storeRegistrationId(BeseyeNotificationService.this, regId);
+	                //storeRegistrationId(BeseyeNotificationService.this, regId);
 	            } catch (IOException ex) {
 	                msg = "Error :" + ex.getMessage();
 	                // If there is an error, don't just keep trying to register.
@@ -1499,8 +1500,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 								intent.setClassName(this, OpeningPage.class.getName());
 								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //								intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-//								intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//								intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+								intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+								intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 								intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);	
 								intent.putExtra(OpeningPage.KEY_EVENT_FLAG, true);
 							}else{

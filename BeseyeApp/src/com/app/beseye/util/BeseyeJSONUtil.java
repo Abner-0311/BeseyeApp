@@ -468,16 +468,16 @@ public class BeseyeJSONUtil {
 			try {
 				strRet = obj.getString(strKey);
 				if(null != strRet && 0 < strRet.length()){
-					strRet = Html.fromHtml(strRet).toString();
-					strRet = strRet.replaceAll("<br/>", "\n");
+					//strRet = Html.fromHtml(strRet).toString();
+					//strRet = strRet.replaceAll("<br/>", "\n");
 				}else{
 					strRet = strDefault;
 				}
 				
-				//workaround for backend
-				if("null".equalsIgnoreCase(strRet)){
-					strRet = strDefault;
-				}
+//				//workaround for backend
+//				if("null".equalsIgnoreCase(strRet)){
+//					strRet = strDefault;
+//				}
 			} catch (JSONException e) {
 				if(BeseyeConfig.DEBUG)
 					Log.d(TAG, "getJSONString(), can't get value by "+strKey);

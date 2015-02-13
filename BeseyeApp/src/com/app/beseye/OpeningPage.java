@@ -253,7 +253,6 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		        	intentCameraList.putExtra(KEY_EVENT_FLAG, true);
 		        	intentCameraList.putExtra(KEY_EVENT_INTENT, intentLanuch);
 		        	intentLanuch = intentCameraList;
-		        	finish();
 	        	}
 	        	
 	        }else{
@@ -275,6 +274,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 						intentLanuchRunnable.setClassName(OpeningPage.this, BeseyeEntryActivity.class.getName());
 					}
 					startActivity(intentLanuchRunnable);
+					finish();
 				}
 			}, sbFirstLaunch?TIME_TO_CLOSE_OPENING_PAGE:0);
 		}else{

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
-    android:versionCode="94"
-    android:versionName="0.1.94" 
+    android:versionCode="97"
+    android:versionName="0.1.97" 
     android:installLocation="auto">
 
     <!-- Android 2.3.3 -->
@@ -90,7 +90,8 @@
             android:name=".CameraViewActivity"
             android:label="@string/app_name" 
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="unspecified" >
+            android:screenOrientation="unspecified"
+            android:launchMode="singleTask">
         </activity>
         
         <activity
