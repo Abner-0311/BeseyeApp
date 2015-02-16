@@ -965,6 +965,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	protected void showNoNetworkDialog(){
 		super.showNoNetworkDialog();
 		showInvalidStateMask();
+		setVisibility(mPbLoadingCursor, View.VISIBLE);
 	}
 	
 	private boolean mbNeedToCheckReddotNetwork = false;
