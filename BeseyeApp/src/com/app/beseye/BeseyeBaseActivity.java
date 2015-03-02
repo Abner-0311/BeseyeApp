@@ -858,7 +858,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 							
 							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(strVcamId, mCam_obj);
 							
-							if(true == ((BeseyeAccountTask.GetCamInfoTask)task).getNeedToLoadCamSetup()){
+							if(true == ((BeseyeAccountTask.GetCamInfoTask)task).getNeedToLoadCamSetup() && null != mStrVCamID){
 								monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 							}
 						}
@@ -1473,9 +1473,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	
 		@Override
 		public void run() {
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(BeseyeBaseActivity.this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, mStrVCamID);
+			if(null != mStrVCamID){
+				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(BeseyeBaseActivity.this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, mStrVCamID);
+			}
 		}
-    	
     }
     
     protected OnResumeUpdateCamInfoRunnable mOnResumeUpdateCamInfoRunnable = null;

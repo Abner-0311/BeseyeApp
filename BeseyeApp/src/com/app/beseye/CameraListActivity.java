@@ -599,8 +599,10 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			try {
 				if(miCurUpdateIdx < iCount){
 					final JSONObject camObj = arrCamList.getJSONObject(miCurUpdateIdx++);
-					
-					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this, iSeed).setDialogId(-1), true, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID));
+					String strCamUID = BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID);
+					if(null != strCamUID){
+						monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this, iSeed).setDialogId(-1), true, strCamUID);
+					}
 					//monitorAsyncTask(new BeseyeMMBEHttpTask.GetLiveStreamTask(CameraListActivity.this, iSeed).setDialogId(-1), true, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID), "false");
 				}
 			} catch (JSONException e) {
@@ -889,7 +891,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	    			
 	    			mbNeedToCheckCamOnStatus = true;
 	    			
-	    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, strCamUID);
+	    			if(null != strCamUID)
+	    				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, strCamUID);
 	    		}
 	    	}
 		}
@@ -915,7 +918,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     							}});
     	    				mOnResumeUpdateCamInfoRunnable = null;
     	    			}
-    	    		}else{
+    	    		}else if(null != strCamUID){
     	    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, strCamUID);
     	    		}
     	    	}
@@ -946,7 +949,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     	    				mOnResumeUpdateCamInfoRunnable = null;
     	    			}
     	    			
-    	    		}else{
+    	    		}else if(null != strCamUID){
     	    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, strCamUID);
     	    		}
     	    	}
