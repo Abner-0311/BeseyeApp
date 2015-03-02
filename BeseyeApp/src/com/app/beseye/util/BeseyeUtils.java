@@ -471,4 +471,14 @@ public class BeseyeUtils {
 	public static boolean isPureAscii(String v) {
 		return null != v && asciiEncoder.canEncode(v);
 	}
+	
+	static public String hexToASCII(String strHex){
+		StringBuilder output = new StringBuilder();
+	    for (int i = 0; i < strHex.length(); i+=2) {
+	        String str = strHex.substring(i, i+2);
+	        output.append((char)Integer.parseInt(str, 16));
+	    }
+	    
+	    return output.toString();
+	}
 }

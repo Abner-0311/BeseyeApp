@@ -609,7 +609,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(mActivityResume){
 			mbIsSwitchPlayer = true;
 			//triggerPlay();
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+			if(null != mStrVCamID)
+				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
 		}
 		
 //		mbIsLiveMode = true;
@@ -696,16 +697,18 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-		if(-1 == BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN, -1)){
-			if(DEBUG)
-				Log.i(TAG, "CameraViewActivity::onSessionComplete(), need to get plan");
-
-			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this), true, mStrVCamID);
-		}else{
-			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
+		if(null != mStrVCamID){
+			if(-1 == BeseyeJSONUtil.getJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN, -1)){
 				if(DEBUG)
-					Log.i(TAG, "CameraViewActivity::onSessionComplete(), need to get cam setup");
-				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+					Log.i(TAG, "CameraViewActivity::onSessionComplete(), need to get plan");
+
+				monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this), true, mStrVCamID);
+			}else{
+				if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA)){
+					if(DEBUG)
+						Log.i(TAG, "CameraViewActivity::onSessionComplete(), need to get cam setup");
+					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+				}
 			}
 		}
 		
@@ -967,6 +970,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	protected void showNoNetworkDialog(){
 		super.showNoNetworkDialog();
 		showInvalidStateMask();
+		setVisibility(mPbLoadingCursor, View.VISIBLE);
 	}
 	
 	private boolean mbNeedToCheckReddotNetwork = false;
@@ -2407,8 +2411,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						closeStreaming();
 						return;
 					}
-					
-					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(CameraViewActivity.this), true, mStrVCamID);
+					if(null != mStrVCamID){
+						monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(CameraViewActivity.this), true, mStrVCamID);
+					}
 					
 				}else if(Player_Major_Error.NO_NETWORK_ERR.ordinal() == iMajorType){
 					Log.w(TAG, "updateRTMPErrorCallback(), NO_NETWORK_ERR");

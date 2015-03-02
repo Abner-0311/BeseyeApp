@@ -133,19 +133,34 @@ public class NetworkMgr {
 		return null;
 	}
 	
-	//Only check Mobile/Wifi/Wimax
-	public boolean isNetworkConnected(){
-		boolean bConnected = false;
-		if(null != mConnectivityManager){
-			NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
-	        if (null != activeNetwork && activeNetwork.isConnected()) {
-	        	int iNetworkType = activeNetwork.getType();
-	            if(iNetworkType == ConnectivityManager.TYPE_MOBILE || iNetworkType == ConnectivityManager.TYPE_WIFI || iNetworkType == ConnectivityManager.TYPE_WIMAX || iNetworkType == ConnectivityManager.TYPE_ETHERNET)
-	            	bConnected = true;
-	        } 
-		}
-		return bConnected;
-	}
+//	//Only check Mobile/Wifi/Wimax
+//	public boolean isNetworkConnected(){
+//		boolean bConnected = false;
+//		if(null != mConnectivityManager){
+//			NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
+//	        if (null != activeNetwork && activeNetwork.isConnected()) {
+//	        	int iNetworkType = activeNetwork.getType();
+//	            if(iNetworkType == ConnectivityManager.TYPE_MOBILE || iNetworkType == ConnectivityManager.TYPE_WIFI || iNetworkType == ConnectivityManager.TYPE_WIMAX || iNetworkType == ConnectivityManager.TYPE_ETHERNET)
+//	            	bConnected = true;
+//	        } 
+//		}
+//		return bConnected;
+//	}
+//	
+	public boolean isNetworkConnected() {
+        boolean outcome = false;
+        if(null != mConnectivityManager){
+            NetworkInfo[] networkInfos = mConnectivityManager.getAllNetworkInfo();
+            for (NetworkInfo tempNetworkInfo : networkInfos) {
+                if (null != tempNetworkInfo && tempNetworkInfo.isConnected()) {
+                    outcome = true;
+                    break;
+                }
+            }
+    	}
+
+        return outcome;
+    }
 	
 	public String getActiveWifiSSID(){
 		if(null != mWifiManager){
@@ -435,7 +450,8 @@ public class NetworkMgr {
 				@Override
 				public void run() {
 					boolean bLatestConnectedState = isNetworkConnected();
-					if(mbIsNetworkConnected != bLatestConnectedState){
+					//Mark below condition because some network handover is too soon 
+					//if(mbIsNetworkConnected != bLatestConnectedState){
 						if(DEBUG)
 							Log.i(TAG, "notifyNetworkStatusChanged(), connectivity change to "+bLatestConnectedState);
 						for(WeakReference<OnNetworkChangeCallback> wrListener : mOnNetworkChangeCallbackListeners){
@@ -444,7 +460,7 @@ public class NetworkMgr {
 								checkListener.onConnectivityChanged(bLatestConnectedState);
 							}
 						}
-					}
+					//}
 					mbIsNetworkConnected = bLatestConnectedState;
 				}});
 		}
