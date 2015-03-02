@@ -7,13 +7,16 @@ import android.net.NetworkInfo;
 import android.net.NetworkInfo.DetailedState;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.NetworkMgr;
 
 public class WifiStateChangeReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		//Log.d(TAG, "WifiStateChangeReceiver::onReceive(), action:"+intent.getAction());
+		if(BeseyeConfig.DEBUG)
+			Log.d(BeseyeConfig.TAG, "WifiStateChangeReceiver::onReceive(), action:"+intent.getAction());
 		if(null != intent){
     		if(intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)){
     			NetworkMgr.getInstance().notifyWifiScanResultAvailable();

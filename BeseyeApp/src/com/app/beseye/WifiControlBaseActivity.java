@@ -3,6 +3,7 @@ package com.app.beseye;
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
+//import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,6 @@ import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 import android.app.Dialog;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -458,7 +458,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		if(iSecType == WifiAPInfo.AUTHNICATION_KEY_NONE){
 			bRet = true;
 		}else if(iSecType == WifiAPInfo.AUTHNICATION_KEY_WEP){
-			bRet = (5 == iPwLen) || (13 == iPwLen);
+			bRet = (5 == iPwLen) || (13 == iPwLen) || (10 == iPwLen) || (26 == iPwLen);
 		}else if(iSecType == WifiAPInfo.AUTHNICATION_KEY_WPA || iSecType == WifiAPInfo.AUTHNICATION_KEY_WPA2){
 			bRet = (8 <= iPwLen) && (iPwLen <= 63);
 		}
@@ -543,10 +543,24 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 //								
 //							}
 							mChosenWifiAPInfo.password = mWifiApPassword;
+//							if(WifiAPInfo.AUTHNICATION_KEY_WEP == mChosenWifiAPInfo.iCipherIdx && (10 == mChosenWifiAPInfo.password.length() || 26 == mChosenWifiAPInfo.password.length())){
+//								byte[] utf8;
+//								try {
+//									utf8 = BeseyeUtils.hexToASCII(mChosenWifiAPInfo.password.toLowerCase()).getBytes("UTF-8");
+//									mChosenWifiAPInfo.password = new String(utf8, "UTF-8");
+//								} catch (UnsupportedEncodingException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+//								
+//								Log.i(TAG, "WifiControlBaseActivity::onClick(), mChosenWifiAPInfo.password=["+mChosenWifiAPInfo.password+"]"+mChosenWifiAPInfo.password.getBytes().length);
+//								Log.i(TAG, "WifiControlBaseActivity::onClick(),"+mChosenWifiAPInfo.password.getBytes()[0]);
+//
+//							}
+							
 					    	//mChosenWifiAPInfo.wepkeyIdx = Integer.parseInt(String.valueOf(mtxtKeyIndex.getText())) -1;
 					    	
 							Intent intent = new Intent();
-							
 							
 							if(getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false)){
 								intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
@@ -667,6 +681,9 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 							}
 							mChosenWifiAPInfo.SSID = mEtSSID.getText().toString();
 							mChosenWifiAPInfo.password = mWifiApPassword;
+//							if(WifiAPInfo.AUTHNICATION_KEY_WEP == mChosenWifiAPInfo.iCipherIdx && (10 == mChosenWifiAPInfo.password.length() || 26 == mChosenWifiAPInfo.password.length())){
+//								mChosenWifiAPInfo.password = BeseyeUtils.hexToASCII(mChosenWifiAPInfo.password.toLowerCase());
+//							}
 					    	//mChosenWifiAPInfo.wepkeyIdx = Integer.parseInt(String.valueOf(mtxtKeyIndex.getText())) -1;
 					    	
 							Intent intent = new Intent();

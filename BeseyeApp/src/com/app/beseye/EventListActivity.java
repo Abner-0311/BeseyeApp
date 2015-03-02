@@ -398,6 +398,11 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			}}, 0);
 	}
 	
+	private boolean reachMaxEventCount(){
+		JSONArray EntList = (null != mEventListAdapter)?mEventListAdapter.getJSONList():null;
+		return (null != EntList) && (EntList.length() -1 >= miTotalEventCount);
+	}
+	
 	private long mlTaskTs = -1;
 	private int miTaskSeedNum = 0;
 	private int miLastTaskSeedNum = -1;
@@ -520,7 +525,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 										}}, 50);
 								}
 								
-								if(null != mMainListView){
+								if(null != mMainListView && false == reachMaxEventCount()){
 									mMainListView.attachFooterLoadMoreView(false, true);
 								}
 							}
@@ -619,7 +624,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 							e.printStackTrace();
 						}
 						
-						if(bHaveFooter && null != mMainListView){
+						if(bHaveFooter && null != mMainListView && false == reachMaxEventCount()){
 							mMainListView.attachFooterLoadMoreView(false, true);
 						}
 						
