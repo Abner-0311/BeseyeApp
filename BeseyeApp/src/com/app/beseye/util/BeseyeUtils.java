@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import com.app.beseye.BeseyeApplication;
+import com.app.beseye.R;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 
@@ -34,8 +35,10 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -480,5 +483,22 @@ public class BeseyeUtils {
 	    }
 	    
 	    return output.toString();
+	}
+	
+	static private String sPkgVersion = null;
+	
+	static public void setPackageVersion(Context context){
+		if(null == sPkgVersion){
+			try {
+				PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+				sPkgVersion = packageInfo.versionName;
+			} catch (NameNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	static public String getPackageVersion(){		
+		return sPkgVersion;
 	}
 }

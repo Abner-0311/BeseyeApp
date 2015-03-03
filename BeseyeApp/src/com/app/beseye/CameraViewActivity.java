@@ -207,8 +207,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			updatePlayPauseBtnByStatus(status);
 		    			}
 		    			
-		    			if(mbIsLiveMode)
+		    			if(mbIsLiveMode){
+		    				mlStreamingBeginTIme = -1;
 		    				startUpdateTime();
+		    			}
 		    			
 		    			hideInvalidStateMask();
 		    			
@@ -1980,8 +1982,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 	} 
     
-    private Runnable mReStartRunnable= null;
-    
     final private static int COUNT_TO_START_CHECK_EXPIRE =30; 
     private int mCurCheckCount = 0;
     private long mlLastTimeDrawBitmap = 0;
@@ -2340,20 +2340,47 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
     	}
     }
+    
+    private long mlStreamingBeginTIme = -1;
+    private Runnable mReStartRunnable= null;
+    final private static int MAX_TORELABLE_DELAY_TIME =5000; //5 secs
    
     public void updateRTMPClockCallback(final int iTimeInSec){
     	BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
 				Date now = new Date();
-				if(DEBUG)
-					Log.w(TAG, "updateRTMPClockCallback(), iTimeInSec:"+iTimeInSec+", now:"+BeseyeUtils.getDateString(now, "hh:mm:ss")+"."+(String.format("%03d", now.getTime()%1000)));
+				
 		    	if(false == mbIsLiveMode){
+		    		if(DEBUG)
+						Log.w(TAG, "updateRTMPClockCallback(), iTimeInSec:"+iTimeInSec+", now:"+BeseyeUtils.getDateString(now, "hh:mm:ss")+"."+(String.format("%03d", now.getTime()%1000)));
+		    		
 		    		mlDVRPlayTimeInSec = iTimeInSec;
 		    		mUpdateDateTimeRunnable.updateDateTime(new Date(mlDVRCurrentStartTs+1000*mlDVRPlayTimeInSec));
 		    		
 		    		if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_WAITING_UNPAUSE)){
 		    			setCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING);
+		    		}
+		    	}else{
+		    		if(-1 == mlStreamingBeginTIme){
+		    			mlStreamingBeginTIme = System.currentTimeMillis();
+						Log.w(TAG, "updateRTMPClockCallback(), mlStreamingBeginTIme:"+mlStreamingBeginTIme+", MAX_TORELABLE_DELAY_TIME:"+MAX_TORELABLE_DELAY_TIME);
+		    		}else{
+		    			long lDeltaReal = (System.currentTimeMillis() - mlStreamingBeginTIme);
+		    			long lDeltaStreaming= (iTimeInSec - 1)*1000;
+		    			long lDelta = (lDeltaReal - lDeltaStreaming);
+		    			if(MAX_TORELABLE_DELAY_TIME < lDelta){
+							Log.w(TAG, "updateRTMPClockCallback(), (lDeltaReal - lDeltaStreaming):"+lDelta+", restart live !!!!!!!!!!!");
+							closeStreaming();
+							mReStartRunnable =  new Runnable(){
+								@Override
+								public void run() {
+									beginLiveView();
+								}};
+		    			}else{
+		    				if(DEBUG)
+		    					Log.w(TAG, "updateRTMPClockCallback(), iTimeInSec:"+iTimeInSec+", now:"+BeseyeUtils.getDateString(now, "hh:mm:ss")+"."+(String.format("%03d", now.getTime()%1000))+", ("+lDeltaReal+"-"+ lDeltaStreaming+"):"+lDelta);
+		    			}
 		    		}
 		    	}
 			}}, 0);
