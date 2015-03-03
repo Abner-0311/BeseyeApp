@@ -1989,9 +1989,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}
 		}
 	} 
-    
-    private Runnable mReStartRunnable= null;
-    
+        
     final private static int COUNT_TO_START_CHECK_EXPIRE =30; 
     private int mCurCheckCount = 0;
     private long mlLastTimeDrawBitmap = 0;
@@ -2352,6 +2350,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
    
     private long mlStreamingBeginTIme = -1;
+    private Runnable mReStartRunnable= null;
+    final private static int MAX_TORELABLE_DELAY_TIME =5; //5 secs
     
     public void updateRTMPClockCallback(final int iTimeInSec){
     	BeseyeUtils.postRunnable(new Runnable(){
@@ -2374,7 +2374,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    		}else{
 		    			long lDeltaReal = (System.currentTimeMillis() - mlStreamingBeginTIme)/1000;
 		    			long lDeltaStreaming = iTimeInSec - 1;
-		    			if(10 < (lDeltaReal - lDeltaStreaming)){
+		    			if(MAX_TORELABLE_DELAY_TIME < (lDeltaReal - lDeltaStreaming)){
 							Log.w(TAG, "updateRTMPClockCallback(), (lDeltaReal - lDeltaStreaming):"+(lDeltaReal - lDeltaStreaming)+", restart live !!!!!!!!!!!");
 							closeStreaming();
 							mReStartRunnable =  new Runnable(){
