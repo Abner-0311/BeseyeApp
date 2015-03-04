@@ -326,7 +326,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    		}
 		    		case CV_STREAM_CLOSE:{
 		    			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
-		    			releaseWakelock();
+		    			//releaseWakelock();
 		    			cancelCheckVideoConn();
 		    			
 		    			if(null != mCameraViewControlAnimator && mCameraViewControlAnimator.isInHoldToTalkMode()){
@@ -1459,6 +1459,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(mbIsLiveMode){
 					if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING) || isCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTED)){
 						closeStreaming();
+						releaseWakelock();
 					}else{
 						//beginLiveView();
 						getStreamingInfo(true);
@@ -1467,6 +1468,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING) || isCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTED)){
 						if(0 <= miStreamIdx){
 							pauseStreaming(miStreamIdx);
+							releaseWakelock();
 						}
 					}else if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PAUSED)){
 						if(0 <= miStreamIdx){
@@ -2373,7 +2375,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			long lDeltaReal = (System.currentTimeMillis() - mlStreamingBeginTIme);
 		    			long lDeltaStreaming= (iTimeInSec - 1)*1000;
 		    			long lDelta = (lDeltaReal - lDeltaStreaming);
-		    			if(MAX_TORELABLE_DELAY_TIME < lDelta){
+		    			if(MAX_TORELABLE_DELAY_TIME < Math.abs(lDelta)){
 							Log.w(TAG, "updateRTMPClockCallback(), (lDeltaReal - lDeltaStreaming):"+lDelta+", restart live !!!!!!!!!!!");
 							closeStreaming();
 							mReStartRunnable =  new Runnable(){
