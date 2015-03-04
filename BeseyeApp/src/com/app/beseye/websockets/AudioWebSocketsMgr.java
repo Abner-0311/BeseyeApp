@@ -869,6 +869,15 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 							listener.onAudioChannelConnecting();
 						}
 						
+						synchronized(AudioWebSocketsMgr.this){
+							mbIsAudioChannelConnected = true;
+						}
+						//OnAudioWSChannelStateChangeListener listener = (null != mOnAudioWSChannelStateChangeListener)?mOnAudioWSChannelStateChangeListener.get():null;
+						if(null != listener){
+							listener.onAudioChannelConnected();
+						}
+						transferAudioBuf();
+						
 					}else{
 						Log.e(TAG, "onPostExecute(), failed to RequestAudioWSOnCamTask, iRetCode = "+iRetCode);
 						//bNeedToClose = true;

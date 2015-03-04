@@ -53,6 +53,7 @@ public class BeseyeApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		SessionMgr.createInstance(getApplicationContext());
+		BeseyeUtils.setPackageVersion(getApplicationContext());
 		sApplication = this;
 		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
 		
