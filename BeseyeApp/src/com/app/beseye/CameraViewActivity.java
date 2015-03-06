@@ -63,6 +63,7 @@ import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.websockets.AudioWebSocketsMgr;
+import com.app.beseye.websockets.AudioWebSocketsMgr.AudioConnStatus;
 import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioAmplitudeUpdateListener;
 import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioWSChannelStateChangeListener;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
@@ -2640,9 +2641,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 
 		@Override
 		public void run() {
-			if(mbTriigerByUser){
+			if(mActivityResume && mbTriigerByUser 
+					&& AudioConnStatus.Status_Occupied != AudioWebSocketsMgr.getInstance().getAudioConnStatus() 
+					&& AudioConnStatus.Status_Constructed != AudioWebSocketsMgr.getInstance().getAudioConnStatus()
+					&& AudioConnStatus.Status_Closed != AudioWebSocketsMgr.getInstance().getAudioConnStatus()){
 				Toast.makeText(CameraViewActivity.this, getString(R.string.hint_hold_to_talk_poor_network_quality), Toast.LENGTH_SHORT).show();
 			}
+			
 			mShowAudioNotConnectedHintRunnable = null;
 			if(mActivityResume && mbNeedToRequestCamAudioConnected || BeseyeFeatureConfig.ADV_TWO_WAY_TALK){
     			requestAudioConnection(false);
@@ -2694,7 +2699,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     
     public void openAudioChannel(boolean bAutoConnect){
     	if(!mbIsDemoCam){
-        	
         	mbAutoAudioWSConnect = bAutoConnect;
         	
         	BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
@@ -2725,7 +2729,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //    			if(!BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
 //    				AudioWebSocketsMgr.getInstance().setSienceFlag(false);
 //    			}
-    			
+
     			if(mbNeedToRequestCamAudioConnected && false == mbAutoAudioWSConnect){
     				requestAudioConnection(!bAutoConnect);
     			}
@@ -2742,6 +2746,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		
     		if(mbNeedToRequestCamAudioConnected){
     			requestAudioConnection(true);
+			}
+    		
+    		if(AudioConnStatus.Status_Occupied == AudioWebSocketsMgr.getInstance().getAudioConnStatus()){
+				Toast.makeText(CameraViewActivity.this, getString(R.string.hint_hold_to_talk_conn_occupied), Toast.LENGTH_SHORT).show();
+			}else if(AudioConnStatus.Status_Constructed != AudioWebSocketsMgr.getInstance().getAudioConnStatus() && AudioConnStatus.Status_Closed != AudioWebSocketsMgr.getInstance().getAudioConnStatus()){
+				Toast.makeText(CameraViewActivity.this, getString(R.string.hint_hold_to_talk_poor_network_quality), Toast.LENGTH_SHORT).show();
 			}
     	}else{
     		openAudioChannel(false);

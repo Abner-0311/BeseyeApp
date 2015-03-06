@@ -412,4 +412,7 @@
   <string name="msg_wifi_pw_length_error_wpa">Invalid wifi password length. Password must be between 8-64 characters.</string>
   <string name="msg_wifi_pw_length_error_wep">Invalid wifi password length. Password must be 5 to 13 characters.</string>
   <string name="msg_wifi_setting_info_error">Invalid wifi setting info.</string>
+  
+  <string name="hint_hold_to_talk_conn_occupied">Audio channel is occupied by other device.\nPlease initialize the talk again later.</string>
+  
 </resources>

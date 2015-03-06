@@ -412,4 +412,7 @@
   <string name="msg_wifi_pw_length_error_wpa">無效的WiFi密碼長度。密碼必須是8-64個字母。</string>
   <string name="msg_wifi_pw_length_error_wep">無效的WiFi密碼長度。密碼必須是5至13個字母。</string>
   <string name="msg_wifi_setting_info_error">無效的WiFi設定。</string>
+  
+  <string name="hint_hold_to_talk_conn_occupied">通話佔線中，\n請稍後再次嘗試通話．</string>
+  
 </resources>
