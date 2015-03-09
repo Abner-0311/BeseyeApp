@@ -468,6 +468,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 						mCamSwitchBtn.setSwitchState((mCamSwitchBtn.getSwitchState()==SwitchState.SWITCH_ON)?SwitchState.SWITCH_OFF:SwitchState.SWITCH_ON);
 					}
 				}}, 0);
+		}else if(task instanceof BeseyeAccountTask.CamDettachTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_failed_detach_cam));
+					showMyDialog(DIALOG_ID_WARNING, b);
+				}}, 0);
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -509,6 +517,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 					if(DEBUG)
 						Log.i(TAG, "onPostExecute(), "+result.toString());
 					onToastShow(task, "Detach  Successfully.");
+					
 //					if(BeseyeConfig.COMPUTEX_PAIRING){
 //						//invokeLogout();
 						launchDelegateActivity(CameraListActivity.class.getName(), null);
