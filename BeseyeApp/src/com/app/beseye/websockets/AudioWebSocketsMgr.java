@@ -246,7 +246,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 									if(null != mStrAuthJobId && mStrAuthJobId.equals(strJobID) && 0 == iRetCode){
 										Log.i(TAG, "onStringAvailable(), Auth OK -----------------------");
 										mStrAuthJobId = null;
-										mBAuth = true;
+										mbAuthComplete = true;
 										//
 										if(FAKE_AUDIO_RECEIVER){
 											String strWsId = mSWID;//BeseyeJSONUtil.getJSONString(dataObj, WSA_WS_ID);

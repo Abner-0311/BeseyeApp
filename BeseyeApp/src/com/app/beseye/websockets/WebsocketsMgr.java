@@ -53,7 +53,7 @@ public class WebsocketsMgr {
 	protected Future<WebSocket> mFNotifyWSChannel = null;
 	protected String mStrAuthJobId = null;
 	protected String mStrAudioConnJobId = null;
-	protected boolean mBAuth = false;
+	protected boolean mbAuthComplete = false;
 	protected boolean mBConstructingNotifyWSChannel = false;
 	protected boolean mbNotifyWSChannelConstructed = false;
 	protected long mlTimeConstrucNotifyWSChannel = 0;
@@ -104,7 +104,7 @@ public class WebsocketsMgr {
 	
 	public boolean constructWSChannel(){
 		if(DEBUG)
-			Log.i(TAG, "constructWSChannel(), ++");
+			Log.i(TAG, "constructWSChannel(), ++"+" on "+this.getClass().getName());
 		boolean bRet = false;
 		try {
 			//printNotifyWSChannelState();
@@ -124,32 +124,24 @@ public class WebsocketsMgr {
 				}
 				
 				if(DEBUG)
-					Log.i(TAG, "constructWSChannel()-----");
+					Log.i(TAG, "constructWSChannel()-----"+" on "+this.getClass().getName());
 				mFNotifyWSChannel = AsyncHttpClient.getDefaultInstance().websocket(getWSPath(), getWSProtocol(), getWebSocketConnectCallback());
 				if(DEBUG)
 					Log.i(TAG, "constructWSChannel(), path =>"+getWSPath());
 				WebSocket ws = mFNotifyWSChannel.get();
-				Log.i(TAG, "constructWSChannel(), ws is null =>"+(null == ws));
+				Log.i(TAG, "constructWSChannel(), ws is null =>"+(null == ws)+" on "+this.getClass().getName());
 				if(null == ws){
 					mFNotifyWSChannel = null;
 				}
 			}
-			
-			
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-			Log.i(TAG, "InterruptedException(), e="+e.toString());
-			OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
-			if(null != listener){
-				listener.onChannelClosed();
-			}
+			Log.i(TAG, "InterruptedException(), e="+e.toString()+" on "+this.getClass().getName());
+			notifyChannelClosed();
 		} catch (ExecutionException e) {
 			e.printStackTrace();
-			Log.i(TAG, "ExecutionException(), e="+e.toString());
-			OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
-			if(null != listener){
-				listener.onChannelClosed();
-			}
+			Log.i(TAG, "ExecutionException(), e="+e.toString()+" on "+this.getClass().getName());
+			notifyChannelClosed();
 		} finally{
 			synchronized(this){
 				mbNotifyWSChannelConstructed = false;
@@ -159,6 +151,19 @@ public class WebsocketsMgr {
 			}
 		}
 		return bRet;
+	}
+	
+	protected void notifyChannelClosed(){
+		synchronized(WebsocketsMgr.this){
+			mFNotifyWSChannel = null;
+			mbAuthComplete =false;
+			mlLastTimeToGetKeepAlive = -1;
+		}
+		
+		OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
+		if(null != listener){
+			listener.onChannelClosed();
+		}
 	}
 	
 	public boolean isWSChannelAlive(){
@@ -174,7 +179,7 @@ public class WebsocketsMgr {
 					bRet = true;
 				}
 			}else if(null != mFNotifyWSChannel && false == mFNotifyWSChannel.isCancelled() && true == mFNotifyWSChannel.isDone()){
-				if(mBAuth || (0 < mlTimeToRequestWSChannelAuth && System.currentTimeMillis() - mlTimeToRequestWSChannelAuth < 20*1000)){
+				if(mbAuthComplete || (0 < mlTimeToRequestWSChannelAuth && System.currentTimeMillis() - mlTimeToRequestWSChannelAuth < 20*1000)){
 					bRet = true;
 				}
 			}
@@ -187,14 +192,14 @@ public class WebsocketsMgr {
 	public boolean destroyWSChannel(){
 		//Thread.dumpStack();
 		if(DEBUG)
-			Log.i(TAG, "destroyWSChannel(), ++");
+			Log.i(TAG, "destroyWSChannel(), ++"+" on "+this.getClass().getName());
 		boolean bRet = false;
 		printNotifyWSChannelState();
 		
 		synchronized(this){
 			try {
 				if(DEBUG)
-					Log.i(TAG, "destroyWSChannel(), check");
+					Log.i(TAG, "destroyWSChannel(), check"+" on "+this.getClass().getName());
 				WebSocket ws = null;
 				if(null != mFNotifyWSChannel){
 					if(mBConstructingNotifyWSChannel){
@@ -204,11 +209,13 @@ public class WebsocketsMgr {
 					}else if(true == mFNotifyWSChannel.isDone() && null != (ws = (WebSocket) mFNotifyWSChannel.get())){
 						ws.close();
 						bRet = true;
-						Log.i(TAG, "destroyWSChannel(), call close");
+						Log.i(TAG, "destroyWSChannel(), call close"+" on "+this.getClass().getName());
 						
 						mFNotifyWSChannel = null;//workaround 0702
-					}
+					}	
 				}
+				
+				mbAuthComplete = false;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				Log.i(TAG, "InterruptedException(), e="+e.toString());
@@ -259,10 +266,10 @@ public class WebsocketsMgr {
         @Override
         public void onCompleted(Exception ex, final WebSocket webSocket) {
         	if(DEBUG)
-        		Log.i(TAG, "onCompleted()...");
+        		Log.i(TAG, "onCompleted()..."+" on "+WebsocketsMgr.this.getClass().getName());
         	
         	if(null == webSocket){
-        		Log.e(TAG, "onCompleted(), webSocket is null...");
+        		Log.e(TAG, "onCompleted(), webSocket is null..."+" on "+WebsocketsMgr.this.getClass().getName());
         		return;
 			}
         	
@@ -320,7 +327,7 @@ public class WebsocketsMgr {
 									if(null != mStrAuthJobId && mStrAuthJobId.equals(strJobID) && 0 == iRetCode){
 										Log.i(TAG, "onStringAvailable(), Auth OK -----------------------");
 										mStrAuthJobId = null;
-										mBAuth = true;
+										mbAuthComplete = true;
 										mlTimeToRequestWSChannelAuth = 0;
 									}
 								}
@@ -363,14 +370,7 @@ public class WebsocketsMgr {
 				@Override
 				public void onCompleted(Exception ex) {
 					Log.i(TAG, "onCompleted(), from close cb");	
-					synchronized(WebsocketsMgr.this){
-						mFNotifyWSChannel = null;
-					}
-					OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
-					if(null != listener){
-						listener.onChannelClosed();
-					}
-					mlLastTimeToGetKeepAlive = -1;
+					notifyChannelClosed();
 				}});
             
             webSocket.setEndCallback(new CompletedCallback(){
@@ -381,11 +381,7 @@ public class WebsocketsMgr {
 					synchronized(WebsocketsMgr.this){
 						mFNotifyWSChannel = null;
 					}
-					OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
-					if(null != listener){
-						listener.onChannelClosed();
-					}
-					mlLastTimeToGetKeepAlive = -1;
+					notifyChannelClosed();
 				}});
             
             webSocket.setWriteableCallback(new WritableCallback(){
