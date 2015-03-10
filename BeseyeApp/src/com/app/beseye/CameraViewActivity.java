@@ -120,6 +120,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private boolean mbIsCamSettingChanged = false;
 	private boolean mbIsWifiSettingChanged = false;
 	private boolean mbIsSwitchPlayer = false;
+	private boolean mbManualPaused = false;
 	
 	//CameraView internal status
     enum CameraView_Internal_Status{
@@ -548,6 +549,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				mstrDVRStreamPathList = new ArrayList<JSONObject>();
 				mstrPendingStreamPathList = new ArrayList<JSONObject>();
 				mstrDiffStreamPathList = new ArrayList<JSONObject>();
+				mbManualPaused = false;
 				
 				if(DEBUG)
 					Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), mbIsDemoCam:"+mbIsDemoCam);
@@ -1470,25 +1472,30 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			case R.id.ib_play_pause:{
 				if(mbIsLiveMode){
 					if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING) || isCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTED)){
+						mbManualPaused = true;
 						closeStreaming();
 						releaseWakelock();
 					}else{
 						//beginLiveView();
+						mbManualPaused = false;
 						getStreamingInfo(true);
 					}
 				}else{
 					if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PLAYING) || isCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTED)){
 						if(0 <= miStreamIdx){
+							mbManualPaused = true;
 							pauseStreaming(miStreamIdx);
 							releaseWakelock();
 						}
 					}else if(isCamViewStatus(CameraView_Internal_Status.CV_STREAM_PAUSED)){
+						mbManualPaused = false;
 						if(0 <= miStreamIdx){
 							if(0 <=resumeStreaming(miStreamIdx))
 								setCamViewStatus(CameraView_Internal_Status.CV_STREAM_WAITING_UNPAUSE);
 						}
 					}else{
 						//beginLiveView();
+						mbManualPaused = false;
 						getStreamingInfo(true);
 					}
 				}
@@ -2037,6 +2044,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		Log.e(TAG, "closeStreaming() ++");
     	
     	cancelCheckVideoBlock();
+    	AudioWebSocketsMgr.getInstance().sendRequestCamDisconnected();
 //    	new Thread(){
 //    		public void run(){ 
     			if(0 <= miStreamIdx)
@@ -2691,7 +2699,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
     
     private void requestAudioConnection(boolean bUserTrigger){
-    	if(mActivityResume && AudioWebSocketsMgr.getInstance().sendRequestCamConnected()){
+    	if(mActivityResume && !mbManualPaused && AudioWebSocketsMgr.getInstance().sendRequestCamConnected()){
     		postShowAudioNotConnectedHintRunnable(bUserTrigger);    		
 			postTerminateAudioChannelRunnable(false);
 		}
@@ -2700,7 +2708,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     public void openAudioChannel(boolean bAutoConnect){
     	if(!mbIsDemoCam){
         	mbAutoAudioWSConnect = bAutoConnect;
-        	
         	BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
         	if(!AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
         		if(null == mGetAudioWSServerTask)
@@ -2730,7 +2737,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //    				AudioWebSocketsMgr.getInstance().setSienceFlag(false);
 //    			}
 
-    			if(mbNeedToRequestCamAudioConnected && false == mbAutoAudioWSConnect){
+    			if(mbNeedToRequestCamAudioConnected/* && false == mbAutoAudioWSConnect*/){
     				requestAudioConnection(!bAutoConnect);
     			}
     		}
