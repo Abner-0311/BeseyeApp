@@ -139,7 +139,13 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	}
 	
 	private void setAudioConnStatus(AudioConnStatus status){
+		//AudioConnStatus oldStatus = mAudioConnStatus;
 		mAudioConnStatus = status;
+		if(mbIsAudioChannelConnected && (AudioConnStatus.Status_Closed == mAudioConnStatus || AudioConnStatus.Status_Init == mAudioConnStatus)){
+			synchronized(AudioWebSocketsMgr.this){
+				mbIsAudioChannelConnected = false;
+			}
+		}
 	}
 	private String mStrVCamId;
 	public void setVCamId(String id){
@@ -395,13 +401,18 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     
     public boolean sendRequestCamDisconnected(){
     	synchronized(this){
-			if(null == mRequestAudioChannelDisconnectedTask){
-				(mRequestAudioChannelDisconnectedTask = new RequestAudioChannelDisconnectedTask(AudioWebSocketsMgr.this)).execute(mStrVCamId);
-				return true;
-			}else{
-				Log.i(TAG, "sendRequestCamDisconnected(), mRequestAudioChannelDisconnectedTask is ongoing");	
+    		if(mbIsAudioChannelConnected){
+    			if(null == mRequestAudioChannelDisconnectedTask){
+    				(mRequestAudioChannelDisconnectedTask = new RequestAudioChannelDisconnectedTask(AudioWebSocketsMgr.this)).execute(mStrVCamId);
+    				return true;
+    			}else{
+    				Log.i(TAG, "sendRequestCamDisconnected(), mRequestAudioChannelDisconnectedTask is ongoing");	
+    				return false;
+    			}
+    		}else{
+    			Log.i(TAG, "sendRequestCamDisconnected(), mbIsAudioChannelConnected is false");	
 				return false;
-			}
+    		}
 		}
     }
     
@@ -921,6 +932,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						
 						//mlTimeToStartWaitingAudioConn = System.currentTimeMillis();
 						setAudioConnStatus(AudioConnStatus.Status_Closed);
+						
 						OnAudioWSChannelStateChangeListener listener = (null != mOnAudioWSChannelStateChangeListener)?mOnAudioWSChannelStateChangeListener.get():null;
 						if(null != listener){
 							listener.onAudioChannelDisconnected();
