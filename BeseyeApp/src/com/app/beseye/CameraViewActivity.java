@@ -420,6 +420,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		attributes.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
 		getWindow().setAttributes(attributes);
 		
+//		getWindow().setFlags(
+//        	    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+//        	    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED); 
+		
 		getSupportActionBar().hide();
 		
 		updateAttrByIntent(getIntent(), false);
@@ -1953,6 +1957,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private native int addStreamingPath(int iDx, String path);
 	private native int updateSurface(int iDx, Surface s);
 	
+	private native int muteStreaming(int iDx, boolean bMute);
+	
 	private native int pauseStreaming(int iDx);
 	private native int resumeStreaming(int iDx);
 	private native int closeStreaming(int iDx);
@@ -2011,6 +2017,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     private int mCurCheckCount = 0;
     private long mlLastTimeDrawBitmap = 0;
     private CheckVideoBlockRunnable mCheckVideoBlockRunnable;
+    private int miDrawCount = 0;
     
     public void drawStreamBitmap(){
     	if(mPbLoadingCursor.getVisibility()!=View.GONE){
@@ -2019,6 +2026,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	
     	if(null != mStreamingView && isCamPowerOn())
     		mStreamingView.drawStreamBitmap();
+    	
+    	miDrawCount++;
     	
     	if(mbIsLiveMode){
     		mlLastTimeDrawBitmap = System.currentTimeMillis();
@@ -2379,8 +2388,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				
 		    	if(false == mbIsLiveMode){
 		    		if(DEBUG)
-						Log.w(TAG, "updateRTMPClockCallback(), iTimeInSec:"+iTimeInSec+", now:"+BeseyeUtils.getDateString(now, "hh:mm:ss")+"."+(String.format("%03d", now.getTime()%1000)));
+						Log.w(TAG, "updateRTMPClockCallback(), miDrawCount:"+miDrawCount+", iTimeInSec:"+iTimeInSec+", now:"+BeseyeUtils.getDateString(now, "hh:mm:ss")+"."+(String.format("%03d", now.getTime()%1000)));
 		    		
+		    		miDrawCount=0;
 		    		mlDVRPlayTimeInSec = iTimeInSec;
 		    		mUpdateDateTimeRunnable.updateDateTime(new Date(mlDVRCurrentStartTs+1000*mlDVRPlayTimeInSec));
 		    		
@@ -2405,8 +2415,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 								}};
 		    			}else{
 		    				if(DEBUG)
-		    					Log.w(TAG, "updateRTMPClockCallback(), iTimeInSec:"+iTimeInSec+", now:"+BeseyeUtils.getDateString(now, "hh:mm:ss")+"."+(String.format("%03d", now.getTime()%1000))+", ("+lDeltaReal+"-"+ lDeltaStreaming+"):"+lDelta);
-
+		    					Log.w(TAG, "updateRTMPClockCallback(), miDrawCount:"+miDrawCount+", iTimeInSec:"+iTimeInSec+", now:"+BeseyeUtils.getDateString(now, "hh:mm:ss")+"."+(String.format("%03d", now.getTime()%1000))+", ("+lDeltaReal+"-"+ lDeltaStreaming+"):"+lDelta);
+		    				miDrawCount=0;
 		    			}
 		    		}
 		    	}
@@ -2716,7 +2726,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
         			}else{
         				AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
     					AudioWebSocketsMgr.getInstance().setAudioWSServerIP(SessionMgr.getInstance().getWSAHostUrl());
-    					AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+    					setAudioMute(true);
     					
     					if(null == mAudioOpenThread){
     						mAudioOpenThread = new Thread(new Runnable(){
@@ -2746,9 +2756,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	}
     }
     
+    private void setAudioMute(boolean bMute){
+    	AudioWebSocketsMgr.getInstance().setSienceFlag(!bMute);
+		muteStreaming(miStreamIdx, bMute);
+    }
+    
     public void pressToTalk(){
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
-    		AudioWebSocketsMgr.getInstance().setSienceFlag(false);
+    		setAudioMute(true);
     		BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
     		
     		if(mbNeedToRequestCamAudioConnected){
@@ -2767,14 +2782,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     
     public void releaseTalkMode(){
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
-    		AudioWebSocketsMgr.getInstance().setSienceFlag(true);
+    		setAudioMute(false);
+
     		postTerminateAudioChannelRunnable(false);
     	}
     }
     
     public void closeAudioChannel(boolean bImmediateClose){
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
-    		AudioWebSocketsMgr.getInstance().setSienceFlag(true);
+    		setAudioMute(false);
     		postTerminateAudioChannelRunnable(bImmediateClose);
 		}else if(null != mGetAudioWSServerTask){
 			mGetAudioWSServerTask.cancel(true);

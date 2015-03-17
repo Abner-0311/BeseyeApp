@@ -481,7 +481,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	    	Log.i(TAG, "setSienceFlag(), ...........  mbSilent from "+mbSilent+" to "+bSilent);	
     	}
     	mbSilent = bSilent;
-    	AudioChannelMgr.setMute(!mbSilent);
+    	//AudioChannelMgr.setMute(!mbSilent);
     	
     	if(!mbSilent){
     		mlTalkStartTs = System.currentTimeMillis();

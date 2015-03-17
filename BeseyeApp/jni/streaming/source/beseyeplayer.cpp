@@ -69,7 +69,8 @@ iNumOfPendingStreamPaths(0),
 rtmpRef(NULL),
 mdStreamClock(-1.0),
 mdSeekOffset(0.0),
-miRestDVRCount(0){
+miRestDVRCount(0),
+mbIsMute(false){
 	wanted_stream[AVMEDIA_TYPE_AUDIO] = -1;
 	wanted_stream[AVMEDIA_TYPE_VIDEO] = -1;
 	wanted_stream[AVMEDIA_TYPE_SUBTITLE] = -1;
@@ -247,6 +248,14 @@ void CBeseyePlayer::do_exit(VideoState *is)
     //exit(0);
 
     av_log(NULL, AV_LOG_INFO, "do_exit()------, is:%d, this:[0x%x]\n", is, this);
+}
+
+void CBeseyePlayer::setAudioMute(bool bMute){
+	mbIsMute = bMute;
+}
+
+bool CBeseyePlayer::isAudioMute(){
+	return mbIsMute;
 }
 
 void CBeseyePlayer::sigterm_handler(int sig)
@@ -889,6 +898,12 @@ int CBeseyePlayer::queue_picture(VideoState *is, AVFrame *src_frame, double pts1
 
 			if(mVideoCallback){
 				mVideoCallback(window, (uint8_t*)pFrameRGB->data[0], miFrameFormat, pFrameRGB->linesize[0], target_width, target_height);
+//				double time = av_gettime() / 1000000.0;
+//				/* update current video pts */
+//				is->video_current_pts = pts;
+//				is->video_current_pts_drift = is->video_current_pts - time;
+//				is->video_current_pos = pos;
+//				is->frame_last_pts = pts;
 			}
 		}else{
 			av_log(NULL, AV_LOG_ERROR, "window is null\n");
@@ -939,13 +954,14 @@ int CBeseyePlayer::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts,
 
         return 0;
     }
-
-    if(avcodec_decode_video2(is->video_st->codec, frame, &got_picture, pkt) < 0)
+    int iRet = -1;
+    if((iRet = avcodec_decode_video2(is->video_st->codec, frame, &got_picture, pkt)) < 0){
+    	av_log(NULL, AV_LOG_ERROR, "avcodec_decode_video2(), iRet:%d\n", iRet);
         return 0;
+    }
 
     if (got_picture) {
         int ret = 1;
-
         if (decoder_reorder_pts == -1) {
             *pts = av_frame_get_best_effort_timestamp(frame);
         } else if (decoder_reorder_pts) {
@@ -965,10 +981,13 @@ int CBeseyePlayer::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts,
                 double clockdiff = get_video_clock(is) - get_master_clock(is);
                 double dpts = av_q2d(is->video_st->time_base) * *pts;
                 double ptsdiff = dpts - is->frame_last_pts;
+            	//av_log(NULL, AV_LOG_ERROR, "get_video_frame(), clockdiff:%f, dpts:%f, is->frame_last_pts:%f, ptsdiff:%f, *pts:%f\n", clockdiff, dpts, is->frame_last_pts, ptsdiff, *pts);
+
                 if (fabs(clockdiff) < AV_NOSYNC_THRESHOLD &&
-                     ptsdiff > 0 && ptsdiff < AV_NOSYNC_THRESHOLD &&
-                     clockdiff + ptsdiff - is->frame_last_filter_delay < 0) {
-                    is->frame_last_dropped_pos = pkt->pos;
+                    ptsdiff > 0 && ptsdiff < AV_NOSYNC_THRESHOLD &&
+                    clockdiff + ptsdiff - is->frame_last_filter_delay < 0) {
+
+                	is->frame_last_dropped_pos = pkt->pos;
                     is->frame_last_dropped_pts = dpts;
                     is->frame_drops_early++;
                     ret = 0;
@@ -976,7 +995,16 @@ int CBeseyePlayer::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts,
             }
             SDL_UnlockMutex(is->pictq_mutex);
         }
+    	//av_log(NULL, AV_LOG_ERROR, "get_video_frame(), got_picture:%d, ret:%d\n", got_picture, ret);
 
+//    	if(ret){
+//    	    double time = av_gettime() / 1000000.0;
+//    	    /* update current video pts */
+//    	    is->video_current_pts = pkt->pts;
+//    	    is->video_current_pts_drift = is->video_current_pts - time;
+//    	    is->video_current_pos = pkt->pos;
+//    		is->frame_last_pts = pkt->pts;
+//    	}
         return ret;
     }
     return 0;
@@ -1114,11 +1142,15 @@ int video_thread(void *arg)
         avcodec_get_frame_defaults(frame);
         av_free_packet(&pkt);
 
+        long long lStartTime = time(NULL);
+
         ret = player->get_video_frame(is, frame, &pts_int, &pkt);
         if (ret < 0){
         	av_log(NULL, AV_LOG_ERROR, "video_thread(), fail to get_video_frame, ret:%d\n", ret);
             goto the_end;
         }
+
+    	//av_log(NULL, AV_LOG_ERROR, "video_thread(), get_video_frame takes:%lld, ret:%d\n", (time(NULL) - lStartTime), ret);
 
         if (!ret){
         	//av_log(NULL, AV_LOG_ERROR, "video_thread(), continue, ret:%d\n", ret);
@@ -1471,7 +1503,13 @@ void sdl_audio_callback(void *opaque, Uint8 *stream, int len)
         len1 = is->audio_buf_size - is->audio_buf_index;
         if (len1 > len)
             len1 = len;
-        memcpy(stream, (uint8_t *)is->audio_buf + is->audio_buf_index, len1);
+
+        if(player->isAudioMute()){
+        	memset(stream, 0, len1);
+        }else{
+            memcpy(stream, (uint8_t *)is->audio_buf + is->audio_buf_index, len1);
+        }
+
         len -= len1;
         stream += len1;
         is->audio_buf_index += len1;

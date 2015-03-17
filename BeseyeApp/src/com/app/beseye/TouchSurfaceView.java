@@ -25,6 +25,7 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Scroller;
 
@@ -247,7 +248,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     		Log.i(TAG, "sharedConstructing()");
         super.setClickable(true);
         getHolder().addCallback(this);	
-        
+               
         this.context = context;
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
         
@@ -1110,18 +1111,25 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     public void drawStreamBitmap(Bitmap bmp){
     	synchronized(this){
     		if(isCameraStatusOn() && mIsSurfaceReady){
+    			long lStartTs = System.currentTimeMillis();
         		Canvas canvas = getHolder().lockCanvas();
             	if(null != canvas){
             		try{
+            			long lTimeToLock = System.currentTimeMillis() - lStartTs;
         				canvas.drawColor(miBackgroundColor/*, PorterDuff.Mode.CLEAR*/);
+        				long lTimeToColor = System.currentTimeMillis() - lStartTs;
         		        //Log.d(TAG, "drawStreamBitmap(), redundantXSpace:"+redundantXSpace+", redundantYSpace:"+redundantYSpace+", scale:"+scale);
         		        //updateMatrix();
         				//printMatrixInfo();
         		        
         				if(null != bmp && false == bmp.isRecycled())
         					canvas.drawBitmap(bmp, matrix, null);
+        				long lTimeToDrawBmp = System.currentTimeMillis() - lStartTs;
         				if(mIsSurfaceReady)
         					getHolder().unlockCanvasAndPost(canvas);
+        				long lTimeToUnlock = System.currentTimeMillis() - lStartTs;
+        				
+        				Log.e(TAG, "drawStreamBitmap(), Time check("+lTimeToLock+", "+lTimeToColor+", "+lTimeToDrawBmp+", "+lTimeToUnlock+")");
             		}catch(java.lang.IllegalStateException e){
             			Log.e(TAG, "drawStreamBitmap(), e"+e.toString());
             		}
