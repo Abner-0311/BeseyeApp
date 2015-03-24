@@ -403,8 +403,8 @@
   <string name="signup_watch_out_desc_speaker">デバイスのマイク</string>
   <string name="signup_watch_out_done">デバイスを用意した、設定を開始する</string>
   <string name="signup_confirm_led_title">ステータスライトを確認</string>
-  <string name="signup_confirm_led_desc">緑色に点滅しない場合、数秒お待ちください</string>
-  <string name="signup_confirm_led_twinkling_green_light">ステータスランプが緑色に点滅していますか？</string>
+  <string name="signup_confirm_led_desc">ステータスランプが%s？緑色に点滅しない場合、数秒お待ちください</string>
+  <string name="signup_confirm_led_twinkling_green_light">緑色に点滅していますか</string>
   <string name="signup_confirm_led_done">はい。緑色に点滅しています</string>
   <string name="signup_pairing_fail_desc">再びプラグを外し、ステータスランプが緑色に点滅していたら、カメラに向かって10センチ以内に装置を置いてもう一度Ｌet it Beeを再試行してください。</string>
   <string name="signup_guideline_try_again_btn">もう一度試す</string>

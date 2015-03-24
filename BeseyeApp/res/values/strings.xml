@@ -403,7 +403,7 @@
   <string name="signup_watch_out_desc_speaker">"device speaker"</string>
   <string name="signup_watch_out_done">Phone is ready, next step</string>
   <string name="signup_confirm_led_title">Confirm status light</string>
-  <string name="signup_confirm_led_desc">Is the status light twinkling in green? If not, please hold on for a few seconds.</string>
+  <string name="signup_confirm_led_desc">Is the status light %s? If not, please hold on for a few seconds.</string>
   <string name="signup_confirm_led_twinkling_green_light">"twinkling in green"</string>
   <string name="signup_confirm_led_done">Yes, green light is twinkling, next step</string>
   <string name="signup_pairing_fail_desc">Please try to plug in your camera once again, and start Let it Bee™ until the green light is twinkling. Also make sure to keep your device near the camera within 10cms.</string>
