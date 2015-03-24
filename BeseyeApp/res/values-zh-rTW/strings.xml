@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><resources>
   <!-- TODO: string name="app_name" -->
-  <!--action to connect to a wifi-->
+  <!-- action to connect to a wifi -->
   <string name="connect">連線</string>
   <string name="cancel">取消</string>
   <string name="done">結束</string>
@@ -8,122 +8,122 @@
   <string name="yes">是</string>
   <string name="select">選擇</string>
   <string name="password">密碼</string>
-  <!--hint to unveil password mask-->
+  <!-- hint to unveil password mask -->
   <string name="show_password">顯示密碼</string>
   <string name="forget_password">忘記密碼</string>
   <string name="username">電子郵件</string>
-  <!--hint to create new account-->
+  <!-- hint to create new account -->
   <string name="hint_to_create_account">還沒有帳號？</string>
   <string name="account_create">建立帳號</string>
   <string name="login">登入</string>
   <string name="remove">移除</string>
   <string name="cont">繼續</string>
-  <!--Title of sound remind page-->
+  <!-- Title of sound remind page -->
   <string name="watch_out_sound">聲音提醒</string>
-  <!--hint of password length-->
+  <!-- hint of password length -->
   <string name="password_hint">至少6個字母，需包括英文與數字</string>
   <string name="action_settings">設定</string>
-  <!--entry to event list page-->
+  <!-- entry to event list page -->
   <string name="event_cam_view">錄影事件</string>
-  <!--entry to live streaming page-->
+  <!-- entry to live streaming page -->
   <string name="event_go_live">跳至直播</string>
-  <!--Item name to live streaming page in events page-->
+  <!-- Item name to live streaming page in events page  -->
   <string name="event_itm_live">直播</string>
-  <!--Camera status: live streaming is off-->
+  <!-- Camera status: live streaming is off  -->
   <string name="can_power_state_off">此攝影機關閉中</string>
-  <!--Camera status: live streaming is off and the connection to camera is down-->
+  <!-- Camera status: live streaming is off and the connection to camera is down-->
   <string name="can_power_state_disconnect">此攝影機斷線中</string>
   <string name="cam_setting_title_detach_cam">移除攝影機</string>
-  <!--Warning message for removing camera-->
+  <!-- Warning message for removing camera -->
   <string name="dialog_dettach_cam">攝影機 [%s] 和其已錄製的雲端影像將被刪除，您確定嗎？</string>
   <string name="network_ssid">網路名稱</string>
   <string name="network_other">其它...</string>
-  <!--action to scan wifi ap-->
+  <!-- action to scan wifi ap -->
   <string name="menu_scan">掃描</string>
-  <!--scanning wifi ap-->
+  <!-- scanning wifi ap -->
   <string name="network_scanning">掃描中...</string>
-  <!--Title of dialog for adding hidden SSID network-->
+  <!-- Title of dialog for adding hidden SSID network -->
   <string name="title_add_network">加入其他網路</string>
-  <!--dscription of wifi ap security type-->
+  <!-- dscription of wifi ap security type-->
   <string name="network_secure_with">網路加密技術 %s</string>
-  <!--status of wifi ap : poor connection-->
+  <!-- status of wifi ap : poor connection-->
   <string name="network_avoid_poor_network">訊號微弱，請選擇其他的網路…</string>
-  <!--status of wifi ap : authenticating-->
+  <!-- status of wifi ap : authenticating-->
   <string name="network_authenticating">驗證中...</string>
-  <!--status of wifi ap : obtain ip from wifi ap-->
+  <!-- status of wifi ap : obtain ip from wifi ap-->
   <string name="network_obtaining_ip">正在取得IP地址...</string>
-  <!--status of wifi ap : connecting to wifi ap-->
+  <!-- status of wifi ap : connecting to wifi ap-->
   <string name="network_connecting">連線中...</string>
-  <!--status of wifi ap : connected to wifi ap-->
+  <!-- status of wifi ap : connected to wifi ap-->
   <string name="network_connected">已連線</string>
-  <!--status of wifi ap : disconnecting to wifi ap-->
+  <!-- status of wifi ap : disconnecting to wifi ap-->
   <string name="network_disconnecting">斷線中...</string>
-  <!--status of wifi ap : disconnected to wifi ap-->
+  <!-- status of wifi ap : disconnected to wifi ap-->
   <string name="network_disconnected">已斷線</string>
-  <!--status of wifi ap : wifi ap is suspended-->
+  <!-- status of wifi ap : wifi ap is suspended-->
   <string name="network_suspended">連線已被暫停使用</string>
-  <!--status of wifi ap : wifi ap is failed to connect-->
+  <!-- status of wifi ap : wifi ap is failed to connect-->
   <string name="network_failed">連線失敗</string>
-  <!--status of wifi ap : wifi ap is idle-->
+  <!-- status of wifi ap : wifi ap is idle-->
   <string name="network_idle">等待狀態</string>
-  <!--status of wifi ap : wifi ap is blocked to connect-->
+  <!-- status of wifi ap : wifi ap is blocked to connect-->
   <string name="network_blocked">被阻擋</string>
-  <!--Title of timezone select page-->
+  <!-- Title of timezone select page-->
   <string name="title_timezone">選擇時區</string>
   <string name="zone_list_menu_sort_alphabetically">按字母排序</string>
   <string name="zone_list_menu_sort_by_timezone">按時區排序</string>
-  <!--Title of warning dialog-->
+  <!-- Title of warning dialog-->
   <string name="dialog_title_warning">警告</string>
-  <!--Title of info dialog-->
+  <!-- Title of info dialog-->
   <string name="dialog_title_info">資訊</string>
-  <!--Message of dialog when no network connection-->
+  <!-- Message of dialog when no network connection-->
   <string name="dialog_no_connectivity">請檢查您的網路狀態。</string>
-  <!--Title of loading dialog-->
+  <!-- Title of loading dialog-->
   <string name="dialog_loading">載入中...</string>
   <string name="dialog_setting">設定中…</string>
-  <!--Title of synchronizing dialog-->
+  <!-- Title of synchronizing dialog-->
   <string name="dialog_syncing">讀取攝影機資訊中…</string>
-  <!--Message of dialog when turning on wifi on phone-->
+  <!-- Message of dialog when turning on wifi on phone-->
   <string name="dialog_wifi_turning_on">打開無線網路...</string>
-  <!--Message of dialog when scanning wifi ap-->
+  <!-- Message of dialog when scanning wifi ap -->
   <string name="dialog_wifi_scanning">掃描無線網路裝置...</string>
-  <!--Message of dialog when setting up a wifi ap-->
+  <!-- Message of dialog when setting up a wifi ap -->
   <string name="dialog_wifi_setting">設定無線網路的裝置...</string>
-  <!--Message of dialog when failing to turn on phone wifi-->
+  <!-- Message of dialog when failing to turn on phone wifi -->
   <string name="dialog_wifi_fail_on">無法打開無線網路，請檢查您的無線網路設備狀態。</string>
-  <!--Message of dialog when failing to scan wifi ap-->
+  <!-- Message of dialog when failing to scan wifi ap -->
   <string name="dialog_wifi_fail_scan">無法掃描無線網路，請檢查此行動裝置的無線網路狀態。</string>
-  <!--Message of dialog when key(password) of wifi ap is wrong-->
+  <!-- Message of dialog when key(password) of wifi ap is wrong -->
   <string name="dialog_wifi_incorrect_password">您輸入的網路密碼不正確，請重新輸入。</string>
-  <!--Message of dialog when key(password) of wifi ap is wrong for WEP secuity type-->
+  <!-- Message of dialog when key(password) of wifi ap is wrong for WEP secuity type-->
   <string name="dialog_wifi_incorrect_password_wep">因為不正確之密碼或網路問題導致無法連線。\ n是否要再試一次？</string>
-  <!--Message of dialog when failing to connect to specific wifi ap-->
+  <!-- Message of dialog when failing to connect to specific wifi ap -->
   <string name="dialog_wifi_fail_to_connect">無法連接到無線網路裝置AP[%s]。\ n請檢查它是否可建立連線。</string>
-  <!--Message of dialog when no network connectivity via specific wifi ap-->
+  <!-- Message of dialog when no network connectivity via specific wifi ap-->
   <string name="dialog_wifi_invalid_connectivity">無法連接上無線網路裝置%s，請選擇其他無線上網裝置或再試一次。</string>
-  <!--description of wifi signal strength-->
+  <!-- description of wifi signal strength-->
   <string name="dialog_wifi_ap_signal">信號強度</string>
   <string name="dialog_wifi_ap_signal_Excellent">好</string>
   <string name="dialog_wifi_ap_signal_Good">尚可</string>
   <string name="dialog_wifi_ap_signal_Fair">不好</string>
   <string name="dialog_wifi_ap_signal_Poor">很糟</string>
-  <!--description of wifi WEP security key index-->
+  <!-- description of wifi WEP security key index-->
   <string name="dialog_wifi_ap_key_index">加密技術金鑰索引</string>
-  <!--description of wifi Security type-->
+  <!-- description of wifi Security type-->
   <string name="dialog_wifi_ap_security">加密技術</string>
-  <!--wifi Security type: None security protected-->
+  <!-- wifi Security type: None security protected-->
   <string name="dialog_wifi_ap_security_none">無</string>
-  <!--Title of Event type filter-->
+  <!-- Title of Event type filter-->
   <string name="title_event_filter">錄影事件過濾器</string>
-  <!--Event filter type: People-->
+  <!-- Event filter type: People-->
   <string name="notification_event_people">人物</string>
-  <!--Event filter type: Motion-->
+  <!-- Event filter type: Motion-->
   <string name="notification_event_motion">動作</string>
-  <!--Event filter type: Fire-->
+  <!-- Event filter type: Fire-->
   <string name="notification_event_fire">火</string>
-  <!--Event filter type: Sound-->
+  <!-- Event filter type: Sound-->
   <string name="notification_event_sound">聲音</string>
-  <!--Title of setting page-->
+  <!-- Title of setting page-->
   <string name="cam_setting_title">設定</string>
   <string name="cam_hardware_setting_title">硬體設定</string>
   <string name="cam_setting_title_power_setting">電源設定</string>
@@ -140,60 +140,60 @@
   <string name="cam_setting_title_special_functions">其它功能</string>
   <string name="cam_setting_title_emergency_siren">緊急警報</string>
   <string name="cam_setting_title_camera_inf">攝影機資訊</string>
-  <!--short description of camera status-->
+  <!-- short description of camera status-->
   <string name="cam_setting_title_power_on">開</string>
   <string name="cam_setting_title_power_off">關</string>
   <string name="cam_setting_title_power_disconnected">已斷線</string>
-  <!--options in notification setting page-->
+  <!-- options in notification setting page-->
   <string name="cam_setting_title_notification_event_notify_me">通知開關</string>
   <string name="cam_setting_title_notification_event_people_detect">偵測到人物</string>
   <string name="cam_setting_title_notification_event_motion_detect">偵測到動作</string>
   <string name="cam_setting_title_notification_event_fire_detect">偵測到火苗</string>
   <string name="cam_setting_title_notification_event_sound_detect">偵測到聲音</string>
   <string name="cam_setting_title_notification_event_offline_detect">離線</string>
-  <!--Warning Message of dialog when failed to change cam status-->
+  <!-- Warning Message of dialog when failed to change cam status-->
   <string name="cam_setting_fail_to_update_cam_status">目前無法更新攝影機狀態，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to change video upload quality-->
+  <!-- Warning Message of dialog when failed to change video upload quality-->
   <string name="cam_setting_fail_to_update_hd_quality">無法更新影像上傳品質，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to change notification settings-->
+  <!-- Warning Message of dialog when failed to change notification settings-->
   <string name="cam_setting_fail_to_update_notify_setting">無法更新通知設定，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to change status light-->
+  <!-- Warning Message of dialog when failed to change status light-->
   <string name="cam_setting_fail_to_update_led_status">無法更新指示燈狀態，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to change status of Camera microphone-->
+  <!-- Warning Message of dialog when failed to change status of Camera microphone-->
   <string name="cam_setting_fail_to_update_mic_status">無法更新攝影機麥克風設定，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to change microphone sensitivity-->
+  <!-- Warning Message of dialog when failed to change microphone sensitivity-->
   <string name="cam_setting_fail_to_update_mic_sensitivity">無法更新麥克風設定，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to change camera Wifi-->
+  <!-- Warning Message of dialog when failed to change camera Wifi-->
   <string name="cam_setting_fail_to_update_wifi_setting">無法更新的無線網路設定，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to change timezone-->
+  <!-- Warning Message of dialog when failed to change timezone-->
   <string name="cam_setting_fail_to_update_timezone">無法更新時區，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to change night vision status-->
+  <!-- Warning Message of dialog when failed to change night vision status-->
   <string name="cam_setting_fail_to_update_night_vision">無法更新夜視功能，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to change video upside-down-->
+  <!-- Warning Message of dialog when failed to change video upside-down-->
   <string name="cam_setting_fail_to_update_video_upside_down">無法設定影像上下顛倒，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to get camera info-->
+  <!-- Warning Message of dialog when failed to get camera info-->
   <string name="cam_setting_fail_to_get_cam_info">無法取得攝影機資訊，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to change schedule on/off status-->
+  <!-- Warning Message of dialog when failed to change schedule on/off status-->
   <string name="cam_setting_fail_to_update_schdule_status">無法更新時間排程，請稍後再試。</string>
-  <!--Message of dialog when adding a new schedule-->
+  <!-- Message of dialog when adding a new schedule-->
   <string name="cam_setting_schedule_add">建立..</string>
-  <!--Warning Message of dialog when failed to add schedule-->
+  <!-- Warning Message of dialog when failed to add schedule-->
   <string name="cam_setting_fail_to_add_schdule">無法建立時間排程，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to update schedule-->
+  <!-- Warning Message of dialog when failed to update schedule-->
   <string name="cam_setting_fail_to_update_schdule">無法更新時間排程，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to delete schedule-->
+  <!-- Warning Message of dialog when failed to delete schedule-->
   <string name="cam_setting_fail_to_del_schdule">無法刪除時間排程，請稍後再試。</string>
-  <!--Message of dialog when changing camera wifi-->
+  <!-- Message of dialog when changing camera wifi-->
   <string name="cam_setting_wifi_setting_apply">正在設定無線網路，請稍後。</string>
-  <!--Message of dialog when failed to change camera wifi-->
+  <!-- Message of dialog when failed to change camera wifi-->
   <string name="cam_setting_fail_to_apply_wifi_setting">無法將攝影機連線至新的無線網路。</string>
-  <!--Message of dialog when changing camera wifi successfully-->
+  <!-- Message of dialog when changing camera wifi successfully-->
   <string name="cam_setting_succeed_to_apply_wifi_setting">連線至新的無線網路。</string>
-  <!--Warning Message of dialog when failed to get wifi ap scan list from camera-->
+  <!-- Warning Message of dialog when failed to get wifi ap scan list from camera -->
   <string name="cam_setting_fail_to_get_wifi_list">無法讀取無線網路列表，請稍後再試。</string>
   <string name="cam_setting_hw_mic_sensitivity_title">攝影機麥克風</string>
   <string name="cam_setting_hw_status_light_title">狀態指示燈</string>
-  <!--options in night vision setting page-->
+  <!-- options in night vision setting page-->
   <string name="cam_setting_hw_night_vision_title">夜視</string>
   <string name="cam_setting_hw_night_vision_auto">自動</string>
   <string name="cam_setting_hw_night_vision_on">開</string>
@@ -202,51 +202,51 @@
   <string name="cam_setting_title_video_upside_down">影像上下顛倒</string>
   <string name="cam_setting_title_wifi_setting">無線網路設定</string>
   <string name="cam_setting_title_cam_info">攝影機資訊</string>
-  <!--Warning Message of dialog when new camera name is empty-->
+  <!-- Warning Message of dialog when new camera name is empty -->
   <string name="cam_setting_empty_name_warning">攝影機名稱不可為空白。</string>
   <string name="cam_info_cam_name">攝影機名稱</string>
   <string name="cam_info_sw_ver">軟體版本</string>
   <string name="cam_info_sn">攝影機序號</string>
   <string name="cam_info_mac">MAC地址</string>
   <string name="unknown">N / A</string>
-  <!--Warning Message of dialog when network or server error in player page-->
+  <!-- Warning Message of dialog when network or server error in player page -->
   <string name="server_error">網路或伺服器錯誤，請稍後再試。</string>
-  <!--Warning Message of dialog when can not get valid DVR path-->
+  <!-- Warning Message of dialog when can not get valid DVR path -->
   <string name="streaming_invalid_dvr">欲撥放之雲端影像不存在。</string>
-  <!--Warning Message of dialog when out of DVR clip-->
+  <!-- Warning Message of dialog when out of DVR clip -->
   <string name="streaming_no_more_dvr">沒有錄影影像可播放。</string>
-  <!--Warning Message of dialog when can not get valid live streaming path-->
+  <!-- Warning Message of dialog when can not get valid live streaming path -->
   <string name="streaming_playing_error">欲撥放之雲端影像不存在或服務器錯誤，請檢查您的網路連線狀態再試一次。</string>
-  <!--Warning Message of dialog when network connectivity is not good-->
+  <!-- Warning Message of dialog when network connectivity is not good -->
   <string name="streaming_error_no_network">請檢查您的網路連線狀態。</string>
-  <!--Warning Message of dialog when error occurred and it cant be identified-->
+  <!-- Warning Message of dialog when error occurred and it cant be identified-->
   <string name="streaming_error_unknown">碰上了未知的錯誤，請稍後再試。</string>
-  <!--Warning Message of dialog when app is out of memory and ask user to relaunch it-->
+  <!-- Warning Message of dialog when app is out of memory and ask user to relaunch it-->
   <string name="streaming_error_low_mem">您的裝置記憶體不足導致程式無法執行，請重新啟動App。</string>
-  <!--Description of sound pairing page-->
+  <!-- Description of sound pairing page-->
   <string name="signup_paring_title_1">正在使用 Let it Bee™ 技術設定您的Beseye</string>
   <string name="signup_paring_title_2">請稍待</string>
-  <!--Warning Message of dialog when failed to Sign up-->
+  <!-- Warning Message of dialog when failed to Sign up-->
   <string name="msg_signup_error">註冊失敗，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to login-->
+  <!-- Warning Message of dialog when failed to login-->
   <string name="msg_login_error">登入失敗，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to pairing-->
+  <!-- Warning Message of dialog when failed to pairing-->
   <string name="msg_pairing_error">攝影機設定失敗，請稍後再試。</string>
-  <!--Warning Message of dialog when failed to set new camera name-->
+  <!-- Warning Message of dialog when failed to set new camera name-->
   <string name="msg_set_cam_name_fail">無法對攝影機取名，請稍後再試。</string>
-  <!--Warning Message of dialog when email format is invalid-->
+  <!-- Warning Message of dialog when email format is invalid-->
   <string name="msg_invalid_account_format">無效的電子郵件格式。</string>
-  <!--Warning Message of dialog when password format is invalid-->
+  <!-- Warning Message of dialog when password format is invalid-->
   <string name="msg_pw_length_error">無效的密碼格式。密碼必須是6-32個字母，並包含英文與數字。</string>
-  <!--Warning Message of dialog when password is too short-->
+  <!-- Warning Message of dialog when password is too short-->
   <string name="msg_pw_too_short">您的密碼太短。最少6個字母。</string>
-  <!--Warning Message of dialog when registration email is used-->
+  <!-- Warning Message of dialog when registration email is used-->
   <string name="msg_signup_err_email_used">該郵件已被註冊過，請使用不同的電子郵件地址。</string>
-  <!--Warning Message of dialog when wrong password to login-->
+  <!-- Warning Message of dialog when wrong password to login-->
   <string name="msg_login_wrong_password">錯誤的密碼，請輸入正確密碼。</string>
-  <!--Warning Message of dialog when the email to login is not found in server-->
+  <!-- Warning Message of dialog when the email to login is not found in server-->
   <string name="msg_account_not_found">不正確的電子郵件地址，請輸入正確地址。</string>
-  <!--Hint Message of dialog when pairing is processing-->
+  <!-- Hint Message of dialog when pairing is processing-->
   <string name="toast_pairing_wait">攝影機設定中，請稍待。</string>
   <string name="toast_pairing_enter_cam_name">幫您的Beseye 取個好認的名字吧。</string>
   <string name="dialog_msg_signup">註冊...</string>
@@ -262,22 +262,22 @@
   <string name="signup_bottom_login">登入</string>
   <string name="signup_bottom_signup">設定攝影機與註冊</string>
   <string name="signup_before_setup_start">開始</string>
-  <!--Hint Message in before setup page-->
+  <!-- Hint Message in before setup page-->
   <string name="signup_before_setup_description">請將攝影機插上電源並等待綠燈閃爍，並將行動裝置拿至距離攝影機30 公分左右。</string>
   <string name="signup_sound_reminder_description">請注意，設定攝影機的過程中您的行動裝置將會發出聲響。</string>
-  <!--Hint Message for TOS and privacy policy-->
+  <!-- Hint Message for TOS and privacy policy-->
   <string name="signup_createAccount_description_title">繼續下一步，我已同意Beseye的</string>
   <string name="signup_createAccount_description_terms">服務條款</string>
   <string name="signup_createAccount_description_and">與</string>
   <string name="signup_createAccount_description_policy">隱私保護政策</string>
-  <!--Hint Message in pairing failed page-->
+  <!-- Hint Message in pairing failed page-->
   <string name="signup_try_again_description_1">請將攝影機插上電源，並將行動裝置拿至距離攝影機30 公分左右，並檢查無線網路密碼是正確的。</string>
   <string name="signup_try_again_description_2">還是有問題？請參閱我們的</string>
   <string name="signup_try_again_description_3">安裝指南</string>
   <string name="signup_try_again_btn">好，再試一次</string>
-  <!--Hint Message after pairing is done and ask user to assign cam name-->
-  <string name="signup_name_camera">就快設定完成了，\n幫您的Beseye 取個好認的名字吧</string>
-  <!--Congratulation Message in live player page after pairing-->
+  <!-- Hint Message after pairing is done and ask user to assign cam name-->
+  <string name="signup_name_camera">就快設定完成了，\n 幫您的Beseye 取個好認的名字吧</string>
+  <!-- Congratulation Message in live player page after pairing-->
   <string name="signup_paring_done">攝影機設定已完成！\n 現在您可以拔掉插座將之安裝在您想要的位置上，所有設定會自動在您插上電之後回復。現在就開始享用您的Beseye Pro 服務吧!</string>
   <string name="datetime_month">月</string>
   <string name="datetime_day">天</string>
@@ -290,68 +290,68 @@
   <string name="event_list_fire_detected">偵測到火苗</string>
   <string name="event_list_motion_detected">偵測到動作</string>
   <string name="event_list_unknown_detected">事件偵測</string>
-  <!--Notification Messages for events-->
+  <!-- Notification Messages for events-->
   <string name="notify_motion_detect">%s 偵測動作。去看看吧。</string>
   <string name="notify_people_detect">%s 偵測人物。去看看吧。</string>
   <string name="notify_offline_detect">%s：無線網路斷線。</string>
   <string name="camera_list_off">此攝影機關閉中</string>
   <string name="camera_list_disconected">此攝影機斷線中</string>
-  <!--Hint message in camera list item when the cam is disconnected-->
+  <!-- Hint message in camera list item when the cam is disconnected-->
   <string name="camera_list_more">點擊查看更多</string>
-  <!--Hint message in camera list item when there is no camera-->
+  <!-- Hint message in camera list item when there is no camera-->
   <string name="camera_list_add">按這裡新增攝影機。\n或點選左上方選單來觀看展示攝影機。</string>
-  <!--Hint message in camera list item when servers are down or network issue-->
+  <!-- Hint message in camera list item when servers are down or network issue-->
   <string name="camera_list_failed_title">無法連線至您的攝影機</string>
   <string name="camera_list_failed_content">請檢查行動裝置與攝影機的網路狀態，然後再試一次</string>
   <string name="cam_list_tilte">我的攝影機</string>
-  <!--Menu items on camera list page-->
+  <!-- Menu items on camera list page-->
   <string name="cam_menu_demo_cam">展示攝影機</string>
   <string name="cam_menu_news">公告</string>
   <string name="cam_menu_about">關於</string>
   <string name="cam_menu_support">支援</string>
   <string name="cam_menu_logout">登出</string>
   <string name="update_title">升級攝影機軟體</string>
-  <!--Action to update cam SW-->
+  <!-- Action to update cam SW -->
   <string name="update_now">立刻更新</string>
   <string name="cam_update_progress">攝影機更新中...%s</string>
   <string name="cam_update_title">您可以更新Beseye攝影機至%s版本</string>
   <string name="cam_update_success">成功更新攝影機。</string>
   <string name="cam_update_timeout">更新服務無回應，請稍後再試。</string>
   <string name="cam_update_failed">無法更新攝影機，請稍後再試。</string>
-  <!--Warning Message when all cameras are disconnected now and can not to update-->
+  <!-- Warning Message when all cameras are disconnected now and can not to update-->
   <string name="cam_update_no_valid_cam">沒有在線的攝影機可供更新。</string>
-  <!--Title of forget password page-->
+  <!-- Title of forget password page -->
   <string name="forget_password_check_title">請檢查您的電子郵件信箱</string>
   <string name="forget_password_btn_submit">送出</string>
   <string name="forget_password_instruction">不用擔心！只需填寫您的電子郵件地址，我們將送給您重設密碼說明。</string>
   <string name="forget_password_check_mail_summary">Beseye 已經將密碼重設步驟發送到以下郵件地址：</string>
   <string name="forget_password_check_mail_note">提醒：該電子郵件將從no-reply@support.beseye.com 發出\ n如果您沒有在幾分鐘內收到該電子郵件，\ n請檢查您的垃圾郵件。</string>
-  <!--Toast message when new camera is complete to pair and connected-->
+  <!-- Toast message when new camera is complete to pair and connected-->
   <string name="toast_new_cam_activated">新加入的攝影機已連線，請刷新您的攝影機列表。</string>
-  <!--Toast message when camera is connected after cam wifi changed-->
+  <!-- Toast message when camera is connected after cam wifi changed-->
   <string name="toast_cam_change_wifi_done">攝影機%s已連線，請刷新您的攝影機列表。</string>
-  <!--Toast message when user password is changed by other devices-->
+  <!-- Toast message when user password is changed by other devices-->
   <string name="toast_password_changed">您的密碼已更改，請重新登入。</string>
-  <!--Toast message when user session is invalid or expired-->
+  <!-- Toast message when user session is invalid or expired-->
   <string name="toast_session_invalid">已自動登出，請重新登入。</string>
-  <!--Toast message when camera is removed from camera list-->
+  <!-- Toast message when camera is removed from camera list -->
   <string name="toast_cam_deactivated">%s攝影機已被移除，請刷新您的攝影機列表。</string>
-  <!--Toast message when camera is disconnected due to network issue-->
+  <!-- Toast message when camera is disconnected due to network issue-->
   <string name="notify_offline_detect_player">攝影機離線中，請檢查您的網路連接。</string>
-  <!--Toast message when camera is disconnected due to network issue in player page-->
+  <!-- Toast message when camera is disconnected due to network issue in player page-->
   <string name="notify_cam_off_detect_player">已關閉攝影機。</string>
-  <!--Toast message when camera is disconnected due to network issue in camera list page-->
+  <!-- Toast message when camera is disconnected due to network issue in camera list page-->
   <string name="notify_cam_off_detect_cam_list">已關閉攝影機%s。</string>
   <string name="about_title">關於Beseye</string>
   <string name="about_ver">Beseye 版本%s</string>
   <string name="about_desc">貝斯（Bes），古埃及神祇中的家庭守護之神，人們習慣將貝斯繪製在家中的重要角落，象徵為家庭的歡樂安泰祈福。Beseye，以守護家庭安全為本，用貝斯之眼，看照親子居家安全。\n當安全監控進入雲端世代，透過高端計算與辨識技術，監控服務走入家庭，成為最堅固的守護堡壘。\n將質感與風格融入產品設計思維，安全監控設備成為居家生活美學，監視鏡頭將不再是必須藏入角落的工具。\n呵護孩子的成長之路，讓異地也能相聚同在，Beseye聚焦親子與居家照護、重新定義家庭安全，留下珍貴時刻。</string>
-  <!--descriptions of pull to refresh listview-->
+  <!-- descriptions of pull to refresh listview-->
   <string name="loading_latest_update">最後更新時間%s</string>
   <string name="pull_to_refresh_pull_label">下拉刷新...</string>
   <string name="pull_to_refresh_release_label">放開刷新...</string>
   <string name="pull_to_refresh_refreshing_label">更新中...</string>
   <string name="pull_to_refresh_from_bottom_pull_label">拉起刷新...</string>
-  <!--Timezone definition begin-->
+  <!-- Timezone definition begin -->
   <string name="tz_us_eastern">美國 - 東部</string>
   <string name="tz_us_central">美國 - 中央區</string>
   <string name="tz_us_pacific">美國 - 太平洋區</string>
