@@ -282,6 +282,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		if(BeseyeUtils.canUpdateFromHockeyApp()){
 			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
 		}else if(BeseyeUtils.isProductionVersion()){
+			//Log.i(TAG, "checkForUpdates(), for production:"+HOCKEY_APP_ID);
 			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListenerForProduction, false);
 		}
 	}
@@ -301,6 +302,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			UpdateManager.unregister();
 			
 			final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+			if(BeseyeUtils.isProductionVersion()){
+				Log.i(TAG, "onUpdateAvailable(), for production, appPackageName:"+appPackageName);
+			}
 			try {
 			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
 			} catch (android.content.ActivityNotFoundException anfe) {
@@ -312,6 +316,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		public void onNoUpdateAvailable() {
 			super.onNoUpdateAvailable();
 			onAppUpdateNotAvailable();
+			if(BeseyeUtils.isProductionVersion()){
+				Log.i(TAG, "onNoUpdateAvailable(), for production");
+			}
 		}
 	}; 
 	

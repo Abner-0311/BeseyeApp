@@ -703,7 +703,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    final SharedPreferences prefs = getGCMPreferences(context);
 	    String registrationId = prefs.getString(PROPERTY_REG_ID, "");
 	    if (registrationId.isEmpty()) {
-	        Log.d(TAG, "Registration not found.");
+	        //Log.d(TAG, "Registration not found.");
 	        return "";
 	    }
 	    // Check if app was updated; if so, it must clear the registration ID
