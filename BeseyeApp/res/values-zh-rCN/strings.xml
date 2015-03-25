@@ -326,7 +326,7 @@
   <string name="forget_password_btn_submit">送出</string>
   <string name="forget_password_instruction">不用担心！只需填写您的电子邮件地址，我们将送给您重设密码说明。</string>
   <string name="forget_password_check_mail_summary">Beseye 已经将密码重设步骤发送到以下邮件地址：</string>
-  <string name="forget_password_check_mail_note">提醒：该电子邮件将从no-reply@support.beseye.com 发出\n如果您没有在几分钟内收到该电子邮件，\n请检查您的垃圾邮件。</string>
+  <string name="forget_password_check_mail_note">提醒：该电子邮件将从no-reply@support.beseye.com 发出，如果您没有在几分钟内收到该电子邮件，请检查您的垃圾邮件。</string>
   <!-- Toast message when new camera is complete to pair and connected-->
   <string name="toast_new_cam_activated">新加入的摄像机已连接，请刷新您的摄像机列表。</string>
   <!-- Toast message when camera is connected after cam wifi changed-->

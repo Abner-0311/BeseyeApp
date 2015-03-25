@@ -52,11 +52,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editText_password"
+        android:layout_marginTop="@dimen/login_marginSmall"
         android:gravity="left"
         android:textColor="@color/signup_font_description_color"
         android:textSize="@dimen/login_fontSmall"
         android:text="@string/password_hint"
-        android:layout_marginTop="4dp"
         android:layout_alignLeft="@+id/editText_password"
         android:layout_alignRight="@+id/editText_password"/>
 
