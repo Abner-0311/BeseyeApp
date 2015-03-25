@@ -96,9 +96,9 @@
   <!-- Message of dialog when key(password) of wifi ap is wrong -->
   <string name="dialog_wifi_incorrect_password">您輸入的網路密碼不正確，請重新輸入。</string>
   <!-- Message of dialog when key(password) of wifi ap is wrong for WEP secuity type-->
-  <string name="dialog_wifi_incorrect_password_wep">因為不正確之密碼或網路問題導致無法連線。\ n是否要再試一次？</string>
+  <string name="dialog_wifi_incorrect_password_wep">因為不正確之密碼或網路問題導致無法連線。是否要再試一次？</string>
   <!-- Message of dialog when failing to connect to specific wifi ap -->
-  <string name="dialog_wifi_fail_to_connect">無法連接到無線網路裝置AP[%s]。\ n請檢查它是否可建立連線。</string>
+  <string name="dialog_wifi_fail_to_connect">無法連接到無線網路裝置AP[%s]。\n請檢查它是否可建立連線。</string>
   <!-- Message of dialog when no network connectivity via specific wifi ap-->
   <string name="dialog_wifi_invalid_connectivity">無法連接上無線網路裝置%s，請選擇其他無線上網裝置或再試一次。</string>
   <!-- description of wifi signal strength-->
@@ -163,7 +163,7 @@
   <string name="cam_setting_fail_to_update_mic_status">無法更新攝影機麥克風設定，請稍後再試。</string>
   <!-- Warning Message of dialog when failed to change microphone sensitivity-->
   <string name="cam_setting_fail_to_update_mic_sensitivity">無法更新麥克風設定，請稍後再試。</string>
-  <!-- Warning Message of dialog when failed to change camera Wifi-->
+  <!-- Warning Message of dialog when failed to change camera Wi-Fi-->
   <string name="cam_setting_fail_to_update_wifi_setting">無法更新的無線網路設定，請稍後再試。</string>
   <!-- Warning Message of dialog when failed to change timezone-->
   <string name="cam_setting_fail_to_update_timezone">無法更新時區，請稍後再試。</string>
@@ -306,6 +306,7 @@
   <string name="cam_list_tilte">我的攝影機</string>
   <!-- Menu items on camera list page-->
   <string name="cam_menu_demo_cam">展示攝影機</string>
+  <string name="cam_menu_private_demo_cam">私人攝影機</string>  
   <string name="cam_menu_news">公告</string>
   <string name="cam_menu_about">關於</string>
   <string name="cam_menu_support">支援</string>
@@ -325,7 +326,7 @@
   <string name="forget_password_btn_submit">送出</string>
   <string name="forget_password_instruction">不用擔心！只需填寫您的電子郵件地址，我們將送給您重設密碼說明。</string>
   <string name="forget_password_check_mail_summary">Beseye 已經將密碼重設步驟發送到以下郵件地址：</string>
-  <string name="forget_password_check_mail_note">提醒：該電子郵件將從no-reply@support.beseye.com 發出\ n如果您沒有在幾分鐘內收到該電子郵件，\ n請檢查您的垃圾郵件。</string>
+  <string name="forget_password_check_mail_note">提醒：該電子郵件將從no-reply@support.beseye.com 發出\n如果您沒有在幾分鐘內收到該電子郵件，\n請檢查您的垃圾郵件。</string>
   <!-- Toast message when new camera is complete to pair and connected-->
   <string name="toast_new_cam_activated">新加入的攝影機已連線，請刷新您的攝影機列表。</string>
   <!-- Toast message when camera is connected after cam wifi changed-->
@@ -409,7 +410,7 @@
   <string name="signup_pairing_fail_desc">請你拔掉插頭重新插上，確認鏡頭燈號為「閃爍綠燈」，且手機喇叭距離鏡頭10公分，再開始Let it Bee™．</string>
   <string name="signup_guideline_try_again_btn">OK，再設定一次看看</string>
   <string name="hint_hold_to_talk_poor_network_quality">網路連線不穩定，\n請再次嘗試通話．</string>
-  <string name="msg_wifi_pw_length_error_wpa">無效的WiFi密碼長度。密碼必須是8-64個字母。</string>
-  <string name="msg_wifi_pw_length_error_wep">無效的WiFi密碼長度。密碼必須是5至13個字母。</string>
-  <string name="msg_wifi_setting_info_error">無效的WiFi設定。</string>
+  <string name="msg_wifi_pw_length_error_wpa">無效的Wi-Fi密碼長度。密碼必須是8-64個字母。</string>
+  <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5至13個字母。</string>
+  <string name="msg_wifi_setting_info_error">無效的Wi-Fi設定。</string>
 </resources>

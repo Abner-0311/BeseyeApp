@@ -133,47 +133,51 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	protected Dialog onCreateDialog(int id) {
 		if(DEBUG)
 			Log.d(TAG, "WifiControlBaseActivity::onCreateDialog()");
-		Dialog dialog;
+		Dialog dialog = null;
 		switch(id){
 			case DIALOG_ID_WIFI_AP_INFO:{
-				dialog = new Dialog(this);
-				dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-				dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-				dialog.setContentView(createWifiAPInfoView(false, 0));
-				
-				if(null != dialog){
-					dialog.setCanceledOnTouchOutside(true);
-					dialog.setOnCancelListener(new OnCancelListener(){
-						@Override
-						public void onCancel(DialogInterface arg0) {
-							removeMyDialog(DIALOG_ID_WIFI_AP_INFO);
-						}});
-					dialog.setOnDismissListener(new OnDismissListener(){
-						@Override
-						public void onDismiss(DialogInterface arg0) {
-							mWifiApPassword = null;
-						}});
+				if(null != mChosenWifiAPInfo){
+					dialog = new Dialog(this);
+					dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+					dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+					dialog.setContentView(createWifiAPInfoView(false, 0));
+					
+					if(null != dialog){
+						dialog.setCanceledOnTouchOutside(true);
+						dialog.setOnCancelListener(new OnCancelListener(){
+							@Override
+							public void onCancel(DialogInterface arg0) {
+								removeMyDialog(DIALOG_ID_WIFI_AP_INFO);
+							}});
+						dialog.setOnDismissListener(new OnDismissListener(){
+							@Override
+							public void onDismiss(DialogInterface arg0) {
+								mWifiApPassword = null;
+							}});
+					}
 				}
 		    	break;
 			}
 			case DIALOG_ID_WIFI_AP_INFO_ADD:{
-				dialog = new Dialog(this);
-				dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-				dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-				dialog.setContentView(createWifiAPInfoAddView(false, 0));
-				
-				if(null != dialog){
-					dialog.setCanceledOnTouchOutside(true);
-					dialog.setOnCancelListener(new OnCancelListener(){
-						@Override
-						public void onCancel(DialogInterface arg0) {
-							removeMyDialog(DIALOG_ID_WIFI_AP_INFO);
-						}});
-					dialog.setOnDismissListener(new OnDismissListener(){
-						@Override
-						public void onDismiss(DialogInterface arg0) {
-							mWifiApPassword = null;
-						}});
+				if(null != mChosenWifiAPInfo){
+					dialog = new Dialog(this);
+					dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+					dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+					dialog.setContentView(createWifiAPInfoAddView(false, 0));
+					
+					if(null != dialog){
+						dialog.setCanceledOnTouchOutside(true);
+						dialog.setOnCancelListener(new OnCancelListener(){
+							@Override
+							public void onCancel(DialogInterface arg0) {
+								removeMyDialog(DIALOG_ID_WIFI_AP_INFO);
+							}});
+						dialog.setOnDismissListener(new OnDismissListener(){
+							@Override
+							public void onDismiss(DialogInterface arg0) {
+								mWifiApPassword = null;
+							}});
+					}
 				}
 				break;
 			}
@@ -576,7 +580,12 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 								
 								startActivity(intent);
 								setResult(RESULT_OK);
-							}
+								
+								if(bPasswordOnly){
+									removeMyDialog(DIALOG_ID_WIFI_AP_INCORRECT_PW);
+								}else{
+									removeMyDialog(DIALOG_ID_WIFI_AP_INFO);
+								}							}
 							if(DEBUG)
 								Log.i(TAG, "WifiControlBaseActivity::onClick(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
 						}});

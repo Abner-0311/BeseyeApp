@@ -84,11 +84,11 @@
   <!-- Title of synchronizing dialog-->
   <string name="dialog_syncing">Syncing…</string>
   <!-- Message of dialog when turning on wifi on phone-->
-  <string name="dialog_wifi_turning_on">Turning on Wifi…</string>
+  <string name="dialog_wifi_turning_on">Turning on Wi-Fi…</string>
   <!-- Message of dialog when scanning wifi ap -->
-  <string name="dialog_wifi_scanning">Scanning Wifi AP…</string>
+  <string name="dialog_wifi_scanning">Scanning Wi-Fi AP…</string>
   <!-- Message of dialog when setting up a wifi ap -->
-  <string name="dialog_wifi_setting">Setting up Wifi AP…</string>
+  <string name="dialog_wifi_setting">Setting up Wi-Fi AP…</string>
   <!-- Message of dialog when failing to turn on phone wifi -->
   <string name="dialog_wifi_fail_on">Cannot turn on wifi, please check wifi status on your device.</string>
   <!-- Message of dialog when failing to scan wifi ap -->
@@ -98,9 +98,9 @@
   <!-- Message of dialog when key(password) of wifi ap is wrong for WEP secuity type-->
   <string name="dialog_wifi_incorrect_password_wep">Unable to connect due to an incorrect password or network issues.\nWould you like to try again?</string>
   <!-- Message of dialog when failing to connect to specific wifi ap -->
-  <string name="dialog_wifi_fail_to_connect">Cannot connect to Wifi AP [%s].\nPlease check if it is available.</string>
+  <string name="dialog_wifi_fail_to_connect">Cannot connect to Wi-Fi AP [%s].\nPlease check if it is available.</string>
   <!-- Message of dialog when no network connectivity via specific wifi ap-->
-  <string name="dialog_wifi_invalid_connectivity">Wifi AP %s has connection issues. Please choose another Wifi AP or try again.</string>
+  <string name="dialog_wifi_invalid_connectivity">Wi-Fi AP %s has connection issues. Please choose another Wi-Fi AP or try again.</string>
   <!-- description of wifi signal strength-->
   <string name="dialog_wifi_ap_signal">Signal strength</string>
   <string name="dialog_wifi_ap_signal_Excellent">Excellent</string>
@@ -163,8 +163,8 @@
   <string name="cam_setting_fail_to_update_mic_status">Fail to update microphone status. Please try again later.</string>
   <!-- Warning Message of dialog when failed to change microphone sensitivity-->
   <string name="cam_setting_fail_to_update_mic_sensitivity">Fail to update microphone status. Please try again later.</string>
-  <!-- Warning Message of dialog when failed to change camera Wifi-->
-  <string name="cam_setting_fail_to_update_wifi_setting">Fail to update WiFi setting. Please try again later.</string>
+  <!-- Warning Message of dialog when failed to change camera Wi-Fi-->
+  <string name="cam_setting_fail_to_update_wifi_setting">Fail to update Wi-Fi setting. Please try again later.</string>
   <!-- Warning Message of dialog when failed to change timezone-->
   <string name="cam_setting_fail_to_update_timezone">Fail to update timezone. Please try again later.</string>
   <!-- Warning Message of dialog when failed to change night vision status-->
@@ -184,13 +184,13 @@
   <!-- Warning Message of dialog when failed to delete schedule-->
   <string name="cam_setting_fail_to_del_schdule">Fail to delete schedule. Please try again later.</string>
   <!-- Message of dialog when changing camera wifi-->
-  <string name="cam_setting_wifi_setting_apply">WiFi config is applying. Please wait for a while.</string>
+  <string name="cam_setting_wifi_setting_apply">Wi-Fi config is applying. Please wait for a while.</string>
   <!-- Message of dialog when failed to change camera wifi-->
-  <string name="cam_setting_fail_to_apply_wifi_setting">Cannot apply to new WiFi.</string>
+  <string name="cam_setting_fail_to_apply_wifi_setting">Cannot apply to new Wi-Fi.</string>
   <!-- Message of dialog when changing camera wifi successfully-->
-  <string name="cam_setting_succeed_to_apply_wifi_setting">Apply to new WiFi.</string>
+  <string name="cam_setting_succeed_to_apply_wifi_setting">Apply to new Wi-Fi.</string>
   <!-- Warning Message of dialog when failed to get wifi ap scan list from camera -->
-  <string name="cam_setting_fail_to_get_wifi_list">Fail to get WiFi list from camera. Please try again later.</string>
+  <string name="cam_setting_fail_to_get_wifi_list">Fail to get Wi-Fi list from camera. Please try again later.</string>
   <string name="cam_setting_hw_mic_sensitivity_title">Camera microphone</string>
   <string name="cam_setting_hw_status_light_title">Status light</string>
   <!-- options in night vision setting page-->
@@ -200,7 +200,7 @@
   <string name="cam_setting_hw_night_vision_off">Off</string>
   <string name="cam_setting_hw_timezone_title">Time zone</string>
   <string name="cam_setting_title_video_upside_down">Video upside-down</string>
-  <string name="cam_setting_title_wifi_setting">Wifi setting</string>
+  <string name="cam_setting_title_wifi_setting">Wi-Fi setting</string>
   <string name="cam_setting_title_cam_info">Camera information</string>
   <!-- Warning Message of dialog when new camera name is empty -->
   <string name="cam_setting_empty_name_warning">Camera name cannot be blank.</string>
@@ -254,9 +254,9 @@
   <string name="dialog_msg_logiout">Log out…</string>
   <string name="signup_title_before_setup">Before setup</string>
   <string name="signup_title_create_account">Create account</string>
-  <string name="signup_title_cam_wifi_settings">Camera WiFi Settings</string>
+  <string name="signup_title_cam_wifi_settings">Camera Wi-Fi Settings</string>
   <string name="signup_title_cam_pair_fail">Please try again</string>
-  <string name="signup_title_wifi_list">WiFi List</string>
+  <string name="signup_title_wifi_list">Wi-Fi List</string>
   <string name="signup_learn_more">Learn more about</string>
   <string name="signup_beseye">Beseye</string>
   <string name="signup_bottom_login">Log in</string>
@@ -293,7 +293,7 @@
   <!-- Notification Messages for events-->
   <string name="notify_motion_detect">Motion detected by %s. Go and check it up.</string>
   <string name="notify_people_detect">People detected by %s. Go and check it up.</string>
-  <string name="notify_offline_detect">%s: WiFi disconnected.</string>
+  <string name="notify_offline_detect">%s: Wi-Fi disconnected.</string>
   <string name="camera_list_off">This camera is off</string>
   <string name="camera_list_disconected">This camera is disconnected</string>
   <!-- Hint message in camera list item when the cam is disconnected-->
@@ -306,6 +306,7 @@
   <string name="cam_list_tilte">My cameras</string>
   <!-- Menu items on camera list page-->
   <string name="cam_menu_demo_cam">Demo cameras</string>
+  <string name="cam_menu_private_demo_cam">Private cameras</string>
   <string name="cam_menu_news">News</string>
   <string name="cam_menu_about">About</string>
   <string name="cam_menu_support">Support</string>

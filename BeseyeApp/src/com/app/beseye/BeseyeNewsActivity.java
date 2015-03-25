@@ -60,6 +60,10 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 		
 		if(Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE)){
 			mStrLocale = "zh-tw";
+		}else if(Locale.getDefault().equals(Locale.JAPAN) || Locale.getDefault().equals(Locale.JAPANESE) ){
+			mStrLocale = "ja";
+		}else if(Locale.getDefault().equals(Locale.SIMPLIFIED_CHINESE)){
+			mStrLocale = "zh-cn";
 		}
 		
 		mbIgnoreSessionCheck = true;

@@ -163,7 +163,7 @@
   <string name="cam_setting_fail_to_update_mic_status">マイク設定の更新ができませんでした。再実行してください。</string>
   <!-- Warning Message of dialog when failed to change microphone sensitivity-->
   <string name="cam_setting_fail_to_update_mic_sensitivity">マイク設定の更新ができませんでした。再実行してください。</string>
-  <!-- Warning Message of dialog when failed to change camera Wifi-->
+  <!-- Warning Message of dialog when failed to change camera Wi-Fi-->
   <string name="cam_setting_fail_to_update_wifi_setting">Wi-Fi 設定の更新ができませんでした。再実行してください。</string>
   <!-- Warning Message of dialog when failed to change timezone-->
   <string name="cam_setting_fail_to_update_timezone">タイムゾーン設定の更新ができませんでした。再実行してください。</string>
@@ -306,6 +306,7 @@
   <string name="cam_list_tilte">カメラ一覧</string>
   <!-- Menu items on camera list page-->
   <string name="cam_menu_demo_cam">デモカメラ一覧</string>
+  <string name="cam_menu_private_demo_cam">プライベートカメラ</string>  
   <string name="cam_menu_news">ニュース</string>
   <string name="cam_menu_about">について</string>
   <string name="cam_menu_support">サポート</string>
