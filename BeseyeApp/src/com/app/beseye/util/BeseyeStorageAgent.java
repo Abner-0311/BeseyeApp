@@ -125,6 +125,14 @@ public class BeseyeStorageAgent {
     	updateExternalStorageState();
     	return sExternalStorageAvailable && sExternalStorageWriteable;
     }
+    
+    static public File getFileInPicDir(String uniqueName) {
+	    // Check if media is mounted or storage is built-in, if so, try and use external cache dir
+	    // otherwise use internal cache dir
+	    final String cachePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath()+ File.separator +"Camera";
+
+	    return new File(cachePath + File.separator + uniqueName);
+	}
 	
 	// Creates a unique subdirectory of the designated app cache directory. Tries to use external
 	// but if not mounted, falls back on internal storage.

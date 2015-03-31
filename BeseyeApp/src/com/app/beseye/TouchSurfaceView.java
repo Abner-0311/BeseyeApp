@@ -1103,6 +1103,23 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     	}
     }
     
+    static public interface OnBitmapScreenshotCallback{
+    	public void onBitmapScreenshotUpdate(long lTs, Bitmap bmp);
+    }
+    
+    private OnBitmapScreenshotCallback mOnBitmapScreenshotCallback = null;
+    private long mlRequestBmpTimestamp = -1;
+    
+    public boolean requestLatestBitmap(long lTs, OnBitmapScreenshotCallback cb){
+    	boolean bRet = false;
+    	if(-1 == mlRequestBmpTimestamp && null != cb){
+    		mOnBitmapScreenshotCallback = cb;
+    		mlRequestBmpTimestamp = lTs;
+    		bRet = true;
+    	}
+    	return bRet;
+    }
+    
     public void drawStreamBitmap(){
     	drawStreamBitmap(mStreamBitmap);
     }
@@ -1120,6 +1137,20 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         		        
         				if(null != bmp && false == bmp.isRecycled())
         					canvas.drawBitmap(bmp, matrix, null);
+        				
+        				if(-1 != mlRequestBmpTimestamp){
+        					Bitmap bmpSave = bmp.copy(bmp.getConfig(), true);
+        					Canvas canvasBmp2 = new Canvas( bmpSave );
+        					if(null != canvasBmp2){
+        						canvasBmp2.drawBitmap(bmp, 0, 0, null);
+        					}
+        					if(null != mOnBitmapScreenshotCallback){
+        						mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
+        					}
+        					mlRequestBmpTimestamp = -1;
+        					mOnBitmapScreenshotCallback = null;
+        				}
+        				
         				if(mIsSurfaceReady)
         					getHolder().unlockCanvasAndPost(canvas);
             		}catch(java.lang.IllegalStateException e){

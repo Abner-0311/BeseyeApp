@@ -416,4 +416,9 @@
   
   <string name="cam_setting_failed_detach_cam">Failed to remove camera. \nPlease try it again later.</string>
   
+  <string name="player_screenshot_capturing">Capturing picture…</string>
+  <string name="player_screenshot_capture_ok">Picture saved.</string>
+  <string name="player_screenshot_capture_failed">Failed to catpure picture.\nPlease try it again later.</string>
+  
+  
 </resources>
