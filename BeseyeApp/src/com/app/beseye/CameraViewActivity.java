@@ -1876,8 +1876,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		private WeakReference<TextView> mTxtDate, mTxtTime;
 		private TimeZone mTimeZone = TimeZone.getDefault();
 		
-		static private final SimpleDateFormat sDateFormat = new SimpleDateFormat("MM.dd.yyyy");
-		static private final SimpleDateFormat sTimeFormat = new SimpleDateFormat("hh:mm:ss a");
+		private final SimpleDateFormat sDateFormat = new SimpleDateFormat("MM.dd.yyyy");
+		private final SimpleDateFormat sTimeFormat = new SimpleDateFormat("hh:mm:ss a");
 		
 		public UpdateDateTimeRunnable(TextView txtDate, TextView txtTime){
 			mTxtDate = new WeakReference<TextView>(txtDate);

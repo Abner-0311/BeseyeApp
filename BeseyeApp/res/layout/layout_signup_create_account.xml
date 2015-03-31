@@ -3,15 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/signup_bg_color" >
-
-    <ImageView
-        android:id="@+id/iv_create_account_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/rl_bottom_description"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/signup_createAccount_description_margin"
-        android:src="@drawable/signup_create_ill" />
     
     <EditText
         android:id="@+id/editText_username"
@@ -66,13 +57,16 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/button_continue"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/signup_createAccount_description_margin" >
+        android:layout_marginBottom="@dimen/signup_createAccount_description_margin" 
+        android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide">
 
         <TextView
             android:id="@+id/tv_bottom_description_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:gravity="center"
             android:text="@string/signup_createAccount_description_title"
             android:textColor="@color/signup_font_description_color"
             android:textSize="@dimen/login_fontSmall" />
@@ -114,9 +108,16 @@
 	            android:textSize="@dimen/login_fontSmall" />
         </RelativeLayout>
         
-        
     </RelativeLayout>
-
+	<ImageView
+	        android:id="@+id/iv_create_account_img"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_above="@+id/rl_bottom_description"
+	        android:layout_below="@+id/txt_hint"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginBottom="@dimen/signup_createAccount_description_margin"
+	        android:src="@drawable/signup_create_ill" />
     <Button
         android:id="@+id/button_continue"
         android:layout_width="fill_parent"
