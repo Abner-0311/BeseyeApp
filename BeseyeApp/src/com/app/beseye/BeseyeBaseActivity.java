@@ -371,6 +371,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_WIFI_AP_INFO_ADD 		= DIALOG_ID_WIFI_BASE+17;
 	static public final int DIALOG_ID_WIFI_AP_SECU_PICKER	= DIALOG_ID_WIFI_BASE+18; 
 	static public final int DIALOG_ID_WIFI_AP_APPLY			= DIALOG_ID_WIFI_BASE+19; 
+	static public final int DIALOG_ID_PLAYER_CAPTURE		= DIALOG_ID_WIFI_BASE+20; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
@@ -505,6 +506,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}
 			case DIALOG_ID_SIGNUP:{
 				dialog = ProgressDialog.show(this, "", getString(R.string.dialog_msg_signup), true, true);
+				dialog.setCancelable(false);
+				//TODO: avoid this dialog infinite showing
+				break;
+			}
+			case DIALOG_ID_PLAYER_CAPTURE:{
+				dialog = ProgressDialog.show(this, "", getString(R.string.player_screenshot_capturing), true, true);
 				dialog.setCancelable(false);
 				//TODO: avoid this dialog infinite showing
 				break;

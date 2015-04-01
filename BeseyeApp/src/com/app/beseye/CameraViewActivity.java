@@ -4,6 +4,9 @@ package com.app.beseye;
 import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeUtils.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,9 +28,12 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.PowerManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -44,6 +50,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.beseye.TouchSurfaceView.CameraStatusCallback;
+import com.app.beseye.TouchSurfaceView.OnBitmapScreenshotCallback;
 import com.app.beseye.TouchSurfaceView.OnTouchSurfaceCallback;
 import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.httptask.BeseyeAccountTask;
@@ -59,6 +66,7 @@ import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
+import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
@@ -75,7 +83,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 																	  OnWSChannelStateChangeListener,
 																	  OnAudioWSChannelStateChangeListener,
 																	  OnAudioAmplitudeUpdateListener,
-																	  CameraStatusCallback{
+																	  CameraStatusCallback,
+																	  OnBitmapScreenshotCallback{
 	static public final String KEY_PAIRING_DONE 	= "KEY_PAIRING_DONE";
 	static public final String KEY_PAIRING_DONE_HANDLED 	= "KEY_PAIRING_DONE_HANDLED";
 	static public final String KEY_TIMELINE_INFO    = "KEY_TIMELINE_INFO";
@@ -328,6 +337,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			setCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT);
 		    			//releaseWakelock();
 		    			cancelCheckVideoConn();
+		    			cancelBitmapScreenshot();
 		    			
 		    			if(null != mCameraViewControlAnimator && mCameraViewControlAnimator.isInHoldToTalkMode()){
 							mCameraViewControlAnimator.terminateTalkMode();
@@ -1429,10 +1439,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				break;
 			}
 			case R.id.txt_events:{
-				Bundle b = new Bundle();
-				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-				b.putBoolean(CameraListActivity.KEY_DEMO_CAM_MODE, mbIsDemoCam);
-				launchActivityByClassName(EventListActivity.class.getName(), b);
+//				Bundle b = new Bundle();
+//				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+//				b.putBoolean(CameraListActivity.KEY_DEMO_CAM_MODE, mbIsDemoCam);
+//				launchActivityByClassName(EventListActivity.class.getName(), b);
+				requestBitmapScreenshot();
 				break;
 			}
 			case R.id.txt_go_live:{
@@ -1875,6 +1886,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	static class UpdateDateTimeRunnable implements Runnable{
 		private WeakReference<TextView> mTxtDate, mTxtTime;
 		private TimeZone mTimeZone = TimeZone.getDefault();
+		private Date mLastDateUpdate = null;
 		
 		private final SimpleDateFormat sDateFormat = new SimpleDateFormat("MM.dd.yyyy");
 		private final SimpleDateFormat sTimeFormat = new SimpleDateFormat("hh:mm:ss a");
@@ -1913,6 +1925,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 		
 		public void updateDateTime(Date date){
+			mLastDateUpdate = date;
 			TextView txtDate = mTxtDate.get();
 			if(null != txtDate){
 				txtDate.setText(sDateFormat.format(date));
@@ -1922,6 +1935,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(null != txtTime){
 				txtTime.setText(sTimeFormat.format(date));
 			}
+		}
+		
+		public Date getLastDateUpdate(){
+			return mLastDateUpdate;
 		}
 	} 
 	
@@ -2013,6 +2030,111 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
         		BeseyeUtils.postRunnable(mCheckVideoBlockRunnable, CheckVideoBlockRunnable.EXPIRE_VIDEO_BLOCK);
         	}
     	}
+    }
+    
+    static private final long MAX_TIME_TO_GET_SCREENSHOT = 10000;//10 seconds 
+    private long mlRequestBitmapScreenshotTs = -1;
+    private SaveScreenshotTask mSaveScreenshotTask = null;
+    private Runnable mMonitorScreenshotRunnable = new Runnable(){
+		@Override
+		public void run() {
+			if(-1 != mlRequestBitmapScreenshotTs){
+				//close dialog
+				removeMyDialog(DIALOG_ID_PLAYER_CAPTURE);
+				
+				if(null != mSaveScreenshotTask && false == mSaveScreenshotTask.isCancelled()){
+					mSaveScreenshotTask.cancel(true);
+					Toast.makeText(CameraViewActivity.this, R.string.player_screenshot_capture_failed, Toast.LENGTH_LONG).show();
+					mSaveScreenshotTask = null;
+				}
+				mlRequestBitmapScreenshotTs = -1;
+			}
+		}};
+		
+    private void requestBitmapScreenshot(){
+    	if(null != mStreamingView){
+    		if(mStreamingView.requestLatestBitmap(mlRequestBitmapScreenshotTs = System.currentTimeMillis(), this)){
+    			showMyDialog(DIALOG_ID_PLAYER_CAPTURE);
+    			BeseyeUtils.postRunnable(mMonitorScreenshotRunnable, MAX_TIME_TO_GET_SCREENSHOT);
+    		}
+    	}
+    }
+    
+    private void cancelBitmapScreenshot(){
+		Log.i(TAG, "cancelBitmapScreenshot()");
+		removeMyDialog(DIALOG_ID_PLAYER_CAPTURE);
+    	if(-1 != mlRequestBitmapScreenshotTs){
+    		if(null != mSaveScreenshotTask){
+    			mSaveScreenshotTask.cancel(true);
+    			mSaveScreenshotTask = null;
+    		}
+    		mlRequestBitmapScreenshotTs = -1;
+    	}
+    }
+    
+    public void onBitmapScreenshotUpdate(long lTs, Bitmap bmp){
+    	if(-1 != mlRequestBitmapScreenshotTs && lTs == mlRequestBitmapScreenshotTs && null == mSaveScreenshotTask){
+    		mSaveScreenshotTask = new SaveScreenshotTask();
+    		if(null != mSaveScreenshotTask){
+    			mSaveScreenshotTask.execute(bmp);
+    		}
+    	}else{
+    		Log.i(TAG, "onBitmapScreenshotUpdate(), invalid match mlRequestBitmapScreenshotTs:"+mlRequestBitmapScreenshotTs+", lTs:"+lTs);
+    		if(null != bmp){
+    			bmp.recycle();
+    		}
+    		mlRequestBitmapScreenshotTs = -1;
+    	}
+    }
+    
+    private class SaveScreenshotTask extends AsyncTask<Bitmap, Double, Boolean> {
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			removeMyDialog(DIALOG_ID_PLAYER_CAPTURE);
+			if(result){
+				Toast.makeText(CameraViewActivity.this, R.string.player_screenshot_capture_ok, Toast.LENGTH_LONG).show();
+			}else if(false == isCancelled()){
+				Toast.makeText(CameraViewActivity.this, R.string.player_screenshot_capture_failed, Toast.LENGTH_LONG).show();
+			}
+			mlRequestBitmapScreenshotTs = -1;
+			mSaveScreenshotTask = null;
+		}
+
+		@Override
+		protected Boolean doInBackground(Bitmap... bmp) {
+			boolean bRet = false;
+			File fileToSave = BeseyeStorageAgent.getFileInPicDir("beseye_screenshot_"+CameraViewActivity.this.mStrVCamName+"_"+BeseyeUtils.getDateString(mUpdateDateTimeRunnable.getLastDateUpdate(), "yyyy-MM-dd-HH-mm-ss.jpg"));
+			if(null != fileToSave){
+				FileOutputStream out = null;
+    			try {
+    		        out = new FileOutputStream(fileToSave);
+    		        if(0 < bmp.length && null != bmp[0] && false == bmp[0].isRecycled()){
+	    		        if (bmp[0].compress(Bitmap.CompressFormat.JPEG, 100, out)){
+	    		        	out.flush();
+	    		            bRet = true;
+//	    		            String strUrl = MediaStore.Images.Media.insertImage(CameraViewActivity.this.getContentResolver(), bmp[0], fileToSave.getName(), "Beseye pic");
+//	    		            if(null == strUrl){
+//		    		    		Log.e(TAG, "failed to insert to db for "+fileToSave.getAbsolutePath());
+//	    		            }
+	    		            Uri localUri = Uri.fromFile(fileToSave);
+	    		            Intent localIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri); 
+	    		            sendBroadcast(localIntent);
+	    		        }
+    		        }
+    		    } catch (Exception e) {
+    		        e.printStackTrace();
+    		    }finally{
+    		    	if(null != out)
+						try {
+							out.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+    		    }
+			}
+			return bRet;
+		} 
     }
     
     private void cancelCheckVideoBlock(){
