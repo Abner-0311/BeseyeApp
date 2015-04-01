@@ -1439,11 +1439,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				break;
 			}
 			case R.id.txt_events:{
-//				Bundle b = new Bundle();
-//				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-//				b.putBoolean(CameraListActivity.KEY_DEMO_CAM_MODE, mbIsDemoCam);
-//				launchActivityByClassName(EventListActivity.class.getName(), b);
-				requestBitmapScreenshot();
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				b.putBoolean(CameraListActivity.KEY_DEMO_CAM_MODE, mbIsDemoCam);
+				launchActivityByClassName(EventListActivity.class.getName(), b);
 				break;
 			}
 			case R.id.txt_go_live:{
@@ -1535,6 +1534,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					if(++mlStartLogoutClickCount >=5 && (System.currentTimeMillis() - mlStartLogoutTs) <= 7*1000){
 						invokeLogout();
 					}
+				}else{
+					if(BeseyeConfig.DEBUG)
+						requestBitmapScreenshot();
 				}
 				break;
 			}

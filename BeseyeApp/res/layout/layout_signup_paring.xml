@@ -24,6 +24,9 @@
 	        android:layout_alignParentTop="true"
 	        android:layout_centerHorizontal="true"
 	        android:layout_marginTop="@dimen/signup_paring_margin_small"
+	        android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    	android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    	android:gravity="center"
 	        android:text="@string/signup_paring_title_1"
 	        android:textColor="@color/word_gray"
 	        android:textSize="@dimen/login_fontNormal" />
