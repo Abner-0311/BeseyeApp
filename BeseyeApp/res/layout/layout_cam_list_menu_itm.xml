@@ -4,7 +4,7 @@
     android:id="@+id/vg_day"
     android:layout_width="match_parent"
     android:layout_height="@dimen/wifi_list_item_height"
-    android:background="@drawable/cl_cam_menu_item_bg">
+    android:background="@drawable/dsl_cam_menu_item_bg">
     
     <ImageView 
         android:id="@+id/iv_menu_icon"
@@ -22,7 +22,7 @@
    		android:layout_centerVertical="true"
    		android:layout_toRightOf="@+id/iv_menu_icon"
    		android:textSize="@dimen/cam_list_item_main_font_size"
-   		android:textColor="@color/cl_wifi_list_main_font_color"
+   		android:textColor="@color/csl_wifi_list_main_font_color"
    		android:text="Monday"/>
    
    <ImageView 

@@ -88,7 +88,7 @@
 			            android:layout_below="@+id/tv_camera_disconnected"
 			            android:layout_centerHorizontal="true"
 			            android:text="@string/camera_list_more"
-			            android:textColor="@color/cl_link_font_color"
+			            android:textColor="@color/csl_link_font_color"
 	           			android:textSize="@dimen/login_fontSmall" 
 	           			android:visibility="visible"/>
 		        </RelativeLayout>

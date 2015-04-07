@@ -84,7 +84,7 @@
 	            android:layout_alignParentLeft="true"
 	            
 	            android:text="@string/signup_createAccount_description_terms"
-	            android:textColor="@color/cl_link_font_color"
+	            android:textColor="@color/csl_link_font_color"
 	            android:textSize="@dimen/login_fontSmall" />
 	        
 	        <TextView
@@ -104,7 +104,7 @@
 	            android:layout_height="wrap_content"
 	            android:layout_toRightOf="@id/tv_bottom_description_and"
 	            android:text="@string/signup_createAccount_description_policy"
-	            android:textColor="@color/cl_link_font_color"
+	            android:textColor="@color/csl_link_font_color"
 	            android:textSize="@dimen/login_fontSmall" />
         </RelativeLayout>
         

@@ -4,7 +4,7 @@
     android:id="@+id/vg_day"
     android:layout_width="match_parent"
     android:layout_height="@dimen/wifi_list_item_height"
-    android:background="@drawable/cl_setting_item_bg"
+    android:background="@drawable/dsl_setting_item_bg"
     android:layout_below="@+id/vg_turnoff_to">
     
     <ImageView 
@@ -37,7 +37,7 @@
    		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding"
    		android:layout_centerVertical="true"
    		android:textSize="@dimen/wifi_list_item_main_font_size"
-   		android:textColor="@color/cl_wifi_list_main_font_color"
+   		android:textColor="@color/csl_wifi_list_main_font_color"
    		android:text="Monday"
    		android:duplicateParentState="true"/>
 </RelativeLayout>

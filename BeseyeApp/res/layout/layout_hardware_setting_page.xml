@@ -11,7 +11,7 @@
 	     	android:id="@+id/vg_hd_quality"
 		    android:layout_width="match_parent"
 		    android:layout_height="@dimen/wifi_list_item_height"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity">
 	        <com.app.beseye.widget.BeseyeSwitchBtn 
 			    android:id="@+id/sb_hd_switch"
@@ -36,7 +36,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_hw_hd_quality_title"
 			   		android:duplicateParentState="true"/>
 				
@@ -46,7 +46,7 @@
 			   		android:layout_height="wrap_content" 
 			   		android:singleLine="true"
 			   		android:textSize="@dimen/wifi_list_item_sub_font_size"
-			   		android:textColor="@color/cl_wifi_list_sub_font_color"
+			   		android:textColor="@color/csl_wifi_list_sub_font_color"
 			   		android:layout_below="@+id/txt_hd_quality_title"
 			   		android:text="@string/cam_setting_hw_hd_quality_desc"
 			   		android:duplicateParentState="true"/>
@@ -56,7 +56,7 @@
 		    android:id="@+id/vg_mic"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    android:paddingTop="@dimen/hw_setting_mic_margin_vertical"
 		    android:paddingBottom="@dimen/hw_setting_mic_margin_vertical">
 		    <RelativeLayout 
@@ -86,7 +86,7 @@
 				    	android:layout_width="wrap_content"
 				   		android:layout_height="wrap_content" 
 				   		android:textSize="@dimen/wifi_list_item_main_font_size"
-				   		android:textColor="@color/cl_wifi_list_main_font_color"
+				   		android:textColor="@color/csl_wifi_list_main_font_color"
 				   		android:text="@string/cam_setting_hw_mic_sensitivity_title"
 				   		android:duplicateParentState="true"/>
 			    </RelativeLayout>   
@@ -137,7 +137,7 @@
 		    android:id="@+id/vg_status_light"
 		    android:layout_width="match_parent"
 		    android:layout_height="@dimen/wifi_list_item_height"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity" >
 		    <com.app.beseye.widget.BeseyeSwitchBtn 
 			    android:id="@+id/sb_status_light_switch"
@@ -162,7 +162,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_hw_status_light_title"
 			   		android:duplicateParentState="true"/>
 		    </RelativeLayout>   
@@ -172,7 +172,7 @@
 	     	android:id="@+id/vg_video_upside_down"
 		    android:layout_width="match_parent"
 		    android:layout_height="@dimen/wifi_list_item_height"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity">
 		    
 		    <ImageView 
@@ -205,7 +205,7 @@
 		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding"
 		   		android:layout_centerVertical="true"
 		   		android:textSize="@dimen/wifi_list_item_main_font_size"
-		   		android:textColor="@color/cl_wifi_list_main_font_color"
+		   		android:textColor="@color/csl_wifi_list_main_font_color"
 		   		android:text="@string/cam_setting_title_video_upside_down"
 		   		android:duplicateParentState="true"/>
 		</RelativeLayout>
@@ -214,7 +214,7 @@
 		    android:id="@+id/vg_night_vision"
 		    android:layout_width="match_parent"
 		    android:layout_height="@dimen/wifi_list_item_height"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity" >
 	
 		    <ImageView
@@ -239,7 +239,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_hw_night_vision_title"
 			   		android:duplicateParentState="true"/>
 		        
@@ -248,7 +248,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_hw_night_vision_auto"
 			   		android:layout_alignParentRight="true"
 			   		android:paddingRight="@dimen/hw_setting_night_vision_horin_margin"
@@ -259,7 +259,7 @@
 	     	android:id="@+id/vg_wifi_setting"
 		    android:layout_width="match_parent"
 		    android:layout_height="@dimen/wifi_list_item_height"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity">    
 		    <ImageView 
 		        android:id="@+id/iv_enter_arrow"
@@ -278,7 +278,7 @@
 		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding"
 		   		android:layout_centerVertical="true"
 		   		android:textSize="@dimen/wifi_list_item_main_font_size"
-		   		android:textColor="@color/cl_wifi_list_main_font_color"
+		   		android:textColor="@color/csl_wifi_list_main_font_color"
 		   		android:text="@string/cam_setting_title_wifi_setting"
 		   		android:duplicateParentState="true"/>
 		</RelativeLayout>
@@ -286,7 +286,7 @@
 	     	android:id="@+id/vg_timezone"
 		    android:layout_width="match_parent"
 		    android:layout_height="@dimen/wifi_list_item_height"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity">
 	        <ImageView 
 		        android:id="@+id/iv_timezone_inf"
@@ -311,7 +311,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_hw_timezone_title"
 			   		android:duplicateParentState="true"/>
 				
@@ -321,7 +321,7 @@
 			   		android:layout_height="wrap_content" 
 			   		android:singleLine="true"
 			   		android:textSize="@dimen/wifi_list_item_sub_font_size"
-			   		android:textColor="@color/cl_wifi_list_sub_font_color"
+			   		android:textColor="@color/csl_wifi_list_sub_font_color"
 			   		android:layout_below="@+id/txt_timezone_title"
 			   		android:text="@string/cam_setting_hw_hd_quality_desc"
 			   		android:duplicateParentState="true"/>

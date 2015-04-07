@@ -54,9 +54,9 @@ public class NewsListAdapter extends BeseyeJSONAdapter {
 			NewsListItmHolder holder = (NewsListItmHolder)convertView.getTag();
 			if(null != holder){
 				if(null != obj && null != holder.mVgNews){
-					holder.mVgNews.setBackgroundResource((0 == iPosition%2)?R.drawable.cl_news_list_bg_color_1:R.drawable.cl_news_list_bg_color_2);
+					holder.mVgNews.setBackgroundResource((0 == iPosition%2)?R.drawable.dsl_news_list_bg_color_1:R.drawable.dsl_news_list_bg_color_2);
 					if(BeseyeNewsHistoryMgr.isUnread(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.NEWS_ID))){
-						holder.mVgNews.setBackgroundResource(R.drawable.cl_news_list_bg_color_unread);
+						holder.mVgNews.setBackgroundResource(R.drawable.dsl_news_list_bg_color_unread);
 					}
 					
 					if(null != holder.mTxtTitle){

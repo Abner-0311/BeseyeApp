@@ -103,7 +103,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 			EventListItmHolder holder = (EventListItmHolder)convertView.getTag();
 			if(null != holder){
 				genDetectionType(holder, BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.MM_TYPE_IDS), obj);
-				convertView.setBackgroundResource((iPosition%2 == 0)?R.drawable.cl_event_itm_bg_gray_color:R.drawable.cl_event_itm_bg_white_color);
+				convertView.setBackgroundResource((iPosition%2 == 0)?R.drawable.dsl_event_itm_bg_gray_color:R.drawable.dsl_event_itm_bg_white_color);
 				if(null != holder.mImgDot){
 					holder.mImgDot.setImageResource(0 == iPosition?R.drawable.eventlist_timeline_point_bluegreen:R.drawable.eventlist_timeline_point_gray);
 				}

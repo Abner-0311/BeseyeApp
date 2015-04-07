@@ -15,14 +15,14 @@
 	   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
 	   		android:layout_centerVertical="true"
 	   		android:textSize="@dimen/setting_list_item_main_title_font_size"
-	   		android:textColor="@color/cl_wifi_list_main_font_color"
+	   		android:textColor="@color/csl_wifi_list_main_font_color"
 	   		android:text="@string/cam_info_cam_name"/>
 	</RelativeLayout>
 	
 	<RelativeLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="@dimen/wifi_list_item_height"
-	    android:background="@drawable/cl_setting_item_bg">
+	    android:background="@drawable/dsl_setting_item_bg">
 	    
 	    <ImageView 
 	        android:id="@+id/iv_cam_name_line"
@@ -66,7 +66,7 @@
 		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
 		   		android:layout_centerVertical="true"
 		   		android:textSize="@dimen/setting_list_item_main_title_font_size"
-		   		android:textColor="@color/cl_wifi_list_main_font_color"
+		   		android:textColor="@color/csl_wifi_list_main_font_color"
 		   		android:text="@string/cam_info_sw_ver"/>
 		</RelativeLayout>
 		
@@ -74,7 +74,7 @@
 		    android:id="@+id/vg_sw_ver" 
 		    android:layout_width="match_parent"
 		    android:layout_height="@dimen/wifi_list_item_height"
-		    android:background="@drawable/cl_setting_item_bg">
+		    android:background="@drawable/dsl_setting_item_bg">
 			<TextView
 			    android:id="@+id/txt_sw_ver" 
 		    	android:layout_width="wrap_content"
@@ -83,7 +83,7 @@
 	   			android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
 	   			android:layout_centerVertical="true"
 		   		android:textSize="@dimen/wifi_list_item_main_font_size"
-		   		android:textColor="@color/cl_wifi_list_main_font_color"/>
+		   		android:textColor="@color/csl_wifi_list_main_font_color"/>
 		</RelativeLayout>
 	</LinearLayout>
 	
@@ -98,7 +98,7 @@
 	   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
 	   		android:layout_centerVertical="true"
 	   		android:textSize="@dimen/setting_list_item_main_title_font_size"
-	   		android:textColor="@color/cl_wifi_list_main_font_color"
+	   		android:textColor="@color/csl_wifi_list_main_font_color"
 	   		android:text="@string/cam_info_sn"/>
 	</RelativeLayout>
 	
@@ -106,7 +106,7 @@
 	    android:id="@+id/vg_sn" 
 	    android:layout_width="match_parent"
 	    android:layout_height="@dimen/wifi_list_item_height"
-	    android:background="@drawable/cl_setting_item_bg">
+	    android:background="@drawable/dsl_setting_item_bg">
 		<TextView
 		    android:id="@+id/txt_sn" 
 	    	android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
    			android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
    			android:layout_centerVertical="true"
 	   		android:textSize="@dimen/wifi_list_item_main_font_size"
-	   		android:textColor="@color/cl_wifi_list_main_font_color"/>
+	   		android:textColor="@color/csl_wifi_list_main_font_color"/>
 	</RelativeLayout>
 	
 	<RelativeLayout 
@@ -129,7 +129,7 @@
 	   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
 	   		android:layout_centerVertical="true"
 	   		android:textSize="@dimen/setting_list_item_main_title_font_size"
-	   		android:textColor="@color/cl_wifi_list_main_font_color"
+	   		android:textColor="@color/csl_wifi_list_main_font_color"
 	   		android:text="@string/cam_info_mac"/>
 	</RelativeLayout>
 		
@@ -137,7 +137,7 @@
 	    android:id="@+id/vg_mac_addr" 
 	    android:layout_width="match_parent"
 	    android:layout_height="@dimen/wifi_list_item_height"
-	    android:background="@drawable/cl_setting_item_bg">
+	    android:background="@drawable/dsl_setting_item_bg">
 		<TextView
 		    android:id="@+id/txt_mac_addr" 
 	    	android:layout_width="wrap_content"
@@ -146,7 +146,7 @@
    			android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
    			android:layout_centerVertical="true"
 	   		android:textSize="@dimen/wifi_list_item_main_font_size"
-	   		android:textColor="@color/cl_wifi_list_main_font_color"/>
+	   		android:textColor="@color/csl_wifi_list_main_font_color"/>
 	</RelativeLayout>
 </LinearLayout>
 

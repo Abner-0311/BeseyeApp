@@ -52,7 +52,7 @@ public class PairingRemindActivity extends BeseyeAccountBaseActivity {
 			//Spannable str = (Spannable) tvDesc.getEditableText();
 		    int i = strDesc.indexOf(strGLight);
 		    if(i >=0){
-			    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.cl_link_font_color)), i, i+strGLight.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.csl_link_font_color)), i, i+strGLight.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    }
 		    tvDesc.setText(wordtoSpan);
 		}

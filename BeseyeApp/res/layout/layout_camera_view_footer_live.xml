@@ -57,7 +57,7 @@
 	   		android:layout_gravity="center"
 	   		android:gravity="center"
 	   		android:textSize="@dimen/liveview_navbar_font_size"
-	   		android:textColor="@color/cl_reverse_font_color"
+	   		android:textColor="@color/csl_reverse_font_color"
 	   		android:text="@string/event_cam_view"
 	   		android:background="@drawable/sl_liveview_event_btn_bg"/>
 	    <TextView 
@@ -69,7 +69,7 @@
 	   		android:layout_gravity="center"
 	   		android:gravity="center"
 	   		android:textSize="@dimen/liveview_navbar_font_size"
-	   		android:textColor="@color/cl_normal_font_color"
+	   		android:textColor="@color/csl_normal_font_color"
 	   		android:background="@drawable/sl_liveview_live_btn_bg"/>
   	</LinearLayout>
 </LinearLayout>

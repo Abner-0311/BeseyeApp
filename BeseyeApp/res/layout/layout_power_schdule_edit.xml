@@ -21,7 +21,7 @@
 	    android:id="@+id/vg_turnoff_picker"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:background="@drawable/cl_setting_item_bg">
+	    android:background="@drawable/dsl_setting_item_bg">
 	    <View 
 	        android:layout_width="1dp"
 	    	android:layout_height="@dimen/wifi_list_item_height"/>
@@ -46,7 +46,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_schedule_turnoff_every"/>
 			<TextView 
 			       	android:id="@+id/txt_turnoff_picker_desc"
@@ -54,7 +54,7 @@
 			   		android:layout_height="wrap_content" 
 			   		android:singleLine="true"
 			   		android:textSize="@dimen/wifi_list_item_sub_font_size"
-			   		android:textColor="@color/cl_wifi_list_sub_font_color"
+			   		android:textColor="@color/csl_wifi_list_sub_font_color"
 			   		android:layout_below="@+id/txt_turnoff_picker_title"
 			   		android:text="@string/cam_setting_hw_hd_quality_desc"/>
 	    </RelativeLayout>   
@@ -64,7 +64,7 @@
 	    android:id="@+id/vg_turnoff_from"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:background="@drawable/cl_setting_item_bg"
+	    android:background="@drawable/dsl_setting_item_bg"
 	    android:layout_below="@+id/vg_turnoff_picker">
 	
 	    <View 
@@ -79,7 +79,7 @@
 	        android:layout_centerVertical="true"
 	        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
 	   		android:textSize="@dimen/wifi_list_item_main_font_size"
-	   		android:textColor="@color/cl_wifi_list_main_font_color"
+	   		android:textColor="@color/csl_wifi_list_main_font_color"
 	   		android:duplicateParentState="true"
 	   		android:text="07:00"/>
 
@@ -92,7 +92,7 @@
 	        android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding"
 	        android:layout_toLeftOf="@+id/txt_time_from"
 	   		android:textSize="@dimen/wifi_list_item_main_font_size"
-	   		android:textColor="@color/cl_wifi_list_main_font_color"
+	   		android:textColor="@color/csl_wifi_list_main_font_color"
 	   		android:text="@string/cam_setting_schedule_turnoff_from"
 	   		android:duplicateParentState="true"/>
 	</RelativeLayout>
@@ -101,7 +101,7 @@
 	    android:id="@+id/vg_turnoff_to"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:background="@drawable/cl_setting_item_bg"
+	    android:background="@drawable/dsl_setting_item_bg"
 	    android:layout_below="@+id/vg_turnoff_from">
 	
 	    <View 
@@ -116,7 +116,7 @@
 	        android:layout_centerVertical="true"
 	        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
 	   		android:textSize="@dimen/wifi_list_item_main_font_size"
-	   		android:textColor="@color/cl_wifi_list_main_font_color"
+	   		android:textColor="@color/csl_wifi_list_main_font_color"
 	   		android:text="07:00"
 	   		android:duplicateParentState="true"/>
 
@@ -129,7 +129,7 @@
 	        android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding"
 	        android:layout_toLeftOf="@+id/txt_time_to"
 	   		android:textSize="@dimen/wifi_list_item_main_font_size"
-	   		android:textColor="@color/cl_wifi_list_main_font_color"
+	   		android:textColor="@color/csl_wifi_list_main_font_color"
 	   		android:text="@string/cam_setting_schedule_turnoff_to"
 	   		android:duplicateParentState="true"/>
 	</RelativeLayout>
@@ -138,7 +138,7 @@
      	android:id="@+id/vg_turnoff_all_day"
 	    android:layout_width="match_parent"
 	    android:layout_height="@dimen/wifi_list_item_height"
-	    android:background="@drawable/cl_setting_item_bg"
+	    android:background="@drawable/dsl_setting_item_bg"
 	    android:layout_below="@+id/vg_turnoff_to">
 	    
 	    <ImageView 
@@ -169,7 +169,7 @@
 	   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding"
 	   		android:layout_centerVertical="true"
 	   		android:textSize="@dimen/wifi_list_item_main_font_size"
-	   		android:textColor="@color/cl_wifi_list_main_font_color"
+	   		android:textColor="@color/csl_wifi_list_main_font_color"
 	   		android:text="@string/cam_setting_title_turnoff_all_day"/>
 	</RelativeLayout>
  

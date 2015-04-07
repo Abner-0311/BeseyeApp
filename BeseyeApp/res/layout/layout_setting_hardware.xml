@@ -30,7 +30,7 @@
 		    android:id="@+id/vg_cam_info"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity" >
 		
 		    <View 
@@ -57,7 +57,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_title_camera_inf"/>
 		    </RelativeLayout>   
 		</RelativeLayout>
@@ -66,7 +66,7 @@
 		    android:id="@+id/vg_siren"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity" >
 		
 		    <View 
@@ -94,7 +94,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_title_emergency_siren"/>
 		    </RelativeLayout>   
 		</RelativeLayout>
@@ -103,7 +103,7 @@
 		    android:id="@+id/vg_detach_cam"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity" >
 		
 		    <View 
@@ -131,7 +131,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_title_detach_cam"/>
 		    </RelativeLayout>   
 		</RelativeLayout>
@@ -140,7 +140,7 @@
 		    android:id="@+id/vg_reboot_cam"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity" >
 		
 		    <View 
@@ -168,7 +168,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_title_reboot_cam"/>
 		    </RelativeLayout>   
 		</RelativeLayout>

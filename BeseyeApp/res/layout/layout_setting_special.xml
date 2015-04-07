@@ -31,7 +31,7 @@
 		    android:id="@+id/vg_hw_settings"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:background="@drawable/cl_setting_item_bg"
+		    android:background="@drawable/dsl_setting_item_bg"
 		    tools:context=".MainActivity" >
 		
 		    <View 
@@ -58,7 +58,7 @@
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
-			   		android:textColor="@color/cl_wifi_list_main_font_color"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_title_hardware_setting_inf"/>
 		    </RelativeLayout>   
 		</RelativeLayout>

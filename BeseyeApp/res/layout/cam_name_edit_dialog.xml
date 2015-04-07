@@ -53,7 +53,7 @@
    		android:layout_height="wrap_content"
    		android:background="@drawable/sl_dialog_single_btn_bg"
    		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
-   		android:textColor="@color/cl_wifi_list_dialog_btn_font_color"
+   		android:textColor="@color/csl_wifi_list_dialog_btn_font_color"
    		android:text="@string/ok"/>
 
 </LinearLayout>
