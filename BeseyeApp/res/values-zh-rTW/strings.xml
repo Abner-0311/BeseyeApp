@@ -412,6 +412,8 @@
   <string name="signup_guideline_try_again_btn">OK，再設定一次看看</string>
   <!--Toast message for poor quality when talking-->
   <string name="hint_hold_to_talk_poor_network_quality">網路連線不穩定，\n請再次嘗試通話．</string>
+  <string name="hint_hold_to_talk_conn_occupied">麥克風使用中，請稍後再試．</string>
+  
   <string name="msg_wifi_pw_length_error_wpa">無效的Wi-Fi密碼長度。密碼必須是8-64個字母。</string>
   <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5至13個字母。</string>
   <string name="msg_wifi_setting_info_error">無效的Wi-Fi設定。</string>

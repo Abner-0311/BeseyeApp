@@ -415,6 +415,7 @@
   <string name="msg_wifi_pw_length_error_wpa">Invalid password format. The password should contain 8 to 64 letters.</string>
   <string name="msg_wifi_pw_length_error_wep">Invalid password format. The password should contain 6 to 13 letters.</string>
   <string name="msg_wifi_setting_info_error">Invalid wifi setting info.</string>
+
   <!--Warning message for detaching cam failed case-->
   <string name="cam_setting_failed_detach_cam">Failed to remove camera. \nPlease try again later.</string>
   <!--Dialog message for player pic capture-->
@@ -423,4 +424,6 @@
   <string name="player_screenshot_capture_ok">Picture is saved.</string>
   <!--Toast message for fail to pic capture-->
   <string name="player_screenshot_capture_failed">Failed to catpure picture.\nPlease try again later.</string>
+
+  <string name="hint_hold_to_talk_conn_occupied">The microphone is busy, please try again later.</string>
 </resources>
