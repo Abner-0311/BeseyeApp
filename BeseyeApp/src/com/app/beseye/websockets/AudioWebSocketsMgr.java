@@ -841,7 +841,6 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						if(null != listener){
 							listener.onAudioChannelConnecting();
 						}
-						
 					}else{
 						Log.e(TAG, "onPostExecute(), failed to RequestAudioWSOnCamTask, iRetCode = "+iRetCode);
 						bNeedToClose = true;

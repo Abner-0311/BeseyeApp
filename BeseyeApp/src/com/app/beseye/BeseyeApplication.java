@@ -18,6 +18,7 @@ import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import com.app.beseye.httptask.SessionMgr;
@@ -28,6 +29,7 @@ import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
+import com.app.beseye.util.BeseyeNewFeatureMgr;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.DeviceUuidFactory;
 import com.app.beseye.util.NetworkMgr;
@@ -53,12 +55,13 @@ public class BeseyeApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		SessionMgr.createInstance(getApplicationContext());
+		BeseyeNewFeatureMgr.createInstance(getApplicationContext());
 		BeseyeUtils.setPackageVersion(getApplicationContext());
 		sApplication = this;
 		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
 		
 		if(BeseyeConfig.DEBUG){
-			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" HOCKEY_APP_ID:"+HOCKEY_APP_ID+", can update:"+BeseyeUtils.canUpdateFromHockeyApp());
+			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" HOCKEY_APP_ID:"+HOCKEY_APP_ID+", can update:"+BeseyeUtils.canUpdateFromHockeyApp()+", Build.VERSION.RELEASE:"+Build.VERSION.RELEASE);
 			Log.i(TAG, "CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK+", ADV_TWO_WAY_tALK:"+BeseyeFeatureConfig.ADV_TWO_WAY_TALK+", VPC_NUM_QUERY:"+BeseyeFeatureConfig.VPC_NUM_QUERY);
 
 		}else{ 

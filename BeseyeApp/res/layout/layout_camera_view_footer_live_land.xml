@@ -41,6 +41,32 @@
         android:layout_width="0dp"
    		android:layout_height="1dp" 
    		android:layout_weight="1"/>
+    <RelativeLayout 
+        android:layout_width="wrap_content"
+   		android:layout_height="wrap_content" 
+   		android:layout_gravity="center">
+       	<ImageButton 
+	       	android:id="@+id/ib_screenshot"
+	    	android:layout_width="wrap_content"
+	   		android:layout_height="wrap_content" 
+	   		android:layout_centerVertical="true"
+	   		android:src="@drawable/sl_liveview_camera_btn"
+	   		android:background="@android:color/transparent"
+	   		android:padding="@dimen/news_icon_padding"/>
+       	<ImageView
+	        android:id="@+id/iv_camera_news"
+		    android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:src="@drawable/account_inf_menu_news_icon"
+			android:layout_alignTop="@+id/ib_screenshot"
+			android:layout_alignRight="@+id/ib_screenshot"
+			android:visibility="invisible"/>
+    </RelativeLayout>
+    
+    <View 
+        android:layout_width="0dp"
+   		android:layout_height="1dp" 
+   		android:layout_weight="1"/>
     <ImageButton 
        	android:id="@+id/ib_talk"
     	android:layout_width="wrap_content"

@@ -2,14 +2,8 @@ package com.app.beseye.httptask;
 
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeSharedPreferenceUtil.getPrefIntValue;
-import static com.app.beseye.util.BeseyeSharedPreferenceUtil.getPrefLongValue;
-import static com.app.beseye.util.BeseyeSharedPreferenceUtil.getPrefStringValue;
-import static com.app.beseye.util.BeseyeSharedPreferenceUtil.getSecuredSharedPreferences;
-import static com.app.beseye.util.BeseyeSharedPreferenceUtil.getSharedPreferences;
-import static com.app.beseye.util.BeseyeSharedPreferenceUtil.setPrefIntValue;
-import static com.app.beseye.util.BeseyeSharedPreferenceUtil.setPrefLongValue;
-import static com.app.beseye.util.BeseyeSharedPreferenceUtil.setPrefStringValue;
+import static com.app.beseye.util.BeseyeSharedPreferenceUtil.*;
+
 
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
@@ -136,6 +130,8 @@ public class SessionMgr {
 	static private final String SESSION_NEWS_HISTORY	    = "beseye_news_history";
 	static private final String SESSION_NEWS_LAST_MAX	    = "beseye_news_last_max";
 	static private final String SESSION_NEWS_IND_SHOW	    = "beseye_news_show_ind";
+	
+	//static private final String SESSION_SCREENSHOT_FEATURE	= "beseye_screen_feature";
 	
 	static private SessionMgr sSessionMgr;
 	

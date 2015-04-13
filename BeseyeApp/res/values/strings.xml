@@ -263,7 +263,7 @@
   <string name="signup_bottom_signup">Setup camera and Sign up</string>
   <string name="signup_before_setup_start">Start</string>
   <!-- Hint Message in before setup page-->
-  <string name="signup_before_setup_description">Please plug in your camera and wait until the green light is twinkling. Also make sure to keep your device near the camera within 10cms.</string>
+  <string name="signup_before_setup_description">Please plug in your camera and wait until the green light is blinking. Also make sure to keep your device near the camera within 10cms.</string>
   <string name="signup_sound_reminder_description">Attention! Your device is going to make beeping sound in the next step.</string>
   <!-- Hint Message for TOS and privacy policy-->
   <string name="signup_createAccount_description_title">By continuing, I agree to Beseye\'s</string>
@@ -306,6 +306,7 @@
   <string name="cam_list_tilte">My cameras</string>
   <!-- Menu items on camera list page-->
   <string name="cam_menu_demo_cam">Demo cameras</string>
+  <!-- Menu items on camera list page-->
   <string name="cam_menu_private_demo_cam">Private cameras</string>
   <string name="cam_menu_news">News</string>
   <string name="cam_menu_about">About</string>
@@ -326,7 +327,7 @@
   <string name="forget_password_btn_submit">Submit</string>
   <string name="forget_password_instruction">Don’t worry! Fill in your email address, and we will send you instructions to reset password.</string>
   <string name="forget_password_check_mail_summary">An instruction mail is sent to the following address</string>
-  <string name="forget_password_check_mail_note">Note: The mail will be coming from reset-password@beseye.com. If you don’t get the email within a few minutes, please check your spam filter.</string>
+  <string name="forget_password_check_mail_note">Note: The mail will be coming from no-reply@beseye.com. If you don’t get the email within a few minutes, please check your spam filter.</string>
   <!-- Toast message when new camera is complete to pair and connected-->
   <string name="toast_new_cam_activated">A new camera is online. Please refresh your camera list.</string>
   <!-- Toast message when camera is connected after cam wifi changed-->
@@ -394,7 +395,6 @@
   <string name="tz_euro_spain">Spain</string>
   <string name="tz_euro_austria">Austria</string>
   <string name="tz_euro_italy">Italy</string>
-  
   <string name="cam_name_update_success">Camera name is changed successfully.</string>
   <string name="signup_plug_in_description">First, plug in your camera.</string>
   <string name="signup_plug_in_title">Plug in your camera</string>
@@ -406,27 +406,21 @@
   <string name="signup_watch_out_done">Phone is ready, next step</string>
   <string name="signup_confirm_led_title">Confirm status light</string>
   <string name="signup_confirm_led_desc">Is the status light %s? If not, please hold on for a few seconds.</string>
-  <string name="signup_confirm_led_twinkling_green_light">"twinkling in green"</string>
-  <string name="signup_confirm_led_done">Yes, green light is twinkling, next step</string>
-  <string name="signup_pairing_fail_desc">Please try to plug in your camera once again, and start Let it Bee™ until the green light is twinkling. Also make sure to keep your device near the camera within 10cms.</string>
+  <string name="signup_confirm_led_twinkling_green_light">"blinking in green"</string>
+  <string name="signup_confirm_led_done">Green light is blinking, next step</string>
+  <string name="signup_pairing_fail_desc">Please try to plug in your camera once again, and start Let it Bee™ until the green light is blinking. Also make sure to keep your device near the camera within 10cms.</string>
   <string name="signup_guideline_try_again_btn">OK. Let\'s try again.</string>
-  
-  <!-- Toast message for poor quality when talking -->
+  <!--Toast message for poor quality when talking-->
   <string name="hint_hold_to_talk_poor_network_quality">Network connection is poor. Please hold to talk once again.</string>
-  
   <string name="msg_wifi_pw_length_error_wpa">Invalid password format. The password should contain 8 to 64 letters.</string>
   <string name="msg_wifi_pw_length_error_wep">Invalid password format. The password should contain 6 to 13 letters.</string>
   <string name="msg_wifi_setting_info_error">Invalid wifi setting info.</string>
-  
-  <!-- Warning message for detaching cam failed case -->
-  <string name="cam_setting_failed_detach_cam">Failed to remove camera. \nPlease try it again later.</string>
-  
-  <!-- Dialog message for player pic capture -->
-  <string name="player_screenshot_capturing">Capturing picture…</string>
-  <!-- Toast message for complete pic capture -->
-  <string name="player_screenshot_capture_ok">Picture saved.</string>
-  <!-- Toast message for fail to pic capture -->
-  <string name="player_screenshot_capture_failed">Failed to catpure picture.\nPlease try it again later.</string>
-  
-  
+  <!--Warning message for detaching cam failed case-->
+  <string name="cam_setting_failed_detach_cam">Failed to remove camera. \nPlease try again later.</string>
+  <!--Dialog message for player pic capture-->
+  <string name="player_screenshot_capturing">Picture capturing…</string>
+  <!--Toast message for complete pic capture-->
+  <string name="player_screenshot_capture_ok">Picture is saved.</string>
+  <!--Toast message for fail to pic capture-->
+  <string name="player_screenshot_capture_failed">Failed to catpure picture.\nPlease try again later.</string>
 </resources>

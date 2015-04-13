@@ -8,4 +8,5 @@ public class BeseyeFeatureConfig {
 	public final static boolean TWO_WAY_TALK_LONG_PRESS_SIMU = false; 
 	public final static boolean VPC_2_TEST = false; 
 	public final static boolean PTOKEN_QUERY_TEST = true; 
+	
 }

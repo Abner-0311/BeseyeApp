@@ -60,6 +60,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -357,6 +358,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    		httpRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
 	    		httpRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
 	    		httpRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
+	    		httpRequest.addHeader("Bes-Android-Ver", Build.VERSION.RELEASE);
 	    		
 	    		httpRequest.addHeader("Content-Type", "application/json");
 	    		httpRequest.addHeader("Accept", "application/json");

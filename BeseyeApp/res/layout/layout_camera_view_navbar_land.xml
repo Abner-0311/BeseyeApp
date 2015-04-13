@@ -21,16 +21,29 @@
    		android:src="@drawable/liveview_h_display_icon"
    		android:visibility="invisible"/>
     
-    <ImageButton 
-       	android:id="@+id/ib_settings"
-       	android:layout_marginRight="@dimen/liveview_navbar_margin_hori_land"
-       	android:layout_centerVertical="true"
-    	android:layout_width="wrap_content"
+    <RelativeLayout 
+        android:id="@+id/vg_settings_holder"
+        android:layout_width="wrap_content"
    		android:layout_height="wrap_content" 
-   		android:layout_alignParentRight="true"
-   		android:src="@drawable/sl_liveview_settings_btn"
-   		android:background="@android:color/transparent"/>
-    
+   		android:layout_marginRight="@dimen/liveview_navbar_margin_hori_land"
+	    android:layout_centerVertical="true"
+	    android:layout_alignParentRight="true">
+        <ImageButton 
+	       	android:id="@+id/ib_settings"
+	    	android:layout_width="wrap_content"
+	   		android:layout_height="wrap_content" 
+	   		android:src="@drawable/sl_liveview_settings_btn"
+	   		android:background="@android:color/transparent"
+	   		android:padding="@dimen/news_icon_padding"/>
+		<ImageView
+	        android:id="@+id/iv_settings_news"
+		    android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:src="@drawable/account_inf_menu_news_icon"
+			android:layout_alignTop="@+id/ib_settings"
+			android:layout_alignRight="@+id/ib_settings"
+			android:visibility="invisible"/>
+    </RelativeLayout>
     <TextView 
        	android:id="@+id/txt_cam_name"
     	android:layout_width="wrap_content"
@@ -73,7 +86,7 @@
    		android:layout_height="wrap_content" 
    		android:layout_marginLeft="@dimen/listview_time_divider_dist" 
    		android:layout_toRightOf="@+id/iv_time_divider"
-   		android:layout_toLeftOf="@+id/ib_settings"
+   		android:layout_toLeftOf="@+id/vg_settings_holder"
    		android:layout_below="@+id/txt_cam_name"
    		android:layout_marginTop="2dp"
    		android:layout_alignBaseline="@+id/iv_time_divider"

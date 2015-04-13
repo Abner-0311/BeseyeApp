@@ -2658,6 +2658,13 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 //		LOGE("wifi set cmd:[%s]\n", cmd);
 		int iRet = 0;
 
+		//Because Raylios implements network recovery mechanism for wrong wifi config, we need to check BSSID to confirm wifi change
+		char* orginalBSSID = getCurWiFiBSSID();
+		if(DEBUG_MODE){
+			LOGE("orginalBSSID:%s\n", NULL != orginalBSSID?orginalBSSID:"");
+		}
+
+		bool bIsSameSSID = FALSE;
 		if(0 == strSSIDHash.length()){
 			if(bUnknownSecType){
 				if((0 < retPW.str().length())){
@@ -2671,6 +2678,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				}
 				cSecType = PAIRING_SEC_WPA2;
 			}
+			bIsSameSSID = isSameWiFiSSID((const char*)strSSIDFinal.c_str());
 			iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
 		}else{
 			iRet = setWifiBySSIDHash(lSSIDHash, iSSIDLen/2, (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
@@ -2705,6 +2713,17 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					if(iNetworkRet != 0)
 						iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.alibaba.com.cn") >> 8;
 
+					if(0 == iNetworkRet && orginalBSSID && FALSE == bIsSameSSID){
+						char* curBSSID = getCurWiFiBSSID();
+						if(DEBUG_MODE){
+							LOGE("orginalBSSID:%s, curBSSID:%s\n", NULL != orginalBSSID?orginalBSSID:"", curBSSID?curBSSID:"");
+						}
+						if(curBSSID && 0 == strcmp(orginalBSSID, curBSSID)){
+							LOGE("the same bssid, orginalBSSID:%s, curBSSID:%s\n", NULL != orginalBSSID?orginalBSSID:"", curBSSID?curBSSID:"");
+							iNetworkRet = -1;
+						}
+						FREE(curBSSID)
+					}
 					lTimeDelta = time_ms() - lTimeToChkNetwork;
 					if(DEBUG_MODE){
 						LOGE("wifi connection check, trial: [%d/%d] ,iNetworkRet:%d, lTimeDelta:%lld\n", iTrials, iTotalTrialCount, iNetworkRet, lTimeDelta);
@@ -2804,6 +2823,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				sPairingErrType = PAIRING_ERR_MAC_NOT_FOUND;
 			}
 		}
+		FREE(orginalBSSID)
 	}
 
 #endif

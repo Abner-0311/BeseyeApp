@@ -1120,6 +1120,35 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     	return bRet;
     }
     
+    public boolean copyCurrentBitmap(long lTs, OnBitmapScreenshotCallback cb){
+    	boolean bRet = false;
+    	if(-1 == mlRequestBmpTimestamp && null != cb){
+    		mOnBitmapScreenshotCallback = cb;
+    		mlRequestBmpTimestamp = lTs;
+    		bRet = copyBitmap(mStreamBitmap);
+    	}
+    	return bRet;
+    }
+    
+    private boolean copyBitmap(Bitmap bmp){
+	    if(-1 != mlRequestBmpTimestamp){
+	    	if(null != bmp && false == bmp.isRecycled()){
+	    		Bitmap bmpSave = bmp.copy(bmp.getConfig(), true);
+	    		Canvas canvasBmp2 = new Canvas( bmpSave );
+	    		if(null != canvasBmp2){
+	    			canvasBmp2.drawBitmap(bmp, 0, 0, null);
+	    		}
+	    		if(null != mOnBitmapScreenshotCallback){
+	    			mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
+	    		}
+	    		mlRequestBmpTimestamp = -1;
+	    		mOnBitmapScreenshotCallback = null;
+	    		return true;
+	    	}
+	    }
+	    return false;
+    }
+    
     public void drawStreamBitmap(){
     	drawStreamBitmap(mStreamBitmap);
     }
@@ -1138,18 +1167,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         				if(null != bmp && false == bmp.isRecycled())
         					canvas.drawBitmap(bmp, matrix, null);
         				
-        				if(-1 != mlRequestBmpTimestamp){
-        					Bitmap bmpSave = bmp.copy(bmp.getConfig(), true);
-        					Canvas canvasBmp2 = new Canvas( bmpSave );
-        					if(null != canvasBmp2){
-        						canvasBmp2.drawBitmap(bmp, 0, 0, null);
-        					}
-        					if(null != mOnBitmapScreenshotCallback){
-        						mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
-        					}
-        					mlRequestBmpTimestamp = -1;
-        					mOnBitmapScreenshotCallback = null;
-        				}
+        				copyBitmap(bmp);
         				
         				if(mIsSurfaceReady)
         					getHolder().unlockCanvasAndPost(canvas);

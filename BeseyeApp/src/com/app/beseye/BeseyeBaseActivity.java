@@ -66,6 +66,7 @@ import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamUpdateVersionCheckListener;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeNewFeatureMgr;
 import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
@@ -1073,6 +1074,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	protected void onSessionInvalid(){
 		SessionMgr.getInstance().cleanSession();
+		BeseyeNewFeatureMgr.getInstance().reset();
 		launchDelegateActivity(BeseyeEntryActivity.class.getName());
 	}
 	
