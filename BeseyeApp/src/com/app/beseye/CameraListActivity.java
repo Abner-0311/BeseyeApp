@@ -665,9 +665,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else if(R.id.vg_my_cam == view.getId()){
 			if(mCameraListMenuAnimator.isPrivateCamShow()){
 				if(mbIsDemoCamMode || mbIsPrivateCamMode){
+					immediateHideMenu();
 					launchActivityByClassName(CameraListActivity.class.getName(), null);
+				}else{
+					showMenu();
 				}
-				showMenu();
 			}else{
 				if(mbIsDemoCamMode){
 					finish();
@@ -700,22 +702,26 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			bundle.putString(KEY_VALID_CAM_INFO, (null != arrCamLst)?arrCamLst.toString():"");
 			
 			launchActivityByClassName(BeseyeNewsActivity.class.getName(), bundle);
-			showMenu();
+			immediateHideMenu();
 		}else if(R.id.vg_demo_cam == view.getId()){
 			if(!mbIsDemoCamMode){
+				immediateHideMenu();
 				launchActivityByClassName(CameraListActivity.class.getName(), mBundleDemo);
+			}else{
+				showMenu();
 			}
-			showMenu();
 		}else if(R.id.vg_private_cam == view.getId()){
 			if(!mbIsPrivateCamMode){
+				immediateHideMenu();
 				launchActivityByClassName(CameraListActivity.class.getName(), mBundlePrivate);
+			}else{
+				showMenu();
 			}
-			showMenu();
 		}else if(R.id.vg_about == view.getId()){
 			launchActivityByClassName(BeseyeAboutActivity.class.getName(), null);
-			showMenu();
+			immediateHideMenu();
 		}else if(R.id.vg_support == view.getId()){
-			showMenu();
+			immediateHideMenu();
 		}else if(R.id.vg_logout == view.getId()){
 			invokeLogout();
 			showMenu();
@@ -759,6 +765,12 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	private void hideMenu(){
 		if(null != mCameraListMenuAnimator && !mCameraListMenuAnimator.isInAnimation()){
 			mCameraListMenuAnimator.performMenuAnimation();
+		}
+	}
+	
+	private void immediateHideMenu(){
+		if(null != mCameraListMenuAnimator && !mCameraListMenuAnimator.isInAnimation()){
+			mCameraListMenuAnimator.hideMenu();
 		}
 	}
 	

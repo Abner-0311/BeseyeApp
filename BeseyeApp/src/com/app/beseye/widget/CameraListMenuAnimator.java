@@ -203,6 +203,26 @@ public class CameraListMenuAnimator {
 		}
 	}
 	
+	public void hideMenu(){
+		if(false == isInAnimation()){
+			if(null != m_vgMenu){
+				if(View.VISIBLE == m_vgMenu.getVisibility()){
+					m_vgMenu.setVisibility(View.INVISIBLE);
+					m_vgMenu.setEnabled(false);
+					
+					if(null != m_vMenuHolderBg){
+						m_vMenuHolderBg.setVisibility(View.INVISIBLE);
+						m_vMenuHolderBg.setEnabled(false);
+					}
+					
+					if(null != m_vgMenuHolderLayout){
+						m_vgMenuHolderLayout.setVisibility(View.INVISIBLE);
+					}
+				}
+			}
+		}
+	}
+	
 	private void cancelAnimation(){
 		if(isInAnimation()){
 			if(null != m_vgMenu){

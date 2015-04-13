@@ -321,7 +321,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 					public void run() {
 						removeMyDialog(DIALOG_ID_WIFI_AP_APPLY);
 						Toast.makeText(HWSettingsActivity.this, getString(R.string.cam_setting_fail_to_apply_wifi_setting), Toast.LENGTH_LONG).show();
-					}}, 60*1000);
+					}}, 120*1000);
 				break;
 			}
 			default:
