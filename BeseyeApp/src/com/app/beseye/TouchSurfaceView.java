@@ -25,7 +25,6 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Scroller;
 
@@ -80,7 +79,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     //
     private float matchViewWidth, matchViewHeight, prevMatchViewWidth, prevMatchViewHeight;
     
-    private float mfPaddingTop, mfPaddingBottom;
+    //private float mfPaddingTop, mfPaddingBottom;
     
     private ScaleGestureDetector mScaleDetector;
     private GestureDetector mGestureDetector;
@@ -102,51 +101,6 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 		if(DEBUG)
 			Log.i(TAG, "surfaceChanged()......");
-		
-        int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
-        switch (format) {
-        case PixelFormat.A_8:
-            Log.v(TAG, "pixel format A_8");
-            break;
-        case PixelFormat.LA_88:
-            Log.v(TAG, "pixel format LA_88");
-            break;
-        case PixelFormat.L_8:
-            Log.v(TAG, "pixel format L_8");
-            break;
-        case PixelFormat.RGBA_4444:
-            Log.v(TAG, "pixel format RGBA_4444");
-            sdlFormat = 0x15421002; // SDL_PIXELFORMAT_RGBA4444
-            break;
-        case PixelFormat.RGBA_5551:
-            Log.v(TAG, "pixel format RGBA_5551");
-            sdlFormat = 0x15441002; // SDL_PIXELFORMAT_RGBA5551
-            break;
-        case PixelFormat.RGBA_8888:
-            Log.v(TAG, "pixel format RGBA_8888");
-            sdlFormat = 0x16462004; // SDL_PIXELFORMAT_RGBA8888
-            break;
-        case PixelFormat.RGBX_8888:
-            Log.v(TAG, "pixel format RGBX_8888");
-            sdlFormat = 0x16261804; // SDL_PIXELFORMAT_RGBX8888
-            break;
-        case PixelFormat.RGB_332:
-            Log.v(TAG, "pixel format RGB_332");
-            sdlFormat = 0x14110801; // SDL_PIXELFORMAT_RGB332
-            break;
-        case PixelFormat.RGB_565:
-            Log.v(TAG, "pixel format RGB_565");
-            sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565
-            break;
-        case PixelFormat.RGB_888:
-            Log.v(TAG, "pixel format RGB_888");
-            // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
-            sdlFormat = 0x16161804; // SDL_PIXELFORMAT_RGB888
-            break;
-        default:
-            Log.v(TAG, "pixel format unknown " + format);
-            break;
-        }
 
         mSurfaceWidth = width;
         mSurfaceHeight = height;
@@ -164,8 +118,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         if(DEBUG)
         	Log.v(TAG, "Window size:" + width + "x"+height);
         
-        mfPaddingTop = this.getContext().getResources().getDimension(R.dimen.liveview_navbar_height_landscape);
-        mfPaddingBottom = this.getContext().getResources().getDimension(R.dimen.liveview_toolbar_height_landscape);
+//        mfPaddingTop = this.getContext().getResources().getDimension(R.dimen.liveview_navbar_height_landscape);
+//        mfPaddingBottom = this.getContext().getResources().getDimension(R.dimen.liveview_toolbar_height_landscape);
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         synchronized(this){

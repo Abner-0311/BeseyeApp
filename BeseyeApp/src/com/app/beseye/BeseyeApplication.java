@@ -82,7 +82,7 @@ public class BeseyeApplication extends Application {
 		
 		if(null != s_checkBackgroundRunnable){
 			s_checkBackgroundRunnable.updateContext(this);
-		}
+		}    
 	}
 	
 	static synchronized public Application getApplication(){
@@ -287,17 +287,6 @@ public class BeseyeApplication extends Application {
 		SessionMgr.getInstance().setBEHostUrl(mode);
 		if(DEBUG)
 			Log.i(TAG, "checkServerMode(), mode :"+mode);
-	}
-	
-	private long value(String string) {
-	    string = string.trim();
-	    if( string.contains( "." )){ 
-	        final int index = string.lastIndexOf( "." );
-	        return value( string.substring( 0, index ))* 100 + value( string.substring( index + 1 )); 
-	    }
-	    else {
-	        return Long.valueOf( string ); 
-	    }
 	}
 }
 

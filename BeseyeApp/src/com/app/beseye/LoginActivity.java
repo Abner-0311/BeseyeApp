@@ -23,7 +23,6 @@ import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
-import com.app.beseye.util.BeseyeAccountFilter;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -151,7 +150,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,String strMsg) {	
 		if(task instanceof BeseyeAccountTask.LoginHttpTask){
 			int iErrMsg = R.string.msg_login_error;
 			if(BeseyeError.E_BE_ACC_USER_EMAIL_FORMAT_INVALID == iErrType){
@@ -165,7 +164,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(DEBUG)
 			Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){

@@ -3,7 +3,6 @@ package com.app.beseye.widget;
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -643,7 +642,7 @@ public class RemoteGifImageView extends RemoteImageView {
 	
 	private RectF rectF = new RectF();
 	private Paint paintShadow = new Paint();
-	
+	private PorterDuffXfermode mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
 	@Override
 	protected void onDraw(Canvas canvas) {
 		if(mbEnableShadow){
@@ -684,7 +683,7 @@ public class RemoteGifImageView extends RemoteImageView {
 
 				Xfermode oldMode = paint.getXfermode();
 				// This is the paint already associated with the BitmapDrawable that super draws
-		        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+		        paint.setXfermode(mode);
 		        
 		        super.onDraw(canvas);
 		        paint.setXfermode(oldMode);

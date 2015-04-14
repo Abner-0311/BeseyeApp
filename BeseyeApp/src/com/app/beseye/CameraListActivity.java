@@ -1,6 +1,5 @@
 package com.app.beseye;
 
-
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
@@ -140,7 +139,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				txtTitle.setOnClickListener(this);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
@@ -407,7 +406,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(BeseyeConfig.DEBUG)
 			Log.d(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		
@@ -542,7 +541,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeAccountTask.GetVCamListTask){
 			postToLvRreshComplete();
 		}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){

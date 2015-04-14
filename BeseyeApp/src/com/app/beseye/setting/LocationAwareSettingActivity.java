@@ -3,8 +3,6 @@ package com.app.beseye.setting;
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.SCHED_LIST;
-import static com.app.beseye.util.BeseyeJSONUtil.SCHED_OBJ;
 import static com.app.beseye.util.BeseyeJSONUtil.LOCATION_LAT;
 import static com.app.beseye.util.BeseyeJSONUtil.LOCATION_LONG;
 import static com.app.beseye.util.BeseyeJSONUtil.LOCATION_OBJ;
@@ -155,13 +153,13 @@ public class LocationAwareSettingActivity extends BeseyeBaseActivity
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
 		super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
 	
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){

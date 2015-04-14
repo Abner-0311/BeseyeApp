@@ -1,7 +1,5 @@
 package com.app.beseye.widget;
 
-
-
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
@@ -30,7 +28,6 @@ import android.widget.TextView;
 
 import com.app.beseye.CameraViewActivity;
 import com.app.beseye.R;
-import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeNewFeatureMgr;
@@ -108,13 +105,13 @@ public class CameraViewControlAnimator {
 			
 			if(null != m_vgHeaderLayout){
 				m_vgHeaderLayout.removeAllViews();
-				m_vgHeaderLayout.addView((Configuration.ORIENTATION_PORTRAIT == miOrientation)?mVgNavbarPortrait:mVgNavbarLandscape, LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				m_vgHeaderLayout.addView((Configuration.ORIENTATION_PORTRAIT == miOrientation)?mVgNavbarPortrait:mVgNavbarLandscape, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 				syncHeaderLayoutItmProperty();
 			}
 			
 			if(null != m_vgToolbarLayout){
 				m_vgToolbarLayout.removeAllViews();
-				m_vgToolbarLayout.addView((Configuration.ORIENTATION_PORTRAIT == miOrientation)?mVgToolbarPortrait:mVgToolbarLandscape, LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				m_vgToolbarLayout.addView((Configuration.ORIENTATION_PORTRAIT == miOrientation)?mVgToolbarPortrait:mVgToolbarLandscape, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 				syncToolbarLayoutItmProperty();
 			}
 			
@@ -389,7 +386,7 @@ public class CameraViewControlAnimator {
 			if(null != mVgNavbarPortrait){
 				ViewGroup title = (ViewGroup)mVgNavbarPortrait.findViewById(R.id.vg_nav_bar_title_up);
 				if(null != title){
-					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, miStatusBarHeight);
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, miStatusBarHeight);
 					title.setLayoutParams(params);
 				}
 			}
@@ -545,7 +542,7 @@ public class CameraViewControlAnimator {
 		if(false == m_bInHoldToTalkAnimation){
 			if(null != mVgHoldToTalk){
 				Animation animation = null;
-				CameraViewActivity act = mCameraViewActivity.get();
+				//CameraViewActivity act = mCameraViewActivity.get();
 				if(View.VISIBLE == mVgHoldToTalk.getVisibility()){					
 					animation = m_aniHoldToTalkFadeOut;
 					mVgHoldToTalk.startAnimation(animation);

@@ -138,7 +138,7 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity {
 	
 	
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,String strMsg) {	
 		Log.e(TAG, "onErrorReport(), "+task.getClass().getSimpleName()+", iErrType="+iErrType);	
 		if(task instanceof BeseyeAccountTask.SetCamAttrTask){
 			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_set_cam_name_fail));
@@ -148,7 +148,7 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity {
 	
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(DEBUG)
 			Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){

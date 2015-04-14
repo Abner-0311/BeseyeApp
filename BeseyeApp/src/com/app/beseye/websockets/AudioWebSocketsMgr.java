@@ -27,15 +27,12 @@ import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.app.beseye.audio.AudioChannelMgr;
 import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask.RequestAudioChannelDisconnectedTask;
-import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.koushikdutta.async.ByteBufferList;
 import com.koushikdutta.async.DataEmitter;
 import com.koushikdutta.async.callback.CompletedCallback;
@@ -498,7 +495,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     static public final String WS_CMD_FORMAT_AUDIO 			= "[\"%s\", \"data\":%s]";
     private int iRefCount = 0;
     private static final int COUNT_TO_CHECK = 3;//0.1 second 
-    private static long slLastToSentEmpty = 0;
+   // private static long slLastToSentEmpty = 0;
    
     class AudioSendThread extends Thread {
     	
@@ -510,7 +507,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		    OutputStream os = null;
 		    Socket socket = null;
 		    FileOutputStream fos = null;
-		    slLastToSentEmpty = 0;
+		    //slLastToSentEmpty = 0;
 		    
 		    if(ENABLE_INTERNAL_SERVER){
 		    	try{
@@ -634,7 +631,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 						    				//lBeginTime = System.currentTimeMillis();
 						    				
 							    			mFNotifyWSChannel.get().send(strSent);	
-							    			slLastToSentEmpty = System.currentTimeMillis();
+							    			//slLastToSentEmpty = System.currentTimeMillis();
 							    			//Log.i(TAG, "run(), ts:"+System.currentTimeMillis()+", send time:"+(System.currentTimeMillis() - lBeginTime)+", len:"+len);
 						    			}
 						    			//Log.i(TAG, "run(), len="+len+", strSent=\n"+strSent);
@@ -852,21 +849,21 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     }
 
 	@Override
-	public void onShowDialog(AsyncTask task, int iDialogId, int iTitleRes,
+	public void onShowDialog(AsyncTask<String, Double, List<JSONObject>> task, int iDialogId, int iTitleRes,
 			int iMsgRes) {
 	}
 
 	@Override
-	public void onDismissDialog(AsyncTask task, int iDialogId) {
+	public void onDismissDialog(AsyncTask<String, Double, List<JSONObject>> task, int iDialogId) {
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,String strMsg) {
 	}
 
 	private String session;
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(task instanceof GetSessionTask){
 			//Log.i(TAG, "onPostExecute(), result = "+result.toString());
 			//if(0 == iRetCode){
@@ -950,10 +947,10 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 	}
 
 	@Override
-	public void onToastShow(AsyncTask task, String strMsg) {
+	public void onToastShow(AsyncTask<String, Double, List<JSONObject>> task, String strMsg) {
 	}
 
 	@Override
-	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
+	public void onSessionInvalid(AsyncTask<String, Double, List<JSONObject>> task, int iInvalidReason) {
 	}
 }

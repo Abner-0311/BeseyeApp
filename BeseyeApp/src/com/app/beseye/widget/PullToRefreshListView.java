@@ -109,13 +109,13 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 		// Create Loading Views ready for use later
 		mLvHeaderLoadingFrame = new FrameLayout(context);
 		mHeaderLoadingView = new BeseyeRefreshLayout(context, LvExtendedMode.PULL_DOWN_TO_REFRESH, a);
-		mLvHeaderLoadingFrame.addView(mHeaderLoadingView, FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+		mLvHeaderLoadingFrame.addView(mHeaderLoadingView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 		mHeaderLoadingView.setVisibility(View.GONE);
 		//lv.addHeaderView(mLvHeaderLoadingFrame, null, false);
 
 		mLvFooterLoadingFrame = new FrameLayout(context);
 		mFooterLoadingView = new BeseyeRefreshLayout(context, LvExtendedMode.PULL_UP_TO_REFRESH, a);
-		mLvFooterLoadingFrame.addView(mFooterLoadingView, FrameLayout.LayoutParams.FILL_PARENT,
+		mLvFooterLoadingFrame.addView(mFooterLoadingView, FrameLayout.LayoutParams.MATCH_PARENT,
 				FrameLayout.LayoutParams.WRAP_CONTENT);
 		mFooterLoadingView.setVisibility(View.GONE);
 		

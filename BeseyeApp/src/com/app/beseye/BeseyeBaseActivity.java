@@ -185,7 +185,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		super.onBackPressed();
 	}
 	
-	private AsyncTask mGetCamListTask = null; 
+	private AsyncTask<String, Double, List<JSONObject>> mGetCamListTask = null; 
 	
 	private void getCamListAndCheckCamUpdateVersions(){
 		//Set<String> setVcamList = null;
@@ -658,9 +658,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	 * Well manage the async tasks
 	 * Cancel it if we don't need to run it after finishing this page
 	 */
-    private Map<AsyncTask, AsyncTaskParams> mMapCurAsyncTasks;
-    private AsyncTask mLastAsyncTask = null;
-    private AsyncTaskParams mLastTaskParams = null;
+    private Map<AsyncTask<String, Double, List<JSONObject>>, AsyncTaskParams> mMapCurAsyncTasks;
+    private AsyncTask<String, Double, List<JSONObject>> mLastAsyncTask = null;
+    //private AsyncTaskParams mLastTaskParams = null;
     
     static class AsyncTaskParams{
     	AsyncTaskParams(boolean bCancelWhenDestroy, String... strArgs){
@@ -671,7 +671,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	String[] strArgs;
     }
     
-    public void monitorAsyncTask(AsyncTask task, boolean bCancelWhenDestroy, String... strArgs){
+    public void monitorAsyncTask(AsyncTask<String, Double, List<JSONObject>> task, boolean bCancelWhenDestroy, String... strArgs){
     	monitorAsyncTask(task, bCancelWhenDestroy, FULL_TASK_EXECUTOR, strArgs);
     }
     
@@ -693,7 +693,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	}
     }
     
-    public void monitorAsyncTask(AsyncTask task, boolean bCancelWhenDestroy, ExecutorService executor , String... strArgs){
+    public void monitorAsyncTask(AsyncTask<String, Double, List<JSONObject>> task, boolean bCancelWhenDestroy, ExecutorService executor , String... strArgs){
     	if(null != task){
         	//Log.i(TAG, "Check network status");
         	if(NetworkMgr.getInstance().isNetworkConnected()){
@@ -711,7 +711,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     protected void cancelRunningTasks(){
     	if(null != mMapCurAsyncTasks){
-    		for(AsyncTask task:mMapCurAsyncTasks.keySet()){
+    		for(AsyncTask<String, Double, List<JSONObject>> task:mMapCurAsyncTasks.keySet()){
     			AsyncTaskParams params = mMapCurAsyncTasks.get(task);
     			if((null == params || true == params.bCancelWhenDestroy) && AsyncTask.Status.FINISHED != task.getStatus())
     				task.cancel(true);
@@ -720,7 +720,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	} 
     }
     
-    protected void recordLastAsyncTask(AsyncTask task){
+    protected void recordLastAsyncTask(AsyncTask<String, Double, List<JSONObject>> task){
     	//the task is still executed after clone
 //    	try {
 //    		if(null != task){
@@ -734,7 +734,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     protected void clearLastAsyncTask(){
     	mLastAsyncTask = null;
-    	mLastTaskParams = null;
+    	//mLastTaskParams = null;
     }
     
     protected void onRetryHttpTask(){
@@ -794,7 +794,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeAccountTask.CheckAccountTask){
 			//onSessionInvalid();
 		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
@@ -824,7 +824,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, final List<JSONObject> result, final int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, final List<JSONObject> result, final int iRetCode) {
 		if(DEBUG)
 			Log.i(TAG, "BeseyeBaseActivity::onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		
@@ -1555,7 +1555,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	return false;
     }
     
-    protected AsyncTask mGetNewCamTask;
+    protected AsyncTask<String, Double, List<JSONObject>> mGetNewCamTask;
     
     protected boolean onCameraActivated(JSONObject msgObj){
     	if(! (this instanceof SoundPairingActivity) && mActivityResume){

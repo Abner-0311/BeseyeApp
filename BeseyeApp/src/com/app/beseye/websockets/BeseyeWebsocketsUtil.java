@@ -84,22 +84,17 @@ public class BeseyeWebsocketsUtil {
 
     static public JSONObject wrapWSBaseMsg(){
     	JSONObject ret_obj = new JSONObject();
-    	if(null != ret_obj){
-    		JSONObject job_obj = getJsonObjWithJobID();
-    		if(null != job_obj){
-    			try {
-					ret_obj.put(WS_ATTR_DATA, job_obj);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    		}else{
-    			Log.e(TAG,  "job_obj is null\n");
-    		}
-    	}
-    	else{
-    		Log.e( TAG,"ret_obj is null\n");
-    	}
+    	JSONObject job_obj = getJsonObjWithJobID();
+		if(null != job_obj){
+			try {
+				ret_obj.put(WS_ATTR_DATA, job_obj);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			Log.e(TAG,  "job_obj is null\n");
+		}
     	return ret_obj;
     }
     
@@ -131,9 +126,6 @@ public class BeseyeWebsocketsUtil {
     			Log.e(TAG,  "job_obj is null\n");
     		}
     	}
-    	else{
-    		Log.e( TAG,"ret_obj is null\n");
-    	}
     	return ret_obj;
     }
     
@@ -154,9 +146,6 @@ public class BeseyeWebsocketsUtil {
     		}else{
     			Log.e(TAG,  "job_obj is null\n");
     		}
-    	}
-    	else{
-    		Log.e( TAG,"ret_obj is null\n");
     	}
     	return ret_obj;
     }

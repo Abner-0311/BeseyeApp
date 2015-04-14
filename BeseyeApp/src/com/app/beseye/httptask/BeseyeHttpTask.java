@@ -134,12 +134,12 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	}
 	
 	static public interface OnHttpTaskCallback{
-		void onShowDialog(AsyncTask task, int iDialogId, int iTitleRes, int iMsgRes);
-		void onDismissDialog(AsyncTask task, int iDialogId);
-		void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg);
-		void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode);
-		void onToastShow(AsyncTask task, String strMsg);
-		void onSessionInvalid(AsyncTask task, int iInvalidReason);
+		void onShowDialog(AsyncTask<String, Double, List<JSONObject>> task, int iDialogId, int iTitleRes, int iMsgRes);
+		void onDismissDialog(AsyncTask<String, Double, List<JSONObject>> task, int iDialogId);
+		void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg);
+		void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode);
+		void onToastShow(AsyncTask<String, Double, List<JSONObject>> task, String strMsg);
+		void onSessionInvalid(AsyncTask<String, Double, List<JSONObject>> task, int iInvalidReason);
 	} 
 	
 	public BeseyeHttpTask setHttpMethod(String method){

@@ -223,15 +223,15 @@ public class CameraListMenuAnimator {
 		}
 	}
 	
-	private void cancelAnimation(){
-		if(isInAnimation()){
-			if(null != m_vgMenu){
-				Animation animation = m_vgMenu.getAnimation();
-				if(null != animation)
-					animation.cancel();
-			}
-		}
-	}
+//	private void cancelAnimation(){
+//		if(isInAnimation()){
+//			if(null != m_vgMenu){
+//				Animation animation = m_vgMenu.getAnimation();
+//				if(null != animation)
+//					animation.cancel();
+//			}
+//		}
+//	}
 	
 //	private void setMenuVisibility(int visibility){
 //		//cancelAnimation();

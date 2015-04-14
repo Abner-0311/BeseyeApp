@@ -58,8 +58,8 @@ public class WifiListActivity extends WifiControlBaseActivity
 	
 	private PullToRefreshListView mlvWifiList;
 	private WifiInfoAdapter mWifiInfoAdapter;
-	private View mSwWifi;
-	private ActionBar.LayoutParams mSwWifiViewLayoutParams;
+	//private View mSwWifi;
+	//private ActionBar.LayoutParams mSwWifiViewLayoutParams;
 	private BeseyeSwitchBtn mWifiSwitchBtn;
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
@@ -103,7 +103,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 				//}
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
@@ -555,7 +555,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetWiFiSSIDListTask){
 			BeseyeUtils.postRunnable(new Runnable(){
@@ -572,7 +572,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.GetWiFiSSIDListTask){
 				if(0 == iRetCode){

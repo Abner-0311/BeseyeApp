@@ -4,7 +4,6 @@ import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeUtils.isSameDay;
 
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,8 +14,6 @@ import net.simonvt.numberpicker.NumberPicker.OnValueChangeListener;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

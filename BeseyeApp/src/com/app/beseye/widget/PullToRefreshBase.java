@@ -15,7 +15,6 @@
  *******************************************************************************/
 package com.app.beseye.widget;
 
-import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -76,7 +75,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout {
 	private int mState = PULL_TO_REFRESH;
 	private LvExtendedMode mMode = DEFAULT_MODE;
 
-	private LvExtendedMode mCurrentMode;
+	private LvExtendedMode mCurrentMode = LvExtendedMode.PULL_DOWN_TO_REFRESH;
 	T mRefreshableView;
 	private boolean mPullToRefreshEnabled = true;
 
@@ -684,7 +683,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout {
 	}
 
 	protected void addRefreshableView(Context context, T refreshableView) {
-		addView(refreshableView, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 0, 1.0f));
+		addView(refreshableView, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0, 1.0f));
 	}
 
 	/**
@@ -760,6 +759,8 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout {
 			case PULL_DOWN_TO_REFRESH:
 				mHeaderLayout.pullToRefresh();
 				break;
+			default:
+				break;
 		}
 	}
 
@@ -773,6 +774,8 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout {
 				break;
 			case PULL_DOWN_TO_REFRESH:
 				mHeaderLayout.releaseToRefresh();
+				break;
+			default:
 				break;
 		}
 	}
@@ -892,7 +895,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout {
 			removeView(mHeaderLayout);
 		}
 		if (mMode.canPullDownUpdate()) {
-			addView(mHeaderLayout, 0, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+			addView(mHeaderLayout, 0, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT));
 		}
 
@@ -901,7 +904,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout {
 			removeView(mFooterLayout);
 		}
 		if (mMode.canPullUpLoadMore()) {
-			addView(mFooterLayout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+			addView(mFooterLayout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT));
 
 		}
@@ -973,7 +976,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout {
 	private void measureView(View child) {
 		ViewGroup.LayoutParams p = child.getLayoutParams();
 		if (p == null) {
-			p = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+			p = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 		}
 
 		int childWidthSpec = ViewGroup.getChildMeasureSpec(0, 0, p.width);

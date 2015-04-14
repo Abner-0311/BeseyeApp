@@ -31,9 +31,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.PowerManager;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -1181,7 +1179,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(DEBUG)
 			Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		
@@ -1367,7 +1365,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask task, final int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeMMBEHttpTask.GetLiveStreamTask){
 			if(task == mLiveStreamTask){
 				mLiveStreamTask = null;

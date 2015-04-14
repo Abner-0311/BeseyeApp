@@ -77,7 +77,7 @@ public class EventFilterActivity extends BeseyeBaseActivity{
 				txtTitle.setText(R.string.title_event_filter);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
 		

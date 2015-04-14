@@ -35,7 +35,6 @@ import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
-import com.app.beseye.util.BeseyeAccountFilter;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -65,8 +64,9 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 					File snFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_sn");
 					mstrSN = "0000";
 					if(null != snFile && snFile.exists()){
+						BufferedReader reader = null;
 						try {
-							BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(snFile)));
+							reader = new BufferedReader(new InputStreamReader(new FileInputStream(snFile)));
 							try {
 								mstrSN = (null != reader)?reader.readLine():null;
 							} catch (IOException e) {
@@ -74,6 +74,14 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 							}
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
+						}finally{
+							if(null != reader){
+								try {
+									reader.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
 						}
 					}
 					try{
@@ -201,7 +209,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,String strMsg) {	
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,String strMsg) {	
 		if(task instanceof BeseyeAccountTask.RegisterTask){
 			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
 			//finish();
@@ -215,7 +223,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(DEBUG)
 			Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){

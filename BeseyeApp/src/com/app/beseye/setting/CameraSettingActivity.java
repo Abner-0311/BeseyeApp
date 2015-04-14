@@ -75,7 +75,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				txtTitle.setOnClickListener(this);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 			//mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
@@ -428,7 +428,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
 			String strMsg) {
 		/*if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 			onToastShow(task, "Notify SW Update Failed.");
@@ -486,7 +486,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){

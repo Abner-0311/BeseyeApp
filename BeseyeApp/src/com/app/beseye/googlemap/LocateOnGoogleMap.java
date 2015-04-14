@@ -421,7 +421,7 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
 	}
 	
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.SetCamLocaleTask){
 				if(0 == iRetCode){

@@ -57,7 +57,7 @@ public class NightVisionActivity extends BeseyeBaseActivity {
 				txtTitle.setText(R.string.cam_setting_hw_night_vision_title);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
 		
@@ -142,7 +142,7 @@ public class NightVisionActivity extends BeseyeBaseActivity {
 	}
 	
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.SetIRCutStatusTask){
 				if(0 == iRetCode){
@@ -162,7 +162,7 @@ public class NightVisionActivity extends BeseyeBaseActivity {
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.SetIRCutStatusTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override

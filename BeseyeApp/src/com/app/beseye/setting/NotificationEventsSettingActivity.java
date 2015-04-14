@@ -54,7 +54,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	private ViewGroup mVgNotifyType[];
 	private ImageView mIvNotifyTypeCheck[], mIvNotifyTypeCheckBg[];
 	private TextView mTxtSchedDays[];
-	private JSONObject mSched_obj;
+	//private JSONObject mSched_obj;
 	private boolean mbModified = false;
 	
 	private String[] mStrObjKey = {BeseyeJSONUtil.NOTIFY_PEOPLE, 
@@ -66,7 +66,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	
 	private boolean[] mbEnabledLst = {false, true, false, false, false};
 	
-	private View mVwNavBar, mVNotifyMe;
+	private View mVwNavBar;//, mVNotifyMe;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
 	@Override
@@ -88,7 +88,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 				txtTitle.setText(R.string.cam_setting_title_notification_event);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
 		
@@ -105,7 +105,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 			Log.e(TAG, "PowerScheduleDayPickerActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 		}
 		
-		mVNotifyMe = findViewById(R.id.vg_notify_me);
+		//mVNotifyMe = findViewById(R.id.vg_notify_me);
 		
 		mNotifyMeSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_notify_me_switch);
 		if(null != mNotifyMeSwitchBtn){
@@ -317,7 +317,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	}
 	
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
@@ -343,7 +343,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true);

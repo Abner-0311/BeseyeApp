@@ -48,7 +48,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	public static final String KEY_SCHED_OBJ_DEL = "KEY_SCHED_OBJ_DEL";
 	public static final String KEY_SCHED_EDIT_MODE = "KEY_SCHED_EDIT_MODE";
 	
-	private ImageView mIvTurnoffAllDayCheck, mIvTurnoffAllDayCheckBg;
+	private ImageView mIvTurnoffAllDayCheck;//, mIvTurnoffAllDayCheckBg;
 	private ViewGroup mVgPickDays, mVgFromTime, mVgToTime, mVgTurnOffAllDay;
 	private Button mBtnRemove;
 	private TextView mTxtTimeFrom, mTxtTimeTo, mTxtSchedDays;
@@ -93,7 +93,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 				txtTitle.setText(R.string.cam_setting_schedule_edit_title);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
@@ -162,7 +162,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 			mIvTurnoffAllDayCheck.setVisibility(View.INVISIBLE);
 		}
 		
-		mIvTurnoffAllDayCheckBg = (ImageView)findViewById(R.id.iv_turnoff_all_day_check_bg);
+//		mIvTurnoffAllDayCheckBg = (ImageView)findViewById(R.id.iv_turnoff_all_day_check_bg);
 //		if(null != mIvTurnoffAllDayCheckBg){
 //			mIvTurnoffAllDayCheckBg.setOnClickListener(this);
 //		}
@@ -265,7 +265,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 			BeseyeUtils.postRunnable(new Runnable(){
@@ -304,7 +304,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.AddScheduleTask || task instanceof BeseyeCamBEHttpTask.UpdateScheduleTask){
 				if(0 == iRetCode){
