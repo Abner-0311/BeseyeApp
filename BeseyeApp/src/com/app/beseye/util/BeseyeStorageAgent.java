@@ -13,6 +13,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -126,12 +127,15 @@ public class BeseyeStorageAgent {
     	return sExternalStorageAvailable && sExternalStorageWriteable;
     }
     
-    static public File getFileInPicDir(String uniqueName) {
+    static public File getFileInPicDir(Context context, String uniqueName) {
 	    // Check if media is mounted or storage is built-in, if so, try and use external cache dir
 	    // otherwise use internal cache dir
-	    final String cachePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath()+ File.separator +"Camera";
-
-	    return new File(cachePath + File.separator + uniqueName);
+	    final String cachePath = (canUseExternalStorage()?Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM):(new ContextWrapper(context)).getDir("imageDir", Context.MODE_PRIVATE)).getAbsolutePath()+File.separator+"Beseye";
+	    File dir = new File(cachePath);
+	    if(null != dir && false == dir.exists()){
+	    	dir.mkdir();
+	    }
+	    return new File(cachePath, uniqueName);
 	}
 	
 	// Creates a unique subdirectory of the designated app cache directory. Tries to use external

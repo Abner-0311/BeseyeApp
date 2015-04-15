@@ -55,7 +55,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class BeseyeUtils {
-	static private Handler sHandler = new Handler();
+	static private Handler sHandler = null;
+	
+	static public void init(){
+		sHandler = new Handler();
+	}
 	
 	static public final float BESEYE_THUMBNAIL_RATIO_9_16 = 9.0f/16.0f;
 	

@@ -497,7 +497,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private void switchPlayer(){
 		mbHaveBitmapContent = false;
-		setEnabled(mCameraViewControlAnimator.getScreenshotView(), !mbIsDemoCam);
+		setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
 		closeStreaming();
 		mbIsSwitchPlayer = true;
 		updateAttrByIntent(getIntent(), true);
@@ -1125,6 +1125,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private void updatePowerState(){
 		if(null != mVgPowerState){
 			if(isCamPowerDisconnected()){
+				setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
 				showInvalidStateMask();
 				mVgPowerState.setVisibility(View.GONE);
 			}else{
@@ -2151,7 +2152,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		@Override
 		protected Boolean doInBackground(Bitmap... bmp) {
 			boolean bRet = false;
-			File fileToSave = BeseyeStorageAgent.getFileInPicDir("Beseye_Pro_"+BeseyeUtils.getDateString(mUpdateDateTimeRunnable.getLastDateUpdate(), "MM_dd_yyyy_hh_mm_ss_a.jpg"));
+			File fileToSave = BeseyeStorageAgent.getFileInPicDir(CameraViewActivity.this,"Beseye_Pro_"+BeseyeUtils.getDateString(mUpdateDateTimeRunnable.getLastDateUpdate(), "MM_dd_yyyy_hh_mm_ss_a.jpg"));
 			if(null != fileToSave){
 				FileOutputStream out = null;
     			try {
@@ -2179,6 +2180,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							e.printStackTrace();
 						}
     		    }
+			}else{
+	    		Log.i(TAG, "fileToSave is null");
 			}
 			return bRet;
 		} 

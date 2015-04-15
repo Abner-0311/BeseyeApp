@@ -108,14 +108,14 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 					holder.mImgDot.setImageResource(0 == iPosition?R.drawable.eventlist_timeline_point_bluegreen:R.drawable.eventlist_timeline_point_gray);
 				}
 				
-				if(0 == iPosition){
-					if(null != holder.mTxtEventType){
-						holder.mTxtEventType.setText(R.string.event_itm_live);
-					}
-				}
-				
 				BeseyeUtils.setVisibility(holder.mTxtEventType, (0 == iPosition)?View.INVISIBLE:View.VISIBLE);
 				BeseyeUtils.setVisibility(holder.mVGoLiveHolder, (0 == iPosition)?View.VISIBLE:View.GONE);
+				
+//				if(0 == iPosition){
+//					if(null != holder.mTxtEventType){
+//						holder.mTxtEventType.setText(R.string.event_itm_live);
+//					}
+//				}
 				
 				if(null != holder.mImgThumbnail){
 					if(0 < iPosition){

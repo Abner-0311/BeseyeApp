@@ -54,6 +54,7 @@ public class BeseyeApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		BeseyeUtils.init();
 		SessionMgr.createInstance(getApplicationContext());
 		BeseyeNewFeatureMgr.createInstance(getApplicationContext());
 		BeseyeUtils.setPackageVersion(getApplicationContext());

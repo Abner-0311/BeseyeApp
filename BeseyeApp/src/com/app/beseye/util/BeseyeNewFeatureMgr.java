@@ -37,7 +37,7 @@ public class BeseyeNewFeatureMgr {
 	}
 	
 	private void initValues(){
-		mNewFeatureScreenshot = new NewFeatureConfig(mPref, "beseye_screen_feature", BeseyeUtils.stringToDate("2015-05-01-00-00-00","yyyy-MM-dd-HH-mm-ss"));
+		mNewFeatureScreenshot = new NewFeatureConfig(mPref, "beseye_screen_feature", BeseyeUtils.stringToDate("2015-06-01-00-00-00","yyyy-MM-dd-HH-mm-ss"));
 	}
 	
 	public void reset(){

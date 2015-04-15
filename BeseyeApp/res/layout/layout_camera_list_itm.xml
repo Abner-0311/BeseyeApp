@@ -68,10 +68,12 @@
 		        android:layout_height="180dp"
 		        android:background="@color/camera_list_video_mask">
 				<RelativeLayout
+				    android:id="@+id/rl_camera_disconnected_content"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
 			        android:layout_centerHorizontal="true"
-			        android:layout_centerVertical="true" >
+			        android:layout_centerVertical="true" 
+			        android:visibility="invisible">
 			        <TextView
 			            android:id="@+id/tv_camera_disconnected"
 			            android:layout_width="wrap_content"
