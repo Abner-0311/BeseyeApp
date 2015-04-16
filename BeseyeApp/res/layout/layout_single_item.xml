@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/single_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:orientation="horizontal">
+    
+    <ImageView
+		android:id="@+id/imageView1"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginRight="@dimen/listview_item_padding_landscape"
+		android:layout_marginLeft="@dimen/listview_item_padding_landscape"
+    />
+
+	<TextView 
+  	    android:id="@+id/textView1"
+  	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:textSize="@dimen/wifi_list_item_main_font_size"
+		android:textColor="@color/csl_wifi_list_main_font_color"
+    	android:layout_gravity="center"
+    />
+
+</LinearLayout>

@@ -48,6 +48,7 @@ import com.app.beseye.widget.CameraListMenuAnimator;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
+import com.facebook.appevents.AppEventsLogger;
 
 public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBtnStateChangedListener{
 	static public final String KEY_VCAM_OBJ 	= "KEY_VCAM_OBJ";
@@ -214,6 +215,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		//facebook
+		// Logs 'install' and 'app activate' App Events.
+		//Log.i("Kelly", "FB Resume");
+		//AppEventsLogger.activateApp(this);
 		
 		if(null != mOnResumeUpdateCamListRunnable){
 			if(BeseyeConfig.DEBUG)

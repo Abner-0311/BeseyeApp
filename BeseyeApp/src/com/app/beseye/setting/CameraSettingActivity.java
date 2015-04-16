@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
@@ -37,6 +38,7 @@ import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.ShareMgr;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
@@ -46,7 +48,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerTitle;
-	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam;
+	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam, mVgShare;
 	
 	private int miUnmaskDetachCamHitCount = 0;
 	
@@ -158,6 +160,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			mVgRebootCam.setOnClickListener(this);
 			if(BeseyeUtils.isHiddenFeature()){
 				mVgRebootCam.setVisibility(View.GONE);
+			}
+		}
+		
+		mVgShare = (ViewGroup)findViewById(R.id.vg_share);
+		if(null != mVgShare){
+			mVgShare.setOnClickListener(this);
+			if(BeseyeUtils.isHiddenFeature()){
+				mVgShare.setVisibility(View.GONE);
 			}
 		}
 	}
@@ -307,6 +317,13 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 					BeseyeUtils.setVisibility(mVgRebootCam, View.VISIBLE);
 					BeseyeUtils.setVisibility(mVgDetachCam, View.VISIBLE);
 				}
+				break;
+			}
+			case R.id.vg_share:{
+				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard1/DCIM/100ANDRO/DSC_3441.JPG");
+//				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.LINK, "http://beseye.com");
+//				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.LINK, "meow");
+//				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.VIDEO, "/storage/sdcard1/DCIM/100ANDRO/MOV_3455.mp4");
 				break;
 			}
 			default:

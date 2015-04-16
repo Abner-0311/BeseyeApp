@@ -428,5 +428,7 @@
   <!-- Toast message for fail to pic capture -->
   <string name="player_screenshot_capture_failed">Failed to catpure picture.\nPlease try it again later.</string>
   
-  
+  <string name="share_title">Share</string>
+  <!-- facebook APP ID, shoud be changed!-->
+  <string name ="facebook_app_id">812080018846492</string>
 </resources>

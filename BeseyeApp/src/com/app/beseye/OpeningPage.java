@@ -28,6 +28,8 @@ import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 
 public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	public static final String ACTION_BRING_FRONT 		= "ACTION_BRING_FRONT";
@@ -50,6 +52,10 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		super.onCreate(savedInstanceState);
 		if(DEBUG)
 			Log.i(TAG, "OpeningPage::onCreate()");
+		
+		//facebook
+		FacebookSdk.sdkInitialize(getApplicationContext());
+		
 		//if(sbFirstLaunch)
 		if(getIntent().getBooleanExtra(KEY_HAVE_HANDLED, false)){
 			if(DEBUG)
@@ -124,6 +130,10 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		}
 		m_bLaunchForDelegate = false;
 		sbFirstLaunch = false;
+		
+		//facebook
+		// Logs 'install' and 'app activate' App Events.
+		AppEventsLogger.activateApp(this);
 	}
 	
 	@Override
@@ -138,6 +148,11 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			mGetVCamListTask.cancel(true);
 		}
 		super.onPause();
+		
+		//Facebook
+		// Logs 'app deactivate' App Event.
+		AppEventsLogger.deactivateApp(this);
+		  
 //		Log.i(TAG, "OpeningPage::onPause(), call finish");
 //		finish();
 	}
