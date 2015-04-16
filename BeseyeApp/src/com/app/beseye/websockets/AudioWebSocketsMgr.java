@@ -448,20 +448,25 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     	launchAudioThread();
     }
     
-    public void launchAudioThread(){
-    	bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz,
-		channelConfig, audioFormat);
-    	bufferSizeInBytes = 6400;
-    	if(null == audioRecord){
-			audioRecord = new AudioRecord(audioSource, sampleRateInHz,
-			channelConfig, audioFormat, bufferSizeInBytes);
-			audioRecord.startRecording();
-			
-			audioSendThread = new AudioSendThread();
-			//audioSendThread.setPriority(Thread.MIN_PRIORITY);
-			audioSendThread.start();
+    public synchronized void launchAudioThread(){
+    	if(null == audioSendThread){
+    		bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
+        	bufferSizeInBytes = 6400;
+        	if(null == audioRecord){
+    			audioRecord = new AudioRecord(audioSource, sampleRateInHz, channelConfig, audioFormat, bufferSizeInBytes);
+    			if(null != audioRecord){
+    				audioRecord.startRecording();
+    				audioSendThread = new AudioSendThread();
+    				//audioSendThread.setPriority(Thread.MIN_PRIORITY);
+    				audioSendThread.start();
+    			}else{
+    		    	Log.e(TAG, "launchAudioThread(), fail to init audioRecord, sampleRateInHz:"+sampleRateInHz+", audioFormat:"+audioFormat+", audioRecord.getState():"+audioRecord.getState());	
+    			}
+        	}else{
+    	    	Log.i(TAG, "launchAudioThread(), audioRecord is not null");	
+        	}
     	}else{
-	    	Log.i(TAG, "launchAudioThread(), audioRecord is not null");	
+	    	Log.i(TAG, "launchAudioThread(), audioSendThread is not null");	
     	}
     }
     

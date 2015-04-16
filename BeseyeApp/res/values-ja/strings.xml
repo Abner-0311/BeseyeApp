@@ -276,7 +276,7 @@
   <string name="signup_try_again_description_3">セットアップガイド</string>
   <string name="signup_try_again_btn">OK、再度実行してください</string>
   <!-- Hint Message after pairing is done and ask user to assign cam name-->
-  <string name="signup_name_camera">もうすぐセットアップ完了です、\n このカメラに名前をつけましょう。</string>
+  <string name="signup_name_camera">もうすぐセットアップ完了です、\nカメラに名前をつけましょう</string>
   <!-- Congratulation Message in live player page after pairing-->
   <string name="signup_paring_done">セットアップ完了です！\nカメラのコンセントを抜き、お好きな場所にカメラを設置しましょう。セットアップ内容は、電源を切っても保存されています。設置の際は「ウォールマウントガイド」をご覧ください。Beseye提供するサービスを始めましょ！</string>
   <string name="datetime_month">月</string>

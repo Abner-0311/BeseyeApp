@@ -81,6 +81,9 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					BeseyeUtils.setThumbnailRatio(holder.mImgThumbnail, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
 				}
 				
+				Log.i(TAG, "CameraListAdapter::inflateItem()+++++++++++++++++++++++++++, id:"+holder.mImgThumbnail);
+
+				
 				holder.mVgCamOff = (ViewGroup)convertView.findViewById(R.id.rl_cameralist_no_video);
 				if(null != holder.mVgCamOff){
 					BeseyeUtils.setThumbnailRatio(holder.mVgCamOff, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);

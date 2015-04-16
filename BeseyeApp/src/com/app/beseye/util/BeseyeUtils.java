@@ -409,7 +409,7 @@ public class BeseyeUtils {
 		String description = "";
 
 	    try {
-	      Process process = Runtime.getRuntime().exec("logcat -d BesEye:D SoundPairing:I Debug:W *:S");
+	      Process process = Runtime.getRuntime().exec("logcat -v time -d BesEye:D SoundPairing:I Debug:W *:S");
 	      BufferedReader bufferedReader = 
 	        new BufferedReader(new InputStreamReader(process.getInputStream()));
 
