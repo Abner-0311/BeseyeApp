@@ -21,6 +21,7 @@ public class BeseyeWebsocketsUtil {
     static public final String WS_CB_ACK  				= "wss_ack";
     static public final String WS_CB_EVT  				= "wss_evt";
     static public final String WS_CB_REMOTE_BIN_CONN  	= "wss_remote_binary_connected";
+    static public final String WS_CB_REMOTE_BIN_DISCONN = "wss_remote_binary_disconnected";
     
     
     static public final String WS_FUNC_CONNECTED 		= "wsc_connected";
@@ -83,22 +84,17 @@ public class BeseyeWebsocketsUtil {
 
     static public JSONObject wrapWSBaseMsg(){
     	JSONObject ret_obj = new JSONObject();
-    	if(null != ret_obj){
-    		JSONObject job_obj = getJsonObjWithJobID();
-    		if(null != job_obj){
-    			try {
-					ret_obj.put(WS_ATTR_DATA, job_obj);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    		}else{
-    			Log.e(TAG,  "job_obj is null\n");
-    		}
-    	}
-    	else{
-    		Log.e( TAG,"ret_obj is null\n");
-    	}
+    	JSONObject job_obj = getJsonObjWithJobID();
+		if(null != job_obj){
+			try {
+				ret_obj.put(WS_ATTR_DATA, job_obj);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			Log.e(TAG,  "job_obj is null\n");
+		}
     	return ret_obj;
     }
     
@@ -130,9 +126,6 @@ public class BeseyeWebsocketsUtil {
     			Log.e(TAG,  "job_obj is null\n");
     		}
     	}
-    	else{
-    		Log.e( TAG,"ret_obj is null\n");
-    	}
     	return ret_obj;
     }
     
@@ -153,9 +146,6 @@ public class BeseyeWebsocketsUtil {
     		}else{
     			Log.e(TAG,  "job_obj is null\n");
     		}
-    	}
-    	else{
-    		Log.e( TAG,"ret_obj is null\n");
     	}
     	return ret_obj;
     }

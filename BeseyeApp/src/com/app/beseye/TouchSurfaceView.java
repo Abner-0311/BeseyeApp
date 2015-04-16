@@ -79,7 +79,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     //
     private float matchViewWidth, matchViewHeight, prevMatchViewWidth, prevMatchViewHeight;
     
-    private float mfPaddingTop, mfPaddingBottom;
+    //private float mfPaddingTop, mfPaddingBottom;
     
     private ScaleGestureDetector mScaleDetector;
     private GestureDetector mGestureDetector;
@@ -101,51 +101,6 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 		if(DEBUG)
 			Log.i(TAG, "surfaceChanged()......");
-		
-        int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
-        switch (format) {
-        case PixelFormat.A_8:
-            Log.v(TAG, "pixel format A_8");
-            break;
-        case PixelFormat.LA_88:
-            Log.v(TAG, "pixel format LA_88");
-            break;
-        case PixelFormat.L_8:
-            Log.v(TAG, "pixel format L_8");
-            break;
-        case PixelFormat.RGBA_4444:
-            Log.v(TAG, "pixel format RGBA_4444");
-            sdlFormat = 0x15421002; // SDL_PIXELFORMAT_RGBA4444
-            break;
-        case PixelFormat.RGBA_5551:
-            Log.v(TAG, "pixel format RGBA_5551");
-            sdlFormat = 0x15441002; // SDL_PIXELFORMAT_RGBA5551
-            break;
-        case PixelFormat.RGBA_8888:
-            Log.v(TAG, "pixel format RGBA_8888");
-            sdlFormat = 0x16462004; // SDL_PIXELFORMAT_RGBA8888
-            break;
-        case PixelFormat.RGBX_8888:
-            Log.v(TAG, "pixel format RGBX_8888");
-            sdlFormat = 0x16261804; // SDL_PIXELFORMAT_RGBX8888
-            break;
-        case PixelFormat.RGB_332:
-            Log.v(TAG, "pixel format RGB_332");
-            sdlFormat = 0x14110801; // SDL_PIXELFORMAT_RGB332
-            break;
-        case PixelFormat.RGB_565:
-            Log.v(TAG, "pixel format RGB_565");
-            sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565
-            break;
-        case PixelFormat.RGB_888:
-            Log.v(TAG, "pixel format RGB_888");
-            // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
-            sdlFormat = 0x16161804; // SDL_PIXELFORMAT_RGB888
-            break;
-        default:
-            Log.v(TAG, "pixel format unknown " + format);
-            break;
-        }
 
         mSurfaceWidth = width;
         mSurfaceHeight = height;
@@ -163,8 +118,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         if(DEBUG)
         	Log.v(TAG, "Window size:" + width + "x"+height);
         
-        mfPaddingTop = this.getContext().getResources().getDimension(R.dimen.liveview_navbar_height_landscape);
-        mfPaddingBottom = this.getContext().getResources().getDimension(R.dimen.liveview_toolbar_height_landscape);
+//        mfPaddingTop = this.getContext().getResources().getDimension(R.dimen.liveview_navbar_height_landscape);
+//        mfPaddingBottom = this.getContext().getResources().getDimension(R.dimen.liveview_toolbar_height_landscape);
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         synchronized(this){
@@ -247,7 +202,7 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     		Log.i(TAG, "sharedConstructing()");
         super.setClickable(true);
         getHolder().addCallback(this);	
-        
+               
         this.context = context;
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
         
@@ -1120,6 +1075,35 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     	return bRet;
     }
     
+    public boolean copyCurrentBitmap(long lTs, OnBitmapScreenshotCallback cb){
+    	boolean bRet = false;
+    	if(-1 == mlRequestBmpTimestamp && null != cb){
+    		mOnBitmapScreenshotCallback = cb;
+    		mlRequestBmpTimestamp = lTs;
+    		bRet = copyBitmap(mStreamBitmap);
+    	}
+    	return bRet;
+    }
+    
+    private boolean copyBitmap(Bitmap bmp){
+	    if(-1 != mlRequestBmpTimestamp){
+	    	if(null != bmp && false == bmp.isRecycled()){
+	    		Bitmap bmpSave = bmp.copy(bmp.getConfig(), true);
+	    		Canvas canvasBmp2 = new Canvas( bmpSave );
+	    		if(null != canvasBmp2){
+	    			canvasBmp2.drawBitmap(bmp, 0, 0, null);
+	    		}
+	    		if(null != mOnBitmapScreenshotCallback){
+	    			mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
+	    		}
+	    		mlRequestBmpTimestamp = -1;
+	    		mOnBitmapScreenshotCallback = null;
+	    		return true;
+	    	}
+	    }
+	    return false;
+    }
+    
     public void drawStreamBitmap(){
     	drawStreamBitmap(mStreamBitmap);
     }
@@ -1127,32 +1111,27 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     public void drawStreamBitmap(Bitmap bmp){
     	synchronized(this){
     		if(isCameraStatusOn() && mIsSurfaceReady){
+    			//long lStartTs = System.currentTimeMillis();
         		Canvas canvas = getHolder().lockCanvas();
             	if(null != canvas){
             		try{
+            			//long lTimeToLock = System.currentTimeMillis() - lStartTs;
         				canvas.drawColor(miBackgroundColor/*, PorterDuff.Mode.CLEAR*/);
+        				//long lTimeToColor = System.currentTimeMillis() - lStartTs;
         		        //Log.d(TAG, "drawStreamBitmap(), redundantXSpace:"+redundantXSpace+", redundantYSpace:"+redundantYSpace+", scale:"+scale);
         		        //updateMatrix();
         				//printMatrixInfo();
         		        
         				if(null != bmp && false == bmp.isRecycled())
         					canvas.drawBitmap(bmp, matrix, null);
-        				
-        				if(-1 != mlRequestBmpTimestamp){
-        					Bitmap bmpSave = bmp.copy(bmp.getConfig(), true);
-        					Canvas canvasBmp2 = new Canvas( bmpSave );
-        					if(null != canvasBmp2){
-        						canvasBmp2.drawBitmap(bmp, 0, 0, null);
-        					}
-        					if(null != mOnBitmapScreenshotCallback){
-        						mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
-        					}
-        					mlRequestBmpTimestamp = -1;
-        					mOnBitmapScreenshotCallback = null;
-        				}
-        				
+	
+        				copyBitmap(bmp);
+        				//long lTimeToDrawBmp = System.currentTimeMillis() - lStartTs;
         				if(mIsSurfaceReady)
         					getHolder().unlockCanvasAndPost(canvas);
+        				//long lTimeToUnlock = System.currentTimeMillis() - lStartTs;
+        				
+        				//Log.e(TAG, "drawStreamBitmap(), Time check("+lTimeToLock+", "+lTimeToColor+", "+lTimeToDrawBmp+", "+lTimeToUnlock+")");
             		}catch(java.lang.IllegalStateException e){
             			Log.e(TAG, "drawStreamBitmap(), e"+e.toString());
             		}

@@ -14,7 +14,7 @@
     	android:paddingRight="@dimen/cameralist_nav_margin_hori">
     </ImageView>
     
-     <ImageView
+    <ImageView
         android:id="@+id/iv_nav_news"
 	    android:layout_width="wrap_content"
     	android:layout_height="wrap_content"

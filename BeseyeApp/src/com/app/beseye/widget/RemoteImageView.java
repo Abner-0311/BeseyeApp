@@ -725,10 +725,10 @@ public class RemoteImageView extends ImageView {
 		return (path != null && (f = new File(path)).exists() && f.length() > 0);
 	}
 	
-	static private boolean deleteFile(String path) {
-		File f;
-		return (path != null && (f = new File(path)).exists() && f.delete());
-	}
+//	static private boolean deleteFile(String path) {
+//		File f;
+//		return (path != null && (f = new File(path)).exists() && f.delete());
+//	}
 
 	static public void compressFile(Bitmap bitmap, String target,
 			Bitmap.CompressFormat format, int quality) {

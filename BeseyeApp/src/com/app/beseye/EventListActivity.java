@@ -34,8 +34,6 @@ import android.widget.TextView;
 import com.app.beseye.adapter.EventListAdapter;
 import com.app.beseye.adapter.EventListAdapter.EventListItmHolder;
 import com.app.beseye.adapter.EventListAdapter.IListViewScrollListenser;
-import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -411,7 +409,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 	private JSONArray mArrOldEventList = null;
 	
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode+", "+System.currentTimeMillis());	
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeMMBEHttpTask.GetEventListCountTask){
@@ -721,7 +719,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 	
 	
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
 		super.onErrorReport(task, iErrType, strTitle, strMsg);
 		postToLvRreshComplete();
 		if(iErrType == BeseyeHttpTask.ERR_TYPE_NO_CONNECTION){

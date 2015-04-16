@@ -5,6 +5,7 @@ import static com.app.beseye.websockets.BeseyeWebsocketsUtil.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +58,6 @@ import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
-import com.app.beseye.websockets.AudioWebSocketsMgr;
 import com.app.beseye.websockets.WebsocketsMgr;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 
@@ -367,9 +367,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	Date now = new Date();
     	if(null != now){
     		//Log.d(TAG, "getTimeToCheck(), now : "+now);
-    		int iHour = now.getHours();
-    		int iMin = now.getMinutes();
-    		int iSec = now.getSeconds();
+    		Calendar calendar = Calendar.getInstance();
+    		calendar.setTimeInMillis (now.getTime());
+    		int iHour = calendar.get(Calendar.HOUR_OF_DAY);
+    		int iMin = calendar.get(Calendar.MINUTE);
+    		int iSec = calendar.get(Calendar.SECOND);
     		if(iHour < CACHE_CHECK_TIME){
     			lRet = Math.abs(((60*60*(CACHE_CHECK_TIME - iHour))-(60*iMin+iSec))*1000L);
     		}else if(iHour == CACHE_CHECK_TIME){
@@ -408,17 +410,17 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
      * Target we publish for clients to send messages to IncomingHandler.
      */
     final Messenger mMessenger = new Messenger(new IncomingHandler());
-    private String mLastNotifyId = null;
-	private long mLastNotifyUpdateTime = 0;
+//    private String mLastNotifyId = null;
+//	private long mLastNotifyUpdateTime = 0;
 	private String mStrFocusVCamId = null;
 //	private SessionData mSessionData = null;
 //	private iKalaSettingsMgr.SettingData mSettingData = null;
 	
 	static private final String PUSH_SERVICE_PREF 				= "beseye_push_service";
-	static private final String PUSH_SERVICE_SENDER_ID 			= "beseye_push_service_sender";
+//	static private final String PUSH_SERVICE_SENDER_ID 			= "beseye_push_service_sender";
 	static public  final String PUSH_SERVICE_REG_ID 			= "beseye_push_service_reg_id";
-	static private final String PUSH_SERVICE_LAST_NOTIFY_ID 	= "beseye_push_last_notify_id";
-	static private final String PUSH_SERVICE_LAST_NOTIFY_TIME 	= "beseye_push_last_notify_time";
+//	static private final String PUSH_SERVICE_LAST_NOTIFY_ID 	= "beseye_push_last_notify_id";
+//	static private final String PUSH_SERVICE_LAST_NOTIFY_TIME 	= "beseye_push_last_notify_time";
 	
 	static private final String PUSH_SERVICE_LAST_EVENT 		= "beseye_push_last_event";
 	private JSONObject mLastEventObj = null;
@@ -454,9 +456,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         
        
         mPref = BeseyeSharedPreferenceUtil.getSharedPreferences(getApplicationContext(), PUSH_SERVICE_PREF);
-        
-        mLastNotifyId = BeseyeSharedPreferenceUtil.getPrefStringValue(mPref, PUSH_SERVICE_LAST_NOTIFY_ID);
-        mLastNotifyUpdateTime = BeseyeSharedPreferenceUtil.getPrefLongValue(mPref, PUSH_SERVICE_LAST_NOTIFY_TIME, -1L);
+//        
+//        mLastNotifyId = BeseyeSharedPreferenceUtil.getPrefStringValue(mPref, PUSH_SERVICE_LAST_NOTIFY_ID);
+//        mLastNotifyUpdateTime = BeseyeSharedPreferenceUtil.getPrefLongValue(mPref, PUSH_SERVICE_LAST_NOTIFY_TIME, -1L);
         
         try {
         	mLastEventObj = new JSONObject(BeseyeSharedPreferenceUtil.getPrefStringValue(mPref, PUSH_SERVICE_LAST_EVENT));
@@ -876,15 +878,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         }
     };
 	
-	private void setLastNotifyItem(JSONObject notifyObj){
-		if(null != notifyObj){
-			//mLastNotifyId = BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_ID);
-			BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_LAST_NOTIFY_ID, mLastNotifyId);
-			
-			mLastNotifyUpdateTime = BeseyeJSONUtil.getJSONLong(notifyObj, UPDATE_TIME);
-			BeseyeSharedPreferenceUtil.setPrefLongValue(mPref, PUSH_SERVICE_LAST_NOTIFY_TIME, mLastNotifyUpdateTime);
-		}
-	}
+//	private void setLastNotifyItem(JSONObject notifyObj){
+//		if(null != notifyObj){
+//			//mLastNotifyId = BeseyeJSONUtil.getJSONString(notifyObj, NOTIFY_ID);
+//			BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, PUSH_SERVICE_LAST_NOTIFY_ID, mLastNotifyId);
+//			
+//			mLastNotifyUpdateTime = BeseyeJSONUtil.getJSONLong(notifyObj, UPDATE_TIME);
+//			BeseyeSharedPreferenceUtil.setPrefLongValue(mPref, PUSH_SERVICE_LAST_NOTIFY_TIME, mLastNotifyUpdateTime);
+//		}
+//	}
 	
 	private boolean isNewEvent(JSONObject eventObj){
 		boolean bRet = false;
@@ -1087,18 +1089,18 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //		testMsgGot();
 //	}
 	
-	private void testMsgGot(){
-		new IncomingHandler().postDelayed(new Runnable(){
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(GCMIntentService.FORWARD_GCM_MSG_ACTION);
-		        intent.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, GCMIntentService.FORWARD_ACTION_TYPE_MSG);
-		        intent.putExtra("info", "This is a beseye test message.");
-		        sendBroadcast(intent);
-			}}, 1000);
-		
-	}
+//	private void testMsgGot(){
+//		new IncomingHandler().postDelayed(new Runnable(){
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				Intent intent = new Intent(GCMIntentService.FORWARD_GCM_MSG_ACTION);
+//		        intent.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, GCMIntentService.FORWARD_ACTION_TYPE_MSG);
+//		        intent.putExtra("info", "This is a beseye test message.");
+//		        sendBroadcast(intent);
+//			}}, 1000);
+//		
+//	}
 	
 	
 	private void cancelNotification(){
@@ -1131,13 +1133,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //	}
 
 	@Override
-	public void onShowDialog(AsyncTask task, int iDialogId, int iTitleRes, int iMsgRes) {}
+	public void onShowDialog(AsyncTask<String, Double, List<JSONObject>> task, int iDialogId, int iTitleRes, int iMsgRes) {}
 
 	@Override
-	public void onDismissDialog(AsyncTask task, int iDialogId) {}
+	public void onDismissDialog(AsyncTask<String, Double, List<JSONObject>> task, int iDialogId) {}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyePushServiceTask.GetProjectIDTask){
 			Log.e(TAG, "onPostExecute(), GetProjectIDTask, iErrType = "+iErrType);
 		}else if(task instanceof BeseyePushServiceTask.AddRegisterIDTask){
@@ -1149,12 +1151,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	@Override
-	public void onSessionInvalid(AsyncTask task, int iInvalidReason){
+	public void onSessionInvalid(AsyncTask<String, Double, List<JSONObject>> task, int iInvalidReason){
 		
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(false == task.isCancelled()){
 			if(task instanceof BeseyePushServiceTask.GetProjectIDTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
@@ -1289,7 +1291,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 
 	@Override
-	public void onToastShow(AsyncTask task, String strMsg) {
+	public void onToastShow(AsyncTask<String, Double, List<JSONObject>> task, String strMsg) {
 		// TODO Auto-generated method stub
 		
 	}

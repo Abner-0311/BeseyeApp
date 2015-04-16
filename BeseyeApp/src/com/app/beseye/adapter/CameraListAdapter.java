@@ -45,6 +45,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 	static public class CameraListItmHolder{
 		public ViewGroup mVgCamOff;
 		public ViewGroup mVgCamDisconnected;
+		public ViewGroup mVgCamDisconnectedContent;
 		public TextView mTxtCamName;
 		public TextView mTxtMore;
 		public RemoteImageView mImgThumbnail;
@@ -90,6 +91,8 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					BeseyeUtils.setThumbnailRatio(holder.mVgCamDisconnected, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
 				}
 				
+				holder.mVgCamDisconnectedContent= (ViewGroup)convertView.findViewById(R.id.rl_camera_disconnected_content);
+				
 				convertView.setOnClickListener(mItemOnClickListener);
 				convertView.setTag(holder);
 			}
@@ -116,12 +119,13 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				
 				//BeseyeUtils.setVisibility(holder.mImgThumbnail, connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED)?View.INVISIBLE:View.VISIBLE);
 				BeseyeUtils.setVisibility(holder.mVgCamOff, connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_OFF)?View.VISIBLE:View.GONE);
-				BeseyeUtils.setVisibility(holder.mVgCamDisconnected, connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED)?View.VISIBLE:View.GONE);
-				
+				BeseyeUtils.setVisibility(holder.mVgCamDisconnectedContent, connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED)?View.VISIBLE:View.GONE);
+				BeseyeUtils.setVisibility(holder.mVgCamDisconnected, (connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_INIT)||connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED))?View.VISIBLE:View.GONE);
+
 				if(null != holder.mSbCamOnOff){
 					holder.mSbCamOnOff.setTag(holder);
 					holder.mSbCamOnOff.setSwitchState(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON)?SwitchState.SWITCH_ON:(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_OFF)?SwitchState.SWITCH_OFF:SwitchState.SWITCH_DISABLED));
-					holder.mSbCamOnOff.setEnabled(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED)?false:true);
+					holder.mSbCamOnOff.setEnabled(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_INIT)||connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED)?false:true);
 				}
 				
 				//Log.i(TAG, "setupItem(), holder.mImgThumbnail:"+holder.mImgThumbnail.getWidth());

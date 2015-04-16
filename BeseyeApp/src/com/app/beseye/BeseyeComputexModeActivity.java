@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -14,12 +12,12 @@ import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 
 public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
-	private RadioButton mRbDemomode;
-	private RadioButton mRbPairingmode;
-	private RadioButton mRbP2Pmode;
-	private EditText mTxtIP;
-	private EditText mTxtCamName;
-	private EditText mTxtPeriod;
+//	private RadioButton mRbDemomode;
+//	private RadioButton mRbPairingmode;
+//	private RadioButton mRbP2Pmode;
+//	private EditText mTxtIP;
+//	private EditText mTxtCamName;
+//	private EditText mTxtPeriod;
 	private Button mBtnApply;
 	private Spinner mSpServerType;
 	
@@ -29,13 +27,13 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		mbIgnoreSessionCheck = true;
 		mbIgnoreCamVerCheck = true;
 		
-		mRbDemomode = (RadioButton)findViewById(R.id.rbDemo);
-		mRbPairingmode = (RadioButton)findViewById(R.id.rbPairing);
-		mRbP2Pmode = (RadioButton)findViewById(R.id.rbP2P);
-		
-		mTxtIP = (EditText)findViewById(R.id.editText_ip);
-		mTxtCamName = (EditText)findViewById(R.id.editText_cam_name);
-		mTxtPeriod = (EditText)findViewById(R.id.editText_notify_period);
+//		mRbDemomode = (RadioButton)findViewById(R.id.rbDemo);
+//		mRbPairingmode = (RadioButton)findViewById(R.id.rbPairing);
+//		mRbP2Pmode = (RadioButton)findViewById(R.id.rbP2P);
+//		
+//		mTxtIP = (EditText)findViewById(R.id.editText_ip);
+//		mTxtCamName = (EditText)findViewById(R.id.editText_cam_name);
+//		mTxtPeriod = (EditText)findViewById(R.id.editText_notify_period);
 		
 		mBtnApply = (Button)findViewById(R.id.button_confirm);
 		if(null != mBtnApply){

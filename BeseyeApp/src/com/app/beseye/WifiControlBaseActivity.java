@@ -78,7 +78,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	protected String miOriginalVcamArr = null;
 	static public final String KEY_CHANGE_WIFI_ONLY = "KEY_CHANGE_WIFI_ONLY";
 	
-	static private String sWiFiPasswordHistory = "";
+	//static private String sWiFiPasswordHistory = "";
 	
 	static public void updateWiFiPasswordHistory(String strPW){
 		if(DEBUG)
@@ -365,7 +365,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		if(DEBUG)
 			Log.i(TAG, "WifiControlBaseActivity::setWifiSettingState(), state:"+state);
 		
-		WIFI_SETTING_STATE prevState = mWifiSettingState;
+		//WIFI_SETTING_STATE prevState = mWifiSettingState;
 		mWifiSettingState = state;
 		switch(mWifiSettingState){
 			case STATE_INIT:{

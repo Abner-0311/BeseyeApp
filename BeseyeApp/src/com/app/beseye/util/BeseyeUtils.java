@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -54,7 +55,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class BeseyeUtils {
-	static private Handler sHandler = new Handler();
+	static private Handler sHandler = null;
+	
+	static public void init(){
+		sHandler = new Handler();
+	}
 	
 	static public final float BESEYE_THUMBNAIL_RATIO_9_16 = 9.0f/16.0f;
 	
@@ -289,6 +294,15 @@ public class BeseyeUtils {
 		
 		return strRet;
 	}
+	
+	static public Date stringToDate(String strDate,String strFormat) {
+	      if(strDate==null) return null;
+	      ParsePosition pos = new ParsePosition(0);
+	      SimpleDateFormat simpledateformat = new SimpleDateFormat(strFormat);
+	      Date stringDate = simpledateformat.parse(strDate, pos);
+	      return stringDate;            
+
+	   }
 	
 	public static final int DEFAULT_FROM_TIME = 19*60*60; //PM 07:00
 	public static final int DEFAULT_TO_TIME   = 7*60*60;  //AM 07:00

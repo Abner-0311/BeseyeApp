@@ -248,7 +248,7 @@
   <string name="msg_account_not_found">不正确的电子邮件地址，请输入正确地址。</string>
   <!-- Hint Message of dialog when pairing is processing-->
   <string name="toast_pairing_wait">摄像机设定中，请稍待。</string>
-  <string name="toast_pairing_enter_cam_name">帮您的Beseye 取个好认的名字吧。</string>
+  <string name="toast_pairing_enter_cam_name">帮您的Beseye 取个名字吧。</string>
   <string name="dialog_msg_signup">注册...</string>
   <string name="dialog_msg_login">登入...</string>
   <string name="dialog_msg_logiout">注销...</string>
@@ -302,11 +302,12 @@
   <string name="camera_list_add">按这里新增摄像机。\n或点选左上方选单来观看展示摄像机。</string>
   <!-- Hint message in camera list item when servers are down or network issue-->
   <string name="camera_list_failed_title">无法连接至您的摄像机</string>
-  <string name="camera_list_failed_content">请检查行动装置与摄像机的网络状态，然后再试一次</string>
+  <string name="camera_list_failed_content">请检查行动装置与摄像机的网络状态，然后再试一次。</string>
   <string name="cam_list_tilte">我的摄像机</string>
   <!-- Menu items on camera list page-->
   <string name="cam_menu_demo_cam">展示摄像机</string>
-  <string name="cam_menu_private_demo_cam">私人摄像机</string>    
+  <!-- Menu items on camera list page-->
+  <string name="cam_menu_private_demo_cam">私人摄像机</string>
   <string name="cam_menu_news">公告</string>
   <string name="cam_menu_about">关于</string>
   <string name="cam_menu_support">支援</string>
@@ -315,18 +316,18 @@
   <!-- Action to update cam SW -->
   <string name="update_now">立刻更新</string>
   <string name="cam_update_progress">摄像机更新中...%s</string>
-  <string name="cam_update_title">您可以更新Beseye摄像机至%s版本</string>
-  <string name="cam_update_success">成功更新摄像机。</string>
+  <string name="cam_update_title">您可以更新 Beseye 摄像机至%s版本</string>
+  <string name="cam_update_success">成功更新摄像机</string>
   <string name="cam_update_timeout">更新服务无回应，请稍后再试。</string>
   <string name="cam_update_failed">无法更新摄像机，请稍后再试。</string>
   <!-- Warning Message when all cameras are disconnected now and can not to update-->
-  <string name="cam_update_no_valid_cam">没有在线的摄像机可供更新。</string>
+  <string name="cam_update_no_valid_cam">没有在线的摄像机可供更新</string>
   <!-- Title of forget password page -->
   <string name="forget_password_check_title">请检查您的电子邮件信箱</string>
   <string name="forget_password_btn_submit">送出</string>
   <string name="forget_password_instruction">不用担心！只需填写您的电子邮件地址，我们将送给您重设密码说明。</string>
   <string name="forget_password_check_mail_summary">Beseye 已经将密码重设步骤发送到以下邮件地址：</string>
-  <string name="forget_password_check_mail_note">提醒：该电子邮件将从no-reply@support.beseye.com 发出，如果您没有在几分钟内收到该电子邮件，请检查您的垃圾邮件。</string>
+  <string name="forget_password_check_mail_note">提醒：该电子邮件将从 no-reply@beseye.com 发出，如果您没有在几分钟内收到该电子邮件，请检查您的垃圾邮件。</string>
   <!-- Toast message when new camera is complete to pair and connected-->
   <string name="toast_new_cam_activated">新加入的摄像机已连接，请刷新您的摄像机列表。</string>
   <!-- Toast message when camera is connected after cam wifi changed-->
@@ -394,23 +395,32 @@
   <string name="tz_euro_spain">西班牙</string>
   <string name="tz_euro_austria">奥地利</string>
   <string name="tz_euro_italy">意大利</string>
-  <string name="cam_name_update_success">成功更新摄像机名称．</string>
+  <string name="cam_name_update_success">成功更新摄像机名称</string>
   <string name="signup_plug_in_description">首先，请帮摄像机插上电源插头．</string>
   <string name="signup_plug_in_title">连接摄像机电源</string>
   <string name="signup_plug_in_done">插上电源了，开始设定吧</string>
   <string name="signup_watch_out_title">注意</string>
-  <string name="signup_watch_out_desc">注意注意，您的手机即将%1$s!\n请将您的%2$s对准镜头．\n再按下一步．</string>
+  <string name="signup_watch_out_desc">注意注意，您的手机即将%1$s!\n请将您的%2$s对准镜头．\n再按下一步。</string>
   <string name="signup_watch_out_desc_bebebe">「发出哔哔声」</string>
   <string name="signup_watch_out_desc_speaker">「手机喇叭」</string>
   <string name="signup_watch_out_done">手机就位，下一步</string>
   <string name="signup_confirm_led_title">确认指示灯号</string>
   <string name="signup_confirm_led_desc">镜头指示灯是否显示为%s呢?\n如果尚未闪烁绿灯，表示摄像机暖机中．\n请静候数分钟!</string>
   <string name="signup_confirm_led_twinkling_green_light">「闪烁绿灯」</string>
-  <string name="signup_confirm_led_done">是，已闪绿灯，下一步</string>
-  <string name="signup_pairing_fail_desc">请你拔掉插头重新插上，确认镜头灯号为「闪烁绿灯」，且手机喇叭距离镜头10公分，再开始Let it Bee™．</string>
+  <string name="signup_confirm_led_done">已闪绿灯，下一步</string>
+  <string name="signup_pairing_fail_desc">请你拔掉插头重新插上，确认镜头灯号为「闪烁绿灯」，且手机喇叭距离镜头10公分，再开始Let it Bee™。</string>
   <string name="signup_guideline_try_again_btn">OK，再设定一次看看</string>
+  <!--Toast message for poor quality when talking-->
   <string name="hint_hold_to_talk_poor_network_quality">网络连接不稳定，\n请再次尝试通话．</string>
   <string name="msg_wifi_pw_length_error_wpa">无效的Wi-Fi密码长度。密码必须是8-64个字母。</string>
   <string name="msg_wifi_pw_length_error_wep">无效的Wi-Fi密码长度。密码必须是5至13个字母。</string>
   <string name="msg_wifi_setting_info_error">无效的Wi-Fi设定。</string>
+  <!--Warning message for detaching cam failed case-->
+  <string name="cam_setting_failed_detach_cam">无法移除摄像机，请再试一次。</string>
+  <!--Dialog message for player pic capture-->
+  <string name="player_screenshot_capturing">正在存储摄像机影像</string>
+  <!--Toast message for complete pic capture-->
+  <string name="player_screenshot_capture_ok">摄像机影像已存储</string>
+  <!--Toast message for fail to pic capture-->
+  <string name="player_screenshot_capture_failed">无法存储摄像机影像，请稍候再试。</string>
 </resources>

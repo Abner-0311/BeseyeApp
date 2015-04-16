@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
-    android:versionCode="104"
-    android:versionName="0.1.104" 
+    android:versionCode="106"
+    android:versionName="0.1.106" 
     android:installLocation="auto">
 
     <!-- Android 2.3.3 -->
     <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="14" />
 
     <!-- OpenGL ES 2.0 -->
-    <uses-feature android:glEsVersion="0x00020000" /> 
+    <uses-feature android:glEsVersion="0x00020000" android:required="true" />
 
     <!-- Allow writing to external storage -->
     
@@ -31,8 +31,6 @@
     
     <permission android:name="com.app.beseye.googlemap.MAPS_RECEIVE"></permission>
 	<uses-permission android:name="com.app.beseye.googlemap.permission.MAPS_RECEIVE"/>
-    
-	<uses-feature android:glEsVersion="0x00020000" android:required="true" />
 	
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> 

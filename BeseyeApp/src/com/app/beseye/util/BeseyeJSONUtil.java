@@ -263,6 +263,7 @@ public class BeseyeJSONUtil {
 	}
 	
 	public static enum CAM_CONN_STATUS{
+		CAM_INIT(-2),
 		CAM_DISCONNECTED(-1),
 		CAM_OFF(0),
 		CAM_ON(1);
@@ -284,8 +285,11 @@ public class BeseyeJSONUtil {
 				case 1:{
 					return CAM_CONN_STATUS.CAM_ON;
 				}
-				default:
+				case -1:{
 					return CAM_CONN_STATUS.CAM_DISCONNECTED;
+				}
+				default:
+					return CAM_CONN_STATUS.CAM_INIT;
 			}
 		}
 	}
@@ -802,7 +806,7 @@ public class BeseyeJSONUtil {
 	}
 	
 	static public CAM_CONN_STATUS getVCamConnStatus(JSONObject objCam){
-		CAM_CONN_STATUS cRet = CAM_CONN_STATUS.CAM_DISCONNECTED;
+		CAM_CONN_STATUS cRet = CAM_CONN_STATUS.CAM_INIT;
 		if(null != objCam){
 			JSONObject dataObj = getJSONObject(objCam, ACC_DATA);
 			if(null != dataObj){
@@ -816,6 +820,8 @@ public class BeseyeJSONUtil {
 					}else if(0==iCamStatus){
 						cRet = CAM_CONN_STATUS.CAM_OFF;
 					}
+				}else{
+					cRet = CAM_CONN_STATUS.CAM_DISCONNECTED;
 				}
 				
 			}else{

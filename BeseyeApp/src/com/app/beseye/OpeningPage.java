@@ -4,12 +4,6 @@ package com.app.beseye;
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -18,7 +12,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -302,20 +295,20 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	}
 	
 	@Override
-	public void onDismissDialog(AsyncTask task, int iDialogId) {
+	public void onDismissDialog(AsyncTask<String, Double, List<JSONObject>> task, int iDialogId) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
 			String strMsg) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result,
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result,
 			int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.GetUserInfoTask){
@@ -363,19 +356,19 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	}
 
 	@Override
-	public void onToastShow(AsyncTask task, String strMsg) {
+	public void onToastShow(AsyncTask<String, Double, List<JSONObject>> task, String strMsg) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
+	public void onSessionInvalid(AsyncTask<String, Double, List<JSONObject>> task, int iInvalidReason) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onShowDialog(AsyncTask task, int iDialogId, int iTitleRes,
+	public void onShowDialog(AsyncTask<String, Double, List<JSONObject>> task, int iDialogId, int iTitleRes,
 			int iMsgRes) {
 		// TODO Auto-generated method stub
 		

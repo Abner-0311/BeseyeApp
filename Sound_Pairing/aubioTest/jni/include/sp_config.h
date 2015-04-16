@@ -7,8 +7,10 @@
 #include <iostream>
 #include <sstream>
 #include <climits>
+#include <math.h>
 
 #include "utils.h"
+#include "time_utils.h"
 #include <zxing/common/reedsolomon/GenericGF.h>
 
 //#if not __has_feature(cxx_constexpr)

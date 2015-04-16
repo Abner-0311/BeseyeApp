@@ -57,7 +57,7 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 				mTxtNavTitle.setText(R.string.signup_title_cam_wifi_settings);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
@@ -160,7 +160,7 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 	}
 	
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result,
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result,
 			int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.GetVCamListTask){

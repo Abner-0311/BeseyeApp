@@ -77,7 +77,7 @@
   <!-- Title of info dialog-->
   <string name="dialog_title_info">資訊</string>
   <!-- Message of dialog when no network connection-->
-  <string name="dialog_no_connectivity">請檢查您的網路狀態。</string>
+  <string name="dialog_no_connectivity">請檢查您的網路狀態</string>
   <!-- Title of loading dialog-->
   <string name="dialog_loading">載入中...</string>
   <string name="dialog_setting">設定中…</string>
@@ -96,7 +96,7 @@
   <!-- Message of dialog when key(password) of wifi ap is wrong -->
   <string name="dialog_wifi_incorrect_password">您輸入的網路密碼不正確，請重新輸入。</string>
   <!-- Message of dialog when key(password) of wifi ap is wrong for WEP secuity type-->
-  <string name="dialog_wifi_incorrect_password_wep">因為不正確之密碼或網路問題導致無法連線。是否要再試一次？</string>
+  <string name="dialog_wifi_incorrect_password_wep">因為不正確之密碼或網路問題導致無法連線。\n是否要再試一次？</string>
   <!-- Message of dialog when failing to connect to specific wifi ap -->
   <string name="dialog_wifi_fail_to_connect">無法連接到無線網路裝置AP[%s]。\n請檢查它是否可建立連線。</string>
   <!-- Message of dialog when no network connectivity via specific wifi ap-->
@@ -248,7 +248,7 @@
   <string name="msg_account_not_found">不正確的電子郵件地址，請輸入正確地址。</string>
   <!-- Hint Message of dialog when pairing is processing-->
   <string name="toast_pairing_wait">攝影機設定中，請稍待。</string>
-  <string name="toast_pairing_enter_cam_name">幫您的Beseye 取個好認的名字吧。</string>
+  <string name="toast_pairing_enter_cam_name">幫您的Beseye 取個名字吧。</string>
   <string name="dialog_msg_signup">註冊...</string>
   <string name="dialog_msg_login">登入...</string>
   <string name="dialog_msg_logiout">登出...</string>
@@ -302,11 +302,12 @@
   <string name="camera_list_add">按這裡新增攝影機。\n或點選左上方選單來觀看展示攝影機。</string>
   <!-- Hint message in camera list item when servers are down or network issue-->
   <string name="camera_list_failed_title">無法連線至您的攝影機</string>
-  <string name="camera_list_failed_content">請檢查行動裝置與攝影機的網路狀態，然後再試一次</string>
+  <string name="camera_list_failed_content">請檢查行動裝置與攝影機的網路狀態，然後再試一次。</string>
   <string name="cam_list_tilte">我的攝影機</string>
   <!-- Menu items on camera list page-->
   <string name="cam_menu_demo_cam">展示攝影機</string>
-  <string name="cam_menu_private_demo_cam">私人攝影機</string>  
+  <!-- Menu items on camera list page-->
+  <string name="cam_menu_private_demo_cam">私人攝影機</string>
   <string name="cam_menu_news">公告</string>
   <string name="cam_menu_about">關於</string>
   <string name="cam_menu_support">支援</string>
@@ -315,18 +316,18 @@
   <!-- Action to update cam SW -->
   <string name="update_now">立刻更新</string>
   <string name="cam_update_progress">攝影機更新中...%s</string>
-  <string name="cam_update_title">您可以更新Beseye攝影機至%s版本</string>
-  <string name="cam_update_success">成功更新攝影機。</string>
+  <string name="cam_update_title">您可以更新 Beseye 攝影機至%s版本</string>
+  <string name="cam_update_success">成功更新攝影機</string>
   <string name="cam_update_timeout">更新服務無回應，請稍後再試。</string>
   <string name="cam_update_failed">無法更新攝影機，請稍後再試。</string>
   <!-- Warning Message when all cameras are disconnected now and can not to update-->
-  <string name="cam_update_no_valid_cam">沒有在線的攝影機可供更新。</string>
+  <string name="cam_update_no_valid_cam">沒有在線的攝影機可供更新</string>
   <!-- Title of forget password page -->
   <string name="forget_password_check_title">請檢查您的電子郵件信箱</string>
   <string name="forget_password_btn_submit">送出</string>
   <string name="forget_password_instruction">不用擔心！只需填寫您的電子郵件地址，我們將送給您重設密碼說明。</string>
   <string name="forget_password_check_mail_summary">Beseye 已經將密碼重設步驟發送到以下郵件地址：</string>
-  <string name="forget_password_check_mail_note">提醒：該電子郵件將從no-reply@support.beseye.com 發出\n如果您沒有在幾分鐘內收到該電子郵件，\n請檢查您的垃圾郵件。</string>
+  <string name="forget_password_check_mail_note">提醒：該電子郵件將從 no-reply@beseye.com 發出，如果您沒有在幾分鐘內收到該電子郵件，請檢查您的垃圾郵件。</string>
   <!-- Toast message when new camera is complete to pair and connected-->
   <string name="toast_new_cam_activated">新加入的攝影機已連線，請刷新您的攝影機列表。</string>
   <!-- Toast message when camera is connected after cam wifi changed-->
@@ -394,23 +395,34 @@
   <string name="tz_euro_spain">西班牙</string>
   <string name="tz_euro_austria">奧地利</string>
   <string name="tz_euro_italy">義大利</string>
-  <string name="cam_name_update_success">成功更新攝影機名稱．</string>
+  <string name="cam_name_update_success">成功更新攝影機名稱</string>
   <string name="signup_plug_in_description">首先，請幫攝影機插上電源插頭．</string>
   <string name="signup_plug_in_title">連接攝影機電源</string>
   <string name="signup_plug_in_done">插上電源了，開始設定吧</string>
   <string name="signup_watch_out_title">注意</string>
-  <string name="signup_watch_out_desc">注意注意，您的手機即將%1$s!\n請將您的%2$s對準鏡頭．\n再按下一步．</string>
+  <string name="signup_watch_out_desc">注意注意，您的手機即將%1$s!\n請將您的%2$s對準鏡頭．\n再按下一步。</string>
   <string name="signup_watch_out_desc_bebebe">「發出嗶嗶聲」</string>
   <string name="signup_watch_out_desc_speaker">「手機喇叭」</string>
   <string name="signup_watch_out_done">手機就位，下一步</string>
   <string name="signup_confirm_led_title">確認指示燈號</string>
   <string name="signup_confirm_led_desc">鏡頭指示燈是否顯示為%s呢?\n如果尚未閃爍綠燈，表示攝影機暖機中．\n請靜候數分鐘!</string>
   <string name="signup_confirm_led_twinkling_green_light">「閃爍綠燈」</string>
-  <string name="signup_confirm_led_done">是，已閃綠燈，下一步</string>
-  <string name="signup_pairing_fail_desc">請你拔掉插頭重新插上，確認鏡頭燈號為「閃爍綠燈」，且手機喇叭距離鏡頭10公分，再開始Let it Bee™．</string>
+  <string name="signup_confirm_led_done">已閃綠燈，下一步</string>
+  <string name="signup_pairing_fail_desc">請你拔掉插頭重新插上，確認鏡頭燈號為「閃爍綠燈」，且手機喇叭距離鏡頭10公分，再開始Let it Bee™。</string>
   <string name="signup_guideline_try_again_btn">OK，再設定一次看看</string>
+  <!--Toast message for poor quality when talking-->
   <string name="hint_hold_to_talk_poor_network_quality">網路連線不穩定，\n請再次嘗試通話．</string>
+  <string name="hint_hold_to_talk_conn_occupied">麥克風使用中，請稍後再試．</string>
+  
   <string name="msg_wifi_pw_length_error_wpa">無效的Wi-Fi密碼長度。密碼必須是8-64個字母。</string>
   <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5至13個字母。</string>
   <string name="msg_wifi_setting_info_error">無效的Wi-Fi設定。</string>
+  <!--Warning message for detaching cam failed case-->
+  <string name="cam_setting_failed_detach_cam">無法移除攝影機，請再試一次。</string>
+  <!--Dialog message for player pic capture-->
+  <string name="player_screenshot_capturing">正在儲存攝影機影像</string>
+  <!--Toast message for complete pic capture-->
+  <string name="player_screenshot_capture_ok">攝影機影像已儲存</string>
+  <!--Toast message for fail to pic capture-->
+  <string name="player_screenshot_capture_failed">無法儲存攝影機影像，請稍候再試。</string>
 </resources>

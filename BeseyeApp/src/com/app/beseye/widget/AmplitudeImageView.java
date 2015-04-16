@@ -1,11 +1,9 @@
 package com.app.beseye.widget;
 
-import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
 public class AmplitudeImageView extends ImageView {

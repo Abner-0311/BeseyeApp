@@ -75,7 +75,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 				txtTitle.setText(R.string.cam_setting_title_power_time);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
 		
@@ -140,7 +140,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 						vgScheduleItm.setTag(holder);
 						vgScheduleItm.setOnClickListener(this);
 						
-						mVgPowerScheduleContainer.addView(vgScheduleItm, LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+						mVgPowerScheduleContainer.addView(vgScheduleItm, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 						mArrVgSchedules.add(vgScheduleItm);
 					}
 				}
@@ -214,7 +214,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 			BeseyeUtils.postRunnable(new Runnable(){
@@ -245,7 +245,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){

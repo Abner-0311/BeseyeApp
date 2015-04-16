@@ -176,13 +176,13 @@ public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(task instanceof BeseyeCamBEHttpTask.CheckCamUpdateStatusTask){
 			//final String strVcamId = ((BeseyeCamBEHttpTask.CheckCamUpdateStatusTask)task).getVcamId();
 			if(0 == iRetCode){
@@ -203,26 +203,26 @@ public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
 	}
 	
 	@Override
-	public void onShowDialog(AsyncTask task, int iDialogId, int iTitleRes,
+	public void onShowDialog(AsyncTask<String, Double, List<JSONObject>> task, int iDialogId, int iTitleRes,
 			int iMsgRes) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onDismissDialog(AsyncTask task, int iDialogId) {
+	public void onDismissDialog(AsyncTask<String, Double, List<JSONObject>> task, int iDialogId) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onToastShow(AsyncTask task, String strMsg) {
+	public void onToastShow(AsyncTask<String, Double, List<JSONObject>> task, String strMsg) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
+	public void onSessionInvalid(AsyncTask<String, Double, List<JSONObject>> task, int iInvalidReason) {
 		// TODO Auto-generated method stub
 		
 	}

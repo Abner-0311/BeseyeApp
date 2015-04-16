@@ -1,7 +1,5 @@
 package com.app.beseye.setting;
 
-import static com.app.beseye.util.BeseyeConfig.TAG;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -9,7 +7,6 @@ import java.util.TimeZone;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -89,7 +86,7 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 				mIvRight.setVisibility(View.GONE);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 			//mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}

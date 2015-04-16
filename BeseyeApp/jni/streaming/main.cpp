@@ -582,6 +582,22 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_pauseStreaming(JNIE
 	return iRet;
 }
 
+JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_muteStreaming(JNIEnv * env, jobject obj, int iStreamIdx, jboolean bMute)
+{
+	DECLARE_JNIENV_WITH_RETURN()
+	int iRet = 0;
+	pthread_mutex_lock(&mutexlock);
+	if(0 <= iStreamIdx && iStreamIdx < MAX_STREAM_COUNT && NULL != player[iStreamIdx]){
+		player[iStreamIdx]->setAudioMute(bMute);
+	}else{
+		LOGE("setAudioMute(), stream[%d] is null", iStreamIdx);
+	}
+	pthread_mutex_unlock(&mutexlock);
+
+	return iRet;
+}
+
+
 JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_resumeStreaming(JNIEnv * env, jobject obj, int iStreamIdx)
 {
 	DECLARE_JNIENV_WITH_RETURN()

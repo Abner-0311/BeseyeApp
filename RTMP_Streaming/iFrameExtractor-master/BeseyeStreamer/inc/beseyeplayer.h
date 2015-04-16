@@ -97,6 +97,9 @@ public:
 	void setStreamClock(double dClock);
 	void setStreamSeekOffset(double dOffset);
 
+	virtual void setAudioMute(bool bMute);
+	virtual bool isAudioMute();
+
 private:
 	inline void fill_rectangle(SDL_Surface *screen, int x, int y, int w, int h, int color){
 	    SDL_Rect rect;
@@ -218,6 +221,8 @@ private:
 
 	/* current context */
 	int is_full_screen;
+
+	bool mbIsMute;
 
 	//SDL_Surface *screen;
 

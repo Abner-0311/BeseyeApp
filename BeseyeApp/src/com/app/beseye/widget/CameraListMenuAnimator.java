@@ -203,15 +203,35 @@ public class CameraListMenuAnimator {
 		}
 	}
 	
-	private void cancelAnimation(){
-		if(isInAnimation()){
+	public void hideMenu(){
+		if(false == isInAnimation()){
 			if(null != m_vgMenu){
-				Animation animation = m_vgMenu.getAnimation();
-				if(null != animation)
-					animation.cancel();
+				if(View.VISIBLE == m_vgMenu.getVisibility()){
+					m_vgMenu.setVisibility(View.INVISIBLE);
+					m_vgMenu.setEnabled(false);
+					
+					if(null != m_vMenuHolderBg){
+						m_vMenuHolderBg.setVisibility(View.INVISIBLE);
+						m_vMenuHolderBg.setEnabled(false);
+					}
+					
+					if(null != m_vgMenuHolderLayout){
+						m_vgMenuHolderLayout.setVisibility(View.INVISIBLE);
+					}
+				}
 			}
 		}
 	}
+	
+//	private void cancelAnimation(){
+//		if(isInAnimation()){
+//			if(null != m_vgMenu){
+//				Animation animation = m_vgMenu.getAnimation();
+//				if(null != animation)
+//					animation.cancel();
+//			}
+//		}
+//	}
 	
 //	private void setMenuVisibility(int visibility){
 //		//cancelAnimation();

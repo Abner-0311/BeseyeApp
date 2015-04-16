@@ -1,7 +1,5 @@
 package com.app.beseye.widget;
 
-
-
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
@@ -32,6 +30,7 @@ import com.app.beseye.CameraViewActivity;
 import com.app.beseye.R;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
+import com.app.beseye.util.BeseyeNewFeatureMgr;
 import com.app.beseye.util.BeseyeUtils;
 
 public class CameraViewControlAnimator {
@@ -59,8 +58,8 @@ public class CameraViewControlAnimator {
 	private AmplitudeImageView mAmplitudeImageView;
 	
 	private TextView mTxtDate, mTxtCamName, mTxtTime, mTxtEvent, mTxtGoLive;
-	private ImageView mIvStreamType, mIvBack;
-	private ImageButton mIbTalk, mIbRewind, mIbPlayPause, mIbFastForward, mIbSetting;	
+	private ImageView mIvStreamType, mIvBack, mIvScreenshotNew;
+	private ImageButton mIbTalk, mIbRewind, mIbPlayPause, mIbFastForward, mIbSetting, mIbScreenshot;	
 	
 	private WeakReference<CameraViewActivity> mCameraViewActivity;
 	private int miOrientation;
@@ -106,13 +105,13 @@ public class CameraViewControlAnimator {
 			
 			if(null != m_vgHeaderLayout){
 				m_vgHeaderLayout.removeAllViews();
-				m_vgHeaderLayout.addView((Configuration.ORIENTATION_PORTRAIT == miOrientation)?mVgNavbarPortrait:mVgNavbarLandscape, LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				m_vgHeaderLayout.addView((Configuration.ORIENTATION_PORTRAIT == miOrientation)?mVgNavbarPortrait:mVgNavbarLandscape, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 				syncHeaderLayoutItmProperty();
 			}
 			
 			if(null != m_vgToolbarLayout){
 				m_vgToolbarLayout.removeAllViews();
-				m_vgToolbarLayout.addView((Configuration.ORIENTATION_PORTRAIT == miOrientation)?mVgToolbarPortrait:mVgToolbarLandscape, LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				m_vgToolbarLayout.addView((Configuration.ORIENTATION_PORTRAIT == miOrientation)?mVgToolbarPortrait:mVgToolbarLandscape, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 				syncToolbarLayoutItmProperty();
 			}
 			
@@ -258,6 +257,30 @@ public class CameraViewControlAnimator {
 				mIbPlayPause.setOnClickListener(act);
 			}
 			
+			ImageButton ibScreenshot = (ImageButton)vgReference.findViewById(R.id.ib_screenshot);
+			if(null != ibScreenshot){
+				syncViewProprety(mIbScreenshot, ibScreenshot);
+				mIbScreenshot = ibScreenshot;
+				//mIbScreenshot.setOnClickListener(act);
+				mIbScreenshot.setOnTouchListener(new OnTouchListener(){
+					@Override
+					public boolean onTouch(View view, MotionEvent event) {
+						if(event.getAction() == MotionEvent.ACTION_DOWN){
+							CameraViewActivity act = mCameraViewActivity.get();
+							if(null != act){
+								act.pressToScreenshot();
+							}
+						}
+						return false;
+					}});
+			}
+			
+			ImageView ivScreenshotNew = (ImageView)vgReference.findViewById(R.id.iv_camera_news);
+			if(null != ivScreenshotNew){
+				mIvScreenshotNew = ivScreenshotNew;
+				BeseyeUtils.setVisibility(mIvScreenshotNew, !BeseyeNewFeatureMgr.getInstance().isScreenshotFeatureClicked()?View.VISIBLE:View.INVISIBLE);
+			}
+			
 			ImageButton ibFastForward = (ImageButton)vgReference.findViewById(R.id.ib_fast_forward);
 			if(null != ibFastForward){
 				syncViewProprety(mIbFastForward, ibFastForward);
@@ -302,6 +325,14 @@ public class CameraViewControlAnimator {
 	
 	public ImageButton getPlayPauseView(){
 		return mIbPlayPause;
+	}
+	
+	public ImageButton getScreenshotView(){
+		return mIbScreenshot;
+	}
+	
+	public ImageView getScreenshotNewView(){
+		return mIvScreenshotNew;
 	}
 	
 	public ImageButton getPlayPauseViewOrient(){
@@ -355,7 +386,7 @@ public class CameraViewControlAnimator {
 			if(null != mVgNavbarPortrait){
 				ViewGroup title = (ViewGroup)mVgNavbarPortrait.findViewById(R.id.vg_nav_bar_title_up);
 				if(null != title){
-					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, miStatusBarHeight);
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, miStatusBarHeight);
 					title.setLayoutParams(params);
 				}
 			}
@@ -511,7 +542,7 @@ public class CameraViewControlAnimator {
 		if(false == m_bInHoldToTalkAnimation){
 			if(null != mVgHoldToTalk){
 				Animation animation = null;
-				CameraViewActivity act = mCameraViewActivity.get();
+				//CameraViewActivity act = mCameraViewActivity.get();
 				if(View.VISIBLE == mVgHoldToTalk.getVisibility()){					
 					animation = m_aniHoldToTalkFadeOut;
 					mVgHoldToTalk.startAnimation(animation);

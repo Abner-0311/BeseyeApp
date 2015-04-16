@@ -4,10 +4,6 @@ import com.app.beseye.BeseyeAccountBaseActivity;
 import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
 import com.app.beseye.WifiListActivity;
-import com.app.beseye.R.drawable;
-import com.app.beseye.R.id;
-import com.app.beseye.R.layout;
-import com.app.beseye.R.string;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,8 +11,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class PairingGuidelineActivity extends BeseyeAccountBaseActivity {
 	private Button mBtnTryAgain;

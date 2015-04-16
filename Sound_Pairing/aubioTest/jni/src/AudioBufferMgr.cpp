@@ -1,4 +1,5 @@
 #include "AudioBufferMgr.h"
+#include "time_utils_cpp.h"
 
 unsigned int AudioBufferMgr::MAX_QUEUE_SIZE = (int) (SoundPair_Config::MAX_RECORDING_TIME*SoundPair_Config::SAMPLE_RATE_REC/SoundPair_Config::FRAME_SIZE_REC);//30;
 AudioBufferMgr* AudioBufferMgr::sAudioBufferMgr = NULL;

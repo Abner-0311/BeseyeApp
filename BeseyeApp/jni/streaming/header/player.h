@@ -102,6 +102,16 @@ typedef struct AudioParams {
     enum AVSampleFormat fmt;
 } AudioParams;
 
+typedef struct Clock {
+    double pts;           /* clock base */
+    double pts_drift;     /* clock base minus time at which we updated the clock */
+    double last_updated;
+    double speed;
+    int serial;           /* clock is based on a packet with this serial */
+    int paused;
+    int *queue_serial;    /* pointer to the current packet queue serial, used for obsolete clock detection */
+} Clock;
+
 enum {
     AV_SYNC_AUDIO_MASTER, /* default choice */
     AV_SYNC_VIDEO_MASTER,
@@ -130,6 +140,10 @@ typedef struct VideoState {
     int av_sync_type;
     double external_clock; /* external clock base */
     int64_t external_clock_time;
+
+    Clock audclk;
+    Clock vidclk;
+    Clock extclk;
 
     double audio_clock;
     double audio_diff_cum; /* used for AV difference average computation */

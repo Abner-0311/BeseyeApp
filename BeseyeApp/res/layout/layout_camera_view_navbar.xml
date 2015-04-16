@@ -30,7 +30,16 @@
 	   		android:layout_height="wrap_content" 
 	   		android:layout_alignParentRight="true"
 	   		android:src="@drawable/sl_liveview_settings_btn_portrait"
-	   		android:background="@android:color/transparent"/>
+	   		android:background="@android:color/transparent"
+	   		android:padding="@dimen/news_icon_padding"/>
+	    <ImageView
+	        android:id="@+id/iv_settings_news"
+		    android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+			android:src="@drawable/account_inf_menu_news_icon"
+			android:layout_alignTop="@+id/ib_settings"
+			android:layout_alignRight="@+id/ib_settings"
+			android:visibility="invisible"/>
 	    
 	    <TextView 
 	       	android:id="@+id/txt_cam_name"

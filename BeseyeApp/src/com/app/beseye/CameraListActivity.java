@@ -1,6 +1,5 @@
 package com.app.beseye;
 
-
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
@@ -141,7 +140,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				txtTitle.setOnClickListener(this);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
@@ -413,7 +412,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(BeseyeConfig.DEBUG)
 			Log.d(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		
@@ -548,7 +547,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeAccountTask.GetVCamListTask){
 			postToLvRreshComplete();
 		}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
@@ -671,9 +670,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else if(R.id.vg_my_cam == view.getId()){
 			if(mCameraListMenuAnimator.isPrivateCamShow()){
 				if(mbIsDemoCamMode || mbIsPrivateCamMode){
+					immediateHideMenu();
 					launchActivityByClassName(CameraListActivity.class.getName(), null);
+				}else{
+					showMenu();
 				}
-				showMenu();
 			}else{
 				if(mbIsDemoCamMode){
 					finish();
@@ -706,22 +707,26 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			bundle.putString(KEY_VALID_CAM_INFO, (null != arrCamLst)?arrCamLst.toString():"");
 			
 			launchActivityByClassName(BeseyeNewsActivity.class.getName(), bundle);
-			showMenu();
+			immediateHideMenu();
 		}else if(R.id.vg_demo_cam == view.getId()){
 			if(!mbIsDemoCamMode){
+				immediateHideMenu();
 				launchActivityByClassName(CameraListActivity.class.getName(), mBundleDemo);
+			}else{
+				showMenu();
 			}
-			showMenu();
 		}else if(R.id.vg_private_cam == view.getId()){
 			if(!mbIsPrivateCamMode){
+				immediateHideMenu();
 				launchActivityByClassName(CameraListActivity.class.getName(), mBundlePrivate);
+			}else{
+				showMenu();
 			}
-			showMenu();
 		}else if(R.id.vg_about == view.getId()){
 			launchActivityByClassName(BeseyeAboutActivity.class.getName(), null);
-			showMenu();
+			immediateHideMenu();
 		}else if(R.id.vg_support == view.getId()){
-			showMenu();
+			immediateHideMenu();
 		}else if(R.id.vg_logout == view.getId()){
 			invokeLogout();
 			showMenu();
@@ -765,6 +770,12 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	private void hideMenu(){
 		if(null != mCameraListMenuAnimator && !mCameraListMenuAnimator.isInAnimation()){
 			mCameraListMenuAnimator.performMenuAnimation();
+		}
+	}
+	
+	private void immediateHideMenu(){
+		if(null != mCameraListMenuAnimator && !mCameraListMenuAnimator.isInAnimation()){
+			mCameraListMenuAnimator.hideMenu();
 		}
 	}
 	

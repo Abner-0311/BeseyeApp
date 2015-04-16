@@ -142,7 +142,7 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 	 *            - Empty View to be used
 	 */
 	public final void setEmptyView(View newEmptyView) {
-		setEmptyView(newEmptyView, ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT);
+		setEmptyView(newEmptyView, ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
 	}
 	
 	public final void setEmptyView(View newEmptyView, int iWidth, int iHeight) {
@@ -203,9 +203,9 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 
 	protected void addRefreshableView(Context context, T refreshableView) {
 		mRefreshableViewHolder = new FrameLayout(context);
-		mRefreshableViewHolder.addView(refreshableView, ViewGroup.LayoutParams.FILL_PARENT,
-				ViewGroup.LayoutParams.FILL_PARENT);
-		addView(mRefreshableViewHolder, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 0, 1.0f));
+		mRefreshableViewHolder.addView(refreshableView, ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT);
+		addView(mRefreshableViewHolder, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 0, 1.0f));
 	}
 
 	/**

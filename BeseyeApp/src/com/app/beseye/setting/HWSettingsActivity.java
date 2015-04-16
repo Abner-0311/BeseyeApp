@@ -87,7 +87,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				txtTitle.setOnClickListener(this);
 			}
 			
-			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
 		
@@ -321,7 +321,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 					public void run() {
 						removeMyDialog(DIALOG_ID_WIFI_AP_APPLY);
 						Toast.makeText(HWSettingsActivity.this, getString(R.string.cam_setting_fail_to_apply_wifi_setting), Toast.LENGTH_LONG).show();
-					}}, 60*1000);
+					}}, 120*1000);
 				break;
 			}
 			default:
@@ -427,7 +427,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true);
@@ -581,7 +581,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 
 	@Override
-	public void onPostExecute(AsyncTask task, List<JSONObject> result, int iRetCode) {
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
