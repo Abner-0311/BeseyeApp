@@ -42,6 +42,7 @@ import com.app.beseye.util.ShareMgr;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
+import com.facebook.CallbackManager;
 
 public class CameraSettingActivity extends BeseyeBaseActivity 
 								   implements OnSwitchBtnStateChangedListener{
@@ -54,6 +55,8 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
+	//For FB share
+	private CallbackManager callbackManager = CallbackManager.Factory.create();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -617,7 +620,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			} catch (JSONException e) {
 				Log.e(TAG, "onActivityResult(), e:"+e.toString());
 			}
-		}else
+		}else {
 			super.onActivityResult(requestCode, resultCode, intent);
+			//for FB share
+			ShareMgr.setShareOnActivityResult(callbackManager, requestCode, resultCode, intent);
+		}
 	}
 }

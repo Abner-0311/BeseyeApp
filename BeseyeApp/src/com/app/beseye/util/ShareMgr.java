@@ -20,6 +20,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Log;
 
+import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
@@ -125,6 +126,10 @@ public class ShareMgr {
 	        .show(); 
 		}
 		return miErrType;
+	}
+	
+	public static void setShareOnActivityResult(CallbackManager callbackManager, int requestCode, int resultCode, Intent data) {
+	    callbackManager.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	private static Intent getShareIntent(Activity activiity, TYPE type, String content){
