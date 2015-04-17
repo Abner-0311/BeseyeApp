@@ -35,6 +35,8 @@ static msec_t lTimeInvodeSystem = 0;
 static pid_t intermediate_pid = -1;
 //static int iRetSystemCall = 0;
 
+static char* sOrginalBSSID = NULL;
+
 static bool sbNetworkConnectedChecked = false;
 static bool sbNetworkConnected = false;
 static bool sbTokenExisted = false;
@@ -1089,6 +1091,15 @@ bool AudioTest::startPairingAnalysis(){
 			sbNetworkConnectedChecked = true;
 		}
 
+		if(sbNetworkConnected){
+			if(NULL == sOrginalBSSID || 0 == strlen(sOrginalBSSID)){
+				sOrginalBSSID = getCurWiFiBSSID();
+			}
+			//if(DEBUG_MODE){
+				LOGE("sOrginalBSSID:[%s]\n", NULL != sOrginalBSSID?sOrginalBSSID:"");
+			//}
+		}
+
 		bRet = startAnalyzeTone();
 #ifndef ANDROID
 		if(bRet){
@@ -1111,6 +1122,7 @@ bool AudioTest::startPairingAnalysis(){
 	}
 
 	turnOnWiFiModule();
+	FREE(sOrginalBSSID)
 	LOGE("startPairingAnalysis()--\n");
 	return bRet;
 }
@@ -2407,6 +2419,13 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	int iSSIDLen = 0;
 	int iRotateLen = 0;
 
+	if(NULL == sOrginalBSSID || 0 == strlen(sOrginalBSSID)){
+		sOrginalBSSID = getCurWiFiBSSID();
+	}
+	//if(DEBUG_MODE){
+		LOGE("sOrginalBSSID:[%s]\n", NULL != sOrginalBSSID?sOrginalBSSID:"");
+	//}
+
 	turnOnWiFiModule();
 
 	if(0 == strCode.find("error")){
@@ -2659,12 +2678,9 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		int iRet = 0;
 
 		//Because Raylios implements network recovery mechanism for wrong wifi config, we need to check BSSID to confirm wifi change
-		char* orginalBSSID = getCurWiFiBSSID();
-		if(DEBUG_MODE){
-			LOGE("orginalBSSID:%s\n", NULL != orginalBSSID?orginalBSSID:"");
-		}
 
 		bool bIsSameSSID = FALSE;
+		bool bIsSameWiFiConfig = FALSE;
 		if(0 == strSSIDHash.length()){
 			if(bUnknownSecType){
 				if((0 < retPW.str().length())){
@@ -2679,6 +2695,8 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				cSecType = PAIRING_SEC_WPA2;
 			}
 			bIsSameSSID = isSameWiFiSSID((const char*)strSSIDFinal.c_str());
+			bIsSameWiFiConfig = isSameWiFiConfig2((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);
+
 			iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
 		}else{
 			iRet = setWifiBySSIDHash(lSSIDHash, iSSIDLen/2, (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
@@ -2695,7 +2713,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			msec_t lTimeDelta = 0;
 			const int iTotalTrialCount = (bGuess)?9:15;
 
-			LOGE("wifi connection check begin.............\n");
+			LOGE("wifi connection check begin............., (%d, %d)\n", bIsSameWiFiConfig, bIsSameSSID);
 			do{
 				do{
 					if(0 < iTrials){
@@ -2713,13 +2731,13 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					if(iNetworkRet != 0)
 						iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.alibaba.com.cn") >> 8;
 
-					if(0 == iNetworkRet && orginalBSSID && FALSE == bIsSameSSID){
+					if(0 == iNetworkRet && sOrginalBSSID && (FALSE == bIsSameWiFiConfig /*|| FALSE == bIsSameSSID*/)){
 						char* curBSSID = getCurWiFiBSSID();
 						if(DEBUG_MODE){
-							LOGE("orginalBSSID:%s, curBSSID:%s\n", NULL != orginalBSSID?orginalBSSID:"", curBSSID?curBSSID:"");
+							LOGE("sOrginalBSSID:%s, curBSSID:%s\n", NULL != sOrginalBSSID?sOrginalBSSID:"", curBSSID?curBSSID:"");
 						}
-						if(curBSSID && 0 == strcmp(orginalBSSID, curBSSID)){
-							LOGE("the same bssid, orginalBSSID:%s, curBSSID:%s\n", NULL != orginalBSSID?orginalBSSID:"", curBSSID?curBSSID:"");
+						if(curBSSID && 0 == strcmp(sOrginalBSSID, curBSSID)){
+							LOGE("the same bssid, sOrginalBSSID:%s, curBSSID:%s\n", NULL != sOrginalBSSID?sOrginalBSSID:"", curBSSID?curBSSID:"");
 							iNetworkRet = -1;
 						}
 						FREE(curBSSID)
@@ -2736,10 +2754,11 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					}
 					if(bUnknownSecType){
 						cSecTypeGuess -=1;
-						if(DEBUG_MODE){
-							LOGE("try cSecTypeGuess: %d.............\n", cSecTypeGuess);
-						}
 						restoreWifi();
+						bIsSameWiFiConfig = isSameWiFiConfig2((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);
+						if(DEBUG_MODE){
+							LOGE("try cSecTypeGuess: %d, bIsSameWiFiConfig:%d.............\n", cSecTypeGuess, bIsSameWiFiConfig);
+						}
 						iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecTypeGuess);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
 						if(0 != iRet){
 							LOGE("failed to setWiFi for cSecTypeGuess: %d.............\n", cSecTypeGuess);
@@ -2747,6 +2766,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						}
 
 						iTrials = 0;
+						lTimeToChkNetwork = time_ms();
 					}
 				}
 			}while(0 != iNetworkRet && (bUnknownSecType && cSecTypeGuess >= PAIRING_SEC_NONE));
@@ -2823,9 +2843,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				sPairingErrType = PAIRING_ERR_MAC_NOT_FOUND;
 			}
 		}
-		FREE(orginalBSSID)
 	}
-
 #endif
 }
 

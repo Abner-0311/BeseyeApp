@@ -690,38 +690,42 @@ public class RemoteImageView extends ImageView {
 //				}
 				
 				final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-				HttpGet getRequest = new HttpGet(new URL(uri).toString().replace("{", "%7B").replace("|", "%7C").replace("}", "%7D"));
+				HttpGet getRequest = new HttpGet(convertURL(uri));
 				try{
-					getRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
-					getRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
-					getRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
-					getRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
-					getRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
-					getRequest.addHeader("Bes-Android-Ver", Build.VERSION.RELEASE);
-					if(null != strVcamId){
-						getRequest.addHeader("Bes-VcamPermission-VcamUid", strVcamId);
-				      	HttpResponse response = client.execute(getRequest);
-				      	final int statusCode = response.getStatusLine().getStatusCode();
-				      	if(statusCode == HttpStatus.SC_OK){
-				      		final HttpEntity entity = response.getEntity();
-				      		if(entity != null){
-				      			inputStream = entity.getContent();
-				      			if (inputStream != null) {
-									BitmapFactory.Options options = new BitmapFactory.Options();
-									options.inSampleSize = iSample;
-									bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-								}else{
-									Log.w(TAG, "inputStream is null");
-								}
-				      			entity.consumeContent();
-				      		}
-				      	}
-				    }
+					if(null != getRequest){
+						getRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+						getRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
+						getRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
+						getRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
+						getRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
+						getRequest.addHeader("Bes-Android-Ver", Build.VERSION.RELEASE);
+						if(null != strVcamId){
+							getRequest.addHeader("Bes-VcamPermission-VcamUid", strVcamId);
+					      	HttpResponse response = client.execute(getRequest);
+					      	final int statusCode = response.getStatusLine().getStatusCode();
+					      	if(statusCode == HttpStatus.SC_OK){
+					      		final HttpEntity entity = response.getEntity();
+					      		if(entity != null){
+					      			inputStream = entity.getContent();
+					      			if (inputStream != null) {
+										BitmapFactory.Options options = new BitmapFactory.Options();
+										options.inSampleSize = iSample;
+										bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+									}else{
+										Log.w(TAG, "inputStream is null");
+									}
+					      			entity.consumeContent();
+					      		}
+					      	}
+					    }
+					}
 				}catch(Exception e){
 				      // Could provide a more explicit error message for IOException or
 				      // IllegalStateException
 				    	Log.w(TAG, "Http Get image fail: " + e);
-				    	getRequest.abort();
+				    	if(null != getRequest){
+				    		getRequest.abort();
+				    	}
 				 }finally{
 				      if(client != null){
 				    	  client.close();
@@ -922,4 +926,26 @@ public class RemoteImageView extends ImageView {
 				super.onDraw(canvas);
 		}
 	}
+	
+	private static String convertURL(String str) {
+        String url = null;
+        try{
+        url = new String(str.trim()
+        	//.replace(" ", "%20").replace("&", "%26")
+            //.replace(",", "%2c").replace("(", "%28").replace(")", "%29")
+            //.replace("!", "%21").replace("=", "%3D").replace("<", "%3C")
+            //.replace(">", "%3E").replace("#", "%23").replace("$", "%24")
+            //.replace("'", "%27").replace("*", "%2A").replace("-", "%2D")
+            //.replace(".", "%2E").replace("/", "%2F").replace(":", "%3A")
+            //.replace(";", "%3B").replace("?", "%3F").replace("@", "%40")
+            //.replace("[", "%5B").replace("\\", "%5C").replace("]", "%5D")
+            //.replace("_", "%5F").replace("`", "%60")
+        	.replace("{", "%7B")
+            //.replace("|", "%7C")
+        	.replace("}", "%7D"));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return url;
+    } 
 }
