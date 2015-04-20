@@ -5,8 +5,8 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="/Users/kelly79126/Documents/workspace/HomeSecurity_FE_Android/BeseyeApp/libs/bolts-android-1.1.2.jar"/>
-	<classpathentry kind="lib" path="/Users/kelly79126/Documents/workspace/HomeSecurity_FE_Android/BeseyeApp/libs/annotations.jar"/>
-	<classpathentry kind="lib" path="/Users/kelly79126/Documents/workspace/HomeSecurity_FE_Android/BeseyeApp/libs/android-support-annotations.jar"/>
+	<classpathentry kind="lib" path="/BeseyeApp/libs/android-support-annotations.jar"/>
+	<classpathentry kind="lib" path="/BeseyeApp/libs/annotations.jar"/>
+	<classpathentry kind="lib" path="/BeseyeApp/libs/bolts-android-1.1.2.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
