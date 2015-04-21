@@ -55,8 +55,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
-	//For FB share
-	private CallbackManager callbackManager = CallbackManager.Factory.create();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -623,7 +621,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		}else {
 			super.onActivityResult(requestCode, resultCode, intent);
 			//for FB share
-			ShareMgr.setShareOnActivityResult(callbackManager, requestCode, resultCode, intent);
+			ShareMgr.setShareOnActivityResult(requestCode, resultCode, intent);
 		}
 	}
 }

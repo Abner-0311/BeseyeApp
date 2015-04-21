@@ -44,6 +44,11 @@ import com.facebook.share.widget.ShareDialog;
  * 
  * Sample:
  * 		ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard1/DCIM/100ANDRO/DSC_3431.JPG");
+ * 
+ * NOTE:
+ * 		when you call ShareMgr.BeseyeShare, please add 
+ * 		"ShareMgr.setShareOnActivityResult(requestCode, resultCode, intent);"
+ * 		in onActivityResult.
  */
 
 public class ShareMgr {
@@ -55,57 +60,70 @@ public class ShareMgr {
 	public static final int ERR_TYPE_INVALID_INTENT			= 5;
 	public static final int ERR_TYPE_INVALID_PACKAGE		= 6;
 	public static final int ERR_TYPE_INVALID_FB_CONTENT		= 7;
+	public static final int ERR_TYPE_NO_INTENT_FOUND		= 8;
 	
 	public enum TYPE {
 	    LINK, IMAGE, VIDEO
 	}
 	 
 	private static final String PHOTO_SHARE_HASH = " #Beseye";
+	private static CallbackManager callbackManager = CallbackManager.Factory.create();
+
 	
 	public static int BeseyeShare(final Activity activity, final TYPE type, final String content){
-
-		// init fb sdk 
-		final ShareDialog shareDialog = new ShareDialog(activity);	
-		final MessageDialog messageDialog = new MessageDialog(activity);
-		
 		
 		//Validate type and content
-		int miErrType = isValidContent(activity, type, content);
-		if(ERR_TYPE_NO_ERR != miErrType) {
-			return miErrType;
-		}	
-		
-		//get intent activities and link to adapter
-		final Intent shareIntent = getShareIntent(activity, type, content);
-		final PackageManager packageManager = activity.getPackageManager();
-		
-		if(null == shareIntent){
-			miErrType = ERR_TYPE_INVALID_INTENT;
-		} else if(null == packageManager) {
-			miErrType = ERR_TYPE_INVALID_PACKAGE;
-		} else {
-			List<ResolveInfo> activities = packageManager.queryIntentActivities(shareIntent, PackageManager.MATCH_DEFAULT_ONLY);
-			if(activities.isEmpty()){
-				Log.v(TAG, "no activities found by intent");
-			}
+		int miErrType = isValidInput(activity, type, content);
+		if(ERR_TYPE_NO_ERR == miErrType) {		
+			//get intent activities and link to adapter
+			final Intent shareIntent = getShareIntent(type, content);
+			final PackageManager packageManager = activity.getPackageManager();
 			
-			//set adapter and create Dialog
-			final ShareAdapter adapter = new ShareAdapter(activity, activities.toArray());
-			new AlertDialog.Builder(activity)
-	        .setAdapter(adapter, new DialogInterface.OnClickListener() {
+			if(null == shareIntent){
+				miErrType = ERR_TYPE_INVALID_INTENT;
+			} else if(null == packageManager) {
+				miErrType = ERR_TYPE_INVALID_PACKAGE;
+			} else {
+				List<ResolveInfo> listActivities = packageManager.queryIntentActivities(shareIntent, PackageManager.MATCH_DEFAULT_ONLY);
+				if(listActivities.isEmpty()){
+					miErrType = ERR_TYPE_NO_INTENT_FOUND;
+				} else {
+					//set adapter and create Dialog
+					final ShareAdapter adapter = new ShareAdapter(activity, listActivities.toArray());
+					miErrType = buildAlertDialog(adapter, activity, type, content, shareIntent);
+				}
+			}
+		}
+		return miErrType;
+	}
 	
-	            @Override
-	            public void onClick(DialogInterface dialog, int which) {
-	                ResolveInfo info = (ResolveInfo) adapter.getItem(which);
+	public static void setShareOnActivityResult(int requestCode, int resultCode, Intent data) {
+	    callbackManager.onActivityResult(requestCode, resultCode, data);
+	}
+	
+	private static int buildAlertDialog(final ShareAdapter adapter, final Activity activity, final TYPE type, final String content, final Intent shareIntent){
+		int miErrType = ERR_TYPE_NO_ERR;
+		
+		new AlertDialog.Builder(activity)
+        .setAdapter(adapter, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ResolveInfo info = (ResolveInfo) adapter.getItem(which);
+                if(null == info) {
+                	Log.e(TAG, "no info be resolved");
+                } else {               
 	                if(info.activityInfo.packageName.contains("facebook")) { 
 	            		@SuppressWarnings("rawtypes")
 						ShareContent shareContent = getShareContent(type, content);
-	            		if(shareContent == null) {
+	            		if(null == shareContent) {
 	            			Log.e(TAG, "invalid fb content");
 	            		} else {
 		                	if(info.activityInfo.packageName.contains("katana")) {
+		                		ShareDialog shareDialog = new ShareDialog(activity);	
 		            			shareDialog.show(shareContent);
 		                	} else if(info.activityInfo.packageName.contains("orca")){
+		                		MessageDialog messageDialog = new MessageDialog(activity);
 		                		messageDialog.show(shareContent);
 		                	}
 	            		}
@@ -113,26 +131,17 @@ public class ShareMgr {
 	                    shareIntent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
 	                    activity.startActivity(shareIntent);
 	                }
-	            }
-	        })
-	        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-	
-	            @Override
-	            public void onClick(DialogInterface dialog, int which) {
-	            }
-	        })
-	        .setTitle("Choose one")
-	        .setCancelable(true) 
-	        .show(); 
-		}
+                }
+            }
+        }).setNegativeButton("Cancel", null)
+        .setTitle("Choose one")
+        .setCancelable(true) 
+        .show(); 
+		
 		return miErrType;
 	}
 	
-	public static void setShareOnActivityResult(CallbackManager callbackManager, int requestCode, int resultCode, Intent data) {
-	    callbackManager.onActivityResult(requestCode, resultCode, data);
-	}
-	
-	private static Intent getShareIntent(Activity activiity, TYPE type, String content){
+	private static Intent getShareIntent(TYPE type, String content){
 		Intent intent = new Intent(android.content.Intent.ACTION_SEND);
 		
 		switch(type){
@@ -283,24 +292,29 @@ public class ShareMgr {
 		return videoContent;
 	}
 	
-	private static int isValidContent(Activity activity, TYPE type, String content){
+	private static int isValidInput(Activity activity, TYPE type, String content){
 		int miErrType = ERR_TYPE_NO_ERR;
-		switch(type){
-			case LINK:
-				try{
-					new URL(content);
-				} catch(Exception e){	
-					miErrType = ERR_TYPE_INVALID_LINK;
-				}
-				break;
-			case IMAGE:
-			case VIDEO:
-				if(true != new File(content).exists()){
-					miErrType = ERR_TYPE_INVALID_FILE;	
-				} 
-				break;
-			default:
-				miErrType = ERR_TYPE_INVALID_TYPE;
+		
+		if(null == activity || null == content){
+			miErrType = ERR_TYPE_NULL;
+		} else {
+			switch(type){
+				case LINK:
+					try{
+						new URL(content);
+					} catch(Exception e){	
+						miErrType = ERR_TYPE_INVALID_LINK;
+					}
+					break;
+				case IMAGE:
+				case VIDEO:
+					if(true != new File(content).exists()){
+						miErrType = ERR_TYPE_INVALID_FILE;	
+					} 
+					break;
+				default:
+					miErrType = ERR_TYPE_INVALID_TYPE;
+			}
 		}
 		return miErrType;
 	}
