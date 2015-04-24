@@ -43,6 +43,7 @@ import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.facebook.CallbackManager;
+import com.facebook.appevents.AppEventsLogger;
 
 public class CameraSettingActivity extends BeseyeBaseActivity 
 								   implements OnSwitchBtnStateChangedListener{
@@ -177,6 +178,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	protected void onResume() {
 		if(DEBUG)
 			Log.i(TAG, "CameraSettingActivity::onResume()");
+		onDismissDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING);
 		super.onResume();
 		if(!mbFirstResume){
 			updateSettingState();
@@ -201,6 +203,12 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 //		monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
 		
 		//monitorAsyncTask(new BeseyeCamBEHttpTask.SetImageSettingTask(this), true, mStrVCamID,"0","0","32","32","32","32","32","15");
+	}
+	
+	@Override
+	protected void onPause() {
+		onShowDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING, 0, 0);
+		super.onPause();
 	}
 	
 	protected void onSessionComplete(){
@@ -321,7 +329,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				break;
 			}
 			case R.id.vg_share:{
-				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard1/DCIM/100ANDRO/DSC_3441.JPG");
+				//int f = ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard0/DCIM/Camera/IMG_20150327_123016.jpg");
+				//int f = ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard1/DCIM/100ANDRO/DSC_3483.JPG");
+				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");
+				
+				//Toast.makeText(getApplicationContext(), " " + f, Toast.LENGTH_LONG).show();
 //				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.LINK, "http://beseye.com");
 //				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.LINK, "meow");
 //				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.VIDEO, "/storage/sdcard1/DCIM/100ANDRO/MOV_3455.mp4");

@@ -20,7 +20,10 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Log;
 
+import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.R;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
@@ -45,10 +48,16 @@ import com.facebook.share.widget.ShareDialog;
  * Sample:
  * 		ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard1/DCIM/100ANDRO/DSC_3431.JPG");
  * 
- * NOTE:
+ * NOTE: 	
  * 		when you call ShareMgr.BeseyeShare, please add 
- * 		"ShareMgr.setShareOnActivityResult(requestCode, resultCode, intent);"
- * 		in onActivityResult.
+ * 		1. "ShareMgr.setShareOnActivityResult(requestCode, resultCode, intent);"
+ * 			in onActivityResult.
+ * 		2.  Because FB share photo will take some time to start a FB activity, add
+ * 			onShowDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING, 0, 0);
+ * 			in onPause.
+ * 			onDismissDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING);
+ * 			in onResume		  
+ * 
  */
 
 public class ShareMgr {
@@ -68,9 +77,12 @@ public class ShareMgr {
 	 
 	private static final String PHOTO_SHARE_HASH = " #Beseye";
 	private static CallbackManager callbackManager = CallbackManager.Factory.create();
+	
 
 	
 	public static int BeseyeShare(final Activity activity, final TYPE type, final String content){
+		
+		FacebookSdk.sdkInitialize(activity.getApplicationContext());
 		
 		//Validate type and content
 		int miErrType = isValidInput(activity, type, content);
@@ -121,6 +133,7 @@ public class ShareMgr {
 	            		} else {
 		                	if(info.activityInfo.packageName.contains("katana")) {
 		                		ShareDialog shareDialog = new ShareDialog(activity);	
+		                		//onShowDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING, 0, 0);
 		            			shareDialog.show(shareContent);
 		                	} else if(info.activityInfo.packageName.contains("orca")){
 		                		MessageDialog messageDialog = new MessageDialog(activity);
