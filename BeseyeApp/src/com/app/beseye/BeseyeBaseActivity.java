@@ -921,10 +921,16 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					}
 				}else{
 					if(null != mUpdateVcamList){
-						mLstUpdateCandidate.remove(strVcamId);
-						miCheckUpdateCamIdx--;
+						if(iRetCode != BeseyeError.E_OTA_SW_UPDATING){
+							mLstUpdateCandidate.remove(strVcamId);
+							miCheckUpdateCamIdx--;
+						}else{
+							if(DEBUG)
+								Log.i(TAG, "onPostExecute(), strVcamId["+strVcamId+"] is updating");
+						}
 						
-						if(iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST && 
+						if(iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST &&
+						   iRetCode != BeseyeError.E_OTA_SW_UPDATING &&	
 						   iRetCode != BeseyeError.E_WEBSOCKET_CONN_NOT_EXIST && 
 						   iRetCode != BeseyeError.E_WEBSOCKET_OPERATION_FAIL && 
 						   !((BeseyeHttpTask)task).isNetworkTimeoutErr() && 

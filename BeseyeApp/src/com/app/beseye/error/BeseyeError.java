@@ -39,6 +39,7 @@ public class BeseyeError {
 	
 	//# OTA related
 	static public final int   E_OTA_SW_ALRADY_LATEST  					   = 0x00500202;
+	static public final int   E_OTA_SW_UPDATING  					   	   = 0x00500205;
 	static public final int   E_WEBSOCKET_OPERATION_FAIL                   = 0x00500400;
 	static public final int   E_WEBSOCKET_CONN_NOT_EXIST                   = 0x00500401;
 	static public final int   E_WEBSOCKET_AUDIO_CONN_OCCUPIED              = 0x00500600;
