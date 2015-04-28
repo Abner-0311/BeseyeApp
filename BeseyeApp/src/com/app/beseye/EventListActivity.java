@@ -1064,6 +1064,10 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		}else if(R.id.txt_nav_title == view.getId()){
 			if(++miHitCount == 5){
 				BeseyeUtils.setVisibility(mIvFilter, View.VISIBLE);
+				if(null != mEventListAdapter){
+					mEventListAdapter.setPeopleDetectEnabled(true);
+					refreshList();
+				}
 			}
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
 			finish();

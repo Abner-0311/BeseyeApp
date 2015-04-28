@@ -284,7 +284,8 @@
   <string name="datetime_hour">Hour</string>
   <string name="datetime_min">Minute</string>
   <string name="event_list_now">Now</string>
-  <string name="event_list_family_detected">Family recognized</string>
+  <string name="event_list_family_detected">People dectected (%s)</string>
+  <string name="event_list_people_detected_stranger">Stranger</string>
   <string name="event_list_people_detected">People dectected</string>
   <string name="event_list_sound_detected">Sound dectected</string>
   <string name="event_list_fire_detected">Fire dectected</string>
