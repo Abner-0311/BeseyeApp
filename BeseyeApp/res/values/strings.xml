@@ -428,7 +428,7 @@
   <string name="hint_hold_to_talk_conn_occupied">The microphone is busy, please try again later.</string>
   
   <string name="share_title">Share</string>
-  <!-- facebook APP ID, shoud be changed!-->
+  <!-- facebook APP ID -->
   <string name ="facebook_app_id">913128435388925</string>
 
 </resources>
