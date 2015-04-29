@@ -46,7 +46,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerTitle;
-	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam;
+	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam, mVgMotionNotification;
 	
 	private int miUnmaskDetachCamHitCount = 0;
 	
@@ -143,6 +143,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		if(null != mVgFamilyRecognition){
 			mVgFamilyRecognition.setOnClickListener(this);
 			mVgFamilyRecognition.setVisibility(View.GONE);
+		}
+		
+		mVgMotionNotification = (ViewGroup)findViewById(R.id.vg_motion_notification_events);
+		if(null != mVgMotionNotification){
+			mVgMotionNotification.setOnClickListener(this);
+			if(BeseyeUtils.isHiddenFeature()){
+				mVgMotionNotification.setVisibility(View.GONE);
+			}
 		}
 		
 		mVgDetachCam = (ViewGroup)findViewById(R.id.vg_detach_cam);
@@ -299,6 +307,12 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
 				launchActivityByClassName(NotificationEventsSettingActivity.class.getName(),b);
+				break;
+			}
+			case R.id.vg_motion_notification_events:{
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				launchActivityByClassName(MotionNotificationSettingActivity.class.getName(),b);
 				break;
 			}
 			case R.id.txt_nav_title:{

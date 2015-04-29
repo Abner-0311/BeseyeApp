@@ -426,4 +426,8 @@
   <string name="player_screenshot_capture_failed">Failed to catpure picture.\nPlease try again later.</string>
 
   <string name="hint_hold_to_talk_conn_occupied">The microphone is busy, please try again later.</string>
+  
+  <!-- motion zone -->
+  <string name="cam_setting_title_motion_zone">motion zone</string>
+ 
 </resources>
