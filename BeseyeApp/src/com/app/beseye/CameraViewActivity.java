@@ -2751,7 +2751,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						AudioWebSocketsMgr.getInstance().stopAudioSendThread();
 						if(BeseyeFeatureConfig.ADV_TWO_WAY_TALK){
 							if(mActivityResume){
-								requestAudioConnection(false);
+								requestAudioConnection(!mbAutoAudioWSConnect);
 							}else{
 								AudioWebSocketsMgr.getInstance().sendRequestCamDisconnected();
 							}
@@ -2761,13 +2761,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					if(null != mCameraViewControlAnimator && mCameraViewControlAnimator.isInHoldToTalkMode()){
 						postTerminateAudioChannelRunnable(false);
 						if(mbNeedToRequestCamAudioConnected){
-			    			requestAudioConnection(false);
+			    			requestAudioConnection(!mbAutoAudioWSConnect);
 						}
 					}else{
 						setNeedToRequestCamAudioConnected(true);
 						AudioWebSocketsMgr.getInstance().stopAudioSendThread();
 						if(BeseyeFeatureConfig.ADV_TWO_WAY_TALK){
-							requestAudioConnection(false);
+							requestAudioConnection(!mbAutoAudioWSConnect);
 						}
 					}		
 				}
@@ -2797,38 +2797,53 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     private BeseyeNotificationBEHttpTask.GetAudioWSServerTask mGetAudioWSServerTask = null;
     private class ShowAudioNotConnectedHintRunnable implements Runnable{
 		private boolean mbTriigerByUser = false;
-		public void setTriigerByUser(boolean mbTriigerByUser) {
-			this.mbTriigerByUser = mbTriigerByUser;
+		public void setTriigerByUser(boolean bTriigerByUser) {
+			mbTriigerByUser = bTriigerByUser;
+			if(bTriigerByUser){
+				Thread.dumpStack();
+			}
 		}
 
 		@Override
 		public void run() {
+			boolean bNeedToPostSelf = false;
 			if(mActivityResume && mbTriigerByUser 
 					&& AudioConnStatus.Status_Occupied != AudioWebSocketsMgr.getInstance().getAudioConnStatus() 
 					&& AudioConnStatus.Status_Constructed != AudioWebSocketsMgr.getInstance().getAudioConnStatus()
 					&& AudioConnStatus.Status_Closed != AudioWebSocketsMgr.getInstance().getAudioConnStatus()){
 				Toast.makeText(CameraViewActivity.this, getString(R.string.hint_hold_to_talk_poor_network_quality), Toast.LENGTH_SHORT).show();
+				Log.i(TAG, "ShowAudioNotConnectedHintRunnable::run(), show poor msg ...........");
+				if(false == isInHoldToTalkMode()){
+					mbAutoAudioWSConnect = true;
+				}else{
+					bNeedToPostSelf = true;
+				}
 			}
 			
-			mShowAudioNotConnectedHintRunnable = null;
+			if(false == bNeedToPostSelf){
+				mShowAudioNotConnectedHintRunnable = null;
+			}else{
+				BeseyeUtils.postRunnable(this, TIME_TO_POST_LAG_MSG);
+			}
+			
 			if(mActivityResume && mbNeedToRequestCamAudioConnected || BeseyeFeatureConfig.ADV_TWO_WAY_TALK){
-    			requestAudioConnection(false);
+    			requestAudioConnection(!mbAutoAudioWSConnect);
 			}
 		}
     }
     
     private ShowAudioNotConnectedHintRunnable mShowAudioNotConnectedHintRunnable = null;
-    
+    static private final long TIME_TO_POST_LAG_MSG = 10000L;
     private void postShowAudioNotConnectedHintRunnable(boolean bUserTrigger){
     	if(null != mShowAudioNotConnectedHintRunnable){
     		mShowAudioNotConnectedHintRunnable.setTriigerByUser(bUserTrigger);
-    		BeseyeUtils.removeRunnable(mShowAudioNotConnectedHintRunnable);
+    		//BeseyeUtils.removeRunnable(mShowAudioNotConnectedHintRunnable);
     	}else{
     		mShowAudioNotConnectedHintRunnable = new ShowAudioNotConnectedHintRunnable();
     		mShowAudioNotConnectedHintRunnable.setTriigerByUser(bUserTrigger);
+    		BeseyeUtils.postRunnable(mShowAudioNotConnectedHintRunnable, TIME_TO_POST_LAG_MSG);
     	}
-    	BeseyeUtils.postRunnable(mShowAudioNotConnectedHintRunnable, 10000);
-		Log.i(TAG, "postShowAudioNotConnectedHintRunnable()");
+		Log.i(TAG, "postShowAudioNotConnectedHintRunnable(), bUserTrigger:"+bUserTrigger);
     }
     
     private void removeShowAudioNotConnectedHintRunnable(){
@@ -2918,6 +2933,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     public void pressToTalk(){
 		setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
+    		mbAutoAudioWSConnect = false;
     		setAudioMute(true);
     		BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
     		
@@ -2929,6 +2945,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				Toast.makeText(CameraViewActivity.this, getString(R.string.hint_hold_to_talk_conn_occupied), Toast.LENGTH_SHORT).show();
 			}else if(AudioConnStatus.Status_Constructed != AudioWebSocketsMgr.getInstance().getAudioConnStatus() && AudioConnStatus.Status_Closed != AudioWebSocketsMgr.getInstance().getAudioConnStatus()){
 				Toast.makeText(CameraViewActivity.this, getString(R.string.hint_hold_to_talk_poor_network_quality), Toast.LENGTH_SHORT).show();
+				Log.i(TAG, "pressToTalk(), show poor msg ...........");
 			}
     	}else{
     		openAudioChannel(false);
@@ -2984,8 +3001,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					@Override
 					public void run() {
 						if(mActivityResume){
-							Log.i(TAG, "reopen due to onAuthfailed()---");
-							openAudioChannel(false);
+							Log.i(TAG, "reopen due to onAuthfailed() on audio---");
+							openAudioChannel(!mbAutoAudioWSConnect);
 						}
 					}}, 1000);
 			}}, 0);
@@ -3000,7 +3017,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			public void run() {
 				//setInHoldToTalkMode(false);
 				if(false == mbAutoAudioWSConnect || BeseyeFeatureConfig.ADV_TWO_WAY_TALK){
-					requestAudioConnection(false);
+					requestAudioConnection(!mbAutoAudioWSConnect);
 				}
 			}}, 0);
 	}
@@ -3034,8 +3051,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					@Override
 					public void run() {
 						if(mActivityResume && NetworkMgr.getInstance().isNetworkConnected()){
-							Log.i(TAG, "reopen due to onChannelClosed()---");
-							openAudioChannel(false);
+							Log.i(TAG, "reconstructAudioChannel(), reopen due to onChannelClosed() on audio---");
+							openAudioChannel(mbAutoAudioWSConnect);
 						}
 					}}, lDelay);
 				//Toast.makeText(CameraViewActivity.this, "Talk terminated", Toast.LENGTH_SHORT).show();

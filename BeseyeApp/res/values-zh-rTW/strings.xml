@@ -416,7 +416,7 @@
   <string name="hint_hold_to_talk_conn_occupied">麥克風使用中，請稍後再試．</string>
   
   <string name="msg_wifi_pw_length_error_wpa">無效的Wi-Fi密碼長度。密碼必須是8-64個字母。</string>
-  <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5至13個字母。</string>
+  <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5或13個字母。</string>
   <string name="msg_wifi_setting_info_error">無效的Wi-Fi設定。</string>
   <!--Warning message for detaching cam failed case-->
   <string name="cam_setting_failed_detach_cam">無法移除攝影機，請再試一次。</string>
