@@ -213,6 +213,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 					e.printStackTrace();
 				}
 				
+				mEventListAdapter.setPeopleDetectEnabled(BeseyeNewFeatureMgr.getInstance().isFaceRecognitionOn());
 				mEventListAdapter.updateResultList(EntList);
 				mMainListView.getRefreshableView().setAdapter(mEventListAdapter);
 				mVgIndicator.updateToNow(true);
