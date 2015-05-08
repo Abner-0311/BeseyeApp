@@ -425,4 +425,11 @@
   <string name="player_screenshot_capture_ok">攝影機影像已儲存</string>
   <!--Toast message for fail to pic capture-->
   <string name="player_screenshot_capture_failed">無法儲存攝影機影像，請稍候再試。</string>
+  
+  <!-- share -->
+  <string name="share">分享</string>
+  <string name="close">關閉</string>
+  <string name="share_way">分享方式</string>
+  <string name="view_share_title">攝影機快照已儲存</string>
+  
 </resources>

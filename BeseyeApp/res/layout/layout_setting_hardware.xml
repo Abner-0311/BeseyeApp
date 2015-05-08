@@ -206,7 +206,44 @@
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
 			   		android:textColor="@color/csl_wifi_list_main_font_color"
-			   		android:text="@string/share_title"/>
+			   		android:text="@string/share"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:id="@+id/vg_view_share"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <ImageView
+		        android:id="@+id/iv_view_share_inf"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+		        android:src="@drawable/sl_setting_inside_icon" />
+
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_toLeftOf="@+id/iv_view_share_inf"
+		   		android:layout_centerVertical="true">
+		        <TextView 
+		            android:id="@+id/txt_view_share"
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/view_share_title"/>
 		    </RelativeLayout>   
 		</RelativeLayout>
 		

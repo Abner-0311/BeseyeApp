@@ -57,6 +57,8 @@
     <dimen name="wifi_ap_info_dialog_main_attr_font_size">18sp</dimen>
     <dimen name="wifi_ap_info_dialog_attr_font_size">15sp</dimen>
     
+    <dimen name="Kelly">11sp</dimen>
+    
     <dimen name="wifi_ap_keyindex_dialog_width">340dp</dimen>
     <dimen name="wifi_ap_keyindex_divider_width">300dp</dimen>
     <dimen name="wifi_ap_keyindex_itm_height">66dp</dimen>

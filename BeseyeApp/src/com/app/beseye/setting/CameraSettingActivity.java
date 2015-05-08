@@ -5,6 +5,8 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import static com.app.beseye.util.BeseyeJSONUtil.*;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONException;
@@ -39,9 +41,12 @@ import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.ShareMgr;
+import com.app.beseye.widget.BeseyeDatetimePickerDialog;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
+import com.app.beseye.widget.ViewShareDialog;
+import com.app.beseye.widget.ViewShareDialog.OnShareClickListener;
 import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
 
@@ -50,7 +55,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerTitle;
-	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam, mVgShare;
+	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam, mVgShare, mVgViewShare;
 	
 	private int miUnmaskDetachCamHitCount = 0;
 	
@@ -164,12 +169,19 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				mVgRebootCam.setVisibility(View.GONE);
 			}
 		}
-		
+		//for share
 		mVgShare = (ViewGroup)findViewById(R.id.vg_share);
 		if(null != mVgShare){
 			mVgShare.setOnClickListener(this);
 			if(BeseyeUtils.isHiddenFeature()){
 				mVgShare.setVisibility(View.GONE);
+			}
+		}
+		mVgViewShare = (ViewGroup)findViewById(R.id.vg_view_share);
+		if(null != mVgViewShare){
+			mVgViewShare.setOnClickListener(this);
+			if(BeseyeUtils.isHiddenFeature()){
+				mVgViewShare.setVisibility(View.GONE);
 			}
 		}
 	}
@@ -329,15 +341,26 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				break;
 			}
 			case R.id.vg_share:{
-				//int f = ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard0/DCIM/Camera/IMG_20150327_123016.jpg");
-				//int f = ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard1/DCIM/100ANDRO/DSC_3483.JPG");
-				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");
-				
-				//Toast.makeText(getApplicationContext(), " " + f, Toast.LENGTH_LONG).show();
-//				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.LINK, "http://beseye.com");
-//				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.LINK, "meow");
-//				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.VIDEO, "/storage/sdcard1/DCIM/100ANDRO/MOV_3455.mp4");
+//				int f = ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard0/DCIM/Beseye/Beseye_Pro_04_22_2015_12_13_05_下午.jpg");
+//				int f = ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard1/DCIM/100ANDRO/DSC_3483.JPG");
+				int f =ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");			
+				Toast.makeText(getApplicationContext(), " " + f, Toast.LENGTH_LONG).show();
 				break;
+			}
+			case R.id.vg_view_share:{
+				ViewShareDialog d = new ViewShareDialog(this, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg"); 
+				d.setOnShareClickListener(new OnShareClickListener(){
+
+					@Override
+					public void onBtnShareClick() {
+						int f =ShareMgr.BeseyeShare(CameraSettingActivity.this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");			
+						Toast.makeText(getApplicationContext(), " " + f, Toast.LENGTH_LONG).show();
+					}
+
+					@Override
+					public void onBtnCloseClick() {
+					}} );
+				d.show();
 			}
 			default:
 				super.onClick(view);

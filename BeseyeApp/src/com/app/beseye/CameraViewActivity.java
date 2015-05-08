@@ -63,6 +63,7 @@ import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.ShareMgr;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeNewFeatureMgr;
 import com.app.beseye.util.BeseyeStorageAgent;
@@ -75,6 +76,8 @@ import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioAmplitudeUpdateListen
 import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioWSChannelStateChangeListener;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
 import com.app.beseye.widget.CameraViewControlAnimator;
+import com.app.beseye.widget.ViewShareDialog;
+import com.app.beseye.widget.ViewShareDialog.OnShareClickListener;
 
 
 
@@ -2901,6 +2904,23 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
 
     public void pressToScreenshot(){
+    	Toast.makeText(CameraViewActivity.this, "Kelly Snapshot", Toast.LENGTH_SHORT).show();
+    	
+    	ViewShareDialog d = new ViewShareDialog(this, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg"); 
+		d.setOnShareClickListener(new OnShareClickListener(){
+
+			@Override
+			public void onBtnShareClick() {
+				int f =ShareMgr.BeseyeShare(CameraViewActivity.this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");			
+				Toast.makeText(getApplicationContext(), " " + f, Toast.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onBtnCloseClick() {
+			}} );
+		d.show();
+		
+    	
     	requestBitmapScreenshot();
     	if(!BeseyeNewFeatureMgr.getInstance().isScreenshotFeatureClicked()){
 			BeseyeNewFeatureMgr.getInstance().setScreenshotFeatureClicked(true);

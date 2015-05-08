@@ -5,10 +5,17 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+
+import org.json.JSONObject;
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,11 +26,21 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.R;
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
@@ -47,6 +64,8 @@ import com.facebook.share.widget.ShareDialog;
  * 
  * Sample:
  * 		ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard1/DCIM/100ANDRO/DSC_3431.JPG");
+ * 		ShareMgr.BeseyeShare(this, ShareMgr.TYPE.LINK, "http://beseye.com");
+ *		ShareMgr.BeseyeShare(this, ShareMgr.TYPE.VIDEO, "/storage/sdcard1/DCIM/100ANDRO/MOV_3455.mp4");
  * 
  * NOTE: 	
  * 		when you call ShareMgr.BeseyeShare, please add 
@@ -70,22 +89,33 @@ public class ShareMgr {
 	public static final int ERR_TYPE_INVALID_PACKAGE		= 6;
 	public static final int ERR_TYPE_INVALID_FB_CONTENT		= 7;
 	public static final int ERR_TYPE_NO_INTENT_FOUND		= 8;
+	public static final int ERR_TYPE_FBLOGININIT_ERR		= 9;
 	
 	public enum TYPE {
 	    LINK, IMAGE, VIDEO
-	}
-	 
+	};
+	
+	static Boolean isFBLogin = false;
 	private static final String PHOTO_SHARE_HASH = " #Beseye";
 	private static CallbackManager callbackManager = CallbackManager.Factory.create();
-	
-
+	private static LoginManager loginManager;
 	
 	public static int BeseyeShare(final Activity activity, final TYPE type, final String content){
+		int miErrType;
 		
 		FacebookSdk.sdkInitialize(activity.getApplicationContext());
+//		FacebookSdk.setIsDebugEnabled(true);
+		
+		if(null != AccessToken.getCurrentAccessToken()){
+    		isFBLogin = true;
+    	}
+		
+		miErrType = fbLoginInit(activity, type, content);
 		
 		//Validate type and content
-		int miErrType = isValidInput(activity, type, content);
+		if(ERR_TYPE_NO_ERR == miErrType) {	
+			miErrType = isValidInput(activity, type, content);
+		}
 		if(ERR_TYPE_NO_ERR == miErrType) {		
 			//get intent activities and link to adapter
 			final Intent shareIntent = getShareIntent(type, content);
@@ -109,15 +139,76 @@ public class ShareMgr {
 		return miErrType;
 	}
 	
-	public static void setShareOnActivityResult(int requestCode, int resultCode, Intent data) {
-	    callbackManager.onActivityResult(requestCode, resultCode, data);
+	
+	private static int fbLoginInit(final Activity activity, final TYPE type, final String content) {	
+		int miErrType = ERR_TYPE_NO_ERR;
+		LoginManager loginManager = LoginManager.getInstance();
+		
+		if(null != loginManager){
+		    loginManager.registerCallback(callbackManager,
+		            new FacebookCallback<LoginResult>() {
+		                @Override
+		                public void onSuccess(LoginResult loginResult) {	      
+		                	if (loginResult.getAccessToken() != null) {
+		                		//if user deny permission, ask again
+		                        Set<String> deniedPermissions = loginResult.getRecentlyDeniedPermissions();
+		                        if (deniedPermissions.contains("user_friends")) {
+		                            LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("user_friends"));
+		                        } else {         
+				                	GraphRequest request = GraphRequest.newMeRequest(
+				                            loginResult.getAccessToken(),
+				                            new GraphRequest.GraphJSONObjectCallback() {
+				                                @Override
+				                                public void onCompleted(JSONObject object, GraphResponse response) {
+				                                	
+				                                }
+				                            });
+				                    request.executeAsync();
+				                    //share
+				                    fbShareAction(activity, type, content);
+				                }
+		                	}
+		                }
+		                @Override
+		                public void onCancel() {
+		                	Log.e(TAG, "FBLoginCancel");
+		                }
+	
+		                @Override
+		                public void onError(FacebookException exception) {
+		                    Log.e(TAG, "FBLoginError");
+		                }
+		            });
+		} else {
+			miErrType = ERR_TYPE_FBLOGININIT_ERR;
+		}
+		return miErrType;
+	}
+	
+	private static void fbShareAction(final Activity activity, final TYPE type, final String content) {
+		@SuppressWarnings("rawtypes")
+		ShareContent shareContent = getShareContent(type, content);
+		if(null == shareContent) {
+			Log.e(TAG, "invalid fb content");
+		} else {
+    		ShareDialog shareDialog = new ShareDialog(activity);
+			shareDialog.show(shareContent);
+		}
+	}
+	
+	public static void setShareOnActivityResult(int requestCode, int resultCode, Intent data) {                                                                                                                                                            
+		callbackManager.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	private static int buildAlertDialog(final ShareAdapter adapter, final Activity activity, final TYPE type, final String content, final Intent shareIntent){
 		int miErrType = ERR_TYPE_NO_ERR;
 		
-		new AlertDialog.Builder(activity)
-        .setAdapter(adapter, new DialogInterface.OnClickListener() {
+		LayoutInflater inflater = (LayoutInflater) activity.getSystemService(activity.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.layout_sharmgr_dialog, null);
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -125,32 +216,55 @@ public class ShareMgr {
                 if(null == info) {
                 	Log.e(TAG, "no info be resolved");
                 } else {               
-	                if(info.activityInfo.packageName.contains("facebook")) { 
-	            		@SuppressWarnings("rawtypes")
+	                if(info.activityInfo.packageName.contains("facebook.katana")) {
+	                	//if user have already login, share directly
+	                	if(true == isFBLogin) {
+	                		fbShareAction(activity, type, content);
+	                	} else{
+	                		//ask user login and get permissions 
+	                		Collection<String> permissions = (Collection<String>) Arrays.asList("public_profile", "user_friends");
+	                		loginManager.logInWithReadPermissions(activity, permissions);
+	                		/* TODO: where can I save data?
+	                		for (Object o : permissions)
+	                			Log.v(TAG, "Permission "+o);
+	                		*/
+	                	}
+	                } else if(info.activityInfo.packageName.contains("facebook.orca")) { 
+						@SuppressWarnings("rawtypes")
 						ShareContent shareContent = getShareContent(type, content);
-	            		if(null == shareContent) {
-	            			Log.e(TAG, "invalid fb content");
-	            		} else {
-		                	if(info.activityInfo.packageName.contains("katana")) {
-		                		ShareDialog shareDialog = new ShareDialog(activity);	
-		                		//onShowDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING, 0, 0);
-		            			shareDialog.show(shareContent);
-		                	} else if(info.activityInfo.packageName.contains("orca")){
-		                		MessageDialog messageDialog = new MessageDialog(activity);
-		                		messageDialog.show(shareContent);
-		                	}
-	            		}
-	                } else {
+						MessageDialog messageDialog = new MessageDialog(activity);
+						messageDialog.show(shareContent);
+	                } else { 
+	                	//WeChat is special case
+	                	if(!info.activityInfo.packageName.contains("WeChat")) {
+	                		shareIntent.putExtra(Intent.EXTRA_TEXT, PHOTO_SHARE_HASH);
+	                	}
 	                    shareIntent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
 	                    activity.startActivity(shareIntent);
 	                }
                 }
             }
-        }).setNegativeButton("Cancel", null)
-        .setTitle("Choose one")
-        .setCancelable(true) 
-        .show(); 
+        })//.setNegativeButton("Cancel", null)
+        .setTitle(activity.getResources().getString(R.string.share_way))
+        .setCancelable(true); 
 		
+        //It is a hack!
+        //http://stackoverflow.com/questions/14439538/how-can-i-change-the-color-of-alertdialog-title-and-the-color-of-the-line-under
+        Dialog d = builder.show();
+        int dividerId = d.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+        View divider = d.findViewById(dividerId);
+        divider.setBackgroundColor(activity.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
+        
+        int textViewId = d.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
+        TextView tv = (TextView) d.findViewById(textViewId);
+        tv.setTextColor(activity.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
+        //tv.setTextSize(activity.getResources().getDimensionPixelSize(R.dimen.Kelly));
+		
+       // int linearId = d.getContext().getResources().getIdentifier("android:id/title_template", null, null);
+       // LinearLayout ll = (LinearLayout) d.findViewById(linearId);
+       // ll.setMinimumHeight(activity.getResources().getDimensionPixelSize(R.dimen.wifi_list_item_padding_top));
+       // int s = activity.getResources().getDimensionPixelSize(R.dimen.firmware_update_margin_small);
+       // ll.setPadding(s,s,s,s);
 		return miErrType;
 	}
 	
@@ -171,7 +285,7 @@ public class ShareMgr {
 				}
 		        intent.setType("image/jpeg");
 		        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-		        intent.putExtra(Intent.EXTRA_TEXT, PHOTO_SHARE_HASH);
+		        //intent.putExtra(Intent.EXTRA_TEXT, PHOTO_SHARE_HASH);
 				break;
 			case VIDEO:				
 				//NOTE: not available for youtube now (need more setting)

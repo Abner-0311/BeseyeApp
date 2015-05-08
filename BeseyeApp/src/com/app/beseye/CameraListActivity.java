@@ -214,12 +214,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		//facebook
-		// Logs 'install' and 'app activate' App Events.
-		//Log.i("Kelly", "FB Resume");
-		//AppEventsLogger.activateApp(this);
-		
+				
 		if(null != mOnResumeUpdateCamListRunnable){
 			if(BeseyeConfig.DEBUG)
 				Log.i(TAG, "onResume(), mOnResumeUpdateCamListRunnable trigger...");

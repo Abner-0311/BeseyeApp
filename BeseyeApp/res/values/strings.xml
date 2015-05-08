@@ -427,8 +427,13 @@
 
   <string name="hint_hold_to_talk_conn_occupied">The microphone is busy, please try again later.</string>
   
-  <string name="share_title">Share</string>
+  <!-- share -->
+  <string name="share">Share</string>
+  <string name="close">Close</string>
+  <string name="share_way">choose share</string>
+  <string name="view_share_title">Snapchat is saved</string>
+  
   <!-- facebook APP ID -->
-  <string name ="facebook_app_id">913128435388925</string>
+  <string name ="facebook_app_id">812080018846492</string>
 
 </resources>
