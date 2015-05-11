@@ -122,6 +122,7 @@ public class SessionMgr {
 	
 	static private final String SESSION_UPDATE_TS			= "beseye_cam_update_ts";
 	static private final String SESSION_UPDATE_CAMS			= "beseye_cam_update_list";
+	static private final String SESSION_UPDATE_SUSPEND		= "beseye_cam_update_suspend";
 	
 	static private final String SESSION_SERVER_MODE	    	= "beseye_server_mode";
 	
@@ -162,6 +163,7 @@ public class SessionMgr {
 				mSessionData.setDomain(getPrefStringValue(mPref, SESSION_DOMAIN));
 				mSessionData.setAuthToken(getPrefStringValue(mPref, SESSION_TOKEN));
 				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
+				mSessionData.setIsCamSWUpdateSuspended(getPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, false));
 				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, DEFAULT_SERVER_MODE.ordinal())));
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
 				mSessionData.setPairToken(getPrefStringValue(mPref, SESSION_PAIR_TOKEN));
@@ -449,6 +451,16 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
+	public boolean getIsCamSWUpdateSuspended(){
+		return mSessionData.getIsCamSWUpdateSuspended();
+	}
+	
+	public void setIsCamSWUpdateSuspended(boolean bIsCamSWUpdateSuspended){
+		setPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, bIsCamSWUpdateSuspended);
+		mSessionData.setIsCamSWUpdateSuspended(bIsCamSWUpdateSuspended);
+		notifySessionUpdate();
+	}
+	
 	public SERVER_MODE getServerMode(){
 		return mSessionData.getServerMode();
 	}
@@ -517,7 +529,7 @@ public class SessionMgr {
 	
 	public static class SessionData implements Parcelable{
 		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
-		private boolean mbIsCertificated;
+		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
 		private String mStrCamUpdateList;
@@ -540,6 +552,7 @@ public class SessionMgr {
 			mStrOwnerInfo = "";
 			mStrPairToken = "";
 			mbIsCertificated = false;
+			mbIsCamSWUpdateSuspended = false;
 			mServerMode = DEFAULT_SERVER_MODE;
 			
 			mlCamUpdateTs = 0;
@@ -678,6 +691,14 @@ public class SessionMgr {
 			mbIsCertificated = bIsCertificated;
 		}
 		
+		public boolean getIsCamSWUpdateSuspended(){
+			return mbIsCamSWUpdateSuspended;
+		}
+		
+		public void setIsCamSWUpdateSuspended(boolean bIsCamSWUpdateSuspended){
+			mbIsCamSWUpdateSuspended = bIsCamSWUpdateSuspended;
+		}
+		
 		public SERVER_MODE getServerMode(){
 			return mServerMode;
 		}
@@ -747,6 +768,8 @@ public class SessionMgr {
 			dest.writeString(mStrPairToken);
 			
 			dest.writeInt(mbIsCertificated?1:0);
+			dest.writeInt(mbIsCamSWUpdateSuspended?1:0);
+			
 			dest.writeInt(mServerMode.ordinal());
 			
 			dest.writeLong(mlCamUpdateTs);
@@ -789,6 +812,7 @@ public class SessionMgr {
 			mStrPairToken = in.readString();
 			
 			mbIsCertificated = in.readInt()>0?true:false;
+			mbIsCamSWUpdateSuspended = in.readInt()>0?true:false;
 			mServerMode = SERVER_MODE.translateToMode(in.readInt());
 			
 			mlCamUpdateTs = in.readLong();

@@ -10,8 +10,10 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.os.Bundle;
@@ -1089,16 +1091,25 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 	    if(-1 != mlRequestBmpTimestamp){
 	    	if(null != bmp && false == bmp.isRecycled()){
 	    		Bitmap bmpSave = bmp.copy(bmp.getConfig(), true);
-	    		Canvas canvasBmp2 = new Canvas( bmpSave );
-	    		if(null != canvasBmp2){
-	    			canvasBmp2.drawBitmap(bmp, 0, 0, null);
+	    		if(null != bmpSave){
+	    			Canvas canvasTarget = new Canvas( bmpSave );
+		    		if(null != canvasTarget){
+		    			canvasTarget.drawBitmap(bmp, 0, 0, null);
+//		    			Bitmap icon = BitmapFactory.decodeResource(context.getResources(),com.app.beseye.R.drawable.common_app_icon);
+//		    			if(null != icon){
+//		    				Paint paint = new Paint();
+//			    			paint.setARGB(127, 255, 255, 255);
+//			    			canvasTarget.drawBitmap(icon, bmpSave.getWidth() - icon.getWidth(), bmpSave.getHeight() - icon.getHeight(), paint);
+//		    			}
+		    			
+		    			if(null != mOnBitmapScreenshotCallback){
+			    			mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
+			    		}
+			    		mlRequestBmpTimestamp = -1;
+			    		mOnBitmapScreenshotCallback = null;
+			    		return true;
+		    		}
 	    		}
-	    		if(null != mOnBitmapScreenshotCallback){
-	    			mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
-	    		}
-	    		mlRequestBmpTimestamp = -1;
-	    		mOnBitmapScreenshotCallback = null;
-	    		return true;
 	    	}
 	    }
 	    return false;

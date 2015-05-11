@@ -189,7 +189,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private void getCamListAndCheckCamUpdateVersions(){
 		//Set<String> setVcamList = null;
-		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK){
+		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
 			return;
 		}
 		
@@ -1031,7 +1031,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected void getCamUpdateCandidateList(JSONObject objVCamList){
 		//Log.i(TAG, "mGetCamListTask(), objVCamList="+objVCamList.toString());
 		
-		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK){
+		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
 			return;
 		}
 		

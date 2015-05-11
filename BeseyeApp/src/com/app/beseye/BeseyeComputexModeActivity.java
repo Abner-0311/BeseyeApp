@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -20,6 +23,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 //	private EditText mTxtPeriod;
 	private Button mBtnApply;
 	private Spinner mSpServerType;
+	private CheckBox mCbCamSWUpdateSuspended;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +44,19 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			mBtnApply.setOnClickListener(this);
 		}
 		
+		mCbCamSWUpdateSuspended = (CheckBox)findViewById(R.id.ck_suspend_cam_sw_update);
+		if(null != mCbCamSWUpdateSuspended){
+			mCbCamSWUpdateSuspended.setChecked(SessionMgr.getInstance().getIsCamSWUpdateSuspended());
+			mCbCamSWUpdateSuspended.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+				@Override
+				public void onCheckedChanged(CompoundButton arg0, boolean bChecked) {
+					//SessionMgr.getInstance().setIsCamSWUpdateSuspended(bChecked);
+				}});
+		}
+		
 		mSpServerType = (Spinner)findViewById(R.id.sp_server_type);
 		if(null != mSpServerType){
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server","Staging Server", "Tokyo Staging Server(deprecated)"/*, "Production Server"*/});
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server(deprecated)","Staging Server", "Tokyo Staging Server(deprecated)"/*, "Production Server"*/});
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			mSpServerType.setAdapter(adapter);
 		}
@@ -104,7 +118,10 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			mode = SERVER_MODE.translateToMode(mSpServerType.getSelectedItemPosition());
 			SessionMgr.getInstance().setServerMode(mode);
 			SessionMgr.getInstance().setBEHostUrl(mode);
-			Toast.makeText(this, "Server mode is "+mode, Toast.LENGTH_LONG).show();
+			SessionMgr.getInstance().setIsCamSWUpdateSuspended(mCbCamSWUpdateSuspended.isChecked());
+
+			//Toast.makeText(this, "Server mode is "+mode, Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Server mode is "+mode+"\nCam SW update is"+(SessionMgr.getInstance().getIsCamSWUpdateSuspended()?"":" not")+" suspended.", Toast.LENGTH_LONG).show();
 		}
 		
 //		if(mRbDemomode.isChecked() && mode.ordinal() <= SERVER_MODE.MODE_COMPUTEX.ordinal()){
