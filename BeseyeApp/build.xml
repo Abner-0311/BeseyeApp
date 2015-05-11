@@ -118,7 +118,7 @@
 				        <replaceregexp file="AndroidManifest.xml" match='${matchVersionName.start}[^"]*${match.end}' replace="${matchVersionName.start}${app.version.major.beta}${app.version.minor.beta}${app.version.branch}${match.end}" />
 				        
 				        <property name="matchAppName.start" value='android:label=\"' />
-				        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name${match.end}" />
+				        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name_beta${match.end}" />
 		        	</then>
 		        	<else>
 		        	    <if condition="${Is_Alpha}">
@@ -140,7 +140,7 @@
 						        <replaceregexp file="AndroidManifest.xml" match='${matchVersionName.start}[^"]*${match.end}' replace="${matchVersionName.start}${app.version.major.alpha}${app.version.minor.alpha}${app.version.branch}${match.end}" />
 						        
 						        <property name="matchAppName.start" value='android:label=\"' />
-						        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name${match.end}" />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name_alpha${match.end}" />
 				        	</then>
 				        	<else>
 				        	    <propertyfile file="version.properties">
