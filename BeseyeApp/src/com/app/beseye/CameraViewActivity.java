@@ -685,6 +685,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(DEBUG)
 			Log.d(TAG, "CameraViewActivity::onResume()");
 		
+		//for share
+		onDismissDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING);
+		
 		super.onResume();
 		
 		if(null != mPauseCameraViewRunnable){
@@ -848,6 +851,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(mbIsLiveMode)
 			onUpdateFocusVCamId("");
+		
+		//for share
+		onShowDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING, 0, 0);
 		super.onPause();
 	}
 
@@ -1599,8 +1605,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			if(resultCode == RESULT_OK){
 				mbIsWifiSettingChanged = true;
 			}
-		}else
+		}else {
 			super.onActivityResult(requestCode, resultCode, intent);
+			//for FB share
+			ShareMgr.setShareOnActivityResult(requestCode, resultCode, intent);
+		}
 	}
 
 	@Override
@@ -2904,15 +2913,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
 
     public void pressToScreenshot(){
-    	Toast.makeText(CameraViewActivity.this, "Kelly Snapshot", Toast.LENGTH_SHORT).show();
-    	
+    	//by Kelly, call ViewShareDialog 
     	ViewShareDialog d = new ViewShareDialog(this, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg"); 
 		d.setOnShareClickListener(new OnShareClickListener(){
 
 			@Override
 			public void onBtnShareClick() {
-				int f =ShareMgr.BeseyeShare(CameraViewActivity.this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");			
-				Toast.makeText(getApplicationContext(), " " + f, Toast.LENGTH_LONG).show();
+				ShareMgr.BeseyeShare(CameraViewActivity.this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");
 			}
 
 			@Override
@@ -2920,7 +2927,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}} );
 		d.show();
 		
-    	
     	requestBitmapScreenshot();
     	if(!BeseyeNewFeatureMgr.getInstance().isScreenshotFeatureClicked()){
 			BeseyeNewFeatureMgr.getInstance().setScreenshotFeatureClicked(true);

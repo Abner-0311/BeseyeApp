@@ -190,6 +190,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	protected void onResume() {
 		if(DEBUG)
 			Log.i(TAG, "CameraSettingActivity::onResume()");
+		//for share
 		onDismissDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING);
 		super.onResume();
 		if(!mbFirstResume){
@@ -219,6 +220,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void onPause() {
+		//for share
 		onShowDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING, 0, 0);
 		super.onPause();
 	}
@@ -340,21 +342,21 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}
 				break;
 			}
+			//for share
 			case R.id.vg_share:{
 //				int f = ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard0/DCIM/Beseye/Beseye_Pro_04_22_2015_12_13_05_下午.jpg");
 //				int f = ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/sdcard1/DCIM/100ANDRO/DSC_3483.JPG");
-				int f =ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");			
-				Toast.makeText(getApplicationContext(), " " + f, Toast.LENGTH_LONG).show();
+				ShareMgr.BeseyeShare(this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");				
 				break;
 			}
+			//for share
 			case R.id.vg_view_share:{
 				ViewShareDialog d = new ViewShareDialog(this, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg"); 
 				d.setOnShareClickListener(new OnShareClickListener(){
 
 					@Override
 					public void onBtnShareClick() {
-						int f =ShareMgr.BeseyeShare(CameraSettingActivity.this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");			
-						Toast.makeText(getApplicationContext(), " " + f, Toast.LENGTH_LONG).show();
+						ShareMgr.BeseyeShare(CameraSettingActivity.this, ShareMgr.TYPE.IMAGE, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");			
 					}
 
 					@Override

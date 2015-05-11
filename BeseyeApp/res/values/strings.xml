@@ -430,10 +430,11 @@
   <!-- share -->
   <string name="share">Share</string>
   <string name="close">Close</string>
-  <string name="share_way">choose share</string>
+  <string name="share_way">choose one to share</string>
   <string name="view_share_title">Snapchat is saved</string>
+  <string name="share_hash">Check out this image captured by my Beseye</string>
   
-  <!-- facebook APP ID -->
+  <!-- facebook APP ID. It is Beseye_T-->
   <string name ="facebook_app_id">812080018846492</string>
 
 </resources>

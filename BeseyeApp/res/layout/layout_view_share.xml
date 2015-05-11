@@ -2,12 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical" 
-    android:paddingLeft="14dp"
-    android:paddingRight="13dp">
+    android:orientation="vertical">
 
    	<RelativeLayout 
-   	    android:layout_width="match_parent"
+   	    android:layout_width="@dimen/snapshot_image_plus_shadow_width"
    		android:layout_height="@dimen/wifi_ap_info_dialog_title_height"
    	    android:background="@drawable/wifisetup_password_inf_bg_up">
    	    <TextView 
@@ -21,20 +19,20 @@
 	   		android:layout_centerVertical="true"/>
    	</RelativeLayout>
 	<LinearLayout 
-	    android:layout_width="match_parent"
+	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:paddingLeft="4dp"
-	    android:paddingRight="4dp"
+	    android:paddingLeft="@dimen/shadow_width"
+	    android:paddingRight="@dimen/shadow_width"
 	    android:orientation="vertical" 
 	    android:background="@drawable/wifisetup_password_inf_bg_mid">
    	   	<ImageView 
    	   	     android:id="@+id/iv_snapshot"
-		     android:layout_width="325dp"
-		     android:layout_height="182dp"/>
+		     android:layout_width="@dimen/snapshot_image_width"
+		     android:layout_height="@dimen/snapshot_image_height"/>
 	</LinearLayout>
    	<LinearLayout 
         android:id="@+id/vg_button_holder"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/snapshot_image_plus_shadow_width"
    		android:layout_height="@dimen/wifi_ap_info_dialog_btn_height"
    		android:background="@drawable/wifisetup_password_inf_bg_diwn"
    		android:orientation="horizontal">

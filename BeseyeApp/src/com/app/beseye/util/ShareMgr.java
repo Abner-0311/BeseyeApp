@@ -26,9 +26,7 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.beseye.R;
@@ -96,7 +94,7 @@ public class ShareMgr {
 	};
 	
 	static Boolean isFBLogin = false;
-	private static final String PHOTO_SHARE_HASH = " #Beseye";
+	private static String PHOTO_SHARE_HASH; 
 	private static CallbackManager callbackManager = CallbackManager.Factory.create();
 	private static LoginManager loginManager;
 	
@@ -108,9 +106,10 @@ public class ShareMgr {
 		
 		if(null != AccessToken.getCurrentAccessToken()){
     		isFBLogin = true;
-    	}
-		
+    	}	
 		miErrType = fbLoginInit(activity, type, content);
+		
+		PHOTO_SHARE_HASH = activity.getResources().getString(R.string.share_hash);
 		
 		//Validate type and content
 		if(ERR_TYPE_NO_ERR == miErrType) {	
@@ -202,10 +201,7 @@ public class ShareMgr {
 	
 	private static int buildAlertDialog(final ShareAdapter adapter, final Activity activity, final TYPE type, final String content, final Intent shareIntent){
 		int miErrType = ERR_TYPE_NO_ERR;
-		
-		LayoutInflater inflater = (LayoutInflater) activity.getSystemService(activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.layout_sharmgr_dialog, null);
-        
+
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
@@ -221,7 +217,6 @@ public class ShareMgr {
 	                	if(true == isFBLogin) {
 	                		fbShareAction(activity, type, content);
 	                	} else{
-	                		//ask user login and get permissions 
 	                		Collection<String> permissions = (Collection<String>) Arrays.asList("public_profile", "user_friends");
 	                		loginManager.logInWithReadPermissions(activity, permissions);
 	                		/* TODO: where can I save data?
@@ -235,7 +230,7 @@ public class ShareMgr {
 						MessageDialog messageDialog = new MessageDialog(activity);
 						messageDialog.show(shareContent);
 	                } else { 
-	                	//WeChat is special case
+	                	//WeChat is special case, only image no text
 	                	if(!info.activityInfo.packageName.contains("WeChat")) {
 	                		shareIntent.putExtra(Intent.EXTRA_TEXT, PHOTO_SHARE_HASH);
 	                	}
@@ -244,7 +239,7 @@ public class ShareMgr {
 	                }
                 }
             }
-        })//.setNegativeButton("Cancel", null)
+        })
         .setTitle(activity.getResources().getString(R.string.share_way))
         .setCancelable(true); 
 		
@@ -258,13 +253,12 @@ public class ShareMgr {
         int textViewId = d.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
         TextView tv = (TextView) d.findViewById(textViewId);
         tv.setTextColor(activity.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
-        //tv.setTextSize(activity.getResources().getDimensionPixelSize(R.dimen.Kelly));
-		
-       // int linearId = d.getContext().getResources().getIdentifier("android:id/title_template", null, null);
-       // LinearLayout ll = (LinearLayout) d.findViewById(linearId);
-       // ll.setMinimumHeight(activity.getResources().getDimensionPixelSize(R.dimen.wifi_list_item_padding_top));
-       // int s = activity.getResources().getDimensionPixelSize(R.dimen.firmware_update_margin_small);
-       // ll.setPadding(s,s,s,s);
+       
+//      int linearId = d.getContext().getResources().getIdentifier("android:id/title_template", null, null);
+//      LinearLayout ll = (LinearLayout) d.findViewById(linearId);
+//      ll.setMinimumHeight(activity.getResources().getDimensionPixelSize(R.dimen.wifi_list_item_padding_top));
+//      int s = activity.getResources().getDimensionPixelSize(R.dimen.firmware_update_margin_small);
+//      ll.setPadding(s,s,s,s);
 		return miErrType;
 	}
 	

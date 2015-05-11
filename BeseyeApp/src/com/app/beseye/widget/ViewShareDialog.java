@@ -1,9 +1,9 @@
 package com.app.beseye.widget;
 
 import com.app.beseye.R;
+
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
@@ -14,6 +14,32 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+
+/*
+ * How to use Dialog:
+ * 		new ViewShareDialog(Activity activity, String content); 
+ * 		#need to setOnShareClickListener#
+ * 
+ * Parameters:
+ * 		activity	just a activity
+ * 		content		(String) image file path 
+ * 
+ * Sample:
+ * 		ViewShareDialog d = new ViewShareDialog(this, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");
+ * 	
+ * How to setOnShareClickListener:
+ * 		setOnShareClickListener(new OnShareClickListener(){
+ * 			@Override
+ *			public void onBtnShareClick() {
+ *				//do something, like call ShageMgr.java 
+ *			}
+ *			@Override
+ *			public void onBtnCloseClick() {
+ *			}} );
+ *
+ * NOTE:
+ * 		don't forget to call show();
+ */
 
 public class ViewShareDialog extends Dialog implements OnClickListener {
 	
@@ -27,18 +53,13 @@ public class ViewShareDialog extends Dialog implements OnClickListener {
 	}
 
 	private void init(Context context, String imageContext) {
-		getWindow().setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
-		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		
-		Configuration config = context.getResources().getConfiguration();	
+		getWindow().setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
+		getWindow().requestFeature(Window.FEATURE_NO_TITLE);		
 		
 		LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		if(null != inflater){
-			if(Configuration.ORIENTATION_PORTRAIT == config.orientation){
-				m_vgViewShare = (ViewGroup)inflater.inflate(R.layout.layout_view_share, null);	
-			} else {
-				m_vgViewShare = (ViewGroup)inflater.inflate(R.layout.layout_view_share_land, null);	
-			}
+			m_vgViewShare = (ViewGroup)inflater.inflate(R.layout.layout_view_share, null);	
 			
 			if(null != m_vgViewShare) {
 				

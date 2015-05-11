@@ -57,8 +57,6 @@
     <dimen name="wifi_ap_info_dialog_main_attr_font_size">18sp</dimen>
     <dimen name="wifi_ap_info_dialog_attr_font_size">15sp</dimen>
     
-    <dimen name="Kelly">11sp</dimen>
-    
     <dimen name="wifi_ap_keyindex_dialog_width">340dp</dimen>
     <dimen name="wifi_ap_keyindex_divider_width">300dp</dimen>
     <dimen name="wifi_ap_keyindex_itm_height">66dp</dimen>
@@ -230,4 +228,11 @@
     
     <dimen name="update_title_font_size">20sp</dimen>
     <dimen name="update_desc_font_size">17sp</dimen>
+    
+    <!-- for ViewShare -->
+    <dimen name="snapshot_image_width">325dp</dimen>
+    <dimen name="snapshot_image_height">182dp</dimen>
+    <dimen name="shadow_width">4dp</dimen>
+    <dimen name="snapshot_image_plus_shadow_width">333dp</dimen>
+    
 </resources>
