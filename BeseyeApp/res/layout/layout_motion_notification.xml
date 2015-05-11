@@ -48,22 +48,21 @@
 		    android:id="@+id/vg_motion_zone"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:background="@drawable/dsl_setting_item_bg"
-		    android:paddingTop="@dimen/hw_setting_mic_margin_vertical"
-		    android:paddingBottom="@dimen/hw_setting_mic_margin_vertical">
+		    android:background="@drawable/dsl_setting_item_bg">
 		    
     	    <com.app.beseye.widget.RemoteImageView
 		        android:id="@+id/iv_motion_zone_thumbnail"
-		        android:layout_width="330dp"
-		        android:layout_height="180dp"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
 		        android:background="@color/camera_list_video_bg"
-		        android:visibility="visible" /> 
-		    
+		        android:visibility="visible" />
+    	    
 		    <RelativeLayout 
 		     	android:id="@+id/vg_motion_zone_text"
 			    android:layout_width="match_parent"
 			    android:layout_height="@dimen/wifi_list_item_height"
 			    android:background="@drawable/dsl_setting_item_bg"
+			    android:layout_below="@id/iv_motion_zone_thumbnail"
 			    tools:context=".MainActivity">    
 			    <ImageView 
 			        android:id="@+id/iv_enter_arrow"
