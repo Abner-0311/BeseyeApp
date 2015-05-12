@@ -130,7 +130,7 @@ public class BeseyeStorageAgent {
     static public File getFileInPicDir(Context context, String uniqueName) {
 	    // Check if media is mounted or storage is built-in, if so, try and use external cache dir
 	    // otherwise use internal cache dir
-	    final String cachePath = (canUseExternalStorage()?Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM):(new ContextWrapper(context)).getDir("imageDir", Context.MODE_PRIVATE)).getAbsolutePath()+File.separator+"Beseye";
+	    final String cachePath = (canUseExternalStorage()?Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM):(new ContextWrapper(context)).getDir("imageDir", Context.MODE_PRIVATE)).getAbsolutePath()+File.separator+"Beseye Pro";
 	    File dir = new File(cachePath);
 	    if(null != dir && false == dir.exists()){
 	    	dir.mkdir();

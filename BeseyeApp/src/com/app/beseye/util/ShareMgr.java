@@ -93,58 +93,59 @@ public class ShareMgr {
 	    LINK, IMAGE, VIDEO
 	};
 	
-	static Boolean isFBLogin = false;
+	static Boolean sbIsFBLogin = false; //[Abner review 150512] sbsbIsFBLogin is better
 	private static String PHOTO_SHARE_HASH; 
-	private static CallbackManager callbackManager = CallbackManager.Factory.create();
-	private static LoginManager loginManager;
+	private static CallbackManager sCallbackManager = CallbackManager.Factory.create(); //[Abner review 150512] sCallbackManager is better
+	private static LoginManager sLoginManager; //[Abner review 150512] sLoginManager is better
 	
 	public static int BeseyeShare(final Activity activity, final TYPE type, final String content){
-		int miErrType;
+		int iErrType = ERR_TYPE_NO_ERR; //[Abner review 150512] no init value, not member variable
 		
 		FacebookSdk.sdkInitialize(activity.getApplicationContext());
 //		FacebookSdk.setIsDebugEnabled(true);
 		
 		if(null != AccessToken.getCurrentAccessToken()){
-    		isFBLogin = true;
+    		sbIsFBLogin = true;
     	}	
-		miErrType = fbLoginInit(activity, type, content);
+		iErrType = fbLoginInit(activity, type, content);
 		
 		PHOTO_SHARE_HASH = activity.getResources().getString(R.string.share_hash);
 		
 		//Validate type and content
-		if(ERR_TYPE_NO_ERR == miErrType) {	
-			miErrType = isValidInput(activity, type, content);
+		if(ERR_TYPE_NO_ERR == iErrType) {	
+			iErrType = isValidInput(activity, type, content);
 		}
-		if(ERR_TYPE_NO_ERR == miErrType) {		
+		if(ERR_TYPE_NO_ERR == iErrType) {		
 			//get intent activities and link to adapter
 			final Intent shareIntent = getShareIntent(type, content);
 			final PackageManager packageManager = activity.getPackageManager();
 			
 			if(null == shareIntent){
-				miErrType = ERR_TYPE_INVALID_INTENT;
+				iErrType = ERR_TYPE_INVALID_INTENT;
 			} else if(null == packageManager) {
-				miErrType = ERR_TYPE_INVALID_PACKAGE;
+				iErrType = ERR_TYPE_INVALID_PACKAGE;
 			} else {
 				List<ResolveInfo> listActivities = packageManager.queryIntentActivities(shareIntent, PackageManager.MATCH_DEFAULT_ONLY);
 				if(listActivities.isEmpty()){
-					miErrType = ERR_TYPE_NO_INTENT_FOUND;
+					iErrType = ERR_TYPE_NO_INTENT_FOUND;
 				} else {
 					//set adapter and create Dialog
 					final ShareAdapter adapter = new ShareAdapter(activity, listActivities.toArray());
-					miErrType = buildAlertDialog(adapter, activity, type, content, shareIntent);
+					iErrType = buildAlertDialog(adapter, activity, type, content, shareIntent);
 				}
 			}
 		}
-		return miErrType;
+		return iErrType;
 	}
 	
 	
 	private static int fbLoginInit(final Activity activity, final TYPE type, final String content) {	
-		int miErrType = ERR_TYPE_NO_ERR;
-		LoginManager loginManager = LoginManager.getInstance();
+		int iErrType = ERR_TYPE_NO_ERR;
+		//[Abner review 150512] Wrong local declare LoginManager, will cause null pointer exception
+		/*LoginManager*/ sLoginManager = LoginManager.getInstance();
 		
-		if(null != loginManager){
-		    loginManager.registerCallback(callbackManager,
+		if(null != sLoginManager){
+		    sLoginManager.registerCallback(sCallbackManager,
 		            new FacebookCallback<LoginResult>() {
 		                @Override
 		                public void onSuccess(LoginResult loginResult) {	      
@@ -179,9 +180,9 @@ public class ShareMgr {
 		                }
 		            });
 		} else {
-			miErrType = ERR_TYPE_FBLOGININIT_ERR;
+			iErrType = ERR_TYPE_FBLOGININIT_ERR;
 		}
-		return miErrType;
+		return iErrType;
 	}
 	
 	private static void fbShareAction(final Activity activity, final TYPE type, final String content) {
@@ -196,11 +197,11 @@ public class ShareMgr {
 	}
 	
 	public static void setShareOnActivityResult(int requestCode, int resultCode, Intent data) {                                                                                                                                                            
-		callbackManager.onActivityResult(requestCode, resultCode, data);
+		sCallbackManager.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	private static int buildAlertDialog(final ShareAdapter adapter, final Activity activity, final TYPE type, final String content, final Intent shareIntent){
-		int miErrType = ERR_TYPE_NO_ERR;
+		int iErrType = ERR_TYPE_NO_ERR;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         
@@ -214,11 +215,14 @@ public class ShareMgr {
                 } else {               
 	                if(info.activityInfo.packageName.contains("facebook.katana")) {
 	                	//if user have already login, share directly
-	                	if(true == isFBLogin) {
+	                	if(true == sbIsFBLogin) {
 	                		fbShareAction(activity, type, content);
 	                	} else{
 	                		Collection<String> permissions = (Collection<String>) Arrays.asList("public_profile", "user_friends");
-	                		loginManager.logInWithReadPermissions(activity, permissions);
+	                		//[Abner review 150512] need to check if sLoginManager is null?
+	                		if(null != sLoginManager){
+	                			sLoginManager.logInWithReadPermissions(activity, permissions);
+	                		}
 	                		/* TODO: where can I save data?
 	                		for (Object o : permissions)
 	                			Log.v(TAG, "Permission "+o);
@@ -259,7 +263,7 @@ public class ShareMgr {
 //      ll.setMinimumHeight(activity.getResources().getDimensionPixelSize(R.dimen.wifi_list_item_padding_top));
 //      int s = activity.getResources().getDimensionPixelSize(R.dimen.firmware_update_margin_small);
 //      ll.setPadding(s,s,s,s);
-		return miErrType;
+		return iErrType;
 	}
 	
 	private static Intent getShareIntent(TYPE type, String content){
@@ -414,29 +418,29 @@ public class ShareMgr {
 	}
 	
 	private static int isValidInput(Activity activity, TYPE type, String content){
-		int miErrType = ERR_TYPE_NO_ERR;
+		int iErrType = ERR_TYPE_NO_ERR;
 		
 		if(null == activity || null == content){
-			miErrType = ERR_TYPE_NULL;
+			iErrType = ERR_TYPE_NULL;
 		} else {
 			switch(type){
 				case LINK:
 					try{
 						new URL(content);
 					} catch(Exception e){	
-						miErrType = ERR_TYPE_INVALID_LINK;
+						iErrType = ERR_TYPE_INVALID_LINK;
 					}
 					break;
 				case IMAGE:
 				case VIDEO:
 					if(true != new File(content).exists()){
-						miErrType = ERR_TYPE_INVALID_FILE;	
+						iErrType = ERR_TYPE_INVALID_FILE;	
 					} 
 					break;
 				default:
-					miErrType = ERR_TYPE_INVALID_TYPE;
+					iErrType = ERR_TYPE_INVALID_TYPE;
 			}
 		}
-		return miErrType;
+		return iErrType;
 	}
 }

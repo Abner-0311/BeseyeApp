@@ -228,11 +228,13 @@
     
     <dimen name="update_title_font_size">20sp</dimen>
     <dimen name="update_desc_font_size">17sp</dimen>
-    
+
     <!-- for ViewShare -->
     <dimen name="snapshot_image_width">325dp</dimen>
     <dimen name="snapshot_image_height">182dp</dimen>
     <dimen name="shadow_width">4dp</dimen>
     <dimen name="snapshot_image_plus_shadow_width">333dp</dimen>
     
+    <dimen name="watermark_padding">10dp</dimen>
+    <dimen name="share_itm_width_height">50dp</dimen>
 </resources>

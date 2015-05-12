@@ -7,15 +7,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -32,6 +34,8 @@ import android.graphics.Xfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.net.http.AndroidHttpClient;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -273,7 +277,7 @@ public class RemoteImageView extends ImageView {
 		return BeseyeMemCache.getBmpByResId(getContext(), mDefaultImage, 0, 0);
 	}
 	
-	private File getFirByVCamid(String strVcamid){
+	private File getDirByVCamid(String strVcamid){
 		File vcamidDir = null;
 		if(null != strVcamid){
 			File picDir = BeseyeStorageAgent.getCacheDir(getContext());
@@ -295,7 +299,7 @@ public class RemoteImageView extends ImageView {
 	
 	private String findLastPhotoByVCamid(String strVcamid){
 		String strRet = null;
-		File vcamidDir = getFirByVCamid(strVcamid);
+		File vcamidDir = getDirByVCamid(strVcamid);
 		if(null != vcamidDir && vcamidDir.isDirectory() && vcamidDir.exists()){
 			File[] files = vcamidDir.listFiles();
 			if(null != files && 0 < files.length){
@@ -307,7 +311,21 @@ public class RemoteImageView extends ImageView {
 
 	public void loadImage() {
 		// load image from cache
-		Bitmap cBmp = BeseyeMemCache.getBitmapFromMemCache(mCachePath);
+		Bitmap cBmp = null;	
+		if(null != mCachePath){
+			if(null != mStrVCamId){
+				String cacheFileName = mCachePath.substring(mCachePath.lastIndexOf("/")+1);
+				if(DEBUG)
+					Log.i(TAG, "cacheFileName:["+cacheFileName+"]:"+mStrVCamId);
+				File vcamidDir = getDirByVCamid(mStrVCamId);
+				String fileToCache = vcamidDir.getAbsoluteFile()+"/"+cacheFileName;
+				if(DEBUG)
+					Log.i(TAG, "fileToCache:["+fileToCache+"]:"+mStrVCamId);
+				cBmp = BeseyeMemCache.getBitmapFromMemCache(fileToCache);
+			}else{
+				cBmp = BeseyeMemCache.getBitmapFromMemCache(mCachePath);
+			}
+		}
 		
 		if (cBmp != null) {
 			if(DEBUG)
@@ -484,7 +502,7 @@ public class RemoteImageView extends ImageView {
 					if(null != mStrVCamId){
 						if(DEBUG)
 							Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
-						vcamidDir = getFirByVCamid(mStrVCamId);
+						vcamidDir = getDirByVCamid(mStrVCamId);
 						String strLastPhoto = findLastPhotoByVCamid(mStrVCamId);
 						if(DEBUG)
 							Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");
@@ -497,13 +515,13 @@ public class RemoteImageView extends ImageView {
 								// write low quality image to memory cache
 								BeseyeMemCache.addBitmapToMemoryCache(strLastPhoto, bitmap);
 								
-								bitmap = null;
+								//bitmap = null;
 								
 								if(DEBUG)
 									Log.i(TAG, "use file cache first");
 							}
 						}
-						bSameFileForVCamid = (null != strLastPhoto)?strLastPhoto.endsWith(strCachePath):false;
+						bSameFileForVCamid = (null != strLastPhoto)?strLastPhoto.endsWith(cacheFileName):false;
 					}
 					
 					if(mbIsPhotoViewMode && !fileExist(mLocalSampleHQ) && fileExist(mLocalSample)){
@@ -521,78 +539,77 @@ public class RemoteImageView extends ImageView {
 						}
 					}
 					
-					if(fileExist(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample)){
-						bitmap = BitmapFactory.decodeFile(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample);
-						if(mbIsPhotoViewMode && DEBUG){
-							Log.i(TAG, "decode file use high quality");
-						}
-					}else {						
-						if (mRemote == null) {
-							return;
-						}
-						
-						if(bSameFileForVCamid){
-							return;
-						}
-						
-						Bitmap downloadBitmap = null;
-						try {
-							if (mIsPreload) {
-								downloadBitmap = BitmapFactory.decodeFile(mRemote);
-							} else {
-								// HTTP get image
-								int retryCount = 0;
-								while (true) {
-									if ((downloadBitmap = imageHTTPTask(mRemote, 1, mStrVCamId/*mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:2)*/)) != null) {
-										break;
-									}
-									if (++retryCount >= 3
-											|| Thread.currentThread()
-													.isInterrupted()) {
-										return;
-									}
-									try {
-										Thread.sleep(500);
-									} catch (InterruptedException e) {
-									}
-								}
+					
+					if(!bSameFileForVCamid){
+						if(fileExist(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample)){
+							bitmap = BitmapFactory.decodeFile(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample);
+							if(mbIsPhotoViewMode && DEBUG){
+								Log.i(TAG, "decode file use high quality");
 							}
-							if(DEBUG){
-								Log.w(TAG, "downloadBitmap width :"+downloadBitmap.getWidth()+", height :"+downloadBitmap.getHeight());
-								Log.w(TAG, "mDestRatio :"+mDestRatio+", miDesireWidth :"+miDesireWidth+", miDesireHeight :"+miDesireHeight);
-								
-								if(mbIsPhotoViewMode){
-									Log.w(TAG, "download file use high quality");
-								}
+						}else {						
+							if (mRemote == null) {
+								return;
 							}
 							
-							if ((0 > Float.compare(mDestRatio, 1.0f) || (0 < miDesireWidth || 0 < miDesireHeight)) && downloadBitmap != null) {
-								float fRatio = 1.0f;
-								if(0 > Float.compare(mDestRatio, 1.0f)){
-									fRatio = Math.abs(mDestRatio);
-								}else{
-									float fWidthRatio = Math.abs(miDesireWidth/(float)downloadBitmap.getWidth());
-									float fHeightRatio = Math.abs(miDesireHeight/(float)downloadBitmap.getHeight());
-									fRatio = (fWidthRatio > fHeightRatio)?((fHeightRatio)>1.0f?1.0f:Math.abs(fHeightRatio))
-											                             :((fWidthRatio)>1.0f?1.0f:Math.abs(fWidthRatio));
+							Bitmap downloadBitmap = null;
+							try {
+								if (mIsPreload) {
+									downloadBitmap = BitmapFactory.decodeFile(mRemote);
+								} else {
+									// HTTP get image
+									int retryCount = 0;
+									while (true) {
+										if ((downloadBitmap = imageHTTPTask(mRemote, 1, mStrVCamId/*mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:2)*/)) != null) {
+											break;
+										}
+										if (++retryCount >= 3
+												|| Thread.currentThread()
+														.isInterrupted()) {
+											return;
+										}
+										try {
+											Thread.sleep(500);
+										} catch (InterruptedException e) {
+										}
+									}
+								}
+								if(DEBUG){
+									Log.w(TAG, "downloadBitmap width :"+downloadBitmap.getWidth()+", height :"+downloadBitmap.getHeight());
+									Log.w(TAG, "mDestRatio :"+mDestRatio+", miDesireWidth :"+miDesireWidth+", miDesireHeight :"+miDesireHeight);
+									
+									if(mbIsPhotoViewMode){
+										Log.w(TAG, "download file use high quality");
+									}
 								}
 								
-								if(0 > Float.compare(fRatio, 1.0f)){
-									if(DEBUG)
-										Log.w(TAG, "scale fRatio:"+fRatio+", mLocal = "+mLocal);
-									// compress image to decrease memory usage
-									bitmap = Bitmap.createScaledBitmap(downloadBitmap,
-											Math.abs((int)(fRatio*downloadBitmap.getWidth())), Math.abs((int)(fRatio*downloadBitmap.getHeight())), true);
+								if ((0 > Float.compare(mDestRatio, 1.0f) || (0 < miDesireWidth || 0 < miDesireHeight)) && downloadBitmap != null) {
+									float fRatio = 1.0f;
+									if(0 > Float.compare(mDestRatio, 1.0f)){
+										fRatio = Math.abs(mDestRatio);
+									}else{
+										float fWidthRatio = Math.abs(miDesireWidth/(float)downloadBitmap.getWidth());
+										float fHeightRatio = Math.abs(miDesireHeight/(float)downloadBitmap.getHeight());
+										fRatio = (fWidthRatio > fHeightRatio)?((fHeightRatio)>1.0f?1.0f:Math.abs(fHeightRatio))
+												                             :((fWidthRatio)>1.0f?1.0f:Math.abs(fWidthRatio));
+									}
+									
+									if(0 > Float.compare(fRatio, 1.0f)){
+										if(DEBUG)
+											Log.w(TAG, "scale fRatio:"+fRatio+", mLocal = "+mLocal);
+										// compress image to decrease memory usage
+										bitmap = Bitmap.createScaledBitmap(downloadBitmap,
+												Math.abs((int)(fRatio*downloadBitmap.getWidth())), Math.abs((int)(fRatio*downloadBitmap.getHeight())), true);
+									}else{
+										bitmap = downloadBitmap;
+									}
+									
 								}else{
 									bitmap = downloadBitmap;
 								}
-								
-							}else{
-								bitmap = downloadBitmap;
+							} finally {
+								if(bitmap != downloadBitmap)
+									recycleBitmap(downloadBitmap);
 							}
-						} finally {
-							if(bitmap != downloadBitmap)
-								recycleBitmap(downloadBitmap);
 						}
 					}
 				}
@@ -604,12 +621,14 @@ public class RemoteImageView extends ImageView {
 				}
 				
 				if(null != vcamidDir){
-					String fileToCache = vcamidDir.getAbsoluteFile()+"/"+cacheFileName;
-					if(!fileExist(fileToCache))
-						deleteFilesUnderDir(vcamidDir);
-					
-					compressFile(bitmap, fileToCache, Bitmap.CompressFormat.JPEG, 90);
-					BeseyeMemCache.addBitmapToMemoryCache(fileToCache, bitmap);
+					if(!bSameFileForVCamid){
+						String fileToCache = vcamidDir.getAbsoluteFile()+"/"+cacheFileName;
+						if(!fileExist(fileToCache))
+							deleteFilesUnderDir(vcamidDir);
+						
+						compressFile(bitmap, fileToCache, Bitmap.CompressFormat.JPEG, 90);
+						BeseyeMemCache.addBitmapToMemoryCache(fileToCache, bitmap);
+					}
 				}else if (!fileExist(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample)) {// write image to file cache
 					createParentDir(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample);
 					compressFile(bitmap, mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample, Bitmap.CompressFormat.JPEG, 90);
@@ -645,27 +664,70 @@ public class RemoteImageView extends ImageView {
 		long lStartTs = System.currentTimeMillis();
 		try {
 			if(uri.startsWith("http")){
-				URL url = new URL(uri);
-				URLConnection conn = url.openConnection();
-				HttpURLConnection httpConn = (HttpURLConnection) conn;
-				httpConn.setRequestProperty("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
-				httpConn.setRequestProperty("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
-				httpConn.setRequestProperty("Bes-User-Agent", BeseyeUtils.getUserAgent());
-				httpConn.setRequestProperty("User-Agent", BeseyeUtils.getUserAgent());
-				if(null != strVcamId)
-					httpConn.setRequestProperty("Bes-VcamPermission-VcamUid", strVcamId);
-				httpConn.setRequestMethod("GET");
-				httpConn.connect();
-				if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-					inputStream = httpConn.getInputStream();
-					if (inputStream != null) {
-						BitmapFactory.Options options = new BitmapFactory.Options();
-						options.inSampleSize = iSample;
-						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-					}else{
-						Log.w(TAG, "inputStream is null");
+//				URL url = new URL(uri);
+//				URLConnection conn = url.openConnection();
+//				HttpURLConnection httpConn = (HttpURLConnection) conn;
+//				httpConn.setRequestProperty("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+//				httpConn.setRequestProperty("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
+//				httpConn.setRequestProperty("Bes-User-Agent", BeseyeUtils.getUserAgent());
+//				httpConn.setRequestProperty("User-Agent", BeseyeUtils.getUserAgent());
+//				if(null != strVcamId)
+//					httpConn.setRequestProperty("Bes-VcamPermission-VcamUid", strVcamId);
+//				httpConn.setRequestMethod("GET");
+//				httpConn.connect();
+//				if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+//					inputStream = httpConn.getInputStream();
+//					if (inputStream != null) {
+//						BitmapFactory.Options options = new BitmapFactory.Options();
+//						options.inSampleSize = iSample;
+//						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+//					}else{
+//						Log.w(TAG, "inputStream is null");
+//					}
+//				}
+				
+				final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+				HttpGet getRequest = new HttpGet(convertURL(uri));
+				try{
+					if(null != getRequest){
+						getRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+						getRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
+						getRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
+						getRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
+						getRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
+						getRequest.addHeader("Bes-Android-Ver", Build.VERSION.RELEASE);
+						if(null != strVcamId){
+							getRequest.addHeader("Bes-VcamPermission-VcamUid", strVcamId);
+					      	HttpResponse response = client.execute(getRequest);
+					      	final int statusCode = response.getStatusLine().getStatusCode();
+					      	if(statusCode == HttpStatus.SC_OK){
+					      		final HttpEntity entity = response.getEntity();
+					      		if(entity != null){
+					      			inputStream = entity.getContent();
+					      			if (inputStream != null) {
+										BitmapFactory.Options options = new BitmapFactory.Options();
+										options.inSampleSize = iSample;
+										bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+									}else{
+										Log.w(TAG, "inputStream is null");
+									}
+					      			entity.consumeContent();
+					      		}
+					      	}
+					    }
 					}
-				}
+				}catch(Exception e){
+				      // Could provide a more explicit error message for IOException or
+				      // IllegalStateException
+				    	Log.w(TAG, "Http Get image fail: " + e);
+				    	if(null != getRequest){
+				    		getRequest.abort();
+				    	}
+				 }finally{
+				      if(client != null){
+				    	  client.close();
+				      }
+				 }
 			}
 //			else if(uri.startsWith(S3_FILE_PREFIX)){
 //				int iBucketPos = S3_FILE_PREFIX.length();
@@ -861,4 +923,26 @@ public class RemoteImageView extends ImageView {
 				super.onDraw(canvas);
 		}
 	}
+	
+	private static String convertURL(String str) {
+        String url = null;
+        try{
+        url = new String(str.trim()
+        	//.replace(" ", "%20").replace("&", "%26")
+            //.replace(",", "%2c").replace("(", "%28").replace(")", "%29")
+            //.replace("!", "%21").replace("=", "%3D").replace("<", "%3C")
+            //.replace(">", "%3E").replace("#", "%23").replace("$", "%24")
+            //.replace("'", "%27").replace("*", "%2A").replace("-", "%2D")
+            //.replace(".", "%2E").replace("/", "%2F").replace(":", "%3A")
+            //.replace(";", "%3B").replace("?", "%3F").replace("@", "%40")
+            //.replace("[", "%5B").replace("\\", "%5C").replace("]", "%5D")
+            //.replace("_", "%5F").replace("`", "%60")
+        	.replace("{", "%7B")
+            //.replace("|", "%7C")
+        	.replace("}", "%7D"));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return url;
+    } 
 }

@@ -31,6 +31,15 @@
 		        android:layout_height="wrap_content"  
 		        android:layout_marginTop="30dp"
 		        android:layout_centerHorizontal="true"/>
+		    
+		    <CheckBox 
+	            android:id="@+id/ck_suspend_cam_sw_update" 
+	            android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/sp_server_type"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:text="Cam SW Update Suspended"/>
             <RadioGroup  
 		        android:id="@+id/radiogroup1"  
 		        android:layout_width="wrap_content"  

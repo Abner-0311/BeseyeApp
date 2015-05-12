@@ -295,10 +295,18 @@ public class BeseyeJSONUtil {
 	}
 
 	static public FACE_LIST findFacebyId(int id){
-		if(0 <= id && id<faceList.length)
-			return faceList[id];
-		else
-			return null;
+		FACE_LIST ret = null;
+		for(int i = 0; i< faceList.length;i++){
+			if(id == faceList[i].miId){
+				ret =  faceList[i];
+				break;
+			}
+		}
+		return ret;
+//		if(0 <= id && id<faceList.length)
+//			return faceList[id];
+//		else
+//			return null;
 	}
 	
 	static final public FACE_LIST faceList[] =
@@ -363,7 +371,9 @@ public class BeseyeJSONUtil {
 
 		    new FACE_LIST(30, "Karen", "IMG_9887.JPG"),
 
-		    new FACE_LIST(31, "Doris", "IMG_9890.JPG")
+		    new FACE_LIST(31, "Doris", "IMG_9890.JPG"),
+
+		    new FACE_LIST(101, "Shaq", "Shaq.jpg")
 
 		};
 	

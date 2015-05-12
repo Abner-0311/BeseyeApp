@@ -27,6 +27,7 @@ public class BeseyeNewFeatureMgr {
 	
 	private SharedPreferences mPref, mSecuredPref;
 	private NewFeatureConfig mNewFeatureScreenshot;
+	private NewFeatureConfig mNewFeatureFaceRecognition;
 	
 	private BeseyeNewFeatureMgr(Context context){
 		if(null != context){
@@ -37,12 +38,14 @@ public class BeseyeNewFeatureMgr {
 	}
 	
 	private void initValues(){
-		mNewFeatureScreenshot = new NewFeatureConfig(mPref, "beseye_screen_feature", BeseyeUtils.stringToDate("2015-06-01-00-00-00","yyyy-MM-dd-HH-mm-ss"));
+		mNewFeatureScreenshot = new NewFeatureConfig(mPref, "beseye_screen_feature", BeseyeUtils.stringToDate("2015-05-13-23-59-59","yyyy-MM-dd-HH-mm-ss"));
+		mNewFeatureFaceRecognition = new NewFeatureConfig(mPref, "beseye_feature_face_recog", BeseyeUtils.stringToDate("2029-12-32-23-59-59","yyyy-MM-dd-HH-mm-ss"));
 	}
 	
 	public void reset(){
 		mPref.edit().clear().commit();
 		mNewFeatureScreenshot = null;
+		mNewFeatureFaceRecognition = null;
 		initValues();
 	}
 	
@@ -52,6 +55,14 @@ public class BeseyeNewFeatureMgr {
 	
 	public void setScreenshotFeatureClicked(boolean bClicked){
 		mNewFeatureScreenshot.setIsUsed(bClicked);
+	}
+	
+	public boolean isFaceRecognitionOn(){
+		return mNewFeatureFaceRecognition.isUsed();
+	}
+	
+	public void setFaceRecognitionOn(boolean bIsOn){
+		mNewFeatureFaceRecognition.setIsUsed(bIsOn);
 	}
 	
 	static public class NewFeatureConfig{
@@ -68,12 +79,7 @@ public class BeseyeNewFeatureMgr {
 			if(BeseyeConfig.DEBUG){
 				Log.e(TAG, "NewFeatureConfig(), "+toString());
 			}
-			if(null != mDateExpire && 0 > mDateExpire.compareTo(new Date())){
-				setIsUsed(true);
-				if(BeseyeConfig.DEBUG){
-					Log.e(TAG, "NewFeatureConfig(), mStrPrefKey is expired. "+toString());
-				}
-			}
+			checkExpired();
 		}
 		
 		public String getPrefKey(){
@@ -85,12 +91,22 @@ public class BeseyeNewFeatureMgr {
 		}
 		
 		public boolean isUsed(){
+			checkExpired();
 			return mbUsed;
 		}
 		
 		public void setIsUsed(boolean bUsed){
 			mbUsed = bUsed;
 			setPrefBooleanValue(mPref, mStrPrefKey, bUsed);
+		}
+		
+		private void checkExpired(){
+			if(null != mDateExpire && 0 > mDateExpire.compareTo(new Date())){
+				setIsUsed(true);
+				if(BeseyeConfig.DEBUG){
+					Log.e(TAG, "checkExpired(), mStrPrefKey is expired. "+toString());
+				}
+			}
 		}
 		
 		public String toString(){

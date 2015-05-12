@@ -30,13 +30,16 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.beseye.adapter.EventListAdapter;
 import com.app.beseye.adapter.EventListAdapter.EventListItmHolder;
 import com.app.beseye.adapter.EventListAdapter.IListViewScrollListenser;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeNewFeatureMgr;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.BlockingLifoQueue;
 import com.app.beseye.widget.BeseyeClockIndicator;
@@ -82,7 +85,9 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
 		
 		mVgIndicator = (BeseyeClockIndicator)findViewById(R.id.vg_event_indicator);
-		
+		if(null != mVgIndicator){
+			mVgIndicator.setOnClickListener(this);
+		}
 		try {
 			mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 			updateAttrByCamObj();
@@ -208,6 +213,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 					e.printStackTrace();
 				}
 				
+				mEventListAdapter.setPeopleDetectEnabled(BeseyeNewFeatureMgr.getInstance().isFaceRecognitionOn());
 				mEventListAdapter.updateResultList(EntList);
 				mMainListView.getRefreshableView().setAdapter(mEventListAdapter);
 				mVgIndicator.updateToNow(true);
@@ -1041,7 +1047,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 	}
 
 	private int miHitCount = 0;
-	
+	private int miHitCountForFaceRecog = 0;
 	@Override
 	public void onClick(View view) {
 		if(view.getTag() instanceof EventListItmHolder){
@@ -1062,7 +1068,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				return;
 			}
 		}else if(R.id.txt_nav_title == view.getId()){
-			if(++miHitCount == 5){
+			if(BeseyeConfig.DEBUG && ++miHitCount == 5){
 				BeseyeUtils.setVisibility(mIvFilter, View.VISIBLE);
 			}
 		}else if(R.id.iv_nav_menu_btn == view.getId()){
@@ -1095,6 +1101,17 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				}});
 			
 			d.show();
+		}else if(R.id.vg_event_indicator == view.getId()){
+			if(BeseyeConfig.DEBUG && ++miHitCountForFaceRecog == 5){
+				miHitCountForFaceRecog = 0;
+				if(null != mEventListAdapter){
+					boolean bFaceRegOn = BeseyeNewFeatureMgr.getInstance().isFaceRecognitionOn();
+					BeseyeNewFeatureMgr.getInstance().setFaceRecognitionOn(!bFaceRegOn);
+					mEventListAdapter.setPeopleDetectEnabled(!bFaceRegOn);
+					refreshList();
+					Toast.makeText(this, "Face Recognition is "+(bFaceRegOn?"off":"on"), Toast.LENGTH_LONG).show();
+				}
+			}
 		}else
 			super.onClick(view);
 	}

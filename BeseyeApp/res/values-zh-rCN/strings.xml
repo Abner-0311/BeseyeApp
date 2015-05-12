@@ -284,7 +284,8 @@
   <string name="datetime_hour">时</string>
   <string name="datetime_min">分</string>
   <string name="event_list_now">现在</string>
-  <string name="event_list_family_detected">家人辨识</string>
+  <string name="event_list_family_detected">侦测到人物 (%s)</string>
+  <string name="event_list_people_detected_stranger">陌生人</string>
   <string name="event_list_people_detected">侦测到人物</string>
   <string name="event_list_sound_detected">侦测到声音</string>
   <string name="event_list_fire_detected">侦测到火苗</string>

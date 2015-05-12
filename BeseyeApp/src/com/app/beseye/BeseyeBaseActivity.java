@@ -189,7 +189,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private void getCamListAndCheckCamUpdateVersions(){
 		//Set<String> setVcamList = null;
-		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK){
+		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
 			return;
 		}
 		
@@ -921,10 +921,16 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					}
 				}else{
 					if(null != mUpdateVcamList){
-						mLstUpdateCandidate.remove(strVcamId);
-						miCheckUpdateCamIdx--;
+						if(iRetCode != BeseyeError.E_OTA_SW_UPDATING){
+							mLstUpdateCandidate.remove(strVcamId);
+							miCheckUpdateCamIdx--;
+						}else{
+							if(DEBUG)
+								Log.i(TAG, "onPostExecute(), strVcamId["+strVcamId+"] is updating");
+						}
 						
-						if(iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST && 
+						if(iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST &&
+						   iRetCode != BeseyeError.E_OTA_SW_UPDATING &&	
 						   iRetCode != BeseyeError.E_WEBSOCKET_CONN_NOT_EXIST && 
 						   iRetCode != BeseyeError.E_WEBSOCKET_OPERATION_FAIL && 
 						   !((BeseyeHttpTask)task).isNetworkTimeoutErr() && 
@@ -1025,7 +1031,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected void getCamUpdateCandidateList(JSONObject objVCamList){
 		//Log.i(TAG, "mGetCamListTask(), objVCamList="+objVCamList.toString());
 		
-		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK){
+		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
 			return;
 		}
 		

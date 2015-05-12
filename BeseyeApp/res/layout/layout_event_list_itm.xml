@@ -37,11 +37,11 @@
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="@dimen/eventlist_content_top"
 	        android:layout_toRightOf="@id/iv_timeline_grayline_holder"
-	        android:text="Event Name"
 	        android:singleLine="true"
 	        android:textColor="@color/liveview_font_normal_color"
 	        android:textSize="@dimen/login_fontRegular" 
-	        android:layout_alignRight="@+id/vg_timeline_video_thumbnail"/>
+	        android:layout_alignRight="@+id/vg_timeline_video_thumbnail"
+	        android:visibility="invisible"/>
 	    
 	    <RelativeLayout 
 	        android:id="@+id/vg_timeline_video_thumbnail"

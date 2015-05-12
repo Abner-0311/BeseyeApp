@@ -39,8 +39,8 @@ public View getView(int position, View convertView, ViewGroup parent) {
     if (convertView == null) {
         convertView = mInflater.inflate(R.layout.layout_single_item, null);
         holder = new ViewHolder();
-        holder.name = (TextView) convertView.findViewById(R.id.textView1);
-        holder.logo = (ImageView) convertView.findViewById(R.id.imageView1);
+        holder.name = (TextView) convertView.findViewById(R.id.txt_share_app_name);
+        holder.logo = (ImageView) convertView.findViewById(R.id.img_share_app_icon);
         convertView.setTag(holder);
     } else {
         holder = (ViewHolder) convertView.getTag();
@@ -56,7 +56,6 @@ public View getView(int position, View convertView, ViewGroup parent) {
 }
 
 static class ViewHolder {
-
     TextView name;
     ImageView logo;
 }}
