@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="/BeseyeApp/libs/android-support-annotations.jar"/>
 	<classpathentry kind="lib" path="/BeseyeApp/libs/annotations.jar"/>
 	<classpathentry kind="lib" path="/BeseyeApp/libs/bolts-android-1.1.2.jar"/>
+	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
