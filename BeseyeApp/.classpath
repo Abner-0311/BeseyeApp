@@ -11,6 +11,6 @@
 	<classpathentry kind="lib" path="libs/gcm.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="/Users/kelly79126/Documents/workspace/HomeSecurity_FE_Android/BeseyeApp/libs/bolts-android-1.1.2.jar"/>
+	<classpathentry kind="lib" path="libs/bolts-android-1.1.2.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
