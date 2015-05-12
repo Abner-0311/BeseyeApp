@@ -505,6 +505,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		updateAttrByIntent(getIntent(), true);
 		
 		setCursorVisiblity(View.VISIBLE);
+		
+		if(null != mStreamingView){
+			mStreamingView.reset();
+			mStreamingView.drawStreamBitmap();
+		}
 	}
 	
 	private boolean isInP2PMode(){
