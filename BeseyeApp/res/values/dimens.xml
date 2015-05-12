@@ -228,4 +228,7 @@
     
     <dimen name="update_title_font_size">20sp</dimen>
     <dimen name="update_desc_font_size">17sp</dimen>
+    
+    <!-- for motion zone -->
+    <dimen name="motion_zone_padding">25dp</dimen>
 </resources>
