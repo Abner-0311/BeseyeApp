@@ -1098,9 +1098,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 		    			Bitmap icon = BitmapFactory.decodeResource(context.getResources(),com.app.beseye.R.drawable.liveview_snapshot_watermark);
 		    			if(null != icon){
 		    				int iPadding = this.context.getResources().getDimensionPixelSize(R.dimen.watermark_padding);
-		    				Paint paint = new Paint();
-			    			paint.setARGB(127, 255, 255, 255);
-			    			canvasTarget.drawBitmap(icon, bmpSave.getWidth() - icon.getWidth() - iPadding, bmpSave.getHeight() - icon.getHeight() - iPadding, paint);
+//		    				Paint paint = new Paint();
+//			    			paint.setARGB(127, 255, 255, 255);
+			    			canvasTarget.drawBitmap(icon, bmpSave.getWidth() - icon.getWidth() - iPadding, bmpSave.getHeight() - icon.getHeight() - iPadding, null);
 		    			}
 		    			
 		    			if(null != mOnBitmapScreenshotCallback){
