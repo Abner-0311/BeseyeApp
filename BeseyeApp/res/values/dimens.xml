@@ -228,4 +228,6 @@
     
     <dimen name="update_title_font_size">20sp</dimen>
     <dimen name="update_desc_font_size">17sp</dimen>
+    
+    <dimen name="watermark_padding">10dp</dimen>
 </resources>

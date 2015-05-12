@@ -15,6 +15,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -2120,11 +2122,16 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	}
     }
     
+    private static ExecutorService SINGLE_TASK_EXECUTOR; 
+	static {  
+		SINGLE_TASK_EXECUTOR = (ExecutorService) Executors.newFixedThreadPool(1);  
+    };  
+    
     public void onBitmapScreenshotUpdate(long lTs, Bitmap bmp){
     	if(-1 != mlRequestBitmapScreenshotTs && lTs == mlRequestBitmapScreenshotTs && null == mSaveScreenshotTask){
     		mSaveScreenshotTask = new SaveScreenshotTask();
     		if(null != mSaveScreenshotTask){
-    			mSaveScreenshotTask.execute(bmp);
+    			mSaveScreenshotTask.executeOnExecutor(SINGLE_TASK_EXECUTOR, bmp);
     		}
     	}else{
     		Log.i(TAG, "onBitmapScreenshotUpdate(), invalid match mlRequestBitmapScreenshotTs:"+mlRequestBitmapScreenshotTs+", lTs:"+lTs);
@@ -2161,10 +2168,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	    		        if (bmp[0].compress(Bitmap.CompressFormat.JPEG, 100, out)){
 	    		        	out.flush();
 	    		            bRet = true;
-//	    		            String strUrl = MediaStore.Images.Media.insertImage(CameraViewActivity.this.getContentResolver(), bmp[0], fileToSave.getName(), "Beseye pic");
-//	    		            if(null == strUrl){
-//		    		    		Log.e(TAG, "failed to insert to db for "+fileToSave.getAbsolutePath());
-//	    		            }
+	    		            
 	    		            Uri localUri = Uri.fromFile(fileToSave);
 	    		            Intent localIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri); 
 	    		            sendBroadcast(localIntent);//For album db update
