@@ -405,8 +405,8 @@
     	    android:name="com.facebook.sdk.ApplicationId" 
     	    android:value="@string/facebook_app_id"/>
     	
-    	<!-- 913128435388925 is APP ID, 812080018846492 is Beseye_T -->
-    	<provider android:authorities="com.facebook.app.FacebookContentProvider812080018846492"
+    	<!-- 913128435388925 is APP ID -->
+    	<provider android:authorities="com.facebook.app.FacebookContentProvider913128435388925"
           android:name="com.facebook.FacebookContentProvider"
           android:exported="true" />
 

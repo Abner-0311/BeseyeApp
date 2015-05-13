@@ -27,6 +27,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.app.beseye.R;
@@ -93,13 +94,13 @@ public class ShareMgr {
 	    LINK, IMAGE, VIDEO
 	};
 	
-	static Boolean sbIsFBLogin = false; //[Abner review 150512] sbsbIsFBLogin is better
+	static Boolean sbIsFBLogin = false; 
 	private static String PHOTO_SHARE_HASH; 
-	private static CallbackManager sCallbackManager = CallbackManager.Factory.create(); //[Abner review 150512] sCallbackManager is better
-	private static LoginManager sLoginManager; //[Abner review 150512] sLoginManager is better
+	private static CallbackManager sCallbackManager = CallbackManager.Factory.create(); 
+	private static LoginManager sLoginManager;
 	
 	public static int BeseyeShare(final Activity activity, final TYPE type, final String content){
-		int iErrType = ERR_TYPE_NO_ERR; //[Abner review 150512] no init value, not member variable
+		int iErrType = ERR_TYPE_NO_ERR; 
 		
 		FacebookSdk.sdkInitialize(activity.getApplicationContext());
 //		FacebookSdk.setIsDebugEnabled(true);
@@ -141,8 +142,7 @@ public class ShareMgr {
 	
 	private static int fbLoginInit(final Activity activity, final TYPE type, final String content) {	
 		int iErrType = ERR_TYPE_NO_ERR;
-		//[Abner review 150512] Wrong local declare LoginManager, will cause null pointer exception
-		/*LoginManager*/ sLoginManager = LoginManager.getInstance();
+		sLoginManager = LoginManager.getInstance();
 		
 		if(null != sLoginManager){
 		    sLoginManager.registerCallback(sCallbackManager,
@@ -219,7 +219,6 @@ public class ShareMgr {
 	                		fbShareAction(activity, type, content);
 	                	} else{
 	                		Collection<String> permissions = (Collection<String>) Arrays.asList("public_profile", "user_friends");
-	                		//[Abner review 150512] need to check if sLoginManager is null?
 	                		if(null != sLoginManager){
 	                			sLoginManager.logInWithReadPermissions(activity, permissions);
 	                		}
@@ -243,10 +242,20 @@ public class ShareMgr {
 	                }
                 }
             }
-        })
-        .setTitle(activity.getResources().getString(R.string.share_way))
-        .setCancelable(true); 
+        }).setCancelable(true); 
 		
+        TextView title = new TextView(activity);
+        title.setText(activity.getResources().getString(R.string.share_way));
+        title.setPadding(activity.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_left),
+        		activity.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top),
+        		activity.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top),
+        		activity.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top));
+        
+        title.setTextColor(activity.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
+        float scaledDensity = activity.getResources().getDisplayMetrics().scaledDensity;
+        title.setTextSize(activity.getResources().getDimension(R.dimen.wifi_ap_info_dialog_title_font_size)/scaledDensity);        
+        builder.setCustomTitle(title);
+        
         //It is a hack!
         //http://stackoverflow.com/questions/14439538/how-can-i-change-the-color-of-alertdialog-title-and-the-color-of-the-line-under
         Dialog d = builder.show();
@@ -254,15 +263,10 @@ public class ShareMgr {
         View divider = d.findViewById(dividerId);
         divider.setBackgroundColor(activity.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
         
-        int textViewId = d.getContext().getResources().getIdentifier("android:id/alertTitle", null, null);
-        TextView tv = (TextView) d.findViewById(textViewId);
-        tv.setTextColor(activity.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
-       
-//      int linearId = d.getContext().getResources().getIdentifier("android:id/title_template", null, null);
-//      LinearLayout ll = (LinearLayout) d.findViewById(linearId);
-//      ll.setMinimumHeight(activity.getResources().getDimensionPixelSize(R.dimen.wifi_list_item_padding_top));
-//      int s = activity.getResources().getDimensionPixelSize(R.dimen.firmware_update_margin_small);
-//      ll.setPadding(s,s,s,s);
+        d.getWindow().setFlags(
+        	    WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+        	    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        
 		return iErrType;
 	}
 	

@@ -103,7 +103,6 @@ public class ViewShareDialog extends Dialog implements OnClickListener {
 				break;
 			}
 			case R.id.btn_share:{
-				//[Abner review 150512] shound hide it
 				hide();
 				if(null != mOnShareClickListener){
 					mOnShareClickListener.onBtnShareClick();
