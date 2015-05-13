@@ -243,7 +243,7 @@
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
 			   		android:textColor="@color/csl_wifi_list_main_font_color"
-			   		android:text="@string/view_share_title"/>
+			   		android:text="@string/player_screenshot_capture_ok"/>
 		    </RelativeLayout>   
 		</RelativeLayout>
 		

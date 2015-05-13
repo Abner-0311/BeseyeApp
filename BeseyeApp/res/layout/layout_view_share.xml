@@ -15,7 +15,7 @@
 	   		android:paddingLeft="@dimen/wifi_list_item_horizontal_padding"
 	   		android:textColor="@color/wifi_info_dialog_title_font_color"
 	   		android:textSize="@dimen/wifi_ap_info_dialog_title_font_size"
-	   		android:text="@string/view_share_title"
+	   		android:text="@string/player_screenshot_capture_ok"
 	   		android:layout_centerVertical="true"/>
    	</RelativeLayout>
 	<LinearLayout 
