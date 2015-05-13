@@ -237,4 +237,7 @@
     
     <dimen name="watermark_padding">10dp</dimen>
     <dimen name="share_itm_width_height">50dp</dimen>
+    
+    <dimen name="alertdialog_padding_left">20dp</dimen>
+    <dimen name="alertdialog_padding_top">10dp</dimen>
 </resources>
