@@ -1151,7 +1151,7 @@ int video_thread(void *arg)
             goto the_end;
         }
         //if(bNeedToStartAudio){
-        	SDL_PauseAudio(0);
+        	//SDL_PauseAudio(0);
         	//bNeedToStartAudio = FALSE;
         //}
 
@@ -1672,7 +1672,7 @@ int CBeseyePlayer::stream_component_open(VideoState *is, int stream_index)
         memset(&is->audio_pkt, 0, sizeof(is->audio_pkt));
         memset(&is->audio_pkt_temp, 0, sizeof(is->audio_pkt_temp));
         packet_queue_start(&is->audioq);
-        //SDL_PauseAudio(0);
+        SDL_PauseAudio(0);
         break;
     case AVMEDIA_TYPE_VIDEO:{
         is->video_stream = stream_index;
