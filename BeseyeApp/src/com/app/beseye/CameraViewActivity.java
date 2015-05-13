@@ -693,8 +693,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			Log.d(TAG, "CameraViewActivity::onResume()");
 		
 		//for share
-		onDismissDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING);
-		
+		if(mbIsShareChoosed){
+			onDismissDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING);
+		}
 		super.onResume();
 		
 		if(null != mPauseCameraViewRunnable){
@@ -844,7 +845,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private static final long TIME_TO_CONFIRM_PAUSE = 500L;
 	private PauseCameraViewRunnable mPauseCameraViewRunnable;
-
+	private boolean mbIsShareChoosed = false;
+	
 	@Override
 	protected void onPause() {
 		if(DEBUG)
@@ -860,7 +862,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			onUpdateFocusVCamId("");
 		
 		//for share
-		onShowDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING, 0, 0);
+		if(mbIsShareChoosed){
+			onShowDialog(null, BeseyeBaseActivity.DIALOG_ID_LOADING, 0, 0);
+		}
 		super.onPause();
 	}
 
@@ -2202,6 +2206,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    		    			@Override
 			    		    			public void onBtnShareClick() {
 			    		    				ShareMgr.BeseyeShare(CameraViewActivity.this, ShareMgr.TYPE.IMAGE, fileToSave.getAbsolutePath());
+			    		    				mbIsShareChoosed = true;
 			    		    			}
 
 			    		    			@Override
