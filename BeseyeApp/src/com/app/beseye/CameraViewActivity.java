@@ -2185,10 +2185,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	    		            Intent localIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri); 
 	    		            sendBroadcast(localIntent);//For album db update
 	    		            
+							removeMyDialog(DIALOG_ID_PLAYER_CAPTURE);
+
 	    		            BeseyeUtils.postRunnable(new Runnable(){
 
 								@Override
-								public void run() {
+								public void run() {									
 									//by Kelly, call ViewShareDialog 
 			    		        	ViewShareDialog d = new ViewShareDialog(CameraViewActivity.this, fileToSave.getAbsolutePath()); 
 			    		    		d.setOnShareClickListener(new OnShareClickListener(){
@@ -2201,7 +2203,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    		    			public void onBtnCloseClick() {
 			    		    			}} );
 			    		    		d.show();
-								}}, 0);
+								}}, 500);
 	    		        }
     		        }
     		    } catch (Exception e) {

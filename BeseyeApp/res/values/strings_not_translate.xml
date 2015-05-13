@@ -8,8 +8,8 @@
     <string name="camerview_init_time">--:--:-- --</string>
     <string name="dialog_reboot_cam">Are you sure to reboot this cam [%s]?</string>
     
-    <!-- facebook APP ID. It is Beseye_T-->
- 	<string name ="facebook_app_id">812080018846492</string>
+    <!-- facebook APP ID. It is Beseye-->
+ 	<string name ="facebook_app_id">913128435388925</string>
     
     <string name="news_release_date">2014.7.13</string>
 	<string name="news_title">BesEye camera firmware 6.7 update</string>
