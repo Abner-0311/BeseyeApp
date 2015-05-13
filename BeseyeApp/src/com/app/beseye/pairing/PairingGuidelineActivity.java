@@ -1,15 +1,28 @@
 package com.app.beseye.pairing;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Locale;
+
 import com.app.beseye.BeseyeAccountBaseActivity;
 import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
 import com.app.beseye.WifiListActivity;
+import com.app.beseye.util.BeseyeUtils;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 
 public class PairingGuidelineActivity extends BeseyeAccountBaseActivity {
@@ -24,7 +37,19 @@ public class PairingGuidelineActivity extends BeseyeAccountBaseActivity {
 		
 		mWvGuideline = (WebView)findViewById(R.id.wv_guideline);
 		if(null != mWvGuideline){
-			mWvGuideline.loadUrl("https://www.beseye.com/signup_faq_mobile");
+			String strUrl = null;
+			try {
+				strUrl = "https://www.beseye.com/signup_faq_mobile?lang="+URLEncoder.encode(BeseyeUtils.getLocaleString(), "utf-8");				 
+				mWvGuideline.getSettings().setJavaScriptEnabled(true); 
+				mWvGuideline.getSettings().setDomStorageEnabled(true);
+				mWvGuideline.loadUrl(strUrl);
+				if(DEBUG){
+					Log.i(TAG, "PairingGuidelineActivity::onCreate(), strUrl:"+strUrl);
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if(null != mTxtNavTitle){

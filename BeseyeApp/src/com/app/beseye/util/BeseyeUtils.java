@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -514,5 +515,19 @@ public class BeseyeUtils {
 	
 	static public String getPackageVersion(){		
 		return sPkgVersion;
+	}
+	
+	static public final String DEF_NEWS_LANG = "en";
+	
+	static public String getLocaleString(){
+		String strLocale = DEF_NEWS_LANG;
+		if(Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE)){
+			strLocale = "zh-tw";
+		}else if(Locale.getDefault().equals(Locale.JAPAN) || Locale.getDefault().equals(Locale.JAPANESE) ){
+			strLocale = "ja";
+		}else if(Locale.getDefault().equals(Locale.SIMPLIFIED_CHINESE)){
+			strLocale = "zh-cn";
+		}		
+		return strLocale;
 	}
 }

@@ -1130,6 +1130,7 @@ int video_thread(void *arg)
 //        codec->opaque         = &is->buffer_pool;
 //    }
 //#endif
+    bool bNeedToStartAudio = TRUE;
 
     for (;;) {
 //#if CONFIG_AVFILTER
@@ -1149,6 +1150,10 @@ int video_thread(void *arg)
         	av_log(NULL, AV_LOG_ERROR, "video_thread(), fail to get_video_frame, ret:%d\n", ret);
             goto the_end;
         }
+        //if(bNeedToStartAudio){
+        	SDL_PauseAudio(0);
+        	//bNeedToStartAudio = FALSE;
+        //}
 
     	//av_log(NULL, AV_LOG_ERROR, "video_thread(), get_video_frame takes:%lld, ret:%d\n", (time(NULL) - lStartTime), ret);
 
@@ -1667,7 +1672,7 @@ int CBeseyePlayer::stream_component_open(VideoState *is, int stream_index)
         memset(&is->audio_pkt, 0, sizeof(is->audio_pkt));
         memset(&is->audio_pkt_temp, 0, sizeof(is->audio_pkt_temp));
         packet_queue_start(&is->audioq);
-        SDL_PauseAudio(0);
+        //SDL_PauseAudio(0);
         break;
     case AVMEDIA_TYPE_VIDEO:{
         is->video_stream = stream_index;
@@ -1987,9 +1992,7 @@ int read_thread(void *arg)
     is->show_mode = player->get_show_mode();
 
     /* open the streams */
-    if (st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
-    	player->stream_component_open(is, st_index[AVMEDIA_TYPE_AUDIO]);
-    }
+
 
 	ret = -1;
 	if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
@@ -1999,6 +2002,10 @@ int read_thread(void *arg)
 //		}
 
 		ret = player->stream_component_open(is, st_index[AVMEDIA_TYPE_VIDEO]);
+	}
+
+	 if (st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+		player->stream_component_open(is, st_index[AVMEDIA_TYPE_AUDIO]);
 	}
 
 	player->triggerPlayCB(CBeseyePlayer::STREAM_STATUS_CB, NULL, STREAM_CONNECTED, 0);
