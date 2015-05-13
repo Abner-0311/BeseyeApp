@@ -39,7 +39,6 @@ import com.app.beseye.widget.PullToRefreshListView;
 
 public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	static private final int NUM_NEWS_QUERY = 10;
-	static public final String DEF_NEWS_LANG = "en";
 	
 	private PullToRefreshListView mMainListView;
 	private NewsListAdapter mNewsListAdapter;
@@ -48,7 +47,7 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	private boolean mbRefreshCase = false;
 	protected JSONArray mlstNews;
 	private BeseyeNewsBEHttpTask.GetNewsListTask mGetNewsListTask = null;
-	private String mStrLocale = DEF_NEWS_LANG;
+	private String mStrLocale = BeseyeUtils.DEF_NEWS_LANG;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +57,7 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 		}
 		super.onCreate(savedInstanceState);
 		
-		if(Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE)){
-			mStrLocale = "zh-tw";
-		}else if(Locale.getDefault().equals(Locale.JAPAN) || Locale.getDefault().equals(Locale.JAPANESE) ){
-			mStrLocale = "ja";
-		}else if(Locale.getDefault().equals(Locale.SIMPLIFIED_CHINESE)){
-			mStrLocale = "zh-cn";
-		}
+		mStrLocale = BeseyeUtils.getLocaleString();
 		
 		mbIgnoreSessionCheck = true;
 		

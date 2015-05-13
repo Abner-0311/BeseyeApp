@@ -229,7 +229,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		
 		if(false == mbFirstResume){
 			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this).setDialogId(-1), true);
-			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeNewsActivity.DEF_NEWS_LANG);
+			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeUtils.DEF_NEWS_LANG);
 		}
 		
 		checkLatestNew();
@@ -269,7 +269,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		super.onSessionComplete();
 		if((!mbIsDemoCamMode && !mbIsPrivateCamMode)|| null == mVCamListInfoObj){
 			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
-			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeNewsActivity.DEF_NEWS_LANG);
+			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeUtils.DEF_NEWS_LANG);
 			monitorAsyncTask(new BeseyeAccountTask.GetUserInfoTask(this), true);
 		}else{
 			fillVCamList(mVCamListInfoObj);

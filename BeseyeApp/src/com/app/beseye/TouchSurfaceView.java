@@ -206,28 +206,44 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         getHolder().addCallback(this);	
                
         this.context = context;
-        mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
-        
-        mGestureDetector = new GestureDetector(context, new GestureListener());
-        //mGestureDetector.setIsLongpressEnabled(false);
-        
-        matrix = new Matrix();
-        prevMatrix = new Matrix();
-        mArrMatrixValues = new float[9];
-        normalizedScale = 1;
-        minScale = 1;
-        maxScale = 4;
-        superMinScale = SUPER_MIN_MULTIPLIER * minScale;
-        superMaxScale = SUPER_MAX_MULTIPLIER * maxScale;
-        drawStreamBitmap();
-        //setImageMatrix(matrix);
-        //setScaleType(ScaleType.MATRIX);
-        setState(NONE);
-        setLongClickable(false);
-        setOnTouchListener(new TouchImageViewListener());
-        
-        miBackgroundColorLand = context.getResources().getColor(R.color.liveview_background);
-        miBackgroundColor = context.getResources().getColor(R.color.background_white);
+        initParams();
+    }
+    
+    public void reset(){
+    	initParams();
+    	
+    	prevMatrix.setValues(mArrMatrixValues);
+        prevMatchViewHeight = matchViewHeight;
+        prevMatchViewWidth = matchViewWidth;
+        prevViewHeight = viewHeight;
+        prevViewWidth = viewWidth;
+		TouchSurfaceView.this.measure(MeasureSpec.makeMeasureSpec((int)mSurfaceHeight, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((int)mSurfaceHeight, MeasureSpec.EXACTLY));
+		TouchSurfaceView.this.measure(MeasureSpec.makeMeasureSpec((int)mSurfaceWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((int)mSurfaceHeight, MeasureSpec.EXACTLY));
+    }
+    
+    private void initParams(){
+    	 mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+         
+         mGestureDetector = new GestureDetector(context, new GestureListener());
+         //mGestureDetector.setIsLongpressEnabled(false);
+         
+         matrix = new Matrix();
+         prevMatrix = new Matrix();
+         mArrMatrixValues = new float[9];
+         normalizedScale = 1;
+         minScale = 1;
+         maxScale = 4;
+         superMinScale = SUPER_MIN_MULTIPLIER * minScale;
+         superMaxScale = SUPER_MAX_MULTIPLIER * maxScale;
+         drawStreamBitmap();
+         //setImageMatrix(matrix);
+         //setScaleType(ScaleType.MATRIX);
+         setState(NONE);
+         setLongClickable(false);
+         setOnTouchListener(new TouchImageViewListener());
+         
+         miBackgroundColorLand = context.getResources().getColor(R.color.liveview_background);
+         miBackgroundColor = context.getResources().getColor(R.color.background_white);
     }
     
     @Override
