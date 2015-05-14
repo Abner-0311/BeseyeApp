@@ -22,6 +22,7 @@ import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.RemoteImageView;
+import com.app.beseye.widget.RemoteImageView.RemoteImageCallback;
 
 public class CameraListAdapter extends BeseyeJSONAdapter {
 	private OnSwitchBtnStateChangedListener mOnSwitchBtnStateChangedListener;
@@ -81,9 +82,9 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					BeseyeUtils.setThumbnailRatio(holder.mImgThumbnail, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
 				}
 				
-				Log.i(TAG, "CameraListAdapter::inflateItem()+++++++++++++++++++++++++++, id:"+holder.mImgThumbnail);
+				if(DEBUG)
+					Log.i(TAG, "CameraListAdapter::inflateItem()+++++++++++++++++++++++++++, id:"+holder.mImgThumbnail);
 
-				
 				holder.mVgCamOff = (ViewGroup)convertView.findViewById(R.id.rl_cameralist_no_video);
 				if(null != holder.mVgCamOff){
 					BeseyeUtils.setThumbnailRatio(holder.mVgCamOff, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
@@ -133,7 +134,16 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				
 				//Log.i(TAG, "setupItem(), holder.mImgThumbnail:"+holder.mImgThumbnail.getWidth());
 				if(/*!connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED) &&*/ null != holder.mImgThumbnail){
-					holder.mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB), R.drawable.cameralist_s_view_noview_bg, BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID));
+					final String strPath = BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB);
+					holder.mImgThumbnail.setURI(strPath, R.drawable.cameralist_s_view_noview_bg, BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID));
+
+//					holder.mImgThumbnail.setURI(strPath, R.drawable.cameralist_s_view_noview_bg, BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID), new RemoteImageCallback(){
+//						@Override
+//						public void imageLoaded(boolean success) {
+//							// TODO Auto-generated method stub
+//							Log.i(TAG, "CameraListAdapter::setupItem(), strPath:"+strPath+", success:"+success);
+//
+//						}});
 					holder.mImgThumbnail.loadImage();
 				}
 				
