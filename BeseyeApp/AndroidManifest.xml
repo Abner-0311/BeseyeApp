@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
-    android:versionCode="113"
-    android:versionName="0.1.113" 
+    android:versionCode="114"
+    android:versionName="0.1.114" 
     android:installLocation="auto">
 
     <!-- Android 2.3.3 -->
@@ -406,9 +406,10 @@
     	    android:value="@string/facebook_app_id"/>
     	
     	<!-- 913128435388925 is APP ID -->
-    	<provider android:authorities="com.facebook.app.FacebookContentProvider913128435388925"
-          android:name="com.facebook.FacebookContentProvider"
-          android:exported="true" />
+    	<provider 
+    	    android:authorities="@string/facebook_provider_authority"
+          	android:name="com.facebook.FacebookContentProvider"
+          	android:exported="true" />
 
     </application>
 </manifest>

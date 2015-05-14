@@ -23,6 +23,7 @@ import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -170,7 +171,9 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.LoginHttpTask){
 				if(0 == iRetCode){
-					//Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(BeseyeConfig.DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+					
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						JSONObject objSes = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_SES);

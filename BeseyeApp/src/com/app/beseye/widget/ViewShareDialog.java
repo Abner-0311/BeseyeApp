@@ -25,7 +25,7 @@ import android.widget.ImageView;
  * 		content		(String) image file path 
  * 
  * Sample:
- * 		ViewShareDialog d = new ViewShareDialog(this, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05_上午.jpg");
+ * 		ViewShareDialog d = new ViewShareDialog(this, "/storage/emulated/0/DCIM/Beseye/Beseye_Pro_04_24_2015_09_59_05.jpg");
  * 	
  * How to setOnShareClickListener:
  * 		setOnShareClickListener(new OnShareClickListener(){
