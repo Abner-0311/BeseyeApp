@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -22,8 +23,10 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 //	private EditText mTxtCamName;
 //	private EditText mTxtPeriod;
 	private Button mBtnApply;
-	private Spinner mSpServerType;
+	private Spinner mSpServerType, mSpDetachHWID;
 	private CheckBox mCbCamSWUpdateSuspended;
+	private EditText mEtDefEmail = null;
+	private static String[] hwids = new String[]{"00409NDO3R15", "00409XONGY7H"};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +59,35 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		
 		mSpServerType = (Spinner)findViewById(R.id.sp_server_type);
 		if(null != mSpServerType){
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server(deprecated)","Staging Server", "Tokyo Staging Server(deprecated)"/*, "Production Server"*/});
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server(deprecated)","Prodution Server", "Staging Server (Computex)"/*, "Production Server"*/});
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			mSpServerType.setAdapter(adapter);
+		}
+		
+		mSpDetachHWID = (Spinner)findViewById(R.id.sp_detach_hw_id);
+		if(null != mSpDetachHWID){
+			String strDeatchHWID = SessionMgr.getInstance().getDetachHWID();
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,hwids);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			mSpDetachHWID.setAdapter(adapter);
+			
+			if(null != strDeatchHWID){
+				mSpDetachHWID.setSelection(0);
+				if(0 == strDeatchHWID.length()){
+					SessionMgr.getInstance().setDetachHWID(hwids[0]);
+				}else{
+					for(int idx = 0;idx < hwids.length;idx++){
+						if(strDeatchHWID.equals(hwids[idx])){
+							mSpDetachHWID.setSelection(idx);
+						}
+					}
+				}
+			}
+		}
+		
+		mEtDefEmail = (EditText)findViewById(R.id.et_signup_email);
+		if(null != mEtDefEmail){
+			mEtDefEmail.setText(SessionMgr.getInstance().getSignupEmail());
 		}
 		checkMode();
 	}
@@ -113,15 +142,23 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 	}
 	
 	private void applyMode(){
-		SERVER_MODE mode = SessionMgr.DEFAULT_SERVER_MODE;
+		SERVER_MODE mode = com.app.beseye.util.BeseyeConfig.DEFAULT_SERVER_MODE;
 		if(null != mSpServerType){
 			mode = SERVER_MODE.translateToMode(mSpServerType.getSelectedItemPosition());
 			SessionMgr.getInstance().setServerMode(mode);
 			SessionMgr.getInstance().setBEHostUrl(mode);
 			SessionMgr.getInstance().setIsCamSWUpdateSuspended(mCbCamSWUpdateSuspended.isChecked());
 
+			if(null != mSpDetachHWID){
+				SessionMgr.getInstance().setDetachHWID(hwids[mSpDetachHWID.getSelectedItemPosition()]);
+			}
+			
+			if(null != mEtDefEmail){
+				SessionMgr.getInstance().setSignupEmail(mEtDefEmail.getText().toString());
+			}
 			//Toast.makeText(this, "Server mode is "+mode, Toast.LENGTH_LONG).show();
-			Toast.makeText(this, "Server mode is "+mode+"\nCam SW update is"+(SessionMgr.getInstance().getIsCamSWUpdateSuspended()?"":" not")+" suspended.", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Server mode is "+mode+"\nCam SW update is"+(SessionMgr.getInstance().getIsCamSWUpdateSuspended()?"":" not")+
+					" suspended.\nDetach HW ID:"+hwids[mSpDetachHWID.getSelectedItemPosition()]+"\n Email:"+SessionMgr.getInstance().getSignupEmail(), Toast.LENGTH_LONG).show();
 		}
 		
 //		if(mRbDemomode.isChecked() && mode.ordinal() <= SERVER_MODE.MODE_COMPUTEX.ordinal()){

@@ -46,9 +46,6 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		if(DEBUG)
 			Log.i(TAG, "OpeningPage::onCreate()");
 		
-		//facebook
-		FacebookSdk.sdkInitialize(getApplicationContext());
-		
 		//if(sbFirstLaunch)
 		if(getIntent().getBooleanExtra(KEY_HAVE_HANDLED, false)){
 			if(DEBUG)

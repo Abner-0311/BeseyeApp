@@ -1104,6 +1104,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     public void launchActivityForResultByClassName(String strClass, Bundle bundle, int iRequestCode){
 		Intent intent = new Intent();
+		intent.setPackage(getPackageName());
 		intent.setClassName(this, strClass);
 		intent.putExtra(KEY_FROM_ACTIVITY, getClass().getSimpleName());
 		if(null != bundle)
@@ -1120,11 +1121,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	intent.setAction("android.intent.action.MAIN"); 
     	intent.addCategory("android.intent.category.LAUNCHER"); 
 		intent.putExtra("ClassName", strCls);
+		intent.setPackage(getPackageName());
 		intent.setClass(this, OpeningPage.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		//intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		//intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK );
+		//intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		if(null != bundle)
 			intent.putExtras(bundle);
 		startActivity(intent);

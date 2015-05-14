@@ -231,7 +231,7 @@ public class BeseyeUtils {
 	
 	static public boolean canUpdateFromHockeyApp(){
 		String strProcessName = BeseyeApplication.getProcessName();
-		return (null != strProcessName && 0 < strProcessName.length() && strProcessName.startsWith("com.app.beseye.") && !isProductionVersion()) || (DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal());
+		return (null != strProcessName && 0 < strProcessName.length() && strProcessName.startsWith("com.app.beseye.") && !isProductionVersion()) || (DEBUG && SessionMgr.getInstance().getServerMode().ordinal() != SERVER_MODE.MODE_PRODUCTION.ordinal());
 	}
 	
 	static public boolean isProductionVersion(){

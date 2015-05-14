@@ -726,7 +726,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			invokeLogout();
 			showMenu();
 		}else if(R.id.txt_nav_title == view.getId()){
-			if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal()){
+			if(BeseyeConfig.DEBUG){
 				++miShowMoreCount;
 				if( miShowMoreCount == 1 && miShowMoreCountMenu >= 6){
 					if(null != mCameraListAdapter){

@@ -34,6 +34,7 @@ import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.DeviceUuidFactory;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.widget.BeseyeMemCache;
+import com.facebook.FacebookSdk;
 
 @ReportsCrashes(formKey= HOCKEY_APP_ID,
 				logcatArguments = { "-t", "2500", "-v", "long", "BesEye:W", "*:S" },
@@ -58,6 +59,9 @@ public class BeseyeApplication extends Application {
 		SessionMgr.createInstance(getApplicationContext());
 		BeseyeNewFeatureMgr.createInstance(getApplicationContext());
 		BeseyeUtils.setPackageVersion(getApplicationContext());
+		//facebook
+		FacebookSdk.sdkInitialize(getApplicationContext());
+		
 		sApplication = this;
 		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
 		

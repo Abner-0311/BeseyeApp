@@ -93,6 +93,8 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 				}else{
 					mEtUserName.setText(TEST_ACC);
 				}
+			}else if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_STAGING){
+				mEtUserName.setText(SessionMgr.getInstance().getSignupEmail());
 			}
 			
 			//}

@@ -16,15 +16,15 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
+import com.app.beseye.util.BeseyeConfig;
 
 //SessionMgr is responsible for storing back-end URL, token, user Userid in storage/memory
 public class SessionMgr {
 	static public enum SERVER_MODE{
 		MODE_DEV,
 		MODE_DEV2,
-		MODE_STAGING,
-		MODE_STAGING_TOKYO,
 		MODE_PRODUCTION,
+		MODE_STAGING,
 		MODE_TYPES_CNT;
 		
 		static public SERVER_MODE translateToMode(int iMode){
@@ -34,15 +34,11 @@ public class SessionMgr {
 					mode = MODE_DEV2;
 					break;
 				} 
-				case 2:{
+				case 3:{
 					mode = MODE_STAGING;
 					break;
 				} 
-				case 3:{
-					mode = MODE_STAGING_TOKYO;
-					break;
-				} 
-				case 4:{
+				case 2:{
 					mode = MODE_PRODUCTION;
 					break;
 				} 
@@ -51,63 +47,52 @@ public class SessionMgr {
 		}
 	}
 	
-	static public final SERVER_MODE DEFAULT_SERVER_MODE = SERVER_MODE.MODE_STAGING;
-	
 	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
 	
 	static private final String[] ACC_VPC_BE_URL = {"https://tokyo-p1-dev-api-1.beseye.com/acc",
 													"https://acc-dev.beseye.com", 
 													"https://oregon-p1-stage-api-1.beseye.com/acc",
-													"https://tokyo-acc-stage.beseye.com",
-													"https://acc-stage.beseye.com"}; 
+													"https://oregon-p2-stage-api-1.beseye.com/acc"}; 
 	
 	static private final String[] ACCOUNT_BE_URL = {"https://tokyo-p1-dev-api-1.beseye.com/acc",
 													"https://acc-dev.beseye.com", 
 													"https://oregon-p1-stage-api-%d.beseye.com/acc",
-													"https://tokyo-acc-stage.beseye.com",
-													"https://acc-stage.beseye.com"}; 
+													"https://oregon-p2-stage-api-%d.beseye.com/acc"}; 
 	
 	static private final String[] MM_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/mm/",
 												"https://mm-dev.beseye.com/",
 												"https://oregon-p1-stage-api-%d.beseye.com/mm/",
-												"https://tokyo-mm-stage.beseye.com/",
-												"https://mm-stage.beseye.com/"}; 
+												"https://oregon-p2-stage-api-%d.beseye.com/mm/"}; 
 
 	static private final String[] CAM_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/cam/",
 												 "https://ns-dev.beseye.com/",
 												 "https://oregon-p1-stage-api-%d.beseye.com/cam/",
-												 "https://tokyo-ns-stage.beseye.com/",
-												 "https://ns-stage.beseye.com/"}; 
+												 "https://oregon-p2-stage-api-%d.beseye.com/cam/"}; 
 	
 	static private final String[] NS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/ns/",
 												"https://ns-dev.beseye.com/",
 												"https://oregon-p1-stage-api-%d.beseye.com/ns/",
-												"https://tokyo-ns-stage.beseye.com/",
-												"https://ns-stage.beseye.com/"}; 
+												"https://oregon-p2-stage-api-%d.beseye.com/ns/"}; 
 	
 	static private final String[] CAM_WS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/ws/",
 													"https://ns-dev.beseye.com/",
 													"https://oregon-p1-stage-api-%d.beseye.com/ws/",
-													"https://tokyo-ns-stage.beseye.com/",
-													"https://ns-stage.beseye.com/"}; 
+													"https://oregon-p2-stage-api-%d.beseye.com/ws/"}; 
 	
 	static private final String[] WS_BE_URL = { "https://tokyo-p1-dev-ws-1.beseye.com/",
 												"https://ws-dev.beseye.com/", 
 												"https://oregon-p1-stage-ws-%d.beseye.com/",
-												"https://tokyo-ws-stage.beseye.com/",
-												"https://ws-stage.beseye.com/"}; 
+												"https://oregon-p2-stage-ws-%d.beseye.com/"}; 
 	
 	static private final String[] WSA_BE_URL = { "https://tokyo-p1-dev-wsa-1.beseye.com/",
 												 "https://wsa-dev.beseye.com/", 
 												 "https://oregon-p1-stage-wsa-%d.beseye.com/",
-												 "https://tokyo-wsa-stage.beseye.com/",
-												 "https://wsa-stage.beseye.com/"}; 
+												 "https://oregon-p2-stage-wsa-%d.beseye.com/"}; 
 	
 	static private final String[] NEWS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/news/",
 												  "https://news-dev.beseye.com/", 
 												  "https://oregon-p1-stage-api-%d.beseye.com/news/",
-												  "https://tokyo-news-stage.beseye.com/",
-												  "https://news-stage.beseye.com/"}; 
+												  "https://oregon-p2-stage-api-%d.beseye.com/news/"}; 
 	
 	
 	
@@ -125,6 +110,8 @@ public class SessionMgr {
 	static private final String SESSION_UPDATE_SUSPEND		= "beseye_cam_update_suspend";
 	
 	static private final String SESSION_SERVER_MODE	    	= "beseye_server_mode";
+	static private final String SESSION_DETACH_HW_ID	    = "beseye_detach_hw_id";//Computex
+	static private final String SESSION_SIGNUP_EMAIL	    = "beseye_signup_email";
 	
 	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
 	
@@ -164,11 +151,14 @@ public class SessionMgr {
 				mSessionData.setAuthToken(getPrefStringValue(mPref, SESSION_TOKEN));
 				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
 				mSessionData.setIsCamSWUpdateSuspended(getPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, false));
-				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, DEFAULT_SERVER_MODE.ordinal())));
+				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal())));
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
 				mSessionData.setPairToken(getPrefStringValue(mPref, SESSION_PAIR_TOKEN));
 				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
 				mSessionData.setCamUpdateList(getPrefStringValue(mPref, SESSION_UPDATE_CAMS));
+				mSessionData.setDetachHWID(getPrefStringValue(mPref, SESSION_DETACH_HW_ID));
+				mSessionData.setSignupEmail(getPrefStringValue(mPref, SESSION_SIGNUP_EMAIL));
+				
 				mSessionData.setVPCNumber(getPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, 1));
 			}
 		}
@@ -502,6 +492,26 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
+	public String getDetachHWID(){
+		return mSessionData.getDetachHWID();
+	}
+	
+	synchronized public void setDetachHWID(String strDetachHWID){
+		setPrefStringValue(mPref, SESSION_DETACH_HW_ID, strDetachHWID);
+		mSessionData.setDetachHWID(strDetachHWID);
+		notifySessionUpdate();
+	}
+	
+	public String getSignupEmail(){
+		return mSessionData.getSignupEmail();
+	}
+	
+	synchronized public void setSignupEmail(String strSignupEmail){
+		setPrefStringValue(mPref, SESSION_SIGNUP_EMAIL, strSignupEmail);
+		mSessionData.setSignupEmail(strSignupEmail);
+		notifySessionUpdate();
+	}
+	
 	public SessionData getSessionData(){
 		return mSessionData;
 	}
@@ -532,7 +542,7 @@ public class SessionMgr {
 		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
-		private String mStrCamUpdateList;
+		private String mStrCamUpdateList, mStrDetachHWID, mStrSignupEmail;
 		private int miVPCno;
 		
 		public SessionData() {
@@ -553,10 +563,12 @@ public class SessionMgr {
 			mStrPairToken = "";
 			mbIsCertificated = false;
 			mbIsCamSWUpdateSuspended = false;
-			mServerMode = DEFAULT_SERVER_MODE;
+			mServerMode = BeseyeConfig.DEFAULT_SERVER_MODE;
 			
 			mlCamUpdateTs = 0;
 			mStrCamUpdateList = "";
+			mStrDetachHWID = "";
+			mStrSignupEmail = "";
 			
 			miVPCno = 1;
 		}
@@ -736,6 +748,22 @@ public class SessionMgr {
 			mStrCamUpdateList = strCamUpdateList;
 		}
 		
+		public String getDetachHWID(){
+			return mStrDetachHWID;
+		}
+		
+		synchronized public void setDetachHWID(String strDetachHWID){
+			mStrDetachHWID = strDetachHWID;
+		}
+		
+		public String getSignupEmail(){
+			return mStrSignupEmail;
+		}
+		
+		synchronized public void setSignupEmail(String strSignupEmail){
+			mStrSignupEmail = strSignupEmail;
+		}
+		
 		public int getVPCNumber(){
 			return miVPCno;
 		}
@@ -774,6 +802,8 @@ public class SessionMgr {
 			
 			dest.writeLong(mlCamUpdateTs);
 			dest.writeString(mStrCamUpdateList);
+			dest.writeString(mStrDetachHWID);
+			dest.writeString(mStrSignupEmail);
 			
 			dest.writeInt(miVPCno);
 		}
@@ -817,6 +847,8 @@ public class SessionMgr {
 			
 			mlCamUpdateTs = in.readLong();
 			mStrCamUpdateList = in.readString();
+			mStrDetachHWID = in.readString();
+			mStrSignupEmail = in.readString();
 			
 			miVPCno = in.readInt();
 		}
