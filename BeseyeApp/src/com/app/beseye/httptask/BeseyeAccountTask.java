@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.app.beseye.R;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeUtils;
 
@@ -387,7 +388,32 @@ public class BeseyeAccountTask {
 				setVCamIdForPerm(strParams[0]);
 				obj.put(ACC_VCAM_ID, strParams[0]);
 				appendDevInfo(obj);
-				Log.e(TAG, "obj:"+obj.toString());
+				if(BeseyeConfig.DEBUG)
+					Log.e(TAG, "obj:"+obj.toString());
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_DEATTACH, obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;	
+		}
+	}
+	
+	static public class CamDettachByHWIDTask extends BeseyeHttpTask {	 	
+		public CamDettachByHWIDTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(ACC_VCAM_HW_ID, strParams[0]);
+				appendDevInfo(obj);
+				if(BeseyeConfig.DEBUG)
+					Log.e(TAG, "obj:"+obj.toString());
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_DEATTACH, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
