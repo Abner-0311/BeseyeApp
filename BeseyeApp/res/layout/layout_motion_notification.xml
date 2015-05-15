@@ -50,19 +50,30 @@
 		    android:layout_height="wrap_content"
 		    android:background="@drawable/dsl_setting_item_bg">
 		    
-    	    <com.app.beseye.widget.RemoteImageView
-		        android:id="@+id/iv_motion_zone_thumbnail"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:background="@color/camera_list_video_bg"
-		        android:visibility="visible" />
+	    	<RelativeLayout
+	    	    android:id="@+id/vg_motion_zone_image"
+	            android:layout_width="wrap_content"
+		        android:layout_height="wrap_content">
+			   	<com.app.beseye.widget.RemoteImageView
+			        android:id="@+id/iv_motion_zone_thumbnail"
+			    	android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:background="@color/camera_list_video_bg"
+			        android:visibility="visible" />
+			   	<ImageView
+			        android:id="@+id/iv_motion_zone_setting"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+		        	android:background="#00000000"
+			        android:visibility="visible"/>
+			</RelativeLayout> 
     	    
 		    <RelativeLayout 
 		     	android:id="@+id/vg_motion_zone_text"
 			    android:layout_width="match_parent"
 			    android:layout_height="@dimen/wifi_list_item_height"
 			    android:background="@drawable/dsl_setting_item_bg"
-			    android:layout_below="@id/iv_motion_zone_thumbnail"
+			    android:layout_below="@id/vg_motion_zone_image"
 			    tools:context=".MainActivity">    
 			    <ImageView 
 			        android:id="@+id/iv_enter_arrow"

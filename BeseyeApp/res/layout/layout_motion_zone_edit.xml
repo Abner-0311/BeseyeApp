@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background_white" >
+    android:background="#e5e5e5" >
     
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height ="0dp"
 	    android:layout_weight="1"
-		android:background="@color/background_white" >
+		android:background="#e5e5e5" >
 
 		<RelativeLayout
             android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
     	android:layout_width="0dp"
     	android:layout_weight="1"
    		android:layout_height="wrap_content"
-   		android:background="@drawable/sl_wifi_ap_dialog_cancel_btn_bg"
+   		android:background="@drawable/sl_motionzone_edit_cancel_btn_bg"
    		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
    		android:textColor="@color/csl_wifi_list_dialog_btn_font_color"
    		android:text="@string/cancel"/>
@@ -58,7 +58,7 @@
     	android:layout_width="0dp"
     	android:layout_weight="1"
    		android:layout_height="wrap_content"
-   		android:background="@drawable/sl_wifi_ap_dialog_connect_btn_bg"
+   		android:background="@drawable/sl_motionzone_edit_fullview_btn_bg"
    		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
    		android:textColor="@color/csl_wifi_list_dialog_btn_font_color"
    		android:text="全螢幕"/>
@@ -68,7 +68,7 @@
     	android:layout_width="0dp"
     	android:layout_weight="1"
    		android:layout_height="wrap_content"
-   		android:background="@drawable/sl_wifi_ap_dialog_connect_btn_bg"
+   		android:background="@drawable/sl_motionzone_edit_enter_btn_bg"
    		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
    		android:textColor="@color/csl_wifi_list_dialog_btn_font_color"
    		android:text="@string/ok"/>

@@ -425,4 +425,8 @@
   <string name="player_screenshot_capture_ok">攝影機影像已儲存</string>
   <!--Toast message for fail to pic capture-->
   <string name="player_screenshot_capture_failed">無法儲存攝影機影像，請稍候再試。</string>
+  
+  <string name="sure">確定</string>
+  <string name="motion_zone_title">編輯偵測區域</string>
+  <string name="motion_zone_cancel_body">如此會取消此次的編輯，您確定嗎？</string>
 </resources>
