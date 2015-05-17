@@ -33,6 +33,15 @@
 		        android:layout_centerInParent="true" 
 		        android:background="#00000000"
 		        android:visibility="visible"/>
+		   	<ProgressBar
+			    android:id="@+id/pb_loadingCursor"
+			    style="?android:attr/progressBarStyleLarge"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_centerHorizontal="true"
+			    android:layout_centerVertical="true" 
+			    android:indeterminate="true"
+		    	android:indeterminateDrawable="@drawable/progress"/>
 		</RelativeLayout> 
 
     </RelativeLayout>

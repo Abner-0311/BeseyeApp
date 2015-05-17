@@ -73,6 +73,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		Log.v(TAG, "Kelly N onCreate");
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
 		
@@ -155,7 +156,9 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.v(TAG, "Kelly N onResume");
 		if(!mbFirstResume){
+			Log.v(TAG, "Kelly N onResume inside");
 			updateNotificationTypeState();
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
 			
@@ -174,6 +177,8 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	}
 	
 	private void updateNotificationTypeState(){
+		
+		Log.v(TAG, "Kelly N updateNotificationTypeState");
 		//boolean bIsCamDisconnected = false;//BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj);
 		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
 		if(false == mbModified){

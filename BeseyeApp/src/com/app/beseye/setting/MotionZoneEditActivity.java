@@ -4,13 +4,16 @@ package com.app.beseye.setting;
 
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeUtils.setVisibility;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,15 +23,19 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
+import com.app.beseye.httptask.BeseyeMMBEHttpTask;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BaseDialog;
 import com.app.beseye.widget.RemoteImageView;
+import com.app.beseye.widget.RemoteImageView.RemoteImageCallback;
 
 import com.app.beseye.widget.BaseDialog;
 import com.app.beseye.widget.BaseDialog.OnDialogClickListener;
@@ -37,6 +44,12 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity implements OnClic
 	private Button mBtnOk, mBtnFull, mBtnCancel;
 	private MotionZoneEditView mMotionZoneEditView;
 	private double[] ratios = new double[4];
+	RemoteImageView mImgThumbnail;
+	int miThumbnailWidth;
+	String mThumbnailPath;
+	ProgressBar mPbLoadingCursor;
+	RemoteImageCallback cb;
+
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,18 +74,10 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity implements OnClic
 			Log.e(TAG, "MotionZoneEditActivity::onCreate(), failed to parse, e1:"+e1.toString());
 		}
 		
-		//TODO: handle when BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB) is null; AsyncTask
-		final RemoteImageView mImgThumbnail;
-		int miThumbnailWidth = BeseyeUtils.getDeviceWidth(this);
-		JSONObject obj = mCam_obj;
+    			
+		miThumbnailWidth = BeseyeUtils.getDeviceWidth(this);
 		
 		mImgThumbnail = (RemoteImageView)findViewById(R.id.iv_motion_zone_thumbnail);
-		if(null != mImgThumbnail){
-			BeseyeUtils.setThumbnailRatio(mImgThumbnail, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
-			mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_VCAM_THUMB), R.drawable.cameralist_s_view_noview_bg, BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID));
-			mImgThumbnail.loadImage();
-		}
-		//TODO: if some error happen on thumbnail, show dialog
 		
 		mBtnCancel = (Button)findViewById(R.id.btn_cancel);
 		if(null != mBtnCancel){
@@ -86,11 +91,18 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity implements OnClic
 		if(null != mBtnOk){
 			mBtnOk.setOnClickListener(this);
 		}
+		
+		mPbLoadingCursor = (ProgressBar)findViewById(R.id.pb_loadingCursor);
+		setCursorVisiblity(View.VISIBLE);
+		BeseyeUtils.setEnabled(mBtnFull, false);
+		BeseyeUtils.setEnabled(mBtnOk, false);
+		
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);
+		
 		mMotionZoneEditView = (MotionZoneEditView)findViewById(R.id.iv_motion_zone_edit);
 		
 		ViewTreeObserver vto = mMotionZoneEditView.getViewTreeObserver();
 		vto.addOnGlobalLayoutListener(this);
-		
 		
 //		int ThumbnailHeight = mImgThumbnail.getLayoutParams().height;
 //		int ThumbnailWidth = mImgThumbnail.getLayoutParams().width;
@@ -106,6 +118,9 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity implements OnClic
 	}
 
 	
+	private void setCursorVisiblity(int iVisibility){
+		setVisibility(mPbLoadingCursor, iVisibility);
+	}
 	
 	//for get size of view
 	@SuppressWarnings("deprecation")
@@ -131,6 +146,38 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity implements OnClic
 	@Override
 	protected int getLayoutId() {
 		return R.layout.layout_motion_zone_edit;
+	}
+	
+	@Override
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
+		Log.v(TAG, "K onPostExecute");
+		if(BeseyeConfig.DEBUG)
+			Log.d(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeMMBEHttpTask.GetLatestThumbnailTask){
+				if(0 == iRetCode){							
+					try {
+						mCam_obj.put(BeseyeJSONUtil.ACC_VCAM_THUMB, BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.MM_THUMBNAIL), "url"));
+						setThumbnail();
+					} catch (JSONException e) {
+						e.printStackTrace();
+					
+					}
+				}
+			}
+		}
+	}
+	
+	private void setThumbnail(){
+		if(null != mImgThumbnail){
+			BeseyeUtils.setThumbnailRatio(mImgThumbnail, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
+			mThumbnailPath = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_THUMB);
+			mImgThumbnail.setURI(mThumbnailPath, 
+								R.drawable.cameralist_s_view_noview_bg, 
+								BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID));
+			mImgThumbnail.loadImage();
+			//TODO: if some error happen on thumbnail, show dialog		
+		}
 	}
 	
 	private double[] getRatioFromServer(){
@@ -185,7 +232,6 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity implements OnClic
 				Bundle b = new Bundle();
 				b.putDoubleArray("MotionZoneRatio", newRatios);
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-
 			    Intent resultIntent = new Intent();
 				resultIntent.putExtras(b);
 				setResult(RESULT_OK, resultIntent);	
