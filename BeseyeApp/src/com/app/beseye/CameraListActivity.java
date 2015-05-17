@@ -47,6 +47,7 @@ import com.app.beseye.widget.CameraListMenuAnimator;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
+import com.facebook.appevents.AppEventsLogger;
 
 public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBtnStateChangedListener{
 	static public final String KEY_VCAM_OBJ 	= "KEY_VCAM_OBJ";
@@ -213,7 +214,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+				
 		if(null != mOnResumeUpdateCamListRunnable){
 			if(BeseyeConfig.DEBUG)
 				Log.i(TAG, "onResume(), mOnResumeUpdateCamListRunnable trigger...");
@@ -228,7 +229,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		
 		if(false == mbFirstResume){
 			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this).setDialogId(-1), true);
-			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeNewsActivity.DEF_NEWS_LANG);
+			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeUtils.DEF_NEWS_LANG);
 		}
 		
 		checkLatestNew();
@@ -268,7 +269,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		super.onSessionComplete();
 		if((!mbIsDemoCamMode && !mbIsPrivateCamMode)|| null == mVCamListInfoObj){
 			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
-			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeNewsActivity.DEF_NEWS_LANG);
+			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeUtils.DEF_NEWS_LANG);
 			monitorAsyncTask(new BeseyeAccountTask.GetUserInfoTask(this), true);
 		}else{
 			fillVCamList(mVCamListInfoObj);
@@ -725,7 +726,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			invokeLogout();
 			showMenu();
 		}else if(R.id.txt_nav_title == view.getId()){
-			if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal()){
+			if(BeseyeConfig.DEBUG){
 				++miShowMoreCount;
 				if( miShowMoreCount == 1 && miShowMoreCountMenu >= 6){
 					if(null != mCameraListAdapter){

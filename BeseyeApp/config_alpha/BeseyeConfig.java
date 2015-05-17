@@ -2,6 +2,7 @@ package com.app.beseye.util;
 
 import android.util.Log;
 
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeConfig;
 
 public class BeseyeConfig {
@@ -12,6 +13,7 @@ public class BeseyeConfig {
 	static public boolean ALPHA_VER = true;
 	static public boolean BETA_VER = false;
 	static public boolean PRODUCTION_VER = false;
+	static public final SERVER_MODE DEFAULT_SERVER_MODE = SERVER_MODE.MODE_STAGING;
 	
 	static public final long TIME_TO_CHECK_WIFI_SETUP = 10000L;
 	static public final boolean FAKE_AUDIO_RECEIVER = false;

@@ -231,4 +231,16 @@
     
     <!-- for motion zone -->
     <dimen name="motion_zone_padding">25dp</dimen>
+
+    <!-- for ViewShare -->
+    <dimen name="snapshot_image_width">325dp</dimen>
+    <dimen name="snapshot_image_height">182dp</dimen>
+    <dimen name="shadow_width">4dp</dimen>
+    <dimen name="snapshot_image_plus_shadow_width">333dp</dimen>
+    
+    <dimen name="watermark_padding">10dp</dimen>
+    <dimen name="share_itm_width_height">50dp</dimen>
+    
+    <dimen name="alertdialog_padding_left">20dp</dimen>
+    <dimen name="alertdialog_padding_top">10dp</dimen>
 </resources>

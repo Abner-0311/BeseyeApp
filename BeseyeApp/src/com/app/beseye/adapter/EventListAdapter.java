@@ -29,8 +29,13 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 	}
 	
 	private int miSelectedImt = 0;
-	private String mStrFamilyDetectFormat, mStrPeopleDetect, mStrSoundDetect, mStrFireDetect, mStrMotionDetect, mStrEventDetect;
+	private String mStrFamilyDetectFormat, mStrPeopleDetect, mStrSoundDetect, mStrFireDetect, mStrMotionDetect, mStrEventDetect, mStrStranger;
 	private IListViewScrollListenser mIListViewScrollListenser;
+	
+	private boolean mbShowPeoeple = false;
+	public void setPeopleDetectEnabled(boolean bEnabled){
+		mbShowPeoeple = bEnabled;
+	}
 	
 	public EventListAdapter(Context context, JSONArray list, int iLayoutId,
 			OnClickListener itemOnClickListener, IListViewScrollListenser listViewScrollListenser) {
@@ -42,6 +47,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		mStrFireDetect = context.getResources().getString(R.string.event_list_fire_detected);
 		mStrMotionDetect = context.getResources().getString(R.string.event_list_motion_detected);
 		mStrEventDetect = context.getResources().getString(R.string.event_list_unknown_detected);
+		mStrStranger = context.getResources().getString(R.string.event_list_people_detected_stranger);
 	}
 	
 	private String mStrVCamID;
@@ -201,31 +207,33 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		
 		String strType = null;
 		if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr)){
-//			JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
-//			if(null != faceList && 0 < faceList.length()){
-//				BeseyeJSONUtil.FACE_LIST face;
-//				try {
-//					int iFaceId = -1;
-//					for(int i = faceList.length()-1;i >=0;i--){
-//						if(0 < faceList.getInt(i)){
-//							iFaceId = faceList.getInt(i);
-//							break;
-//						}
-//					}
-//					face = BeseyeJSONUtil.findFacebyId(iFaceId-1);
-//					if(null != face){
-//						strType = String.format(mStrFamilyDetectFormat, face.mstrName);
-//					}else{
-//						strType = mStrPeopleDetect;
-//					}
-//				} catch (JSONException e) {
-//					Log.e(TAG, "genDetectionType(), e:"+e.toString());	
-//				}
-//				
-//			}else{
-//				strType = mStrPeopleDetect;
-//			}
-			strType = mStrPeopleDetect;
+			if(mbShowPeoeple){
+				JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
+				if(null != faceList && 0 < faceList.length()){
+					BeseyeJSONUtil.FACE_LIST face;
+					try {
+						int iFaceId = -1;
+						for(int i = faceList.length()-1;i >=0;i--){
+							if(0 < faceList.getInt(i)){
+								iFaceId = faceList.getInt(i);
+								break;
+							}
+						}
+						face = BeseyeJSONUtil.findFacebyId(iFaceId);
+						if(null != face){
+							strType = String.format(mStrFamilyDetectFormat, face.mstrName);
+						}else{
+							strType = String.format(mStrFamilyDetectFormat, this.mStrStranger);
+						}
+					} catch (JSONException e) {
+						Log.e(TAG, "genDetectionType(), e:"+e.toString());	
+					}
+					
+				}else{
+					strType = mStrPeopleDetect;
+				}
+			}
+			//strType = mStrPeopleDetect;
 			BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
 		}else{
 			BeseyeUtils.setVisibility(holder.mImgFace, View.INVISIBLE);

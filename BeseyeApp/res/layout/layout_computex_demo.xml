@@ -31,6 +31,57 @@
 		        android:layout_height="wrap_content"  
 		        android:layout_marginTop="30dp"
 		        android:layout_centerHorizontal="true"/>
+		    
+		    <CheckBox 
+	            android:id="@+id/ck_suspend_cam_sw_update" 
+	            android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/sp_server_type"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:text="Cam SW Update Suspended"/>
+		    
+		    <RelativeLayout 
+		        android:id="@+id/vg_detach_hw" 
+		        android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/ck_suspend_cam_sw_update"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp">
+		        <TextView 
+		            android:id="@+id/txt_detach_hw_id" 
+		            android:layout_width="wrap_content"  
+	        		android:layout_height="wrap_content"
+	        		android:layout_alignBaseline="@+id/sp_detach_hw_id"
+	        		android:text="Detach Cam HW ID:"/>
+		        
+		        <Spinner 
+			        android:id="@+id/sp_detach_hw_id" 
+			        android:layout_width="wrap_content"  
+			        android:layout_height="wrap_content"  
+			        android:layout_toRightOf="@+id/txt_detach_hw_id"/>
+		    </RelativeLayout>
+		    
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/vg_detach_hw"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp">
+		        <TextView 
+		            android:id="@+id/txt_signup_email" 
+		            android:layout_width="wrap_content"  
+	        		android:layout_height="wrap_content"
+	        		android:layout_alignBaseline="@+id/txt_signup_email"
+	        		android:text="Default Email:"/>
+		        
+		        <EditText 
+			        android:id="@+id/et_signup_email" 
+			        android:layout_width="match_parent"  
+			        android:layout_height="wrap_content"  
+			        android:layout_toRightOf="@+id/txt_signup_email"/>
+		    </RelativeLayout>
+		    
             <RadioGroup  
 		        android:id="@+id/radiogroup1"  
 		        android:layout_width="wrap_content"  

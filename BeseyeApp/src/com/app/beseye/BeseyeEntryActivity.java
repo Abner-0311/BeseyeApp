@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
@@ -21,7 +22,16 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 		mbIgnoreSessionCheck = true;
 		mbIgnoreCamVerCheck = true;
 		getSupportActionBar().hide();
-		findViewById(R.id.iv_signup_top_logo).setOnClickListener(this);
+		View logo = findViewById(R.id.iv_signup_top_logo);
+		if(null != logo){
+			logo.setOnClickListener(this);
+		}
+		
+		View sun = findViewById(R.id.iv_signup_sun);
+		if(null != sun){
+			sun.setOnClickListener(this);
+		}
+		
 		mTvSetupAndSignup = (TextView)findViewById(R.id.button_signup);
 		if(null != mTvSetupAndSignup){
 			mTvSetupAndSignup.setOnClickListener(this);
@@ -44,7 +54,8 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 	}
 	
 	private int miDemoCount=0;
-
+	private int miDetachCount=0;
+	
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()){
@@ -63,11 +74,21 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 				break;
 			}
 			case R.id.iv_signup_top_logo:{
-				if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_STAGING_TOKYO.ordinal()){
+				if(BeseyeConfig.DEBUG){
 					miDemoCount++;
 					if(miDemoCount >=5){
 						launchActivityByClassName(BeseyeComputexModeActivity.class.getName());
 						miDemoCount =0;
+					}
+				}
+				break;
+			}
+			case R.id.iv_signup_sun:{
+				if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode() == SessionMgr.SERVER_MODE.MODE_STAGING){
+					miDetachCount++;
+					if(miDetachCount >=2){
+						Toast.makeText(this, "Detach by HW ID", Toast.LENGTH_SHORT).show();
+						miDetachCount =0;
 					}
 				}
 				break;

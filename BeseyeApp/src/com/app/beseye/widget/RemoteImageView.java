@@ -79,8 +79,7 @@ public class RemoteImageView extends ImageView {
 	protected static final float SHADOW_WIDTH = 3.0f;
 	protected boolean mbEnableShadow = false;
 	protected float mShadowWidth = SHADOW_WIDTH;
-	
-
+		
 	public interface RemoteImageCallback {
 		public void imageLoaded(boolean success);
 	}
@@ -125,7 +124,6 @@ public class RemoteImageView extends ImageView {
 
 	public void setURI(String uri) {
 		setURI(uri, EMPTY_DEFAULT_IMAGE);
-		mbIsLoaded = false;
 	}
 
 	public void setURI(String uri, int defaultImage) {
@@ -136,14 +134,26 @@ public class RemoteImageView extends ImageView {
 		mbIsPhotoViewMode = false;
 		mbIsLoaded = false;
 		mStrVCamId = null;
+		mbIsLoaded = false;
+		mCallback = null;
 		
 //		if(DEBUG)
 //			Log.i(iKalaUtil.IKALA_APP_TAG, "setURI(), uri:"+uri); 
 	}
 	
+	public void setURI(String uri, int defaultImage, RemoteImageCallback cb) {
+		setURI(uri, defaultImage);
+		mCallback = cb;
+	}
+	
 	public void setURI(String uri, int defaultImage, String strVCamId) {
 		setURI(uri, defaultImage);
 		mStrVCamId = strVCamId;
+	}
+	
+	public void setURI(String uri, int defaultImage, String strVCamId, RemoteImageCallback cb) {
+		setURI(uri, defaultImage, strVCamId);
+		mCallback = cb;
 	}
 
 	public void setURI(String uri, int defaultImage, float ratio, float fDestRatio) {
@@ -471,6 +481,9 @@ public class RemoteImageView extends ImageView {
 		@Override
 		public void run() {
 			if (mLocal == null) {
+				Log.w(TAG, "mLocal is null");
+
+				imageLoaded(false);
 				return;
 			}
 			boolean loaded = false;
@@ -548,6 +561,9 @@ public class RemoteImageView extends ImageView {
 							}
 						}else {						
 							if (mRemote == null) {
+								Log.w(TAG, "mRemote is null");
+
+								imageLoaded(false);
 								return;
 							}
 							
@@ -565,6 +581,9 @@ public class RemoteImageView extends ImageView {
 										if (++retryCount >= 3
 												|| Thread.currentThread()
 														.isInterrupted()) {
+											Log.w(TAG, "download image fail");
+
+											imageLoaded(false);
 											return;
 										}
 										try {
@@ -614,9 +633,9 @@ public class RemoteImageView extends ImageView {
 					}
 				}
 				
-
 				if (bitmap == null) {
 					Log.w(TAG, "Get image fail");
+					imageLoaded(false);
 					return;
 				}
 				

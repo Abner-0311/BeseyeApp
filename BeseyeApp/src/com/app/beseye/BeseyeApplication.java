@@ -34,6 +34,7 @@ import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.DeviceUuidFactory;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.widget.BeseyeMemCache;
+import com.facebook.FacebookSdk;
 
 @ReportsCrashes(formKey= HOCKEY_APP_ID,
 				logcatArguments = { "-t", "2500", "-v", "long", "BesEye:W", "*:S" },
@@ -58,15 +59,18 @@ public class BeseyeApplication extends Application {
 		SessionMgr.createInstance(getApplicationContext());
 		BeseyeNewFeatureMgr.createInstance(getApplicationContext());
 		BeseyeUtils.setPackageVersion(getApplicationContext());
+		//facebook
+		FacebookSdk.sdkInitialize(getApplicationContext());
+		
 		sApplication = this;
 		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
 		
 		if(BeseyeConfig.DEBUG){
 			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" HOCKEY_APP_ID:"+HOCKEY_APP_ID+", can update:"+BeseyeUtils.canUpdateFromHockeyApp()+", Build.VERSION.RELEASE:"+Build.VERSION.RELEASE);
-			Log.i(TAG, "CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK+", ADV_TWO_WAY_tALK:"+BeseyeFeatureConfig.ADV_TWO_WAY_TALK+", VPC_NUM_QUERY:"+BeseyeFeatureConfig.VPC_NUM_QUERY);
+			Log.i(TAG, "CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK+", ADV_TWO_WAY_tALK:"+BeseyeFeatureConfig.ADV_TWO_WAY_TALK+", VPC_NUM_QUERY:"+BeseyeFeatureConfig.VPC_NUM_QUERY+", SessionMgr.getInstance().getIsCamSWUpdateSuspended():"+SessionMgr.getInstance().getIsCamSWUpdateSuspended());
 
 		}else{ 
-			Log.i(TAG, "*****************BeseyeApplication::onCreate(), can update:"+BeseyeUtils.canUpdateFromHockeyApp()+", CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK);
+			Log.i(TAG, "*****************BeseyeApplication::onCreate(), can update:"+BeseyeUtils.canUpdateFromHockeyApp()+", CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK+", SessionMgr.getInstance().getIsCamSWUpdateSuspended():"+SessionMgr.getInstance().getIsCamSWUpdateSuspended());
 		}
 
 		ACRA.init(this);

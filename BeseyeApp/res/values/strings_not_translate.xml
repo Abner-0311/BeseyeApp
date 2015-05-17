@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- DO NOT TRANSLATE BEGIN-->
-    <string name="app_name_alpha">Beseye</string>
+    
+    <string name="app_name_dev">Beseye(dev)</string>
+    <string name="app_name_alpha">Beseye(α)</string>
+    <string name="app_name_beta">Beseye(β)</string>
     <string name="crash_toast_text"></string>
     <string name="camerview_init_date">---.--.----</string>
     <string name="camerview_init_time">--:--:-- --</string>
     <string name="dialog_reboot_cam">Are you sure to reboot this cam [%s]?</string>
     
+    <!-- facebook APP ID. It is Beseye-->
+ 	<string name ="facebook_app_id">1659909464230473</string>
+ 	<string name ="facebook_app_id_alpha">783054278482250</string>
+ 	<string name ="facebook_app_id_beta">783054278482250</string>
+ 	<string name ="facebook_app_id_prod">913128435388925</string>
+ 	
+ 	<string name ="facebook_provider_authority">com.facebook.app.FacebookContentProvider1659909464230473</string>
+ 	<string name ="facebook_provider_authority_alpha">com.facebook.app.FacebookContentProvider783054278482250</string>
+ 	<string name ="facebook_provider_authority_beta">com.facebook.app.FacebookContentProvider783054278482250</string>
+ 	<string name ="facebook_provider_authority_prod">com.facebook.app.FacebookContentProvider913128435388925</string>
+ 	
     <string name="news_release_date">2014.7.13</string>
 	<string name="news_title">BesEye camera firmware 6.7 update</string>
 	<string name="news_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue augue id...</string>

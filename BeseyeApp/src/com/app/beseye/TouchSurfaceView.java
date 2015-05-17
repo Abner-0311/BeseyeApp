@@ -10,8 +10,10 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.os.Bundle;
@@ -204,28 +206,44 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         getHolder().addCallback(this);	
                
         this.context = context;
-        mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
-        
-        mGestureDetector = new GestureDetector(context, new GestureListener());
-        //mGestureDetector.setIsLongpressEnabled(false);
-        
-        matrix = new Matrix();
-        prevMatrix = new Matrix();
-        mArrMatrixValues = new float[9];
-        normalizedScale = 1;
-        minScale = 1;
-        maxScale = 4;
-        superMinScale = SUPER_MIN_MULTIPLIER * minScale;
-        superMaxScale = SUPER_MAX_MULTIPLIER * maxScale;
-        drawStreamBitmap();
-        //setImageMatrix(matrix);
-        //setScaleType(ScaleType.MATRIX);
-        setState(NONE);
-        setLongClickable(false);
-        setOnTouchListener(new TouchImageViewListener());
-        
-        miBackgroundColorLand = context.getResources().getColor(R.color.liveview_background);
-        miBackgroundColor = context.getResources().getColor(R.color.background_white);
+        initParams();
+    }
+    
+    public void reset(){
+    	initParams();
+    	
+    	prevMatrix.setValues(mArrMatrixValues);
+        prevMatchViewHeight = matchViewHeight;
+        prevMatchViewWidth = matchViewWidth;
+        prevViewHeight = viewHeight;
+        prevViewWidth = viewWidth;
+		TouchSurfaceView.this.measure(MeasureSpec.makeMeasureSpec((int)mSurfaceHeight, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((int)mSurfaceHeight, MeasureSpec.EXACTLY));
+		TouchSurfaceView.this.measure(MeasureSpec.makeMeasureSpec((int)mSurfaceWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec((int)mSurfaceHeight, MeasureSpec.EXACTLY));
+    }
+    
+    private void initParams(){
+    	 mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+         
+         mGestureDetector = new GestureDetector(context, new GestureListener());
+         //mGestureDetector.setIsLongpressEnabled(false);
+         
+         matrix = new Matrix();
+         prevMatrix = new Matrix();
+         mArrMatrixValues = new float[9];
+         normalizedScale = 1;
+         minScale = 1;
+         maxScale = 4;
+         superMinScale = SUPER_MIN_MULTIPLIER * minScale;
+         superMaxScale = SUPER_MAX_MULTIPLIER * maxScale;
+         drawStreamBitmap();
+         //setImageMatrix(matrix);
+         //setScaleType(ScaleType.MATRIX);
+         setState(NONE);
+         setLongClickable(false);
+         setOnTouchListener(new TouchImageViewListener());
+         
+         miBackgroundColorLand = context.getResources().getColor(R.color.liveview_background);
+         miBackgroundColor = context.getResources().getColor(R.color.background_white);
     }
     
     @Override
@@ -1089,16 +1107,28 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 	    if(-1 != mlRequestBmpTimestamp){
 	    	if(null != bmp && false == bmp.isRecycled()){
 	    		Bitmap bmpSave = bmp.copy(bmp.getConfig(), true);
-	    		Canvas canvasBmp2 = new Canvas( bmpSave );
-	    		if(null != canvasBmp2){
-	    			canvasBmp2.drawBitmap(bmp, 0, 0, null);
+	    		if(null != bmpSave){
+	    			Canvas canvasTarget = new Canvas( bmpSave );
+		    		if(null != canvasTarget){
+		    			canvasTarget.drawBitmap(bmp, 0, 0, null);
+		    			Bitmap icon = BitmapFactory.decodeResource(context.getResources(),com.app.beseye.R.drawable.liveview_snapshot_watermark);
+		    			if(null != icon){
+		    				int iPadding = this.context.getResources().getDimensionPixelSize(R.dimen.watermark_padding);
+//		    				Paint paint = new Paint();
+//			    			paint.setARGB(127, 255, 255, 255);
+			    			canvasTarget.drawBitmap(icon, bmpSave.getWidth() - icon.getWidth() - iPadding, bmpSave.getHeight() - icon.getHeight() - iPadding, null);
+		    			}
+		    			
+		    			if(null != mOnBitmapScreenshotCallback){
+			    			mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
+			    		}
+			    		mlRequestBmpTimestamp = -1;
+			    		mOnBitmapScreenshotCallback = null;
+			    		
+			    		//Log.i(TAG, "copyBitmap(), done...");
+			    		return true;
+		    		}
 	    		}
-	    		if(null != mOnBitmapScreenshotCallback){
-	    			mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
-	    		}
-	    		mlRequestBmpTimestamp = -1;
-	    		mOnBitmapScreenshotCallback = null;
-	    		return true;
 	    	}
 	    }
 	    return false;

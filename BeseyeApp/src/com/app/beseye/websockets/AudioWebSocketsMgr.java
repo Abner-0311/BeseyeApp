@@ -451,10 +451,11 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
     public synchronized void launchAudioThread(){
     	if(null == audioSendThread){
     		bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
-        	bufferSizeInBytes = 6400;
-        	if(null == audioRecord){
+        	
+        	if(null == audioRecord && bufferSizeInBytes != AudioRecord.ERROR_BAD_VALUE){
+        		bufferSizeInBytes = 6400;
     			audioRecord = new AudioRecord(audioSource, sampleRateInHz, channelConfig, audioFormat, bufferSizeInBytes);
-    			if(null != audioRecord){
+    			if(null != audioRecord && audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
     				audioRecord.startRecording();
     				audioSendThread = new AudioSendThread();
     				//audioSendThread.setPriority(Thread.MIN_PRIORITY);

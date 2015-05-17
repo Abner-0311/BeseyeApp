@@ -284,7 +284,8 @@
   <string name="datetime_hour">Hour</string>
   <string name="datetime_min">Minute</string>
   <string name="event_list_now">Now</string>
-  <string name="event_list_family_detected">Family recognized</string>
+  <string name="event_list_family_detected">People dectected (%s)</string>
+  <string name="event_list_people_detected_stranger">Stranger</string>
   <string name="event_list_people_detected">People dectected</string>
   <string name="event_list_sound_detected">Sound dectected</string>
   <string name="event_list_fire_detected">Fire dectected</string>
@@ -416,7 +417,7 @@
   <string name="msg_wifi_pw_length_error_wep">Invalid password format. The password should contain 6 to 13 letters.</string>
   <string name="msg_wifi_setting_info_error">Invalid wifi setting info.</string>
 
-  <!--Warning message for detaching cam failed case-->
+   <!--Warning message for detaching cam failed case-->
   <string name="cam_setting_failed_detach_cam">Failed to remove camera. \nPlease try again later.</string>
   <!--Dialog message for player pic capture-->
   <string name="player_screenshot_capturing">Picture capturing…</string>
@@ -429,5 +430,10 @@
   
   <!-- motion zone -->
   <string name="cam_setting_title_motion_zone">motion zone</string>
- 
+
+  <!-- share -->
+  <string name="share">Share</string>
+  <string name="close">Close</string>
+  <string name="share_way">choose one to share</string>
+  <string name="share_hash">Check out this image captured by my Beseye</string>
 </resources>

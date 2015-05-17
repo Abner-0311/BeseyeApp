@@ -284,7 +284,8 @@
   <string name="datetime_hour">時</string>
   <string name="datetime_min">分</string>
   <string name="event_list_now">現在</string>
-  <string name="event_list_family_detected">家人辨識</string>
+  <string name="event_list_family_detected">偵測到人物 (%s)</string>
+  <string name="event_list_people_detected_stranger">陌生人</string>
   <string name="event_list_people_detected">偵測到人物</string>
   <string name="event_list_sound_detected">偵測到聲音</string>
   <string name="event_list_fire_detected">偵測到火苗</string>
@@ -415,7 +416,7 @@
   <string name="hint_hold_to_talk_conn_occupied">麥克風使用中，請稍後再試．</string>
   
   <string name="msg_wifi_pw_length_error_wpa">無效的Wi-Fi密碼長度。密碼必須是8-64個字母。</string>
-  <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5至13個字母。</string>
+  <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5或13個字母。</string>
   <string name="msg_wifi_setting_info_error">無效的Wi-Fi設定。</string>
   <!--Warning message for detaching cam failed case-->
   <string name="cam_setting_failed_detach_cam">無法移除攝影機，請再試一次。</string>
@@ -429,4 +430,10 @@
   <string name="sure">確定</string>
   <string name="motion_zone_title">編輯偵測區域</string>
   <string name="motion_zone_cancel_body">如此會取消此次的編輯，您確定嗎？</string>
+
+  <!-- share -->
+  <string name="share">分享</string>
+  <string name="close">關閉</string>
+  <string name="share_way">分享方式</string>
+  <string name="share_hash">看看我用Beseye 拍到的精彩時刻</string>
 </resources>

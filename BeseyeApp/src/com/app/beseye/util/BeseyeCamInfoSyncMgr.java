@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 
 public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
@@ -138,7 +139,7 @@ public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
 	private JSONArray mLstUpdateCandidate = new JSONArray();
 	
 	public void queryCamUpdateVersions(JSONArray arrVcamIdList){
-		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK){
+		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
 			return;
 		}
 		

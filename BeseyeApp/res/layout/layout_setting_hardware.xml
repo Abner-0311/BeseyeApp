@@ -172,7 +172,7 @@
 			   		android:text="@string/cam_setting_title_reboot_cam"/>
 		    </RelativeLayout>   
 		</RelativeLayout>
-		
+
 </LinearLayout>
 
 

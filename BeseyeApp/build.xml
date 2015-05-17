@@ -118,7 +118,13 @@
 				        <replaceregexp file="AndroidManifest.xml" match='${matchVersionName.start}[^"]*${match.end}' replace="${matchVersionName.start}${app.version.major.beta}${app.version.minor.beta}${app.version.branch}${match.end}" />
 				        
 				        <property name="matchAppName.start" value='android:label=\"' />
-				        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name${match.end}" />
+				        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name_beta${match.end}" />
+				        
+				        <property name="matchFBID.start" value='android:value=\"@string/facebook_app_id\"' />
+				        <replaceregexp file="AndroidManifest.xml" match='${matchFBID.start}' replace='android:value=\"@string/facebook_app_id_beta\"' />
+				        
+				        <property name="matchFBProvider.start" value='android:authorities=\"@string/facebook_provider_authority\"' />
+				        <replaceregexp file="AndroidManifest.xml" match='${matchFBProvider.start}' replace='android:authorities=\"@string/facebook_provider_authority_beta\"' />
 		        	</then>
 		        	<else>
 		        	    <if condition="${Is_Alpha}">
@@ -140,7 +146,13 @@
 						        <replaceregexp file="AndroidManifest.xml" match='${matchVersionName.start}[^"]*${match.end}' replace="${matchVersionName.start}${app.version.major.alpha}${app.version.minor.alpha}${app.version.branch}${match.end}" />
 						        
 						        <property name="matchAppName.start" value='android:label=\"' />
-						        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name${match.end}" />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name_alpha${match.end}" />
+						        
+						        <property name="matchFBID.start" value='android:value=\"@string/facebook_app_id\"' />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchFBID.start}' replace='android:value=\"@string/facebook_app_id_alpha\"' />
+						        
+						        <property name="matchFBProvider.start" value='android:authorities=\"@string/facebook_provider_authority\"' />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchFBProvider.start}' replace='android:authorities=\"@string/facebook_provider_authority_alpha\"' />
 				        	</then>
 				        	<else>
 				        	    <propertyfile file="version.properties">
@@ -161,6 +173,12 @@
 						        
 						        <property name="matchAppName.start" value='android:label=\"' />
 						        <replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name${match.end}" />
+						        
+						        <property name="matchFBID.start" value='android:value=\"@string/facebook_app_id\"' />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchFBID.start}' replace='android:value=\"@string/facebook_app_id_prod\"' />
+						        
+						        <property name="matchFBProvider.start" value='android:authorities=\"@string/facebook_provider_authority\"' />
+						        <replaceregexp file="AndroidManifest.xml" match='${matchFBProvider.start}' replace='android:authorities=\"@string/facebook_provider_authority_prod\"' />
 			            	</else>
 			            </if>
 	            	</else>
