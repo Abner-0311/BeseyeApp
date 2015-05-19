@@ -244,6 +244,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 			} 
 			case R.id.iv_nav_left_btn:{
 				setNotifySetting();
+				break;
 			}
 			default:
 				super.onClick(view);	
@@ -255,8 +256,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		if(keyCode == KeyEvent.KEYCODE_BACK){
 			setNotifySetting();
 			return true;
-		}
-		
+		}		
 		return super.onKeyUp(keyCode, event);
 	}
 
