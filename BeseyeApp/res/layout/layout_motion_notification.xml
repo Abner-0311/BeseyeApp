@@ -58,19 +58,16 @@
 			        android:id="@+id/iv_motion_zone_thumbnail"
 			    	android:layout_width="match_parent"
 			        android:layout_height="wrap_content"
-			        android:background="@color/camera_list_video_bg"
 			        android:visibility="visible" />
 			   	<ImageView
 			        android:id="@+id/iv_motion_zone_setting"
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"
-		        	android:background="#00000000"
 			        android:visibility="visible"/>
 			   	<ImageView 
 			   	    android:id="@+id/iv_motion_zone_mask"
 		        	android:layout_width="match_parent"
 		        	android:layout_height="wrap_content"
-		       	 	android:background="@color/camera_list_video_mask"
 		       	 	android:visibility="gone"/>
 			</RelativeLayout> 
     	    
@@ -100,7 +97,7 @@
 			   		android:layout_centerVertical="true"
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
 			   		android:textColor="@color/csl_wifi_list_main_font_color"
-			   		android:text="@string/cam_setting_title_motion_zone"
+			   		android:text="@string/motion_zone_title"
 			   		android:duplicateParentState="true"/>
 			</RelativeLayout>		
 		</RelativeLayout>

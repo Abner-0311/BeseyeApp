@@ -50,6 +50,7 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_LOCATION_POS 	= "cam/%s/locale";
 	
 	static private final String URL_NOTIFY_SETTING  	= "cam/%s/notify_setting";
+	static private final String URL_MOTION_ZONE	  		= "cam/%s/motion_zone";
 	
 	public static class GetCamSetupTask extends BeseyeHttpTask{
 		private String strVcamId = null;
@@ -721,6 +722,19 @@ public class BeseyeCamBEHttpTask  {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getCamBEHostUrl()+String.format(URL_NOTIFY_SETTING, strParams[0]), strParams[1]);
+		}
+	}
+	
+	public static class SetMotionZoneTask extends BeseyeHttpTask{
+		public SetMotionZoneTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPut.METHOD_NAME);
+		}
+		
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			setVCamIdForPerm(strParams[0]);
+			return super.doInBackground(SessionMgr.getInstance().getCamBEHostUrl()+String.format(URL_MOTION_ZONE, strParams[0]), strParams[1]);
 		}
 	}
 	

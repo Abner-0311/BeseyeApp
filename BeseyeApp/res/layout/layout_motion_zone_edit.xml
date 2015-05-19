@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#e5e5e5" >
+    android:background="@color/liveview_background" >
     
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height ="0dp"
 	    android:layout_weight="1"
-		android:background="#e5e5e5" >
+		android:background="@color/liveview_background" >
 
 		<RelativeLayout
             android:layout_width="wrap_content"
@@ -26,12 +26,11 @@
     			android:paddingBottom="@dimen/motion_zone_padding"
 		        android:layout_centerInParent="true" 
 		        android:visibility="visible" />
-		   	<com.app.beseye.setting.MotionZoneEditView
+		   	<com.app.beseye.widget.MotionZoneEditView
 		        android:id="@+id/iv_motion_zone_edit"
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"
 		        android:layout_centerInParent="true" 
-		        android:background="#00000000"
 		        android:visibility="visible"/>
 		   	<ProgressBar
 			    android:id="@+id/pb_loadingCursor"
@@ -70,7 +69,7 @@
    		android:background="@drawable/sl_motionzone_edit_fullview_btn_bg"
    		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
    		android:textColor="@color/csl_wifi_list_dialog_btn_font_color"
-   		android:text="全螢幕"/>
+   		android:text="@string/fullscreen"/>
        
        <Button 
        	android:id="@+id/btn_ok"

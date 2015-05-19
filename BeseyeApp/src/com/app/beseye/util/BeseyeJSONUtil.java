@@ -80,6 +80,15 @@ public class BeseyeJSONUtil {
 	public static final String NOTIFY_SOUND 			= "Sound";
 	public static final String NOTIFY_OFFLINE 			= "Offline";
 	
+	public static final String MOTION_ZONE				= "MotionZone";
+	public static final String MOTION_ZONE_TOP			= "MZ_Top";
+	public static final String MOTION_ZONE_BOTTOM		= "MZ_Bottom";
+	public static final String MOTION_ZONE_LEFT			= "MZ_Left";
+	public static final String MOTION_ZONE_RIGHT 		= "MZ_Right";
+	public static final String MOTION_ZONE_SENS			= "Sensitivity";
+	public static final String MOTION_THRESHOLD			= "Threshold";
+
+	
 	public static final String IMG_OBJ 					= "Image";
 	public static final String IMG_FLIP 				= "Flip";
 	public static final String IMG_MIRROR 				= "Mirror";
@@ -776,6 +785,19 @@ public class BeseyeJSONUtil {
 		return bRet;
 	}
 	
+	static public boolean setJSONFloat(JSONObject obj, String strKey, Float lVal){
+		boolean bRet = false;
+		try {
+			if(null != obj && null != strKey){
+				obj.put(strKey, lVal);
+				bRet = true;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return bRet;
+	}
+	
 	static public boolean setJSONBoolean(JSONObject obj, String strKey, boolean bVal){
 		boolean bRet = false;
 		try {
@@ -803,6 +825,19 @@ public class BeseyeJSONUtil {
 	}
 	
 	static public boolean setJSONObject(JSONObject obj, String strKey, JSONObject objVal){
+		boolean bRet = false;
+		try {
+			if(null != obj &&  null != strKey && null != objVal){
+				obj.put(strKey, objVal);
+				bRet = true;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return bRet;
+	}
+	
+	static public boolean setJSONArray(JSONObject obj, String strKey, JSONArray objVal){
 		boolean bRet = false;
 		try {
 			if(null != obj &&  null != strKey && null != objVal){
