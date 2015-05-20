@@ -45,16 +45,21 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 		mEtUserName = (EditText)findViewById(R.id.editText_username);
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
-			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal())
-				mEtUserName.setText(TEST_ACC);
+			if(DEBUG){
+				if(SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
+					mEtUserName.setText("beseye_dev@beseye.com");
+				}else if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_STAGING){
+					mEtUserName.setText("beseye_stage@beseye.com");
+				}
+			}
 		}
 		
 		mEtPassword = (EditText)findViewById(R.id.editText_password);
 		if(null != mEtPassword){
 			mEtPassword.addTextChangedListener(mTextWatcher);
 			mEtPassword.setOnEditorActionListener(mOnEditorActionListener);
-			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal())
-				mEtPassword.setText("beseye1234");
+//			if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal())
+//				mEtPassword.setText("Beseye1234");
 		}
 		
 		mTvForgetPassword = (TextView)findViewById(R.id.tv_forgetpw);
