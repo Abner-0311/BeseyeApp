@@ -860,6 +860,10 @@ public class BeseyeJSONUtil {
 		}
 	}
 	
+	static public boolean isCamPowerUnknown(JSONObject objCam){
+		return (BeseyeJSONUtil.getVCamConnStatus(objCam) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_INIT);
+	}
+	
 	static public boolean isCamPowerOn(JSONObject objCam){
 		return (BeseyeJSONUtil.getVCamConnStatus(objCam) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON);
 	}

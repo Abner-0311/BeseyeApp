@@ -1312,6 +1312,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(0 == iRetCode){
 					boolean bIsCamOn = isCamPowerOn();
 					boolean bIsCamDisconnected = isCamPowerDisconnected();
+					boolean bIsCamStatusUnknown = BeseyeJSONUtil.isCamPowerUnknown(mCam_obj);
 					super.onPostExecute(task, result, iRetCode);
 					if(mbIsLiveMode){
 						if(bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED)){
@@ -1321,7 +1322,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //							}
 						}
 						
-						if((isCamPowerOn() && !bIsCamOn) || (isCamPowerOff() && bIsCamOn) || (bIsCamDisconnected != isCamPowerDisconnected()) || mbIsSwitchPlayer){
+						if( bIsCamStatusUnknown || (isCamPowerOn() && !bIsCamOn) || (isCamPowerOff() && bIsCamOn) || (bIsCamDisconnected != isCamPowerDisconnected()) || mbIsSwitchPlayer){
+							if(bIsCamStatusUnknown){
+								mbIsFirstLaunch = true;
+							}
 							checkPlayState();
 						}
 					}
@@ -1676,6 +1680,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	int idx =1;
 	private int miStreamIdx = -1;
 	private Thread mPlayStreamThread = null;
+	static final private long MIN_TIME_SEGMENT_TO_PLAY = 3500L;
+	
+	
 	private void beginLiveView(){
     	if(null == mStreamingView || !isCamPowerOn() || mActivityDestroy){
     		Log.w(TAG, "beginLiveView(), mStreamingView is null or isCamPowerOn() is "+isCamPowerOn()+", mActivityDestroy:"+mActivityDestroy);
@@ -1782,8 +1789,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
                     						mlDVRCurrentStartTs =  mlDVRFirstSegmentStartTs;
                     					}else{
                     						lOffset = mlDVRCurrentStartTs-mlDVRFirstSegmentStartTs;
-                    						if(0 < (lDVRFirstSegmentDuration-lOffset) && (lDVRFirstSegmentDuration-lOffset) < 2000){//too close to segment end
-                    							lOffset-=2000;
+                    						if(0 < (lDVRFirstSegmentDuration-lOffset) && (lDVRFirstSegmentDuration-lOffset) < MIN_TIME_SEGMENT_TO_PLAY){//too close to segment end
+                    							lOffset-=MIN_TIME_SEGMENT_TO_PLAY;
                     							if(0 > lOffset){
                     								lOffset = 0;
                     							}
