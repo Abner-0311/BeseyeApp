@@ -2,6 +2,7 @@ package com.app.beseye.util;
 
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

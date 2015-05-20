@@ -36,6 +36,7 @@ import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeMotionZoneUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BaseOneBtnDialog;
 import com.app.beseye.widget.MotionZoneEditView;
@@ -50,19 +51,10 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 	
 	private Button mBtnOk, mBtnFull, mBtnCancel;
 	private MotionZoneEditView mMotionZoneEditView;
-	private double[] mRatios = {-1.0, -1.0, -1.0, -1.0};
+	private double[] mdRatios = {-1.0, -1.0, -1.0, -1.0};
 	private RemoteImageView mImgThumbnail;
-	private String mThumbnailPath;
 	private ProgressBar mPbLoadingCursor;
-	
-	private final double minZoneRatio = 0.2;
-    private final double confidenceV = 0.95;		//for different device may have different double 
-
-    private String[] mStrObjKey = {BeseyeJSONUtil.MOTION_ZONE_LEFT, 
-			   BeseyeJSONUtil.MOTION_ZONE_TOP,
-			   BeseyeJSONUtil.MOTION_ZONE_RIGHT,
-			   BeseyeJSONUtil.MOTION_ZONE_BOTTOM
-			   };
+	private Intent resultIntent = new Intent();
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -111,13 +103,18 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 			BeseyeUtils.setVisibility(mMotionZoneEditView, View.GONE);
 		}
 		
-		mRatios = getIntent().getDoubleArrayExtra("MotionZoneRatio");
-		if(-1 == mRatios[0]){
-			mRatios = getRatioFromServer();
-		}
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);	
+		mdRatios = getIntent().getDoubleArrayExtra(BeseyeMotionZoneUtil.MOTION_ZONE_RATIO);
 	}
 
+	@Override
+	protected void onSessionComplete(){
+		super.onSessionComplete();
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);
+		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID){
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+		}
+	}
+	
 	//for get size of view
 	@SuppressWarnings("deprecation")
 	@Override
@@ -132,43 +129,16 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 			        obs.removeOnGlobalLayoutListener(this);
 			    }
 				
-				if(-1 == mRatios[0]) {
-					mRatios = getRatioFromServer();
+				if(-1 == mdRatios[0]){
+					mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
+				}	
+				
+				if(!BeseyeMotionZoneUtil.isMotionZoneRangeValiate(mdRatios, BeseyeMotionZoneUtil.siRatioMinV, 
+						BeseyeMotionZoneUtil.siRatioMaxV, BeseyeMotionZoneUtil.sdMinZoneRatio, BeseyeMotionZoneUtil.sdConfidenceV)){
+					BeseyeMotionZoneUtil.setDefaultRatio(mdRatios);
 				}
 				
-//				for(int i=0; i<mRatios.length; i++){
-//					if(0 > mRatios[i]) {
-//						mRatios[i] = 0;
-//					} 
-//					if(1 < mRatios[i]){
-//						mRatios[i] = 1;
-//					}
-//				}
-				
-				boolean isRatioVailate = true;
-				//check 0~1
-				for(int i=0; i<mRatios.length; i++){
-					if(0 > mRatios[i] || 1 < mRatios[i]){
-						isRatioVailate = false;
-						break;
-					}
-				}
-				
-				// check minL 
-				if(isRatioVailate){
-					if( (mRatios[3]-mRatios[1]) < minZoneRatio*confidenceV || (mRatios[2]-mRatios[0]) < minZoneRatio/16.0*9*confidenceV){
-						isRatioVailate = false;
-					}
-				}
-				
-				if(!isRatioVailate){
-					mRatios[0] = 0;
-					mRatios[1] = 0;
-					mRatios[2] = 1;
-					mRatios[3] = 1;
-				}
-				
-				mMotionZoneEditView.Init(mMotionZoneEditView.getWidth(), mMotionZoneEditView.getHeight(), mRatios);	
+				mMotionZoneEditView.init(mMotionZoneEditView.getWidth(), mMotionZoneEditView.getHeight(), mdRatios);	
 			}
 		}
 	}
@@ -200,7 +170,7 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 					BeseyeJSONUtil.setJSONArray(getJSONObject(mCam_obj, ACC_DATA), MOTION_ZONE, motion_zone_array);
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
-	
+					setResult(RESULT_OK, resultIntent);
 					finish();
 				} else {
 					Log.e(TAG, "MotionZoneEditActivity SetMotionZoneTask Error");
@@ -216,9 +186,7 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 			int miThumbnailWidth = BeseyeUtils.getDeviceWidth(this);
 			BeseyeUtils.setThumbnailRatio(mImgThumbnail, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
 			
-			mThumbnailPath = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_THUMB);
-			
-			mImgThumbnail.setURI(mThumbnailPath, 
+			mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_THUMB), 
 								R.drawable.cameralist_s_view_noview_bg, 
 								BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID),
 								new RemoteImageView.RemoteImageCallback(){
@@ -237,32 +205,13 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		}
 	}
 	
-	private double[] getRatioFromServer(){
-		double[] r = {-1.0, -1.0, -1.0, -1.0};
-		JSONArray motion_zone_array =  BeseyeJSONUtil.getJSONArray(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), MOTION_ZONE);
-
-		JSONObject motion_zone_obj = null;
-		try {
-			motion_zone_obj = (JSONObject) motion_zone_array.get(0);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		if(null != motion_zone_obj){
-			for(int idx = 0; idx < mStrObjKey.length; idx++){
-				r[idx] = BeseyeJSONUtil.getJSONDouble(motion_zone_obj, mStrObjKey[idx]);
-			}
-		}
-		
-		return r;
-	}
-	
 	private int setRatio(double[] newRatios){
 		JSONObject obj =  new JSONObject();
 		
 		JSONObject motion_zone_obj =  new JSONObject();
 		if(null != motion_zone_obj){
-			for(int idx = 0; idx < mStrObjKey.length; idx++){
-				BeseyeJSONUtil.setJSONFloat(motion_zone_obj, mStrObjKey[idx], (float)newRatios[idx]);
+			for(int idx = 0; idx < BeseyeMotionZoneUtil.ssStrObjKey.length; idx++){
+				BeseyeJSONUtil.setJSONFloat(motion_zone_obj, BeseyeMotionZoneUtil.ssStrObjKey[idx], (float)newRatios[idx]);
 			}
 		}
 		
@@ -273,8 +222,6 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		monitorAsyncTask(new BeseyeCamBEHttpTask.SetMotionZoneTask(this), true, mStrVCamID, obj.toString());
 		return 0;
 	}
-	
-	
 	
 	@Override
 	public void onClick(View view){
@@ -289,14 +236,13 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 			}
 			case R.id.btn_ok:{
 				double[] newRatios = mMotionZoneEditView.getNewRatio();
-				setRatio(newRatios);
 				
 				Bundle b = new Bundle();
-				b.putDoubleArray("MotionZoneRatio", newRatios);
+				b.putDoubleArray(BeseyeMotionZoneUtil.MOTION_ZONE_RATIO, newRatios);
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-			    Intent resultIntent = new Intent();
-				resultIntent.putExtras(b);
-				setResult(RESULT_OK, resultIntent);	
+				resultIntent.putExtras(b);	
+				
+				setRatio(newRatios);
 				break;
 			}
 			default:

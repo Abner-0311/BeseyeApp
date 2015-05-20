@@ -10,7 +10,6 @@ import static com.app.beseye.util.BeseyeJSONUtil.getJSONObject;
 
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,6 +43,7 @@ import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeMotionZoneUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.RemoteImageView;
@@ -61,28 +61,15 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	private ViewGroup mVgMotionZoneEdit;
 	private ImageView mIvDrawingImageView;
 	private ImageView mIvImageMask;
-	private double[] mRatios = {-1.0, -1.0, -1.0, -1.0};
+	private double[] mdRatios = {-1.0, -1.0, -1.0, -1.0};
 	private BeseyeSwitchBtn mNotifyMeSwitchBtn;
 	private boolean mbModified = false;
 	private RemoteImageView mImgThumbnail;
-	private int mImageWidth, mImageHeight;
-	private boolean mbChangeBySelf = false;
+	private int miImageWidth, miImageHeight;
 	
 	private Canvas canvas;
-	private Paint linePaint, rectPaint;
+	private Paint linePaint;
 	private int strokeWidth;
-
-	private final double minZoneRatio = 0.2;
-	private final double confidenceV = 0.95;		//for different device may have different double
-    private final int maskAlpha = 153;				//255*0.6
-	
-	private String[] mStrObjKey = {BeseyeJSONUtil.MOTION_ZONE_LEFT, 
-			   BeseyeJSONUtil.MOTION_ZONE_TOP,
-			   BeseyeJSONUtil.MOTION_ZONE_RIGHT,
-			   BeseyeJSONUtil.MOTION_ZONE_BOTTOM
-			   };
-	
-	private static final int REQUEST_MOTION_ZONE_EDIT = 1001;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,27 +115,25 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		if(null != mVgMotionZoneEdit){
 			mVgMotionZoneEdit.setOnClickListener(this);
 		}
-		
-    	monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);
-    			
-    	mImageWidth = BeseyeUtils.getDeviceWidth(this);
-		mImageHeight = (int) ((double)mImageWidth/16.0*9);
+				
+    	miImageWidth = BeseyeUtils.getDeviceWidth(this);
+		miImageHeight = (int) ((double)miImageWidth*BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
 		
 		
 		mImgThumbnail = (RemoteImageView)findViewById(R.id.iv_motion_zone_thumbnail);
 		if(null != mImgThumbnail) {
 			Bitmap defaultImage = BitmapFactory.decodeResource(getResources(), R.drawable.cameralist_s_view_noview_bg);
-			mImgThumbnail.setImageBitmap(Bitmap.createScaledBitmap(defaultImage, mImageWidth, mImageHeight, false));
+			mImgThumbnail.setImageBitmap(Bitmap.createScaledBitmap(defaultImage, miImageWidth, miImageHeight, false));
 		}
 		
 	    mIvImageMask = (ImageView) this.findViewById(R.id.iv_motion_zone_mask);
 	    if(null != mIvImageMask){
-		    Bitmap bitmapMask = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
+		    Bitmap bitmapMask = Bitmap.createBitmap(miImageWidth, miImageHeight, Bitmap.Config.ARGB_8888);
 		    mIvImageMask.setImageBitmap(bitmapMask);
 		    mIvImageMask.setBackgroundColor(this.getResources().getColor(R.color.camera_list_video_mask));
 		}
 	    
-	    Bitmap bitmap = Bitmap.createBitmap(mImageWidth, mImageHeight, Bitmap.Config.ARGB_8888);
+	    Bitmap bitmap = Bitmap.createBitmap(miImageWidth, miImageHeight, Bitmap.Config.ARGB_8888);
 		mIvDrawingImageView = (ImageView) this.findViewById(R.id.iv_motion_zone_setting);
 		if(null != mIvDrawingImageView) {
 			mIvDrawingImageView.setImageBitmap(bitmap);
@@ -163,18 +148,6 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setColor(getResources().getColor(R.color.beseye_color_normal));
         linePaint.setStrokeWidth(strokeWidth);
-
-//	    rectPaint = new Paint();
-//	    rectPaint.setAntiAlias(true);
-//        rectPaint.setDither(true);
-//        rectPaint.setStrokeJoin(Paint.Join.MITER);
-//        rectPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-//        rectPaint.setColor(getResources().getColor(R.color.mask_black));
-//        rectPaint.setAlpha(maskAlpha);
-//        rectPaint.setStrokeWidth(0);
-
-        mRatios = getRatioFromServer();
-        drawLineRect();
 	}
 
 	@Override
@@ -189,13 +162,14 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 						setThumbnail();
 					} catch (JSONException e) {
 						e.printStackTrace();
-					
 					}
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					super.onPostExecute(task, result, iRetCode);
 					updateNotificationTypeState();
+					mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
+					drawLineRect();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetNotifySettingTask){
 				if(0 == iRetCode){
@@ -217,16 +191,19 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	@Override
 	protected void onSessionComplete(){
 		super.onSessionComplete();
+    	monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);
 		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID){
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this), true, mStrVCamID);
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}else{
 			updateNotificationTypeState();
+	        mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
+	        drawLineRect();
 		}
 	}
 	
 	private void setThumbnail(){
 		if(null != mImgThumbnail){
-			BeseyeUtils.setThumbnailRatio(mImgThumbnail, mImageWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
+			BeseyeUtils.setThumbnailRatio(mImgThumbnail, miImageWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
 			mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_THUMB), R.drawable.cameralist_s_view_noview_bg, BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID));
 			mImgThumbnail.loadImage();
 		}
@@ -237,9 +214,9 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		switch(view.getId()){
 			case R.id.vg_motion_zone:{
 				Bundle b = new Bundle();
-				b.putDoubleArray("MotionZoneRatio", mRatios);
+				b.putDoubleArray(BeseyeMotionZoneUtil.MOTION_ZONE_RATIO, mdRatios);
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-				launchActivityForResultByClassName(MotionZoneEditActivity.class.getName(), b, REQUEST_MOTION_ZONE_EDIT);
+				launchActivityForResultByClassName(MotionZoneEditActivity.class.getName(), b, BeseyeMotionZoneUtil.REQUEST_MOTION_ZONE_EDIT);
 				break;
 			} 
 			case R.id.iv_nav_left_btn:{
@@ -286,105 +263,47 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void updateUICallback(){
-		if(!mbChangeBySelf) {
-			mRatios = getRatioFromServer();
-		}
-		drawLineRect();
-		mbChangeBySelf = false;
+		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 	}
 	
 	private void drawLineRect(){
+		if(!BeseyeMotionZoneUtil.isMotionZoneRangeValiate(mdRatios, BeseyeMotionZoneUtil.siRatioMinV, 
+				BeseyeMotionZoneUtil.siRatioMaxV, BeseyeMotionZoneUtil.sdMinZoneRatio, BeseyeMotionZoneUtil.sdConfidenceV)){
+			BeseyeMotionZoneUtil.setDefaultRatio(mdRatios);
+		}     
 		Paint p = new Paint();
         p.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
         canvas.drawPaint(p);
         p.setXfermode(new PorterDuffXfermode(Mode.SRC));   
         
-		float left = (float) (mRatios[0]*mImageWidth);
-	    float top = (float) (mRatios[1]*mImageHeight);
-	    float right = (float) (mRatios[2]*mImageWidth);
-	    float bottom = (float) (mRatios[3]*mImageHeight);
+		float left = (float) (mdRatios[0]*miImageWidth);
+	    float top = (float) (mdRatios[1]*miImageHeight);
+	    float right = (float) (mdRatios[2]*miImageWidth);
+	    float bottom = (float) (mdRatios[3]*miImageHeight);
 
 	    canvas.drawRect(left+strokeWidth/2, top+strokeWidth/2, right-strokeWidth/2, bottom-strokeWidth/2, linePaint);
-//	      canvas.drawRect(0, 0, mImageWidth, top, rectPaint); 
-//        canvas.drawRect(0, top, left, bottom, rectPaint);	
-//        canvas.drawRect(right, top, mImageWidth, bottom, rectPaint);
-//        canvas.drawRect(0, bottom, mImageWidth, mImageHeight, rectPaint);
-        
+     
 	    Rect rHole = new Rect((int)left, (int)top, (int)right, (int)bottom);
 	    canvas.clipRect(rHole,  Region.Op.DIFFERENCE);
-	    canvas.drawARGB(maskAlpha, 0, 0, 0);
-	    canvas.clipRect(new Rect(0, 0, mImageWidth, mImageHeight), Region.Op.REPLACE);
+	    canvas.drawARGB(BeseyeMotionZoneUtil.siMaskAlpha, 0, 0, 0);
+	    canvas.clipRect(new Rect(0, 0, miImageWidth, miImageHeight), Region.Op.REPLACE);
 	    
         mIvDrawingImageView.invalidate();
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if(REQUEST_MOTION_ZONE_EDIT == requestCode && resultCode == RESULT_OK){
-			mbChangeBySelf = true;
-			
+		if(BeseyeMotionZoneUtil.REQUEST_MOTION_ZONE_EDIT == requestCode && resultCode == RESULT_OK){
 			try {
 				mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-		    setThumbnail();
-		     
-	        mRatios = intent.getDoubleArrayExtra("MotionZoneRatio");
+		    setThumbnail();	     
+	        mdRatios = intent.getDoubleArrayExtra(BeseyeMotionZoneUtil.MOTION_ZONE_RATIO);
 	        drawLineRect();
 		}
 		super.onActivityResult(requestCode, resultCode, intent);
-	}
-	
-	private double[] getRatioFromServer(){
-		double[] r = {-1.0, -1.0, -1.0, -1.0};
-		
-		JSONArray motion_zone_array =  BeseyeJSONUtil.getJSONArray(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), BeseyeJSONUtil.MOTION_ZONE);
-		if(motion_zone_array == null){
-			Log.e(TAG, "motion_zone_array is null");
-		} else{
-			JSONObject motion_zone_obj = null;
-			try {
-				motion_zone_obj = (JSONObject) motion_zone_array.get(0);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			if(null != motion_zone_obj){
-				for(int idx = 0; idx < mStrObjKey.length; idx++){
-					r[idx] = BeseyeJSONUtil.getJSONDouble(motion_zone_obj, mStrObjKey[idx]);
-				}
-			}
-		}
-			
-		return checkRatioRange(r);
-	}
-	
-	private double[] checkRatioRange(double[] r){
-		boolean isRatioVailate = true;
-		
-		// check 0~1
-		for(int i=0; i<r.length; i++){
-			if(0 > r[i] || 1 < r[i]){
-				isRatioVailate = false;
-				break;
-			}
-		}
-		
-		// check minL 
-		if(isRatioVailate){
-			if( (r[3]-r[1]) < minZoneRatio*confidenceV || (r[2]-r[0]) < minZoneRatio/16.0*9*confidenceV){
-				isRatioVailate = false;
-			}
-		}
-		
-		if(!isRatioVailate){
-			r[0] = 0;
-			r[1] = 0;
-			r[2] = 1;
-			r[3] = 1;
-		}
-		
-		return r;
 	}
 	
 	@Override
@@ -394,11 +313,8 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		super.onResume();
 		
 		if(!mbFirstResume){
-			updateNotificationTypeState();
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
-			
-			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID)
-				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}
 	}
 

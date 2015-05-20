@@ -3,6 +3,7 @@ package com.app.beseye.widget;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,105 +17,95 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.app.beseye.R;
+import com.app.beseye.setting.MotionZoneEditActivity;
+import com.app.beseye.util.BeseyeMotionZoneUtil;
+
+/*
+ * View to drawing
+ * Position of points:
+ * 		1			4
+ * 	
+ * 		2			3
+ */
 
 public class MotionZoneEditView extends View {
   	// point1 and point 3 are of same group and same as point 2 and point4
-	private Point[] points = new Point[4];
+	private Point[] mPoints = new Point[4];
+	private Point[] mOldPoints = new Point[4];
     
 	// position of image
-	private Point thumbnailTopLeft = new Point();
-	private Point thumbnailBotRight = new Point();
-	private int thumbnailWidth = 0;
-	private int thumbnailHeight = 0;
-	private int minMotionZoneL = 0; 	
+	private Point mpThumbnailTopLeft = new Point();
+	private Point mpThumbnailBotRight = new Point();
+	private int miThumbnailWidth = 0;
+	private int miThumbnailHeight = 0;
+	private int miMinMotionZoneL = 0; 	
     
-	private int groupId = -1;
     private ArrayList<ColorBall> colorballs = new ArrayList<ColorBall>();
-    private int balID = 0;
-    
+    private int miGroupId = -1;
+    private int miBalId = 0;
+    private final double mdFatfingerRange = 1.5;
+	
     private Paint linePaint, rectPaint;
     private Canvas canvas;
     private int oldX = -1;
     private int oldY = -1;
-    
     private final int strokeWidth = getResources().getDimensionPixelSize(R.dimen.motion_zone_strokewidth);	
-    private final double fatfingerRange = 1.5;
-    private final double minZoneRatio = 0.2;
-    private final int maskAlpha = 153;	//255*0.6
-    private boolean changeflag =false;
-    
+	    
     public MotionZoneEditView(Context context) {
         super(context);
-        linePaint = new Paint();
-        rectPaint = new Paint();
-        setFocusable(true); 
-        canvas = new Canvas();
+        basicSetup();
     }
 
     public MotionZoneEditView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        basicSetup();
     }
 
     public MotionZoneEditView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        linePaint = new Paint();
+        basicSetup();
+    }
+    
+    private void basicSetup(){
+    	linePaint = new Paint();
         rectPaint = new Paint();
-        setFocusable(true);
         canvas = new Canvas();
+        setFocusable(true);
+  
+        // line
+        linePaint.setAntiAlias(true);
+        linePaint.setDither(true);			
+        linePaint.setStrokeJoin(Paint.Join.ROUND);
+        linePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setColor(getResources().getColor(R.color.beseye_color_normal));
+        linePaint.setStrokeWidth(strokeWidth);
+        
+        // rectangle
+        rectPaint.setAntiAlias(true);
+        rectPaint.setDither(true);
+        rectPaint.setStrokeJoin(Paint.Join.ROUND);
+        rectPaint.setStyle(Paint.Style.FILL);
+        rectPaint.setColor(getResources().getColor(R.color.mask_black));
+        rectPaint.setAlpha(BeseyeMotionZoneUtil.siMaskAlpha);
+        rectPaint.setStrokeWidth(0);
     }
 
-    // the method that draws the balls
     @Override
     protected void onDraw(Canvas canvas) {
-        if(null == points[0]){
-        	 Log.e(TAG, "onDraw: points are null");
+        if(null == mPoints[0]){
+        	 Log.e(TAG, "onDraw: mPoints are null");
         } else{
-	        linePaint.setAntiAlias(true);
-	        linePaint.setDither(true);			
-	        linePaint.setStrokeJoin(Paint.Join.ROUND);
-	        rectPaint.setAntiAlias(true);
-	        rectPaint.setDither(true);
-	        rectPaint.setStrokeJoin(Paint.Join.ROUND);
-	        
+        	// draw mask
+	        canvas.drawRect(mpThumbnailTopLeft.x, mpThumbnailTopLeft.y, mpThumbnailBotRight.x, mPoints[0].y, rectPaint);	             
+	        canvas.drawRect(mpThumbnailTopLeft.x, mPoints[0].y, mPoints[0].x, mPoints[2].y, rectPaint);
+	        canvas.drawRect(mPoints[2].x, mPoints[0].y, mpThumbnailBotRight.x, mPoints[2].y, rectPaint);      
+	        canvas.drawRect(mpThumbnailTopLeft.x, mPoints[2].y, mpThumbnailBotRight.x, mpThumbnailBotRight.y, rectPaint);
 	        // draw line
-	        linePaint.setStyle(Paint.Style.STROKE);
-	        linePaint.setColor(getResources().getColor(R.color.beseye_color_normal));
-	        linePaint.setStrokeWidth(strokeWidth);
-	        
-	        canvas.drawRect(points[0].x, points[0].y, points[2].x, points[2].y, linePaint);
-	     
-	        // fill the rectangle
-	        rectPaint.setStyle(Paint.Style.FILL);
-	        rectPaint.setColor(getResources().getColor(R.color.mask_black));
-	        rectPaint.setAlpha(maskAlpha);	//255*0.6
-	        rectPaint.setStrokeWidth(0);
-	
-	        canvas.drawRect(thumbnailTopLeft.x, 
-	        				thumbnailTopLeft.y, 
-	        				thumbnailBotRight.x, 
-	        				points[0].y-strokeWidth/2 <= thumbnailTopLeft.y ? thumbnailTopLeft.y :points[0].y-strokeWidth/2, rectPaint);
-	       
-	        canvas.drawRect(thumbnailTopLeft.x, 
-	        				points[0].y-strokeWidth/2 <= thumbnailTopLeft.y ? thumbnailTopLeft.y :points[0].y-strokeWidth/2, 
-	        				points[0].x-strokeWidth/2 <= thumbnailTopLeft.x ? thumbnailTopLeft.x :points[0].x-strokeWidth/2, 
-	        				points[2].y+strokeWidth/2 >= thumbnailBotRight.y? thumbnailBotRight.y:points[2].y+strokeWidth/2, rectPaint);
-	     
-	        canvas.drawRect(points[2].x+strokeWidth/2 >= thumbnailBotRight.x? thumbnailBotRight.x:points[2].x+strokeWidth/2, 
-	        				points[0].y-strokeWidth/2 <= thumbnailTopLeft.y ? thumbnailTopLeft.y :points[0].y-strokeWidth/2, 
-	        				thumbnailBotRight.x, 
-	        				points[2].y+strokeWidth/2 >= thumbnailBotRight.y? thumbnailBotRight.y:points[2].y+strokeWidth/2, rectPaint);
-	        
-	        canvas.drawRect(thumbnailTopLeft.x, 
-	        				points[2].y+strokeWidth/2 >= thumbnailBotRight.y? thumbnailBotRight.y:points[2].y+strokeWidth/2, 
-	        				thumbnailBotRight.x, 
-	        				thumbnailBotRight.y, rectPaint);
-	        
-	        // draw the balls on the canvas, reuse linePaint for ball
-	        linePaint.setColor(getResources().getColor(R.color.beseye_color_normal));
-	        linePaint.setStrokeWidth(0);
+	        canvas.drawRect(mPoints[0].x, mPoints[0].y, mPoints[2].x, mPoints[2].y, linePaint);       
+	        // draw balls
 	        for (int i =0; i < colorballs.size(); i ++) {
 	            ColorBall ball = colorballs.get(i);
-	            canvas.drawBitmap(ball.getBitmap(), ball.getX()-ball.getWidthOfBall()/2, ball.getY()-ball.getHeightOfBall()/2, linePaint);
+	            canvas.drawBitmap(ball.getBitmap(), ball.getX()-ball.getWidthOfBall()/2, ball.getY()-ball.getHeightOfBall()/2, null);
 	        }
         }
     }
@@ -122,7 +113,6 @@ public class MotionZoneEditView extends View {
     // events when touching the screen
     public boolean onTouchEvent(MotionEvent event) {
         int eventaction = event.getAction();
-        changeflag = true;
 
         int X = (int) event.getX();
         int Y = (int) event.getY();
@@ -131,12 +121,12 @@ public class MotionZoneEditView extends View {
         switch (eventaction) {
 
 	        case MotionEvent.ACTION_DOWN: // touch down
-	            if (null == points[0]) {
-	               Log.e(TAG, "onTouchEvent: points are null");
+	            if (null == mPoints[0]) {
+	               Log.e(TAG, "onTouchEvent: mPoints are null");
 	            } else {
 	            	//check if the finger is on a ball
-	                balID = -1;
-	                groupId = -1;
+	                miBalId = -1;
+	                miGroupId = -1;
 	                for (int i = colorballs.size()-1; i>=0; i--) {
 	                    ColorBall ball = colorballs.get(i);
 	           
@@ -145,17 +135,17 @@ public class MotionZoneEditView extends View {
 	                            .sqrt((double) (((ball.getX() - X) * (ball.getX() - X)) 
 	                            		+ (ball.getY() - Y) * (ball.getY() - Y)));
 	
-	                    if (radCircle < (ball.getWidthOfBall()*fatfingerRange)) {
-	                        balID = ball.getID();
-	                        if (balID == 1 || balID == 3) {
-	                            groupId = 2;
+	                    if (radCircle < (ball.getWidthOfBall()*mdFatfingerRange)) {
+	                        miBalId = ball.getID();
+	                        if (miBalId == 1 || miBalId == 3) {
+	                            miGroupId = 2;
 	                        } else {
-	                            groupId = 1;
+	                            miGroupId = 1;
 	                        }
 	                        break;
 	                    }
 	                } 
-	                if(-1 == balID){
+	                if(-1 == miBalId){
 	                	// move rectangle
 	                	oldX = X;
 	                	oldY = Y;
@@ -165,17 +155,17 @@ public class MotionZoneEditView extends View {
 	
 	        case MotionEvent.ACTION_MOVE: // touch drag with the ball
 	
-	            if (balID > -1) {
+	            if (miBalId > -1) {
 	            	// resize
-	            	X = X > thumbnailBotRight.x? thumbnailBotRight.x : X;
-            		X = X < thumbnailTopLeft.x? thumbnailTopLeft.x : X;
-            		Y = Y > thumbnailBotRight.y? thumbnailBotRight.y : Y;
-            		Y = Y < thumbnailTopLeft.y? thumbnailTopLeft.y : Y;
+	            	X = X > mpThumbnailBotRight.x? mpThumbnailBotRight.x : X;
+            		X = X < mpThumbnailTopLeft.x? mpThumbnailTopLeft.x : X;
+            		Y = Y > mpThumbnailBotRight.y? mpThumbnailBotRight.y : Y;
+            		Y = Y < mpThumbnailTopLeft.y? mpThumbnailTopLeft.y : Y;
                 	
 	                // move the balls the same as the finger
 	            	if(true == islegalScaleW(X)) {
-		                colorballs.get(balID).setX(X);
-		                if (groupId == 1) {
+		                colorballs.get(miBalId).setX(X);
+		                if (miGroupId == 1) {
 		                    colorballs.get(1).setX(colorballs.get(0).getX());
 		                    colorballs.get(3).setX(colorballs.get(2).getX());
 		                } else {
@@ -184,8 +174,8 @@ public class MotionZoneEditView extends View {
 		                }
 	            	}
 	            	if(true == islegalScaleH(Y)) {
-	                    colorballs.get(balID).setY(Y);
-		                if (groupId == 1) {
+	                    colorballs.get(miBalId).setY(Y);
+		                if (miGroupId == 1) {
 		                    colorballs.get(1).setY(colorballs.get(2).getY());
 		                    colorballs.get(3).setY(colorballs.get(0).getY());
 		                } else {
@@ -198,11 +188,11 @@ public class MotionZoneEditView extends View {
 	            	dX = X - oldX;
 	            	dY = Y - oldY;
 
-	            	if(points[2].x  + dX > thumbnailBotRight.x) {
-	                	dX = thumbnailBotRight.x - points[2].x ;
+	            	if(mPoints[2].x  + dX > mpThumbnailBotRight.x) {
+	                	dX = mpThumbnailBotRight.x - mPoints[2].x ;
 	                }
-	                if(points[0].x  + dX < thumbnailTopLeft.x) {
-	                	dX = thumbnailTopLeft.x - points[0].x ; 
+	                if(mPoints[0].x  + dX < mpThumbnailTopLeft.x) {
+	                	dX = mpThumbnailTopLeft.x - mPoints[0].x ; 
 	                }
                 	colorballs.get(1).setX(colorballs.get(1).getX() + dX);
 	                colorballs.get(2).setX(colorballs.get(2).getX() + dX);
@@ -210,11 +200,11 @@ public class MotionZoneEditView extends View {
 	            	colorballs.get(0).setX(colorballs.get(0).getX() + dX);
 	                oldX = X;
 
-	                if(points[2].y  + dY > thumbnailBotRight.y) {
-	                	dY = thumbnailBotRight.y - points[2].y ;
+	                if(mPoints[2].y  + dY > mpThumbnailBotRight.y) {
+	                	dY = mpThumbnailBotRight.y - mPoints[2].y ;
 	                }
-	                if(points[0].y  + dY < thumbnailTopLeft.y) {
-	                	dY = thumbnailTopLeft.y - points[0].y ; 
+	                if(mPoints[0].y  + dY < mpThumbnailTopLeft.y) {
+	                	dY = mpThumbnailTopLeft.y - mPoints[0].y ; 
 	                }
 	                colorballs.get(1).setY(colorballs.get(1).getY() + dY);
 	                colorballs.get(2).setY(colorballs.get(2).getY() + dY);
@@ -233,12 +223,12 @@ public class MotionZoneEditView extends View {
     
     private boolean islegalScaleW(int X){
     	int width;
-    	if(balID==2 || balID==3){
+    	if(miBalId==2 || miBalId==3){
     		width = X - colorballs.get(0).getX();
     	} else {
     		width = colorballs.get(2).getX() - X;
     	}
-    	if(width < minMotionZoneL) {
+    	if(width < miMinMotionZoneL) {
     		return false;
     	} 
     	return true;
@@ -246,33 +236,33 @@ public class MotionZoneEditView extends View {
     
     private boolean islegalScaleH(int Y){
     	int height;
-    	if(balID==0 || balID==3){
+    	if(miBalId==0 || miBalId==3){
     		height = colorballs.get(2).getY() - Y;
     	} else {
     		height = Y - colorballs.get(0).getY();
     	}
     	
-    	if(height < minMotionZoneL) {
+    	if(height < miMinMotionZoneL) {
     		return false;
     	} 
     	return true;
     }
     
     public void fullscreen(){
-    	if (null == points[0]) {
-            Log.e(TAG, "fullscreen: points are null");
+    	if (null == mPoints[0]) {
+            Log.e(TAG, "fullscreen: mPoints are null");
     	} else {
-	    	points[0].x = thumbnailTopLeft.x;
-	        points[0].y = thumbnailTopLeft.y;
+	    	mPoints[0].x = mpThumbnailTopLeft.x;
+	        mPoints[0].y = mpThumbnailTopLeft.y;
 	
-	        points[1].x = thumbnailTopLeft.x;
-	        points[1].y = thumbnailBotRight.y;
+	        mPoints[1].x = mpThumbnailTopLeft.x;
+	        mPoints[1].y = mpThumbnailBotRight.y;
 	
-	        points[2].x = thumbnailBotRight.x;
-	        points[2].y = thumbnailBotRight.y;
+	        mPoints[2].x = mpThumbnailBotRight.x;
+	        mPoints[2].y = mpThumbnailBotRight.y;
 	
-	        points[3].x = thumbnailBotRight.x;
-	        points[3].y = thumbnailTopLeft.y;
+	        mPoints[3].x = mpThumbnailBotRight.x;
+	        mPoints[3].y = mpThumbnailTopLeft.y;
 	            
 	    	invalidate();
 	    }
@@ -281,74 +271,78 @@ public class MotionZoneEditView extends View {
     public double[] getNewRatio(){
     	double[] ratios = new double[4];
     	
-    	if (null == points[0]) {
-            Log.e(TAG, "getNewRatio(): points are null");
+    	if (null == mPoints[0]) {
+            Log.e(TAG, "getNewRatio(): mPoints are null");
     	} else {
-	        ratios[0] = (points[0].x - thumbnailTopLeft.x)/(double)thumbnailWidth;
-	        ratios[1] = (points[0].y - thumbnailTopLeft.y)/(double)thumbnailHeight;
-	        ratios[2] = (points[2].x - thumbnailTopLeft.x)/(double)thumbnailWidth;
-	        ratios[3] = (points[2].y - thumbnailTopLeft.y)/(double)thumbnailHeight;
+	        ratios[0] = (mPoints[0].x - mpThumbnailTopLeft.x)/(double)miThumbnailWidth;
+	        ratios[1] = (mPoints[0].y - mpThumbnailTopLeft.y)/(double)miThumbnailHeight;
+	        ratios[2] = (mPoints[2].x - mpThumbnailTopLeft.x)/(double)miThumbnailWidth;
+	        ratios[3] = (mPoints[2].y - mpThumbnailTopLeft.y)/(double)miThumbnailHeight;
     	}
     	return ratios;
     }
     
     public boolean isChange(){
-    	return changeflag;
+    	if(Arrays.equals(mPoints, mOldPoints)){
+    		return false;
+    	}
+    	return true;
     }
     
-    public void Init(int viewWidth, int viewHeight, double[] r){
+    public void init(int viewWidth, int viewHeight, double[] r){
     	float padding = getResources().getDimensionPixelSize(R.dimen.motion_zone_padding);
        
     	if(viewWidth>0 && viewHeight>0){
 		    if((double)viewWidth/16.0 > (double)viewHeight/9.0){
-		    	thumbnailHeight = (int) (viewHeight - padding*2);
-		    	thumbnailWidth = (int) ((double)thumbnailHeight/9.0*16);
+		    	miThumbnailHeight = (int) (viewHeight - padding*2);
+		    	miThumbnailWidth = (int) ((double)miThumbnailHeight/9.0*16);
 		        
-		       	thumbnailTopLeft.x= (int) ((viewWidth - thumbnailWidth)/2);
-		    	thumbnailTopLeft.y= (int) (padding);
-		    	thumbnailBotRight.x= (int) (viewWidth - (viewWidth - thumbnailWidth)/2);
-		    	thumbnailBotRight.y= (int) (viewHeight - padding);
+		       	mpThumbnailTopLeft.x= (int) ((viewWidth - miThumbnailWidth)/2);
+		    	mpThumbnailTopLeft.y= (int) (padding);
+		    	mpThumbnailBotRight.x= (int) (viewWidth - (viewWidth - miThumbnailWidth)/2);
+		    	mpThumbnailBotRight.y= (int) (viewHeight - padding);
 		    } else {
-		    	thumbnailWidth = (int) (viewWidth - padding*2);
-		    	thumbnailHeight = (int) ((double)viewWidth/16.0*9);
+		    	miThumbnailWidth = (int) (viewWidth - padding*2);
+		    	miThumbnailHeight = (int) ((double)viewWidth/16.0*9);
 		    	
-		       	thumbnailTopLeft.x= (int) (padding);
-		    	thumbnailTopLeft.y= (int) ((viewHeight - thumbnailHeight)/2);
-		    	thumbnailBotRight.x= (int) (viewWidth - padding);
-		    	thumbnailBotRight.y= (int) (viewHeight - (viewHeight - thumbnailHeight)/2);
+		       	mpThumbnailTopLeft.x= (int) (padding);
+		    	mpThumbnailTopLeft.y= (int) ((viewHeight - miThumbnailHeight)/2);
+		    	mpThumbnailBotRight.x= (int) (viewWidth - padding);
+		    	mpThumbnailBotRight.y= (int) (viewHeight - (viewHeight - miThumbnailHeight)/2);
 		    }
 		    
-		    minMotionZoneL = (int) ((double)(thumbnailBotRight.y - thumbnailTopLeft.y)*minZoneRatio);
+		    miMinMotionZoneL = (int) ((double)(mpThumbnailBotRight.y - mpThumbnailTopLeft.y)*BeseyeMotionZoneUtil.sdMinZoneRatio);
 		    setInitMotionZone(r[0], r[1], r[2], r[3]);
     	} 
     }
     
     private void setInitMotionZone(double leftR, double topR, double rightR, double botR){
     	//initialize rectangle.
-        points[0] = new Point();
-        points[0].x = (int) (thumbnailTopLeft.x + leftR*thumbnailWidth);
-        points[0].y = (int) (thumbnailTopLeft.y + topR*thumbnailHeight);
+        mPoints[0] = new Point();
+        mPoints[0].x = (int) (mpThumbnailTopLeft.x + leftR*miThumbnailWidth);
+        mPoints[0].y = (int) (mpThumbnailTopLeft.y + topR*miThumbnailHeight);
 
-        points[1] = new Point();
-        points[1].x = (int) (thumbnailTopLeft.x + leftR*thumbnailWidth);
-        points[1].y = (int) (thumbnailTopLeft.y + botR*thumbnailHeight);
+        mPoints[1] = new Point();
+        mPoints[1].x = (int) (mpThumbnailTopLeft.x + leftR*miThumbnailWidth);
+        mPoints[1].y = (int) (mpThumbnailTopLeft.y + botR*miThumbnailHeight);
 
-        points[2] = new Point();
-        points[2].x = (int) (thumbnailTopLeft.x + rightR*thumbnailWidth);
-        points[2].y = (int) (thumbnailTopLeft.y + botR*thumbnailHeight);
+        mPoints[2] = new Point();
+        mPoints[2].x = (int) (mpThumbnailTopLeft.x + rightR*miThumbnailWidth);
+        mPoints[2].y = (int) (mpThumbnailTopLeft.y + botR*miThumbnailHeight);
 
-        points[3] = new Point();
-        points[3].x = (int) (thumbnailTopLeft.x + rightR*thumbnailWidth);
-        points[3].y = (int) (thumbnailTopLeft.y + topR*thumbnailHeight);
+        mPoints[3] = new Point();
+        mPoints[3].x = (int) (mpThumbnailTopLeft.x + rightR*miThumbnailWidth);
+        mPoints[3].y = (int) (mpThumbnailTopLeft.y + topR*miThumbnailHeight);
 
-        balID = 2;
-        groupId = 1;
-        int id = 0;
-        for (Point pt : points) {
-             colorballs.add(new ColorBall(getContext(), pt, id));
-             id++;
+        miBalId = 2;
+        miGroupId = 1;
+        for (int i=0; i<mPoints.length; i++) {
+             colorballs.add(new ColorBall(getContext(), mPoints[i], i));
+             mOldPoints[i] = new Point();
+             mOldPoints[i].x = mPoints[i].x;
+             mOldPoints[i].y = mPoints[i].y;
         }
-        
+      
         invalidate();
     }
 

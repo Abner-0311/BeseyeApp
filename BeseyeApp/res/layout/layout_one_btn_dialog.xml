@@ -20,16 +20,15 @@
 	<LinearLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
+	    android:minHeight="@dimen/dialog_body_height"
 	    android:background="@drawable/wifisetup_password_inf_bg_mid">
    	   	<TextView 
    	   	    android:id="@+id/txt_dialog_body"
 	   	    android:layout_width="match_parent"
 	   		android:layout_height="wrap_content" 
-	   		android:layout_gravity="center"
+	   		android:layout_gravity="center|center_vertical"
 	   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
    			android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding" 
-   			android:layout_marginTop="@dimen/dialog_vertical_padding" 
-   			android:layout_marginBottom="@dimen/dialog_vertical_padding" 
 	   		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
 	   		android:textColor="@color/wifi_info_dialog_attr_font_color"/>
 	</LinearLayout>

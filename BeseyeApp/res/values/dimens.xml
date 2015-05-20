@@ -231,8 +231,8 @@
     
     <!-- for motion zone -->
     <dimen name="motion_zone_padding">25dp</dimen>
-	<dimen name="dialog_vertical_padding">50dp</dimen>
     <dimen name="motion_zone_strokewidth">4dp</dimen>
+    <dimen name="dialog_body_height">150dp</dimen>
 	
     <!-- for ViewShare -->
     <dimen name="snapshot_image_width">325dp</dimen>
