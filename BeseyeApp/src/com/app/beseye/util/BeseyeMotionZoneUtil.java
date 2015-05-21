@@ -70,7 +70,7 @@ public class BeseyeMotionZoneUtil {
 		r[0] = siRatioMinV;
 		r[1] = siRatioMinV;
 		r[2] = siRatioMaxV;
-		r[2] = siRatioMaxV;
+		r[3] = siRatioMaxV;
 		
 		return r;
 	}
