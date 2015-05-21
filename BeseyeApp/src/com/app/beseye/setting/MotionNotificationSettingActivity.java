@@ -75,6 +75,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		if(DEBUG)
 			Log.i(TAG, "MotionNotificationSettingActivity::onCreate()");
+		
 		super.onCreate(savedInstanceState);
 		
 		getSupportActionBar().setDisplayOptions(0);
@@ -167,6 +168,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					super.onPostExecute(task, result, iRetCode);
+					
 					updateNotificationTypeState();
 					mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
 					drawLineRect();
@@ -175,6 +177,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 				if(0 == iRetCode){
 					if(DEBUG)
 						Log.i(TAG, "onPostExecute(), "+result.toString());
+				
 					JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(result.get(0), NOTIFY_OBJ);
 					BeseyeJSONUtil.setJSONObject(getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ, notify_obj);
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
@@ -191,7 +194,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	@Override
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-    	monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);
 		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID){
 			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}else{
@@ -263,7 +266,8 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected void updateUICallback(){
-		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+		mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
+		drawLineRect();
 	}
 	
 	private void drawLineRect(){
@@ -300,9 +304,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 				e.printStackTrace();
 			}
 		    setThumbnail();	     
-	        mdRatios = intent.getDoubleArrayExtra(BeseyeMotionZoneUtil.MOTION_ZONE_RATIO);
-	        drawLineRect();
-		}
+		 }
 		super.onActivityResult(requestCode, resultCode, intent);
 	}
 	
@@ -314,7 +316,8 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		
 		if(!mbFirstResume){
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID)
+				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}
 	}
 

@@ -22,8 +22,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -47,14 +45,13 @@ import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.RemoteImageView;
 
 public class MotionZoneEditActivity extends BeseyeBaseActivity 
-									implements OnClickListener, OnGlobalLayoutListener{
+									implements OnClickListener{
 	
 	private Button mBtnOk, mBtnFull, mBtnCancel;
 	private MotionZoneEditView mMotionZoneEditView;
 	private double[] mdRatios = {-1.0, -1.0, -1.0, -1.0};
 	private RemoteImageView mImgThumbnail;
 	private ProgressBar mPbLoadingCursor;
-	private Intent resultIntent = new Intent();
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -97,9 +94,6 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		}
 		mMotionZoneEditView = (MotionZoneEditView)findViewById(R.id.iv_motion_zone_edit);		
 		if(null != mMotionZoneEditView){
-			ViewTreeObserver vto = mMotionZoneEditView.getViewTreeObserver();
-			vto.addOnGlobalLayoutListener(this);
-
 			BeseyeUtils.setVisibility(mMotionZoneEditView, View.GONE);
 		}
 		
@@ -109,37 +103,9 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 	@Override
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);
+		monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);		
 		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID){
 			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
-		}
-	}
-	
-	//for get size of view
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onGlobalLayout() {
-		if(null != mMotionZoneEditView) {
-			if (mMotionZoneEditView.getWidth() > 0 && mMotionZoneEditView.getHeight() > 0) {
-				ViewTreeObserver obs = mMotionZoneEditView.getViewTreeObserver();
-				
-				if (Build.VERSION.SDK_INT < 16) {
-			        obs.removeGlobalOnLayoutListener(this);
-			    }else {
-			        obs.removeOnGlobalLayoutListener(this);
-			    }
-				
-				if(-1 == mdRatios[0]){
-					mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
-				}	
-				
-				if(!BeseyeMotionZoneUtil.isMotionZoneRangeValiate(mdRatios, BeseyeMotionZoneUtil.siRatioMinV, 
-						BeseyeMotionZoneUtil.siRatioMaxV, BeseyeMotionZoneUtil.sdMinZoneRatio, BeseyeMotionZoneUtil.sdConfidenceV)){
-					BeseyeMotionZoneUtil.setDefaultRatio(mdRatios);
-				}
-				
-				mMotionZoneEditView.init(mMotionZoneEditView.getWidth(), mMotionZoneEditView.getHeight(), mdRatios);	
-			}
 		}
 	}
 	
@@ -165,11 +131,16 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 					showThumbnailError();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetMotionZoneTask){
-				if(0 == iRetCode){
+				if(0 == iRetCode){	
 					JSONArray motion_zone_array =  BeseyeJSONUtil.getJSONArray(result.get(0), MOTION_ZONE);
 					BeseyeJSONUtil.setJSONArray(getJSONObject(mCam_obj, ACC_DATA), MOTION_ZONE, motion_zone_array);
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
+				
+					Bundle b = new Bundle();
+					b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+					Intent resultIntent = new Intent();
+					resultIntent.putExtras(b);					
 					setResult(RESULT_OK, resultIntent);
 					finish();
 				} else {
@@ -185,7 +156,7 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		if(null != mImgThumbnail){
 			int miThumbnailWidth = BeseyeUtils.getDeviceWidth(this);
 			BeseyeUtils.setThumbnailRatio(mImgThumbnail, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
-			
+				
 			mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_THUMB), 
 								R.drawable.cameralist_s_view_noview_bg, 
 								BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID),
@@ -193,16 +164,31 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 									@Override
 									public void imageLoaded(boolean success) {
 										if(true == success){
+											drawMotionZoneRect();
 											BeseyeUtils.setVisibility(mPbLoadingCursor, View.GONE);
 											BeseyeUtils.setVisibility(mMotionZoneEditView, View.VISIBLE);
 											BeseyeUtils.setEnabled(mBtnFull, true);
-											BeseyeUtils.setEnabled(mBtnOk, true);
+											BeseyeUtils.setEnabled(mBtnOk, true);			
 										} else{
 											showThumbnailError();
 										}
 									}});
+								
 			mImgThumbnail.loadImage();
 		}
+	}
+	
+	private void drawMotionZoneRect(){
+		if(-1 == mdRatios[0]){
+			mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
+		}	
+		
+		if(!BeseyeMotionZoneUtil.isMotionZoneRangeValiate(mdRatios, BeseyeMotionZoneUtil.siRatioMinV, 
+				BeseyeMotionZoneUtil.siRatioMaxV, BeseyeMotionZoneUtil.sdMinZoneRatio, BeseyeMotionZoneUtil.sdConfidenceV)){
+			BeseyeMotionZoneUtil.setDefaultRatio(mdRatios);
+		}
+		
+		mMotionZoneEditView.init(mImgThumbnail.getWidth(), mImgThumbnail.getHeight(), mdRatios);	
 	}
 	
 	private int setRatio(double[] newRatios){
@@ -236,12 +222,6 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 			}
 			case R.id.btn_ok:{
 				double[] newRatios = mMotionZoneEditView.getNewRatio();
-				
-				Bundle b = new Bundle();
-				b.putDoubleArray(BeseyeMotionZoneUtil.MOTION_ZONE_RATIO, newRatios);
-				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-				resultIntent.putExtras(b);	
-				
 				setRatio(newRatios);
 				break;
 			}

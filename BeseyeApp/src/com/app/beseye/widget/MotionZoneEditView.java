@@ -290,8 +290,9 @@ public class MotionZoneEditView extends View {
     }
     
     public void init(int viewWidth, int viewHeight, double[] r){
+    	
     	float padding = getResources().getDimensionPixelSize(R.dimen.motion_zone_padding);
-       
+
     	if(viewWidth>0 && viewHeight>0){
 		    if((double)viewWidth/16.0 > (double)viewHeight/9.0){
 		    	miThumbnailHeight = (int) (viewHeight - padding*2);
