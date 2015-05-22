@@ -2163,7 +2163,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		}
     	}else{
     		Log.i(TAG, "onBitmapScreenshotUpdate(), invalid match mlRequestBitmapScreenshotTs:"+mlRequestBitmapScreenshotTs+", lTs:"+lTs);
-    		if(null != bmp){
+    		if(null != bmp && false == bmp.isRecycled()){
     			bmp.recycle();
     		}
     		mlRequestBitmapScreenshotTs = -1;
@@ -2222,6 +2222,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    		    		d.show();
 								}}, 500);
 	    		        }
+	    		        bmp[0].recycle();
     		        }
     		    } catch (Exception e) {
     		        e.printStackTrace();

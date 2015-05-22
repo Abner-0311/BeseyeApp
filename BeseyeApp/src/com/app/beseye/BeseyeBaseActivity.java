@@ -351,6 +351,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_LOGIN   	= 6; 
 	static public final int DIALOG_ID_SIGNUP  	= 7; 
 	static public final int DIALOG_ID_NO_NETWORK= 8; 
+	static public final int DIALOG_ID_DETACH_CAM= 9; 
 	
 	static public final int DIALOG_ID_WIFI_BASE 			= 0x1000; 
 	static public final int DIALOG_ID_TURN_ON_WIFI 			= DIALOG_ID_WIFI_BASE+1; 
@@ -513,6 +514,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}
 			case DIALOG_ID_PLAYER_CAPTURE:{
 				dialog = ProgressDialog.show(this, "", getString(R.string.player_screenshot_capturing), true, true);
+				dialog.setCancelable(false);
+				//TODO: avoid this dialog infinite showing
+				break;
+			}
+			case DIALOG_ID_DETACH_CAM:{
+				dialog = ProgressDialog.show(this, "", getString(R.string.cam_setting_title_detach_cam), true, true);
 				dialog.setCancelable(false);
 				//TODO: avoid this dialog infinite showing
 				break;
@@ -1065,7 +1072,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		runOnUiThread(new Runnable(){
 			@Override
 			public void run() {
-					//Toast.makeText(BeseyeBaseActivity.this, strMsg, Toast.LENGTH_LONG).show();
+					Toast.makeText(BeseyeBaseActivity.this, strMsg, Toast.LENGTH_LONG).show();
 			}});
 	}
 	

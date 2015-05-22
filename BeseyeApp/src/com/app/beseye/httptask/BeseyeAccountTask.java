@@ -38,6 +38,9 @@ public class BeseyeAccountTask {
 	public static final String URL_CAM_VALIDATE		="vcam/validate";
 	public static final String URL_CAM_VALIDATE_BEE	="vcam/bee_validate";
 	
+	public static final String URL_CAM_DEATTACH_SALE="vcam/detach_by_sales?UidList=%s&SalesDemoToken=skHGU1TsnbfHIqKWyKFlapJ8BVMV0UeZM1I2Bm41NQBil9JepgOLV4Agf1h84a82";
+	
+	
 	static private void appendDevInfo(JSONObject obj){
 		if(null != obj){
 			JSONObject objClient = new JSONObject();
@@ -403,24 +406,11 @@ public class BeseyeAccountTask {
 	static public class CamDettachByHWIDTask extends BeseyeHttpTask {	 	
 		public CamDettachByHWIDTask(OnHttpTaskCallback cb) {
 			super(cb);
-			setHttpMethod(HttpPost.METHOD_NAME);
 		}
  
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			JSONObject obj = new JSONObject();
-			try {
-				obj.put(ACC_VCAM_HW_ID, strParams[0]);
-				appendDevInfo(obj);
-				if(BeseyeConfig.DEBUG)
-					Log.e(TAG, "obj:"+obj.toString());
-				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_DEATTACH, obj.toString());
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			return null;	
+			return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+String.format(URL_CAM_DEATTACH_SALE, strParams[0]));
 		}
 	}
 	
