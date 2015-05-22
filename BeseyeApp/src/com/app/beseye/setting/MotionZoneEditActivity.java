@@ -152,6 +152,17 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		}
 	}
 	
+	@Override
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
+			String strMsg) {
+		// GetLatestThumbnailTask don't need to have onErrorReport because it has its error dialog
+		if(task instanceof BeseyeCamBEHttpTask.SetMotionZoneTask){
+			showErrorDialog(R.string.cam_setting_fail_to_update_motion_zone, true);
+		}else{
+			super.onErrorReport(task, iErrType, strTitle, strMsg);
+		}
+	}
+	
 	private void setThumbnail(){
 		if(null != mImgThumbnail){
 			int miThumbnailWidth = BeseyeUtils.getDeviceWidth(this);

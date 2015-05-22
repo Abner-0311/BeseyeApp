@@ -182,12 +182,24 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 					BeseyeJSONUtil.setJSONObject(getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ, notify_obj);
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
-					finish();
 				}
 				updateNotificationTypeState();
 			}else{
 				super.onPostExecute(task, result, iRetCode);
 			}
+		}
+	}
+	
+	@Override
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
+			String strMsg) {
+		// GetLatestThumbnailTask don't need to have onErrorReport because it has default image
+		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true);
+		}else if(task instanceof BeseyeCamBEHttpTask.SetNotifySettingTask){
+			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true);
+		}else{
+			super.onErrorReport(task, iErrType, strTitle, strMsg);
 		}
 	}
 	
@@ -222,50 +234,38 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 				launchActivityForResultByClassName(MotionZoneEditActivity.class.getName(), b, BeseyeMotionZoneUtil.REQUEST_MOTION_ZONE_EDIT);
 				break;
 			} 
-			case R.id.iv_nav_left_btn:{
-				setNotifySetting();
-				break;
-			}
 			default:
 				super.onClick(view);	
 		}
 	}
-	
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		if(keyCode == KeyEvent.KEYCODE_BACK){
-			setNotifySetting();
-			return true;
-		}		
-		return super.onKeyUp(keyCode, event);
-	}
 
-	private void setNotifySetting(){
-		if(checkDiff()){
-			JSONObject obj =  new JSONObject();
-			if(null != obj){
-				BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, (null != mNotifyMeSwitchBtn && mNotifyMeSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON));
-				monitorAsyncTask(new BeseyeCamBEHttpTask.SetNotifySettingTask(this), true, mStrVCamID, obj.toString());
-			}
-		}else{
-			finish();
-		}
-	}
+//	private void setNotifySetting(){
+//		if(checkDiff()){
+//			JSONObject obj =  new JSONObject();
+//			if(null != obj){
+//				BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, (null != mNotifyMeSwitchBtn && mNotifyMeSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON));
+//				monitorAsyncTask(new BeseyeCamBEHttpTask.SetNotifySettingTask(this), true, mStrVCamID, obj.toString());
+//			}
+//		}else{
+//			finish();
+//		}
+//	}
 	
-	private boolean checkDiff(){
-		boolean bRet = false;
-		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
-		if(null != notify_obj){
-			boolean bNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
-			if(!mNotifyMeSwitchBtn.getSwitchState().equals(bNotifyMe?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF)){
-				bRet = true;
-			}
-		}	
-		return bRet;
-	}
+//	private boolean checkDiff(){
+//		boolean bRet = false;
+//		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
+//		if(null != notify_obj){
+//			boolean bNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
+//			if(!mNotifyMeSwitchBtn.getSwitchState().equals(bNotifyMe?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF)){
+//				bRet = true;
+//			}
+//		}	
+//		return bRet;
+//	}
 	
 	@Override
 	protected void updateUICallback(){
+		updateNotificationTypeState();
 		mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
 		drawLineRect();
 	}
@@ -313,12 +313,21 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		if(DEBUG)
 			Log.i(TAG, "MotionNotificationSettingActivity::onResume()");	
 		super.onResume();
+		Log.v(TAG, "Kelly onResume");
 		
 		if(!mbFirstResume){
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
 			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID)
 				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		if(DEBUG)
+			Log.d(TAG, "MotionNotificationSettingActivity::onPause()");
+		Log.v(TAG, "Kelly onPause");
+		super.onPause();
 	}
 
 	@Override
@@ -329,9 +338,13 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	@Override
 	public void onSwitchBtnStateChanged(SwitchState state, View view) {
 		mbModified = true;
-		updateNotificationTypeState();	
+		JSONObject obj =  new JSONObject();
+		if(null != obj){
+			BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, (null != mNotifyMeSwitchBtn && mNotifyMeSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON));
+			monitorAsyncTask(new BeseyeCamBEHttpTask.SetNotifySettingTask(this), true, mStrVCamID, obj.toString());
+		}
 	}
-	
+
 	private void updateNotificationTypeState(){
 		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
 		if(false == mbModified){
