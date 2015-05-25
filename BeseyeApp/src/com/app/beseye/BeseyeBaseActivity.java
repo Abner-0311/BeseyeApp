@@ -71,6 +71,8 @@ import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
+import com.app.beseye.widget.BaseOneBtnDialog;
+import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
 
 
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, 
@@ -378,81 +380,123 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
 		Dialog dialog;
 		switch(id){
-			case DIALOG_ID_WARNING:{
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            	builder.setTitle(bundle.getString(KEY_WARNING_TITLE, getString(R.string.dialog_title_warning)));
-            	builder.setMessage(bundle.getString(KEY_WARNING_TEXT));
-				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				    public void onClick(DialogInterface dialog, int item) {
-				    	removeMyDialog(DIALOG_ID_WARNING);
-				    }
-				});
-				builder.setOnCancelListener(new OnCancelListener(){
-					@Override
-					public void onCancel(DialogInterface dialog) {
-						removeMyDialog(DIALOG_ID_WARNING);
-						if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
-							finish();
-						}
-					}});
-				
-				dialog = builder.create();
-				if(null != dialog){
-					dialog.setCanceledOnTouchOutside(true);
-					if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
-						((android.app.AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
-						    public void onClick(DialogInterface dialog, int item) {
-						    	removeMyDialog(DIALOG_ID_WARNING);
-						    	finish();
-						    }
-						});
-					}
-				}
-				break;
-			}
-			case DIALOG_ID_NO_NETWORK:{
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            	builder.setTitle(getString(R.string.dialog_title_warning));
-            	builder.setMessage(R.string.streaming_error_no_network);
-				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				    public void onClick(DialogInterface dialog, int item) {
-				    	removeMyDialog(DIALOG_ID_NO_NETWORK);
-				    }
-				});
-				
-				builder.setOnCancelListener(new OnCancelListener(){
-					@Override
-					public void onCancel(DialogInterface dialog) {
-						removeMyDialog(DIALOG_ID_NO_NETWORK);
-					}});
-				
-				dialog = builder.create();
-				if(null != dialog){
-					dialog.setCanceledOnTouchOutside(true);
-				}
-				break;
-			}
-			case DIALOG_ID_INFO:{
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            	builder.setTitle(bundle.getString(KEY_INFO_TITLE, getString(R.string.dialog_title_info)));
-            	builder.setMessage(bundle.getString(KEY_INFO_TEXT));
-				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				    public void onClick(DialogInterface dialog, int item) {
-				    	removeMyDialog(DIALOG_ID_INFO);
-				    }
-				});
-				builder.setOnCancelListener(new OnCancelListener(){
-					@Override
-					public void onCancel(DialogInterface dialog) {
-						removeMyDialog(DIALOG_ID_INFO);
-					}});
-				
-				dialog = builder.create();
-				if(null != dialog){
-					dialog.setCanceledOnTouchOutside(true);
-				}
-				break;
-			}
+		case DIALOG_ID_WARNING:{
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			d.setBodyText(bundle.getString(KEY_WARNING_TEXT));
+			d.setTitleText(bundle.getString(KEY_WARNING_TITLE, getString(R.string.dialog_title_warning)));
+
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+			
+				@Override
+				public void onBtnClick() {
+					removeMyDialog(DIALOG_ID_WARNING);			
+				}});
+			dialog = d;
+			break;
+		}
+		case DIALOG_ID_NO_NETWORK:{
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			d.setBodyText(R.string.streaming_error_no_network);
+			d.setTitleText(getString(R.string.dialog_title_warning));
+
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+			
+				@Override
+				public void onBtnClick() {
+					removeMyDialog(DIALOG_ID_NO_NETWORK);		
+				}});
+			dialog = d;
+			break;
+		}
+		case DIALOG_ID_INFO:{
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			d.setBodyText(bundle.getString(KEY_INFO_TEXT));
+			d.setTitleText(bundle.getString(KEY_INFO_TITLE, getString(R.string.dialog_title_info)));
+
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+			
+				@Override
+				public void onBtnClick() {
+					removeMyDialog(DIALOG_ID_INFO);			
+				}});
+			dialog = d;
+			break;
+		}
+//			case DIALOG_ID_WARNING:{
+//				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            	builder.setTitle(bundle.getString(KEY_WARNING_TITLE, getString(R.string.dialog_title_warning)));
+//            	builder.setMessage(bundle.getString(KEY_WARNING_TEXT));
+//				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+//				    public void onClick(DialogInterface dialog, int item) {
+//				    	removeMyDialog(DIALOG_ID_WARNING);
+//				    }
+//				});
+//				builder.setOnCancelListener(new OnCancelListener(){
+//					@Override
+//					public void onCancel(DialogInterface dialog) {
+//						removeMyDialog(DIALOG_ID_WARNING);
+//						if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
+//							finish();
+//						}
+//					}});
+//				
+//				dialog = builder.create();
+//				if(null != dialog){
+//					dialog.setCanceledOnTouchOutside(true);
+//					if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
+//						((android.app.AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
+//						    public void onClick(DialogInterface dialog, int item) {
+//						    	removeMyDialog(DIALOG_ID_WARNING);
+//						    	finish();
+//						    }
+//						});
+//					}
+//				}
+//				break;
+//			}
+//			case DIALOG_ID_NO_NETWORK:{
+//				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            	builder.setTitle(getString(R.string.dialog_title_warning));
+//            	builder.setMessage(R.string.streaming_error_no_network);
+//				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+//				    public void onClick(DialogInterface dialog, int item) {
+//				    	removeMyDialog(DIALOG_ID_NO_NETWORK);
+//				    }
+//				});
+//				
+//				builder.setOnCancelListener(new OnCancelListener(){
+//					@Override
+//					public void onCancel(DialogInterface dialog) {
+//						removeMyDialog(DIALOG_ID_NO_NETWORK);
+//					}});
+//				
+//				dialog = builder.create();
+//				if(null != dialog){
+//					dialog.setCanceledOnTouchOutside(true);
+//				}
+//				break;
+//			}
+//			case DIALOG_ID_INFO:{
+//				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            	builder.setTitle(bundle.getString(KEY_INFO_TITLE, getString(R.string.dialog_title_info)));
+//            	builder.setMessage(bundle.getString(KEY_INFO_TEXT));
+//				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+//				    public void onClick(DialogInterface dialog, int item) {
+//				    	removeMyDialog(DIALOG_ID_INFO);
+//				    }
+//				});
+//				builder.setOnCancelListener(new OnCancelListener(){
+//					@Override
+//					public void onCancel(DialogInterface dialog) {
+//						removeMyDialog(DIALOG_ID_INFO);
+//					}});
+//				
+//				dialog = builder.create();
+//				if(null != dialog){
+//					dialog.setCanceledOnTouchOutside(true);
+//				}
+//				break;
+//			}
 			default:
 				dialog = super.onCreateDialog(id, bundle);
 		}
@@ -533,53 +577,53 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return dialog;
 	}
 
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
-		switch (id) {
-			case DIALOG_ID_LOADING:{
-				String strMsgRes = "";
-				if(null != args){
-					strMsgRes = args.getString(KEY_WARNING_TEXT);
-				}
-				if(dialog instanceof AlertDialog){
-					if(0 < strMsgRes.length())
-						((AlertDialog) dialog).setMessage(strMsgRes);
-				}
-			}
-	        case DIALOG_ID_WARNING:{
-				String strTitleRes = "", strMsgRes = "";
-				if(null != args){
-					strTitleRes = args.getString(KEY_WARNING_TITLE);
-					strMsgRes = args.getString(KEY_WARNING_TEXT);
-				}
-				if(dialog instanceof AlertDialog){
-					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon);
-					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_warning):strTitleRes);
-					if(0 < strMsgRes.length())
-						((AlertDialog) dialog).setMessage(strMsgRes);
-				}
-				
-				break;
-			}
-	        case DIALOG_ID_INFO:{
-				String strTitleRes = "", strMsgRes = "";
-				if(null != args){
-					strTitleRes = args.getString(KEY_INFO_TITLE);
-					strMsgRes = args.getString(KEY_INFO_TEXT);
-				}
-				if(dialog instanceof AlertDialog){
-					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon);
-					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_info):strTitleRes);
-					if(0 < strMsgRes.length())
-						((AlertDialog) dialog).setMessage(strMsgRes);
-				}
-				
-				break;
-			}
-	        default:
-	        	super.onPrepareDialog(id, dialog, args);
-	    }
-	}
+//	@Override
+//	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+//		switch (id) {
+//			case DIALOG_ID_LOADING:{
+//				String strMsgRes = "";
+//				if(null != args){
+//					strMsgRes = args.getString(KEY_WARNING_TEXT);
+//				}
+//				if(dialog instanceof AlertDialog){
+//					if(0 < strMsgRes.length())
+//						((AlertDialog) dialog).setMessage(strMsgRes);
+//				}
+//			}
+//	        case DIALOG_ID_WARNING:{
+//				String strTitleRes = "", strMsgRes = "";
+//				if(null != args){
+//					strTitleRes = args.getString(KEY_WARNING_TITLE);
+//					strMsgRes = args.getString(KEY_WARNING_TEXT);
+//				}
+//				if(dialog instanceof AlertDialog){
+//					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon);
+//					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_warning):strTitleRes);
+//					if(0 < strMsgRes.length())
+//						((AlertDialog) dialog).setMessage(strMsgRes);
+//				}
+//				
+//				break;
+//			}
+//	        case DIALOG_ID_INFO:{
+//				String strTitleRes = "", strMsgRes = "";
+//				if(null != args){
+//					strTitleRes = args.getString(KEY_INFO_TITLE);
+//					strMsgRes = args.getString(KEY_INFO_TEXT);
+//				}
+//				if(dialog instanceof AlertDialog){
+//					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon);
+//					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_info):strTitleRes);
+//					if(0 < strMsgRes.length())
+//						((AlertDialog) dialog).setMessage(strMsgRes);
+//				}
+//				
+//				break;
+//			}
+//	        default:
+//	        	super.onPrepareDialog(id, dialog, args);
+//	    }
+//	}
 	
 	public boolean showMyDialog(int iDialogId){
 		return showMyDialog(iDialogId, null);

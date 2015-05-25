@@ -85,12 +85,24 @@ public class BaseOneBtnDialog extends Dialog implements OnClickListener {
 		m_tvBody.setText(resid);
 	}
 	
+	public void setBodyText(String bodyString){
+		m_tvBody.setText(bodyString);	
+	}
+	
 	public void setTitleText(int resid){
 		m_tvTitle.setText(resid);
 	}
 	
+	public void setTitleText(String titleString){
+		m_tvTitle.setText(titleString);
+	}
+	
 	public void setPositiveBtnText(int resid){
 		mBtnYes.setText(resid);
+	}
+	
+	public void setPositiveBtnText(String BtnString){
+		mBtnYes.setText(BtnString);
 	}
 	
 	static public interface OnOneBtnClickListener{

@@ -92,17 +92,29 @@ public class BaseTwoBtnDialog extends Dialog implements OnClickListener {
 	public void setBodyText(int resid){
 		m_tvBody.setText(resid);
 	}
+	public void setBodyText(String bodyString){
+		m_tvBody.setText(bodyString);	
+	}
 	
 	public void setTitleText(int resid){
 		m_tvTitle.setText(resid);
+	}
+	public void setTitleText(String titleString){
+		m_tvTitle.setText(titleString);
 	}
 	
 	public void setPositiveBtnText(int resid){
 		mBtnYes.setText(resid);
 	}
+	public void setPositiveBtnText(String BtnPString){
+		mBtnYes.setText(BtnPString);
+	}
 	
 	public void setNegativeBtnText(int resid){
 		mBtnNo.setText(resid);
+	}
+	public void setNegativeBtnText(String BtnNString){
+		mBtnNo.setText(BtnNString);
 	}
 	
 	static public interface OnTwoBtnClickListener{
