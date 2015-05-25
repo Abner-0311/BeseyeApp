@@ -424,13 +424,13 @@
   <!--Toast message for complete pic capture-->
   <string name="player_screenshot_capture_ok">Picture is saved.</string>
   <!--Toast message for fail to pic capture-->
-  <string name="player_screenshot_capture_failed">Failed to catpure picture.\nPlease try again later.</string>
+  <string name="player_screenshot_capture_failed">Failed to capture picture.\nPlease try again later.</string>
 
   <string name="hint_hold_to_talk_conn_occupied">The microphone is busy, please try again later.</string>
   
   <!-- share -->
   <string name="share">Share</string>
   <string name="close">Close</string>
-  <string name="share_way">choose one to share</string>
+  <string name="share_way">Share via</string>
   <string name="share_hash">Check out this image captured by my Beseye</string>
 </resources>
