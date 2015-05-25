@@ -155,9 +155,9 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
 			String strMsg) {
-		// GetLatestThumbnailTask don't need to have onErrorReport because it has its error dialog
+		// GetLatestThumbnailTask don't need to have onErrorReport because it has its callback
 		if(task instanceof BeseyeCamBEHttpTask.SetMotionZoneTask){
-			showErrorDialog(R.string.cam_setting_fail_to_update_motion_zone, true);
+			showSetMZToServerError();
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 		}
@@ -274,11 +274,24 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		d.setTitleText(R.string.thumbnail_error_title);
 		d.setCancelable(false);
 		
-		d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
-		
+		d.setOnOneBtnClickListener(new OnOneBtnClickListener(){	
 			@Override
 			public void onBtnClick() {
 				finish();			
+			}});
+		d.show();
+	}
+	
+	private void showSetMZToServerError(){
+		BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+		d.setBodyText(R.string.thumbnail_error_body);
+		d.setTitleText(R.string.thumbnail_error_title);
+		d.setCancelable(false);
+		
+		d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+			@Override
+			public void onBtnClick() {	
+				// do nothing, just stay in edit page
 			}});
 		d.show();
 	}
