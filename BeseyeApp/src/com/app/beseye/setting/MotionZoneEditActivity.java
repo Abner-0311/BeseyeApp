@@ -266,8 +266,7 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		}
 	}
 	
-	private void showThumbnailError(){
-		//[Abner review 0525]Make sure Dialog was created in UI thread, or will crash 
+	private void showThumbnailError(){ 
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
@@ -286,7 +285,6 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 	}
 	
 	private void showSetMZToServerError(){
-		//[Abner review 0525]Make sure Dialog was created in UI thread, or will crash 
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {

@@ -428,7 +428,15 @@
 
   <string name="hint_hold_to_talk_conn_occupied">The microphone is busy, please try again later.</string>
   
-  <!-- share -->
+  <string name="sure">OK</string>
+  <string name="motion_zone_title">Edit detection area</string>
+  <string name="motion_zone_cancel_body">Your edits will be aborted, are you sure?</string>
+  <string name="motion_zone_cancel_title">Abort</string>
+  <string name="cam_setting_title_motion_zone">Motion detection</string>
+  <string name="thumbnail_error_title">Failed to connect to camera.</string>
+  <string name="thumbnail_error_body">Please check network on mobile device and camera, then try again.</string>
+  <string name="fullscreen">Full screen</string>
+  
   <string name="share">Share</string>
   <string name="close">Close</string>
   <string name="share_way">Share via</string>

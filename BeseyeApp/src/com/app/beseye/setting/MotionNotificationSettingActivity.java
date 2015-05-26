@@ -67,7 +67,6 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	private RemoteImageView mImgThumbnail;
 	private int miImageWidth, miImageHeight;
 	
-	//[Abner review 0525]member variable naming convention
 	private Canvas mCanvas;
 	private Paint mLinePaint;
 	private int miStrokeWidth;
@@ -286,7 +285,6 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	    float right = (float) (mdRatios[2]*miImageWidth);
 	    float bottom = (float) (mdRatios[3]*miImageHeight);
 
-	    //[Abner review 0525] Seem to find one line under rectangle
 	    mCanvas.drawRect(left+miStrokeWidth/2, top+miStrokeWidth/2, right-miStrokeWidth/2, bottom-miStrokeWidth/2, mLinePaint);
      
 	    Rect rHole = new Rect((int)left, (int)top, (int)right, (int)bottom);
@@ -315,8 +313,6 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		if(DEBUG)
 			Log.i(TAG, "MotionNotificationSettingActivity::onResume()");	
 		super.onResume();
-		//[Abner review 0525] Remember to remove debug message
-		Log.v(TAG, "Kelly onResume");
 		
 		if(!mbFirstResume){
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
@@ -329,8 +325,6 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	protected void onPause() {
 		if(DEBUG)
 			Log.d(TAG, "MotionNotificationSettingActivity::onPause()");
-		//[Abner review 0525] Remember to remove debug message
-		Log.v(TAG, "Kelly onPause");
 		super.onPause();
 	}
 

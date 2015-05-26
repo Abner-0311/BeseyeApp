@@ -40,17 +40,13 @@ public class MotionZoneEditView extends View {
 	private int miThumbnailHeight = 0;
 	private int miMinMotionZoneL = 0; 	
     
-	//[Abner review 0525]member variable naming convention
-    private ArrayList<ColorBall> mArrColorballs = new ArrayList<ColorBall>();
+	private ArrayList<ColorBall> mArrColorballs = new ArrayList<ColorBall>();
     private int miGroupId = -1;
     private int miBalId = 0;
     private final double mdFatfingerRange = 1.5;
 	
-    //[Abner review 0525]member variable naming convention
     private Paint mLinePaint, mRectPaint;
     
-    //[Abner review 0525]not use canvas
-    //private Canvas canvas;
     private int oldX = -1;
     private int oldY = -1;
     private final int strokeWidth = getResources().getDimensionPixelSize(R.dimen.motion_zone_strokewidth);	
@@ -73,7 +69,6 @@ public class MotionZoneEditView extends View {
     private void basicSetup(){
     	mLinePaint = new Paint();
         mRectPaint = new Paint();
-        //canvas = new Canvas();
         setFocusable(true);
   
         // line
@@ -352,7 +347,6 @@ public class MotionZoneEditView extends View {
     }
 
     public static class ColorBall {
-    	//[Abner review 0525]member variable naming convention
         Bitmap mBitmap;
         Context mContext;
         Point mPoint;
