@@ -428,7 +428,7 @@
   <string name="sure">确定</string>
   <string name="motion_zone_title">编辑侦测区域</string>
   <string name="motion_zone_cancel_body">如此会舍弃此次编辑，您确定吗？</string>
-  <string name="motion_zone_cancel_title">舍弃</string>
+  <string name="motion_zone_cancel_title">舍弃编辑</string>
   <string name="cam_setting_title_motion_zone">动态通知</string>
   <string name="thumbnail_error_title">无法成功连接至您的摄像头</string>
   <string name="thumbnail_error_body">请将摄像头与手持装置保持连接状态，之后再试一次。</string>

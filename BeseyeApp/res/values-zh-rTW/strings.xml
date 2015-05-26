@@ -430,7 +430,7 @@
   <string name="sure">確定</string>
   <string name="motion_zone_title">編輯偵測區域</string>
   <string name="motion_zone_cancel_body">如此會捨棄此次編輯，您確定嗎？</string>
-  <string name="motion_zone_cancel_title">捨棄</string>
+  <string name="motion_zone_cancel_title">捨棄編輯</string>
   <string name="cam_setting_title_motion_zone">動態通知</string>
   <string name="thumbnail_error_title">無法成功連線至您的攝影機</string>
   <string name="thumbnail_error_body">請將攝影機與手持裝置保持連線狀態，之後再試一次。</string>
