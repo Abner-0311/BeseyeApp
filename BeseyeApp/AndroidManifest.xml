@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
-    android:versionCode="117"
-    android:versionName="0.1.117" 
+    android:versionCode="118"
+    android:versionName="0.1.118" 
     android:installLocation="auto">
-
     <!-- Android 2.3.3 -->
     <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="14" />
 
@@ -52,7 +51,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/common_app_icon"
-        android:label="@string/app_name_dev"
+        android:label="@string/app_name"
         android:theme="@style/AppTheme" 
         android:name=".BeseyeApplication">
         <!--change the android:name=".test.TestActivity" below for UI test-->

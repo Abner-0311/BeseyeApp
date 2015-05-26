@@ -139,6 +139,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgNotificationType = (ViewGroup)findViewById(R.id.vg_notification_type);
 		if(null != mVgNotificationType){
 			mVgNotificationType.setOnClickListener(this);
+			if(BeseyeUtils.isHiddenFeature()){
+				mVgNotificationType.setVisibility(View.GONE);
+			}
 		}
 		
 		mVgFamilyRecognition = (ViewGroup)findViewById(R.id.vg_family_recognition);
@@ -150,7 +153,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgMotionNotification = (ViewGroup)findViewById(R.id.vg_motion_notification_events);
 		if(null != mVgMotionNotification){
 			mVgMotionNotification.setOnClickListener(this);
-			if(BeseyeUtils.isHiddenFeature()){
+			if(!BeseyeUtils.isHiddenFeature()){
 				mVgMotionNotification.setVisibility(View.GONE);
 			}
 		}
