@@ -354,14 +354,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				    	
 				    	mbTriggerDetachAfterReboot = true;
 				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(DIALOG_ID_SYNCING), true, mStrVCamID);
+				    	
 				    	//monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);	
 				    	
 				    	//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(-1), true, mStrVCamID);
-//				    	BeseyeUtils.postRunnable(new Runnable(){
-//							@Override
-//							public void run() {
-//															
-//							}}, 1000);
 				    }
 				});
 				builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

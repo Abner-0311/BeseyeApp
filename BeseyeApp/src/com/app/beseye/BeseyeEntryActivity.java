@@ -1,14 +1,21 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+import java.util.List;
+
+import org.json.JSONObject;
+
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.pairing.PairingPlugPowerActivity;
 import com.app.beseye.util.BeseyeConfig;
 
@@ -87,8 +94,9 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 				if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode() == SessionMgr.SERVER_MODE.MODE_STAGING){
 					miDetachCount++;
 					if(miDetachCount >=2){
-						Toast.makeText(this, "Detach by HW ID", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(this, "Detach by HW ID", Toast.LENGTH_SHORT).show();
 						miDetachCount =0;
+						monitorAsyncTask(new BeseyeAccountTask.CamDettachByHWIDTask(this).setDialogId(DIALOG_ID_DETACH_CAM), false, SessionMgr.getInstance().getDetachHWID());
 					}
 				}
 				break;
@@ -96,6 +104,23 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 			default:
 				super.onClick(view);
 		}		
+	}
+	
+	@Override
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeAccountTask.CamDettachByHWIDTask){
+				if(0 == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+					onToastShow(task, "Detach Cam (HW_ID is "+SessionMgr.getInstance().getDetachHWID()+") successfully.");
+				}else{
+					onToastShow(task, "Detach Cam (HW_ID is "+SessionMgr.getInstance().getDetachHWID()+") falsed.");
+				}
+			}else{
+				super.onPostExecute(task, result, iRetCode);
+			}
+		}
 	}
 	
 	static public final int REQUEST_SIGNUP = 1;

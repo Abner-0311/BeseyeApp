@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.app.beseye.R;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeUtils;
 
@@ -36,6 +37,9 @@ public class BeseyeAccountTask {
 	public static final String URL_CAM_DEATTACH		="user/vcam/detach";
 	public static final String URL_CAM_VALIDATE		="vcam/validate";
 	public static final String URL_CAM_VALIDATE_BEE	="vcam/bee_validate";
+	
+	public static final String URL_CAM_DEATTACH_SALE="vcam/detach_by_sales?UidList=%s&SalesDemoToken=skHGU1TsnbfHIqKWyKFlapJ8BVMV0UeZM1I2Bm41NQBil9JepgOLV4Agf1h84a82";
+	
 	
 	static private void appendDevInfo(JSONObject obj){
 		if(null != obj){
@@ -387,7 +391,8 @@ public class BeseyeAccountTask {
 				setVCamIdForPerm(strParams[0]);
 				obj.put(ACC_VCAM_ID, strParams[0]);
 				appendDevInfo(obj);
-				Log.e(TAG, "obj:"+obj.toString());
+				if(BeseyeConfig.DEBUG)
+					Log.e(TAG, "obj:"+obj.toString());
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_CAM_DEATTACH, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -395,6 +400,17 @@ public class BeseyeAccountTask {
 				e.printStackTrace();
 			}
 			return null;	
+		}
+	}
+	
+	static public class CamDettachByHWIDTask extends BeseyeHttpTask {	 	
+		public CamDettachByHWIDTask(OnHttpTaskCallback cb) {
+			super(cb);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+String.format(URL_CAM_DEATTACH_SALE, strParams[0]));
 		}
 	}
 	

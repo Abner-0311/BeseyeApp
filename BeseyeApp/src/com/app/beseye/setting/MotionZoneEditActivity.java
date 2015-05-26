@@ -1,7 +1,5 @@
 package com.app.beseye.setting;
 
-
-
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
@@ -269,30 +267,40 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 	}
 	
 	private void showThumbnailError(){
-		BaseOneBtnDialog d = new BaseOneBtnDialog(this);
-		d.setBodyText(R.string.thumbnail_error_body);
-		d.setTitleText(R.string.thumbnail_error_title);
-		d.setCancelable(false);
-		
-		d.setOnOneBtnClickListener(new OnOneBtnClickListener(){	
+		//[Abner review 0525]Make sure Dialog was created in UI thread, or will crash 
+		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
-			public void onBtnClick() {
-				finish();			
-			}});
-		d.show();
+			public void run() {
+				BaseOneBtnDialog d = new BaseOneBtnDialog(MotionZoneEditActivity.this);
+				d.setBodyText(R.string.thumbnail_error_body);
+				d.setTitleText(R.string.thumbnail_error_title);
+				d.setCancelable(false);
+				
+				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){	
+					@Override
+					public void onBtnClick() {
+						finish();			
+					}});
+				d.show();
+			}}, 0);
 	}
 	
 	private void showSetMZToServerError(){
-		BaseOneBtnDialog d = new BaseOneBtnDialog(this);
-		d.setBodyText(R.string.thumbnail_error_body);
-		d.setTitleText(R.string.thumbnail_error_title);
-		d.setCancelable(false);
-		
-		d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+		//[Abner review 0525]Make sure Dialog was created in UI thread, or will crash 
+		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
-			public void onBtnClick() {	
-				// do nothing, just stay in edit page
-			}});
-		d.show();
+			public void run() {
+				BaseOneBtnDialog d = new BaseOneBtnDialog(MotionZoneEditActivity.this);
+				d.setBodyText(R.string.thumbnail_error_body);
+				d.setTitleText(R.string.thumbnail_error_title);
+				d.setCancelable(false);
+				
+				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+					@Override
+					public void onBtnClick() {	
+						// do nothing, just stay in edit page
+					}});
+				d.show();
+			}}, 0);
 	}
 }

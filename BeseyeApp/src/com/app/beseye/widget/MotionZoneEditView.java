@@ -40,13 +40,17 @@ public class MotionZoneEditView extends View {
 	private int miThumbnailHeight = 0;
 	private int miMinMotionZoneL = 0; 	
     
-    private ArrayList<ColorBall> colorballs = new ArrayList<ColorBall>();
+	//[Abner review 0525]member variable naming convention
+    private ArrayList<ColorBall> mArrColorballs = new ArrayList<ColorBall>();
     private int miGroupId = -1;
     private int miBalId = 0;
     private final double mdFatfingerRange = 1.5;
 	
-    private Paint linePaint, rectPaint;
-    private Canvas canvas;
+    //[Abner review 0525]member variable naming convention
+    private Paint mLinePaint, mRectPaint;
+    
+    //[Abner review 0525]not use canvas
+    //private Canvas canvas;
     private int oldX = -1;
     private int oldY = -1;
     private final int strokeWidth = getResources().getDimensionPixelSize(R.dimen.motion_zone_strokewidth);	
@@ -67,27 +71,27 @@ public class MotionZoneEditView extends View {
     }
     
     private void basicSetup(){
-    	linePaint = new Paint();
-        rectPaint = new Paint();
-        canvas = new Canvas();
+    	mLinePaint = new Paint();
+        mRectPaint = new Paint();
+        //canvas = new Canvas();
         setFocusable(true);
   
         // line
-        linePaint.setAntiAlias(true);
-        linePaint.setDither(true);			
-        linePaint.setStrokeJoin(Paint.Join.ROUND);
-        linePaint.setStyle(Paint.Style.STROKE);
-        linePaint.setColor(getResources().getColor(R.color.beseye_color_normal));
-        linePaint.setStrokeWidth(strokeWidth);
+        mLinePaint.setAntiAlias(true);
+        mLinePaint.setDither(true);			
+        mLinePaint.setStrokeJoin(Paint.Join.ROUND);
+        mLinePaint.setStyle(Paint.Style.STROKE);
+        mLinePaint.setColor(getResources().getColor(R.color.beseye_color_normal));
+        mLinePaint.setStrokeWidth(strokeWidth);
         
         // rectangle
-        rectPaint.setAntiAlias(true);
-        rectPaint.setDither(true);
-        rectPaint.setStrokeJoin(Paint.Join.ROUND);
-        rectPaint.setStyle(Paint.Style.FILL);
-        rectPaint.setColor(getResources().getColor(R.color.mask_black));
-        rectPaint.setAlpha(BeseyeMotionZoneUtil.siMaskAlpha);
-        rectPaint.setStrokeWidth(0);
+        mRectPaint.setAntiAlias(true);
+        mRectPaint.setDither(true);
+        mRectPaint.setStrokeJoin(Paint.Join.ROUND);
+        mRectPaint.setStyle(Paint.Style.FILL);
+        mRectPaint.setColor(getResources().getColor(R.color.mask_black));
+        mRectPaint.setAlpha(BeseyeMotionZoneUtil.siMaskAlpha);
+        mRectPaint.setStrokeWidth(0);
     }
 
     @Override
@@ -96,15 +100,15 @@ public class MotionZoneEditView extends View {
         	 Log.e(TAG, "onDraw: mPoints are null");
         } else{
         	// draw mask
-	        canvas.drawRect(mpThumbnailTopLeft.x, mpThumbnailTopLeft.y, mpThumbnailBotRight.x, mPoints[0].y, rectPaint);	             
-	        canvas.drawRect(mpThumbnailTopLeft.x, mPoints[0].y, mPoints[0].x, mPoints[2].y, rectPaint);
-	        canvas.drawRect(mPoints[2].x, mPoints[0].y, mpThumbnailBotRight.x, mPoints[2].y, rectPaint);      
-	        canvas.drawRect(mpThumbnailTopLeft.x, mPoints[2].y, mpThumbnailBotRight.x, mpThumbnailBotRight.y, rectPaint);
+	        canvas.drawRect(mpThumbnailTopLeft.x, mpThumbnailTopLeft.y, mpThumbnailBotRight.x, mPoints[0].y, mRectPaint);	             
+	        canvas.drawRect(mpThumbnailTopLeft.x, mPoints[0].y, mPoints[0].x, mPoints[2].y, mRectPaint);
+	        canvas.drawRect(mPoints[2].x, mPoints[0].y, mpThumbnailBotRight.x, mPoints[2].y, mRectPaint);      
+	        canvas.drawRect(mpThumbnailTopLeft.x, mPoints[2].y, mpThumbnailBotRight.x, mpThumbnailBotRight.y, mRectPaint);
 	        // draw line
-	        canvas.drawRect(mPoints[0].x, mPoints[0].y, mPoints[2].x, mPoints[2].y, linePaint);       
+	        canvas.drawRect(mPoints[0].x, mPoints[0].y, mPoints[2].x, mPoints[2].y, mLinePaint);       
 	        // draw balls
-	        for (int i =0; i < colorballs.size(); i ++) {
-	            ColorBall ball = colorballs.get(i);
+	        for (int i =0; i < mArrColorballs.size(); i ++) {
+	            ColorBall ball = mArrColorballs.get(i);
 	            canvas.drawBitmap(ball.getBitmap(), ball.getX()-ball.getWidthOfBall()/2, ball.getY()-ball.getHeightOfBall()/2, null);
 	        }
         }
@@ -127,8 +131,8 @@ public class MotionZoneEditView extends View {
 	            	//check if the finger is on a ball
 	                miBalId = -1;
 	                miGroupId = -1;
-	                for (int i = colorballs.size()-1; i>=0; i--) {
-	                    ColorBall ball = colorballs.get(i);
+	                for (int i = mArrColorballs.size()-1; i>=0; i--) {
+	                    ColorBall ball = mArrColorballs.get(i);
 	           
 	                    // calculate the radius from the touch to the center of the ball
 	                    double radCircle = Math
@@ -164,23 +168,23 @@ public class MotionZoneEditView extends View {
                 	
 	                // move the balls the same as the finger
 	            	if(true == islegalScaleW(X)) {
-		                colorballs.get(miBalId).setX(X);
+		                mArrColorballs.get(miBalId).setX(X);
 		                if (miGroupId == 1) {
-		                    colorballs.get(1).setX(colorballs.get(0).getX());
-		                    colorballs.get(3).setX(colorballs.get(2).getX());
+		                    mArrColorballs.get(1).setX(mArrColorballs.get(0).getX());
+		                    mArrColorballs.get(3).setX(mArrColorballs.get(2).getX());
 		                } else {
-		                    colorballs.get(0).setX(colorballs.get(1).getX());
-		                    colorballs.get(2).setX(colorballs.get(3).getX());
+		                    mArrColorballs.get(0).setX(mArrColorballs.get(1).getX());
+		                    mArrColorballs.get(2).setX(mArrColorballs.get(3).getX());
 		                }
 	            	}
 	            	if(true == islegalScaleH(Y)) {
-	                    colorballs.get(miBalId).setY(Y);
+	                    mArrColorballs.get(miBalId).setY(Y);
 		                if (miGroupId == 1) {
-		                    colorballs.get(1).setY(colorballs.get(2).getY());
-		                    colorballs.get(3).setY(colorballs.get(0).getY());
+		                    mArrColorballs.get(1).setY(mArrColorballs.get(2).getY());
+		                    mArrColorballs.get(3).setY(mArrColorballs.get(0).getY());
 		                } else {
-		                    colorballs.get(0).setY(colorballs.get(3).getY());
-		                    colorballs.get(2).setY(colorballs.get(1).getY());
+		                    mArrColorballs.get(0).setY(mArrColorballs.get(3).getY());
+		                    mArrColorballs.get(2).setY(mArrColorballs.get(1).getY());
 		                }
 	            	}
 	            } else {
@@ -194,10 +198,10 @@ public class MotionZoneEditView extends View {
 	                if(mPoints[0].x  + dX < mpThumbnailTopLeft.x) {
 	                	dX = mpThumbnailTopLeft.x - mPoints[0].x ; 
 	                }
-                	colorballs.get(1).setX(colorballs.get(1).getX() + dX);
-	                colorballs.get(2).setX(colorballs.get(2).getX() + dX);
-	            	colorballs.get(3).setX(colorballs.get(3).getX() + dX);
-	            	colorballs.get(0).setX(colorballs.get(0).getX() + dX);
+                	mArrColorballs.get(1).setX(mArrColorballs.get(1).getX() + dX);
+	                mArrColorballs.get(2).setX(mArrColorballs.get(2).getX() + dX);
+	            	mArrColorballs.get(3).setX(mArrColorballs.get(3).getX() + dX);
+	            	mArrColorballs.get(0).setX(mArrColorballs.get(0).getX() + dX);
 	                oldX = X;
 
 	                if(mPoints[2].y  + dY > mpThumbnailBotRight.y) {
@@ -206,10 +210,10 @@ public class MotionZoneEditView extends View {
 	                if(mPoints[0].y  + dY < mpThumbnailTopLeft.y) {
 	                	dY = mpThumbnailTopLeft.y - mPoints[0].y ; 
 	                }
-	                colorballs.get(1).setY(colorballs.get(1).getY() + dY);
-	                colorballs.get(2).setY(colorballs.get(2).getY() + dY);
-	                colorballs.get(3).setY(colorballs.get(3).getY() + dY);
-	                colorballs.get(0).setY(colorballs.get(0).getY() + dY);
+	                mArrColorballs.get(1).setY(mArrColorballs.get(1).getY() + dY);
+	                mArrColorballs.get(2).setY(mArrColorballs.get(2).getY() + dY);
+	                mArrColorballs.get(3).setY(mArrColorballs.get(3).getY() + dY);
+	                mArrColorballs.get(0).setY(mArrColorballs.get(0).getY() + dY);
 	                oldY = Y;
 	            }
 	            break;
@@ -224,9 +228,9 @@ public class MotionZoneEditView extends View {
     private boolean islegalScaleW(int X){
     	int width;
     	if(miBalId==2 || miBalId==3){
-    		width = X - colorballs.get(0).getX();
+    		width = X - mArrColorballs.get(0).getX();
     	} else {
-    		width = colorballs.get(2).getX() - X;
+    		width = mArrColorballs.get(2).getX() - X;
     	}
     	if(width < miMinMotionZoneL) {
     		return false;
@@ -237,9 +241,9 @@ public class MotionZoneEditView extends View {
     private boolean islegalScaleH(int Y){
     	int height;
     	if(miBalId==0 || miBalId==3){
-    		height = colorballs.get(2).getY() - Y;
+    		height = mArrColorballs.get(2).getY() - Y;
     	} else {
-    		height = Y - colorballs.get(0).getY();
+    		height = Y - mArrColorballs.get(0).getY();
     	}
     	
     	if(height < miMinMotionZoneL) {
@@ -338,7 +342,7 @@ public class MotionZoneEditView extends View {
         miBalId = 2;
         miGroupId = 1;
         for (int i=0; i<mPoints.length; i++) {
-             colorballs.add(new ColorBall(getContext(), mPoints[i], i));
+             mArrColorballs.add(new ColorBall(getContext(), mPoints[i], i));
              mOldPoints[i] = new Point();
              mOldPoints[i].x = mPoints[i].x;
              mOldPoints[i].y = mPoints[i].y;
@@ -348,50 +352,50 @@ public class MotionZoneEditView extends View {
     }
 
     public static class ColorBall {
-
-        Bitmap bitmap;
+    	//[Abner review 0525]member variable naming convention
+        Bitmap mBitmap;
         Context mContext;
-        Point point;
-        int id;
-        static int count = 0;
+        Point mPoint;
+        int miId;
+        static int siCount = 0;
 
         public ColorBall(Context context, Point point, int id) {
-            this.id = id;
-            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.motionzone_control_point_2);
+            this.miId = id;
+            mBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.motionzone_control_point_2);
             mContext = context;
-            this.point = point;
+            this.mPoint = point;
         }
 
         public int getWidthOfBall() {
-            return bitmap.getWidth();
+            return mBitmap.getWidth();
         }
 
         public int getHeightOfBall() {
-            return bitmap.getHeight();
+            return mBitmap.getHeight();
         }
 
         public Bitmap getBitmap() {
-            return bitmap;
+            return mBitmap;
         }
 
         public int getX() {
-            return point.x;
+            return mPoint.x;
         }
 
         public int getY() {
-            return point.y;
+            return mPoint.y;
         }
 
         public int getID() {
-            return id;
+            return miId;
         }
 
         public void setX(int x) {
-            point.x = x;
+            mPoint.x = x;
         }
 
         public void setY(int y) {
-            point.y = y;
+            mPoint.y = y;
         }
     }
 }

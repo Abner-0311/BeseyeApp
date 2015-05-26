@@ -67,9 +67,10 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	private RemoteImageView mImgThumbnail;
 	private int miImageWidth, miImageHeight;
 	
-	private Canvas canvas;
-	private Paint linePaint;
-	private int strokeWidth;
+	//[Abner review 0525]member variable naming convention
+	private Canvas mCanvas;
+	private Paint mLinePaint;
+	private int miStrokeWidth;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -139,16 +140,16 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		if(null != mIvDrawingImageView) {
 			mIvDrawingImageView.setImageBitmap(bitmap);
 		}
-		canvas = new Canvas(bitmap);
-		strokeWidth = getResources().getDimensionPixelSize(R.dimen.motion_zone_strokewidth);
+		mCanvas = new Canvas(bitmap);
+		miStrokeWidth = getResources().getDimensionPixelSize(R.dimen.motion_zone_strokewidth);
 		
-	    linePaint = new Paint();	    
-        linePaint.setAntiAlias(true);
-        linePaint.setDither(true);			
-        linePaint.setStrokeJoin(Paint.Join.MITER);
-        linePaint.setStyle(Paint.Style.STROKE);
-        linePaint.setColor(getResources().getColor(R.color.beseye_color_normal));
-        linePaint.setStrokeWidth(strokeWidth);
+	    mLinePaint = new Paint();	    
+        mLinePaint.setAntiAlias(true);
+        mLinePaint.setDither(true);			
+        mLinePaint.setStrokeJoin(Paint.Join.MITER);
+        mLinePaint.setStyle(Paint.Style.STROKE);
+        mLinePaint.setColor(getResources().getColor(R.color.beseye_color_normal));
+        mLinePaint.setStrokeWidth(miStrokeWidth);
 	}
 
 	@Override
@@ -277,7 +278,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		}     
 		Paint p = new Paint();
         p.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
-        canvas.drawPaint(p);
+        mCanvas.drawPaint(p);
         p.setXfermode(new PorterDuffXfermode(Mode.SRC));   
         
 		float left = (float) (mdRatios[0]*miImageWidth);
@@ -285,12 +286,13 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	    float right = (float) (mdRatios[2]*miImageWidth);
 	    float bottom = (float) (mdRatios[3]*miImageHeight);
 
-	    canvas.drawRect(left+strokeWidth/2, top+strokeWidth/2, right-strokeWidth/2, bottom-strokeWidth/2, linePaint);
+	    //[Abner review 0525] Seem to find one line under rectangle
+	    mCanvas.drawRect(left+miStrokeWidth/2, top+miStrokeWidth/2, right-miStrokeWidth/2, bottom-miStrokeWidth/2, mLinePaint);
      
 	    Rect rHole = new Rect((int)left, (int)top, (int)right, (int)bottom);
-	    canvas.clipRect(rHole,  Region.Op.DIFFERENCE);
-	    canvas.drawARGB(BeseyeMotionZoneUtil.siMaskAlpha, 0, 0, 0);
-	    canvas.clipRect(new Rect(0, 0, miImageWidth, miImageHeight), Region.Op.REPLACE);
+	    mCanvas.clipRect(rHole,  Region.Op.DIFFERENCE);
+	    mCanvas.drawARGB(BeseyeMotionZoneUtil.siMaskAlpha, 0, 0, 0);
+	    mCanvas.clipRect(new Rect(0, 0, miImageWidth, miImageHeight), Region.Op.REPLACE);
 	    
         mIvDrawingImageView.invalidate();
 	}
@@ -313,6 +315,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		if(DEBUG)
 			Log.i(TAG, "MotionNotificationSettingActivity::onResume()");	
 		super.onResume();
+		//[Abner review 0525] Remember to remove debug message
 		Log.v(TAG, "Kelly onResume");
 		
 		if(!mbFirstResume){
@@ -326,6 +329,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	protected void onPause() {
 		if(DEBUG)
 			Log.d(TAG, "MotionNotificationSettingActivity::onPause()");
+		//[Abner review 0525] Remember to remove debug message
 		Log.v(TAG, "Kelly onPause");
 		super.onPause();
 	}
