@@ -147,7 +147,7 @@ int register_librtmp_CB(URLContext *urlCtx,
 	LibRTMPContext *ctx = urlCtx->priv_data;
 	RTMP *r = &ctx->rtmp;
 	if(r){
-		RTMP_RegisterCB(r, rtmpCallback, rtmpStatusCallback, rtmpErrorCallback, userData);
+		RTMP_RegisterCB(r, rtmpCallback, rtmpStatusCallback, rtmpErrorCallback, userData, NULL, 0);
 	}else{
 		av_log(NULL, AV_LOG_INFO,"register_librtmp_CB()-, r is null\n");
 	}

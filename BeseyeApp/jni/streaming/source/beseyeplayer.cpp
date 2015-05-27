@@ -1850,6 +1850,12 @@ int read_thread(void *arg)
     holder.rtmpStatusCallback = rtmpStatusCallback;
     holder.rtmpErrorCallback = rtmpErrorCallback;
     holder.userData = player;
+    holder.iCustomCount = 2;
+    holder.iCustomValues = (int*)malloc(sizeof(int)*2);
+    if(holder.iCustomValues){
+    	holder.iCustomValues[0] = 9;
+    	holder.iCustomValues[1] = 14;
+    }
 
     av_dict_set(&format_opts, "holder", (const char*)&holder, 0);
 
