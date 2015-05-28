@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- DO NOT TRANSLATE BEGIN-->
-    <string name="app_name_dev">Beseye(debug)</string>
+    <string name="app_name_dev">Beseye(d)</string>
     <string name="app_name_alpha">Beseye(α)</string>
     <string name="app_name_beta">Beseye(β)</string>
     <string name="alpha">(α)</string>
