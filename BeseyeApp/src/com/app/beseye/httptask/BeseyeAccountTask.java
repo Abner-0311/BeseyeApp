@@ -292,13 +292,30 @@ public class BeseyeAccountTask {
 		}
 	}
 	
-	static public class GetVCamListTask extends BeseyeHttpTask {	 	
+	static public class GetVCamListTask extends BeseyeHttpTask {
+		private String mstrVCamIdCheck= null;
+		private JSONObject mMsgObj = null;
 		public GetVCamListTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
 			//enableHttps();
 		}
  
+		public GetVCamListTask(OnHttpTaskCallback cb, String strVCamIdCheck, JSONObject msgObj) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+			mstrVCamIdCheck = strVCamIdCheck;
+			mMsgObj = msgObj;
+		}
+		
+		public String getVCamIdCheck(){
+			return mstrVCamIdCheck;
+		}
+		
+		public JSONObject getMsgObj(){
+			return mMsgObj;
+		}
+		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();

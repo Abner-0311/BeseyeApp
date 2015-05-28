@@ -133,7 +133,9 @@ static int rtmp_open2(URLContext *s, const char *uri, int flags, AVDictionary **
     					holder->rtmpCallback,
                         holder->rtmpStatusCallback,
                         holder->rtmpErrorCallback,
-                        holder->userData);
+                        holder->userData,
+                        holder->iCustomValues,
+                        holder->iCustomCount);
 
     }
     rtmp_metadata_set_callback(rtmp_metdata_cb);

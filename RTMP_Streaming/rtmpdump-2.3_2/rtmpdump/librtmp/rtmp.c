@@ -133,7 +133,9 @@ int RTMP_RegisterCB(RTMP *r,
 					void (*rtmpCallback)(void* , const AVal*, const AVal*, void*),
 					void (*rtmpStatusCallback)(void* , int , void*),
 					void (*rtmpErrorCallback)(void* , int , void*),
-					void* userData){
+					void* userData,
+					int * iCustomValues,
+					int iCustomCount){
 	int iRet = 0;
 	RTMP_Log(RTMP_LOGINFO, "%s++, r:%d, rtmpCallback:%x, rtmpStatusCallback:%x, userData:%x", __FUNCTION__, r,rtmpCallback, rtmpStatusCallback, userData);
 	if(NULL != r){
@@ -141,6 +143,11 @@ int RTMP_RegisterCB(RTMP *r,
 		r->m_rtmpStatusCallback = rtmpStatusCallback;
 		r->m_rtmpErrorCallback = rtmpErrorCallback;
 		r->mUserCb = userData;
+		r->miLinkTimeout = (iCustomValues && iCustomCount>0)?iCustomValues[0]:9;
+		r->miReadTimeout = (iCustomValues && iCustomCount>1)?iCustomValues[1]:10;
+
+		RTMP_Log(RTMP_LOGINFO, "%s++, timeout:(%d, %d)", __FUNCTION__, r->miLinkTimeout, r->miReadTimeout);
+
 		iRet = 1;
 	}else{
 		RTMP_Log(RTMP_LOGINFO, "%s, r is null", __FUNCTION__);
@@ -876,19 +883,19 @@ RTMP_Connect0(RTMP *r, struct sockaddr * service)
 
   /* set timeout */
   {
-    SET_RCVTIMEO(tv, r->Link.timeout);
+    //SET_RCVTIMEO(tv, r->Link.timeout);
+	SET_RCVTIMEO(tv, r->miLinkTimeout);
     if (setsockopt(r->m_sb.sb_socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv, sizeof(tv))){
-        RTMP_Log(RTMP_LOGERROR, "%s, Setting socket timeout to %ds failed!",
-	    __FUNCTION__, r->Link.timeout);
+        RTMP_Log(RTMP_LOGERROR, "%s, Setting socket timeout to %ds failed!",__FUNCTION__, r->miLinkTimeout);
 
         if(r->m_rtmpErrorCallback){
   		  r->m_rtmpErrorCallback(r->mUserCb, NETWORK_CONNECTION_ERROR, "Setting socket timeout failed");
         }
       }
 
-    SET_RCVTIMEO(tv2, 6);
+    SET_RCVTIMEO(tv2, r->miReadTimeout);
     if(setsockopt(r->m_sb.sb_socket, SOL_SOCKET, SO_SNDTIMEO, &tv2, sizeof(tv2)) < 0){
-    	RTMP_Log(RTMP_LOGERROR, "%s, Setting socket timeout to %ds failed!",__FUNCTION__, 6);
+    	RTMP_Log(RTMP_LOGERROR, "%s, Setting socket timeout to %ds failed!",__FUNCTION__, r->miReadTimeout);
 
 		if(r->m_rtmpErrorCallback){
 		  r->m_rtmpErrorCallback(r->mUserCb, NETWORK_CONNECTION_ERROR, "Setting socket timeout SO_SNDTIMEO failed");
