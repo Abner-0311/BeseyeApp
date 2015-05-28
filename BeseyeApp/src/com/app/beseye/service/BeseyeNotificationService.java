@@ -343,8 +343,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	if(DEBUG)
                 		Log.d(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
                 	
-                	if(SessionMgr.getInstance().getServerMode().ordinal() <= SessionMgr.SERVER_MODE.MODE_DEV.ordinal())
-                		Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
+//                	if(SessionMgr.getInstance().getServerMode().ordinal() <= SessionMgr.SERVER_MODE.MODE_DEV.ordinal())
+//                		Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
                 	handleGCMEvents(data, dataCus);
                 	break;
                 }
