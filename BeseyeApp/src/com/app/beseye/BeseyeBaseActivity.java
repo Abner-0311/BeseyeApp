@@ -1713,7 +1713,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			long lTsOldTs = BeseyeJSONUtil.getJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP);
 			if(DEBUG)
 				Log.i(TAG, getClass().getSimpleName()+"::onCamSetupChanged(),  lTs = "+lTs+", lTsOldTs="+lTsOldTs);
-			if(lTs >= lTsOldTs){
+			if(0 < lTs && lTs >= lTsOldTs){
 				mCam_obj = objCamSetup;
 				mOnResumeUpdateCamInfoRunnable = null;
 				updateUICallback();
