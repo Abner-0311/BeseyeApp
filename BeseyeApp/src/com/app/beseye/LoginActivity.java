@@ -49,7 +49,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 				if(SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 					mEtUserName.setText("beseye_dev@beseye.com");
 				}else if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_STAGING){
-					mEtUserName.setText("beseye_stage@beseye.com");
+					mEtUserName.setText("democam@beseye.com");
 				}
 			}
 		}

@@ -355,10 +355,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				    public void onClick(DialogInterface dialog, int item) {
 				    	removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
 				    	
-//				    	mbTriggerDetachAfterReboot = true;
-//				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(DIALOG_ID_SYNCING), true, mStrVCamID);
+				    	mbTriggerDetachAfterReboot = true;
+				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(DIALOG_ID_SYNCING), true, mStrVCamID);
 				    	
-				    	monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);	
+//				    	monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);	
 				    	
 				    	//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(-1), true, mStrVCamID);
 				    }
