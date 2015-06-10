@@ -528,7 +528,11 @@ public class BeseyeUtils {
 			strLocale = "ja";
 		}else if(Locale.getDefault().equals(Locale.SIMPLIFIED_CHINESE)){
 			strLocale = "zh-cn";
-		}		
+		}else{
+			strLocale = Locale.getDefault().toString().replace("_", "-");
+		}	
+		Log.e(TAG, "getLocaleString(), Locale.getDefault():"+Locale.getDefault()+", strLocale:"+strLocale);
+
 		return strLocale;
 	}
 }

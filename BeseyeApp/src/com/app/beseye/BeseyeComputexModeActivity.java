@@ -60,7 +60,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		
 		mSpServerType = (Spinner)findViewById(R.id.sp_server_type);
 		if(null != mSpServerType){
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server(deprecated)","Production Server", "Staging Server (Computex)"/*, "Production Server"*/});
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server(deprecated)","Production Server", "Staging Server (Computex)", "China p2-Stage Server"});
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			mSpServerType.setAdapter(adapter);
 		}

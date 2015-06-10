@@ -322,16 +322,17 @@ public class BeseyeAccountTask {
 			try {		
 //				if(0 < strParams.length){
 //					setVCamIdForPerm(strParams[0]);
-//					obj.put(ACC_VCAM_ID, strParams[0]);
+//					
 //				}
+				obj.put(ACC_REGION, BeseyeUtils.getLocaleString());
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_GET_VCAM_LST, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} 
-//			catch (JSONException e) {
-//				e.printStackTrace();
-//			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			}
 			return null;	
 		}
 	}

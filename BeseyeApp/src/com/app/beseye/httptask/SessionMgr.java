@@ -25,6 +25,7 @@ public class SessionMgr {
 		MODE_DEV2,
 		MODE_PRODUCTION,
 		MODE_STAGING,
+		MODE_CHINA_STAGE,
 		MODE_TYPES_CNT;
 		
 		static public SERVER_MODE translateToMode(int iMode){
@@ -42,6 +43,10 @@ public class SessionMgr {
 					mode = MODE_PRODUCTION;
 					break;
 				} 
+				case 4:{
+					mode = MODE_CHINA_STAGE;
+					break;
+				} 
 			}
 			return mode;
 		}
@@ -52,47 +57,56 @@ public class SessionMgr {
 	static private final String[] ACC_VPC_BE_URL = {"https://tokyo-p1-dev-api-1.beseye.com/acc",
 													"https://acc-dev.beseye.com", 
 													"https://oregon-p1-stage-api-1.beseye.com/acc",
-													"https://oregon-p2-stage-api-1.beseye.com/acc"}; 
+													"https://oregon-p2-stage-api-1.beseye.com/acc",
+													"https://bj-p2-stage-api-1.beseye.cn/acc"}; 
 	
 	static private final String[] ACCOUNT_BE_URL = {"https://tokyo-p1-dev-api-1.beseye.com/acc",
 													"https://acc-dev.beseye.com", 
 													"https://oregon-p1-stage-api-%d.beseye.com/acc",
-													"https://oregon-p2-stage-api-%d.beseye.com/acc"}; 
+													"https://oregon-p2-stage-api-%d.beseye.com/acc",
+													"https://bj-p2-stage-api-%d.beseye.cn/acc"}; 
 	
 	static private final String[] MM_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/mm/",
 												"https://mm-dev.beseye.com/",
 												"https://oregon-p1-stage-api-%d.beseye.com/mm/",
-												"https://oregon-p2-stage-api-%d.beseye.com/mm/"}; 
+												"https://oregon-p2-stage-api-%d.beseye.com/mm/",
+												"https://bj-p2-stage-api-%d.beseye.cn/mm/"}; 
 
 	static private final String[] CAM_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/cam/",
 												 "https://ns-dev.beseye.com/",
 												 "https://oregon-p1-stage-api-%d.beseye.com/cam/",
-												 "https://oregon-p2-stage-api-%d.beseye.com/cam/"}; 
+												 "https://oregon-p2-stage-api-%d.beseye.com/cam/",
+												 "https://bj-p2-stage-api-%d.beseye.cn/cam/"}; 
 	
 	static private final String[] NS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/ns/",
 												"https://ns-dev.beseye.com/",
 												"https://oregon-p1-stage-api-%d.beseye.com/ns/",
-												"https://oregon-p2-stage-api-%d.beseye.com/ns/"}; 
+												"https://oregon-p2-stage-api-%d.beseye.com/ns/",
+												"https://bj-p2-stage-api-%d.beseye.cn/ns/"}; 
 	
 	static private final String[] CAM_WS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/ws/",
 													"https://ns-dev.beseye.com/",
 													"https://oregon-p1-stage-api-%d.beseye.com/ws/",
-													"https://oregon-p2-stage-api-%d.beseye.com/ws/"}; 
+													"https://oregon-p2-stage-api-%d.beseye.com/ws/",
+													"https://bj-p2-stage-api-%d.beseye.cn/ws/"}; 
 	
 	static private final String[] WS_BE_URL = { "https://tokyo-p1-dev-ws-1.beseye.com/",
 												"https://ws-dev.beseye.com/", 
 												"https://oregon-p1-stage-ws-%d.beseye.com/",
-												"https://oregon-p2-stage-ws-%d.beseye.com/"}; 
+												"https://oregon-p2-stage-ws-%d.beseye.com/",
+												"https://bj-p2-stage-ws-%d.beseye.cn/"}; 
 	
 	static private final String[] WSA_BE_URL = { "https://tokyo-p1-dev-wsa-1.beseye.com/",
 												 "https://wsa-dev.beseye.com/", 
 												 "https://oregon-p1-stage-wsa-%d.beseye.com/",
-												 "https://oregon-p2-stage-wsa-%d.beseye.com/"}; 
+												 "https://oregon-p2-stage-wsa-%d.beseye.com/",
+												 "https://bj-p2-stage-wsa-%d.beseye.cn/"}; 
 	
 	static private final String[] NEWS_BE_URL = { "https://tokyo-p1-dev-api-1.beseye.com/news/",
 												  "https://news-dev.beseye.com/", 
 												  "https://oregon-p1-stage-api-%d.beseye.com/news/",
-												  "https://oregon-p2-stage-api-%d.beseye.com/news/"}; 
+												  "https://oregon-p2-stage-api-%d.beseye.com/news/",
+												  "https://bj-p2-stage-api-%d.beseye.cn/news/"}; 
 	
 	
 	

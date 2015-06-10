@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- DO NOT TRANSLATE BEGIN-->
+    <string name="app_name_dev">云守护摄像头(d)</string>
+    <string name="app_name_alpha">云守护摄像头(α)</string>
+    <string name="app_name_beta">云守护摄像头(β)</string>
+</resources>

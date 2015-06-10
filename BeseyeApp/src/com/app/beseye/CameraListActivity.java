@@ -5,12 +5,14 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -77,6 +79,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	private CameraListMenuAnimator mCameraListMenuAnimator;
 	private Runnable mPendingRunnableOnCreate = null;
 	
+	private static Locale sLastLocale = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,14 +89,17 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		
 		mbIsDemoCamMode = getIntent().getBooleanExtra(KEY_DEMO_CAM_MODE, false);
 		if(mbIsDemoCamMode){
-			String strVCamListInfo = getIntent().getStringExtra(KEY_DEMO_CAM_INFO);
-			if(null != strVCamListInfo && 0 < strVCamListInfo.length()){
-				try {
-					mVCamListInfoObj = new JSONObject(strVCamListInfo);
-				} catch (JSONException e) {
-					Log.i(TAG, "onCreate(), e:"+e.toString());	
+			if(null == sLastLocale || sLastLocale.equals(Locale.getDefault())){
+				String strVCamListInfo = getIntent().getStringExtra(KEY_DEMO_CAM_INFO);
+				if(null != strVCamListInfo && 0 < strVCamListInfo.length()){
+					try {
+						mVCamListInfoObj = new JSONObject(strVCamListInfo);
+					} catch (JSONException e) {
+						Log.i(TAG, "onCreate(), e:"+e.toString());	
+					}
 				}
 			}
+			sLastLocale = Locale.getDefault();
 		}else{
 			mBundleDemo = new Bundle();
 			mBundleDemo.putBoolean(KEY_DEMO_CAM_MODE, true);
@@ -274,6 +281,15 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else{
 			fillVCamList(mVCamListInfoObj);
 		}
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		if(DEBUG)
+			Log.i(TAG, "onConfigurationChanged " + newConfig);
+		super.onConfigurationChanged(newConfig);
+		//if(newConfig.locale != )
+		getIntent().getExtras().putString(KEY_DEMO_CAM_INFO, "");
 	}
 	
 	protected int miOriginalVcamCnt = -1;

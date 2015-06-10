@@ -128,7 +128,7 @@ public:
 	//WiFi AP SSID
 	unsigned int playSSIDPairingCode(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken);
 	unsigned int playSSIDPairingCodeWithPurpose(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose);
-	unsigned int playSSIDPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId);
+	unsigned int playSSIDPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId, bool bIsChinaReg = FALSE);
 
 	//WiFi AP SSID Hash
 	uint64 getSSIDHashValue(const char* ssid);

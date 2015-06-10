@@ -79,7 +79,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private native int playSSIDPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
 	private native int playSSIDPairingCodeWithPurposeAndRegion(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose, int cRegId);
 	private native int playSSIDHashPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
-	private native int playSSIDHashPairingCodeWithPurposeAndRegion(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose, int cRegId);
+	private native int playSSIDHashPairingCodeWithPurposeAndRegion(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose, int cRegId, boolean bIsChinaReg);
 	private native String getSSIDHashValue(String strSSID);
 	
 	private native long getSoundPairingDuration(String strSSID, String strKey, boolean bSSIDHash);
@@ -295,7 +295,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					if(isSSIDPiaringCase()){
 						iRet = playSSIDPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose, SessionMgr.getInstance().getVPCNumber());
 					}else{
-						iRet = playSSIDHashPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose,SessionMgr.getInstance().getVPCNumber());
+						iRet = playSSIDHashPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose,SessionMgr.getInstance().getVPCNumber(), SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE));
 					}
 					
 					if(iRet != 0){
