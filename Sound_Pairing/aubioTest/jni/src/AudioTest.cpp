@@ -1592,6 +1592,36 @@ static void triggerAnalysis(){
 	siAboveThreshHoldCount = 0;
 }
 
+static msec_t sLastTimeCheckSPFile = 0;
+static const char* SP_FILE = "/beseye/config/sp_msg";
+void checkPairingResult(string strCode, string strDecodeUnmark);
+
+
+void AudioTest::checkPairingFile(){
+	if(0 == sLastTimeCheckSPFile || (time_ms() - sLastTimeCheckSPFile) > 5000L){
+		char* spMsg = readFromFile(SP_FILE);
+		if(NULL != spMsg){
+			LOGI("spMsg:[%s]\n", spMsg?spMsg:"");
+			string strSpMsg = spMsg;
+			checkPairingResult(strSpMsg, "");
+			if(0 <= miPairingReturnCode){
+				LOGE("miPairingReturnCode:[%d], close sp\n",miPairingReturnCode);
+				changePairingMode(PAIRING_DONE);
+				saveToFile("/beseye/config/sp_enabled", "");
+				setLedLight(0,1,0);
+				stopAutoTest();
+				return;
+			}else{
+				changePairingMode(PAIRING_ERROR);
+			}
+
+			deleteFile(SP_FILE);
+			FREE(spMsg)
+		}
+		sLastTimeCheckSPFile = time_ms();
+	}
+}
+
 //static int iOldLen = 0;
 void writeBuf(unsigned char* charBuf, int iLen){
 
@@ -1912,10 +1942,10 @@ void writeBuf(unsigned char* charBuf, int iLen){
 			}
 			siRefCount++;
 
+
 			//if(PAIRING_INIT != sPairingMode){
 				if(iCurIdx == shortsRecBuf->size()-1){
 					if(false == sForceDisabledSp){
-
 						//LOGE("writeBuf(), add rec buf at %lld, iIdxOffset:%d, iCurIdx:%d, shortsRecBuf->size():%d\n", lTs1, iIdxOffset, iCurIdx, shortsRecBuf->size() );
 						if(PAIRING_WAITING == sPairingMode && 0 == (++siBufCount)%3){
 							string strTone = FreqAnalyzer::getInstance()->findToneCodeByFreq(FreqAnalyzer::getInstance()->analyzeAudioViaAudacityAC(shortsRecBuf, SoundPair_Config::FRAME_SIZE_REC, false, 0, NULL));
@@ -1942,6 +1972,9 @@ void writeBuf(unsigned char* charBuf, int iLen){
 								}
 								siUnderThreshHoldCount = 0;
 							}
+
+							//for remote pairing workaround
+							AudioTest::getInstance()->checkPairingFile();
 						}
 
 						AudioBufferMgr::getInstance()->addToDataBuf(lTs1, shortsRecBuf, shortsRecBuf->size());
