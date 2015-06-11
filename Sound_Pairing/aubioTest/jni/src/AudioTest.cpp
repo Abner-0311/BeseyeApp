@@ -2350,14 +2350,16 @@ static int onSPSuccess(){
 	return iRet;
 }
 
-static int applyRegionId(unsigned char cRegId){
+static int applyRegionId(unsigned char cVPCId, unsigned char cRegId){
 	int iRet = 0;
-//	if(0 != saveRegionId(cRegId)){
-//		LOGE("Failed to save cRegId:[%d]\n", cRegId);
+//	if(0 != saveRegionId(cVPCId)){
+//		LOGE("Failed to save cVPCId:[%d]\n", cVPCId);
 //	}else{
 		//call script
 		char cmd[BUF_SIZE]={0};
-		sprintf(cmd, "\"$GEN_EXPORT_SVR_URL_SCRIPT_PROGRAM\" --vpc_id %d", cRegId);
+		int iVPCInfo = (((int)cRegId)<<8) + cVPCId;
+		LOGE("iVPCInfo:[%d, %d, %d]\n", cRegId, cVPCId, iVPCInfo);
+		sprintf(cmd, "\"$GEN_EXPORT_SVR_URL_SCRIPT_PROGRAM\" --vpc_info %d", iVPCInfo);
 		int iTrials = 0;
 		do{
 			iRet = invokeSystem(cmd);
@@ -2411,6 +2413,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	unsigned char cPurpose = 0;
 	unsigned char cSecType = 0;
 	unsigned char cSecTypeGuess = 0;
+	unsigned char cVPCId = 0;
 	unsigned char cRegId = 0;
 	unsigned int iReserved = 0;
 	uint64 lSSIDHash = 0;
@@ -2653,10 +2656,11 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		int iLenPurpose = strPurposeSeg.length();///iMultiply;
 		cPurpose =SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(0, 1).c_str());
 		cSecType =SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(1, 1).c_str());
-		cRegId = (SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(2, 1).c_str())<< iPower) +
+		cVPCId = (SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(2, 1).c_str())<< iPower) +
 				  SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(3, 1).c_str());
+		cRegId =  SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(4, 1).c_str());
 
-		for(int i =4;i < iLenPurpose;i++){
+		for(int i =5;i < iLenPurpose;i++){
 			iReserved << iPower;
 			int iVal = SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(i, 1).c_str());
 			iReserved+=iVal;
@@ -2670,7 +2674,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 		bUnknownSecType = (cSecType == PAIRING_SEC_UNKNOWN) && (false == bGuess) && (0 == strSSIDHash.length());
 
-		LOGE("cPurpose:%u, cSecType:%u, cRegId:%u, iReserved:%d, strPurposeSeg:[%s], bUnknownSecType:%d\n", cPurpose, cSecType, cRegId, iReserved, strPurposeSeg.c_str(), bUnknownSecType);
+		LOGE("cPurpose:%u, cSecType:%u, cVPCId:%u, cRegId:%u, iReserved:%d, strPurposeSeg:[%s], bUnknownSecType:%d\n", cPurpose, cSecType, cVPCId, cRegId, iReserved, strPurposeSeg.c_str(), bUnknownSecType);
 
 		char cmd[BUF_SIZE]={0};
 //		sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", strMAC.c_str(), retPW.str().c_str());
@@ -2782,7 +2786,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					sbTokenExisted = true;
 					LOGE("Token is already existed, check tmp token\n");
 					if(1 == cPurpose){
-						iRet = applyRegionId(cRegId);
+						iRet = applyRegionId(cVPCId, cRegId);
 						if(0 == iRet){
 							sprintf(cmd, "/beseye/cam_main/cam-util -verToken '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
 							LOGE("verToken cmd:[%s]\n", cmd);
@@ -2797,7 +2801,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 								onSPFailed();
 							}
 						}else{
-							LOGE("Failed to apply cRegId : [%d]\n", cRegId);
+							LOGE("Failed to apply cVPCId : [%d]\n", cVPCId);
 							onSPFailed();
 						}
 					}else{
@@ -2807,7 +2811,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					}
 				}else{
 					if(0 == cPurpose){
-						iRet = applyRegionId(cRegId);
+						iRet = applyRegionId(cVPCId, cRegId);
 						if(0 == iRet){
 							LOGE("Token is invalid, try to attach\n");
 							sprintf(cmd, "/beseye/cam_main/cam-util -attach '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
@@ -2825,7 +2829,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 								onSPFailed();
 							}
 						}else{
-							LOGE("Failed to apply cRegId : [%d]\n", cRegId);
+							LOGE("Failed to apply cVPCId : [%d]\n", cVPCId);
 							onSPFailed();
 						}
 					}else{
