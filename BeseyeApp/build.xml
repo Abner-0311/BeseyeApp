@@ -375,7 +375,7 @@
 	    <copy file="AndroidManifest-backup.xml" tofile="AndroidManifest.xml" />
 	    <delete file="AndroidManifest-backup.xml" quiet="true" />
 	    <property name="matchAppName.start" value='android:label=\"' />
-		<replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name${match.end}" />
+		<replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name_dev${match.end}" />
 	</target>
 	
 	<target name="-post-build">

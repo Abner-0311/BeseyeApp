@@ -77,9 +77,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private native int playPairingCode(String strMac, String strKey, int iSecType, short sUserToken);
 	private native int playPairingCodeWithPurpose(String strMac, String strKey, int iSecType, short sUserToken, char cPurpose);
 	private native int playSSIDPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
-	private native int playSSIDPairingCodeWithPurposeAndRegion(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose, int cRegId);
-	private native int playSSIDHashPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
-	private native int playSSIDHashPairingCodeWithPurposeAndRegion(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose, int cRegId, boolean bIsChinaReg);
+	private native int playSSIDPairingCodeWithPurposeAndRegion(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose, int cRegId, boolean bIsChinaReg);
+//	private native int playSSIDHashPairingCodeWithPurpose(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose);
+//	private native int playSSIDHashPairingCodeWithPurposeAndRegion(String strSSID, String strKey, int iSecType, short sUserToken, char cPurpose, int cRegId);
 	private native String getSSIDHashValue(String strSSID);
 	
 	private native long getSoundPairingDuration(String strSSID, String strKey, boolean bSSIDHash);
@@ -292,11 +292,11 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				@Override
 				public void run() {
 					int iRet = 0;
-					if(isSSIDPiaringCase()){
-						iRet = playSSIDPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose, SessionMgr.getInstance().getVPCNumber());
-					}else{
-						iRet = playSSIDHashPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose,SessionMgr.getInstance().getVPCNumber(), SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE));
-					}
+					//if(isSSIDPiaringCase()){
+						iRet = playSSIDPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose, SessionMgr.getInstance().getVPCNumber(), SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE));
+					//}else{
+					//	iRet = playSSIDHashPairingCodeWithPurposeAndRegion(mChosenWifiAPInfo.SSID, mChosenWifiAPInfo.password,mChosenWifiAPInfo.iCipherIdx,(short) sUserTmpId, cPurpose,SessionMgr.getInstance().getVPCNumber());
+					//}
 					
 					if(iRet != 0){
 						Toast.makeText(SoundPairingActivity.this, "Failed to play pairing code, errCode:"+iRet, Toast.LENGTH_SHORT).show();
