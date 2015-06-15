@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><resources>
-  <!-- TODO: string name="app_name" -->
+  <string name="app_name">云守护摄像头</string>
   <!-- action to connect to a wifi -->
   <string name="connect">连接</string>
   <string name="cancel">取消</string>
@@ -15,14 +15,14 @@
   <!-- hint to create new account -->
   <string name="hint_to_create_account">还没有账号？</string>
   <string name="account_create">建立账号</string>
-  <string name="login">登入</string>
+  <string name="login">登录</string>
   <string name="remove">移除</string>
   <string name="cont">继续</string>
   <!-- Title of sound remind page -->
   <string name="watch_out_sound">声音提醒</string>
   <!-- hint of password length -->
   <string name="password_hint">至少6个字母，需包括英文与数字</string>
-  <string name="action_settings">设定</string>
+  <string name="action_settings">设置</string>
   <!-- entry to event list page -->
   <string name="event_cam_view">录像事件</string>
   <!-- entry to live streaming page -->
@@ -35,7 +35,7 @@
   <string name="can_power_state_disconnect">此摄像头断线中</string>
   <string name="cam_setting_title_detach_cam">移除摄像头</string>
   <!-- Warning message for removing camera -->
-  <string name="dialog_dettach_cam">摄像头 [%s] 和其已录制的云端影像将被删除，您确定吗？</string>
+  <string name="dialog_dettach_cam">摄像头 [%s] 和其已录制的云端图像将被删除，您确定吗？</string>
   <string name="network_ssid">网络名称</string>
   <string name="network_other">其它...</string>
   <!-- action to scan wifi ap -->
@@ -80,7 +80,7 @@
   <string name="dialog_no_connectivity">请检查您的网络状态。</string>
   <!-- Title of loading dialog-->
   <string name="dialog_loading">载入中...</string>
-  <string name="dialog_setting">设定中…</string>
+  <string name="dialog_setting">设置中…</string>
   <!-- Title of synchronizing dialog-->
   <string name="dialog_syncing">读取摄像头信息中…</string>
   <!-- Message of dialog when turning on wifi on phone-->
@@ -88,7 +88,7 @@
   <!-- Message of dialog when scanning wifi ap -->
   <string name="dialog_wifi_scanning">扫描无线网络装置...</string>
   <!-- Message of dialog when setting up a wifi ap -->
-  <string name="dialog_wifi_setting">设定无线网络的装置...</string>
+  <string name="dialog_wifi_setting">设置无线网络的装置...</string>
   <!-- Message of dialog when failing to turn on phone wifi -->
   <string name="dialog_wifi_fail_on">无法打开无线网络，请检查您的无线网络设备状态。</string>
   <!-- Message of dialog when failing to scan wifi ap -->
@@ -124,19 +124,19 @@
   <!-- Event filter type: Sound-->
   <string name="notification_event_sound">声音</string>
   <!-- Title of setting page-->
-  <string name="cam_setting_title">设定</string>
-  <string name="cam_hardware_setting_title">硬件设定</string>
-  <string name="cam_setting_title_power_setting">电源设定</string>
+  <string name="cam_setting_title">设置</string>
+  <string name="cam_hardware_setting_title">硬件设置</string>
+  <string name="cam_setting_title_power_setting">电源设置</string>
   <string name="cam_setting_title_power">摄像头电源</string>
   <string name="cam_setting_title_power_time">电源开关排程</string>
   <string name="cam_setting_title_Location_aware">位置感知功能</string>
   <string name="cam_setting_title_location">位置感知功能</string>
-  <string name="cam_setting_title_setlocation">设定位置</string>
-  <string name="cam_setting_title_notification_setting">通知设定</string>
+  <string name="cam_setting_title_setlocation">设置位置</string>
+  <string name="cam_setting_title_notification_setting">通知设置</string>
   <string name="cam_setting_title_notification_event">通知事件</string>
   <string name="cam_setting_title_family_recognition">家人辨识</string>
-  <string name="cam_setting_title_hardware_setting">硬件设定</string>
-  <string name="cam_setting_title_hardware_setting_inf">硬件设定</string>
+  <string name="cam_setting_title_hardware_setting">硬件设置</string>
+  <string name="cam_setting_title_hardware_setting_inf">硬件设置</string>
   <string name="cam_setting_title_special_functions">其它功能</string>
   <string name="cam_setting_title_emergency_siren">紧急警报</string>
   <string name="cam_setting_title_camera_inf">摄像头信息</string>
@@ -154,23 +154,23 @@
   <!-- Warning Message of dialog when failed to change cam status-->
   <string name="cam_setting_fail_to_update_cam_status">目前无法更新摄像头状态，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to change video upload quality-->
-  <string name="cam_setting_fail_to_update_hd_quality">无法更新影像上传质量，请稍后再试。</string>
+  <string name="cam_setting_fail_to_update_hd_quality">无法更新图像上传质量，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to change notification settings-->
-  <string name="cam_setting_fail_to_update_notify_setting">无法更新通知设定，请稍后再试。</string>
+  <string name="cam_setting_fail_to_update_notify_setting">无法更新通知设置，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to change status light-->
   <string name="cam_setting_fail_to_update_led_status">无法更新指示灯状态，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to change status of Camera microphone-->
-  <string name="cam_setting_fail_to_update_mic_status">无法更新摄像头麦克风设定，请稍后再试。</string>
+  <string name="cam_setting_fail_to_update_mic_status">无法更新摄像头麦克风设置，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to change microphone sensitivity-->
-  <string name="cam_setting_fail_to_update_mic_sensitivity">无法更新麦克风设定，请稍后再试。</string>
+  <string name="cam_setting_fail_to_update_mic_sensitivity">无法更新麦克风设置，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to change camera Wi-Fi-->
-  <string name="cam_setting_fail_to_update_wifi_setting">无法更新的无线网络设定，请稍后再试。</string>
+  <string name="cam_setting_fail_to_update_wifi_setting">无法更新的无线网络设置，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to change timezone-->
   <string name="cam_setting_fail_to_update_timezone">无法更新时区，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to change night vision status-->
   <string name="cam_setting_fail_to_update_night_vision">无法更新夜视功能，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to change video upside-down-->
-  <string name="cam_setting_fail_to_update_video_upside_down">无法设定影像上下颠倒，请稍后再试。</string>
+  <string name="cam_setting_fail_to_update_video_upside_down">无法设置影像上下颠倒，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to get camera info-->
   <string name="cam_setting_fail_to_get_cam_info">无法取得摄像头信息，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to change schedule on/off status-->
@@ -184,7 +184,7 @@
   <!-- Warning Message of dialog when failed to delete schedule-->
   <string name="cam_setting_fail_to_del_schdule">无法删除时间排程，请稍后再试。</string>
   <!-- Message of dialog when changing camera wifi-->
-  <string name="cam_setting_wifi_setting_apply">正在设定无线网络，请稍后。</string>
+  <string name="cam_setting_wifi_setting_apply">正在设置无线网络，请稍后。</string>
   <!-- Message of dialog when failed to change camera wifi-->
   <string name="cam_setting_fail_to_apply_wifi_setting">无法将摄像头连接至新的无线网络。</string>
   <!-- Message of dialog when changing camera wifi successfully-->
@@ -199,11 +199,11 @@
   <string name="cam_setting_hw_night_vision_on">开</string>
   <string name="cam_setting_hw_night_vision_off">关</string>
   <string name="cam_setting_hw_timezone_title">时区</string>
-  <string name="cam_setting_title_video_upside_down">影像上下颠倒</string>
-  <string name="cam_setting_title_wifi_setting">无线网络设定</string>
+  <string name="cam_setting_title_video_upside_down">图像上下颠倒</string>
+  <string name="cam_setting_title_wifi_setting">无线网络设置</string>
   <string name="cam_setting_title_cam_info">摄像头信息</string>
   <!-- Warning Message of dialog when new camera name is empty -->
-  <string name="cam_setting_empty_name_warning">摄像头名称不可为空白。</string>
+  <string name="cam_setting_empty_name_warning">摄像头名称不可为空白</string>
   <string name="cam_info_cam_name">摄像头名称</string>
   <string name="cam_info_sw_ver">软件版本</string>
   <string name="cam_info_sn">摄像头序号</string>
@@ -212,11 +212,11 @@
   <!-- Warning Message of dialog when network or server error in player page -->
   <string name="server_error">网络或服务器错误，请稍后再试。</string>
   <!-- Warning Message of dialog when can not get valid DVR path -->
-  <string name="streaming_invalid_dvr">欲拨放之云端影像不存在。</string>
+  <string name="streaming_invalid_dvr">欲播放之云端图像不存在。</string>
   <!-- Warning Message of dialog when out of DVR clip -->
-  <string name="streaming_no_more_dvr">没有录像影像可播放。</string>
+  <string name="streaming_no_more_dvr">没有录像图像可播放。</string>
   <!-- Warning Message of dialog when can not get valid live streaming path -->
-  <string name="streaming_playing_error">欲拨放之云端影像不存在或服务器错误，请检查您的网络连接状态再试一次。</string>
+  <string name="streaming_playing_error">欲拨放之云端图像不存在或服务器错误，请检查您的网络连接状态再试一次。</string>
   <!-- Warning Message of dialog when network connectivity is not good -->
   <string name="streaming_error_no_network">请检查您的网络连接状态。</string>
   <!-- Warning Message of dialog when error occurred and it cant be identified-->
@@ -224,14 +224,14 @@
   <!-- Warning Message of dialog when app is out of memory and ask user to relaunch it-->
   <string name="streaming_error_low_mem">您的装置内存不足导致程序无法执行，请重新启动App。</string>
   <!-- Description of sound pairing page-->
-  <string name="signup_paring_title_1">正在使用 Let it Bee™ 技术设定您的Beseye</string>
+  <string name="signup_paring_title_1">正在使用 Let it Bee™ 技术设置您的Beseye</string>
   <string name="signup_paring_title_2">请稍待</string>
   <!-- Warning Message of dialog when failed to Sign up-->
   <string name="msg_signup_error">注册失败，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to login-->
-  <string name="msg_login_error">登入失败，请稍后再试。</string>
+  <string name="msg_login_error">登录失败，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to pairing-->
-  <string name="msg_pairing_error">摄像头设定失败，请稍后再试。</string>
+  <string name="msg_pairing_error">摄像头设置失败，请稍后再试。</string>
   <!-- Warning Message of dialog when failed to set new camera name-->
   <string name="msg_set_cam_name_fail">无法对摄像头取名，请稍后再试。</string>
   <!-- Warning Message of dialog when email format is invalid-->
@@ -247,24 +247,24 @@
   <!-- Warning Message of dialog when the email to login is not found in server-->
   <string name="msg_account_not_found">不正确的电子邮件地址，请输入正确地址。</string>
   <!-- Hint Message of dialog when pairing is processing-->
-  <string name="toast_pairing_wait">摄像头设定中，请稍待。</string>
+  <string name="toast_pairing_wait">摄像头设置中，请稍待。</string>
   <string name="toast_pairing_enter_cam_name">帮您的Beseye 取个名字吧。</string>
   <string name="dialog_msg_signup">注册...</string>
-  <string name="dialog_msg_login">登入...</string>
+  <string name="dialog_msg_login">登录...</string>
   <string name="dialog_msg_logiout">注销...</string>
   <string name="signup_title_before_setup">安装之前</string>
   <string name="signup_title_create_account">建立账号</string>
-  <string name="signup_title_cam_wifi_settings">摄像头无线网络设定</string>
+  <string name="signup_title_cam_wifi_settings">摄像头无线网络设置</string>
   <string name="signup_title_cam_pair_fail">请再试一次</string>
   <string name="signup_title_wifi_list">无线网络列表</string>
   <string name="signup_learn_more">了解更多</string>
   <string name="signup_beseye">Beseye</string>
-  <string name="signup_bottom_login">登入</string>
-  <string name="signup_bottom_signup">设定摄像头与注册</string>
+  <string name="signup_bottom_login">登录</string>
+  <string name="signup_bottom_signup">设置摄像头与注册</string>
   <string name="signup_before_setup_start">开始</string>
   <!-- Hint Message in before setup page-->
   <string name="signup_before_setup_description">请将摄像头插上电源并等待绿灯闪烁，并将行动装置拿至距离摄像头30 公分左右。</string>
-  <string name="signup_sound_reminder_description">请注意，设定摄像头的过程中您的行动装置将会发出声响。</string>
+  <string name="signup_sound_reminder_description">请注意，设置摄像头的过程中您的行动装置将会发出声响。</string>
   <!-- Hint Message for TOS and privacy policy-->
   <string name="signup_createAccount_description_title">继续下一步，我已同意Beseye的</string>
   <string name="signup_createAccount_description_terms">服务条款</string>
@@ -276,16 +276,15 @@
   <string name="signup_try_again_description_3">安装指南</string>
   <string name="signup_try_again_btn">好，再试一次</string>
   <!-- Hint Message after pairing is done and ask user to assign cam name-->
-  <string name="signup_name_camera">就快设定完成了，\n 帮您的Beseye 取个好认的名字吧</string>
+  <string name="signup_name_camera">就快设置完成了，\n 帮您的Beseye 取个好认的名字吧</string>
   <!-- Congratulation Message in live player page after pairing-->
-  <string name="signup_paring_done">摄像头设定已完成！\n 现在您可以拔掉插座将之安装在您想要的位置上，所有设定会自动在您插上电之后恢复。现在就开始享用您的Beseye Pro 服务吧!</string>
+  <string name="signup_paring_done">摄像头设置已完成！\n 现在您可以拔掉插座将之安装在您想要的位置上，所有设置会自动在您插上电之后恢复。现在就开始享用您的Beseye Pro 服务吧!</string>
   <string name="datetime_month">月</string>
   <string name="datetime_day">天</string>
   <string name="datetime_hour">时</string>
   <string name="datetime_min">分</string>
   <string name="event_list_now">现在</string>
-  <string name="event_list_family_detected">侦测到人物 (%s)</string>
-  <string name="event_list_people_detected_stranger">陌生人</string>
+  <string name="event_list_family_detected">家人辨识</string>
   <string name="event_list_people_detected">侦测到人物</string>
   <string name="event_list_sound_detected">侦测到声音</string>
   <string name="event_list_fire_detected">侦测到火苗</string>
@@ -315,7 +314,7 @@
   <string name="cam_menu_logout">注销</string>
   <string name="update_title">升级摄像头软件</string>
   <!-- Action to update cam SW -->
-  <string name="update_now">立刻更新</string>
+  <string name="update_now">立即更新</string>
   <string name="cam_update_progress">摄像头更新中...%s</string>
   <string name="cam_update_title">您可以更新 Beseye 摄像头至%s版本</string>
   <string name="cam_update_success">成功更新摄像头</string>
@@ -334,9 +333,9 @@
   <!-- Toast message when camera is connected after cam wifi changed-->
   <string name="toast_cam_change_wifi_done">摄像头%s已连接，请刷新您的摄像头列表。</string>
   <!-- Toast message when user password is changed by other devices-->
-  <string name="toast_password_changed">您的密码已更改，请重新登入。</string>
+  <string name="toast_password_changed">您的密码已更改，请重新登录。</string>
   <!-- Toast message when user session is invalid or expired-->
-  <string name="toast_session_invalid">已自动注销，请重新登入。</string>
+  <string name="toast_session_invalid">已自动注销，请重新登录。</string>
   <!-- Toast message when camera is removed from camera list -->
   <string name="toast_cam_deactivated">%s摄像头已被移除，请刷新您的摄像头列表。</string>
   <!-- Toast message when camera is disconnected due to network issue-->
@@ -347,7 +346,7 @@
   <string name="notify_cam_off_detect_cam_list">已关闭摄像头%s。</string>
   <string name="about_title">关于Beseye</string>
   <string name="about_ver">Beseye 版本%s</string>
-  <string name="about_desc">贝斯（Bes），古埃及神祇中的家庭守护之神，人们习惯将贝斯绘制在家中的重要角落，象征为家庭的欢乐安泰祈福。Beseye，以守护家庭安全为本，用贝斯之眼，看照亲子居家安全。\n 当安全监控进入云端世代，透过高端计算与辨识技术，监控服务走入家庭，成为最坚固的守护堡垒。\n将质感与风格融入产品设计思维，安全监控设备成为居家生活美学，监视镜头将不再是必须藏入角落的工具。\n呵护孩子的成长之路，让异地也能相聚同在，Beseye聚焦亲子与居家照护、重新定义家庭安全，留下珍贵时刻。</string>
+  <string name="about_desc">贝斯（Bes），古埃及神祇中的家庭守护之神，人们习惯将贝斯绘制在家中的重要角落，象征为家庭的欢乐安泰祈福。Beseye，以守护家庭安全为本，用贝斯之眼，看照亲子居家安全。\n 当安全监控进入云端世代，透过高端计算与辨识技术，监控服务走入家庭，成为最坚固的守护堡垒。\n将质感与风格融入产品设计思维，安全监控设备成为居家生活美学，监控镜头将不再是必须藏入角落的工具。\n呵护孩子的成长之路，让异地也能相聚同在，Beseye聚焦亲子与居家照护、重新定义家庭安全，留下珍贵时刻。</string>
   <!-- descriptions of pull to refresh listview-->
   <string name="loading_latest_update">最后更新时间%s</string>
   <string name="pull_to_refresh_pull_label">下拉刷新...</string>
@@ -399,7 +398,7 @@
   <string name="cam_name_update_success">成功更新摄像头名称</string>
   <string name="signup_plug_in_description">首先，请帮摄像头插上电源插头．</string>
   <string name="signup_plug_in_title">连接摄像头电源</string>
-  <string name="signup_plug_in_done">插上电源了，开始设定吧</string>
+  <string name="signup_plug_in_done">插上电源了，开始设置吧</string>
   <string name="signup_watch_out_title">注意</string>
   <string name="signup_watch_out_desc">注意注意，您的手机即将%1$s!\n请将您的%2$s对准镜头．\n再按下一步。</string>
   <string name="signup_watch_out_desc_bebebe">「发出哔哔声」</string>
@@ -410,33 +409,43 @@
   <string name="signup_confirm_led_twinkling_green_light">「闪烁绿灯」</string>
   <string name="signup_confirm_led_done">已闪绿灯，下一步</string>
   <string name="signup_pairing_fail_desc">请你拔掉插头重新插上，确认镜头灯号为「闪烁绿灯」，且手机喇叭距离镜头10公分，再开始Let it Bee™。</string>
-  <string name="signup_guideline_try_again_btn">OK，再设定一次看看</string>
+  <string name="signup_guideline_try_again_btn">OK，再设置一次看看</string>
   <!--Toast message for poor quality when talking-->
   <string name="hint_hold_to_talk_poor_network_quality">网络连接不稳定，\n请再次尝试通话．</string>
   <string name="msg_wifi_pw_length_error_wpa">无效的Wi-Fi密码长度。密码必须是8-64个字母。</string>
   <string name="msg_wifi_pw_length_error_wep">无效的Wi-Fi密码长度。密码必须是5至13个字母。</string>
-  <string name="msg_wifi_setting_info_error">无效的Wi-Fi设定。</string>
+  <string name="msg_wifi_setting_info_error">无效的Wi-Fi设置。</string>
   <!--Warning message for detaching cam failed case-->
   <string name="cam_setting_failed_detach_cam">无法移除摄像头，请再试一次。</string>
   <!--Dialog message for player pic capture-->
-  <string name="player_screenshot_capturing">正在存储摄像头影像</string>
+  <string name="player_screenshot_capturing">正在存储摄像头图像</string>
   <!--Toast message for complete pic capture-->
-  <string name="player_screenshot_capture_ok">摄像头影像已存储</string>
+  <string name="player_screenshot_capture_ok">摄像头图像已存储</string>
   <!--Toast message for fail to pic capture-->
-  <string name="player_screenshot_capture_failed">无法存储摄像头影像，请稍候再试。</string>
-  
-  <string name="sure">确定</string>
-  <string name="motion_zone_title">编辑侦测区域</string>
-  <string name="motion_zone_cancel_body">如此会舍弃此次编辑，您确定吗？</string>
-  <string name="motion_zone_cancel_title">舍弃编辑</string>
-  <string name="cam_setting_title_motion_zone">动态通知</string>
-  <string name="thumbnail_error_title">无法成功连接至您的摄像头</string>
-  <string name="thumbnail_error_body">请将摄像头与手持装置保持连接状态，之后再试一次。</string>
-  <string name="fullscreen">全屏幕</string>
-  
+  <string name="player_screenshot_capture_failed">无法存储摄像头图像，请稍候再试。</string>
+  <!--Toast message for mic occupied-->
+  <string name="hint_hold_to_talk_conn_occupied">麦克风使用中，请稍后再试．</string>
+  <!--Share button on screenshot dialog-->
   <string name="share">分享</string>
+  <!--Close button on screenshot dialog-->
   <string name="close">关闭</string>
+  <!--Title on share list dialog-->
   <string name="share_way">分享方式</string>
+  <!--Description show on share app-->
   <string name="share_hash">看看我用Beseye 拍到的精彩时刻</string>
-  
+  <!--用來回應 “你確定嗎？” -->
+  <string name="sure">确定</string>
+  <!--(動態通知頁面)the text below motion zone image preview-->
+  <string name="motion_zone_title">编辑侦测区域</string>
+  <!--cancel dialog body-->
+  <string name="motion_zone_cancel_body">如此会舍弃此次编辑，您确定吗？</string>
+  <!--cancel dialog title-->
+  <string name="motion_zone_cancel_title">舍弃编辑</string>
+  <!--(設定頁面)-->
+  <string name="cam_setting_title_motion_zone">动态通知</string>
+  <!--dialog title for get thumbnail error in EditView-->
+  <string name="thumbnail_error_title">无法成功连接至您的摄像头</string>
+  <!--dialog body for get thumbnail error in EditView-->
+  <string name="thumbnail_error_body">请将摄像头与手持装置保持连接状态, 之后再试一次。</string>
+  <string name="fullscreen">全屏幕</string>
 </resources>

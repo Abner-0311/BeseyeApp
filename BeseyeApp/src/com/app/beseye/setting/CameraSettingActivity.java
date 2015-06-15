@@ -139,7 +139,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgNotificationType = (ViewGroup)findViewById(R.id.vg_notification_type);
 		if(null != mVgNotificationType){
 			mVgNotificationType.setOnClickListener(this);
-			if(BeseyeUtils.isHiddenFeature()){
+			if(!BeseyeConfig.PRODUCTION_VER){
 				mVgNotificationType.setVisibility(View.GONE);
 			}
 		}
@@ -153,9 +153,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgMotionNotification = (ViewGroup)findViewById(R.id.vg_motion_notification_events);
 		if(null != mVgMotionNotification){
 			mVgMotionNotification.setOnClickListener(this);
-//			if(!BeseyeUtils.isHiddenFeature()){
-//				mVgMotionNotification.setVisibility(View.GONE);
-//			}
+			if(BeseyeConfig.PRODUCTION_VER){
+				mVgMotionNotification.setVisibility(View.GONE);
+			}
 		}
 		
 		mVgDetachCam = (ViewGroup)findViewById(R.id.vg_detach_cam);
@@ -358,7 +358,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				    	mbTriggerDetachAfterReboot = true;
 				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(DIALOG_ID_SYNCING), true, mStrVCamID);
 				    	
-				    	//monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);	
+//				    	monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);	
 				    	
 				    	//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(-1), true, mStrVCamID);
 				    }

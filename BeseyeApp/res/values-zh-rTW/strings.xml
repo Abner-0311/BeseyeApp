@@ -203,7 +203,7 @@
   <string name="cam_setting_title_wifi_setting">無線網路設定</string>
   <string name="cam_setting_title_cam_info">攝影機資訊</string>
   <!-- Warning Message of dialog when new camera name is empty -->
-  <string name="cam_setting_empty_name_warning">攝影機名稱不可為空白。</string>
+  <string name="cam_setting_empty_name_warning">攝影機名稱不可為空白</string>
   <string name="cam_info_cam_name">攝影機名稱</string>
   <string name="cam_info_sw_ver">軟體版本</string>
   <string name="cam_info_sn">攝影機序號</string>
@@ -284,8 +284,7 @@
   <string name="datetime_hour">時</string>
   <string name="datetime_min">分</string>
   <string name="event_list_now">現在</string>
-  <string name="event_list_family_detected">偵測到人物 (%s)</string>
-  <string name="event_list_people_detected_stranger">陌生人</string>
+  <string name="event_list_family_detected">家人辨識</string>
   <string name="event_list_people_detected">偵測到人物</string>
   <string name="event_list_sound_detected">偵測到聲音</string>
   <string name="event_list_fire_detected">偵測到火苗</string>
@@ -413,10 +412,8 @@
   <string name="signup_guideline_try_again_btn">OK，再設定一次看看</string>
   <!--Toast message for poor quality when talking-->
   <string name="hint_hold_to_talk_poor_network_quality">網路連線不穩定，\n請再次嘗試通話．</string>
-  <string name="hint_hold_to_talk_conn_occupied">麥克風使用中，請稍後再試．</string>
-  
-  <string name="msg_wifi_pw_length_error_wpa">無效的Wi-Fi密碼長度。密碼必須是8-64個字母。</string>
-  <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5或13個字母。</string>
+  <string name="msg_wifi_pw_length_error_wpa">無效的Wi-Fi 密碼長度。密碼必須是8-64個字母。</string>
+  <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5至13個字母。</string>
   <string name="msg_wifi_setting_info_error">無效的Wi-Fi設定。</string>
   <!--Warning message for detaching cam failed case-->
   <string name="cam_setting_failed_detach_cam">無法移除攝影機，請再試一次。</string>
@@ -426,18 +423,29 @@
   <string name="player_screenshot_capture_ok">攝影機影像已儲存</string>
   <!--Toast message for fail to pic capture-->
   <string name="player_screenshot_capture_failed">無法儲存攝影機影像，請稍候再試。</string>
-  
-  <string name="sure">確定</string>
-  <string name="motion_zone_title">編輯偵測區域</string>
-  <string name="motion_zone_cancel_body">如此會捨棄此次編輯，您確定嗎？</string>
-  <string name="motion_zone_cancel_title">捨棄編輯</string>
-  <string name="cam_setting_title_motion_zone">動態通知</string>
-  <string name="thumbnail_error_title">無法成功連線至您的攝影機</string>
-  <string name="thumbnail_error_body">請將攝影機與手持裝置保持連線狀態，之後再試一次。</string>
-  <string name="fullscreen">全螢幕</string>
-
+  <!--Toast message for mic occupied-->
+  <string name="hint_hold_to_talk_conn_occupied">麥克風使用中，請稍後再試．</string>
+  <!--Share button on screenshot dialog-->
   <string name="share">分享</string>
+  <!--Close button on screenshot dialog-->
   <string name="close">關閉</string>
+  <!--Title on share list dialog-->
   <string name="share_way">分享方式</string>
+  <!--Description show on share app-->
   <string name="share_hash">看看我用Beseye 拍到的精彩時刻</string>
+  <!--用來回應 “你確定嗎？” -->
+  <string name="sure">確定</string>
+  <!--(動態通知頁面)the text below motion zone image preview-->
+  <string name="motion_zone_title">編輯偵測區域</string>
+  <!--cancel dialog body-->
+  <string name="motion_zone_cancel_body">如此會捨棄此次編輯，您確定嗎？</string>
+  <!--cancel dialog title-->
+  <string name="motion_zone_cancel_title">捨棄編輯</string>
+  <!--(設定頁面)-->
+  <string name="cam_setting_title_motion_zone">動態通知</string>
+  <!--dialog title for get thumbnail error in EditView-->
+  <string name="thumbnail_error_title">無法成功連線至您的攝影機</string>
+  <!--dialog body for get thumbnail error in EditView-->
+  <string name="thumbnail_error_body">請將攝影機與手持裝置保持連線狀態, 之後再試一次。</string>
+  <string name="fullscreen">全螢幕</string>
 </resources>

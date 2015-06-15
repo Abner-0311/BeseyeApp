@@ -203,7 +203,7 @@
   <string name="cam_setting_title_wifi_setting">Wi-Fi を設定する</string>
   <string name="cam_setting_title_cam_info">カメラ情報</string>
   <!-- Warning Message of dialog when new camera name is empty -->
-  <string name="cam_setting_empty_name_warning">カメラ名を入力してください。</string>
+  <string name="cam_setting_empty_name_warning">カメラ名を入力してください</string>
   <string name="cam_info_cam_name">カメラ名前</string>
   <string name="cam_info_sw_ver">ソフトウェアバージョン</string>
   <string name="cam_info_sn">シリアルナンバー</string>
@@ -276,7 +276,7 @@
   <string name="signup_try_again_description_3">セットアップガイド</string>
   <string name="signup_try_again_btn">OK、再度実行してください</string>
   <!-- Hint Message after pairing is done and ask user to assign cam name-->
-  <string name="signup_name_camera">もうすぐセットアップ完了です、\nカメラに名前をつけましょう</string>
+  <string name="signup_name_camera">もうすぐセットアップ完了です、\n カメラに名前をつけましょう。</string>
   <!-- Congratulation Message in live player page after pairing-->
   <string name="signup_paring_done">セットアップ完了です！\nカメラのコンセントを抜き、お好きな場所にカメラを設置しましょう。セットアップ内容は、電源を切っても保存されています。設置の際は「ウォールマウントガイド」をご覧ください。Beseye提供するサービスを始めましょ！</string>
   <string name="datetime_month">月</string>
@@ -423,4 +423,29 @@
   <string name="player_screenshot_capture_ok">カメラの映像が保存されていました</string>
   <!--Toast message for fail to pic capture-->
   <string name="player_screenshot_capture_failed">カメラの映像を保存することができません、後はもう一度やり直してくだ。</string>
+  <!--Toast message for mic occupied-->
+  <!-- TODO: string name="hint_hold_to_talk_conn_occupied" -->
+  <!--Share button on screenshot dialog-->
+  <!-- TODO: string name="share" -->
+  <!--Close button on screenshot dialog-->
+  <!-- TODO: string name="close" -->
+  <!--Title on share list dialog-->
+  <!-- TODO: string name="share_way" -->
+  <!--Description show on share app-->
+  <!-- TODO: string name="share_hash" -->
+  <!--用來回應 “你確定嗎？” -->
+  <!-- TODO: string name="sure" -->
+  <!--(動態通知頁面)the text below motion zone image preview-->
+  <!-- TODO: string name="motion_zone_title" -->
+  <!--cancel dialog body-->
+  <!-- TODO: string name="motion_zone_cancel_body" -->
+  <!--cancel dialog title-->
+  <!-- TODO: string name="motion_zone_cancel_title" -->
+  <!--(設定頁面)-->
+  <!-- TODO: string name="cam_setting_title_motion_zone" -->
+  <!--dialog title for get thumbnail error in EditView-->
+  <!-- TODO: string name="thumbnail_error_title" -->
+  <!--dialog body for get thumbnail error in EditView-->
+  <!-- TODO: string name="thumbnail_error_body" -->
+  <!-- TODO: string name="fullscreen" -->
 </resources>

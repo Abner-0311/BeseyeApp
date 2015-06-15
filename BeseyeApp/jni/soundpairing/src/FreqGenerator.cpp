@@ -1003,7 +1003,7 @@ unsigned int FreqGenerator::playSSIDPairingCodeWithPurpose(const char* ssid, con
 	return playSSIDPairingCodeWithPurposeAndRegion(ssid, wifiKey, secType, tmpUserToken, cPurpose, (unsigned char) 1);
 }
 
-unsigned int FreqGenerator::playSSIDPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId){
+unsigned int FreqGenerator::playSSIDPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId, bool bIsChinaReg){
 	unsigned int iRet = R_OK;
 	stringstream sstrSsid;
 	stringstream sstrWifiKey;
@@ -1068,7 +1068,7 @@ unsigned int FreqGenerator::playSSIDPairingCodeWithPurposeAndRegion(const char* 
 			sstrToken<<SoundPair_Config::sCodeTable.at((iRegId   & 0x0f));
 
 			//Reserved
-			sstrToken<<SoundPair_Config::sCodeTable.at(0);
+			sstrToken<<SoundPair_Config::sCodeTable.at(bIsChinaReg?1:0);//For China region flag
 			sstrToken<<SoundPair_Config::sCodeTable.at(0);
 			sstrToken<<SoundPair_Config::sCodeTable.at(0);
 			sstrToken<<SoundPair_Config::sCodeTable.at(0);

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- DO NOT TRANSLATE BEGIN-->
-    
-    <string name="app_name_dev">Beseye(dev)</string>
+    <string name="app_name_dev">Beseye(d)</string>
     <string name="app_name_alpha">Beseye(α)</string>
     <string name="app_name_beta">Beseye(β)</string>
+    <string name="alpha">(α)</string>
+    <string name="beta">(β)</string>
     <string name="crash_toast_text"></string>
     <string name="camerview_init_date">---.--.----</string>
     <string name="camerview_init_time">--:--:-- --</string>

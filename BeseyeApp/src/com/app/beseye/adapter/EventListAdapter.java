@@ -221,6 +221,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 						}
 						face = BeseyeJSONUtil.findFacebyId(iFaceId);
 						if(null != face){
+							Log.i(TAG, "genDetectionType(), find match "+iFaceId+" to "+face.mstrName);	
 							strType = String.format(mStrFamilyDetectFormat, face.mstrName);
 						}else{
 							strType = String.format(mStrFamilyDetectFormat, this.mStrStranger);

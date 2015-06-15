@@ -45,6 +45,7 @@ import com.app.beseye.GCMIntentService;
 import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
 import com.app.beseye.error.BeseyeError;
+import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
@@ -53,6 +54,8 @@ import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.FACE_LIST;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeSharedPreferenceUtil;
 import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
@@ -287,6 +290,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			BeseyeStorageAgent.doDeleteCache(BeseyeNotificationService.this.getApplicationContext());
                 		}//If Login
                 		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid()){
+                			if(null == mGetVCamListTask){
+                				(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this)).execute();
+                			}
                 			checkGCMService();
                 			//checkEventPeriod();
 //                			try {
@@ -337,8 +343,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	if(DEBUG)
                 		Log.d(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
                 	
-                	if(SessionMgr.getInstance().getServerMode().ordinal() <= SessionMgr.SERVER_MODE.MODE_DEV.ordinal())
-                		Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
+//                	if(SessionMgr.getInstance().getServerMode().ordinal() <= SessionMgr.SERVER_MODE.MODE_DEV.ordinal())
+//                		Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
                 	handleGCMEvents(data, dataCus);
                 	break;
                 }
@@ -431,9 +437,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private BeseyePushServiceTask.GetProjectIDTask mGetProjectIDTask = null;
 	private long mlTimeToCloseWs = -1;
 	private Runnable mCloseWsRunnable = null;
-    
-	private Map<String, Integer> mMapNotificationId = new HashMap<String, Integer>();
-	private Map<String, Integer> mMapNCode = new HashMap<String, Integer>();
 	
     @Override
     public void onCreate() {
@@ -686,7 +689,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public IBinder onBind(Intent intent) {
         return mMessenger.getBinder();
     }
-
 	
 	public static final String PROPERTY_REG_ID = "registration_id";
 	private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -943,13 +945,20 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 
 	static int sRequestCode = (int) (System.currentTimeMillis()%100000);
 	
+	private String getAppName(){
+		return (BeseyeConfig.ALPHA_VER?getText(R.string.app_name_alpha):
+			   (BeseyeConfig.BETA_VER?getText(R.string.app_name_beta):
+		       (BeseyeConfig.DEBUG?getText(R.string.app_name_dev):
+		        getText(R.string.app_name)))).toString();
+	}
+	
 	private void showNotification(int iNotifyId, Intent intent, CharSequence charSequence, CharSequence text, long lTs) {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, sRequestCode++ , intent, 0);
 		
 		//Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 		if(null != contentIntent){	         
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(BeseyeNotificationService.this)
-			        .setContentTitle((null == charSequence)?getText(R.string.app_name):charSequence)  
+			        .setContentTitle((null == charSequence)?getAppName():charSequence)  
 			        .setContentText(text)
 			        .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
 			        .setWhen(lTs)
@@ -966,7 +975,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	private void showNotification(int iNotifyId, Intent intent, CharSequence text, long lTs) {
-		showNotification(iNotifyId, intent, getText(R.string.app_name), text, lTs);
+		showNotification(iNotifyId, intent, getAppName(), text, lTs);
 	}
 	
 	private void showNotification(int iNotifyId, Intent intent, CharSequence text, JSONObject eventObj) {
@@ -1141,11 +1150,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyePushServiceTask.GetProjectIDTask){
-			Log.e(TAG, "onPostExecute(), GetProjectIDTask, iErrType = "+iErrType);
+			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetProjectIDTask, iErrType = "+iErrType);
 		}else if(task instanceof BeseyePushServiceTask.AddRegisterIDTask){
-			Log.e(TAG, "onPostExecute(), AddRegisterIDTask, iErrType = "+iErrType);
+			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), AddRegisterIDTask, iErrType = "+iErrType);
 		}else if(task instanceof BeseyePushServiceTask.DelRegisterIDTask){
-			Log.e(TAG, "onPostExecute(), DelRegisterIDTask, iErrType = "+iErrType);
+			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), DelRegisterIDTask, iErrType = "+iErrType);
 		}
 		Log.e(TAG, "Service::onErrorReport(), "+task.getClass().getSimpleName()+", params:"+strMsg+", iErrType: "+iErrType);
 	}
@@ -1163,28 +1172,28 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					String senderId = BeseyeJSONUtil.getJSONString(result.get(0), PS_PORJ_NUM);
 					
 					if(DEBUG)
-						Log.i(TAG, "onPostExecute(), senderId "+senderId);
+						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), senderId "+senderId);
 					
 					if(0 < senderId.length()){
 						registerGCM(senderId);
 					}else{
-						Log.e(TAG, "onPostExecute(), GetProjectIDTask, invalid senderId ");
+						Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetProjectIDTask, invalid senderId ");
 					}
 				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_FOUND == iRetCode){
-					Log.i(TAG, "onPostExecute(), E_BE_ACC_SESSION_NOT_FOUND ");
+					Log.i(TAG, "BeseyeNotificationService::onPostExecute(), E_BE_ACC_SESSION_NOT_FOUND ");
 					SessionMgr.getInstance().cleanSession();
 				}
 			}else if(task instanceof BeseyePushServiceTask.AddRegisterIDTask){
 				if(0 == iRetCode || 2 == iRetCode && null != result && 0 < result.size()){
 					if(DEBUG)
-						Log.i(TAG, "onPostExecute(), AddRegisterIDTask OK");
+						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), AddRegisterIDTask OK");
 					
 					mbRegisterGCM = true;
 				}
 			}else if(task instanceof BeseyePushServiceTask.DelRegisterIDTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
 					if(DEBUG)
-						Log.i(TAG, "onPostExecute(), DelRegisterIDTask OK");
+						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), DelRegisterIDTask OK");
 					
 					storeRegistrationId(this, "");
 				}
@@ -1200,10 +1209,26 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						e.printStackTrace();
 					}
 				}
+			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
+				if(0 == iRetCode){
+					JSONObject objVCamList = result.get(0);
+					fillVCamList(objVCamList);
+					BeseyeAccountTask.GetVCamListTask accTask = (BeseyeAccountTask.GetVCamListTask)task;
+					String strCheckId = accTask.getVCamIdCheck();
+					if(null != strCheckId){
+						if(false == mMapNotificationId.containsKey(strCheckId)){
+							mListBlackVCamId.add(strCheckId);
+							if(DEBUG)
+								Log.i(TAG, "BeseyeNotificationService::onPostExecute(), add "+strCheckId+" into mListBlackVCamId");
+						}else{
+							handleNotificationEvent(accTask.getMsgObj(), false);
+						}
+					}
+				}
 			}else if(task instanceof BeseyeMMBEHttpTask.GetIMPEventListTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
 					if(DEBUG)
-						Log.i(TAG, "onPostExecute(), GetIMPEventListTask "+result.get(0).toString());
+						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), GetIMPEventListTask "+result.get(0).toString());
 					
 					int miEventCount = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_OBJ_CNT);
 					if(0 < miEventCount){
@@ -1287,6 +1312,36 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		
 		if(task == mGetProjectIDTask){
 			mGetProjectIDTask = null;
+		}
+		
+		if(task == mGetVCamListTask){
+			mGetVCamListTask = null;
+		}
+	}
+	
+	private Map<String, Integer> mMapNotificationId = new HashMap<String, Integer>();
+	private Map<String, Integer> mMapNCode = new HashMap<String, Integer>();
+	private List<String> mListBlackVCamId = new ArrayList<String>();
+	private BeseyeHttpTask mGetVCamListTask = null;
+	
+	private void fillVCamList(JSONObject objVCamList){
+		int iVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_VCAM_CNT);		
+		if(0 < iVcamCnt){
+			JSONArray VcamList = BeseyeJSONUtil.getJSONArray(objVCamList, BeseyeJSONUtil.ACC_VCAM_LST);
+			for(int i = 0;i< iVcamCnt;i++){
+				try {
+					JSONObject camObj = VcamList.getJSONObject(i);
+					if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+						String strVCamId = BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID);
+						int iNotifyType = NOTIFICATION_TYPE_INFO+((null != strVCamId)?strVCamId.hashCode():0);
+						if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
+							mMapNotificationId.put(strVCamId, iNotifyType);
+						}
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -1453,66 +1508,78 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				case NCODE_PEOPLE_DETECT:
 				case NCODE_MOTION_DETECT:
 				case NCODE_OFFLINE_DETECT:{
-					String strCamName = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME);
-					if(NCODE_PEOPLE_DETECT == iNCode)
-						iMsgType = MSG_CAM_EVENT_PEOPLE;
-					else if(NCODE_MOTION_DETECT == iNCode)
-						iMsgType = MSG_CAM_EVENT_MOTION;
-					else 
-						iMsgType = MSG_CAM_EVENT_OFFLINE;
-					
-					//if(bFromGCM){
-						if(NCODE_PEOPLE_DETECT == iNCode){
-							strNotifyMsg = String.format(getString(R.string.notify_people_detect), strCamName);
-							//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_people_detect);
-						}else if(NCODE_MOTION_DETECT == iNCode){
-							strNotifyMsg = String.format(getString(R.string.notify_motion_detect), strCamName);
-							//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_motion_detect);
-						}else{ 
-							strNotifyMsg = String.format(getString(R.string.notify_offline_detect), strCamName);
-							//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_offline_detect);
+					String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+					if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
+						if(false == mListBlackVCamId.contains(strVCamId)){
+							if(null != mGetVCamListTask && false == mGetVCamListTask.isCancelled()){
+								mGetVCamListTask.cancel(true);
+                			}
+							if(DEBUG)
+								Log.i(TAG, "handleNotificationEvent(),strVCamId="+strVCamId+" not in mListBlackVCamId nor mMapNotificationId");	
+							(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this, strVCamId, msgObj)).execute();
 						}
-						String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+					}else{
+						String strCamName = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME);
+						if(NCODE_PEOPLE_DETECT == iNCode)
+							iMsgType = MSG_CAM_EVENT_PEOPLE;
+						else if(NCODE_MOTION_DETECT == iNCode)
+							iMsgType = MSG_CAM_EVENT_MOTION;
+						else 
+							iMsgType = MSG_CAM_EVENT_OFFLINE;
 						
-						iNotifyType = NOTIFICATION_TYPE_INFO+((null != strVCamId)?strVCamId.hashCode():0);
-						if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
-							mMapNotificationId.put(strVCamId, iNotifyType);
-							mMapNCode.put(strVCamId, iNCode);
-						}
-						
-						if(NCODE_OFFLINE_DETECT != iNCode){
-							if(null != strVCamId && !strVCamId.equals(mStrFocusVCamId)){
-								JSONObject cam_obj = new JSONObject();
-								BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_ID, strVCamId);
-							    BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME, strCamName);
-							        
-							   // iNotifyType = NOTIFICATION_TYPE_INFO+((null != strVCamId)?strVCamId.hashCode():0);
-								
-								lTs = BeseyeJSONUtil.getJSONLong(objCus, BeseyeJSONUtil.PS_EVT_TS);
-								
-								Intent delegateIntent = new Intent();
-								delegateIntent.setClassName(this, CameraViewActivity.class.getName());
-								delegateIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
-								delegateIntent.putExtra(CameraViewActivity.KEY_DVR_STREAM_MODE, true);
-								
-								JSONObject tsInfo = new JSONObject();
-								BeseyeJSONUtil.setJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME, lTs);
-								delegateIntent.putExtra(CameraViewActivity.KEY_TIMELINE_INFO, tsInfo.toString());
-								
-								intent.setClassName(this, OpeningPage.class.getName());
-								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//								intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-								intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-								intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-								intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);	
-								intent.putExtra(OpeningPage.KEY_EVENT_FLAG, true);
-							}else{
-								strNotifyMsg = null;
-								if(DEBUG)
-									Log.i(TAG, "handleNotificationEvent(),match mStrFocusVCamId="+mStrFocusVCamId);	
+						//if(bFromGCM){
+							if(NCODE_PEOPLE_DETECT == iNCode){
+								strNotifyMsg = String.format(getString(R.string.notify_people_detect), strCamName);
+								//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_people_detect);
+							}else if(NCODE_MOTION_DETECT == iNCode){
+								strNotifyMsg = String.format(getString(R.string.notify_motion_detect), strCamName);
+								//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_motion_detect);
+							}else{ 
+								strNotifyMsg = String.format(getString(R.string.notify_offline_detect), strCamName);
+								//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_offline_detect);
 							}
-						}
-					//}
+							
+							iNotifyType = NOTIFICATION_TYPE_INFO+((null != strVCamId)?strVCamId.hashCode():0);
+							if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
+								mMapNotificationId.put(strVCamId, iNotifyType);
+								mMapNCode.put(strVCamId, iNCode);
+							}
+							
+							if(NCODE_OFFLINE_DETECT != iNCode){
+								if(null != strVCamId && !strVCamId.equals(mStrFocusVCamId)){
+									JSONObject cam_obj = new JSONObject();
+									BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_ID, strVCamId);
+								    BeseyeJSONUtil.setJSONString(cam_obj, BeseyeJSONUtil.ACC_NAME, strCamName);
+								        
+								   // iNotifyType = NOTIFICATION_TYPE_INFO+((null != strVCamId)?strVCamId.hashCode():0);
+									
+									lTs = BeseyeJSONUtil.getJSONLong(objCus, BeseyeJSONUtil.PS_EVT_TS);
+									
+									Intent delegateIntent = new Intent();
+									delegateIntent.setClassName(this, CameraViewActivity.class.getName());
+									delegateIntent.putExtra(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
+									delegateIntent.putExtra(CameraViewActivity.KEY_DVR_STREAM_MODE, true);
+									
+									JSONObject tsInfo = new JSONObject();
+									BeseyeJSONUtil.setJSONLong(tsInfo, BeseyeJSONUtil.MM_START_TIME, lTs);
+									delegateIntent.putExtra(CameraViewActivity.KEY_TIMELINE_INFO, tsInfo.toString());
+									
+									intent.setClassName(this, OpeningPage.class.getName());
+									intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//									intent.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+									intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+									intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+									intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);	
+									intent.putExtra(OpeningPage.KEY_EVENT_FLAG, true);
+								}else{
+									strNotifyMsg = null;
+									if(DEBUG)
+										Log.i(TAG, "handleNotificationEvent(),match mStrFocusVCamId="+mStrFocusVCamId);	
+								}
+							}
+						//}
+					}
+					
 					break;
 				}
 				default:{

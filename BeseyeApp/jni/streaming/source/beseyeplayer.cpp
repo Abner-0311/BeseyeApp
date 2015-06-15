@@ -30,7 +30,7 @@ pFrameRGB(NULL),
 window(w),
 seek_by_bytes(-1),
 show_status(-1),
-av_sync_type(AV_SYNC_AUDIO_MASTER),
+av_sync_type(AV_SYNC_VIDEO_MASTER),
 start_time(AV_NOPTS_VALUE),
 duration(AV_NOPTS_VALUE),
 fast(0),
@@ -1850,6 +1850,12 @@ int read_thread(void *arg)
     holder.rtmpStatusCallback = rtmpStatusCallback;
     holder.rtmpErrorCallback = rtmpErrorCallback;
     holder.userData = player;
+    holder.iCustomCount = 2;
+    holder.iCustomValues = (int*)malloc(sizeof(int)*2);
+    if(holder.iCustomValues){
+    	holder.iCustomValues[0] = 9;
+    	holder.iCustomValues[1] = 14;
+    }
 
     av_dict_set(&format_opts, "holder", (const char*)&holder, 0);
 

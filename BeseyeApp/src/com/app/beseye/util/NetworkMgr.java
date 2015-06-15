@@ -956,7 +956,7 @@ public class NetworkMgr {
 	
 	private static class WiFiInfoComparator implements Comparator<WifiAPInfo> {
         public int compare(WifiAPInfo info1, WifiAPInfo info2) {
-        	return info1.signalLevel >= info2.signalLevel ?-1:1;
+        	return info1.signalLevel > info2.signalLevel ?-1:(info1.signalLevel == info2.signalLevel?0:1);
         }
     }
 	

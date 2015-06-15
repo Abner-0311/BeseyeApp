@@ -211,7 +211,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_PAIRING_AP_MAC 		= "PairingWifiRouterMac";
 	public static final String ACC_PAIRING_META_DATA 	= "PairingMetaData";
 	public static final String ACC_PAIRING_TOKEN 		= "PairingToken";
-	
+	public static final String ACC_REGION 				= "Region";
 	
 	public static final String ACC_SES_DEV 				= "DevSession";
 	public static final String ACC_VCAM_CLIENT 			= "VcamClient";
@@ -320,70 +320,85 @@ public class BeseyeJSONUtil {
 	
 	static final public FACE_LIST faceList[] =
 		{
-		    new FACE_LIST(1, "Abner", "Abner 1.jpg"),
+//		    new FACE_LIST(1, "Abner", "Abner 1.jpg"),
+//
+//		    new FACE_LIST(2, "Amos", "Amos.jpg"),
+//
+//		    new FACE_LIST(3, "Carlos", "Carlos.jpg"),
+//
+//		    new FACE_LIST(4, "Chris", "Chris_head.jpg"),
+//
+//		    new FACE_LIST(5, "Claudia", "Claudia_20110817.jpg"),
+//
+//		    new FACE_LIST(6, "Doris", "Doris.jpg"),
+//
+//		    new FACE_LIST(7, "Yolux", "DSC04568.JPG"),
+//
+//		    new FACE_LIST(8, "Giben", "Giben.Lin.png"),
+//
+//		    new FACE_LIST(9, "Olive", "Olive.jpg"),
+//
+//		    new FACE_LIST(10, "Peggy", "peggy.jpg"),
+//
+//		    new FACE_LIST(11, "Selena", "selena.JPG"),
+//
+//		    new FACE_LIST(12, "Shaq", "Shaq.jpg"),
+//
+//		    new FACE_LIST(13, "Yehudi", "Yehudi.JPG"),
+//
+//		    new FACE_LIST(14, "Zara", "zara.jpg"),
+//
+//		    new FACE_LIST(15, "Cuthbert", "Cuthbert1.jpg"),   //-4
+//
+//		    new FACE_LIST(16, "Cuthbert", "Cuthbert2.JPG"),   //-6
+//
+//		    new FACE_LIST(17, "Peggy", "IMG_9856.JPG"),
+//
+//		    new FACE_LIST(18, "Meg", "IMG_9868.JPG"),
+//
+//		    new FACE_LIST(19, "Olive", "IMG_9872.JPG"),
+//
+//		    new FACE_LIST(20, "Giben", "IMG_9873.JPG"),
+//
+//		    new FACE_LIST(21, "Zara", "IMG_9875.JPG"),
+//
+//		    new FACE_LIST(22, "Selena", "IMG_9876.JPG"),
+//
+//		    new FACE_LIST(23, "Yolux", "IMG_9880.JPG"),
+//
+//		    new FACE_LIST(24, "Chris", "IMG_9881.JPG"),
+//
+//		    new FACE_LIST(25, "Yehudi", "IMG_9882.JPG"),
+//
+//		    new FACE_LIST(26, "Carlos", "IMG_9883.JPG"),
+//
+//		    new FACE_LIST(27, "Abner", "IMG_9884.JPG"),
+//
+//		    new FACE_LIST(28, "Shaq", "IMG_9885.JPG"),
+//
+//		    new FACE_LIST(29, "Jobbie", "IMG_9886.JPG"),
+//
+//		    new FACE_LIST(30, "Karen", "IMG_9887.JPG"),
+//
+//		    new FACE_LIST(31, "Doris", "IMG_9890.JPG"),
 
-		    new FACE_LIST(2, "Amos", "Amos.jpg"),
-
-		    new FACE_LIST(3, "Carlos", "Carlos.jpg"),
-
-		    new FACE_LIST(4, "Chris", "Chris_head.jpg"),
-
-		    new FACE_LIST(5, "Claudia", "Claudia_20110817.jpg"),
-
-		    new FACE_LIST(6, "Doris", "Doris.jpg"),
-
-		    new FACE_LIST(7, "Yolux", "DSC04568.JPG"),
-
-		    new FACE_LIST(8, "Giben", "Giben.Lin.png"),
-
-		    new FACE_LIST(9, "Olive", "Olive.jpg"),
-
-		    new FACE_LIST(10, "Peggy", "peggy.jpg"),
-
-		    new FACE_LIST(11, "Selena", "selena.JPG"),
-
-		    new FACE_LIST(12, "Shaq", "Shaq.jpg"),
-
-		    new FACE_LIST(13, "Yehudi", "Yehudi.JPG"),
-
-		    new FACE_LIST(14, "Zara", "zara.jpg"),
-
-		    new FACE_LIST(15, "Cuthbert", "Cuthbert1.jpg"),   //-4
-
-		    new FACE_LIST(16, "Cuthbert", "Cuthbert2.JPG"),   //-6
-
-		    new FACE_LIST(17, "Peggy", "IMG_9856.JPG"),
-
-		    new FACE_LIST(18, "Meg", "IMG_9868.JPG"),
-
-		    new FACE_LIST(19, "Olive", "IMG_9872.JPG"),
-
-		    new FACE_LIST(20, "Giben", "IMG_9873.JPG"),
-
-		    new FACE_LIST(21, "Zara", "IMG_9875.JPG"),
-
-		    new FACE_LIST(22, "Selena", "IMG_9876.JPG"),
-
-		    new FACE_LIST(23, "Yolux", "IMG_9880.JPG"),
-
-		    new FACE_LIST(24, "Chris", "IMG_9881.JPG"),
-
-		    new FACE_LIST(25, "Yehudi", "IMG_9882.JPG"),
-
-		    new FACE_LIST(26, "Carlos", "IMG_9883.JPG"),
-
-		    new FACE_LIST(27, "Abner", "IMG_9884.JPG"),
-
-		    new FACE_LIST(28, "Shaq", "IMG_9885.JPG"),
-
-		    new FACE_LIST(29, "Jobbie", "IMG_9886.JPG"),
-
-		    new FACE_LIST(30, "Karen", "IMG_9887.JPG"),
-
-		    new FACE_LIST(31, "Doris", "IMG_9890.JPG"),
-
-		    new FACE_LIST(101, "Shaq", "Shaq.jpg")
-
+			new FACE_LIST(100, "Cindy", "Shaq.jpg"),
+			
+			new FACE_LIST(101, "Ella", "Shaq.jpg"),
+			
+			new FACE_LIST(102, "Giben", "Shaq.jpg"),
+			
+			new FACE_LIST(103, "Jobbie", "Shaq.jpg"),
+			
+		    new FACE_LIST(104, "Shaq", "Shaq.jpg"),
+		    
+		    new FACE_LIST(105, "Tienlin", "Shaq.jpg"),
+		    
+		    new FACE_LIST(106, "Yehudi", "Shaq.jpg"),
+		    
+		    new FACE_LIST(107, "Cynthia", "Shaq.jpg"),
+		    
+		    new FACE_LIST(108, "Kris", "Shaq.jpg")
 		};
 	
 	public static final String MM_IS_LIVE 				= "isLive";

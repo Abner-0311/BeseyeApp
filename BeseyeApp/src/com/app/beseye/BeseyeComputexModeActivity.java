@@ -26,7 +26,8 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 	private Spinner mSpServerType, mSpDetachHWID;
 	private CheckBox mCbCamSWUpdateSuspended;
 	private EditText mEtDefEmail = null;
-	private static String[] hwids = new String[]{"00409NDO3R15", "00409XONGY7H"};
+	private static String[] hwids = new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"};
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		
 		mSpServerType = (Spinner)findViewById(R.id.sp_server_type);
 		if(null != mSpServerType){
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server(deprecated)","Production Server", "Staging Server (Computex)"/*, "Production Server"*/});
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server(deprecated)","Production Server", "Staging Server (Computex)", "China p2-Stage Server"});
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			mSpServerType.setAdapter(adapter);
 		}

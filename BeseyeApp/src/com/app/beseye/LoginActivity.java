@@ -49,7 +49,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 				if(SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 					mEtUserName.setText("beseye_dev@beseye.com");
 				}else if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_STAGING){
-					mEtUserName.setText("beseye_stage@beseye.com");
+					mEtUserName.setText("democam@beseye.com");
 				}
 			}
 		}
@@ -147,7 +147,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 				return;
 			}
 			
-			if(BeseyeFeatureConfig.VPC_NUM_QUERY){
+			if(BeseyeFeatureConfig.VPC_NUM_QUERY && !SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)){
 				monitorAsyncTask(new BeseyeAccountTask.GetVPCNoHttpTask(this).setDialogId(DIALOG_ID_LOGIN), true, mEtUserName.getText().toString());
 			}else{
 				monitorAsyncTask(new BeseyeAccountTask.LoginHttpTask(this).setDialogId(DIALOG_ID_LOGIN), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());

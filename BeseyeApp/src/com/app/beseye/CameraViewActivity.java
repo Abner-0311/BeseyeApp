@@ -2038,7 +2038,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     
     static class CheckVideoBlockRunnable implements Runnable{
     	static private final long EXPIRE_VIDEO_BLOCK = 20000L;
-    	static private final long EXPIRE_VIDEO_NOT_START = 5000L;
+    	static private final long EXPIRE_VIDEO_NOT_START = 12000L;
 		private WeakReference<CameraViewActivity> mAct;
 		
 		public CheckVideoBlockRunnable(CameraViewActivity act){
@@ -2576,7 +2576,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     
     private long mlStreamingBeginTIme = -1;
     private Runnable mReStartRunnable= null;
-    final private static int MAX_TORELABLE_DELAY_TIME =5000; //5 secs
+    final private static int MAX_TORELABLE_DELAY_TIME =15000; //15 secs
     
     public void updateRTMPClockCallback(final int iTimeInSec){
     	BeseyeUtils.postRunnable(new Runnable(){
