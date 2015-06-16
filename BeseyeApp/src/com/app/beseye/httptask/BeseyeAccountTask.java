@@ -261,7 +261,8 @@ public class BeseyeAccountTask {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			JSONObject obj = new JSONObject();
 			try {
-				obj.put(ACC_EMAIL, strParams[0]);				
+				obj.put(ACC_EMAIL, strParams[0]);	
+				obj.put(ACC_LANG, BeseyeUtils.getLocaleString());	
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_FORGET_PW, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -324,7 +325,7 @@ public class BeseyeAccountTask {
 //					setVCamIdForPerm(strParams[0]);
 //					
 //				}
-				obj.put(ACC_REGION, BeseyeUtils.getLocaleString());
+				obj.put(ACC_REGION, BeseyeUtils.getLocaleStringForRegion());
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_GET_VCAM_LST, obj.toString());
 			} catch (NumberFormatException e) {

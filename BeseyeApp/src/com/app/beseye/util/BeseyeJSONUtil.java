@@ -212,6 +212,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_PAIRING_META_DATA 	= "PairingMetaData";
 	public static final String ACC_PAIRING_TOKEN 		= "PairingToken";
 	public static final String ACC_REGION 				= "Region";
+	public static final String ACC_LANG 				= "Lang";
 	
 	public static final String ACC_SES_DEV 				= "DevSession";
 	public static final String ACC_VCAM_CLIENT 			= "VcamClient";

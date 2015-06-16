@@ -528,10 +528,24 @@ public class BeseyeUtils {
 			strLocale = "ja";
 		}else if(Locale.getDefault().equals(Locale.SIMPLIFIED_CHINESE)){
 			strLocale = "zh-cn";
+		}
+		Log.e(TAG, "getLocaleString(), Locale.getDefault():"+Locale.getDefault()+", strLocale:"+strLocale);
+
+		return strLocale;
+	}
+	
+	static public String getLocaleStringForRegion(){
+		String strLocale = DEF_NEWS_LANG;
+		if(Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE)){
+			strLocale = "zh-tw";
+		}else if(Locale.getDefault().equals(Locale.JAPAN) || Locale.getDefault().equals(Locale.JAPANESE) ){
+			strLocale = "ja";
+		}else if(Locale.getDefault().equals(Locale.SIMPLIFIED_CHINESE)){
+			strLocale = "zh-cn";
 		}else{
 			strLocale = Locale.getDefault().toString().replace("_", "-");
 		}	
-		Log.e(TAG, "getLocaleString(), Locale.getDefault():"+Locale.getDefault()+", strLocale:"+strLocale);
+		Log.e(TAG, "getLocaleStringForRegion(), Locale.getDefault():"+Locale.getDefault()+", strLocale:"+strLocale);
 
 		return strLocale;
 	}
