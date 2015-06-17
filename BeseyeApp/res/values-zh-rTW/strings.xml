@@ -448,4 +448,7 @@
   <!--dialog body for get thumbnail error in EditView-->
   <string name="thumbnail_error_body">請將攝影機與手持裝置保持連線狀態, 之後再試一次。</string>
   <string name="fullscreen">全螢幕</string>
+  
+  <string name="event_list_family_detected_ex">偵測到人物 (%s)</string>
+  <string name="event_list_people_detected_stranger">陌生人</string>
 </resources>

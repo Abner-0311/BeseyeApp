@@ -385,7 +385,8 @@ public class BeseyeJSONUtil {
 
 			new FACE_LIST(100, "Cindy", "Shaq.jpg"),
 			
-			new FACE_LIST(101, "Ella", "Shaq.jpg"),
+			//new FACE_LIST(101, "Ella", "Shaq.jpg"),
+			new FACE_LIST(101, "Shaq", "Shaq.jpg"),
 			
 			new FACE_LIST(102, "Giben", "Shaq.jpg"),
 			

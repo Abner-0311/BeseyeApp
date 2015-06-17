@@ -448,4 +448,6 @@
   <!--dialog body for get thumbnail error in EditView-->
   <string name="thumbnail_error_body">请将摄像头与手持装置保持连接状态, 之后再试一次。</string>
   <string name="fullscreen">全屏幕</string>
+  <string name="event_list_family_detected_ex">侦测到人物 (%s)</string>
+  <string name="event_list_people_detected_stranger">陌生人</string>
 </resources>

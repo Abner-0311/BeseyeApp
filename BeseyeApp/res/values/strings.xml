@@ -448,5 +448,6 @@
   <!--dialog body for get thumbnail error in EditView-->
   <string name="thumbnail_error_body">Please check network on mobile device and camera, then try again.</string>
   <string name="fullscreen">Full screen</string>
+  <string name="event_list_family_detected_ex">People dectected (%s)</string>
   <string name="event_list_people_detected_stranger">Stranger</string>
 </resources>

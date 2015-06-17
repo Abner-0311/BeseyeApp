@@ -41,7 +41,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 			OnClickListener itemOnClickListener, IListViewScrollListenser listViewScrollListenser) {
 		super(context, list, iLayoutId, itemOnClickListener);
 		mIListViewScrollListenser = listViewScrollListenser;
-		mStrFamilyDetectFormat = context.getResources().getString(R.string.event_list_family_detected);
+		mStrFamilyDetectFormat = context.getResources().getString(R.string.event_list_family_detected_ex);
 		mStrPeopleDetect = context.getResources().getString(R.string.event_list_people_detected);
 		mStrSoundDetect = context.getResources().getString(R.string.event_list_sound_detected);
 		mStrFireDetect = context.getResources().getString(R.string.event_list_fire_detected);
