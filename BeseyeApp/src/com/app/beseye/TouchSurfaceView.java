@@ -422,8 +422,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 //        	return;
 //        }
         
-        int drawableWidth = 1280;//null != mStreamBitmap ?mStreamBitmap.getWidth():0;
-        int drawableHeight = 720;//null != mStreamBitmap ? mStreamBitmap.getHeight():0;
+        int drawableWidth = null != mStreamBitmap ?mStreamBitmap.getWidth():1280;
+        int drawableHeight = null != mStreamBitmap ? mStreamBitmap.getHeight():720;
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
