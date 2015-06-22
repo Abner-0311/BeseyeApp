@@ -224,7 +224,7 @@ public class BeseyeHttpWifiTask extends AsyncTask<String, Double, List<JSONObjec
 	    nameValuePairs.add(new BasicNameValuePair("wep_key_4", ""));
 	    nameValuePairs.add(new BasicNameValuePair("WEP4Select", "0"));
 	    nameValuePairs.add(new BasicNameValuePair("cipher", "1"));
-	    nameValuePairs.add(new BasicNameValuePair("passphrase", "0630BesEye"));
+	    nameValuePairs.add(new BasicNameValuePair("passphrase", ""));
 	    nameValuePairs.add(new BasicNameValuePair("keyRenewalInterval", "3600"));
 	    nameValuePairs.add(new BasicNameValuePair("CONNT", "1"));
 	    nameValuePairs.add(new BasicNameValuePair("WANIP", "0.0.0.0"));

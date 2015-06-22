@@ -276,7 +276,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			case R.id.vg_power_schedule:{
 				//Toast.makeText(this, "Power", Toast.LENGTH_SHORT).show();
 				//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(this), true, mStrVCamID);
-				//monitorAsyncTask(new BeseyeCamBEHttpTask.SetWiFiConfigTask(this), true, mStrVCamID, "beseye", "0630BesEye", "3");
 				//showMyDialog(DIALOG_ID_CAM_INFO);
 				//showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
 				
