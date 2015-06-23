@@ -727,7 +727,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				if(null != mEtSSID){
 					mEtSSID.setText(mChosenWifiAPInfo.SSID);
 					if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-						mEtSSID.setText("���u�@��ն��u�@���");
+						mEtSSID.setText("beseye2G");
 					}
 					mEtSSID.addTextChangedListener(new TextWatcher(){
 						@Override

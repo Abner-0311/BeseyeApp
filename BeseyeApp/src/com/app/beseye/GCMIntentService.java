@@ -20,14 +20,18 @@ public class GCMIntentService extends GCMBaseIntentService{
 	public static final String FORWARD_ACTION_TYPE_ERR_MSG  	= "ErrorMsg";
 	public static final String FORWARD_ACTION_TYPE_CHECK_DIALOG = "CheckDialog";
 	
-	static public String SENDER_ID = "";//"309705516409";
+	static private String sStrSenderID = "";//"309705516409";
 	
 	public GCMIntentService(){
-		super(SENDER_ID);
+		super(sStrSenderID);
 	}
 	
 	static public void updateSenderId(String id){
-		SENDER_ID = id;
+		sStrSenderID = id;
+	}
+	
+	static public String getSenderId(){
+		return sStrSenderID;
 	}
 	
 	@Override

@@ -12,14 +12,14 @@ public class BeseyeGCMBroadcastReceiver extends GCMBroadcastReceiver {
 	
 	public BeseyeGCMBroadcastReceiver() {
         super();
-        if(DEBUG)
-        	Log.e(BeseyeConfig.TAG, "BeseyeGCMBroadcastReceiver::BeseyeGCMBroadcastReceiver()");
+//        if(DEBUG)
+//        	Log.e(BeseyeConfig.TAG, "BeseyeGCMBroadcastReceiver::BeseyeGCMBroadcastReceiver()");
     }
 	
 	@Override
 	protected String getGCMIntentServiceClassName(Context context){
 		if(DEBUG)
 			Log.e(BeseyeConfig.TAG, "BeseyeGCMBroadcastReceiver::getGCMIntentServiceClassName(), GCMIntentService.class.getName():"+GCMIntentService.class.getName());
-		return GCMIntentService.class.getName();
+		return GCMIntentService.class.getName();//Let GCM service find the correct service to forward
 	}
 }

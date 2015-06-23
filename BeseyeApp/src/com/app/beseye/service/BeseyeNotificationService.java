@@ -617,11 +617,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private void registerGCMServer(){
 		try {
 	    	if(null != SessionMgr.getInstance() && SessionMgr.getInstance().isUseridValid() && false == mbRegisterGCM){
-	    		registerReceiver(mHandleMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
+	    		registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
 	    		mbRegisterReceiver = true;
 	            
 	    		if(null != mPref){
-	    			String sSenderID = GCMIntentService.SENDER_ID;
+	    			String sSenderID = GCMIntentService.getSenderId();
 	    			if(DEBUG)
 	    				Log.i(TAG, "onCreate(), sSenderID "+sSenderID);
 	    			
@@ -629,7 +629,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    				if(null == mGetProjectIDTask)
 	    					(mGetProjectIDTask = new BeseyePushServiceTask.GetProjectIDTask(this)).execute();
 	    			}else{
-	    				registerGCM(sSenderID);
+	    				registerGCMService(sSenderID);
 	    			}
 	    		}
 	    	}
@@ -641,7 +641,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     private void unregisterGCMServer(){
     	if(mbRegisterReceiver){
     		mbRegisterReceiver = false;
-    		unregisterReceiver(mHandleMessageReceiver);
+    		unregisterReceiver(mHandleGCMMessageReceiver);
     	}
     	
     	if(mbRegisterGCM){
@@ -733,7 +733,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    }
 	}
 	
-	private void registerInBackground(final String strSenderId) {
+	private void registerGCMInBackground(final String strSenderId) {
 	    new AsyncTask<Void, Integer, String>() {
 	        @Override
 	        protected String doInBackground(Void... params) {
@@ -745,6 +745,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	                String regId = mGCMInstance.register(strSenderId);
 	                msg = "Device registered, registration ID=" + regId;
 	                registerPushServer(regId);
+	                //Not store reg id because it may be changed at any time
 	                //storeRegistrationId(BeseyeNotificationService.this, regId);
 	            } catch (IOException ex) {
 	                msg = "Error :" + ex.getMessage();
@@ -774,22 +775,22 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    editor.commit();
 	}
 	
-    private void registerGCM(String strSenderId){
+    private void registerGCMService(String strSenderId){
     	GCMIntentService.updateSenderId(strSenderId);
     	try{
 	    	final String regId = getRegistrationId(BeseyeNotificationService.this);//GCMRegistrar.getRegistrationId(getApplicationContext());
 	    	if(DEBUG)
-	    		Log.d(TAG, "registerGCM(), regId: "+regId);
+	    		Log.d(TAG, "registerGCMService(), regId: "+regId);
 	        
 	    	if (regId.equals("")) {
 	        	// Log.i(TAG, "registerGCM(), strSenderId "+strSenderId);
 	            // Automatically registers application on startup.
-	        	registerInBackground(strSenderId);
+	        	registerGCMInBackground(strSenderId);
 	        } else {
 	        	registerPushServer(regId);
 	        }
 	    }catch (UnsupportedOperationException e) {
-			Log.e(TAG, "registerGCM(), e: "+e.toString());
+			Log.e(TAG, "registerGCMService(), e: "+e.toString());
 	    }
     }
     
@@ -847,7 +848,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	}
     }
     
-    private final BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mHandleGCMMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getExtras().getString(GCMIntentService.FORWARD_ACTION_TYPE);
@@ -1175,7 +1176,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), senderId "+senderId);
 					
 					if(0 < senderId.length()){
-						registerGCM(senderId);
+						registerGCMService(senderId);
 					}else{
 						Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetProjectIDTask, invalid senderId ");
 					}
