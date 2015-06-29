@@ -51,6 +51,7 @@ import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
 import com.app.beseye.httptask.BeseyePushServiceTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeJSONUtil.FACE_LIST;
@@ -63,6 +64,8 @@ import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.websockets.WebsocketsMgr;
 import com.app.beseye.websockets.WebsocketsMgr.OnWSChannelStateChangeListener;
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -152,6 +155,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         public void handleMessage(Message msg) {
 //        	if(BeseyeConfig.DEBUG)
 //        		Log.i(TAG, "BG service detects "+msg.toString());
+        	
+        	Log.i(TAG, "Kelly BG service detects "+msg.toString());
         	
             switch (msg.what) {
                 case MSG_REGISTER_CLIENT:
@@ -343,6 +348,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	if(DEBUG)
                 		Log.d(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
                 	
+                	Log.d(TAG, "Kelly MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
+                	
+                		Log.d(TAG,"Kelly restart");
+                		//PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, "ll6nuIrggwTGz0o9Fawh5PPC");
+                	
+                	
 //                	if(SessionMgr.getInstance().getServerMode().ordinal() <= SessionMgr.SERVER_MODE.MODE_DEV.ordinal())
 //                		Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
                 	handleGCMEvents(data, dataCus);
@@ -440,6 +451,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
     @Override
     public void onCreate() {
+    	
+    	Log.d(TAG, "Kelly mode1" + SessionMgr.getInstance().getServerMode() );
+    	
     	if(DEBUG)
     		Log.i(TAG, "###########################  BeseyeNotificationService::onCreate(), this:"+this);
  	
@@ -469,10 +483,21 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			Log.i(TAG, "BeseyeNotificationService::onCreate(), there is no last event");
 		}
         
-        mGCMInstance = GoogleCloudMessaging.getInstance(this);
+        Log.d(TAG, "Kelly mode" + SessionMgr.getInstance().getServerMode() );
         
-        checkGCMService();
-       
+        if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {
+        	Log.d(TAG, "Kelly in China start to reg");
+        	
+        	PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, "ll6nuIrggwTGz0o9Fawh5PPC");
+        	registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
+    		mbRegisterReceiver = true;
+    	
+    		Log.d(TAG, "Kelly in China reg end");
+            	
+        } else {
+        	mGCMInstance = GoogleCloudMessaging.getInstance(this);
+        	checkGCMService();
+        }
         WebsocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
         
         //checkEventPeriod();
@@ -849,18 +874,27 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
     
     private final BroadcastReceiver mHandleGCMMessageReceiver = new BroadcastReceiver() {
-        @Override
+    	@Override
         public void onReceive(Context context, Intent intent) {
+    		 Log.d(TAG, "Kelly mode BR" + SessionMgr.getInstance().getServerMode() );
+    		 Log.d(TAG, "Kelly BroadcastReceiver" + intent);
+    		 Log.d(TAG, "Kelly bool mbRegisterReceiver" + (mbRegisterReceiver? "1" : "0"));
+    	    	
+    		 
             String action = intent.getExtras().getString(GCMIntentService.FORWARD_ACTION_TYPE);
             Message msg = null;
             if(DEBUG)
             	Log.i(TAG, "onReceive(), action "+action+", data:"+intent.getExtras().getString(BeseyeJSONUtil.PS_REGULAR_DATA));
+            
+            Log.i(TAG, "Kelly onReceive(), action "+action+", data:"+intent.getExtras().getString(BeseyeJSONUtil.PS_REGULAR_DATA));
             
             if(GCMIntentService.FORWARD_ACTION_TYPE_REG.equals(action)){	
             	msg = Message.obtain(null,MSG_GSM_REGISTER,0,0);
             }else if(GCMIntentService.FORWARD_ACTION_TYPE_UNREG.equals(action)){
             	msg = Message.obtain(null,MSG_GSM_UNREGISTER,0,0);
             }else if(GCMIntentService.FORWARD_ACTION_TYPE_MSG.equals(action)){
+            	Log.d(TAG, "Kelly BroadcastReceiver got meg!");
+             	
             	msg = Message.obtain(null,MSG_GSM_MSG,0,0);
             }else if(GCMIntentService.FORWARD_ACTION_TYPE_ERR.equals(action)){
             	msg = Message.obtain(null,MSG_GSM_ERR,0,0);
