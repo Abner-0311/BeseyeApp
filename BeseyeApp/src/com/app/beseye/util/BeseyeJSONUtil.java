@@ -186,6 +186,10 @@ public class BeseyeJSONUtil {
 	public static final String ACC_CLIENT_LOC 			= "ClientLocation";
 	public static final String ACC_CLIENT_IP 			= "ClientIp";
 	public static final String ACC_VPC_NO 				= "Number";
+	public static final String ACC_REGION_NO 			= "RegionNo";
+	
+	public static final int ACC_REGION_WORLDWIDE 		= 0;
+	public static final int ACC_REGION_CHINA 			= 1;
 	
 	public static final String ACC_USER 				= "User";
 	public static final String ACC_ID 					= "Uid";

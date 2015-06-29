@@ -535,7 +535,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				if(0 == iRetCode){
 					if(DEBUG)
 						Log.i(TAG, "onPostExecute(), "+result.toString());
-					onToastShow(task, "Detach  Successfully.");
+					//onToastShow(task, "Detach  Successfully.");
 					
 //					if(BeseyeConfig.COMPUTEX_PAIRING){
 //						//invokeLogout();

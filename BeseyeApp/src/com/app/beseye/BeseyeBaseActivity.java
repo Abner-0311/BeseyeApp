@@ -849,7 +849,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		if(task instanceof BeseyeAccountTask.CheckAccountTask){
 			//onSessionInvalid();
 		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
-			SessionMgr.getInstance().cleanSession();
+			//SessionMgr.getInstance().cleanSession();
 			onSessionInvalid();
 		}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 			onToastShow(task, "failed to update sw");
