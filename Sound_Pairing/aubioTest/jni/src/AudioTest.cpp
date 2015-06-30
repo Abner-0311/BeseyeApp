@@ -2715,7 +2715,8 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		int iRet = 0;
 
 		//Because Raylios implements network recovery mechanism for wrong wifi config, we need to check BSSID to confirm wifi change
-
+		bool bHiddenSSID = FALSE;
+		unsigned char cSecTypeFound = 0;
 		bool bIsSameSSID = FALSE;
 		bool bIsSameWiFiConfig = FALSE;
 		if(0 == strSSIDHash.length()){
@@ -2732,9 +2733,16 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				cSecType = PAIRING_SEC_WPA2;
 			}
 			bIsSameSSID = isSameWiFiSSID((const char*)strSSIDFinal.c_str());
-			bIsSameWiFiConfig = isSameWiFiConfig2((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);
+			if(!bUnknownSecType){
+				bIsSameWiFiConfig = isSameWiFiConfig2((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);
+			}
 
-			iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
+			cSecTypeFound = cSecType;
+			iRet = setWifiBySSID3((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType, &bHiddenSSID, (char*)&cSecTypeFound);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
+
+			if(bUnknownSecType){
+				bIsSameWiFiConfig = isSameWiFiConfig2((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecTypeFound);
+			}
 		}else{
 			iRet = setWifiBySSIDHash(lSSIDHash, iSSIDLen/2, (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
 		}
@@ -2790,20 +2798,28 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						break;
 					}
 					if(bUnknownSecType){
-						cSecTypeGuess -=1;
-						restoreWifi();
-						bIsSameWiFiConfig = isSameWiFiConfig2((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);
-						if(DEBUG_MODE){
-							LOGE("try cSecTypeGuess: %d, bIsSameWiFiConfig:%d.............\n", cSecTypeGuess, bIsSameWiFiConfig);
-						}
-						iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecTypeGuess);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
-						if(0 != iRet){
-							LOGE("failed to setWiFi for cSecTypeGuess: %d.............\n", cSecTypeGuess);
+						if(false == bHiddenSSID){
+							LOGE("bHiddenSSID:%d, cSecTypeFound:%d, cSecTypeGuess (%d).............\n", bHiddenSSID, cSecTypeFound,cSecTypeGuess);
 							break;
-						}
+						}else{
+							cSecTypeGuess -=1;
+							restoreWifi();
+							if(DEBUG_MODE){
+								LOGE("try cSecTypeGuess: %d, bIsSameWiFiConfig:%d.............\n", cSecTypeGuess, bIsSameWiFiConfig);
+							}
+							cSecTypeFound = cSecTypeGuess;
+							iRet = setWifiBySSID3((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecTypeGuess, &bHiddenSSID, (char*)&cSecTypeFound);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
 
-						iTrials = 0;
-						lTimeToChkNetwork = time_ms();
+							if(0 != iRet){
+								LOGE("failed to setWiFi for cSecTypeGuess: %d.............\n", cSecTypeGuess);
+								break;
+							}
+
+							bIsSameWiFiConfig = isSameWiFiConfig2((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecTypeFound);
+
+							iTrials = 0;
+							lTimeToChkNetwork = time_ms();
+						}
 					}
 				}
 			}while(0 != iNetworkRet && (bUnknownSecType && cSecTypeGuess >= PAIRING_SEC_NONE));
