@@ -57,6 +57,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	private String mStrCamName;
 	private PairingCounter mPairingCounter;
 	private static boolean sbFinishToPlay = false;
+	private boolean mbGetPairingToken = false;
 	
 	private int miOriginalVCamCnt = -1;
 	private JSONArray mArrOriginalVCam = null;
@@ -166,7 +167,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	protected void onSessionComplete() {
 		super.onSessionComplete();
 		if(isSSIDPiaringCase()){
-			if((null == mPairingCounter || mPairingCounter.isFinished()) && false == sbFinishToPlay){
+			if(false == mbGetPairingToken){
 				monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, (getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE+"":BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", mChosenWifiAPInfo.SSID);
 			}
 		}else{
@@ -466,7 +467,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				if(0 == iRetCode){
 					if(DEBUG)
 						Log.i(TAG, "onPostExecute(), "+result.toString());
-					
+					mbGetPairingToken = true;
 					String strPairToken = BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.ACC_PAIRING_TOKEN);
 					SessionMgr.getInstance().setPairToken(strPairToken);
 					beginToPlayPairingTone(Integer.parseInt(strPairToken, 16), (char) ((getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE:BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH));
