@@ -540,17 +540,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     private void checkBaiduService(){
     	if(false == mbRegisterGCM){
     		Log.d(TAG, "Kelly checkBaiduService");
-    		//mbRegisterGCM = true;
     		(mGetBaiduApiKeyTask = new BeseyePushServiceTask.GetBaiduApiKeyTask(this)).execute();
-    		//TODO: Kelly
-    		
-//    		PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, "ll6nuIrggwTGz0o9Fawh5PPC");
-//    		registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
-//        	mbRegisterReceiver = true;
     	}
     }
     private void checkGCMService(){  
-       if(getRegistrationId(this).isEmpty() || false == mbRegisterGCM){
+       if(SessionMgr.getInstance().isTokenValid() && getRegistrationId(this).isEmpty() || false == mbRegisterGCM){
     	   if(checkPlayServices()){
     		   registerGCMServer();
            }
@@ -686,13 +680,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private void registerGCMServer(){
 		try {
 	    	if(null != SessionMgr.getInstance() && SessionMgr.getInstance().isUseridValid() && false == mbRegisterGCM){
-	    		registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
-	    		mbRegisterReceiver = true;
-	            
+	    		if(false == mbRegisterReceiver){
+	    			registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
+	    			mbRegisterReceiver = true;
+	    		}
+	    		
 	    		if(null != mPref){
 	    			String sSenderID = GCMIntentService.getSenderId();
 	    			if(DEBUG)
-	    				Log.i(TAG, "onCreate(), sSenderID "+sSenderID);
+	    				Log.i(TAG, "registerGCMServer(), sSenderID "+sSenderID);
 	    			
 	    			if(null == sSenderID || 0 == sSenderID.length()){
 	    				if(null == mGetProjectIDTask)
@@ -779,6 +775,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    
 	private BeseyeHttpTask mRegisterPushServerTask, mUnRegisterPushServerTask;
 	private GoogleCloudMessaging mGCMInstance;
+	private String mStrRegistrationId = "";
 	
 	private SharedPreferences getGCMPreferences(Context context) {
 	    // This sample app persists the registration ID in shared preferences, but
@@ -787,34 +784,34 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	private String getRegistrationId(Context context) {
-	    final SharedPreferences prefs = getGCMPreferences(context);
-	    String registrationId = prefs.getString(PROPERTY_REG_ID, "");
-	    if (registrationId.isEmpty()) {
-	        //Log.d(TAG, "Registration not found.");
-	        return "";
-	    }
-	    // Check if app was updated; if so, it must clear the registration ID
-	    // since the existing regID is not guaranteed to work with the new
-	    // app version.
-	    int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-	    int currentVersion = getAppVersion(context);
-	    if (registeredVersion != currentVersion) {
-	        Log.d(TAG, "App version changed.");
-	        storeRegistrationId(this,"");
-	        return "";
-	    }
-	    return registrationId;
+//	    final SharedPreferences prefs = getGCMPreferences(context);
+//	    String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+//	    if (registrationId.isEmpty()) {
+//	        //Log.d(TAG, "Registration not found.");
+//	        return "";
+//	    }
+//	    // Check if app was updated; if so, it must clear the registration ID
+//	    // since the existing regID is not guaranteed to work with the new
+//	    // app version.
+//	    int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+//	    int currentVersion = getAppVersion(context);
+//	    if (registeredVersion != currentVersion) {
+//	        Log.d(TAG, "App version changed.");
+//	        storeRegistrationId(this,"");
+//	        return "";
+//	    }
+	    return mStrRegistrationId;
 	}
 	
-	private static int getAppVersion(Context context) {
-	    try {
-	        PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-	        return packageInfo.versionCode;
-	    } catch (NameNotFoundException e) {
-	        // should never happen
-	        throw new RuntimeException("Could not get package name: " + e);
-	    }
-	}
+//	private static int getAppVersion(Context context) {
+//	    try {
+//	        PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+//	        return packageInfo.versionCode;
+//	    } catch (NameNotFoundException e) {
+//	        // should never happen
+//	        throw new RuntimeException("Could not get package name: " + e);
+//	    }
+//	}
 	
 	private void registerGCMInBackground(final String strSenderId) {
 	    new AsyncTask<Void, Integer, String>() {
@@ -829,7 +826,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	                msg = "Device registered, registration ID=" + regId;
 	                registerPushServer(regId);
 	                //Not store reg id because it may be changed at any time
-	                //storeRegistrationId(BeseyeNotificationService.this, regId);
+	                storeRegistrationId(BeseyeNotificationService.this, regId);
 	            } catch (IOException ex) {
 	                msg = "Error :" + ex.getMessage();
 	                // If there is an error, don't just keep trying to register.
@@ -848,14 +845,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	private void storeRegistrationId(Context context, String regId) {
-	    final SharedPreferences prefs = getGCMPreferences(context);
-	    int appVersion = getAppVersion(context);
-	    if(DEBUG)
-	    	Log.d(TAG, "Saving regId on app version " + appVersion);
-	    SharedPreferences.Editor editor = prefs.edit();
-	    editor.putString(PROPERTY_REG_ID, regId);
-	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
-	    editor.commit();
+//	    final SharedPreferences prefs = getGCMPreferences(context);
+//	    int appVersion = getAppVersion(context);
+//	    if(DEBUG)
+//	    	Log.d(TAG, "Saving regId on app version " + appVersion);
+//	    SharedPreferences.Editor editor = prefs.edit();
+//	    editor.putString(PROPERTY_REG_ID, regId);
+//	    editor.putInt(PROPERTY_APP_VERSION, appVersion);
+//	    editor.commit();
+		mStrRegistrationId = regId;
 	}
 	
     private void registerGCMService(String strSenderId){
@@ -915,7 +913,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    		//BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, USER_ID, userId);
 	    		// Device is already registered on GCM, check server.
 	    		
-	            if (!mbRegisterGCM) {
+	            if (!mbRegisterGCM && null == mRegisterPushServerTask) {
 	                // Try to register again, but not in the UI thread.
 	                // It's also necessary to cancel the thread onDestroy(),
 	                // hence the use of AsyncTask instead of a raw thread.
@@ -1493,15 +1491,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 			}
 		}
-		if(task == mGetIMPEventListTask){
+		if(task == mRegisterPushServerTask){
+			mRegisterPushServerTask = null;
+		}else if(task == mGetIMPEventListTask){
 			mGetIMPEventListTask = null;
-		}
-		
-		if(task == mGetProjectIDTask){
+		}else if(task == mGetProjectIDTask){
 			mGetProjectIDTask = null;
-		}
-		
-		if(task == mGetVCamListTask){
+		}else if(task == mGetVCamListTask){
 			mGetVCamListTask = null;
 		}
 		

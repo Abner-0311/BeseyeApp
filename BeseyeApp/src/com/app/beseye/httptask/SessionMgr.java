@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
 import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeJSONUtil;
 
 //SessionMgr is responsible for storing back-end URL, token, user Userid in storage/memory
 public class SessionMgr {
@@ -54,11 +55,11 @@ public class SessionMgr {
 	
 	static private final String ACCOUNT_URL_FORMAT = "%s/be_acc/v1/";
 	
-	static private final String[] ACC_VPC_BE_URL = {"https://oregon-p2-dev-api-1.beseye.com/acc",
+	static private final String[] ACC_VPC_BE_URL = {"http://oregon-p2-dev-api-1.beseye.com/acc",
 													"https://acc-dev.beseye.com", 
-													"https://oregon-p1-stage-api-1.beseye.com/acc",
-													"https://oregon-p2-stage-api-1.beseye.com/acc",
-													"https://bj-p2-stage-api-1.beseye.cn/acc"}; 
+													"http://oregon-p1-stage-api-1.beseye.com/acc",
+													"http://oregon-p2-stage-api-1.beseye.com/acc",
+													"http://oregon-p1-stage-api-1.beseye.com/acc"}; 
 	
 	static private final String[] ACCOUNT_BE_URL = {"https://oregon-p2-dev-api-1.beseye.com/acc",
 													"https://acc-dev.beseye.com", 
@@ -257,12 +258,25 @@ public class SessionMgr {
 	}
 	
 	public void setVPCNumber(int iVPCno){
-		Log.e(TAG, "setVPCNumber(), iVPCno:"+iVPCno);
+		Log.i(TAG, "setVPCNumber(), iVPCno:"+iVPCno);
 
 		mSessionData.setVPCNumber(iVPCno);
 		setPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, mSessionData.getVPCNumber());
 		setBEHostUrl(getServerMode());
 		notifySessionUpdate();
+	}
+	
+	public void setRegionNumber(int iRegNo){
+		Log.i(TAG, "setRegionNumber(), iRegNo:"+iRegNo);
+
+		//For production mode switch between China p2-stage and Oregon p1-stage
+		if(BeseyeJSONUtil.ACC_REGION_WORLDWIDE == iRegNo && SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)){
+			SessionMgr.getInstance().setServerMode(SessionMgr.SERVER_MODE.MODE_PRODUCTION);
+			SessionMgr.getInstance().setBEHostUrl(SessionMgr.SERVER_MODE.MODE_PRODUCTION);
+		}else if(BeseyeJSONUtil.ACC_REGION_CHINA == iRegNo && SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_PRODUCTION)){
+			SessionMgr.getInstance().setServerMode(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE);
+			SessionMgr.getInstance().setBEHostUrl(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE);
+		}
 	}
 	
 	public String getAccountBEHostUrl(){

@@ -139,9 +139,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgNotificationType = (ViewGroup)findViewById(R.id.vg_notification_type);
 		if(null != mVgNotificationType){
 			mVgNotificationType.setOnClickListener(this);
-			if(!BeseyeConfig.PRODUCTION_VER){
+			//if(BeseyeConfig.PRODUCTION_VER){
 				mVgNotificationType.setVisibility(View.GONE);
-			}
+			//}
 		}
 		
 		mVgFamilyRecognition = (ViewGroup)findViewById(R.id.vg_family_recognition);
@@ -153,9 +153,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgMotionNotification = (ViewGroup)findViewById(R.id.vg_motion_notification_events);
 		if(null != mVgMotionNotification){
 			mVgMotionNotification.setOnClickListener(this);
-			if(BeseyeConfig.PRODUCTION_VER){
-				mVgMotionNotification.setVisibility(View.GONE);
-			}
+			//if(BeseyeConfig.PRODUCTION_VER){
+			//	mVgMotionNotification.setVisibility(View.GONE);
+			//}
 		}
 		
 		mVgDetachCam = (ViewGroup)findViewById(R.id.vg_detach_cam);
@@ -535,7 +535,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				if(0 == iRetCode){
 					if(DEBUG)
 						Log.i(TAG, "onPostExecute(), "+result.toString());
-					onToastShow(task, "Detach  Successfully.");
+					//onToastShow(task, "Detach  Successfully.");
 					
 //					if(BeseyeConfig.COMPUTEX_PAIRING){
 //						//invokeLogout();

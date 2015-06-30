@@ -987,9 +987,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							}
 							checkAndExtendHideHeader();
 							
-//							if(BeseyeConfig.COMPUTEX_DEMO && bundle.getBoolean(KEY_WARNING_CLOSE, false)){
-//								finish();
-//							}
+							if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
+								finish();
+							}
 							tryToReconnect();
 							
 						}});

@@ -387,10 +387,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			d.setTitleText(bundle.getString(KEY_WARNING_TITLE, getString(R.string.dialog_title_warning)));
 
 			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
-			
 				@Override
 				public void onBtnClick() {
-					removeMyDialog(DIALOG_ID_WARNING);			
+					removeMyDialog(DIALOG_ID_WARNING);	
+					if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
+						finish();
+					}
 				}});
 			dialog = d;
 			break;
@@ -418,7 +420,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			
 				@Override
 				public void onBtnClick() {
-					removeMyDialog(DIALOG_ID_INFO);			
+					removeMyDialog(DIALOG_ID_INFO);	
 				}});
 			dialog = d;
 			break;
@@ -849,7 +851,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		if(task instanceof BeseyeAccountTask.CheckAccountTask){
 			//onSessionInvalid();
 		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
-			SessionMgr.getInstance().cleanSession();
+			//SessionMgr.getInstance().cleanSession();
 			onSessionInvalid();
 		}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 			onToastShow(task, "failed to update sw");

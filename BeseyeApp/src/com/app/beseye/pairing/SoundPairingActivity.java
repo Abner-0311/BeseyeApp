@@ -166,7 +166,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 	protected void onSessionComplete() {
 		super.onSessionComplete();
 		if(isSSIDPiaringCase()){
-			monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, (getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE+"":BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", mChosenWifiAPInfo.SSID);
+			if((null == mPairingCounter || mPairingCounter.isFinished()) && false == sbFinishToPlay){
+				monitorAsyncTask(new BeseyeAccountTask.StartCamPairingTask(this), true, (getIntent().getBooleanExtra(KEY_CHANGE_WIFI_BEBEBE, false))?BeseyeJSONUtil.ACC_PAIRING_TYPE_VALIDATE+"":BeseyeJSONUtil.ACC_PAIRING_TYPE_ATTACH+"", mChosenWifiAPInfo.SSID);
+			}
 		}else{
 			String strSSIDHash = getSSIDHashValue(mChosenWifiAPInfo.SSID);
 			if(DEBUG)

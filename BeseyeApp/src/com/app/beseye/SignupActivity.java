@@ -202,7 +202,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 				return;
 			}
 			
-			if(BeseyeFeatureConfig.VPC_NUM_QUERY && !SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)){
+			if(BeseyeFeatureConfig.VPC_NUM_QUERY /*&& !SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)*/){
 				monitorAsyncTask(new BeseyeAccountTask.GetVPCNoHttpTask(this).setDialogId(DIALOG_ID_SIGNUP), true, mEtUserName.getText().toString());
 			}else{
 				monitorAsyncTask(new BeseyeAccountTask.RegisterTask(this).setDialogId(DIALOG_ID_SIGNUP), true, mEtUserName.getText().toString(), mEtPassword.getText().toString());
@@ -283,6 +283,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						SessionMgr.getInstance().setVPCNumber(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.ACC_VPC_NO));
+						SessionMgr.getInstance().setRegionNumber(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.ACC_REGION_NO));
 						BeseyeUtils.postRunnable(new Runnable(){
 							@Override
 							public void run() {
