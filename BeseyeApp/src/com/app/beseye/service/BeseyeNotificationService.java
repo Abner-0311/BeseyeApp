@@ -284,6 +284,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			
                 			if(!SessionMgr.getInstance().isUseridValid()){
                 				if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+                					Log.d(TAG, "Kelly MSG_UPDATE_SESSION_DATA");
                 					unregisterBaiduServer();
                 				} else {
                 					unregisterGCMServer();
@@ -291,7 +292,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			}
                 			
                 			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
-                				unregisterBaiduPushServer();
+                				//unregisterBaiduPushServer();
                 			} else { 
                 				unregisterPushServer();
                 			}
@@ -480,6 +481,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	private SharedPreferences mPref;
 	private boolean mbRegisterGCM = false;
+	private boolean mbBaiduApiKey = false;
 	private boolean mbRegisterReceiver = false;
 	private BeseyePushServiceTask.GetProjectIDTask mGetProjectIDTask = null;
 	private BeseyePushServiceTask.GetBaiduApiKeyTask mGetBaiduApiKeyTask = null;
@@ -538,7 +540,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
     
     private void checkBaiduService(){
-    	if(false == mbRegisterGCM){
+    	if(SessionMgr.getInstance().isTokenValid() && false == mbBaiduApiKey){
     		Log.d(TAG, "Kelly checkBaiduService");
     		(mGetBaiduApiKeyTask = new BeseyePushServiceTask.GetBaiduApiKeyTask(this)).execute();
     	}
@@ -579,8 +581,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		postToCloseWs((-1 != mlTimeToCloseWs && mlTimeToCloseWs >= System.currentTimeMillis())?(mlTimeToCloseWs - System.currentTimeMillis()):0);
     	}
     	if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
-        	//Kelly temp TODO
-    		//checkBaiduService();
+        	checkBaiduService();
         } else {
         	checkGCMService();
         }
@@ -708,6 +709,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		if(mbRegisterGCM){
 			Log.d(TAG, "Kelly ready to stopWrok");
     		mbRegisterGCM = false;
+    		mbBaiduApiKey = false;
     		PushManager.stopWork(getApplicationContext());
 		}
 	}
@@ -1335,16 +1337,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					String apiKey = BeseyeJSONUtil.getJSONString(result.get(0), PS_BAIDU_API_KEY);
 					
 					Log.d(TAG, "Kelly onPostExecute GetBaiduApiKeyTask " + result.get(0));
-					
 					if(DEBUG)
 						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), apiKey "+apiKey);
 					
-					Log.d(TAG, "Kelly onPostExecute GetBaiduApiKeyTask apiKey" + apiKey);
-					
-					if(0 < apiKey.length()){
+					if(null != apiKey && 0 < apiKey.length()){
 						PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, apiKey);
 			        	registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
 			        	mbRegisterReceiver = true;
+			        	mbBaiduApiKey = true;
 					}else{
 						Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetBaiduApiKeyTask, invalid apiKey ");
 					}
