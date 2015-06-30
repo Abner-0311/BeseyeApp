@@ -2,7 +2,10 @@ TOP_LOCAL_PATH := $(call my-dir)
 
 #Build Sound Pairing module  
 LOCAL_PATH := $(call my-dir)
-  
+include $(CLEAR_VARS)
+LOCAL_MODULE := bdpush_V2_3
+LOCAL_SRC_FILES := prebuilt/armeabi/libbdpush_V2_3.so
+include $(PREBUILT_SHARED_LIBRARY)  
 include $(CLEAR_VARS)
 
 LOCAL_PATH := ./

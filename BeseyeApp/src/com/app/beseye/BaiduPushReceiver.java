@@ -1,5 +1,7 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+
 import java.util.List;
 
 import org.json.JSONException;
@@ -12,73 +14,92 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.app.beseye.service.BeseyeNotificationService;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.baidu.android.pushservice.PushMessageReceiver;
 
 public class BaiduPushReceiver extends PushMessageReceiver{
 
+	public static final String FORWARD_ACTION_TYPE_BAIDU_REG 	  	= "onBaiduRegistered";
+	public static final String FORWARD_ACTION_TYPE_BAIDU_UNREG 		= "onBaiduUnregistered";
+	public static final String FORWARD_ACTION_TYPE_BAIDU_MSG 		= "onBaiduMessage";
+	public static final String BAIDU_USER_ID						= "BaiduUserID";
+	public static final String BAIDU_CHANNEL_ID						= "BaiduChannelId";
+			
+	
 	@Override
 	public void onBind(Context context, int errorCode, String appid, String userId, String channelId, String requestId) {
-		String responseString = "onBind errorCode=" + errorCode + " appid="
-				+ appid + " userId=" + userId + " channelId=" + channelId
-                + " requestId=" + requestId;
-        Log.d(TAG, "Kelly responseString" + responseString);
-
+		String responseString = "onBind errorCode=" + errorCode + " appid=" + appid + " userId=" + userId + " channelId=" + channelId + " requestId=" + requestId;
+		if(DEBUG)
+			Log.i(BeseyeConfig.TAG, "Baidu onBind " + responseString);
+        
+		
+		Log.d(BeseyeConfig.TAG, "Kelly onBind appid " + appid);
+		
         if (errorCode == 0) {
-        	Log.d(TAG, "Kelly reg succ!");
-            // 绑定成功
-        	//TODO: to Chris
+        	forwardGCMMessage(context, FORWARD_ACTION_TYPE_BAIDU_REG, userId, channelId);
         }
-        
-        Intent intent = new Intent(GCMIntentService.FORWARD_GCM_MSG_ACTION);
-        intent.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, GCMIntentService.FORWARD_ACTION_TYPE_MSG);
-     
-        Bundle b = new Bundle();
-        b.putString(BeseyeJSONUtil.PS_REGULAR_DATA, responseString);
-        b.putString(BeseyeJSONUtil.PS_CUSTOM_DATA, (errorCode==0? "1" : "0"));
-        intent.putExtras(b);
-        context.sendBroadcast(intent);	
-        
-        // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-        // updateContent(context, responseString);
 	}
 
 
 	@Override
 	public void onMessage(Context context, String message, String customContentString) {
-        String messageString = "透传消息 message=\"" + message + "\" customContentString=" + customContentString;
-        Log.d(TAG, "Kelly messageString" + messageString);
-
-        // 自定义内容获取方式，mykey和myvalue对应透传消息推送时自定义内容中设置的键和值
-        if (!TextUtils.isEmpty(customContentString)) {
-            JSONObject customJson = null;
-            try {
-                customJson = new JSONObject(customContentString);
-                String myvalue = null;
-                if (!customJson.isNull("mykey")) {
-                    myvalue = customJson.getString("mykey");
-                }
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+        String messageString = "Baidu message=\"" + message + "\" customContentString=" + customContentString;
+        if(DEBUG)
+			Log.i(BeseyeConfig.TAG, "Baidu onMessage " + messageString);
         
-        Intent intent = new Intent(GCMIntentService.FORWARD_GCM_MSG_ACTION);
-        intent.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, GCMIntentService.FORWARD_ACTION_TYPE_MSG);
-     
-        Bundle b = new Bundle();
-        b.putString(BeseyeJSONUtil.PS_REGULAR_DATA, message);
-        b.putString(BeseyeJSONUtil.PS_CUSTOM_DATA, "Kelly");
-        intent.putExtras(b);
-        context.sendBroadcast(intent);	
+        JSONObject obj;
+        String rdata = "", cdata = "";
+		try {
+			obj = new JSONObject(message);
+			rdata = obj.getString(BeseyeJSONUtil.PS_REGULAR_DATA);
+			cdata = obj.getString(BeseyeJSONUtil.PS_CUSTOM_DATA);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}	
+        forwardGCMMessage(context, FORWARD_ACTION_TYPE_BAIDU_MSG, rdata, cdata);
     }
 
 	@Override
-	public void onUnbind(Context arg0, int arg1, String arg2) {
-		// TODO Auto-generated method stub	
-	}
+	   public void onUnbind(Context context, int errorCode, String requestId) {
+        String responseString = "onUnbind errorCode=" + errorCode + " requestId = " + requestId;
+        if(DEBUG)
+			Log.i(BeseyeConfig.TAG, "Baidu onUnbind " + responseString);
 
+        Log.d(BeseyeConfig.TAG, "Kelly onUnbind");
+        
+        if (errorCode == 0) {
+        	forwardGCMMessage(context, FORWARD_ACTION_TYPE_BAIDU_UNREG, "", "");
+        }
+    }
+
+	
+	static void forwardGCMMessage(Context context, String type, String strValue, String strValue2) {
+		if(DEBUG)
+			Log.i(BeseyeConfig.TAG, "Baidu forwardGCMMessage(), type "+type+", strValue = "+strValue);
+		
+        Intent intent = new Intent(GCMIntentService.FORWARD_GCM_MSG_ACTION);
+        intent.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, type);
+        
+        if(FORWARD_ACTION_TYPE_BAIDU_UNREG.equals(type)) {
+        	intent.putExtra(BeseyeNotificationService.PUSH_SERVICE_REG_ID, strValue);
+        } else if(FORWARD_ACTION_TYPE_BAIDU_REG.equals(type)){
+        	Bundle b = new Bundle();
+            b.putString(BAIDU_USER_ID, strValue);
+            b.putString(BAIDU_CHANNEL_ID, strValue2);
+            
+        	intent.putExtras(b);
+        } else if(FORWARD_ACTION_TYPE_BAIDU_MSG.equals(type)){
+        	Bundle b = new Bundle();
+            b.putString(BeseyeJSONUtil.PS_REGULAR_DATA, strValue);
+            b.putString(BeseyeJSONUtil.PS_CUSTOM_DATA, strValue2);
+            
+        	intent.putExtras(b);
+        }
+        context.sendBroadcast(intent);
+    }
+
+	
 
 	@Override
 	public void onDelTags(Context arg0, int arg1, List<String> arg2, List<String> arg3, String arg4) {

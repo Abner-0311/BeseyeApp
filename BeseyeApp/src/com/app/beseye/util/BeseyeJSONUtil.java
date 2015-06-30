@@ -427,6 +427,12 @@ public class BeseyeJSONUtil {
 	public static final String PS_REG_DEV_UUID 			= "devUuid";
 	public static final String PS_REG_DEV_NAME 			= "devName";
 	
+	//Baidu Push service
+	public static final String PS_USER_ID 				= "userId";
+	public static final String PS_CHANNEL_ID 			= "chId";
+	public static final String PS_BAIDU_API_KEY			= "ApiKey";
+	public static final String PS_CHANNEL_IDS 			= "chIds";
+	
 	public static final String PS_REG_IDS 				= "regIds";
 	public static final String PS_REG_ID_OLD 			= "from";
 	public static final String PS_REG_ID_NEW 			= "to";

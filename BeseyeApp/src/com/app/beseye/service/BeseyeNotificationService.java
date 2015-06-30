@@ -39,6 +39,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.app.beseye.BaiduPushReceiver;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.CameraViewActivity;
 import com.app.beseye.GCMIntentService;
@@ -147,6 +148,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public static final int MSG_UPDATE_PLAYER_VCAM 			= 35;
     public static final int MSG_USER_PW_CHANGED 			= 36;
     
+    public static final int MSG_BAIDU_REGISTER 				= 37;
+    public static final int MSG_BAIDU_UNREGISTER 			= 38;
+    public static final int MSG_BAIDU_MSG 					= 39;
+    
     /**
      * Handler of incoming messages from clients.
      */
@@ -156,9 +161,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //        	if(BeseyeConfig.DEBUG)
 //        		Log.i(TAG, "BG service detects "+msg.toString());
         	
-        	Log.i(TAG, "Kelly BG service detects "+msg.toString());
-        	
-            switch (msg.what) {
+        	switch (msg.what) {
                 case MSG_REGISTER_CLIENT:
                     mClients.add(msg.replyTo);
                     break;
@@ -280,11 +283,18 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			sendMessage(Message.obtain(null,MSG_SET_UNREAD_NEWS_NUM,0,0));
                 			
                 			if(!SessionMgr.getInstance().isUseridValid()){
-                				unregisterGCMServer();
+                				if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+                					unregisterBaiduServer();
+                				} else {
+                					unregisterGCMServer();
+                				}
                 			}
                 			
-                			unregisterPushServer();
-                			
+                			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+                				unregisterBaiduPushServer();
+                			} else { 
+                				unregisterPushServer();
+                			}
                 			cancelNotification();
                 			setLastEventItem(null);
                 			//BeseyeUtils.removeRunnable(mCheckEventRunnable);
@@ -298,8 +308,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			if(null == mGetVCamListTask){
                 				(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this)).execute();
                 			}
-                			checkGCMService();
-                			//checkEventPeriod();
+                			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+                	        	Log.d(TAG, "Kelly MSG_UPDATE_SESSION_DATA");
+                				checkBaiduService();
+                	        } else {
+                	        	checkGCMService();
+                	        }
+                	        //checkEventPeriod();
 //                			try {
 //            		        	mMessenger.send(Message.obtain(null,MSG_CHECK_NOTIFY_NUM,0,0));
 //            				} catch (RemoteException e) {
@@ -338,9 +353,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 }
                 case MSG_GSM_UNREGISTER:{
                 	mbRegisterGCM = false;
+            		if(mbRegisterReceiver){
+                		mbRegisterReceiver = false;
+                		unregisterReceiver(mHandleGCMMessageReceiver);
+                	}
                 	unregisterPushServer();
                 	break;
                 }
+                case MSG_BAIDU_MSG:
                 case MSG_GSM_MSG:{
                 	final Bundle bundle = msg.getData();
                 	String data = bundle.getString(PS_REGULAR_DATA);
@@ -348,11 +368,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	if(DEBUG)
                 		Log.d(TAG, "MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
                 	
-                	Log.d(TAG, "Kelly MSG_GSM_MSG, data : "+data+", dataCus : "+dataCus);
-                	
-                		Log.d(TAG,"Kelly restart");
-                		//PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, "ll6nuIrggwTGz0o9Fawh5PPC");
-                	
+                	Log.d(TAG, "Kelly MSG_GSM_MSG, data: "+data+", dataCus: "+dataCus);
                 	
 //                	if(SessionMgr.getInstance().getServerMode().ordinal() <= SessionMgr.SERVER_MODE.MODE_DEV.ordinal())
 //                		Toast.makeText(getApplicationContext(), "Got message from GCM server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
@@ -360,6 +376,25 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	break;
                 }
                 case MSG_GSM_ERR:{
+                	break;
+                }
+                case MSG_BAIDU_REGISTER:{
+                	final Bundle bundle = msg.getData();
+                	String BaiduUserID = bundle.getString(BaiduPushReceiver.BAIDU_USER_ID);
+                	String BaiduChannelID = bundle.getString(BaiduPushReceiver.BAIDU_CHANNEL_ID);
+                	
+                	Log.d(TAG, "Kelly mChannelId " + mChannelId + ", BaiduChannelID " + BaiduChannelID);
+                	
+                	if(null == mChannelId || mChannelId.equals(BaiduChannelID)){
+                		Log.d(TAG, "Kelly userID: " + BaiduUserID + " channelID: " + BaiduChannelID);
+                		registerBaiDuPushServer(BaiduUserID, BaiduChannelID);
+                	}
+                	break;
+                }
+                case MSG_BAIDU_UNREGISTER:{
+                	mbRegisterGCM = false;
+                	Log.d(TAG, "Kelly MSG_BAIDU_UNREGISTER");
+                	unregisterBaiduPushServer();
                 	break;
                 }
                 case MSG_CHECK_DIALOG:{
@@ -438,6 +473,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	static public  final String PUSH_SERVICE_REG_ID 			= "beseye_push_service_reg_id";
 //	static private final String PUSH_SERVICE_LAST_NOTIFY_ID 	= "beseye_push_last_notify_id";
 //	static private final String PUSH_SERVICE_LAST_NOTIFY_TIME 	= "beseye_push_last_notify_time";
+	static public  final String PUSH_SERVICE_CHANNEL_ID			= "beseye_push_channel_id";  
 	
 	static private final String PUSH_SERVICE_LAST_EVENT 		= "beseye_push_last_event";
 	private JSONObject mLastEventObj = null;
@@ -446,14 +482,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private boolean mbRegisterGCM = false;
 	private boolean mbRegisterReceiver = false;
 	private BeseyePushServiceTask.GetProjectIDTask mGetProjectIDTask = null;
+	private BeseyePushServiceTask.GetBaiduApiKeyTask mGetBaiduApiKeyTask = null;
 	private long mlTimeToCloseWs = -1;
 	private Runnable mCloseWsRunnable = null;
+	private String mChannelId = null;
 	
     @Override
     public void onCreate() {
-    	
-    	Log.d(TAG, "Kelly mode1" + SessionMgr.getInstance().getServerMode() );
-    	
     	if(DEBUG)
     		Log.i(TAG, "###########################  BeseyeNotificationService::onCreate(), this:"+this);
  	
@@ -483,17 +518,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			Log.i(TAG, "BeseyeNotificationService::onCreate(), there is no last event");
 		}
         
-        Log.d(TAG, "Kelly mode" + SessionMgr.getInstance().getServerMode() );
+        Log.d(TAG, "Kelly onCreate mChannelId: " + mChannelId);
         
-        if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {
-        	Log.d(TAG, "Kelly in China start to reg");
-        	
-        	PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, "ll6nuIrggwTGz0o9Fawh5PPC");
-        	registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
-    		mbRegisterReceiver = true;
-    	
-    		Log.d(TAG, "Kelly in China reg end");
-            	
+        if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+        	checkBaiduService();
         } else {
         	mGCMInstance = GoogleCloudMessaging.getInstance(this);
         	checkGCMService();
@@ -509,6 +537,18 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
        // beginToCheckWebSocketState();
     }
     
+    private void checkBaiduService(){
+    	if(false == mbRegisterGCM){
+    		Log.d(TAG, "Kelly checkBaiduService");
+    		//mbRegisterGCM = true;
+    		(mGetBaiduApiKeyTask = new BeseyePushServiceTask.GetBaiduApiKeyTask(this)).execute();
+    		//TODO: Kelly
+    		
+//    		PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, "ll6nuIrggwTGz0o9Fawh5PPC");
+//    		registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
+//        	mbRegisterReceiver = true;
+    	}
+    }
     private void checkGCMService(){  
        if(getRegistrationId(this).isEmpty() || false == mbRegisterGCM){
     	   if(checkPlayServices()){
@@ -544,8 +584,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	}else{
     		postToCloseWs((-1 != mlTimeToCloseWs && mlTimeToCloseWs >= System.currentTimeMillis())?(mlTimeToCloseWs - System.currentTimeMillis()):0);
     	}
-    	
-    	checkGCMService();
+    	if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+        	//Kelly temp TODO
+    		//checkBaiduService();
+        } else {
+        	checkGCMService();
+        }
     }
     
     private void postToCloseWs(final long lTimeToClose){
@@ -663,6 +707,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         }
     }
     
+	private void unregisterBaiduServer(){
+		Log.d(TAG, "Kelly Bye Bye~");
+		if(mbRegisterGCM){
+			Log.d(TAG, "Kelly ready to stopWrok");
+    		mbRegisterGCM = false;
+    		PushManager.stopWork(getApplicationContext());
+		}
+	}
+	
     private void unregisterGCMServer(){
     	if(mbRegisterReceiver){
     		mbRegisterReceiver = false;
@@ -704,9 +757,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			mRegisterPushServerTask.cancel(true);
         }
 		
+		Log.d(TAG, "Kelly onDestory");
+		
 		WebsocketsMgr.getInstance().unregisterOnWSChannelStateChangeListener();
-		unregisterGCMServer();
-
+		if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+			unregisterBaiduServer();
+		} else {
+			unregisterGCMServer();
+		}
 		super.onDestroy();
 	}
 	
@@ -819,6 +877,36 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    }
     }
     
+    private void registerBaiDuPushServer(String BaiduUserID, String BaiduChannelID){
+    	Log.d(TAG, "Kelly registerBaiDuPushServer");
+    	try{
+    		if(null != BaiduUserID && null != BaiduChannelID){
+    			if (!mbRegisterGCM) {
+    				mChannelId = BaiduChannelID;
+	            	JSONObject obj = new JSONObject();
+	            	try {
+						obj.put(PS_REG_DEV_NAME, Build.MODEL);
+						obj.put(PS_CHANNEL_ID, BaiduChannelID);
+						obj.put(PS_USER_ID, BaiduUserID);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+	            	Log.d(TAG, "Kelly obj " + obj);
+	            	mRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.AddBaiduIDTask(this).execute(obj.toString());
+	            	if(DEBUG)
+	            		Log.d(TAG, "registerPushServer(), userID: "+BaiduUserID+", channelID:"+BaiduChannelID);
+	            }else{
+	            	mbRegisterGCM = true;
+	            }
+	    	}else{
+	    		if(DEBUG)
+	    			Log.e(TAG, "registerPushServer(), invalid regId or mdid "+SessionMgr.getInstance().getUserid());
+	    	}
+	    }catch (UnsupportedOperationException e) {
+			Log.i(TAG, "registerPushServer(), e: "+e.toString());
+	    }
+    }
+    
     private void registerPushServer(String regId){
     	try{
 	    	//final String regId = GCMRegistrar.getRegistrationId(getApplicationContext());
@@ -854,6 +942,25 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			Log.i(TAG, "registerPushServer(), e: "+e.toString());
 	    }
     }
+    private void unregisterBaiduPushServer(){
+    	
+    	Log.d(TAG, "Kelly unregisterBaiduPushServer mChannelId " + mChannelId);
+    	
+    	if(null != mChannelId && 0 < mChannelId.length()){
+    		JSONObject obj = new JSONObject();
+        	try {
+        		JSONArray arrRegIds = new JSONArray();
+        		arrRegIds.put(mChannelId);
+				obj.put(PS_CHANNEL_IDS, arrRegIds);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+        	Log.d(TAG, "Kelly ready to DelBaiduIDTask " + obj);
+        	mUnRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.DelBaiduIDTask(this).execute(obj.toString());
+    	}else{
+    		Log.e(TAG, "unregisterPushServer(), invalid channelId "+mChannelId);
+    	}
+    }
     
     private void unregisterPushServer(){
     	final String regId = getRegistrationId(this);
@@ -876,30 +983,30 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     private final BroadcastReceiver mHandleGCMMessageReceiver = new BroadcastReceiver() {
     	@Override
         public void onReceive(Context context, Intent intent) {
-    		 Log.d(TAG, "Kelly mode BR" + SessionMgr.getInstance().getServerMode() );
-    		 Log.d(TAG, "Kelly BroadcastReceiver" + intent);
-    		 Log.d(TAG, "Kelly bool mbRegisterReceiver" + (mbRegisterReceiver? "1" : "0"));
-    	    	
-    		 
+    				 
             String action = intent.getExtras().getString(GCMIntentService.FORWARD_ACTION_TYPE);
             Message msg = null;
             if(DEBUG)
             	Log.i(TAG, "onReceive(), action "+action+", data:"+intent.getExtras().getString(BeseyeJSONUtil.PS_REGULAR_DATA));
             
-            Log.i(TAG, "Kelly onReceive(), action "+action+", data:"+intent.getExtras().getString(BeseyeJSONUtil.PS_REGULAR_DATA));
+            Log.d(TAG, "Kelly BroadcastReceiver " + action);
             
             if(GCMIntentService.FORWARD_ACTION_TYPE_REG.equals(action)){	
             	msg = Message.obtain(null,MSG_GSM_REGISTER,0,0);
             }else if(GCMIntentService.FORWARD_ACTION_TYPE_UNREG.equals(action)){
             	msg = Message.obtain(null,MSG_GSM_UNREGISTER,0,0);
             }else if(GCMIntentService.FORWARD_ACTION_TYPE_MSG.equals(action)){
-            	Log.d(TAG, "Kelly BroadcastReceiver got meg!");
-             	
             	msg = Message.obtain(null,MSG_GSM_MSG,0,0);
             }else if(GCMIntentService.FORWARD_ACTION_TYPE_ERR.equals(action)){
             	msg = Message.obtain(null,MSG_GSM_ERR,0,0);
             }else if(GCMIntentService.FORWARD_ACTION_TYPE_CHECK_DIALOG.equals(action)){
             	msg = Message.obtain(null,MSG_CHECK_DIALOG,0,0);
+            }else if(BaiduPushReceiver.FORWARD_ACTION_TYPE_BAIDU_REG.equals(action)){
+            	msg = Message.obtain(null,MSG_BAIDU_REGISTER,0,0);
+            }else if(BaiduPushReceiver.FORWARD_ACTION_TYPE_BAIDU_UNREG.equals(action)){
+            	msg = Message.obtain(null,MSG_BAIDU_UNREGISTER,0,0);
+            }else if(BaiduPushReceiver.FORWARD_ACTION_TYPE_BAIDU_MSG.equals(action)){
+            	msg = Message.obtain(null,MSG_BAIDU_MSG,0,0);	
             }else{
             	Log.e(TAG, "onReceive(), invalid action "+action);
             }
@@ -1186,10 +1293,17 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyePushServiceTask.GetProjectIDTask){
 			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetProjectIDTask, iErrType = "+iErrType);
+		}else if(task instanceof BeseyePushServiceTask.GetBaiduApiKeyTask){
+			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetBaiduApiKeyTask, iErrType = "+iErrType);
 		}else if(task instanceof BeseyePushServiceTask.AddRegisterIDTask){
 			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), AddRegisterIDTask, iErrType = "+iErrType);
+		}else if(task instanceof BeseyePushServiceTask.AddBaiduIDTask){
+			mChannelId = null;
+			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), AddBaiduIDTask, iErrType = "+iErrType);
 		}else if(task instanceof BeseyePushServiceTask.DelRegisterIDTask){
 			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), DelRegisterIDTask, iErrType = "+iErrType);
+		}else if(task instanceof BeseyePushServiceTask.DelBaiduIDTask){
+			Log.e(TAG, "Kelly BeseyeNotificationService::onPostExecute(), DelBaiduIDTask, iErrType = "+iErrType + " msg " + strMsg);
 		}
 		Log.e(TAG, "Service::onErrorReport(), "+task.getClass().getSimpleName()+", params:"+strMsg+", iErrType: "+iErrType);
 	}
@@ -1218,12 +1332,42 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					Log.i(TAG, "BeseyeNotificationService::onPostExecute(), E_BE_ACC_SESSION_NOT_FOUND ");
 					SessionMgr.getInstance().cleanSession();
 				}
+			}else if(task instanceof BeseyePushServiceTask.GetBaiduApiKeyTask){
+				if(0 == iRetCode && null != result && 0 < result.size()){
+					String apiKey = BeseyeJSONUtil.getJSONString(result.get(0), PS_BAIDU_API_KEY);
+					
+					Log.d(TAG, "Kelly onPostExecute GetBaiduApiKeyTask " + result.get(0));
+					
+					if(DEBUG)
+						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), apiKey "+apiKey);
+					
+					Log.d(TAG, "Kelly onPostExecute GetBaiduApiKeyTask apiKey" + apiKey);
+					
+					if(0 < apiKey.length()){
+						PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, apiKey);
+			        	registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
+			        	mbRegisterReceiver = true;
+					}else{
+						Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetBaiduApiKeyTask, invalid apiKey ");
+					}
+				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_FOUND == iRetCode){
+					Log.i(TAG, "BeseyeNotificationService::onPostExecute(), E_BE_ACC_SESSION_NOT_FOUND ");
+					SessionMgr.getInstance().cleanSession();
+				}
 			}else if(task instanceof BeseyePushServiceTask.AddRegisterIDTask){
 				if(0 == iRetCode || 2 == iRetCode && null != result && 0 < result.size()){
 					if(DEBUG)
 						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), AddRegisterIDTask OK");
-					
 					mbRegisterGCM = true;
+				}
+			}else if(task instanceof BeseyePushServiceTask.AddBaiduIDTask){
+				if(0 == iRetCode || 2 == iRetCode && null != result && 0 < result.size()){
+					if(DEBUG)
+						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), AddBaiduIDTask OK");
+					mbRegisterGCM = true;
+					Log.d(TAG, "Kelly AddBaiduIDTask succ");
+				}else {
+					mChannelId = null;
 				}
 			}else if(task instanceof BeseyePushServiceTask.DelRegisterIDTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
@@ -1231,6 +1375,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), DelRegisterIDTask OK");
 					
 					storeRegistrationId(this, "");
+				}
+			}else if(task instanceof BeseyePushServiceTask.DelBaiduIDTask){
+				if(0 == iRetCode && null != result && 0 < result.size()){
+					if(DEBUG)
+						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), DelBaiduIDTask OK");
+					mbRegisterGCM = false;
+					mChannelId = null;
+					Log.d(TAG, "Kelly DelBaiduIDTask succ");
 				}
 			}else if(task instanceof BeseyeNotificationBEHttpTask.GetWSServerTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
@@ -1351,6 +1503,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		
 		if(task == mGetVCamListTask){
 			mGetVCamListTask = null;
+		}
+		
+		if(task == mGetBaiduApiKeyTask){
+			mGetBaiduApiKeyTask = null;
 		}
 	}
 	
