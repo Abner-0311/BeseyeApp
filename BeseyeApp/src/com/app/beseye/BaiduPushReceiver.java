@@ -29,13 +29,10 @@ public class BaiduPushReceiver extends PushMessageReceiver{
 	
 	@Override
 	public void onBind(Context context, int errorCode, String appid, String userId, String channelId, String requestId) {
-		String responseString = "onBind errorCode=" + errorCode + " appid=" + appid + " userId=" + userId + " channelId=" + channelId + " requestId=" + requestId;
+		String responseString = "errorCode=" + errorCode + " appid=" + appid + " userId=" + userId + " channelId=" + channelId + " requestId=" + requestId;
 		if(DEBUG)
 			Log.i(BeseyeConfig.TAG, "Baidu onBind " + responseString);
-        
-		
-		Log.d(BeseyeConfig.TAG, "Kelly onBind appid " + appid);
-		
+       
         if (errorCode == 0) {
         	forwardGCMMessage(context, FORWARD_ACTION_TYPE_BAIDU_REG, userId, channelId);
         }
@@ -44,7 +41,7 @@ public class BaiduPushReceiver extends PushMessageReceiver{
 
 	@Override
 	public void onMessage(Context context, String message, String customContentString) {
-        String messageString = "Baidu message=\"" + message + "\" customContentString=" + customContentString;
+        String messageString = "message=\"" + message + "\" customContentString=" + customContentString;
         if(DEBUG)
 			Log.i(BeseyeConfig.TAG, "Baidu onMessage " + messageString);
         
@@ -62,12 +59,10 @@ public class BaiduPushReceiver extends PushMessageReceiver{
 
 	@Override
 	   public void onUnbind(Context context, int errorCode, String requestId) {
-        String responseString = "onUnbind errorCode=" + errorCode + " requestId = " + requestId;
+        String responseString = "errorCode=" + errorCode + " requestId = " + requestId;
         if(DEBUG)
 			Log.i(BeseyeConfig.TAG, "Baidu onUnbind " + responseString);
-
-        Log.d(BeseyeConfig.TAG, "Kelly onUnbind");
-        
+    
         if (errorCode == 0) {
         	forwardGCMMessage(context, FORWARD_ACTION_TYPE_BAIDU_UNREG, "", "");
         }
