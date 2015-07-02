@@ -36,11 +36,13 @@ public class GCMIntentService extends GCMBaseIntentService{
 	
 	@Override
 	protected void onRegistered(Context context, String registrationId) {
+		//deprecated, old GCM version	
 		forwardGCMMessage(context, FORWARD_ACTION_TYPE_REG, registrationId, null);
 	}
 
 	@Override
 	protected void onUnregistered(Context context, String registrationId) {
+		//deprecated, old GCM version
 		forwardGCMMessage(context, FORWARD_ACTION_TYPE_UNREG, registrationId, null);
 	}
 	
@@ -74,17 +76,7 @@ public class GCMIntentService extends GCMBaseIntentService{
 		if(DEBUG)
 			Log.i(BeseyeConfig.TAG, "forwardGCMMessage(), type "+type+", strValue = "+strValue);
 		
-//		final String data = msg.getExtras().getString(PS_REGULAR_DATA);
-//    	final String dataCus = msg.getExtras().getString(PS_CUSTOM_DATA);
-//    	BeseyeUtils.postRunnable(new Runnable(){
-//
-//			@Override
-//			public void run() {
-//				Toast.makeText(BeseyeApplication.getApplication(), "Got message from Beseye server, data = "+data+", dataCus : "+dataCus, Toast.LENGTH_LONG ).show();
-//			}}, 0);
-//    	
-//		
-        Intent intent = new Intent(FORWARD_GCM_MSG_ACTION);
+		Intent intent = new Intent(FORWARD_GCM_MSG_ACTION);
         intent.putExtra(FORWARD_ACTION_TYPE, type);
         if(FORWARD_ACTION_TYPE_REG.equals(type) || FORWARD_ACTION_TYPE_UNREG.equals(type))
         	intent.putExtra(BeseyeNotificationService.PUSH_SERVICE_REG_ID, strValue);

@@ -157,7 +157,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 	
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,String strMsg) {	
-		if(task instanceof BeseyeAccountTask.LoginHttpTask){
+		if(task instanceof BeseyeAccountTask.LoginHttpTask || task instanceof BeseyeAccountTask.GetVPCNoHttpTask){
 			int iErrMsg = R.string.msg_login_error;
 			if(BeseyeError.E_BE_ACC_USER_EMAIL_FORMAT_INVALID == iErrType){
 				iErrMsg = R.string.msg_invalid_account_format;

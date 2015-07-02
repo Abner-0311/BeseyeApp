@@ -20,13 +20,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.drawable.ColorDrawable;
@@ -586,53 +583,23 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return dialog;
 	}
 
-//	@Override
-//	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
-//		switch (id) {
-//			case DIALOG_ID_LOADING:{
-//				String strMsgRes = "";
-//				if(null != args){
-//					strMsgRes = args.getString(KEY_WARNING_TEXT);
-//				}
-//				if(dialog instanceof AlertDialog){
-//					if(0 < strMsgRes.length())
-//						((AlertDialog) dialog).setMessage(strMsgRes);
-//				}
-//			}
-//	        case DIALOG_ID_WARNING:{
-//				String strTitleRes = "", strMsgRes = "";
-//				if(null != args){
-//					strTitleRes = args.getString(KEY_WARNING_TITLE);
-//					strMsgRes = args.getString(KEY_WARNING_TEXT);
-//				}
-//				if(dialog instanceof AlertDialog){
-//					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon);
-//					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_warning):strTitleRes);
-//					if(0 < strMsgRes.length())
-//						((AlertDialog) dialog).setMessage(strMsgRes);
-//				}
-//				
-//				break;
-//			}
-//	        case DIALOG_ID_INFO:{
-//				String strTitleRes = "", strMsgRes = "";
-//				if(null != args){
-//					strTitleRes = args.getString(KEY_INFO_TITLE);
-//					strMsgRes = args.getString(KEY_INFO_TEXT);
-//				}
-//				if(dialog instanceof AlertDialog){
-//					((AlertDialog) dialog).setIcon(R.drawable.common_app_icon);
-//					((AlertDialog) dialog).setTitle((strTitleRes == null || 0 == strTitleRes.length())?getString(R.string.dialog_title_info):strTitleRes);
-//					if(0 < strMsgRes.length())
-//						((AlertDialog) dialog).setMessage(strMsgRes);
-//				}
-//				
-//				break;
-//			}
-//	        default:
-//	        	super.onPrepareDialog(id, dialog, args);
-//	    }
-//	}
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+		switch (id) {
+			case DIALOG_ID_LOADING:{
+				String strMsgRes = "";
+				if(null != args){
+					strMsgRes = args.getString(KEY_WARNING_TEXT);
+				}
+				if(dialog instanceof android.app.AlertDialog){
+					if(0 < strMsgRes.length())
+						((android.app.AlertDialog) dialog).setMessage(strMsgRes);
+				}
+			}
+	        default:
+	        	super.onPrepareDialog(id, dialog, args);
+	    }
+	}
 	
 	public boolean showMyDialog(int iDialogId){
 		return showMyDialog(iDialogId, null);
@@ -1122,8 +1089,36 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}});
 	}
 	
+	private Runnable mLogoutRunnable = null;
+	static final private long TIME_TO_WAIT_DEL_PUSH = 10000L;
+	
 	protected void invokeLogout(){
-		monitorAsyncTask(new BeseyeAccountTask.LogoutHttpTask(this), true, SessionMgr.getInstance().getAuthToken());
+		if(null != mLogoutRunnable){
+			BeseyeUtils.removeRunnable(mLogoutRunnable);
+		}
+		
+		mLogoutRunnable = new Runnable(){
+			@Override
+			public void run() {
+				monitorAsyncTask(new BeseyeAccountTask.LogoutHttpTask(BeseyeBaseActivity.this), true, SessionMgr.getInstance().getAuthToken());
+				mLogoutRunnable = null;
+			}};
+			
+		BeseyeUtils.postRunnable(mLogoutRunnable, TIME_TO_WAIT_DEL_PUSH);
+		
+		if(null != mNotifyService){
+			try {
+				if(DEBUG)
+					Log.i(TAG, "invokeLogout(), send MSG_REQUEST_DEL_PUSH");
+				mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_REQUEST_DEL_PUSH));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Bundle b  = new Bundle();
+		b.putString(KEY_WARNING_TEXT, getString(R.string.dialog_msg_logiout));	
+		showMyDialog(DIALOG_ID_LOADING, b);
 	}
 
 	@Override
@@ -1415,6 +1410,15 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						} catch (JSONException e) {
 							Log.i(TAG, "handleMessage(), e:"+e.toString());
 						}
+                	}
+                }
+                case BeseyeNotificationService.MSG_RESPOND_DEL_PUSH:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+	                	if(null != act.mLogoutRunnable){
+	                		BeseyeUtils.removeRunnable(act.mLogoutRunnable);
+	                		act.mLogoutRunnable.run();
+	                	}
                 	}
                 }
 //                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{

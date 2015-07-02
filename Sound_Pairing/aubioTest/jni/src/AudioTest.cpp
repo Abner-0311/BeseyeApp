@@ -2455,12 +2455,14 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	int iSSIDLen = 0;
 	int iRotateLen = 0;
 
-	if(NULL == sOrginalBSSID || 0 == strlen(sOrginalBSSID)){
-		sOrginalBSSID = getCurWiFiBSSID();
+	if(sbNetworkConnected){
+		if(NULL == sOrginalBSSID || 0 == strlen(sOrginalBSSID)){
+			sOrginalBSSID = getCurWiFiBSSID();
+		}
+		//if(DEBUG_MODE){
+			LOGE("sOrginalBSSID:[%s]\n", NULL != sOrginalBSSID?sOrginalBSSID:"");
+		//}
 	}
-	//if(DEBUG_MODE){
-		LOGE("sOrginalBSSID:[%s]\n", NULL != sOrginalBSSID?sOrginalBSSID:"");
-	//}
 
 	turnOnWiFiModule();
 

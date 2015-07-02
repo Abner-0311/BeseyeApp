@@ -402,7 +402,7 @@
 		        <data android:scheme="package" />
 		    </intent-filter>                   
 		</receiver>
-		<receiver android:name="com.app.beseye.BaiduPushReceiver" >
+		<receiver android:name="com.app.beseye.receiver.BaiduPushReceiver" >
             <intent-filter>
 
                 <!-- 接收push消息 -->

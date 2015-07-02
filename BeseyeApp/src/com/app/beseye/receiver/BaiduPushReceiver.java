@@ -1,4 +1,4 @@
-package com.app.beseye;
+package com.app.beseye.receiver;
 
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 
@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.app.beseye.GCMIntentService;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -68,11 +69,12 @@ public class BaiduPushReceiver extends PushMessageReceiver{
         }
     }
 
-	
+	//[Abner review] Rename forwardGCMMessage to forwardBaiduMessage
 	static void forwardGCMMessage(Context context, String type, String strValue, String strValue2) {
 		if(DEBUG)
 			Log.i(BeseyeConfig.TAG, "Baidu forwardGCMMessage(), type "+type+", strValue = "+strValue);
 		
+		//[Abner review] Rename FORWARD_GCM_MSG_ACTION as general one or create new one action
         Intent intent = new Intent(GCMIntentService.FORWARD_GCM_MSG_ACTION);
         intent.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, type);
         

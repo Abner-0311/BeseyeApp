@@ -212,7 +212,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 	
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,String strMsg) {	
-		if(task instanceof BeseyeAccountTask.RegisterTask){
+		if(task instanceof BeseyeAccountTask.RegisterTask || task instanceof BeseyeAccountTask.GetVPCNoHttpTask){
 			//launchActivityByClassName(WifiSetupGuideActivity.class.getName());
 			//finish();
 			int iErrMsgId = R.string.msg_signup_error;
