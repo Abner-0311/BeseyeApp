@@ -233,6 +233,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			Log.i(TAG, "BG service detects MSG_APP_TO_FOREGROUND()");
                 		mbAppInBackground = false;
                 		beginToCheckWebSocketState();
+                		finishToCheckPushMsgState();
                 	}
                 	
 //                	if(shouldPullMsg())
@@ -250,6 +251,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //                			mMsgInfoTask.cancel(true);
 //                		}
                 		finishToCheckWebSocketState();
+                		beginToCheckPushMsgState();
                 	}
                 	mbAppInBackground = true;
                 	checkUserLoginState();
@@ -318,14 +320,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	break;
                 }
                 case MSG_GCM_REGISTER:{
-                	mbRegisterGCM = true;
+                	mbRegisterLocalPushSerivce = true;
                 	final Bundle bundle = msg.getData();
                 	storeRegistrationId(BeseyeNotificationService.this, bundle.getString(PUSH_SERVICE_REG_ID));
-                	registerPushServer(bundle.getString(PUSH_SERVICE_REG_ID));
+                	registerPushServer();
                 	break;
                 }
                 case MSG_GCM_UNREGISTER:{
-                	mbRegisterGCM = false;
+                	mbRegisterLocalPushSerivce = false;
                 	break;
                 }
                 case MSG_GCM_MSG:{
@@ -417,7 +419,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	private String mStrFocusVCamId = null;//current vcam id on player 
 	private SharedPreferences mPref = null;
-	private boolean mbRegisterGCM = false;
+	private boolean mbRegisterLocalPushSerivce = false;
 	private boolean mbRegisterPushServer = false;
 	private boolean mbRegisterReceiver = false;
 	private BeseyePushServiceTask.GetProjectIDTask mGetProjectIDTask = null;
@@ -456,15 +458,16 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
     
     private void checkGCMService(){  
-       if(SessionMgr.getInstance().isTokenValid() && getRegistrationId(this).isEmpty() || false == mbRegisterGCM || false == mbRegisterPushServer){
-    	   if(checkPlayServices()){
-    		   registerGCMServer();
-           }
-       }
-    }
+        if(SessionMgr.getInstance().isTokenValid()){
+     	   if(false == mbRegisterLocalPushSerivce){
+ 			   registerGCMServer();
+ 		   }else if(false == mbRegisterPushServer){
+ 			   registerPushServer();
+ 		   }
+        }
+     }
     
     private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
-    private JSONObject mCam_obj = new JSONObject();
     
     private void checkUserLoginState(){
     	if(DEBUG)
@@ -489,7 +492,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		postToCloseWs((-1 != mlTimeToCloseWs && mlTimeToCloseWs >= System.currentTimeMillis())?(mlTimeToCloseWs - System.currentTimeMillis()):0);
     	}
     	
-    	//checkGCMService();
+    	checkGCMService();
     }
     
     private void postToCloseWs(final long lTimeToClose){
@@ -528,6 +531,35 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			beginToCheckWebSocketState();
 		}};
     
+	private void beginToCheckPushMsgState(){
+    	BeseyeUtils.removeRunnable(mCheckPushMsgRunnable);
+		BeseyeUtils.postRunnable(mCheckPushMsgRunnable, 60*1000);
+    }
+    
+    private void finishToCheckPushMsgState(){
+    	BeseyeUtils.removeRunnable(mCheckPushMsgRunnable);
+    }
+    
+	private Runnable mCheckPushMsgRunnable = new Runnable(){
+		@Override
+		public void run() {
+			if(DEBUG)
+	    		Log.i(TAG, "mCheckPushMsgRunnable::run(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+mbRegisterPushServer+", "+mbRegisterLocalPushSerivce+"]");
+	    	
+			beginToCheckPushMsgState();
+			if(mbAppInBackground && SessionMgr.getInstance().isTokenValid()){
+				if(false == mbRegisterLocalPushSerivce){
+	 			   	registerGCMServer();
+	 		   	}else if(false == mbRegisterPushServer){
+	 		   		registerPushServer();
+	 		   	}else{
+	 		   		finishToCheckPushMsgState();
+	 		   	}
+			}else{
+				finishToCheckPushMsgState();
+			}
+		}};
+		
     @Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
     	// We want this service to
@@ -561,28 +593,23 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 
 	private void registerGCMServer(){
 		try {
-	    	if(null != SessionMgr.getInstance() && SessionMgr.getInstance().isUseridValid() && (false == mbRegisterGCM || false == mbRegisterPushServer)){
-	    		if(false == mbRegisterReceiver){
-	    			registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
-	    			mbRegisterReceiver = true;
-	    		}
-	    		
-	    		if(null != mPref){
-	    			String sSenderID = GCMIntentService.getSenderId();
-	    			if(DEBUG)
-	    				Log.i(TAG, "registerGCMServer(), sSenderID "+sSenderID);
-	    			
-	    			if(null == sSenderID || 0 == sSenderID.length()){
-	    				if(null == mGetProjectIDTask)
-	    					(mGetProjectIDTask = new BeseyePushServiceTask.GetProjectIDTask(this)).execute();
-	    			}else{
-	    				registerGCMService(sSenderID);
-	    			}
-	    		}
+	    	if(null != SessionMgr.getInstance() && SessionMgr.getInstance().isUseridValid()){
+	    		if(checkPlayServices()){  			
+					String sSenderID = GCMIntentService.getSenderId();
+					if(DEBUG)
+						Log.i(TAG, "registerGCMServer(), sSenderID "+sSenderID);
+					
+					if(null == sSenderID || 0 == sSenderID.length()){
+						if(null == mGetProjectIDTask)
+							(mGetProjectIDTask = new BeseyePushServiceTask.GetProjectIDTask(this)).execute();
+					}else{
+						registerGCMService(sSenderID);
+					}
+	            }
 	    	}
 		}catch (UnsupportedOperationException e) {
     		Log.i(TAG, "registerGCMServer(), e: "+e.toString());
-        }
+		}
     }
     
     private void unregisterGCMServer(){
@@ -591,8 +618,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		unregisterReceiver(mHandleGCMMessageReceiver);
     	}
     	
-    	if(mbRegisterGCM){
-    		mbRegisterGCM = false;
+    	if(mbRegisterLocalPushSerivce){
+    		mbRegisterLocalPushSerivce = false;
     	    new AsyncTask<Void, Integer, String>() {
     	        @Override
     	        protected String doInBackground(Void... params) {
@@ -694,22 +721,29 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
     private void registerGCMService(String strSenderId){
-    	GCMIntentService.updateSenderId(strSenderId);
-    	try{
-	    	final String regId = getRegistrationId(BeseyeNotificationService.this);//GCMRegistrar.getRegistrationId(getApplicationContext());
-	    	if(DEBUG)
-	    		Log.d(TAG, "registerGCMService(), regId: "+regId);
-	        
-	    	if (regId.equals("")) {
-	        	// Log.i(TAG, "registerGCM(), strSenderId "+strSenderId);
-	            // Automatically registers application on startup.
-	        	registerGCMInBackground(strSenderId);
-	        } else {
-	        	registerPushServer(regId);
-	        }
-	    }catch (UnsupportedOperationException e) {
-			Log.e(TAG, "registerGCMService(), e: "+e.toString());
-	    }
+    	if(SessionMgr.getInstance().isTokenValid()){
+    		GCMIntentService.updateSenderId(strSenderId);
+        	try{
+    	    	final String regId = getRegistrationId(BeseyeNotificationService.this);//GCMRegistrar.getRegistrationId(getApplicationContext());
+    	    	if(DEBUG)
+    	    		Log.d(TAG, "registerGCMService(), regId: "+regId);
+    	        
+    	    	if(false == mbRegisterReceiver){
+	    			registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_GCM_MSG_ACTION));
+	    			mbRegisterReceiver = true;
+	    		}
+    	    	
+    	    	if (regId.equals("")) {
+    	        	// Log.i(TAG, "registerGCM(), strSenderId "+strSenderId);
+    	            // Automatically registers application on startup.
+    	        	registerGCMInBackground(strSenderId);
+    	        } else {
+    	        	registerPushServer();
+    	        }
+    	    }catch (UnsupportedOperationException e) {
+    			Log.e(TAG, "registerGCMService(), e: "+e.toString());
+    	    }
+    	}
     }
     
 	private void registerGCMInBackground(final String strSenderId) {
@@ -725,9 +759,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	                msg = "Device registered, registration ID=" + regId;
 	                
 	                storeRegistrationId(BeseyeNotificationService.this, regId);
-	                mbRegisterGCM = true;
+	                mbRegisterLocalPushSerivce = true;
 	                
-	                registerPushServer(regId);
+	                registerPushServer();
 	            } catch (IOException ex) {
 	                msg = "Error :" + ex.getMessage();
 	                // If there is an error, don't just keep trying to register.
@@ -747,14 +781,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    
 	}
     
-    private void registerPushServer(String regId){
+    private void registerPushServer(){
     	try{
-	    	//final String regId = GCMRegistrar.getRegistrationId(getApplicationContext());
+    		final String regId = getRegistrationId(this);
 	    	if(null != regId && 0 < regId.length() /*&& SessionMgr.getInstance().isUseridValid()*/){
-	    		//final String userId = SessionMgr.getInstance().getMdid();
-	    		//BeseyeSharedPreferenceUtil.setPrefStringValue(mPref, USER_ID, userId);
-	    		// Device is already registered on GCM, check server.
-	    		
 	            if (false == mbRegisterPushServer && null == mRegisterPushServerTask) {
 	                // Try to register again, but not in the UI thread.
 	                // It's also necessary to cancel the thread onDestroy(),
@@ -783,7 +813,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     
     private void unregisterPushServer(){
     	final String regId = getRegistrationId(this);
-    	if(null != regId && 0 < regId.length()){
+    	if(null != regId && 0 < regId.length() && null == mUnRegisterPushServerTask){
     		JSONObject obj = new JSONObject();
         	try {
         		JSONArray arrRegIds = new JSONArray();
@@ -979,8 +1009,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		
 		if(task == mRegisterPushServerTask){
 			mRegisterPushServerTask = null;
-		}else if(task == mGetIMPEventListTask){
-			mGetIMPEventListTask = null;
 		}else if(task == mGetProjectIDTask){
 			mGetProjectIDTask = null;
 		}else if(task == mGetVCamListTask){
