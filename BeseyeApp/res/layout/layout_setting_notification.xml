@@ -117,8 +117,8 @@
 		        android:layout_centerVertical="true"
 		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
 		        android:src="@drawable/sl_setting_inside_icon" />
-
-		    <RelativeLayout 
+		    
+		    <RelativeLayout
 		        android:layout_width="wrap_content"
 		   		android:layout_height="wrap_content" 
 		   		android:layout_alignParentLeft="true"
@@ -126,11 +126,21 @@
 		   		android:layout_toLeftOf="@+id/iv_motion_notification_events_inf"
 		   		android:layout_centerVertical="true">
 		        <TextView
+		            android:id="@+id/motion_notification_title" 
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
 			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_title_motion_zone"/>
+		        <ImageView
+		        	android:id="@+id/iv_motion_notification_news"
+			    	android:layout_width="wrap_content"
+		    		android:layout_height="wrap_content"
+					android:src="@drawable/setting_list_news_icon"
+					android:layout_toRightOf="@+id/motion_notification_title"
+					android:layout_centerVertical="true"
+		        	android:layout_marginLeft="@dimen/cam_list_item_horizontal_padding"
+					android:visibility="invisible"/>
 		    </RelativeLayout>   
 		</RelativeLayout>
 		
