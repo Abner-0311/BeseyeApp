@@ -709,6 +709,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mCameraViewControlAnimator.showControl();
 			Configuration config = getResources().getConfiguration();		
 			setMarginByOrientation(config.orientation);
+			//Check if new icon for setting button needs to show
+			mCameraViewControlAnimator.checkSettingNewStatus();
 		}
 		
 		checkAndExtendHideHeader();

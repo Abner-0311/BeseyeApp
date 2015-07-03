@@ -58,7 +58,7 @@ public class CameraViewControlAnimator {
 	private AmplitudeImageView mAmplitudeImageView;
 	
 	private TextView mTxtDate, mTxtCamName, mTxtTime, mTxtEvent, mTxtGoLive;
-	private ImageView mIvStreamType, mIvBack, mIvScreenshotNew;
+	private ImageView mIvStreamType, mIvBack, mIvScreenshotNew, mIvSettingNew;
 	private ImageButton mIbTalk, mIbRewind, mIbPlayPause, mIbFastForward, mIbSetting, mIbScreenshot;	
 	
 	private WeakReference<CameraViewActivity> mCameraViewActivity;
@@ -170,6 +170,19 @@ public class CameraViewControlAnimator {
 				mIbSetting = ibSetting;
 				mIbSetting.setOnClickListener(act);
 			}
+			
+			ImageView ivSettingNew = (ImageView)vgReference.findViewById(R.id.iv_settings_news);
+			if(null != ivSettingNew){
+				syncViewProprety(mIvSettingNew, ivSettingNew);
+				mIvSettingNew = ivSettingNew;
+				BeseyeUtils.setVisibility(mIvSettingNew, !BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked()?View.VISIBLE:View.INVISIBLE);
+			}
+		}
+	}
+	
+	public void checkSettingNewStatus(){
+		if(null != mIvSettingNew){
+			BeseyeUtils.setVisibility(mIvSettingNew, !BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked()?View.VISIBLE:View.INVISIBLE);
 		}
 	}
 	

@@ -28,6 +28,7 @@ public class BeseyeNewFeatureMgr {
 	private SharedPreferences mPref, mSecuredPref;
 	private NewFeatureConfig mNewFeatureScreenshot;
 	private NewFeatureConfig mNewFeatureFaceRecognition;
+	private NewFeatureConfig mNewFeatureTriggerZone;
 	
 	private BeseyeNewFeatureMgr(Context context){
 		if(null != context){
@@ -40,12 +41,14 @@ public class BeseyeNewFeatureMgr {
 	private void initValues(){
 		mNewFeatureScreenshot = new NewFeatureConfig(mPref, "beseye_screen_feature", BeseyeUtils.stringToDate("2015-05-13-23-59-59","yyyy-MM-dd-HH-mm-ss"));
 		mNewFeatureFaceRecognition = new NewFeatureConfig(mPref, "beseye_feature_face_recog", BeseyeUtils.stringToDate("2029-12-32-23-59-59","yyyy-MM-dd-HH-mm-ss"));
+		mNewFeatureTriggerZone = new NewFeatureConfig(mPref, "beseye_feature_trigger_zone", BeseyeUtils.stringToDate("2015-08-02-23-59-59","yyyy-MM-dd-HH-mm-ss"));
 	}
 	
 	public void reset(){
 		mPref.edit().clear().commit();
 		mNewFeatureScreenshot = null;
 		mNewFeatureFaceRecognition = null;
+		mNewFeatureTriggerZone = null;
 		initValues();
 	}
 	
@@ -63,6 +66,14 @@ public class BeseyeNewFeatureMgr {
 	
 	public void setFaceRecognitionOn(boolean bIsOn){
 		mNewFeatureFaceRecognition.setIsUsed(bIsOn);
+	}
+	
+	public boolean isTriggerZoneClicked(){
+		return mNewFeatureTriggerZone.isUsed();
+	}
+	
+	public void setTriggerZoneClicked(boolean bClicked){
+		mNewFeatureTriggerZone.setIsUsed(bClicked);
 	}
 	
 	static public class NewFeatureConfig{
