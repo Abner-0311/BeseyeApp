@@ -11,7 +11,7 @@ import com.app.beseye.util.BeseyeConfig;
 import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService{
-	public static final String FORWARD_GCM_MSG_ACTION 			= "com.app.beseye.FORWARD_GCM_MSG_ACTION";
+	public static final String FORWARD_PUSH_MSG_ACTION 			= "com.app.beseye.FORWARD_PUSH_MSG_ACTION";
 	public static final String FORWARD_ACTION_TYPE 	  			= "FORWARD_ACTION_TYPE";
 	public static final String FORWARD_ACTION_TYPE_REG 	  		= "onRegistered";
 	public static final String FORWARD_ACTION_TYPE_UNREG 		= "onUnregistered";
@@ -76,7 +76,7 @@ public class GCMIntentService extends GCMBaseIntentService{
 		if(DEBUG)
 			Log.i(BeseyeConfig.TAG, "forwardGCMMessage(), type "+type+", strValue = "+strValue);
 		
-		Intent intent = new Intent(FORWARD_GCM_MSG_ACTION);
+		Intent intent = new Intent(FORWARD_PUSH_MSG_ACTION);
         intent.putExtra(FORWARD_ACTION_TYPE, type);
         if(FORWARD_ACTION_TYPE_REG.equals(type) || FORWARD_ACTION_TYPE_UNREG.equals(type))
         	intent.putExtra(BeseyeNotificationService.PUSH_SERVICE_REG_ID, strValue);

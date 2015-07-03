@@ -26,7 +26,6 @@ public class BaiduPushReceiver extends PushMessageReceiver{
 	public static final String FORWARD_ACTION_TYPE_BAIDU_MSG 		= "onBaiduMessage";
 	public static final String BAIDU_USER_ID						= "BaiduUserID";
 	public static final String BAIDU_CHANNEL_ID						= "BaiduChannelId";
-			
 	
 	@Override
 	public void onBind(Context context, int errorCode, String appid, String userId, String channelId, String requestId) {
@@ -34,8 +33,10 @@ public class BaiduPushReceiver extends PushMessageReceiver{
 		if(DEBUG)
 			Log.i(BeseyeConfig.TAG, "Baidu onBind " + responseString);
        
+		Log.d(BeseyeConfig.TAG, "Kelly Baidu onBind errorCode " + errorCode);
+		
         if (errorCode == 0) {
-        	forwardGCMMessage(context, FORWARD_ACTION_TYPE_BAIDU_REG, userId, channelId);
+        	forwardBaiduMessage(context, FORWARD_ACTION_TYPE_BAIDU_REG, userId, channelId);
         }
 	}
 
@@ -55,7 +56,10 @@ public class BaiduPushReceiver extends PushMessageReceiver{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}	
-        forwardGCMMessage(context, FORWARD_ACTION_TYPE_BAIDU_MSG, rdata, cdata);
+		
+		Log.d(BeseyeConfig.TAG, "Kelly Baidu onMessage");
+		
+        forwardBaiduMessage(context, FORWARD_ACTION_TYPE_BAIDU_MSG, rdata, cdata);
     }
 
 	@Override
@@ -64,18 +68,18 @@ public class BaiduPushReceiver extends PushMessageReceiver{
         if(DEBUG)
 			Log.i(BeseyeConfig.TAG, "Baidu onUnbind " + responseString);
     
+        Log.d(BeseyeConfig.TAG, "Kelly Baidu onUnbind");
+        
         if (errorCode == 0) {
-        	forwardGCMMessage(context, FORWARD_ACTION_TYPE_BAIDU_UNREG, "", "");
+        	forwardBaiduMessage(context, FORWARD_ACTION_TYPE_BAIDU_UNREG, "", "");
         }
     }
 
-	//[Abner review] Rename forwardGCMMessage to forwardBaiduMessage
-	static void forwardGCMMessage(Context context, String type, String strValue, String strValue2) {
+	static void forwardBaiduMessage(Context context, String type, String strValue, String strValue2) {
 		if(DEBUG)
-			Log.i(BeseyeConfig.TAG, "Baidu forwardGCMMessage(), type "+type+", strValue = "+strValue);
+			Log.i(BeseyeConfig.TAG, "Baidu forwardBaiduMessage(), type "+type+", strValue = "+strValue);
 		
-		//[Abner review] Rename FORWARD_GCM_MSG_ACTION as general one or create new one action
-        Intent intent = new Intent(GCMIntentService.FORWARD_GCM_MSG_ACTION);
+	    Intent intent = new Intent(GCMIntentService.FORWARD_PUSH_MSG_ACTION);
         intent.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, type);
         
         if(FORWARD_ACTION_TYPE_BAIDU_UNREG.equals(type)) {

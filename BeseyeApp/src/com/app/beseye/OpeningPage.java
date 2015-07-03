@@ -230,7 +230,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			intentLanuch.setClassName(this, strCls);
 		}else{
 			//Try to close push dialog when launch from status bar
-			Intent intentBroadcast = new Intent(GCMIntentService.FORWARD_GCM_MSG_ACTION);
+			Intent intentBroadcast = new Intent(GCMIntentService.FORWARD_PUSH_MSG_ACTION);
 			intentBroadcast.putExtra(GCMIntentService.FORWARD_ACTION_TYPE, GCMIntentService.FORWARD_ACTION_TYPE_CHECK_DIALOG);
 	        sendBroadcast(intentBroadcast);
 	        
