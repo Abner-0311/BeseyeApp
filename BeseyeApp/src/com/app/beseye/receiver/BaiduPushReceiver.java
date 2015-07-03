@@ -57,7 +57,7 @@ public class BaiduPushReceiver extends PushMessageReceiver{
 			e.printStackTrace();
 		}	
 		
-		Log.d(BeseyeConfig.TAG, "Kelly Baidu onMessage");
+		Log.d(BeseyeConfig.TAG, "Kelly Baidu onMessage" + messageString);
 		
         forwardBaiduMessage(context, FORWARD_ACTION_TYPE_BAIDU_MSG, rdata, cdata);
     }

@@ -387,24 +387,24 @@ public class BeseyeJSONUtil {
 //
 //		    new FACE_LIST(31, "Doris", "IMG_9890.JPG"),
 
-			new FACE_LIST(100, "Cindy", "Shaq.jpg"),
+			new FACE_LIST(100, "Shaq", "Shaq.jpg"),
 			
 			//new FACE_LIST(101, "Ella", "Shaq.jpg"),
 			new FACE_LIST(101, "Shaq", "Shaq.jpg"),
 			
-			new FACE_LIST(102, "Giben", "Shaq.jpg"),
+			new FACE_LIST(102, "Shaq", "Shaq.jpg"),
 			
-			new FACE_LIST(103, "Jobbie", "Shaq.jpg"),
+			new FACE_LIST(103, "Shaq", "Shaq.jpg"),
 			
 		    new FACE_LIST(104, "Shaq", "Shaq.jpg"),
 		    
-		    new FACE_LIST(105, "Tienlin", "Shaq.jpg"),
+		    new FACE_LIST(105, "Shaq", "Shaq.jpg"),
 		    
-		    new FACE_LIST(106, "Yehudi", "Shaq.jpg"),
+		    new FACE_LIST(106, "Shaq", "Shaq.jpg"),
 		    
-		    new FACE_LIST(107, "Cynthia", "Shaq.jpg"),
+		    new FACE_LIST(107, "Shaq", "Shaq.jpg"),
 		    
-		    new FACE_LIST(108, "Kris", "Shaq.jpg")
+		    new FACE_LIST(108, "Shaq", "Shaq.jpg")
 		};
 	
 	public static final String MM_IS_LIVE 				= "isLive";
