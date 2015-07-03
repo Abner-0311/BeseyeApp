@@ -277,7 +277,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			sendMessage(Message.obtain(null,MSG_SET_NEWS_NUM,0,0));
                 			sendMessage(Message.obtain(null,MSG_SET_UNREAD_NEWS_NUM,0,0));
                 			
-                			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
+                			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
             					unregisterBaiduService();
             				} else {
             					unregisterGCMServer();
@@ -292,7 +292,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 				(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this)).execute();
                 			}
                 			
-                			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
+                			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
                 				checkBaiduService();
                 	        } else {
                 	        	checkGCMService();
@@ -395,7 +395,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	if(DEBUG)
     					Log.i(TAG, "receive MSG_REQUEST_DEL_PUSH");
                 	
-        			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE ) {        	
+        			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV ) {        	
         				unregisterBaiduPushServer();
         			} else { 
         				unregisterPushServer();
@@ -493,7 +493,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			e.printStackTrace();
 		}
         
-        if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
+        if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
         	checkBaiduService();
         } else {
         	mGCMInstance = GoogleCloudMessaging.getInstance(this);
@@ -557,7 +557,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		postToCloseWs((-1 != mlTimeToCloseWs && mlTimeToCloseWs >= System.currentTimeMillis())?(mlTimeToCloseWs - System.currentTimeMillis()):0);
     	}
 
-    	if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
+    	if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
         	checkBaiduService();
         } else {
         	checkGCMService();
@@ -699,7 +699,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		Log.d(TAG, "Kelly onDestory");
 		
 		WebsocketsMgr.getInstance().unregisterOnWSChannelStateChangeListener();
-		if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
+		if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
 			unregisterBaiduService();
 		} else {
 			unregisterGCMServer();
@@ -804,8 +804,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     			JSONObject obj = new JSONObject();
 		        try {
 					obj.put(PS_REG_DEV_NAME, Build.MODEL);
-					obj.put(PS_CHANNEL_ID, mStrBaiduUserId);
-					obj.put(PS_USER_ID, mStrBaiduChannelId);
+					obj.put(PS_CHANNEL_ID, mStrBaiduChannelId);
+					obj.put(PS_USER_ID, mStrBaiduUserId);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}

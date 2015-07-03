@@ -37,10 +37,6 @@
 
 	<!-- baidu Push service -->
 	<uses-permission android:name="android.permission.WRITE_SETTINGS" />
-	<uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
-	<uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-	<uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
 	
     <!-- For Push server GCM -->
     <permission android:name="com.app.beseye.permission.C2D_MESSAGE" android:protectionLevel="signature" />
@@ -374,7 +370,8 @@
 		
 		<!-- push service start -->
 		<!-- 用于接收系统消息以保证PushService正常运行 -->
-		<receiver android:name="com.baidu.android.pushservice.PushServiceReceiver" android:process=":bdservice_v1" >
+		<receiver android:name="com.baidu.android.pushservice.PushServiceReceiver" 
+		    android:process=":bdservice_v1" >
 		    <intent-filter>
 		        <action android:name="android.intent.action.BOOT_COMPLETED" />
 		        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
