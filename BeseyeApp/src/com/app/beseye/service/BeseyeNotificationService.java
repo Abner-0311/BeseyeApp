@@ -347,7 +347,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	                	String BaiduUserID = bundle.getString(BaiduPushReceiver.BAIDU_USER_ID);
 	                	String BaiduChannelID = bundle.getString(BaiduPushReceiver.BAIDU_CHANNEL_ID);
 	                	if(DEBUG)
-	                		Log.d(TAG, "MSG_BAIDU_REGISTER BaiduUserID " + BaiduUserID + ", BaiduChannelID " + BaiduChannelID);
+	                		Log.i(TAG, "MSG_BAIDU_REGISTER BaiduUserID " + BaiduUserID + ", BaiduChannelID " + BaiduChannelID);
 	                	
 	                	Log.d(TAG, "Kelly MSG_BAIDU_REGISTER");
 	                	
@@ -364,6 +364,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	break;
                 }
                 case MSG_BAIDU_UNREGISTER:{
+                	if(DEBUG)
+                		Log.i(TAG, "MSG_BAIDU_UNREGISTER");
+                	
             		mbRegisterLocalPushSerivce = false;
             		mbBaiduApiKey = false;
             		if(mbRegisterReceiver){
@@ -522,7 +525,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     				(mGetBaiduApiKeyTask = new BeseyePushServiceTask.GetBaiduApiKeyTask(this)).execute();
     			}
     		}else if(false == mbRegisterLocalPushSerivce){
-    			PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, mStrBaiduApiKey);
+    			if(null != mStrBaiduApiKey) {
+    				PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, mStrBaiduApiKey);
+    			}else {
+    				mbBaiduApiKey = false;
+    			}
     		}else if(false == mbRegisterPushServer){
     			registerBaiDuPushServer();
     		}
@@ -840,21 +847,23 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	try{
     		Log.d(TAG, "Kelly registerBaiDuPushServer() mbRegisterPushServer "+ mbRegisterPushServer + " mRegisterPushServerTask " + mRegisterPushServerTask);
     		
-    		//if(false == mbRegisterPushServer && null == mRegisterPushServerTask){
-    		//	Log.d(TAG, "Kelly into registerBaiDuPushServer()");
-    		if(false == mbRegisterPushServer){
-    			JSONObject obj = new JSONObject();
-		        try {
-					obj.put(PS_REG_DEV_NAME, Build.MODEL);
-					obj.put(PS_CHANNEL_ID, mStrBaiduChannelId);
-					obj.put(PS_USER_ID, mStrBaiduUserId);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-		        Log.d(TAG, "Kelly mStrBaiduUserId " + mStrBaiduUserId + " mStrBaiduChannelId "+mStrBaiduChannelId);
-		        mRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.AddBaiduIDTask(this).execute(obj.toString());
-		        if(DEBUG)
-		        	Log.d(TAG, "registerBaiDuPushServer(), userID: "+mStrBaiduUserId+", channelID:"+mStrBaiduChannelId);
+    		if(false == mbRegisterPushServer && null == mRegisterPushServerTask){
+    			if(null != mStrBaiduUserId && null != mStrBaiduChannelId) {
+        			JSONObject obj = new JSONObject();
+			        try {
+						obj.put(PS_REG_DEV_NAME, Build.MODEL);
+						obj.put(PS_CHANNEL_ID, mStrBaiduChannelId);
+						obj.put(PS_USER_ID, mStrBaiduUserId);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+			        Log.d(TAG, "Kelly mStrBaiduUserId " + mStrBaiduUserId + " mStrBaiduChannelId "+mStrBaiduChannelId);
+			        mRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.AddBaiduIDTask(this).execute(obj.toString());
+			        if(DEBUG)
+			        	Log.d(TAG, "registerBaiDuPushServer(), userID: "+mStrBaiduUserId+", channelID:"+mStrBaiduChannelId);
+    			} else {
+    				mbRegisterLocalPushSerivce = false;
+    			}
     		}
 	    }catch (UnsupportedOperationException e) {
 			Log.i(TAG, "registerBaiDuPushServer(), e: "+e.toString());
@@ -929,13 +938,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
     
     private void unregisterBaiduPushServer(){
-    	if(DEBUG)
-    		Log.d(TAG, "unregisterBaiduPushServer() ChannelId " + mStrBaiduChannelId);
-    
-		mbBaiduApiKey = false;
-    	
+    	mbBaiduApiKey = false;
     	if(null != mStrBaiduChannelId && 0 < mStrBaiduChannelId.length() && null == mUnRegisterPushServerTask){
-    		
+    		if(DEBUG)
+        		Log.i(TAG, "unregisterBaiduPushServer() ChannelId: " + mStrBaiduChannelId);
+        
         	Log.d(TAG, "Kelly unregisterBaiduPushServer()");
         	
     		JSONObject obj = new JSONObject();
@@ -1331,7 +1338,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			return true;
 		}
 		if(DEBUG)
-			Log.i(TAG, "handleNotificationEvent(),msgObj="+msgObj.toString());	
+			Log.i(TAG, "handleNotificationEvent(), msgObj="+msgObj.toString() + ", bFromGCM=" + bFromGCM);	
 		
 		boolean bRet = true;
 		JSONObject objReg = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_REGULAR_DATA);
