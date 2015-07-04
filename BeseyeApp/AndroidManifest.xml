@@ -37,6 +37,10 @@
 
 	<!-- baidu Push service -->
 	<uses-permission android:name="android.permission.WRITE_SETTINGS" />
+	<uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
+	<uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+	<uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
 	
     <!-- For Push server GCM -->
     <permission android:name="com.app.beseye.permission.C2D_MESSAGE" android:protectionLevel="signature" />
@@ -441,13 +445,7 @@
     	<provider 
     	    android:authorities="@string/facebook_provider_authority"
           	android:name="com.facebook.FacebookContentProvider"
-          	android:exported="true" />
-    	
-    	<!-- 在百度开发者中心查询应用的API Key -->
-        <meta-data
-            android:name="api_key"
-            android:value="INSERT YOUR OWN APIKEY HERE" />
-        
+          	android:exported="true" />        
 
     </application>
 </manifest>

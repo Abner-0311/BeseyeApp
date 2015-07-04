@@ -366,6 +366,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_BAIDU_UNREGISTER:{
             		mbRegisterLocalPushSerivce = false;
             		mbBaiduApiKey = false;
+            		if(mbRegisterReceiver){
+                		mbRegisterReceiver = false;
+                		unregisterReceiver(mHandleGCMMessageReceiver);
+                	}
                 	unregisterBaiduPushServer();
                 	break;
                 }
@@ -1115,8 +1119,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					if(null != apiKey && 0 < apiKey.length()){
 						mStrBaiduApiKey = apiKey;
 						PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, mStrBaiduApiKey);
-			        	registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_PUSH_MSG_ACTION));
-			        	mbRegisterReceiver = true;
+						if(false == mbRegisterReceiver){
+			    			registerReceiver(mHandleGCMMessageReceiver,new IntentFilter(GCMIntentService.FORWARD_PUSH_MSG_ACTION));
+			    			mbRegisterReceiver = true;
+			    		}
 			        	mbBaiduApiKey = true;
 					}else{
 						Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetBaiduApiKeyTask, invalid apiKey "+ apiKey);
@@ -1555,6 +1561,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		if(!SessionMgr.getInstance().isTokenValid()){
 			return;
 		}
+		
+		Log.d(TAG, "Kelly in handleGCMEvents()");
 		
 		if(null != strRegularData){
 			try {
