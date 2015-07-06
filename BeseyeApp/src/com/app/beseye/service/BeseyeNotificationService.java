@@ -279,7 +279,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			sendMessage(Message.obtain(null,MSG_SET_NEWS_NUM,0,0));
                 			sendMessage(Message.obtain(null,MSG_SET_UNREAD_NEWS_NUM,0,0));
                 			
-                			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+                			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
             					unregisterBaiduService();
             				} else {
             					unregisterGCMServer();
@@ -294,7 +294,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 				(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this)).execute();
                 			}
                 			
-                			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+                			initPushVarialbes();
+                			
+                			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
                 				checkBaiduService();
                 	        } else {
                 	        	checkGCMService();
@@ -402,7 +404,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	if(DEBUG)
     					Log.i(TAG, "receive MSG_REQUEST_DEL_PUSH");
                 	
-        			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV ) {        	
+        			if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
         				unregisterBaiduPushServer();
         			} else { 
         				unregisterPushServer();
@@ -470,13 +472,15 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	static public  final String PUSH_SERVICE_CHANNEL_ID			= "beseye_push_channel_id";  
 	
 	private String mStrFocusVCamId = null;//current vcam id on player 
+	
 	private boolean mbRegisterLocalPushSerivce = false;
 	private boolean mbRegisterPushServer = false;
 	private boolean mbBaiduApiKey = false;
 	private String mStrBaiduChannelId = null;
 	private String mStrBaiduUserId = null;
 	private String mStrBaiduApiKey = null;
-	private SharedPreferences mPref = null;
+	
+	//private SharedPreferences mPref = null;
 	private boolean mbRegisterReceiver = false;
 	private BeseyePushServiceTask.GetProjectIDTask mGetProjectIDTask = null;
 	private BeseyePushServiceTask.GetBaiduApiKeyTask mGetBaiduApiKeyTask = null;
@@ -500,7 +504,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			e.printStackTrace();
 		}
         
-        if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+        if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
         	checkBaiduService();
         } else {
         	mGCMInstance = GoogleCloudMessaging.getInstance(this);
@@ -509,6 +513,16 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 
         WebsocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
         checkUserLoginState();
+    }
+    
+    private void initPushVarialbes(){
+		Log.i(TAG, "BeseyeNotificationService::initPushVarialbes()");
+    	mbRegisterLocalPushSerivce = false;
+    	mbRegisterPushServer = false;
+    	mbBaiduApiKey = false;
+    	mStrBaiduChannelId = null;
+    	mStrBaiduUserId = null;
+    	mStrBaiduApiKey = null;
     }
     
     //Periodical check to avoid specific fail case 
@@ -568,7 +582,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	}else{
     		postToCloseWs((-1 != mlTimeToCloseWs && mlTimeToCloseWs >= System.currentTimeMillis())?(mlTimeToCloseWs - System.currentTimeMillis()):0);
     	}
-    	if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+    	
+    	if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
         	checkBaiduService();
         } else {
         	checkGCMService();
@@ -628,16 +643,35 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    	
 			beginToCheckPushMsgState();
 			if(mbAppInBackground && SessionMgr.getInstance().isTokenValid()){
-				if(false == mbRegisterLocalPushSerivce){
-	 			   	registerGCMServer();
-	 		   	}else if(false == mbRegisterPushServer){
-	 		   		registerPushServer();
-	 		   	}else{
-	 		   		finishToCheckPushMsgState();
-	 		   	}
+				if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
+					if(false == mbBaiduApiKey){
+		    			if(null == mGetBaiduApiKeyTask){
+		    				(mGetBaiduApiKeyTask = new BeseyePushServiceTask.GetBaiduApiKeyTask(BeseyeNotificationService.this)).execute();
+		    			}
+		    		}else if(false == mbRegisterLocalPushSerivce){
+		    			if(null != mStrBaiduApiKey) {
+		    				PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, mStrBaiduApiKey);
+		    			}else {
+		    				mbBaiduApiKey = false;
+		    			}
+		    		}else if(false == mbRegisterPushServer){
+		    			registerBaiDuPushServer();
+		    		}else{
+		 		   		finishToCheckPushMsgState();
+		 		   	}
+		        } else {
+		        	if(false == mbRegisterLocalPushSerivce){
+		 			   	registerGCMServer();
+		 		   	}else if(false == mbRegisterPushServer){
+		 		   		registerPushServer();
+		 		   	}else{
+		 		   		finishToCheckPushMsgState();
+		 		   	}
+		        }
 			}else{
 				finishToCheckPushMsgState();
 			}
+			
 		}};
 		
     @Override
@@ -743,7 +777,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         }
 		
 		WebsocketsMgr.getInstance().unregisterOnWSChannelStateChangeListener();
-		if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE || SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_DEV) {        	
+		if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
 			unregisterBaiduService();
 		} else {
 			unregisterGCMServer();

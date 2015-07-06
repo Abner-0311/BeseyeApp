@@ -35,6 +35,7 @@ import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeNewFeatureMgr;
 import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.ShareMgr;
@@ -49,6 +50,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerTitle;
 	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam, mVgMotionNotification;
+	private ImageView mIvTriggerZoneNew;
 	
 	private int miUnmaskDetachCamHitCount = 0;
 	
@@ -172,6 +174,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			if(BeseyeUtils.isHiddenFeature()){
 				mVgRebootCam.setVisibility(View.GONE);
 			}
+		}
+		
+		mIvTriggerZoneNew = (ImageView)findViewById(R.id.iv_motion_notification_news);
+		if(null != mIvTriggerZoneNew){
+			BeseyeUtils.setVisibility(mIvTriggerZoneNew, !BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked()?View.VISIBLE:View.INVISIBLE);
 		}
 	}
 	
@@ -319,6 +326,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				break;
 			}
 			case R.id.vg_motion_notification_events:{
+				if(!BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked()){
+					BeseyeNewFeatureMgr.getInstance().setTriggerZoneClicked(true);
+					BeseyeUtils.setVisibility(mIvTriggerZoneNew, View.INVISIBLE);
+				}
+				
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
 				launchActivityByClassName(MotionNotificationSettingActivity.class.getName(),b);

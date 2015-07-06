@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
-    android:versionCode="134"
-    android:versionName="0.1.134" 
+    android:versionCode="135"
+    android:versionName="0.1.135" 
     android:installLocation="auto">
     <!-- Android 2.3.3 -->
     <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="14" />
@@ -400,7 +400,7 @@
 		        <data android:scheme="package" />
 		    </intent-filter>                   
 		</receiver>
-		<receiver android:name="com.app.beseye.receiver.BaiduPushReceiver" >
+		<receiver android:name=".receiver.BaiduPushReceiver" >
             <intent-filter>
 
                 <!-- 接收push消息 -->
