@@ -1108,6 +1108,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		
 		if(null != mNotifyService){
 			try {
+				if(DEBUG)
+					Log.i(TAG, "invokeLogout(), send MSG_REQUEST_DEL_PUSH");
 				mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_REQUEST_DEL_PUSH));
 			} catch (RemoteException e) {
 				e.printStackTrace();
