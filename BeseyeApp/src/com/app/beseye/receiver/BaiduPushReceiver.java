@@ -32,9 +32,7 @@ public class BaiduPushReceiver extends PushMessageReceiver{
 		String responseString = "errorCode=" + errorCode + " appid=" + appid + " userId=" + userId + " channelId=" + channelId + " requestId=" + requestId;
 		if(DEBUG)
 			Log.i(BeseyeConfig.TAG, "Baidu onBind " + responseString);
-       
-		Log.d(BeseyeConfig.TAG, "Kelly Baidu onBind errorCode " + errorCode);
-		
+   	
         if (errorCode == 0) {
         	forwardBaiduMessage(context, FORWARD_ACTION_TYPE_BAIDU_REG, userId, channelId);
         }
@@ -57,8 +55,6 @@ public class BaiduPushReceiver extends PushMessageReceiver{
 			e.printStackTrace();
 		}	
 		
-		Log.d(BeseyeConfig.TAG, "Kelly Baidu onMessage" + messageString);
-		
         forwardBaiduMessage(context, FORWARD_ACTION_TYPE_BAIDU_MSG, rdata, cdata);
     }
 
@@ -67,9 +63,7 @@ public class BaiduPushReceiver extends PushMessageReceiver{
         String responseString = "errorCode=" + errorCode + " requestId = " + requestId;
         if(DEBUG)
 			Log.i(BeseyeConfig.TAG, "Baidu onUnbind " + responseString);
-    
-        Log.d(BeseyeConfig.TAG, "Kelly Baidu onUnbind");
-        
+      
         if (errorCode == 0) {
         	forwardBaiduMessage(context, FORWARD_ACTION_TYPE_BAIDU_UNREG, "", "");
         }
