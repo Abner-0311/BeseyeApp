@@ -70,7 +70,10 @@ rtmpRef(NULL),
 mdStreamClock(-1.0),
 mdSeekOffset(0.0),
 miRestDVRCount(0),
-mbIsMute(false){
+mbIsMute(false),
+miRTMPLinkTimeout(9),
+miRTMPReadTimeout(14),
+mbIgnoreURLDecode(true){
 	wanted_stream[AVMEDIA_TYPE_AUDIO] = -1;
 	wanted_stream[AVMEDIA_TYPE_VIDEO] = -1;
 	wanted_stream[AVMEDIA_TYPE_SUBTITLE] = -1;
@@ -96,6 +99,30 @@ CBeseyePlayer::~CBeseyePlayer(){
 	is = NULL;
 
 	av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::~CBeseyePlayer()--\n");
+}
+
+void CBeseyePlayer::setRTMPLinkTimeout(int iTimeoutInSec){
+	miRTMPLinkTimeout = (iTimeoutInSec<0)?9:iTimeoutInSec;
+}
+
+int CBeseyePlayer::getRTMPLinkTimeout(){
+	return miRTMPLinkTimeout;
+}
+
+void CBeseyePlayer::setRTMPReadTimeout(int iTimeoutInSec){
+	miRTMPReadTimeout = (iTimeoutInSec<0)?14:iTimeoutInSec;
+}
+
+int CBeseyePlayer::getRTMPReadTimeout(){
+	return miRTMPReadTimeout;
+}
+
+void CBeseyePlayer::setRTMPIgoreURLDecode(bool bIgnore){
+	mbIgnoreURLDecode = bIgnore;
+}
+
+bool CBeseyePlayer::getRTMPIgoreURLDecode(){
+	return mbIgnoreURLDecode;
 }
 
 void* CBeseyePlayer::getWindow(){
@@ -1850,11 +1877,12 @@ int read_thread(void *arg)
     holder.rtmpStatusCallback = rtmpStatusCallback;
     holder.rtmpErrorCallback = rtmpErrorCallback;
     holder.userData = player;
-    holder.iCustomCount = 2;
-    holder.iCustomValues = (int*)malloc(sizeof(int)*2);
+    holder.iCustomCount = 3;
+    holder.iCustomValues = (int*)malloc(sizeof(int)*holder.iCustomCount);
     if(holder.iCustomValues){
-    	holder.iCustomValues[0] = 9;
-    	holder.iCustomValues[1] = 14;
+    	holder.iCustomValues[0] = player->getRTMPLinkTimeout();
+    	holder.iCustomValues[1] = player->getRTMPReadTimeout();
+    	holder.iCustomValues[2] = player->getRTMPIgoreURLDecode()?1:0;
     }
 
     av_dict_set(&format_opts, "holder", (const char*)&holder, 0);

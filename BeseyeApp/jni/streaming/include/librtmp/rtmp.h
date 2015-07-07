@@ -369,6 +369,8 @@ extern "C"
 		  int * iCustomValues,
 		  int iCustomCount);
 
+  void setIgnoreURLDecodeFlag(int iIgnore);
+
 	enum Stream_Status{
 		STREAM_UNINIT,
 		STREAM_INIT,

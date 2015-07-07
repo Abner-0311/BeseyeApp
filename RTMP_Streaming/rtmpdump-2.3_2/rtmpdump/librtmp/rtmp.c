@@ -146,6 +146,8 @@ int RTMP_RegisterCB(RTMP *r,
 		r->miLinkTimeout = (iCustomValues && iCustomCount>0)?iCustomValues[0]:9;
 		r->miReadTimeout = (iCustomValues && iCustomCount>1)?iCustomValues[1]:10;
 
+		setIgnoreURLDecodeFlag((iCustomValues && iCustomCount>2)?iCustomValues[2]:1);
+
 		RTMP_Log(RTMP_LOGINFO, "%s++, timeout:(%d, %d)", __FUNCTION__, r->miLinkTimeout, r->miReadTimeout);
 
 		iRet = 1;

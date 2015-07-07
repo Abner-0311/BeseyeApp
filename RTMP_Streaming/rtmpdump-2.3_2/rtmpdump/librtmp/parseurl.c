@@ -36,6 +36,7 @@ int RTMP_ParseURL(const char *url, int *protocol, AVal *host, unsigned int *port
 	char *p, *end, *col, *ques, *slash;
 
 	RTMP_Log(RTMP_LOGDEBUG, "Parsing...");
+	//RTMP_Log(RTMP_LOGERROR, "url:[%s] 0", url);
 
 	*protocol = RTMP_PROTOCOL_RTMP;
 	*port = 0;
@@ -130,6 +131,7 @@ parsehost:
 	}
 	p = slash+1;
 
+
 	{
 	/* parse application
 	 *
@@ -180,6 +182,13 @@ parsehost:
 	}
 
 	return TRUE;
+}
+
+static int siIgnoreURLDecode = 1;//default ignore
+
+void setIgnoreURLDecodeFlag(int iIgnore){
+	siIgnoreURLDecode = iIgnore;
+	RTMP_Log(RTMP_LOGINFO, "%s++, siIgnoreURLDecode:(%d)", __FUNCTION__, siIgnoreURLDecode);
 }
 
 /*
@@ -243,6 +252,8 @@ void RTMP_ParsePlaypath(AVal *in, AVal *out) {
 	if (!streamname)
 		return;
 
+	memset(streamname, 0, (pplen+4+1)*sizeof(char));
+
 	destptr = streamname;
 	if (addMP4) {
 		if (strncmp(ppstart, "mp4:", 4)) {
@@ -260,6 +271,8 @@ void RTMP_ParsePlaypath(AVal *in, AVal *out) {
 		}
 	}
 
+	//RTMP_Log(RTMP_LOGERROR, "ppstart:[%s] 0", ppstart?ppstart:"");
+
  	for (p=(char *)ppstart; pplen >0;) {
 		/* skip extension */
 		if (subExt && p == ext) {
@@ -267,7 +280,9 @@ void RTMP_ParsePlaypath(AVal *in, AVal *out) {
 			pplen -= 4;
 			continue;
 		}
-		if (*p == '%') {
+
+		//[Abner 20150706] ignore URL decode for China DVR playback
+		if (0 == siIgnoreURLDecode && *p == '%') {
 			unsigned int c;
 			sscanf(p+1, "%02x", &c);
 			*destptr++ = c;
@@ -278,7 +293,10 @@ void RTMP_ParsePlaypath(AVal *in, AVal *out) {
 			pplen--;
 		}
 	}
+
 	*destptr = '\0';
+
+	RTMP_Log(RTMP_LOGERROR, "streamname:[%s] 1", streamname?streamname:"");
 
 	out->av_val = streamname;
 	out->av_len = destptr - streamname;
