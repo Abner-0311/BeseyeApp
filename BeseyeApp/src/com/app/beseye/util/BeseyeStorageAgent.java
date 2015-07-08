@@ -137,7 +137,7 @@ public class BeseyeStorageAgent {
 	    }
 	    return new File(cachePath, uniqueName);
 	}
-	
+    
 	// Creates a unique subdirectory of the designated app cache directory. Tries to use external
 	// but if not mounted, falls back on internal storage.
 	static public File getCacheDir(Context context) {

@@ -7,6 +7,7 @@ import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -426,7 +427,11 @@ public class BeseyeUtils {
 	      description = log.toString();
 	    } 
 	    catch (IOException e) {
-	    	
+			Log.e(TAG, "e:"+e.toString());
+	    }
+	    
+	    if(description.length() == 0){
+			Log.e(TAG, "log is empty !!!!");
 	    }
 
 	    return description;
@@ -448,13 +453,16 @@ public class BeseyeUtils {
 				
 				Toast.makeText(context, "Dumping log, please wait...", Toast.LENGTH_LONG).show();
 				
-				File logFile = new File(logDir.getAbsolutePath()+"/"+SessionMgr.getInstance().getAccount()+"_"+getDateString(new Date(), "yyyy-MM-dd_hh:mm:ss")+".log");
+				File logFile = new File(logDir.getAbsolutePath()+"/"+SessionMgr.getInstance().getAccount()+"_"+getDateString(new Date(), "MM_dd_hh_mm")+".log");
+				//File logFile = new File(logDir.getAbsolutePath()+"/a.log");
+
 				if(null != logFile){
 					Writer writer = null;
 					try {
 						writer = new BufferedWriter(new FileWriter(logFile));
 						if(null != writer){
 							writer.write(getLog());
+							writer.flush();
 							writer.close();
 						}
 						
@@ -463,22 +471,36 @@ public class BeseyeUtils {
 						
 						final PackageManager pm = context.getPackageManager();
 					    final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
-					    ResolveInfo best = null;
-					    for (final ResolveInfo info : matches)
-					      if (info.activityInfo.packageName.endsWith(".gm") ||
-					          info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
-					    if (best != null)
-					      intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
-					    
-						intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"abner.huang@beseye.com"});
-						intent.putExtra(Intent.EXTRA_SUBJECT, "[Android Log]"+logFile.getName());
-						intent.putExtra(Intent.EXTRA_TEXT, "This is log from "+SessionMgr.getInstance().getAccount()+"\nIssue occurred on [Cam name]");
-						
-						Uri uri = Uri.parse("file://" + logFile);
-						intent.putExtra(Intent.EXTRA_STREAM, uri);
-						context.startActivity(Intent.createChooser(intent, "Send email..."));
+					    if(matches.isEmpty()){
+					    	Toast.makeText(context, "No mail related app", Toast.LENGTH_LONG).show();
+					    }else{
+					    	ResolveInfo best = null;
+						    for (final ResolveInfo info : matches)
+						      if (info.activityInfo.packageName.endsWith(".gm") ||
+						          info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
+						    if (best != null)
+						      intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+						    
+						    if(SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)){
+						    	intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"15219425820@163.com"});
+						    }else{
+						    	intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"abner.huang@beseye.com"});
+						    }
+							
+							intent.putExtra(Intent.EXTRA_SUBJECT, "[Android Log]"+logFile.getName());
+							intent.putExtra(Intent.EXTRA_TEXT, "This is log from "+SessionMgr.getInstance().getAccount()+"\nIssue occurred on [Cam name]");
+							
+							Uri uri = Uri.parse("file://" + logFile);
+							intent.putExtra(Intent.EXTRA_STREAM, uri);
+							context.startActivity(Intent.createChooser(intent, "Send email..."));
+					    }
 					} catch (IOException e) {
-						e.printStackTrace();
+						if(e instanceof FileNotFoundException){
+							Log.e(TAG, "cannot find log :"+logFile.getAbsolutePath());
+					    	Toast.makeText(context, "Can't save tmp log...", Toast.LENGTH_LONG).show();
+						}else{
+							Log.e(TAG, "e:"+e.toString());
+						}
 					}
 				}
 			}
