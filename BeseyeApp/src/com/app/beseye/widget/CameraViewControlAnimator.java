@@ -175,14 +175,14 @@ public class CameraViewControlAnimator {
 			if(null != ivSettingNew){
 				syncViewProprety(mIvSettingNew, ivSettingNew);
 				mIvSettingNew = ivSettingNew;
-				BeseyeUtils.setVisibility(mIvSettingNew, !BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked()?View.VISIBLE:View.INVISIBLE);
+				checkSettingNewStatus();
 			}
 		}
 	}
 	
 	public void checkSettingNewStatus(){
 		if(null != mIvSettingNew){
-			BeseyeUtils.setVisibility(mIvSettingNew, !BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked()?View.VISIBLE:View.INVISIBLE);
+			BeseyeUtils.setVisibility(mIvSettingNew, ((null != mIbSetting && mIbSetting.getVisibility() == View.VISIBLE) && !BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked())?View.VISIBLE:View.INVISIBLE);
 		}
 	}
 	

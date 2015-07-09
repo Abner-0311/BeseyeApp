@@ -677,6 +677,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			BeseyeUtils.setEnabled(mCameraViewControlAnimator.getGoLiveView(), !mbIsLiveMode);
 			BeseyeUtils.setEnabled(mCameraViewControlAnimator.getEventsView(), !isInP2PMode());
 			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), (!isInP2PMode() && mbVCamAdmin && !mbIsDemoCam)?View.VISIBLE:View.INVISIBLE);
+			//[Abner 0709]Need to bundle-check if new icon for setting button needs to show
+			mCameraViewControlAnimator.checkSettingNewStatus();
 		}
 	}
 	
@@ -1073,9 +1075,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private void applyCamAttr(){		
 		if(null != mCameraViewControlAnimator){
 			ImageButton ibSetting = mCameraViewControlAnimator.getSettingView();
-			if(null != ibSetting)
+			if(null != ibSetting){
 				ibSetting.setVisibility((!isInP2PMode() && mbVCamAdmin && !mbIsDemoCam)?View.VISIBLE:View.INVISIBLE);
-			
+				//[Abner 0709]Need to bundle-check if new icon for setting button needs to show
+				if(null != mCameraViewControlAnimator){
+					mCameraViewControlAnimator.checkSettingNewStatus();
+				}
+			}
 			TextView txtCamName = mCameraViewControlAnimator.getCamNameView();
 			if(null != txtCamName){
 				txtCamName.setText(mStrVCamName);
