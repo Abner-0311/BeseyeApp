@@ -94,8 +94,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		
 		mbChangeWifi = getIntent().getBooleanExtra(KEY_CHANGE_WIFI_ONLY, false);
 		mlstScanResult = new ArrayList<WifiAPInfo>();
-//		if(false == mbChangeWifi)
-//			setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+		if(false == mbChangeWifi)
+			setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
 		
 		miOriginalVcamCnt = getIntent().getIntExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, 0);
 		if(DEBUG)
@@ -108,15 +108,11 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
     		Log.d(TAG, "WifiControlBaseActivity::onResume()");
 		super.onResume();
 		if(false == mbChangeWifi){
-//			NetworkMgr.getInstance().registerNetworkChangeCallback(this);
-//			NetworkMgr.getInstance().registerWifiStatusChangeCallback(this);
-//			if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
-//				setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
-//			}
-			mChosenWifiAPInfo = new WifiAPInfo(true);
-			mChosenWifiAPInfo.iCipherIdx = 3;
-			mChosenWifiAPInfo.cipher = WifiAPInfo.AUTHNICATION_WPA2;
-			showMyDialog(DIALOG_ID_WIFI_AP_INFO_ADD);
+			NetworkMgr.getInstance().registerNetworkChangeCallback(this);
+			NetworkMgr.getInstance().registerWifiStatusChangeCallback(this);
+			if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
+				setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+			}
 		}	
 	}
     
@@ -733,12 +729,6 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 					if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 						mEtSSID.setText("beseye2G");
 					}
-					
-					if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() == SERVER_MODE.MODE_CHINA_STAGE.ordinal()){
-						mEtSSID.setText("BeseyeSH_2G");
-						mbtnConnect.setEnabled(true);
-					}
-					
 					mEtSSID.addTextChangedListener(new TextWatcher(){
 						@Override
 						public void afterTextChanged(Editable editable) {
@@ -804,11 +794,6 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 						if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 							etPassword.setText(mChosenWifiAPInfo.iCipherIdx > WifiAPInfo.AUTHNICATION_KEY_WEP?(mChosenWifiAPInfo.SSID.equals("beseye")?"":"asdfghjkl!@#$%^7*()"):"");
 						}
-						
-						if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() == SERVER_MODE.MODE_CHINA_STAGE.ordinal()){
-							etPassword.setText("Shanghai1022");
-						}
-						
 						mWifiApPassword = etPassword.getText().toString();
 						etPassword.addTextChangedListener(new TextWatcher(){
 							@Override

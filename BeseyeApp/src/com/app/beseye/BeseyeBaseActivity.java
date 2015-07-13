@@ -295,21 +295,32 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}
 	}; 
 	
+	private void launchUpdateApp(){
+		final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+		if(BeseyeUtils.isProductionVersion()){
+			Log.i(TAG, "onUpdateAvailable(), for production, appPackageName:"+appPackageName);
+		}
+		try {
+		    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+		} catch (android.content.ActivityNotFoundException anfe) {
+			Log.i(TAG, "onUpdateAvailable(), ActivityNotFoundException:"+anfe.toString());
+
+			if(SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)){
+				Log.i(TAG, "onUpdateAvailable(), launch 360 web page");
+			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.app.haosou.com/detail/index?pname=" + appPackageName+"&id=2972261")));
+			}else{
+				Log.i(TAG, "onUpdateAvailable(), launch google play web page");
+			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+			}
+		}
+	}
+	
 	private UpdateManagerListener mUpdateManagerListenerForProduction = new UpdateManagerListener(){
 		@Override
 		public void onUpdateAvailable() {
 			super.onUpdateAvailable();
 			UpdateManager.unregister();
-			
-			final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-			if(BeseyeUtils.isProductionVersion()){
-				Log.i(TAG, "onUpdateAvailable(), for production, appPackageName:"+appPackageName);
-			}
-			try {
-			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-			} catch (android.content.ActivityNotFoundException anfe) {
-			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
-			}
+			launchUpdateApp();
 		}
 
 		@Override

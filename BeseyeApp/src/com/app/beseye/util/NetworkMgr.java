@@ -734,7 +734,7 @@ public class NetworkMgr {
 		
 		public String SSID ="";
 		public String BSSID ="";
-		private String cipher ="";
+		public String cipher ="";
 		public String password ="";
 		public int iCipherIdx = 0;//0:None, 1:WEP, 2:WPA, 3:WPA2
 		public int wepkeyIdx;
