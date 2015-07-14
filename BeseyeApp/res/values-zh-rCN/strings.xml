@@ -450,4 +450,7 @@
   <string name="fullscreen">全屏幕</string>
   <string name="event_list_family_detected_ex">侦测到人物 (%s)</string>
   <string name="event_list_people_detected_stranger">陌生人</string>
+  
+  <string name="dialog_title_download_app_via">更新云守护摄像头APP</string>
+  <string name="dialog_title_download_app_via_web">网页更新云守护摄像头APP</string>
 </resources>

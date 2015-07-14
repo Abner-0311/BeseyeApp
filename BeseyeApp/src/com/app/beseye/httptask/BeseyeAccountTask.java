@@ -296,17 +296,24 @@ public class BeseyeAccountTask {
 	static public class GetVCamListTask extends BeseyeHttpTask {
 		private String mstrVCamIdCheck= null;
 		private JSONObject mMsgObj = null;
+		private boolean mbFromPush = false;
+		
 		public GetVCamListTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
 			//enableHttps();
 		}
  
-		public GetVCamListTask(OnHttpTaskCallback cb, String strVCamIdCheck, JSONObject msgObj) {
+		public GetVCamListTask(OnHttpTaskCallback cb, String strVCamIdCheck, JSONObject msgObj, boolean bFromPush) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
 			mstrVCamIdCheck = strVCamIdCheck;
 			mMsgObj = msgObj;
+			mbFromPush = bFromPush;
+		}
+		
+		public boolean getFromPsuh(){
+			return mbFromPush;
 		}
 		
 		public String getVCamIdCheck(){

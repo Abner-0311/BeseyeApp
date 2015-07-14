@@ -513,6 +513,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 
         WebsocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
         checkUserLoginState();
+        beginToCheckPushMsgState();
     }
     
     private void initPushVarialbes(){
@@ -1231,7 +1232,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 							if(DEBUG)
 								Log.i(TAG, "BeseyeNotificationService::onPostExecute(), add "+strCheckId+" into mListBlackVCamId");
 						}else{
-							handleNotificationEvent(accTask.getMsgObj(), false);
+							handleNotificationEvent(accTask.getMsgObj(), accTask.getFromPsuh());
 						}
 					}
 				}
@@ -1449,7 +1450,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			}
 							if(DEBUG)
 								Log.i(TAG, "handleNotificationEvent(),strVCamId="+strVCamId+" not in mListBlackVCamId nor mMapNotificationId");	
-							(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this, strVCamId, msgObj)).execute();
+							(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this, strVCamId, msgObj, bFromGCM)).execute();
 						}
 					}else{
 						String strCamName = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME);

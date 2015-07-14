@@ -450,4 +450,7 @@
   <string name="fullscreen">Full screen</string>
   <string name="event_list_family_detected_ex">People dectected (%s)</string>
   <string name="event_list_people_detected_stranger">Stranger</string>
+  
+  <string name="dialog_title_download_app_via">Update Beseye APP via</string>
+  <string name="dialog_title_download_app_via_web">Update Beseye APP via web</string>
 </resources>

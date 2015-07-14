@@ -6,6 +6,8 @@ import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -20,12 +22,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -38,6 +45,7 @@ import android.os.RemoteException;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ProgressBar;
@@ -45,6 +53,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.beseye.BeseyeApplication.BeseyeAppStateChangeListener;
+import com.app.beseye.adapter.MarketAppAdapter;
+import com.app.beseye.adapter.MarketWebAdapter;
+import com.app.beseye.adapter.MarketWebAdapter.MarketWebInfo;
 import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
@@ -70,6 +81,8 @@ import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.widget.BaseOneBtnDialog;
 import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.widget.MessageDialog;
 
 
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, 
@@ -300,19 +313,182 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		if(BeseyeUtils.isProductionVersion()){
 			Log.i(TAG, "onUpdateAvailable(), for production, appPackageName:"+appPackageName);
 		}
-		try {
-		    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-		} catch (android.content.ActivityNotFoundException anfe) {
-			Log.i(TAG, "onUpdateAvailable(), ActivityNotFoundException:"+anfe.toString());
+		
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
+		final PackageManager pm = getPackageManager();
+	    final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
+	    if(!matches.isEmpty()){
+	    	ResolveInfo riGooglePlay = null;
+	    	ResolveInfo best = null;
+		    for (final ResolveInfo info : matches){
+				Log.e(TAG, "info:"+info.toString());
+				if (info.activityInfo.packageName.toLowerCase().equals("com.android.vending")) {
+					riGooglePlay = info;
+					break;
+				}
+		    }
+		    
+		    //If Google Play exist, show it
+		    if(null != riGooglePlay){
+		    	intent.setClassName(riGooglePlay.activityInfo.packageName, riGooglePlay.activityInfo.name);
+		    	startActivity(intent);
+		    	
+		    	dismissMarketAppList();
+		    	dismissMarketWebList();
+		    }else{
+		    	List<ResolveInfo> lstOtherMarket = new ArrayList<ResolveInfo>();
+		    	for (final ResolveInfo info : matches){
+					if (info.activityInfo.packageName.toLowerCase().equals("com.qihoo.appstore") || 
+						info.activityInfo.packageName.toLowerCase().equals("com.xiaomi.market")	) {
+						lstOtherMarket.add(info);
+					}
+			    }
+		    	
+		    	if(false == lstOtherMarket.isEmpty()){
+		    		if(1 == lstOtherMarket.size()){
+		    			intent.setClassName(lstOtherMarket.get(0).activityInfo.packageName, lstOtherMarket.get(0).activityInfo.name);
+				    	startActivity(intent);
+				    	dismissMarketAppList();
+				    	dismissMarketWebList();
+		    		}else{
+	    				mMarketAppAdapter = new MarketAppAdapter(this, lstOtherMarket);
+		    			dismissMarketWebList();
+		    			showMarketAppList();
+		    		}
+		    	}else{
+		    		onNoMarketApp();
+		    	}
+		    }
+	    }else{
+	    	onNoMarketApp();
+	    }
+//	    
+//		try {
+//			getMarketAppIntent(this, appPackageName);
+//		    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+//		} catch (android.content.ActivityNotFoundException anfe) {
+//			Log.i(TAG, "onUpdateAvailable(), ActivityNotFoundException:"+anfe.toString());
+//
+//			if(SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)){
+//				Log.i(TAG, "onUpdateAvailable(), launch 360 web page");
+//			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.app.haosou.com/detail/index?pname=" + appPackageName+"&id=2972261")));
+//			    //"http://m.app.mi.com/detail/index?id=95502"
+//			}else{
+//				Log.i(TAG, "onUpdateAvailable(), launch google play web page");
+//			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+//			}
+//		}
+	}
+	
+	private MarketAppAdapter mMarketAppAdapter = null;
+	private MarketWebAdapter mMarketWebAdapter = null;
+	private Dialog mMarketAppListDialog = null;
+	private Dialog mMarketWebListDialog = null;
+	
+	private void onNoMarketApp(){
+		List<MarketWebInfo> lstMarket = new ArrayList<MarketWebInfo>();
+		lstMarket.add(new MarketWebInfo(getString(R.string.download_app_web_360), Uri.parse("http://m.app.haosou.com/detail/index?&id=2972261")));
+		lstMarket.add(new MarketWebInfo(getString(R.string.download_app_web_mi), Uri.parse("http://m.app.mi.com/detail/index?id=95502")));
+		mMarketWebAdapter = new MarketWebAdapter(this, lstMarket);
+		
+		dismissMarketAppList();
+		showMarketWebList();
+	}
+	
+	private void showMarketAppList(){
+		if(null == mMarketAppListDialog){
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setAdapter(mMarketAppAdapter, new DialogInterface.OnClickListener() {
+	            @Override
+	            public void onClick(DialogInterface dialog, int which) {
+	                Object objInfo = mMarketAppAdapter.getItem(which);
+	            	if(objInfo instanceof ResolveInfo){
+	            		ResolveInfo info = (ResolveInfo)objInfo;
+	            		Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName()));
+	  	               	marketIntent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
+	  	               	startActivity(marketIntent);
+	            	}else{
+	            		Log.e(TAG, "not ResolveInfo object");
+	            	}
+	            }
+	        }).setCancelable(true); 
+	        mMarketAppListDialog = setMarketDialog(builder, getResources().getString(R.string.dialog_title_download_app_via));
+	        mMarketAppListDialog.setCancelable(false);
+	        mMarketAppListDialog.setOnDismissListener(new OnDismissListener(){
 
-			if(SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)){
-				Log.i(TAG, "onUpdateAvailable(), launch 360 web page");
-			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.app.haosou.com/detail/index?pname=" + appPackageName+"&id=2972261")));
-			}else{
-				Log.i(TAG, "onUpdateAvailable(), launch google play web page");
-			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
-			}
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					mMarketAppListDialog = null;
+				}});
 		}
+	}
+	
+	private void showMarketWebList(){
+		if(null == mMarketWebListDialog){
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setAdapter(mMarketWebAdapter, new DialogInterface.OnClickListener() {
+	            @Override
+	            public void onClick(DialogInterface dialog, int which) {
+	            	Object objInfo = mMarketWebAdapter.getItem(which);
+	            	if(objInfo instanceof MarketWebInfo){
+	            		MarketWebInfo info = (MarketWebInfo) objInfo;
+	            		Intent marketIntent = new Intent(Intent.ACTION_VIEW, info.mMarketURL);
+	                    startActivity(marketIntent);
+	            	}else{
+	            		Log.e(TAG, "not MarketWebInfo object");
+	            	}
+	            }
+	        }).setCancelable(true); 
+	        mMarketWebListDialog = setMarketDialog(builder, this.getResources().getString(R.string.dialog_title_download_app_via_web));
+	        mMarketWebListDialog.setCancelable(false);
+	        mMarketWebListDialog.setOnDismissListener(new OnDismissListener(){
+
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					mMarketWebListDialog = null;
+				}});
+		}
+	}
+	
+	private void dismissMarketAppList(){
+		if(null != mMarketAppListDialog){
+			mMarketAppListDialog.dismiss();
+			mMarketAppListDialog = null;
+		}
+	}
+	
+	private void dismissMarketWebList(){
+		if(null != mMarketWebListDialog){
+			mMarketWebListDialog.dismiss();
+			mMarketWebListDialog = null;
+		}
+	}
+	
+	private Dialog setMarketDialog(AlertDialog.Builder builder, String strTitle){
+		TextView title = new TextView(this);
+        title.setText(strTitle);
+        title.setPadding(this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_left),
+        		this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top),
+        		this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top),
+        		this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top));
+        
+        title.setTextColor(this.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
+        float scaledDensity = this.getResources().getDisplayMetrics().scaledDensity;
+        title.setTextSize(this.getResources().getDimension(R.dimen.wifi_ap_info_dialog_title_font_size)/scaledDensity);        
+        builder.setCustomTitle(title);
+        
+        //It is a hack!
+        //http://stackoverflow.com/questions/14439538/how-can-i-change-the-color-of-alertdialog-title-and-the-color-of-the-line-under
+        Dialog d = builder.show();
+        int dividerId = d.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+        View divider = d.findViewById(dividerId);
+        divider.setBackgroundColor(this.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
+        
+        d.getWindow().setFlags(
+        	    WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+        	    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        
+        return d;
 	}
 	
 	private UpdateManagerListener mUpdateManagerListenerForProduction = new UpdateManagerListener(){
@@ -384,6 +560,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_WIFI_AP_SECU_PICKER	= DIALOG_ID_WIFI_BASE+18; 
 	static public final int DIALOG_ID_WIFI_AP_APPLY			= DIALOG_ID_WIFI_BASE+19; 
 	static public final int DIALOG_ID_PLAYER_CAPTURE		= DIALOG_ID_WIFI_BASE+20; 
+	static public final int DIALOG_ID_UPDATE_VIA_MARKET		= DIALOG_ID_WIFI_BASE+21; 
+	static public final int DIALOG_ID_UPDATE_VIA_WEB		= DIALOG_ID_WIFI_BASE+22; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
@@ -607,6 +785,18 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						((android.app.AlertDialog) dialog).setMessage(strMsgRes);
 				}
 			}
+//			case DIALOG_ID_UPDATE_VIA_MARKET:{
+//				if(null != mMarketAppAdapter){
+//					mMarketAppAdapter.notifyDataSetChanged();
+//				}
+//				break;
+//			}
+//			case DIALOG_ID_UPDATE_VIA_WEB:{
+//				if(null != mMarketWebAdapter){
+//					mMarketWebAdapter.notifyDataSetChanged();
+//				}
+//				break;
+//			}
 	        default:
 	        	super.onPrepareDialog(id, dialog, args);
 	    }
