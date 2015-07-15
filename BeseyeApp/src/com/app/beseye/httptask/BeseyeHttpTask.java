@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
@@ -640,13 +641,11 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
              trustStore.load(null, null);
 
              SSLSocketFactory sf = new EasySSLSocketFactory(trustStore);
-             sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+             sf.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
 
              HttpParams params = new BasicHttpParams();
              HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
              HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-             //ConnManagerParams.setMaxTotalConnections(params, MAX_TOTAL_CONNECTIONS);
-             
 
              SchemeRegistry registry = new SchemeRegistry();
              registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
@@ -731,18 +730,37 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	                        throws NoSuchAlgorithmException, KeyManagementException,
 	                        KeyStoreException, UnrecoverableKeyException {
 	                super(truststore);
+	                
+	                TrustManagerFactory tmf = TrustManagerFactory
+	                        .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+	                // Using null here initialises the TMF with the default trust store.
+	                tmf.init((KeyStore) null);
+
+	                // Get hold of the default trust manager
+	                X509TrustManager x509Tm = null;
+	                for (TrustManager tm : tmf.getTrustManagers()) {
+	                    if (tm instanceof X509TrustManager) {
+	                        x509Tm = (X509TrustManager) tm;
+	                        break;
+	                    }
+	                }
+
+	                // Wrap it in your own class.
+	                final X509TrustManager finalTm = x509Tm;
 
 	                TrustManager tm = new X509TrustManager() {
-	                        public void checkClientTrusted(X509Certificate[] chain,
-	                                        String authType) throws CertificateException {
+	                        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+	                        	if(null != finalTm)
+	                        		finalTm.checkClientTrusted(chain, authType);
 	                        }
 
-	                        public void checkServerTrusted(X509Certificate[] chain,
-	                                        String authType) throws CertificateException {
+	                        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+	                        	if(null != finalTm)
+	                        		finalTm.checkServerTrusted(chain, authType);
 	                        }
 
 	                        public X509Certificate[] getAcceptedIssuers() {
-	                                return null;
+	                        	return (null != finalTm)?finalTm.getAcceptedIssuers():null;
 	                        }
 	                };
 
@@ -752,8 +770,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	        @Override
 	        public Socket createSocket(Socket socket, String host, int port,
 	                        boolean autoClose) throws IOException, UnknownHostException {
-	                return sslContext.getSocketFactory().createSocket(socket, host, port,
-	                                autoClose);
+	                return sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
 	        }
 
 	        @Override
