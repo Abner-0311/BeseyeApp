@@ -35,8 +35,6 @@ static msec_t lTimeInvodeSystem = 0;
 static pid_t intermediate_pid = -1;
 //static int iRetSystemCall = 0;
 
-static char* sOrginalBSSID = NULL;
-
 static bool sbNetworkConnectedChecked = false;
 static bool sbNetworkConnected = false;
 static bool sbTokenExisted = false;
@@ -55,6 +53,9 @@ typedef enum{
 typedef enum{
 	PAIRING_ERR_BASE,
 	PAIRING_ERR_MAC_NOT_FOUND,
+	PAIRING_ERR_SSL_ERROR,
+	PAIRING_ERR_ATTACH_ALREADY,
+	PAIRING_ERR_INVALID_HW_ID,
 	PAIRING_ERR_COUNT
 }Pairing_Err_Type;
 
@@ -70,15 +71,10 @@ static msec_t lTImeToSaveErrorLog = 0;
 int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
 	int iTrials = 0;
 	int iRetSystemCall = -1;
-	int iTotalTrials = 3;
 	do{
 		siTimeoutValue = MAX_TIME_TO_INVOKE_SYSTEM;
 		if(0 < iTimeoutInSec && iTimeoutInSec < 120){
 			siTimeoutValue = iTimeoutInSec;
-		}
-
-		if(siTimeoutValue > 20){
-			iTotalTrials = 2;
 		}
 
 		//return system(cmd);
@@ -88,25 +84,19 @@ int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
 
 		intermediate_pid = fork();
 		if (intermediate_pid == 0) {
-			if(DEBUG_MODE){
-				LOGE( "invokeSystem(), intermediate_pid fork successfully time_ms:%lld .............+++++++++++++++++\n", time_ms());
-			}
+			LOGE( "invokeSystem(), intermediate_pid fork successfully time_ms:%lld .............+++++++++++++++++\n", time_ms());
 			int iRet = system(cmd);
 			char cRet[32]={0};
 			sprintf(cRet, "%d", iRet);
 			saveToFile(MONITOR_PROCESS_RET,cRet);
 			deleteFile(MONITOR_PROCESS_FLAG);
-			if(DEBUG_MODE){
-				LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG end time_ms:%lld,cmd:[%s] cRet:[%s] .............---------------\n", time_ms(),cmd, cRet);
-			}
+			LOGE( "invokeSystem(), MONITOR_PROCESS_FLAG end time_ms:%lld,cmd:[%s] cRet:[%s] .............---------------\n", time_ms(),cmd, cRet);
 			exit (0);
 		}
 
 		if(0 < intermediate_pid){
 			lTimeInvodeSystem = time_ms();
-			if(DEBUG_MODE){
-				LOGE( "invokeSystem(), intermediate_pid:%d, siTimeoutValue:[%lld], lTimeInvodeSystem:[%lld] , iTrials:[%d/%d]\n", intermediate_pid, siTimeoutValue, lTimeInvodeSystem, iTrials, iTotalTrials);
-			}
+			LOGE( "invokeSystem(), intermediate_pid:%d, siTimeoutValue:[%lld], lTimeInvodeSystem:[%lld] , iTrials:[%d]\n", intermediate_pid, siTimeoutValue, lTimeInvodeSystem, iTrials);
 			//LOGE( "invokeSystem(), waitpid begin\n");
 			waitpid(intermediate_pid, 0, 0);
 			//LOGE( "invokeSystem(), waitpid end\n");
@@ -123,7 +113,7 @@ int invokeSystemWithTimeout(const char* cmd, int iTimeoutInSec){
 		}
 		FREE(cRet)
 		LOGE( "invokeSystem(), iRetSystemCall:%d, time_ms:%lld .............----\n", iRetSystemCall, time_ms());
-	}while(-1 == iRetSystemCall && iTotalTrials > ++iTrials);
+	}while(-1 == iRetSystemCall && 2 > ++iTrials);
 
 	return iRetSystemCall;
 }
@@ -160,18 +150,14 @@ void checkSystemProcess(bool bFromLC){
 		slTimeToCheckSysProcess = time_ms();
 		if(0 < intermediate_pid){
 			msec_t lDelta = (time_ms() - lTimeInvodeSystem);
-			if(DEBUG_MODE){
-				LOGE( "intermediate_pid:[%d], lDelta:[%lld], lTimeInvodeSystem:[%lld], siTimeoutValue:[%lld], bFromLC:[%d]\n", intermediate_pid, lDelta, lTimeInvodeSystem, siTimeoutValue, bFromLC);
-			}
+			LOGE( "intermediate_pid:[%d], lDelta:[%lld], lTimeInvodeSystem:[%lld], siTimeoutValue:[%lld], bFromLC:[%d]\n", intermediate_pid, lDelta, lTimeInvodeSystem, siTimeoutValue, bFromLC);
 			if(isSystemProcessExist()){
 				if((0 != lTimeInvodeSystem) && (lDelta > (siTimeoutValue*1000))){
 					LOGE( "stop monitor flag is on over %lld sec\n", siTimeoutValue);
 					killSystemProcess();
 				}
 			}else{
-				if(DEBUG_MODE){
-					LOGE( "stop monitor flag is off\n");
-				}
+				LOGE( "stop monitor flag is off\n");
 				if((0 != lTimeInvodeSystem) && (lDelta > (siTimeoutValue*1000))){
 					LOGE( "stop monitor flag is on over %lld sec -- \n", siTimeoutValue);
 					killSystemProcess();
@@ -260,9 +246,7 @@ int checkSpEnabled(){
 	if(FALSE == bIsLANPortUsed){
 		char* curIP = getCurrentIP();
 		if(curIP){
-			if(DEBUG_MODE){
-				LOGE( "curIP:[%s]\n", curIP?curIP:"");
-			}
+			LOGE( "curIP:[%s]\n", curIP?curIP:"");
 			char wifiInfo[BUF_SIZE]={0};
 			int iTrials = 0;
 			do{
@@ -305,9 +289,7 @@ int checkSpEnabled(){
 		}
 
 	}else{
-		if(DEBUG_MODE){
-			LOGE( "isLANPortUsed is true........................\n");
-		}
+		LOGE( "isLANPortUsed is true........................\n");
 	}
 
 	return iRet;
@@ -385,17 +367,13 @@ bool matchTonePattern(){
 
 	if(0 < sToneRec.length()){
 		if(CAM_CORRECTION_TRACE){
-			if(DEBUG_MODE){
-				LOGI( "sToneRec:[%s]---\n", sToneRec.c_str());
-			}
+			LOGI( "sToneRec:[%s]---\n", sToneRec.c_str());
 		}
 		for(int idx = 0; idx < iLenPatterns; idx++){
 			int iPos = -1;
 			if(0 <= (iPos = sToneRec.find(sArrTonePatterns[idx]))){
 				bRet = true;
-				if(DEBUG_MODE){
-					LOGI( "Find match [%d] sToneRec:[%s], pattern:[%s]\n", iPos, sToneRec.c_str(), sArrTonePatterns[idx].c_str());
-				}
+				LOGI( "Find match [%d] sToneRec:[%s], pattern:[%s]\n", iPos, sToneRec.c_str(), sArrTonePatterns[idx].c_str());
 				break;
 			}
 		}
@@ -446,9 +424,7 @@ int setMicrophoneGain(const char* gain){
 	if(gain){
 		sprintf(jsonData, "{\"gain\":%s}", gain);
 		iRet = setMicGain(jsonData);
-		if(DEBUG_MODE){
-			LOGI( "iRet of setMicGain():%d\n", iRet);
-		}
+		LOGI( "iRet of setMicGain():%d\n", iRet);
 	}else{
 		return CMD_RET_CODE_INVALID_INPUT_ERR;
 	}
@@ -470,9 +446,7 @@ int checkSPEnv(){
 		//system("/beseye/util/curl --basic -u admin:password -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"LocalMotion\"}' http://localhost/sray/deleteEventServer.cgi");
 		//iRet = CMD_RET_CODE_NEED_REBOOT;
 	}
-	if(DEBUG_MODE){
-		LOGI( "final iRet:%d\n", iRet);
-	}
+	LOGI( "final iRet:%d\n", iRet);
 	return iRet;
 }
 
@@ -520,9 +494,7 @@ int checkLogFiles ()
 
     	iKillFileEnd = iMatchEnd - 3;
 
-    	if(DEBUG_MODE){
-    		LOGE ("iMatchBegin:%d, iKillFileEnd:%d\n", iMatchBegin, iKillFileEnd);
-    	}
+    	LOGE ("iMatchBegin:%d, iKillFileEnd:%d\n", iMatchBegin, iKillFileEnd);
     	idx = 0;
     	if(iKillFileEnd >= iMatchBegin){
     		if(d){
@@ -550,9 +522,7 @@ int checkLogFiles ()
 					sprintf(logFilePath, "%s/%s", LOG_DIR, entry->d_name);
 					int iRet = remove(logFilePath);
 
-					if(DEBUG_MODE){
-						LOGE ("del dir %s, iRet:%d\n", entry->d_name, iRet);
-					}
+					LOGE ("del dir %s, iRet:%d\n", entry->d_name, iRet);
 				}
 				idx++;
 				if(idx > iKillFileEnd){
@@ -625,9 +595,7 @@ static void copyLogFile(){
 	while( ( ch = fgetc(source) ) != EOF )
 	  fputc(ch, target);
 
-	if(DEBUG_MODE){
-		LOGE("File copied to %s successfully.\n", logFilePath);
-	}
+	LOGE("File copied to %s successfully.\n", logFilePath);
 
 	fclose(source);
 	fclose(target);
@@ -645,9 +613,7 @@ void soundpairSenderCb(const char* cb_type, void* data){
 
 void AudioTest::soundpairSenderCallback(const char* cb_type, void* data){
 #ifdef AUTO_TEST
-	if(DEBUG_MODE){
-		LOGE( "cb_type:[%s]\n", (cb_type)?cb_type:"");
-	}
+	LOGE( "cb_type:[%s]\n", (cb_type)?cb_type:"");
 	if(NULL != cb_type){
 		string strMsg(cb_type);
 		int iVolStartIdx = strMsg.find(SoundPair_Config::BT_MSG_SET_VOLUME);
@@ -656,9 +622,7 @@ void AudioTest::soundpairSenderCallback(const char* cb_type, void* data){
 			if(0 < iEndIdx && iEndIdx > iVolStartIdx){
 				string strVol = strMsg.substr(iVolStartIdx, (iEndIdx - iVolStartIdx));
 				//parse it
-				if(DEBUG_MODE){
-					LOGI( "soundpairSenderCallback(), strVol:[%s]\n", (strVol.c_str())?strVol.c_str():"");
-				}
+				LOGI( "soundpairSenderCallback(), strVol:[%s]\n", (strVol.c_str())?strVol.c_str():"");
 			}
 		}
 
@@ -671,9 +635,7 @@ void AudioTest::soundpairSenderCallback(const char* cb_type, void* data){
 		}else{
 			std::vector<std::string> msg = split(strMsg, SoundPair_Config::BT_MSG_DIVIDER);
 			if(msg.size() == 2){
-				if(DEBUG_MODE){
-					LOGI( "soundpairSenderCallback(), bIsSenderMode, msg[0] = [%s], msg[1] = [%s]",msg[0].c_str(), msg[1].c_str());
-				}
+				LOGI( "soundpairSenderCallback(), bIsSenderMode, msg[0] = [%s], msg[1] = [%s]",msg[0].c_str(), msg[1].c_str());
 				if(0 == msg[0].compare(SoundPair_Config::BT_MSG_ACK) && 0 == mstrCurTransferTs.compare(msg[1])){
 
 					if(0 == mstrCurTransferCode.find(SoundPair_Config::BT_MSG_PURE)){
@@ -701,9 +663,7 @@ void AudioTest::soundpairSenderCallback(const char* cb_type, void* data){
 							FreqGenerator::getECCode(mstrCurTransferCode).c_str());
 
 					int iRet = send_msg_to_server(msgSent);
-					if(DEBUG_MODE){
-						LOGE("soundpairSenderCallback(), send_msg_to_server, iRet:[%d]\n", iRet);
-					}
+					LOGE("soundpairSenderCallback(), send_msg_to_server, iRet:[%d]\n", iRet);
 					//sendBTMsg(String.format(BT_MSG_FORMAT, BT_MSG_ACK, mstrCurTransferTs));
 				}
 			}else if(msg.size() == 3){
@@ -724,9 +684,7 @@ void soundpairReceiverCb(const char* cb_type, void* data){
 
 void AudioTest::soundpairReceiverCallback(const char* cb_type, void* data){//cam ws server side
 #ifdef AUTO_TEST
-	if(DEBUG_MODE){
-		LOGE( "cb_type:[%s]\n", (cb_type)?cb_type:"");
-	}
+	LOGE( "cb_type:[%s]\n", (cb_type)?cb_type:"");
 	if(NULL != cb_type){
 		string strMsg(cb_type);
 		if(0 == strMsg.compare(SoundPair_Config::MSG_AUTO_TEST_BEGIN)){
@@ -736,9 +694,7 @@ void AudioTest::soundpairReceiverCallback(const char* cb_type, void* data){//cam
 			FreqAnalyzer::getInstance()->reset();
 			resetBuffer();
 			acquireAutoTestCtrlObj();
-			if(DEBUG_MODE){
-				LOGI("soundpairReceiverCallback(), broadcast, mbAutoTestBeginOnReceiver=[true]\n");
-			}
+			LOGI("soundpairReceiverCallback(), broadcast, mbAutoTestBeginOnReceiver=[true]\n");
 
 			mbAutoTestBeginOnReceiver = true;
 #ifdef CAM_ENV
@@ -749,9 +705,7 @@ void AudioTest::soundpairReceiverCallback(const char* cb_type, void* data){//cam
 		}else if((0 == strMsg.compare(SoundPair_Config::MSG_AUTO_TEST_END) || 0 == strMsg.compare(MSG_WS_CLOSED)) && mbAutoTestBeginOnReceiver){
 			FreqAnalyzer::getInstance()->endToTrace();
 			acquireAutoTestCtrlObj();
-			if(DEBUG_MODE){
-				LOGI("soundpairReceiverCallback(),  mbAutoTestBeginAnalyzeOnReceiver=[false]\n");
-			}
+			LOGI("soundpairReceiverCallback(),  mbAutoTestBeginAnalyzeOnReceiver=[false]\n");
 #ifdef CAM_ENV
 			Delegate_EndToSaveResult();
 #endif
@@ -767,32 +721,24 @@ void AudioTest::soundpairReceiverCallback(const char* cb_type, void* data){//cam
 			if(mbAutoTestBeginOnReceiver){
 				std::vector<std::string> msg = split(strMsg, SoundPair_Config::BT_MSG_DIVIDER);
 				if(msg.size() == 3){
-					if(DEBUG_MODE){
-						LOGI( "soundpairReceiverCallback(), bIsSenderMode, msg[0] = [%s], msg[1] = [%s], msg[2] = [%s]\n",msg[0].c_str(), msg[1].c_str(), msg[2].c_str());
-					}
+					LOGI( "soundpairReceiverCallback(), bIsSenderMode, msg[0] = [%s], msg[1] = [%s], msg[2] = [%s]\n",msg[0].c_str(), msg[1].c_str(), msg[2].c_str());
 					if(0 == msg[0].compare(SoundPair_Config::BT_MSG_ACK) && 0 == mstrCurTransferTs.compare(msg[1])){
 						curECCode = msg[2];
 						curEncodeMark = curCode+curECCode;
 
 						acquireAutoTestCtrlObj();
 						setAutoTestBeginAnalyzeOnReceiver(true);
-						if(DEBUG_MODE){
-							LOGI("soundpairReceiverCallback(), broadcast, mbAutoTestBeginAnalyzeOnReceiver=[true]\n");
-						}
+						LOGI("soundpairReceiverCallback(), broadcast, mbAutoTestBeginAnalyzeOnReceiver=[true]\n");
 						pthread_cond_broadcast(&mAutoTestCtrlObjCond);
 						releaseAutoTestCtrlObj();
 
 						char msgSent[1024]={0};
 						sprintf(msgSent, SoundPair_Config::BT_MSG_FORMAT.c_str(), SoundPair_Config::BT_MSG_ACK.c_str(), mstrCurTransferTs.c_str());
 						int iRet = send_msg_to_client(msgSent);
-						if(DEBUG_MODE){
-							LOGI("soundpairReceiverCallback(), send_msg_to_client, iRet=[%d]\n", iRet);
-						}
+						LOGI("soundpairReceiverCallback(), send_msg_to_client, iRet=[%d]\n", iRet);
 
 						acquireSendPairingCodeObj();
-						if(DEBUG_MODE){
-							LOGI("soundpairReceiverCallback(), broadcast, mstrCurTransferCode=[%s]\n", mstrCurTransferCode.c_str());
-						}
+						LOGI("soundpairReceiverCallback(), broadcast, mstrCurTransferCode=[%s]\n", mstrCurTransferCode.c_str());
 						mbSenderAcked = true;
 						pthread_cond_broadcast(&mSendPairingCodeObjCond);
 						releaseSendPairingCodeObj();
@@ -927,9 +873,7 @@ bool AudioTest::destroyInstance(){
 }
 
 bool AudioTest::setSenderMode(){
-	if(DEBUG_MODE){
-		LOGI("setSenderMode()+\n");
-	}
+	LOGI("setSenderMode()+\n");
 #ifdef ANDROID
 	connectCamCamWSServer();
 #endif
@@ -940,9 +884,7 @@ bool AudioTest::setSenderMode(){
 }
 
 bool AudioTest::setReceiverMode(bool bAutoTest){
-	if(DEBUG_MODE){
-		LOGI("setReceiverMode()+\n");
-	}
+	LOGI("setReceiverMode()+\n");
 #ifdef AUTO_TEST
 	if(bAutoTest)
 		init_websocket_server(soundpairReceiverCb);
@@ -955,9 +897,7 @@ bool AudioTest::setReceiverMode(bool bAutoTest){
 }
 
 bool AudioTest::setAutoTestMode(){
-	if(DEBUG_MODE){
-		LOGI("setAutoTestMode()+\n");
-	}
+	LOGI("setAutoTestMode()+\n");
 	stopAutoTest();
 	mIsSenderMode = false;
 	mIsReceiverMode = false;
@@ -990,9 +930,7 @@ bool AudioTest::startAutoTest(string strInitCode, int iDigitalToTest){
 
 		FreqAnalyzer::getInstance()->setIFreqAnalyzeResultCB(this);
 
-		if(DEBUG_MODE){
-			LOGI("startAutoTest()+, bRet:%d, isReceiverMode():%d, isAutoTestMode():%d\n",bRet, isReceiverMode(), isAutoTestMode());
-		}
+		LOGI("startAutoTest()+, bRet:%d, isReceiverMode():%d, isAutoTestMode():%d\n",bRet, isReceiverMode(), isAutoTestMode());
 		if(bRet && (isReceiverMode() || isAutoTestMode()))
 				bRet = startGenerateTone(strInitCode, iDigitalToTest);
 		//sleep(1);
@@ -1036,9 +974,7 @@ bool AudioTest::startPairingAnalysis(){
 
 		deleteFile(MONITOR_PROCESS_FLAG);
 		int iRet = checkSpEnabled();//system("/beseye/cam_main/cam-handler -chk_sp_enabled") >> 8;
-		if(DEBUG_MODE){
-			LOGE("startPairingAnalysis(),chk_sp_enabled, iRet:%d\n", iRet);
-		}
+		LOGE("startPairingAnalysis(),chk_sp_enabled, iRet:%d\n", iRet);
 		if(CMD_RET_CODE_SP_DISABLED == iRet){
 			sForceDisabledSp = true;
 			setLEDMode(LED_MODE_SOLID_GB);
@@ -1048,9 +984,7 @@ bool AudioTest::startPairingAnalysis(){
 		}
 
 		sbIsLANPortUsed = isLANPortUsed();
-		if(DEBUG_MODE){
-			LOGE("sbIsLANPortUsed:%d\n", sbIsLANPortUsed);
-		}
+		LOGE("sbIsLANPortUsed:%d\n", sbIsLANPortUsed);
 
 		sSpErrLogEnabled = isFileExist("/beseye/config/sp_error_enabled");
 
@@ -1058,9 +992,7 @@ bool AudioTest::startPairingAnalysis(){
 
 		if(false == sbNetworkConnectedChecked){
 			if(sbTokenExisted = readFromFile(SES_TOKEN_PATH)){//Have token
-				if(DEBUG_MODE){
-					LOGE( "Need to check existed token.\n");
-				}
+				LOGE( "Need to check existed token.\n");
 				msec_t lTimeToBeginNetworkChk = time_ms();
 				do{
 					if(0 == (invokeSystem("/beseye/cam_main/beseye_network_check") >> 8)){
@@ -1076,28 +1008,15 @@ bool AudioTest::startPairingAnalysis(){
 						break;
 					}
 					sleep(3);
-					if(DEBUG_MODE){
-						LOGE( "Network is disconnected.\n");
-					}
+					LOGE( "Network is disconnected.\n");
 				}while((time_ms() - lTimeToBeginNetworkChk) <= 60000);
 				LOGE( "Token validation failed ............\n");
 			}else if(0 == (invokeSystem("/beseye/cam_main/beseye_network_check") >> 8)){
 				sbNetworkConnected = true;
 			}
 
-			if(DEBUG_MODE){
-				LOGE( "sbNetworkConnected:[%d]-------------\n", sbNetworkConnected);
-			}
+			LOGE( "sbNetworkConnected:[%d]-------------\n", sbNetworkConnected);
 			sbNetworkConnectedChecked = true;
-		}
-
-		if(sbNetworkConnected){
-			if(NULL == sOrginalBSSID || 0 == strlen(sOrginalBSSID)){
-				sOrginalBSSID = getCurWiFiBSSID();
-			}
-			//if(DEBUG_MODE){
-				LOGE("sOrginalBSSID:[%s]\n", NULL != sOrginalBSSID?sOrginalBSSID:"");
-			//}
 		}
 
 		bRet = startAnalyzeTone();
@@ -1122,7 +1041,6 @@ bool AudioTest::startPairingAnalysis(){
 	}
 
 	turnOnWiFiModule();
-	FREE(sOrginalBSSID)
 	LOGE("startPairingAnalysis()--\n");
 	return bRet;
 }
@@ -1173,9 +1091,7 @@ bool AudioTest::startGenerateTone(string strInitCode, int iDigitalToTest){
 }
 
 bool AudioTest::stopGenerateTone(){
-	if(DEBUG_MODE){
-		LOGE("stopGenerateTone()+\n");
-	}
+	LOGE("stopGenerateTone()+\n");
 	mbStopControlThreadFlag = true;
 	return true;
 }
@@ -1384,24 +1300,17 @@ bool AudioTest::getDetectStartFlag(){
 }
 
 void changePairingMode(Pairing_Mode mode){
-	if(sPairingMode != mode){
-		if(DEBUG_MODE){
-			LOGW("sPairingMode:%d, mode:%d\n", sPairingMode, mode);
-		}
-	}
+	if(sPairingMode != mode)
+		LOGW("sPairingMode:%d, mode:%d\n", sPairingMode, mode);
 
 	if(PAIRING_ERROR == sPairingMode && sCurLEDCnt <= ERROR_LED_PERIOD){
-		if(DEBUG_MODE){
-			LOGW("---sPedningPairingMode:%d\n", sPedningPairingMode);
-		}
+		LOGW("---sPedningPairingMode:%d\n", sPedningPairingMode);
 		sPedningPairingMode = PAIRING_INIT;//mode;
 	}else{
 		if(PAIRING_ANALYSIS == sPairingMode && mode == PAIRING_ERROR){
 			if(sSpErrLogEnabled){
 				lTImeToSaveErrorLog = time_ms() + 10000;
-				if(DEBUG_MODE){
-					LOGE("Need to save error log at %u\n", lTImeToSaveErrorLog);
-				}
+				LOGE("Need to save error log at %u\n", lTImeToSaveErrorLog);
 			}
 			//try to restart audio
 			stopReceiveAudioBuf();
@@ -1429,6 +1338,12 @@ void changePairingMode(Pairing_Mode mode){
 			}else if(PAIRING_ERROR == mode){
 				if(sPairingErrType == PAIRING_ERR_MAC_NOT_FOUND){
 					setLEDMode(LED_MODE_CYCLE_R_B);
+				}else if(sPairingErrType == PAIRING_ERR_SSL_ERROR){
+					setLEDMode(LED_MODE_CYCLE_R_G);
+				}else if(sPairingErrType == PAIRING_ERR_ATTACH_ALREADY){
+					setLEDMode(LED_MODE_BLINK_RGB);
+				}else if(sPairingErrType == PAIRING_ERR_INVALID_HW_ID){
+					setLEDMode(LED_MODE_CYCLE_R_G_B);
 				}else{
 					setLEDMode(LED_MODE_SOLID_R);
 				}
@@ -1488,9 +1403,7 @@ void* AudioTest::verifyToken(void* userdata){
 			if(sbTokenExisted = readFromFile(SES_TOKEN_PATH)){
 				turnOnWiFiModule();
 				msec_t lTimeToBeginNetworkChk = time_ms();
-				if(DEBUG_MODE){
-					LOGE("try to check token., TIME_TO_CHECK_TOKEN:%d\n", TIME_TO_CHECK_TOKEN);
-				}
+				LOGE("try to check token., TIME_TO_CHECK_TOKEN:%d\n", TIME_TO_CHECK_TOKEN);
 				//Workaround to trigger to get WiFi IP
 				char jsonData[BUF_SIZE]={0};
 				int iTrial = 0;
@@ -1515,9 +1428,7 @@ void* AudioTest::verifyToken(void* userdata){
 						}
 					}
 					sleep(3);
-					if(DEBUG_MODE){
-						LOGE( "Network is disconnected.\n");
-					}
+					LOGE( "Network is disconnected.\n");
 				}while((time_ms() - lTimeToBeginNetworkChk) <= 60000 && PAIRING_ANALYSIS != sPairingMode);
 				LOGE( "Token validation failed....\n");
 				turnOffWiFiModule();
@@ -1529,9 +1440,7 @@ void* AudioTest::verifyToken(void* userdata){
 			do{
 				iRet = getWiFiStatus(WifiLinkInfo);
 				if(RET_CODE_OK == iRet){
-					if(DEBUG_MODE){
-						LOGE( "WifiLinkInfo:[%s]\n", WifiLinkInfo);
-					}
+					LOGE( "WifiLinkInfo:[%s]\n", WifiLinkInfo);
 				}
 			}while(RET_CODE_OK != iRet && iTrials++ < 3);
 		}
@@ -1544,9 +1453,7 @@ void* AudioTest::verifyToken(void* userdata){
 		}
 
 		if(0 < lTImeToSaveErrorLog && lTImeToSaveErrorLog < time_ms()){
-			if(DEBUG_MODE){
-				LOGE("Time to save error log\n");
-			}
+			LOGE("Time to save error log\n");
 			copyLogFile();
 			checkLogFiles();
 			lTImeToSaveErrorLog = 0;
@@ -1561,9 +1468,7 @@ void* AudioTest::verifyToken(void* userdata){
 static int siOffset = 0;
 
 void AudioTest::setOffset(int iOffset){
-	if(DEBUG_MODE){
-		LOGE("setOffset(), iOffset:%d\n", iOffset);
-	}
+	LOGE("setOffset(), iOffset:%d\n", iOffset);
 	siOffset=iOffset;
 }
 
@@ -1590,36 +1495,6 @@ static void triggerAnalysis(){
 
 	AudioTest::getInstance()->setAboveThresholdFlag(true);
 	siAboveThreshHoldCount = 0;
-}
-
-static msec_t sLastTimeCheckSPFile = 0;
-static const char* SP_FILE = "/beseye/config/sp_msg";
-void checkPairingResult(string strCode, string strDecodeUnmark);
-
-
-void AudioTest::checkPairingFile(){
-	if(0 == sLastTimeCheckSPFile || (time_ms() - sLastTimeCheckSPFile) > 5000L){
-		char* spMsg = readFromFile(SP_FILE);
-		if(NULL != spMsg){
-			LOGI("spMsg:[%s]\n", spMsg?spMsg:"");
-			string strSpMsg = spMsg;
-			checkPairingResult(strSpMsg, "");
-			if(0 <= miPairingReturnCode){
-				LOGE("miPairingReturnCode:[%d], close sp\n",miPairingReturnCode);
-				changePairingMode(PAIRING_DONE);
-				saveToFile("/beseye/config/sp_enabled", "");
-				setLedLight(0,1,0);
-				stopAutoTest();
-				return;
-			}else{
-				changePairingMode(PAIRING_ERROR);
-			}
-
-			deleteFile(SP_FILE);
-			FREE(spMsg)
-		}
-		sLastTimeCheckSPFile = time_ms();
-	}
 }
 
 //static int iOldLen = 0;
@@ -1704,9 +1579,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 	}
 
 	if(sbNeedToInitBuf){
-		if(DEBUG_MODE){
-			LOGE("init buffer for entering!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-		}
+		LOGE("init buffer for entering!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 		shortsRecBuf = NULL;
 		iCurIdx = 0;
 		ANALYSIS_THRESHHOLD_MONITOR_CNT = 0;
@@ -1747,9 +1620,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 					if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
 						if(-1 != iStopAnalysisIdx){
 							AudioTest::getInstance()->setStopAnalysisBufIdx(iStopAnalysisIdx);
-							if(DEBUG_MODE){
-								LOGE("miStopAnalysisBufIdx:%d\n",iStopAnalysisIdx);
-							}
+							LOGE("miStopAnalysisBufIdx:%d\n",iStopAnalysisIdx);
 							siRestBufCntToStop = 20;
 						}else{
 							LOGE("reset because miStopAnalysisBufIdx:%d\n",iStopAnalysisIdx);
@@ -1787,9 +1658,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 
 				if(0 == siRefCount%ANALYSIS_THRESHHOLD_CK_LEN){
 					if(ANALYSIS_MAX_AUDIO_VALUE < sMaxValue){
-						if(DEBUG_MODE){
-							LOGW("-------------------------------------------------------->ANALYSIS_MAX_AUDIO_VALUE:%d < sMaxValue:%d, set mic gain\n", ANALYSIS_MAX_AUDIO_VALUE, sMaxValue);
-						}
+						LOGW("-------------------------------------------------------->ANALYSIS_MAX_AUDIO_VALUE:%d < sMaxValue:%d, set mic gain\n", ANALYSIS_MAX_AUDIO_VALUE, sMaxValue);
 						//system("/beseye/cam_main/cam-handler -setgain 25") >> 8;
 						setMicrophoneGain(getSPGain());
 						saveLogFile("/beseye/sp-gain-set");
@@ -1799,9 +1668,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 
 					if(PAIRING_INIT == sPairingMode){
 						ANALYSIS_THRESHHOLD_MONITOR = ((ANALYSIS_THRESHHOLD_MONITOR*(ANALYSIS_THRESHHOLD_MONITOR_CNT))+sMaxValue)/(++ANALYSIS_THRESHHOLD_MONITOR_CNT);
-						if(DEBUG_MODE){
-							LOGW("-------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR:%d, ANALYSIS_THRESHHOLD_MONITOR_CNT:%d\n", ANALYSIS_THRESHHOLD_MONITOR, ANALYSIS_THRESHHOLD_MONITOR_CNT);
-						}
+						LOGW("-------------------------------------------------------->ANALYSIS_THRESHHOLD_MONITOR:%d, ANALYSIS_THRESHHOLD_MONITOR_CNT:%d\n", ANALYSIS_THRESHHOLD_MONITOR, ANALYSIS_THRESHHOLD_MONITOR_CNT);
 						if(ANALYSIS_THRESHHOLD_MONITOR_CNT >= 10){
 							if(ANALYSIS_THRESHHOLD_MONITOR < ANALYSIS_START_THRESHHOLD_MIN){
 								ANALYSIS_START_THRESHHOLD = ANALYSIS_START_THRESHHOLD_MIN;
@@ -1859,9 +1726,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 
 								siAboveThreshHoldCount++;
 								siLastCntToAboveThreshhold = siRefCountToCheckMaxVol;
-								if(DEBUG_MODE){
-									LOGW("-------------------------------------------------------->sMaxValue:%d, siAboveThreshHoldCount:%d, siUnderThreshHoldCount:%d, siRefCountToCheckMaxVol:%d\n", sMaxValue, siAboveThreshHoldCount, siUnderThreshHoldCount, siRefCountToCheckMaxVol);
-								}
+								LOGW("-------------------------------------------------------->sMaxValue:%d, siAboveThreshHoldCount:%d, siUnderThreshHoldCount:%d, siRefCountToCheckMaxVol:%d\n", sMaxValue, siAboveThreshHoldCount, siUnderThreshHoldCount, siRefCountToCheckMaxVol);
 
 	//							if(false == AudioTest::getInstance()->getAboveThresholdFlag() && siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT && PAIRING_WAITING == sPairingMode){
 	//								LOGE("trigger analysis-----\n");
@@ -1913,9 +1778,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 									siUnderThreshHoldCount = 0;
 								}
 								if(0 < siAboveThreshHoldCount){
-									if(DEBUG_MODE){
-										LOGW("--------------------------------------------------------> check, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
-									}
+									LOGW("--------------------------------------------------------> check, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
 								}
 
 								if(-1 < siLastCntToAboveThreshhold && ANALYSIS_AB_THRESHHOLD_TOL_MISS_CNT < (siRefCountToCheckMaxVol - siLastCntToAboveThreshhold)){
@@ -1923,9 +1786,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 								}
 							}else{
 								if(0 < siAboveThreshHoldCount){
-									if(DEBUG_MODE){
-										LOGW("--------------------------------------------------------> check2, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
-									}
+									LOGW("--------------------------------------------------------> check2, ANALYSIS_START_THRESHHOLD:%d, ANALYSIS_END_THRESHHOLD:%d, sMaxValue:%d\n", ANALYSIS_START_THRESHHOLD, ANALYSIS_END_THRESHHOLD, sMaxValue);
 								}
 								siUnderThreshHoldCount = 0;
 
@@ -1942,10 +1803,10 @@ void writeBuf(unsigned char* charBuf, int iLen){
 			}
 			siRefCount++;
 
-
 			//if(PAIRING_INIT != sPairingMode){
 				if(iCurIdx == shortsRecBuf->size()-1){
 					if(false == sForceDisabledSp){
+
 						//LOGE("writeBuf(), add rec buf at %lld, iIdxOffset:%d, iCurIdx:%d, shortsRecBuf->size():%d\n", lTs1, iIdxOffset, iCurIdx, shortsRecBuf->size() );
 						if(PAIRING_WAITING == sPairingMode && 0 == (++siBufCount)%3){
 							string strTone = FreqAnalyzer::getInstance()->findToneCodeByFreq(FreqAnalyzer::getInstance()->analyzeAudioViaAudacityAC(shortsRecBuf, SoundPair_Config::FRAME_SIZE_REC, false, 0, NULL));
@@ -1960,9 +1821,7 @@ void writeBuf(unsigned char* charBuf, int iLen){
 
 							bool bRet = matchTonePattern();
 							if(bRet){
-								if(DEBUG_MODE){
-									LOGE("strTone:[%s] ==> [%s], bRet:[%d], siAboveThreshHoldCount:%d\n", strTone.c_str(), sToneRec.c_str(), bRet, siAboveThreshHoldCount);
-								}
+								LOGE("strTone:[%s] ==> [%s], bRet:[%d], siAboveThreshHoldCount:%d\n", strTone.c_str(), sToneRec.c_str(), bRet, siAboveThreshHoldCount);
 
 								if(false == AudioTest::getInstance()->getAboveThresholdFlag() && PAIRING_WAITING == sPairingMode){
 									if(siAboveThreshHoldCount >= ANALYSIS_AB_THRESHHOLD_CK_CNT){
@@ -1972,18 +1831,13 @@ void writeBuf(unsigned char* charBuf, int iLen){
 								}
 								siUnderThreshHoldCount = 0;
 							}
-
-							//for remote pairing workaround
-							AudioTest::getInstance()->checkPairingFile();
 						}
 
 						AudioBufferMgr::getInstance()->addToDataBuf(lTs1, shortsRecBuf, shortsRecBuf->size());
 						shortsRecBuf = NULL;
 
 						if(0 < siRestBufCntToStop){
-							if(DEBUG_MODE){
-								LOGI("count down siRestBufCntToStop:[%d]\n", siRestBufCntToStop);
-							}
+							LOGI("count down siRestBufCntToStop:[%d]\n", siRestBufCntToStop);
 							if(0 == --siRestBufCntToStop){
 								stopReceiveAudioBuf();
 							}
@@ -2001,29 +1855,21 @@ void writeBuf(unsigned char* charBuf, int iLen){
 }
 
 void AudioTest::setAutoTestBeginAnalyzeOnReceiver(bool flag){
-	if(DEBUG_MODE){
-		LOGI("setAutoTestBeginAnalyzeOnReceiver(), ++, flag:%d\n", flag);
-	}
+	LOGI("setAutoTestBeginAnalyzeOnReceiver(), ++, flag:%d\n", flag);
 	mbAutoTestBeginAnalyzeOnReceiver = flag;
 }
 
 void AudioTest::setAboveThresholdFlag(bool flag){
-	if(DEBUG_MODE){
-		LOGI("setAboveThresholdFlag(), ++, flag:%d\n", flag);
-	}
+	LOGI("setAboveThresholdFlag(), ++, flag:%d\n", flag);
 	acquireThresholdCtrlObj();
 	bool oldflag = mbAboveThreshold;
 	mbAboveThreshold=flag;
 	if(!oldflag && mbAboveThreshold){
-		if(DEBUG_MODE){
-			LOGI("setAboveThresholdFlag(), broadcast\n");
-		}
+		LOGI("setAboveThresholdFlag(), broadcast\n");
 		pthread_cond_broadcast(&mThresholdCtrlObjCond);
 	}
 	releaseThresholdCtrlObj();
-	if(DEBUG_MODE){
-		LOGI("setAboveThresholdFlag()--\n");
-	}
+	LOGI("setAboveThresholdFlag()--\n");
 }
 
 bool AudioTest::getAboveThresholdFlag(){
@@ -2075,9 +1921,7 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 #else
 
 	int iRet = checkSPEnv();
-	if(DEBUG_MODE){
-		LOGE("runAudioBufRecord(), check sp env, iRet:%d\n", iRet);
-	}
+	LOGE("runAudioBufRecord(), check sp env, iRet:%d\n", iRet);
 	if(CMD_RET_CODE_NEED_REBOOT == iRet){
 		LOGE("runAudioBufRecord(), need to reboot due to change config\n");
 		saveLogFile("/beseye/reboot-pairing");
@@ -2112,15 +1956,11 @@ void* AudioTest::runAudioBufRecord(void* userdata){
 					sbInAudioBufLoop = true;
 					int res = GetAudioBufCGI(HOST_NAME_AUDIO, "receiveRaw", session, writeBuf);
 					sbInAudioBufLoop = false;
-					if(DEBUG_MODE){
-						LOGE("GetAudioBufCGI:res(%d), mbStopBufRecordFlag:%d\n",res, tester->mbStopBufRecordFlag);
-					}
+					LOGE("GetAudioBufCGI:res(%d), mbStopBufRecordFlag:%d\n",res, tester->mbStopBufRecordFlag);
 					//Delegate_CloseAudioDevice2();
 				}
 			}else{
-				if(DEBUG_MODE){
-					LOGE("sPairingMode is not PAIRING_INIT, wait a while\n");
-				}
+				LOGE("sPairingMode is not PAIRING_INIT, wait a while\n");
 				checkSystemProcess(false);
 				sleep(2);
 			}
@@ -2153,15 +1993,11 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 		}
 
 		while(tester->isPairingAnalysisMode() && !tester->getAboveThresholdFlag() && !tester->mbStopAnalysisThreadFlag){
-			if(DEBUG_MODE){
-				LOGI("runAudioBufAnalysis(), begin wait threshold\n");
-			}
+			LOGI("runAudioBufAnalysis(), begin wait threshold\n");
 			tester->acquireThresholdCtrlObj();
 			pthread_cond_wait(&tester->mThresholdCtrlObjCond, &tester->mThresholdCtrlObj);
 			tester->releaseThresholdCtrlObj();
-			if(DEBUG_MODE){
-				LOGI("runAudioBufAnalysis(), exit wait threshold\n");
-			}
+			LOGI("runAudioBufAnalysis(), exit wait threshold\n");
 		}
 
 		if(tester->mbStopAnalysisThreadFlag){
@@ -2178,18 +2014,14 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 		}else*/{
 			//LOGE("runAudioBufAnalysis()+1\n");
 			int iSessionOffset = FreqAnalyzer::getInstance()->getSessionOffset();
-			if(DEBUG_MODE){
-				LOGD("runAudioBufAnalysis(), iSessionOffset:%d\n", iSessionOffset);
-			}
+			LOGD("runAudioBufAnalysis(), iSessionOffset:%d\n", iSessionOffset);
 
 			if(iSessionOffset > 0)
 				buf = tester->getBuf((iSessionOffset/SoundPair_Config::FRAME_SIZE_REC)+1);
 			else
 				buf = tester->getBuf();
 
-			if(DEBUG_MODE){
-				LOGD("runAudioBufAnalysis(), get buf\n");
-			}
+			LOGD("runAudioBufAnalysis(), get buf\n");
 			int iCheckIdx = tester->getStopAnalysisBufIdx();
 			if(-1 < iCheckIdx && buf->miIndex == iCheckIdx){
 				LOGE("runAudioBufAnalysis(), meet miStopAnalysisBufIdx:%d\n", iCheckIdx);
@@ -2212,9 +2044,7 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 																					 tester->mbNeedToResetFFT,
 																					 FreqAnalyzer::getInstance()->getLastDetectedToneIdx(buf->mlTs),
 																					 buf->miFFTValues);
-					if(DEBUG_MODE){
-						LOGD("runAudioBufAnalysis(), iFFTValues=[%d,%d,%d,%d,%d]\n", buf->miFFTValues[0], buf->miFFTValues[1], buf->miFFTValues[2], buf->miFFTValues[3], buf->miFFTValues[4]);
-					}
+					LOGD("runAudioBufAnalysis(), iFFTValues=[%d,%d,%d,%d,%d]\n", buf->miFFTValues[0], buf->miFFTValues[1], buf->miFFTValues[2], buf->miFFTValues[3], buf->miFFTValues[4]);
 					msec_t lTs = buf->mlTs;
 
 //					float retKiss = FreqAnalyzer::getInstance()->analyzeAudioViaKiss(bufShort, bufShort->size(), NULL);
@@ -2232,9 +2062,7 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 			if(-1 == AudioTest::getInstance()->getStopAnalysisBufIdx()){
 				msec_t lDleta = time_ms() - lLastTimeToBufRec;
 				if(lDleta >= 1000){
-					if(DEBUG_MODE){
-						LOGI("runAudioBufAnalysis()..., lDleta > 1000\n");
-					}
+					LOGI("runAudioBufAnalysis()..., lDleta > 1000\n");
 					yieldtime.tv_nsec = 100000000;//100 ms
 					nanosleep(&yieldtime, NULL);
 				}else{
@@ -2245,21 +2073,15 @@ void* AudioTest::runAudioBufAnalysis(void* userdata){
 				if(sbInAudioBufLoop){
 					msec_t lDleta = time_ms() - lLastTimeToBufRec;
 					if(lDleta >= 5000){
-						if(DEBUG_MODE){
-							LOGI("runAudioBufAnalysis(), lDleta > 5000\n");
-						}
+						LOGI("runAudioBufAnalysis(), lDleta > 5000\n");
 						yieldtime.tv_nsec = 100000000;//100 ms
 						nanosleep(&yieldtime, NULL);
 					}else if(lDleta >= 3000){
-						if(DEBUG_MODE){
-							LOGI("runAudioBufAnalysis(), lDleta > 3000\n");
-						}
+						LOGI("runAudioBufAnalysis(), lDleta > 3000\n");
 						yieldtime.tv_nsec = 50000000;//50 ms
 						nanosleep(&yieldtime, NULL);
 					}else if(lDleta >= 1000){
-						if(DEBUG_MODE){
-							LOGI("runAudioBufAnalysis(), lDleta > 1000\n");
-						}
+						LOGI("runAudioBufAnalysis(), lDleta > 1000\n");
 						yieldtime.tv_nsec = 30000000;//30 ms
 						nanosleep(&yieldtime, NULL);
 					}else{
@@ -2293,27 +2115,19 @@ Ref<BufRecord> AudioTest::getBuf(int iNumToRest){
 }
 
 void AudioTest::onStartGen(string strCode){
-	if(DEBUG_MODE){
-		LOGI("onStartGen() strCode:%s\n",strCode.c_str());
-	}
+	LOGI("onStartGen() strCode:%s\n",strCode.c_str());
 }
 
 void AudioTest::onStopGen(string strCode){
-	if(DEBUG_MODE){
-		LOGI("onStopGen() strCode:%s\n",strCode.c_str());
-	}
+	LOGI("onStopGen() strCode:%s\n",strCode.c_str());
 }
 
 void AudioTest::onCurFreqChanged(double dFreq){
-	if(DEBUG_MODE){
-		LOGI("onCurFreqChanged() dFreq:%f\n",dFreq);
-	}
+	LOGI("onCurFreqChanged() dFreq:%f\n",dFreq);
 }
 
 void AudioTest::onErrCorrectionCode(string strCode, string strEC, string strEncodeMark){
-	if(DEBUG_MODE){
-		LOGI("onErrCorrectionCode() strCode:%s, strEC:%s, strEncodeMark:%s\n",strCode.c_str(), strEC.c_str(), strEncodeMark.c_str());
-	}
+	LOGI("onErrCorrectionCode() strCode:%s, strEC:%s, strEncodeMark:%s\n",strCode.c_str(), strEC.c_str(), strEncodeMark.c_str());
 	curECCode = strEC;
 	curEncodeMark = strEncodeMark;
 }
@@ -2324,9 +2138,7 @@ void AudioTest::onDetectStart(){
 }
 
 void AudioTest::onDetectPostFix(){
-	if(DEBUG_MODE){
-		LOGI("onDetectPostFix()\n");
-	}
+	LOGI("onDetectPostFix()\n");
 	if(isPairingAnalysisMode())
 		setAboveThresholdFlag(false);
 
@@ -2383,16 +2195,14 @@ static int onSPSuccess(){
 	return iRet;
 }
 
-static int applyRegionId(unsigned char cVPCId, unsigned char cRegId){
+static int applyRegionId(unsigned char cRegId){
 	int iRet = 0;
-//	if(0 != saveRegionId(cVPCId)){
-//		LOGE("Failed to save cVPCId:[%d]\n", cVPCId);
+//	if(0 != saveRegionId(cRegId)){
+//		LOGE("Failed to save cRegId:[%d]\n", cRegId);
 //	}else{
 		//call script
 		char cmd[BUF_SIZE]={0};
-		int iVPCInfo = (((int)cRegId)<<8) + cVPCId;
-		LOGE("iVPCInfo:[%d, %d, %d]\n", cRegId, cVPCId, iVPCInfo);
-		sprintf(cmd, "\"$GEN_EXPORT_SVR_URL_SCRIPT_PROGRAM\" --vpc_info %d", iVPCInfo);
+		sprintf(cmd, "\"$GEN_EXPORT_SVR_URL_SCRIPT_PROGRAM\" --vpc_id %d", cRegId);
 		int iTrials = 0;
 		do{
 			iRet = invokeSystem(cmd);
@@ -2414,18 +2224,43 @@ static string replaceQuote(string input){
 
 	int iDx = iLen-1;
 	int iFound = -1;
-	if(DEBUG_MODE){
-		LOGE("++, input:[%s]\n", input.c_str());
-	}
+	LOGE("++, input:[%s]\n", input.c_str());
 	while(0 <= iDx && 0 <= (iFound = input.rfind("'", iDx))){
 		input = input.replace(iFound, 1, "'\"'\"'");
 		iDx = iFound -1;
 	}
 
-	if(DEBUG_MODE){
-		LOGE("--, input:[%s]\n", input.c_str());
-	}
+	LOGE("--, input:[%s]\n", input.c_str());
 	return input;
+}
+
+static msec_t sLastTimeCheckSPFile = 0;
+static const char* SP_FILE = "/beseye/config/sp_msg";
+void checkPairingResult(string strCode, string strDecodeUnmark);
+
+void AudioTest::checkPairingFile(){
+	if(0 == sLastTimeCheckSPFile || (time_ms() - sLastTimeCheckSPFile) > 5000L){
+		char* spMsg = readFromFile(SP_FILE);
+		if(NULL != spMsg){
+			LOGI("spMsg:[%s]\n", spMsg?spMsg:"");
+			string strSpMsg = spMsg;
+			checkPairingResult(strSpMsg, "");
+			if(0 <= miPairingReturnCode){
+				LOGE("miPairingReturnCode:[%d], close sp\n",miPairingReturnCode);
+				changePairingMode(PAIRING_DONE);
+				saveToFile("/beseye/config/sp_enabled", "");
+				setLedLight(0,1,0);
+				stopAutoTest();
+				return;
+			}else{
+				changePairingMode(PAIRING_ERROR);
+			}
+
+			deleteFile(SP_FILE);
+			FREE(spMsg)
+		}
+		sLastTimeCheckSPFile = time_ms();
+	}
 }
 
 //#include "delegate/account_mgr.h"
@@ -2446,7 +2281,6 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	unsigned char cPurpose = 0;
 	unsigned char cSecType = 0;
 	unsigned char cSecTypeGuess = 0;
-	unsigned char cVPCId = 0;
 	unsigned char cRegId = 0;
 	unsigned int iReserved = 0;
 	uint64 lSSIDHash = 0;
@@ -2454,15 +2288,6 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	bool bUnknownSecType = false;
 	int iSSIDLen = 0;
 	int iRotateLen = 0;
-
-	if(sbNetworkConnected){
-		if(NULL == sOrginalBSSID || 0 == strlen(sOrginalBSSID)){
-			sOrginalBSSID = getCurWiFiBSSID();
-		}
-		//if(DEBUG_MODE){
-			LOGE("sOrginalBSSID:[%s]\n", NULL != sOrginalBSSID?sOrginalBSSID:"");
-		//}
-	}
 
 	turnOnWiFiModule();
 
@@ -2476,14 +2301,10 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 		}
 
 		int iFirstDiv = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER);
-		if(DEBUG_MODE){
-			LOGE("iFirstDiv:%d\n", iFirstDiv);
-		}
+		LOGE("iFirstDiv:%d\n", iFirstDiv);
 		if(SSID_MIN_LEN <= iFirstDiv){
 			int iSecondDiv = strDecodeUnmark.find(SoundPair_Config::PAIRING_DIVIDER, iFirstDiv+1);
-			if(DEBUG_MODE){
-				LOGE("iSecondDiv:%d\n", iSecondDiv);
-			}
+			LOGE("iSecondDiv:%d\n", iSecondDiv);
 			if(iSecondDiv > iFirstDiv){
 				//string ssidSeg = strDecodeUnmark.substr(0, iFirstDiv);
 
@@ -2494,9 +2315,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					int iVal = SoundPair_Config::findIdxFromCodeTable(strTmp.c_str());
 					iRotateLen += (unsigned char) iVal;
 				}
-				if(DEBUG_MODE){
-					LOGI("iRotateLen:[%d]--\n",iRotateLen);
-				}
+				LOGI("iRotateLen:[%d]--\n",iRotateLen);
 
 				string strSSIDLen = SoundPair_Config::rotateDecode(strDecodeUnmark.substr(ROTATE_LEN, SSID_LEN), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_1);//strCode.substr(ROTATE_LEN, SSID_MIN_LEN);
 				for(int idx = 0;idx < SSID_LEN;idx++){
@@ -2508,9 +2327,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 				iSSIDLen*=2;
 
-				if(DEBUG_MODE){
-					LOGI("iSSIDLen:[%d]\n",iSSIDLen);
-				}
+				LOGI("iSSIDLen:[%d]\n",iSSIDLen);
 
 				if(iSSIDLen > SSID_MAX_LEN){
 					LOGE("iSSIDLen:[%d] > SSID_MAX_LEN:[%d] \n",iSSIDLen, SSID_MAX_LEN);
@@ -2570,9 +2387,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			iRotateLen += (unsigned char) iVal;
 		}
 
-		if(DEBUG_MODE){
-			LOGI("iRotateLen:[%d]\n",iRotateLen);
-		}
+		LOGI("iRotateLen:[%d]\n",iRotateLen);
 
 		string strSSIDLen = SoundPair_Config::rotateDecode(strCode.substr(ROTATE_LEN, SSID_LEN), iRotateLen%SoundPair_Config::TONE_ROTATE_SEG_1);//strCode.substr(ROTATE_LEN, SSID_MIN_LEN);
 		for(int idx = 0;idx < SSID_LEN;idx++){
@@ -2584,9 +2399,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 		iSSIDLen*=2;
 
-		if(DEBUG_MODE){
-			LOGI("iSSIDLen:[%d]\n",iSSIDLen);
-		}
+		LOGI("iSSIDLen:[%d]\n",iSSIDLen);
 
 		if(iSSIDLen > SSID_MAX_LEN){
 			LOGE("iSSIDLen:[%d] > SSID_MAX_LEN:[%d] \n",iSSIDLen, SSID_MAX_LEN);
@@ -2627,9 +2440,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 	}
 
 	if((0 < strSSID.length() || 0 < strSSIDHash.length()) && 0 < strUserNum.length() && 0 < strPurposeSeg.length()){
-		if(DEBUG_MODE){
-			LOGE("strSSIDHash.length():[%d]\n",strSSIDHash.length());
-		}
+		LOGE("strSSIDHash.length():[%d]\n",strSSIDHash.length());
 		string strSSIDFinal, strAPIChk;
 		if(0 == strSSIDHash.length()){
 			int iLenSSID = strSSID.length()/iMultiply;
@@ -2646,15 +2457,11 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				retSSID << c;
 			}
 
-			if(DEBUG_MODE){
-				LOGE("retSSID:[%s]\n",retSSID.str().c_str());
-			}
+			LOGE("retSSID:[%s]\n",retSSID.str().c_str());
 
 			strAPIChk = strSSIDFinal = retSSID.str();//UTF8_To_string(retSSID.str());
 
-			if(DEBUG_MODE){
-				LOGE("strSSIDFinal:[%s]\n",strSSIDFinal.c_str());
-			}
+			LOGE("strSSIDFinal:[%s]\n",strSSIDFinal.c_str());
 		}else{
 			for(int i =0;i < SSID_HASH_LEN;i++){
 				lSSIDHash <<= iPower;
@@ -2665,9 +2472,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			}
 
 			strAPIChk = ultostr(lSSIDHash);
-			if(DEBUG_MODE){
-				LOGE("lSSIDHash:[%llu], strAPIChk:[%s]\n",lSSIDHash, strAPIChk.c_str());
-			}
+			LOGE("lSSIDHash:[%llu], strAPIChk:[%s]\n",lSSIDHash, strAPIChk.c_str());
 		}
 
 		int iLenPW = strPW.length()/iMultiply;
@@ -2684,18 +2489,15 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			retPW << c;
 		}
 
-		if(DEBUG_MODE){
-			LOGE("retPW:[%s]\n",retPW.str().c_str());
-		}
+		LOGE("retPW:[%s]\n",retPW.str().c_str());
 
 		int iLenPurpose = strPurposeSeg.length();///iMultiply;
 		cPurpose =SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(0, 1).c_str());
 		cSecType =SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(1, 1).c_str());
-		cVPCId = (SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(2, 1).c_str())<< iPower) +
+		cRegId = (SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(2, 1).c_str())<< iPower) +
 				  SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(3, 1).c_str());
-		cRegId =  SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(4, 1).c_str());
 
-		for(int i =5;i < iLenPurpose;i++){
+		for(int i =4;i < iLenPurpose;i++){
 			iReserved << iPower;
 			int iVal = SoundPair_Config::findIdxFromCodeTable(strPurposeSeg.substr(i, 1).c_str());
 			iReserved+=iVal;
@@ -2709,18 +2511,13 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 		bUnknownSecType = (cSecType == PAIRING_SEC_UNKNOWN) && (false == bGuess) && (0 == strSSIDHash.length());
 
-		LOGE("cPurpose:%u, cSecType:%u, cVPCId:%u, cRegId:%u, iReserved:%d, strPurposeSeg:[%s], bUnknownSecType:%d\n", cPurpose, cSecType, cVPCId, cRegId, iReserved, strPurposeSeg.c_str(), bUnknownSecType);
+		LOGE("cPurpose:%u, cSecType:%u, cRegId:%u, iReserved:%d, strPurposeSeg:[%s], bUnknownSecType:%d\n", cPurpose, cSecType, cRegId, iReserved, strPurposeSeg.c_str(), bUnknownSecType);
 
 		char cmd[BUF_SIZE]={0};
 //		sprintf(cmd, "/beseye/cam_main/cam-handler -setwifi %s %s", strMAC.c_str(), retPW.str().c_str());
 //		LOGE("wifi set cmd:[%s]\n", cmd);
 		int iRet = 0;
 
-		//Because Raylios implements network recovery mechanism for wrong wifi config, we need to check BSSID to confirm wifi change
-		bool bHiddenSSID = FALSE;
-		unsigned char cSecTypeFound = 0;
-		bool bIsSameSSID = FALSE;
-		bool bIsSameWiFiConfig = FALSE;
 		if(0 == strSSIDHash.length()){
 			if(bUnknownSecType){
 				if((0 < retPW.str().length())){
@@ -2729,22 +2526,10 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					cSecType = (cSecTypeGuess = PAIRING_SEC_NONE);
 				}
 			}else if(cSecType == PAIRING_SEC_UNKNOWN){
-				if(DEBUG_MODE){
-					LOGE("Guess cSecType:[PAIRING_SEC_WPA2]\n");
-				}
+				LOGE("Guess cSecType:[PAIRING_SEC_WPA2]\n");
 				cSecType = PAIRING_SEC_WPA2;
 			}
-			bIsSameSSID = isSameWiFiSSID((const char*)strSSIDFinal.c_str());
-			if(!bUnknownSecType){
-				bIsSameWiFiConfig = isSameWiFiConfig2((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);
-			}
-
-			cSecTypeFound = cSecType;
-			iRet = setWifiBySSID3((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType, &bHiddenSSID, (char*)&cSecTypeFound);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
-
-			if(bUnknownSecType){
-				bIsSameWiFiConfig = isSameWiFiConfig2((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecTypeFound);
-			}
+			iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
 		}else{
 			iRet = setWifiBySSIDHash(lSSIDHash, iSSIDLen/2, (const char*)retPW.str().c_str(), cSecType);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
 		}
@@ -2760,7 +2545,7 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			msec_t lTimeDelta = 0;
 			const int iTotalTrialCount = (bGuess)?9:15;
 
-			LOGE("wifi connection check begin............., (%d, %d)\n", bIsSameWiFiConfig, bIsSameSSID);
+			LOGE("wifi connection check begin.............\n");
 			do{
 				do{
 					if(0 < iTrials){
@@ -2768,37 +2553,16 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						sleep(3);
 					}
 					++iTrials;
-					if(DEBUG_MODE){
-						LOGE("wifi connection check , trial %d.............\n", iTrials);
-					}
+					LOGE("wifi connection check , trial %d.............\n", iTrials);
 					//iNetworkRet = checkInternetStatus(NETWORK_CHECK_HOST);
 
-					//check www.beseye.cn in China
-					if(1 == cRegId){
-						iNetworkRet = invokeSystem("/beseye/util/curl -H 'User-Agent: BesProOne0713' --connect-timeout 10 --max-time 10 www.beseye.cn") >> 8;
-					}else{
-						iNetworkRet = invokeSystem("/beseye/util/curl -H 'User-Agent: BesProOne0713' --connect-timeout 10 --max-time 10 www.beseye.com") >> 8;
-					}
+					iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.beseye.com") >> 8;
 
-					if(iNetworkRet != 0){
+					if(iNetworkRet != 0)
 						iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.alibaba.com.cn") >> 8;
-					}
 
-					if(0 == iNetworkRet && sOrginalBSSID && (FALSE == bIsSameWiFiConfig /*|| FALSE == bIsSameSSID*/)){
-						char* curBSSID = getCurWiFiBSSID();
-						if(DEBUG_MODE){
-							LOGE("sOrginalBSSID:%s, curBSSID:%s\n", NULL != sOrginalBSSID?sOrginalBSSID:"", curBSSID?curBSSID:"");
-						}
-						if(curBSSID && 0 == strcmp(sOrginalBSSID, curBSSID)){
-							LOGE("the same bssid, sOrginalBSSID:%s, curBSSID:%s\n", NULL != sOrginalBSSID?sOrginalBSSID:"", curBSSID?curBSSID:"");
-							iNetworkRet = -1;
-						}
-						FREE(curBSSID)
-					}
 					lTimeDelta = time_ms() - lTimeToChkNetwork;
-					if(DEBUG_MODE){
-						LOGE("wifi connection check, trial: [%d/%d] ,iNetworkRet:%d, lTimeDelta:%lld\n", iTrials, iTotalTrialCount, iNetworkRet, lTimeDelta);
-					}
+					LOGE("wifi connection check, trial: [%d/%d] ,iNetworkRet:%d, lTimeDelta:%lld\n", iTrials, iTotalTrialCount, iNetworkRet, lTimeDelta);
 				}while((iTrials < iTotalTrialCount && lTimeDelta < 40000L) && 0 != iNetworkRet);
 
 				if(0 != iNetworkRet){
@@ -2806,28 +2570,16 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						break;
 					}
 					if(bUnknownSecType){
-						if(false == bHiddenSSID){
-							LOGE("bHiddenSSID:%d, cSecTypeFound:%d, cSecTypeGuess (%d).............\n", bHiddenSSID, cSecTypeFound,cSecTypeGuess);
+						cSecTypeGuess -=1;
+						LOGE("try cSecTypeGuess: %d.............\n", cSecTypeGuess);
+						restoreWifi();
+						iRet = setWifiBySSID((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecTypeGuess);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
+						if(0 != iRet){
+							LOGE("failed to setWiFi for cSecTypeGuess: %d.............\n", cSecTypeGuess);
 							break;
-						}else{
-							cSecTypeGuess -=1;
-							restoreWifi();
-							if(DEBUG_MODE){
-								LOGE("try cSecTypeGuess: %d, bIsSameWiFiConfig:%d.............\n", cSecTypeGuess, bIsSameWiFiConfig);
-							}
-							cSecTypeFound = cSecTypeGuess;
-							iRet = setWifiBySSID3((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecTypeGuess, &bHiddenSSID, (char*)&cSecTypeFound);//setWifi((const char*)strMAC.c_str(), (const char*)retPW.str().c_str());//system(cmd) >> 8;
-
-							if(0 != iRet){
-								LOGE("failed to setWiFi for cSecTypeGuess: %d.............\n", cSecTypeGuess);
-								break;
-							}
-
-							bIsSameWiFiConfig = isSameWiFiConfig2((const char*)strSSIDFinal.c_str(), (const char*)retPW.str().c_str(), cSecTypeFound);
-
-							iTrials = 0;
-							lTimeToChkNetwork = time_ms();
 						}
+
+						iTrials = 0;
 					}
 				}
 			}while(0 != iNetworkRet && (bUnknownSecType && cSecTypeGuess >= PAIRING_SEC_NONE));
@@ -2837,18 +2589,13 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			bool bHaveOldToken = readFromFile(SES_TOKEN_PATH);
 
 			if(0 == iNetworkRet){
-
-				LOGE("network connected, Check time first, time_ms:%lld .............+++++++++++++++++\n", time_ms());
-
-				iRet = invokeSystem("/beseye/cam_main/cam-util -checkTime");
-				LOGE("Check time ret:%d , time_ms:%lld .............-------------------\n", iRet, time_ms());
-
+				LOGE("network connected\n");
 				iRet = invokeSystem("/beseye/cam_main/beseye_token_check") >> 8;
 				if(0 == iRet){
 					sbTokenExisted = true;
 					LOGE("Token is already existed, check tmp token\n");
 					if(1 == cPurpose){
-						iRet = applyRegionId(cVPCId, cRegId);
+						iRet = applyRegionId(cRegId);
 						if(0 == iRet){
 							sprintf(cmd, "/beseye/cam_main/cam-util -verToken '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
 							LOGE("verToken cmd:[%s]\n", cmd);
@@ -2863,35 +2610,41 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 								onSPFailed();
 							}
 						}else{
-							LOGE("Failed to apply cVPCId : [%d]\n", cVPCId);
+							LOGE("Failed to apply cRegId : [%d]\n", cRegId);
 							onSPFailed();
 						}
 					}else{
 						LOGE("Wrong cPurpose\n");
 						//roll back wifi settings
+						sPairingErrType == PAIRING_ERR_ATTACH_ALREADY;
 						onSPFailed();
 					}
 				}else{
 					if(0 == cPurpose){
-						iRet = applyRegionId(cVPCId, cRegId);
+						iRet = applyRegionId(cRegId);
 						if(0 == iRet){
 							LOGE("Token is invalid, try to attach\n");
 							sprintf(cmd, "/beseye/cam_main/cam-util -attach '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
-							if(DEBUG_MODE){
-								LOGE("attach cmd:[%s]\n", cmd);
-							}
-							iRet = invokeSystemWithTimeout(cmd, 30) >> 8;
+							LOGE("attach cmd:[%s]\n", cmd);
+							iRet = invokeSystemWithTimeout(cmd, 15) >> 8;
 
 							//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
 							if(0 == iRet){
 								LOGE("Cam attach OK\n");
 								onSPSuccess();
 							}else{
-								LOGE("Cam attach failed\n");
+								LOGE("Cam attach failed, iRet:%d\n", iRet);
+								if(CMD_RET_CODE_SSL_ERROR == iRet){
+									sPairingErrType = PAIRING_ERR_SSL_ERROR;
+								}else if(CMD_RET_CODE_CAM_ATTACH_ALREADY == iRet){
+									sPairingErrType = PAIRING_ERR_ATTACH_ALREADY;
+								}else if(CMD_RET_CODE_CAM_INVALID_HW_ID == iRet){
+									sPairingErrType = PAIRING_ERR_INVALID_HW_ID;
+								}
 								onSPFailed();
 							}
 						}else{
-							LOGE("Failed to apply cVPCId : [%d]\n", cVPCId);
+							LOGE("Failed to apply cRegId : [%d]\n", cRegId);
 							onSPFailed();
 						}
 					}else{
@@ -2910,13 +2663,12 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			}
 		}
 	}
+
 #endif
 }
 
 void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDecodeUnmark, bool bFromAutoCorrection, MatchRetSet* prevMatchRet){
-	if(DEBUG_MODE){
-		LOGI("onSetResult(), strCode:%s, strDecodeMark = %s\n", strCode.c_str(), strDecodeMark.c_str());
-	}
+	LOGI("onSetResult(), strCode:%s, strDecodeMark = %s\n", strCode.c_str(), strDecodeMark.c_str());
 #ifdef CAM_ENV
 	if(mbPairingAnalysisMode){
 		if( 0 < strCode.length()){
@@ -2950,9 +2702,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"strDecodeMark    = ["<<strDecodeMark<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					if(DEBUG_MODE){
-						LOGE("%s\n", strLog.str().c_str());
-					}
+					LOGE("%s\n", strLog.str().c_str());
 
 					Delegate_FeedbackMatchResult(curCode, curECCode, curEncodeMark, strCode, strDecodeUnmark, strDecodeMark, DESC_MATCH, bFromAutoCorrection);
 				}else{
@@ -2965,9 +2715,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"Difference       = ["<<findDifference(curEncodeMark, strDecodeMark)<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					if(DEBUG_MODE){
-						LOGE("%s\n", strLog.str().c_str());
-					}
+					LOGE("%s\n", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_EC){
 							adaptPrevMatchRet(prevMatchRet);
@@ -2996,9 +2744,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"Difference       = ["<<findDifference(curEncodeMark, strDecodeMark)<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					if(DEBUG_MODE){
-						LOGE("%s\n", strLog.str().c_str());
-					}
+					LOGE("%s\n", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_EC){
 							adaptPrevMatchRet(prevMatchRet);
@@ -3025,9 +2771,7 @@ void AudioTest::onSetResult(string strCode, string strDecodeMark, string strDeco
 							"Difference       = ["<<findDifference(curEncodeMark, strDecodeMark)<<"]\n"<<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"] \n"<<
 							"strCode          = ["<<strCode<<"]\n";
-					if(DEBUG_MODE){
-						LOGE("%s\n", strLog.str().c_str());
-					}
+					LOGE("%s\n", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
 							adaptPrevMatchRet(prevMatchRet);
@@ -3082,9 +2826,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 							"curEncodeMark    = ["<<curEncodeMark<<"], \n" <<
 							"tmpRet           = ["<<tmpRet.str()<<"]\n" <<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"]";
-					if(DEBUG_MODE){
-						LOGE("%s\n", strLog.str().c_str());
-					}
+					LOGE("%s\n", strLog.str().c_str());
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
 							adaptPrevMatchRet(prevMatchRet);
@@ -3112,9 +2854,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 							"curEncodeMark    = ["<<curEncodeMark<<"], \n" <<
 							"tmpRet           = ["<<tmpRet.str()<<"]\n" <<
 							"strDecodeUnmark  = ["<<strDecodeUnmark<<"]";
-					if(DEBUG_MODE){
-						LOGE("%s\n", strLog.str().c_str());
-					}
+					LOGE("%s\n", strLog.str().c_str());
 
 					if(bFromAutoCorrection){
 						if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
@@ -3145,9 +2885,7 @@ void AudioTest::onTimeout(void* freqAnalyzerRef, bool bFromAutoCorrection, Match
 						"curEncodeMark    = ["<<curEncodeMark<<"], \n" <<
 						"tmpRet           = ["<<tmpRet.str()<<"]\n" <<
 						"strDecodeUnmark  = ["<<strDecodeUnmark<<"]";
-				if(DEBUG_MODE){
-					LOGE("%s\n", strLog.str().c_str());
-				}
+				LOGE("%s\n", strLog.str().c_str());
 
 				if(bFromAutoCorrection){
 					if(NULL != prevMatchRet && prevMatchRet->prevMatchRetType <= DESC_MATCH_MSG){
@@ -3197,9 +2935,7 @@ float AudioTest::onBufCheck(ArrayRef<short> buf, msec_t lBufTs, bool bResetFFT, 
 }
 
 void AudioTest::adaptPrevMatchRet(MatchRetSet* prevMatchRet){
-	if(DEBUG_MODE){
-		LOGI("adaptPrevMatchRet(), previous result is better,\n prevMatchRet = %s", prevMatchRet?prevMatchRet->toString().c_str():"");
-	}
+	LOGI("adaptPrevMatchRet(), previous result is better,\n prevMatchRet = %s", prevMatchRet?prevMatchRet->toString().c_str():"");
 	Delegate_FeedbackMatchResult(curCode, curECCode, curEncodeMark, prevMatchRet->strCode, prevMatchRet->strDecodeUnmark, prevMatchRet->strDecodeMark, prevMatchRet->prevMatchRetType, false);
 }
 
@@ -3216,9 +2952,7 @@ void AudioTest::resetBuffer(){
 }
 
 void AudioTest::deinitTestRound(){
-	if(DEBUG_MODE){
-		LOGE("deinitTestRound()++\n");
-	}
+	LOGE("deinitTestRound()++\n");
 	tmpRet.str("");
 	tmpRet.clear();
 	FreqAnalyzer::getInstance()->endToTrace();
@@ -3239,9 +2973,7 @@ void AudioTest::deinitTestRound(){
 	acquireSyncObj();
 	pthread_cond_broadcast(&mSyncObjCond);
 	releaseSyncObj();
-	if(DEBUG_MODE){
-		LOGE("deinitTestRound()--\n");
-	}
+	LOGE("deinitTestRound()--\n");
 }
 
 
