@@ -234,7 +234,7 @@ public class ShareMgr {
 						messageDialog.show(shareContent);
 	                } else { 
 	                	//WeChat is special case, only image no text
-	                	if(!info.activityInfo.packageName.contains("WeChat")) {
+	                	if(!info.activityInfo.packageName.contains("tencent")) {
 	                		shareIntent.putExtra(Intent.EXTRA_TEXT, PHOTO_SHARE_HASH);
 	                	}
 	                    shareIntent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
