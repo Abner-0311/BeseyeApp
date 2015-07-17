@@ -2171,6 +2171,7 @@ int read_thread(void *arg)
             continue;
         }
 
+        //av_log(NULL, AV_LOG_ERROR, "read_thread(), av_read_frame, in\n");
         ret = av_read_frame(ic, pkt);
         //av_log(NULL, AV_LOG_ERROR, "read_thread(), av_read_frame, ret:%d\n", ret);
         if (ret < 0) {
@@ -2200,6 +2201,7 @@ int read_thread(void *arg)
         if (pkt->stream_index == is->audio_stream && pkt_in_play_range) {
             packet_queue_put(&is->audioq, pkt);
         } else if (pkt->stream_index == is->video_stream && pkt_in_play_range) {
+        	//av_log(NULL, AV_LOG_INFO, "read_thread(), put in videoq\n");
             packet_queue_put(&is->videoq, pkt);
         } else if (pkt->stream_index == is->subtitle_stream && pkt_in_play_range) {
             packet_queue_put(&is->subtitleq, pkt);

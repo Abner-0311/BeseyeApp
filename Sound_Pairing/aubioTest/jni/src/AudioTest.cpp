@@ -55,6 +55,9 @@ typedef enum{
 typedef enum{
 	PAIRING_ERR_BASE,
 	PAIRING_ERR_MAC_NOT_FOUND,
+	PAIRING_ERR_SSL_ERROR,
+	PAIRING_ERR_ATTACH_ALREADY,
+	PAIRING_ERR_INVALID_HW_ID,
 	PAIRING_ERR_COUNT
 }Pairing_Err_Type;
 
@@ -1427,8 +1430,15 @@ void changePairingMode(Pairing_Mode mode){
 			}else if(PAIRING_ANALYSIS == mode){
 				setLEDMode(LED_MODE_BLINK_B);
 			}else if(PAIRING_ERROR == mode){
+				LOGW("---sPairingErrType:%d\n", sPairingErrType);
 				if(sPairingErrType == PAIRING_ERR_MAC_NOT_FOUND){
 					setLEDMode(LED_MODE_CYCLE_R_B);
+				}else if(sPairingErrType == PAIRING_ERR_SSL_ERROR){
+					setLEDMode(LED_MODE_CYCLE_R_G);
+				}else if(sPairingErrType == PAIRING_ERR_ATTACH_ALREADY){
+					setLEDMode(LED_MODE_BLINK_RGB);
+				}else if(sPairingErrType == PAIRING_ERR_INVALID_HW_ID){
+					setLEDMode(LED_MODE_CYCLE_R_G_B);
 				}else{
 					setLEDMode(LED_MODE_SOLID_R);
 				}
@@ -2773,10 +2783,16 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 					}
 					//iNetworkRet = checkInternetStatus(NETWORK_CHECK_HOST);
 
-					iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.beseye.com") >> 8;
+					//check www.beseye.cn in China
+					if(1 == cRegId){
+						iNetworkRet = invokeSystem("/beseye/util/curl -H 'User-Agent: BesProOne0713' --connect-timeout 10 --max-time 10 www.beseye.cn") >> 8;
+					}else{
+						iNetworkRet = invokeSystem("/beseye/util/curl -H 'User-Agent: BesProOne0713' --connect-timeout 10 --max-time 10 www.beseye.com") >> 8;
+					}
 
-					if(iNetworkRet != 0)
+					if(iNetworkRet != 0){
 						iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.alibaba.com.cn") >> 8;
+					}
 
 					if(0 == iNetworkRet && sOrginalBSSID && (FALSE == bIsSameWiFiConfig /*|| FALSE == bIsSameSSID*/)){
 						char* curBSSID = getCurWiFiBSSID();
@@ -2831,7 +2847,12 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			bool bHaveOldToken = readFromFile(SES_TOKEN_PATH);
 
 			if(0 == iNetworkRet){
-				LOGE("network connected\n");
+
+				LOGE("network connected, Check time first, time_ms:%lld .............+++++++++++++++++\n", time_ms());
+
+				iRet = invokeSystem("/beseye/cam_main/cam-util -checkTime");
+				LOGE("Check time ret:%d , time_ms:%lld .............-------------------\n", iRet, time_ms());
+
 				iRet = invokeSystem("/beseye/cam_main/beseye_token_check") >> 8;
 				if(0 == iRet){
 					sbTokenExisted = true;
@@ -2856,8 +2877,9 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 							onSPFailed();
 						}
 					}else{
-						LOGE("Wrong cPurpose\n");
+						LOGE("Wrong cPurpose for verify\n");
 						//roll back wifi settings
+						sPairingErrType = PAIRING_ERR_ATTACH_ALREADY;
 						onSPFailed();
 					}
 				}else{
@@ -2876,7 +2898,14 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 								LOGE("Cam attach OK\n");
 								onSPSuccess();
 							}else{
-								LOGE("Cam attach failed\n");
+								LOGE("Cam attach failed, iRet:%d\n", iRet);
+								if(CMD_RET_CODE_SSL_ERROR == iRet){
+									sPairingErrType = PAIRING_ERR_SSL_ERROR;
+								}else if(CMD_RET_CODE_CAM_ATTACH_ALREADY == iRet){
+									sPairingErrType = PAIRING_ERR_ATTACH_ALREADY;
+								}else if(CMD_RET_CODE_CAM_INVALID_HW_ID == iRet){
+									sPairingErrType = PAIRING_ERR_INVALID_HW_ID;
+								}
 								onSPFailed();
 							}
 						}else{
