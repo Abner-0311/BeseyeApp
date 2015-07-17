@@ -83,6 +83,10 @@ import com.app.beseye.widget.BaseOneBtnDialog;
 import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
 import com.facebook.share.model.ShareContent;
 import com.facebook.share.widget.MessageDialog;
+import com.xiaomi.market.sdk.UpdateResponse;
+import com.xiaomi.market.sdk.UpdateStatus;
+import com.xiaomi.market.sdk.XiaomiUpdateAgent;
+import com.xiaomi.market.sdk.XiaomiUpdateListener;
 
 
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, 
@@ -284,6 +288,55 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	    });
 	}
 	
+	private boolean mbGetUpdateRetFromHockeyApp = false;
+	private boolean mbGetUpdateRetFromMiSDK = false;
+	private Runnable mCheckUpdateRetFromMiSDKRunnable = new Runnable(){
+		@Override
+		public void run() {
+			if(false == mbGetUpdateRetFromHockeyApp){
+				Log.i(TAG, "run(), try to get update status from mi");
+				XiaomiUpdateAgent.setUpdateAutoPopup(false);
+				XiaomiUpdateAgent.setUpdateListener(new XiaomiUpdateListener() {
+					@Override
+					public void onUpdateReturned(int updateStatus, UpdateResponse reponse) {
+				        switch (updateStatus) {
+				            case UpdateStatus.STATUS_UPDATE:
+				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_UPDATE, reponse:"+reponse.toString());
+				    			 launchUpdateApp();
+				                 break;
+				            case UpdateStatus.STATUS_NO_UPDATE:
+				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_NO_UPDATE");
+				    			 onAppUpdateNotAvailable();
+				                 break;
+				            case UpdateStatus.STATUS_NO_WIFI:
+				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_NO_WIFI");
+				                 break;
+				            case UpdateStatus.STATUS_NO_NET:
+				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_NO_NET");
+				                break;
+				            case UpdateStatus.STATUS_FAILED:
+				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_FAILED");
+				    			 onAppUpdateNotAvailable();
+				                 break;
+				            case UpdateStatus.STATUS_LOCAL_APP_FAILED:
+				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_LOCAL_APP_FAILED");
+				    			 onAppUpdateNotAvailable();
+				                 break;
+				            default:{
+				    			 Log.i(TAG, "onUpdateReturned(), unknown updateStatus:"+updateStatus);
+				    			 onAppUpdateNotAvailable();
+				            }   
+				            mbGetUpdateRetFromMiSDK = true;
+				        }
+					}
+				});
+				mbGetUpdateRetFromMiSDK = false;
+				XiaomiUpdateAgent.update(BeseyeBaseActivity.this);
+			}else{
+				Log.i(TAG, "run(), already get update status from hockeyApp");
+			}
+		}};
+	
 	private void checkForUpdates() {
 	    // Remove this for store builds!
 		mbHaveCheckAppVer = false;
@@ -292,11 +345,17 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			BeseyeCamInfoSyncMgr.getInstance().registerOnCamUpdateVersionCheckListener(this);
 		}
 		
+		BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
+		mbGetUpdateRetFromHockeyApp = false;
 		if(BeseyeUtils.canUpdateFromHockeyApp()){
 			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
+			BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, 6000L);
 		}else if(BeseyeUtils.isProductionVersion()){
 			//Log.i(TAG, "checkForUpdates(), for production:"+HOCKEY_APP_ID);
 			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListenerForProduction, false);
+			BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, 6000L);
+		}else{
+			BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, 6000L);
 		}
 	}
 	
@@ -304,6 +363,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		@Override
 		public void onNoUpdateAvailable() {
 			super.onNoUpdateAvailable();
+			mbGetUpdateRetFromHockeyApp = true;
 			onAppUpdateNotAvailable();
 		}
 	}; 
@@ -495,6 +555,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		@Override
 		public void onUpdateAvailable() {
 			super.onUpdateAvailable();
+			mbGetUpdateRetFromHockeyApp = true;
+			BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
 			UpdateManager.unregister();
 			launchUpdateApp();
 		}
@@ -502,9 +564,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		@Override
 		public void onNoUpdateAvailable() {
 			super.onNoUpdateAvailable();
+			mbGetUpdateRetFromHockeyApp = true;
 			onAppUpdateNotAvailable();
 			if(BeseyeUtils.isProductionVersion()){
 				Log.i(TAG, "onNoUpdateAvailable(), for production");
+				BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
+				BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, 0L);
 			}
 		}
 	}; 
