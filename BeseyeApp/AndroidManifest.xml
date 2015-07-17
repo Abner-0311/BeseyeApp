@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
-    android:versionCode="139"
-    android:versionName="0.1.139" 
+    android:versionCode="137"
+    android:versionName="0.1.13" 
     android:installLocation="auto">
     <!-- Android 2.3.3 -->
     <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="14" />
@@ -53,6 +53,10 @@
 	
 	<!-- Keeps the processor from sleeping when playing streaming. -->
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	
+	<!-- Mi Update service -->
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="com.xiaomi.market.sdk.UPDATE" />
 	
     <application
         android:allowBackup="true"
