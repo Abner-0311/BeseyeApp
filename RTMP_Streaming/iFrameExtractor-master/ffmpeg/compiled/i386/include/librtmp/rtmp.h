@@ -260,6 +260,9 @@ extern "C"
     void (*m_rtmpStatusCallback)(void* , int , void*);
     void (*m_rtmpErrorCallback)(void* , int , void*);
     void* mUserCb;
+
+    int miLinkTimeout;
+    int miReadTimeout;
   } RTMP;
 
   int RTMP_ParseURL(const char *url, int *protocol, AVal *host,
@@ -354,13 +357,19 @@ extern "C"
 	void (*rtmpStatusCallback)(void* , int , void*);
 	void (*rtmpErrorCallback)(void* , int , void*);
 	void* userData;
+	int * iCustomValues;
+	int iCustomCount;
   } beseyeCBFuncHolder;
 
   int RTMP_RegisterCB(RTMP *r,
 		  void (*rtmpCallback)(void* , const AVal*, const AVal*, void*),
 		  void (*rtmpStatusCallback)(void* , int , void*),
 		  void (*rtmpErrorCallback)(void* , int , void*),
-		  void* userData);
+		  void* userData,
+		  int * iCustomValues,
+		  int iCustomCount);
+
+  void setIgnoreURLDecodeFlag(int iIgnore);
 
 	enum Stream_Status{
 		STREAM_UNINIT,

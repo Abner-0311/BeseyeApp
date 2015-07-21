@@ -100,6 +100,13 @@ public:
 	virtual void setAudioMute(bool bMute);
 	virtual bool isAudioMute();
 
+	virtual void setRTMPLinkTimeout(int iTimeoutInSec);
+	virtual int getRTMPLinkTimeout();
+	virtual void setRTMPReadTimeout(int iTimeoutInSec);
+	virtual int getRTMPReadTimeout();
+	virtual void setRTMPIgoreURLDecode(bool bIgnore);
+	virtual bool getRTMPIgoreURLDecode();
+
 private:
 	inline void fill_rectangle(SDL_Surface *screen, int x, int y, int w, int h, int color){
 	    SDL_Rect rect;
@@ -223,6 +230,9 @@ private:
 	int is_full_screen;
 
 	bool mbIsMute;
+	int miRTMPLinkTimeout;
+	int miRTMPReadTimeout;
+	bool mbIgnoreURLDecode;
 
 	//SDL_Surface *screen;
 
