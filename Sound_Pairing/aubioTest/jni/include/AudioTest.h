@@ -52,7 +52,7 @@ public :
 	virtual void onTimeout(void* freqAnalyzer, bool bFromAutoCorrection, MatchRetSet* prevMatchRet);
 	virtual float onBufCheck(ArrayRef<short> buf, msec_t lBufTs, bool bResetFFT, int* iFFTValues);
 	virtual void decodeRSCode(int* data, int iCount, int iNumErr);
-	virtual void checkPairingFile();;
+	virtual void checkPairingFile();
 #ifdef ANDROID
 	virtual void soundpairSenderCallback(const char* cb_type, void* data);
 #endif

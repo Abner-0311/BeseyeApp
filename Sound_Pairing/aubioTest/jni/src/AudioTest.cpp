@@ -1060,7 +1060,7 @@ bool AudioTest::startPairingAnalysis(){
 		registerJobCb(healthCheck);
 
 		if(false == sbNetworkConnectedChecked){
-			if(sbTokenExisted = readFromFile(SES_TOKEN_PATH)){//Have token
+			if(sbTokenExisted = isFileExist(SES_TOKEN_PATH)){//Have token
 				if(DEBUG_MODE){
 					LOGE( "Need to check existed token.\n");
 				}
@@ -1446,6 +1446,8 @@ void changePairingMode(Pairing_Mode mode){
 				setLEDMode(LED_MODE_SOLID_G);
 			}
 			sPairingMode = mode;
+
+
 		}
 	}
 	//LOGW("---sPairingMode:%d\n", sPairingMode);
@@ -1494,8 +1496,10 @@ void* AudioTest::verifyToken(void* userdata){
 	AudioTest* tester = (AudioTest*)userdata;
 	while(!tester->mbStopAnalysisThreadFlag){
 		msec_t lDelta = time_ms() - slLastTimeCheckToken;
+		//LOGE( "sPairingMode:%d, lDelta:%lld, isFileExist(SES_TOKEN_PATH):%d....\n", sPairingMode, lDelta, isFileExist(SES_TOKEN_PATH));
+
 		if((PAIRING_ANALYSIS != sPairingMode && lDelta > TIME_TO_CHECK_TOKEN)/* || (PAIRING_ANALYSIS == sPairingMode && lDelta >TIME_TO_CHECK_TOKEN_ANALYSIS_PERIOD)*/){
-			if(sbTokenExisted = readFromFile(SES_TOKEN_PATH)){
+			if(sbTokenExisted = isFileExist(SES_TOKEN_PATH)){
 				turnOnWiFiModule();
 				msec_t lTimeToBeginNetworkChk = time_ms();
 				if(DEBUG_MODE){
@@ -2843,8 +2847,6 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 			}while(0 != iNetworkRet && (bUnknownSecType && cSecTypeGuess >= PAIRING_SEC_NONE));
 
 			LOGE("network checking complete, iNetworkRet:%d, iTrials:%ld\n", iNetworkRet, iTrials);
-
-			bool bHaveOldToken = readFromFile(SES_TOKEN_PATH);
 
 			if(0 == iNetworkRet){
 
