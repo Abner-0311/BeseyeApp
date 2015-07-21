@@ -1087,7 +1087,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			//SessionMgr.getInstance().cleanSession();
 			onSessionInvalid();
 		}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
-			onToastShow(task, "failed to update sw");
+			//onToastShow(task, "failed to update sw");
 		}else if(task instanceof BeseyeCamBEHttpTask.GetCamUpdateStatusTask){
 			//removeMyDialog(DIALOG_ID_CAM_UPDATE);
 			//onToastShow(task, "failed to update status");

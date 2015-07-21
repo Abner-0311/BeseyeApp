@@ -579,11 +579,14 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.RestartCamTask){
 				if(0 == iRetCode){
-					onToastShow(task, "Reboot cam Successfully.");
-					if(DEBUG)
+					if(DEBUG){
+						onToastShow(task, "Reboot cam Successfully.");
 						Log.i(TAG, "onPostExecute(), "+result.toString());
+					}
 				}else{
-					onToastShow(task, "Reboot cam failed.");
+					if(DEBUG){
+						onToastShow(task, "Reboot cam failed.");
+					}
 				}
 				
 				if(mbTriggerDetachAfterReboot){
