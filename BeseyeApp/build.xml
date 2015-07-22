@@ -125,6 +125,11 @@
 				        
 				        <property name="matchFBProvider.start" value='android:authorities=\"@string/facebook_provider_authority\"' />
 				        <replaceregexp file="AndroidManifest.xml" match='${matchFBProvider.start}' replace='android:authorities=\"@string/facebook_provider_authority_beta\"' />
+				        
+				        <propertyfile file="version.properties">
+				            <entry key="app.version.code.beta" type="int" operation="-" value="1" />
+				            <entry key="app.version.minor.beta" type="int" operation="-" value="1" />
+				        </propertyfile>
 		        	</then>
 		        	<else>
 		        	    <if condition="${Is_Alpha}">
@@ -153,6 +158,11 @@
 						        
 						        <property name="matchFBProvider.start" value='android:authorities=\"@string/facebook_provider_authority\"' />
 						        <replaceregexp file="AndroidManifest.xml" match='${matchFBProvider.start}' replace='android:authorities=\"@string/facebook_provider_authority_alpha\"' />
+						        
+						        <propertyfile file="version.properties">
+						            <entry key="app.version.code.alpha" type="int" operation="-" value="1" />
+						            <entry key="app.version.minor.alpha" type="int" operation="-" value="1" />
+						        </propertyfile>
 				        	</then>
 				        	<else>
 				        	    <propertyfile file="version.properties">
@@ -179,6 +189,11 @@
 						        
 						        <property name="matchFBProvider.start" value='android:authorities=\"@string/facebook_provider_authority\"' />
 						        <replaceregexp file="AndroidManifest.xml" match='${matchFBProvider.start}' replace='android:authorities=\"@string/facebook_provider_authority_prod\"' />
+						        
+						        <propertyfile file="version.properties">
+						            <entry key="app.version.code" type="int" operation="-" value="1" />
+						            <entry key="app.version.minor" type="int" operation="-" value="1" />
+						        </propertyfile>
 			            	</else>
 			            </if>
 	            	</else>
@@ -376,6 +391,38 @@
 	    <delete file="AndroidManifest-backup.xml" quiet="true" />
 	    <property name="matchAppName.start" value='android:label=\"' />
 		<replaceregexp file="AndroidManifest.xml" match='${matchAppName.start}[^"]*${match.end}' replace="${matchAppName.start}@string/app_name_dev${match.end}" />
+		
+		<if condition="${build.is.packaging.debug}">
+	        <then>
+
+	        </then>
+	        <else>
+	            <if condition="${Is_Beta}">
+		        	<then>
+		            	<propertyfile file="version.properties">
+				            <entry key="app.version.code.beta" type="int" operation="+" value="1" />
+				            <entry key="app.version.minor.beta" type="int" operation="+" value="1" />
+				        </propertyfile>
+		        	</then>
+		        	<else>
+		        	    <if condition="${Is_Alpha}">
+				        	<then>
+				            	<propertyfile file="version.properties">
+						            <entry key="app.version.code.alpha" type="int" operation="+" value="1" />
+						            <entry key="app.version.minor.alpha" type="int" operation="+" value="1" />
+						        </propertyfile>
+				        	</then>
+				        	<else>
+				        	    <propertyfile file="version.properties">
+						            <entry key="app.version.code" type="int" operation="+" value="1" />
+						            <entry key="app.version.minor" type="int" operation="+" value="1" />
+						        </propertyfile>
+			            	</else>
+			            </if>
+	            	</else>
+	            </if>
+	        </else>
+	    </if>
 	</target>
 	
 	<target name="-post-build">

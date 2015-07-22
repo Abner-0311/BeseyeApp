@@ -352,7 +352,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    			httpRequest.addHeader("Bes-VcamPermission-VcamUid", mStrVCamIdForPerm);
 	    		}
 	    		
-	    		if(SessionMgr.getInstance().isTokenValid()){
+	    		if(SessionMgr.getInstance().isTokenValid() && false == (this instanceof BeseyeAccountTask.GetVPCNoHttpTask)){
 	    			httpRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
 	    		}
 	    		
