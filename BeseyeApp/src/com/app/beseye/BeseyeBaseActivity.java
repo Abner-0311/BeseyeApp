@@ -213,7 +213,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			if(null != mGetCamListTask && false == mGetCamListTask.isCancelled()){
 				mGetCamListTask.cancel(true);
 			}
-			monitorAsyncTask(mGetCamListTask = new BeseyeAccountTask.GetVCamListTask(this).setDialogId(-1), true);
+			monitorAsyncTask(mGetCamListTask = new BeseyeAccountTask.GetVCamListTask(this, true).setDialogId(-1), true);
 		}
 	}
 	

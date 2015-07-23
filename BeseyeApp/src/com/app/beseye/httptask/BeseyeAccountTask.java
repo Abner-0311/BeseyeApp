@@ -297,16 +297,21 @@ public class BeseyeAccountTask {
 		private String mstrVCamIdCheck= null;
 		private JSONObject mMsgObj = null;
 		private boolean mbFromPush = false;
+		private boolean mbVcamFilter = false;// if true, get user owned cam only
 		
 		public GetVCamListTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
 			//enableHttps();
 		}
+		
+		public GetVCamListTask(OnHttpTaskCallback cb, boolean bVcamFilter) {
+			this(cb);
+			mbVcamFilter = bVcamFilter;
+		}
  
 		public GetVCamListTask(OnHttpTaskCallback cb, String strVCamIdCheck, JSONObject msgObj, boolean bFromPush) {
-			super(cb);
-			setHttpMethod(HttpPost.METHOD_NAME);
+			this(cb);
 			mstrVCamIdCheck = strVCamIdCheck;
 			mMsgObj = msgObj;
 			mbFromPush = bFromPush;
@@ -330,9 +335,11 @@ public class BeseyeAccountTask {
 			try {		
 //				if(0 < strParams.length){
 //					setVCamIdForPerm(strParams[0]);
-//					
 //				}
 				obj.put(ACC_REGION, BeseyeUtils.getLocaleStringForRegion());
+				if(mbVcamFilter){
+					obj.put(ACC_VCAM_FILTER, ACC_VCAM_FILTER_OWN);
+				}
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_GET_VCAM_LST, obj.toString());
 			} catch (NumberFormatException e) {
