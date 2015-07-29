@@ -433,24 +433,27 @@
   <string name="share_way">Share via</string>
   <!--Description show on share app-->
   <string name="share_hash">Check out this image captured by my Beseye</string>
-  <!--用來回應 “你確定嗎？” -->
+  <!--To reply the question 'are you sure?' -->
   <string name="sure">OK</string>
-  <!--(動態通知頁面)the text below motion zone image preview-->
+  <!--the title of motion zone image preview-->
   <string name="motion_zone_title">Edit detection area</string>
   <!--cancel dialog body-->
   <string name="motion_zone_cancel_body">Your edits will be aborted, are you sure?</string>
   <!--cancel dialog title-->
   <string name="motion_zone_cancel_title">Abort</string>
-  <!--(設定頁面)-->
+  <!--(in setting page)-->
   <string name="cam_setting_title_motion_zone">Motion detection</string>
   <!--dialog title for get thumbnail error in EditView-->
-  <string name="thumbnail_error_title">Failed to connect to camera.</string>
+  <string name="thumbnail_error_title">Connection failed</string>
   <!--dialog body for get thumbnail error in EditView-->
   <string name="thumbnail_error_body">Please check network on mobile device and camera, then try again.</string>
   <string name="fullscreen">Full screen</string>
+  <!--Show on event list for people detected-->
   <string name="event_list_family_detected_ex">People dectected (%s)</string>
+  <!--Show on event list-->
   <string name="event_list_people_detected_stranger">Stranger</string>
-  
+  <!--Dialog Title for listing Market App to update beseye -->
   <string name="dialog_title_download_app_via">Update Beseye APP via</string>
+  <!--Dialog Title for listing Market App Web version to update beseye -->
   <string name="dialog_title_download_app_via_web">Update Beseye APP via web</string>
 </resources>

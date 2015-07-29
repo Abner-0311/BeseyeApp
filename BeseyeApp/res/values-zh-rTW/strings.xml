@@ -433,27 +433,27 @@
   <string name="share_way">分享方式</string>
   <!--Description show on share app-->
   <string name="share_hash">看看我用Beseye 拍到的精彩時刻</string>
-  <!--用來回應 “你確定嗎？” -->
+  <!--To reply the question 'are you sure?' -->
   <string name="sure">確定</string>
-  <!--(動態通知頁面)the text below motion zone image preview-->
+  <!--the title of motion zone image preview-->
   <string name="motion_zone_title">編輯偵測區域</string>
   <!--cancel dialog body-->
   <string name="motion_zone_cancel_body">如此會捨棄此次編輯，您確定嗎？</string>
   <!--cancel dialog title-->
   <string name="motion_zone_cancel_title">捨棄編輯</string>
-  <!--(設定頁面)-->
+  <!--(in setting page)-->
   <string name="cam_setting_title_motion_zone">動態通知</string>
   <!--dialog title for get thumbnail error in EditView-->
   <string name="thumbnail_error_title">無法成功連線至您的攝影機</string>
   <!--dialog body for get thumbnail error in EditView-->
   <string name="thumbnail_error_body">請將攝影機與手持裝置保持連線狀態, 之後再試一次。</string>
   <string name="fullscreen">全螢幕</string>
-  
+  <!--Show on event list for people detected-->
   <string name="event_list_family_detected_ex">偵測到人物 (%s)</string>
+  <!--Show on event list-->
   <string name="event_list_people_detected_stranger">陌生人</string>
-  
-  
+  <!--Dialog Title for listing Market App to update beseye -->
   <string name="dialog_title_download_app_via">更新Beseye APP</string>
+  <!--Dialog Title for listing Market App Web version to update beseye -->
   <string name="dialog_title_download_app_via_web">網頁更新Beseye APP</string>
-  
 </resources>

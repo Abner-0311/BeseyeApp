@@ -33,10 +33,14 @@ public class PairingWatchOutActivity extends BeseyeAccountBaseActivity {
 			Spannable wordtoSpan = new SpannableString(strDesc);          
 
 		    int i = strDesc.indexOf(strBeBeSound);
-		    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.csl_link_font_color)), i, i+strBeBeSound.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    if(0 <= i){
+			    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.csl_link_font_color)), i, i+strBeBeSound.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    }
 		    
 		    i = strDesc.indexOf(strSpeaker);
-		    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.csl_link_font_color)), i, i+strSpeaker.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    if(0 <= i){
+		    	wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.csl_link_font_color)), i, i+strSpeaker.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    }
 		    tvDesc.setText(wordtoSpan);
 		}
 		
