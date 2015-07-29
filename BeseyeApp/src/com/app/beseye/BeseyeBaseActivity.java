@@ -2259,7 +2259,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				int iFinalStatus = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_FINAL_STAUS, -1);
 				if(DEBUG)
 					Log.i(TAG, "isCamUpdateFinish(), "+objCamUpdateStatus+", strVcamId:"+strVCamId+", iFinalStatus="+iFinalStatus);
-				if(-1 == iFinalStatus){
+				if(-1 == iFinalStatus){//if final status is -1, means updating is ongoing
 					bRet = false;
 					break;
 				}
@@ -2269,14 +2269,16 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return bRet;
 	}
 	
+	//If timestamp is 0, means update is done
 	protected boolean checkCamUpdateDone(){
 		return SessionMgr.getInstance().getCamUpdateTimestamp() == 0;
 	}
 	
+	//Wait cam for 10 mins at most
 	protected boolean checkCamUpdateValid(){
 		boolean  bRet = true;
 		long lDelta = System.currentTimeMillis() - SessionMgr.getInstance().getCamUpdateTimestamp();
-		if(lDelta > 10*60*1000){
+		if(lDelta > 10*60*1000){//timeout after 10 mis
 			SessionMgr.getInstance().setCamUpdateTimestamp(0);
 			bRet = false;
 		}
@@ -2285,6 +2287,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return bRet;
 	}
 	
+	//Save update cam list in pref file for future checking
 	protected String arrayToString(List<String> lstUpdateCandidate){
 		String strRet = "";
 		int iNum = (null != lstUpdateCandidate)?lstUpdateCandidate.size():0;
