@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
@@ -170,7 +171,12 @@ public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
 				if(null != mCheckCamListVersionTask){
 					JSONObject camObj = mArrVcamList.optJSONObject(miCurCheckIdx++);
 					((BeseyeCamBEHttpTask.CheckCamUpdateStatusTask)mCheckCamListVersionTask).setCamObj(camObj);
-					mCheckCamListVersionTask.executeOnExecutor(SINGLE_TASK_EXECUTOR, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID));
+					
+					if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1){
+						mCheckCamListVersionTask.execute(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID));
+	        		}else{
+						mCheckCamListVersionTask.executeOnExecutor(SINGLE_TASK_EXECUTOR, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID));
+	        		}
 				}
 			}
 		}

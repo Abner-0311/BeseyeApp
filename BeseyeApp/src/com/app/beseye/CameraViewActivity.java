@@ -32,6 +32,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
@@ -2167,7 +2168,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	if(-1 != mlRequestBitmapScreenshotTs && lTs == mlRequestBitmapScreenshotTs && null == mSaveScreenshotTask){
     		mSaveScreenshotTask = new SaveScreenshotTask();
     		if(null != mSaveScreenshotTask){
-    			mSaveScreenshotTask.executeOnExecutor(SINGLE_TASK_EXECUTOR, bmp);
+    			if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1){
+        			mSaveScreenshotTask.execute(bmp);
+        		}else{
+        			mSaveScreenshotTask.executeOnExecutor(SINGLE_TASK_EXECUTOR, bmp);
+        		}
     		}
     	}else{
     		Log.i(TAG, "onBitmapScreenshotUpdate(), invalid match mlRequestBitmapScreenshotTs:"+mlRequestBitmapScreenshotTs+", lTs:"+lTs);

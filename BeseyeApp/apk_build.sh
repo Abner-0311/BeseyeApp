@@ -27,6 +27,19 @@ if [ "$1" = "-b" ]; then
   else
     echo "Invalid Build type !!!! -- $2" && exit 0
   fi
+
+  echo "Build $2 Version ..."
+
+  #Check if last build is failed and restore AndroidManifest.xml
+  test -e "AndroidManifest-backup.xml" && echo "AndroidManifest-backup.xml exist, restore it" && mv AndroidManifest-backup.xml AndroidManifest.xml && echo "Restore AndroidManifest.xml Done..."
+
+  #Copy config files based on build type
+  echo "Copy from config folder: $CFG_DIR"
+
+  cp "$CFG_DIR"/ant.properties . && cp "$CFG_DIR"/beseye.release.keystore . && "$ANT_HOME"/ant clean  && "$ANT_HOME"/ant release "$BUILD_PRM" && echo "Build $2 Version Done ..." && exit 0
+
+  echo "Build $2 Version Failed ..."
+
 elif [ "$1" = "-c" ]; then
   "$ANT_HOME"/ant clean && echo "Clean Done..." && exit 0
 elif [ "$1" = "-i" ]; then
@@ -35,14 +48,3 @@ else
   echo "Invalid parameter !!!! -- $1" && exit 0
 fi
 
-echo "Build $2 Version ..."
-
-#Check if last build is failed and restore AndroidManifest.xml
-test -e "AndroidManifest-backup.xml" && echo "AndroidManifest-backup.xml exist, restore it" && mv AndroidManifest-backup.xml AndroidManifest.xml && echo "Restore AndroidManifest.xml Done..."
-
-#Copy config files based on build type
-echo "Copy from config folder: $CFG_DIR"
-
-cp "$CFG_DIR"/ant.properties . && cp "$CFG_DIR"/beseye.release.keystore . && "$ANT_HOME"/ant clean  && "$ANT_HOME"/ant release "$BUILD_PRM" && echo "Build $2 Version Done ..." && exit 0
-
-echo "Build $2 Version Failed ..."

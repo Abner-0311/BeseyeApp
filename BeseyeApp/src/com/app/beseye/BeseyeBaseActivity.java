@@ -36,6 +36,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -290,6 +291,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private boolean mbGetUpdateRetFromHockeyApp = false;
 	private boolean mbGetUpdateRetFromMiSDK = false;
+	
+	static final private long TIME_TO_CHECK_UPDATE_VIA_MI = 6000L;//Avoid no update from HockeyApp SDK
+	static final private long TIME_TO_CHECK_FINAL_UPDATE_RET    = 10000L;//Avoid no update from both SDK
+	
 	private Runnable mCheckUpdateRetFromMiSDKRunnable = new Runnable(){
 		@Override
 		public void run() {
@@ -330,6 +335,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				        }
 					}
 				});
+				BeseyeUtils.postRunnable(mCheckFinalAppUpdateRet, TIME_TO_CHECK_FINAL_UPDATE_RET);
 				mbGetUpdateRetFromMiSDK = false;
 				XiaomiUpdateAgent.update(BeseyeBaseActivity.this);
 			}else{
@@ -337,34 +343,79 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}
 		}};
 	
-	private void checkForUpdates() {
-	    // Remove this for store builds!
-		mbHaveCheckAppVer = false;
 		
+	private Runnable mCheckFinalAppUpdateRet = new Runnable(){
+		@Override
+		public void run() {
+			Log.i(TAG, "mCheckFinalAppUpdateRet::run(), "+mbGetUpdateRetFromMiSDK+", "+mbGetUpdateRetFromHockeyApp);
+
+			if(false == mbGetUpdateRetFromMiSDK && false ==mbGetUpdateRetFromHockeyApp){
+				onAppUpdateNotAvailable();
+			}
+		}};	
+	
+	private void checkForUpdates() {
 		if(false == mbIgnoreCamVerCheck){
 			BeseyeCamInfoSyncMgr.getInstance().registerOnCamUpdateVersionCheckListener(this);
 		}
 		
-		BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
+		mbHaveCheckAppVer = false;
 		mbGetUpdateRetFromHockeyApp = false;
+		mbGetUpdateRetFromMiSDK = false;
+		BeseyeUtils.removeRunnable(mCheckFinalAppUpdateRet);
+		BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
+		
 		if(BeseyeUtils.canUpdateFromHockeyApp()){
 			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
-			BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, 6000L);
 		}else if(BeseyeUtils.isProductionVersion()){
-			//Log.i(TAG, "checkForUpdates(), for production:"+HOCKEY_APP_ID);
+			Log.i(TAG, "checkForUpdates(), for production:"+((HOCKEY_APP_ID.length() > 7)?HOCKEY_APP_ID.substring(0, 6):""));
 			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListenerForProduction, false);
-			BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, 6000L);
-		}else{
-			BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, 6000L);
 		}
+
+		BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, TIME_TO_CHECK_UPDATE_VIA_MI);
 	}
 	
+	//For Alpha update
 	private UpdateManagerListener mUpdateManagerListener = new UpdateManagerListener(){
 		@Override
 		public void onNoUpdateAvailable() {
 			super.onNoUpdateAvailable();
 			mbGetUpdateRetFromHockeyApp = true;
-			onAppUpdateNotAvailable();
+			if(false == mbGetUpdateRetFromMiSDK){
+				onAppUpdateNotAvailable();
+			}else{
+				Log.i(TAG, "onNoUpdateAvailable(), have get update ret from mi");
+			}
+		}
+	}; 
+	
+	//For production version app update
+	private UpdateManagerListener mUpdateManagerListenerForProduction = new UpdateManagerListener(){
+		@Override
+		public void onUpdateAvailable() {
+			super.onUpdateAvailable();
+			mbGetUpdateRetFromHockeyApp = true;
+			BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
+			UpdateManager.unregister();
+			
+			if(false == mbGetUpdateRetFromMiSDK){
+				launchUpdateApp();
+			}else{
+				Log.i(TAG, "onUpdateAvailable(), have get update ret from mi");
+			}
+		}
+
+		@Override
+		public void onNoUpdateAvailable() {
+			super.onNoUpdateAvailable();
+			mbGetUpdateRetFromHockeyApp = true;
+			BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
+			
+			if(false == mbGetUpdateRetFromMiSDK){
+				onAppUpdateNotAvailable();
+			}else{
+				Log.i(TAG, "onNoUpdateAvailable(), have get update ret from mi");
+			}
 		}
 	}; 
 	
@@ -379,7 +430,6 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	    final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
 	    if(!matches.isEmpty()){
 	    	ResolveInfo riGooglePlay = null;
-	    	ResolveInfo best = null;
 		    for (final ResolveInfo info : matches){
 				Log.e(TAG, "info:"+info.toString());
 				if (info.activityInfo.packageName.toLowerCase().equals("com.android.vending")) {
@@ -550,29 +600,6 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
         
         return d;
 	}
-	
-	private UpdateManagerListener mUpdateManagerListenerForProduction = new UpdateManagerListener(){
-		@Override
-		public void onUpdateAvailable() {
-			super.onUpdateAvailable();
-			mbGetUpdateRetFromHockeyApp = true;
-			BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
-			UpdateManager.unregister();
-			launchUpdateApp();
-		}
-
-		@Override
-		public void onNoUpdateAvailable() {
-			super.onNoUpdateAvailable();
-			mbGetUpdateRetFromHockeyApp = true;
-			onAppUpdateNotAvailable();
-			if(BeseyeUtils.isProductionVersion()){
-				Log.i(TAG, "onNoUpdateAvailable(), for production");
-				BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
-				BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, 0L);
-			}
-		}
-	}; 
 	
 	private void onAppUpdateNotAvailable(){
 		if(this instanceof CameraListActivity && !checkCamUpdateValid() && !isCamUpdating() && null != mObjVCamList){
@@ -986,7 +1013,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
         		if(null != mMapCurAsyncTasks){
             		mMapCurAsyncTasks.put(task, new AsyncTaskParams(bCancelWhenDestroy, strArgs));
             	}
-        		task.executeOnExecutor(executor, strArgs);
+        		
+        		if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1){
+        			task.execute(strArgs);
+        		}else{
+        			task.executeOnExecutor(executor, strArgs);
+        		}
         	}else{
         		Log.e(TAG, "Network disconnected");
         		showNoNetworkDialog();
