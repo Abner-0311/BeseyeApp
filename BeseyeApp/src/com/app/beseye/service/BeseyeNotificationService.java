@@ -1165,14 +1165,17 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					if(DEBUG)
 						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), AddRegisterIDTask OK");
 					mbRegisterPushServer = true;
+				}else if(BeseyeError.E_BE_PUSH_ALREADY_REGISTER == iRetCode){
+					Log.i(TAG, "BeseyeNotificationService::onPostExecute(), E_BE_PUSH_ALREADY_REGISTER");
+					mbRegisterPushServer = true;
 				}
 			}else if(task instanceof BeseyePushServiceTask.AddBaiduIDTask){
 				if(0 == iRetCode || 2 == iRetCode && null != result && 0 < result.size()){
 					if(DEBUG)
 						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), AddBaiduIDTask OK");
 					mbRegisterPushServer = true;
-				}else if(BeseyeError.E_BE_BAIDU_ALREADY_REGISTER == iRetCode){
-					Log.i(TAG, "BeseyeNotificationService::onPostExecute(), E_BE_BAIDU_ALREADY_REGISTER");
+				}else if(BeseyeError.E_BE_PUSH_ALREADY_REGISTER == iRetCode){
+					Log.i(TAG, "BeseyeNotificationService::onPostExecute(), E_BE_PUSH_ALREADY_REGISTER");
 					mbRegisterPushServer = true;
 				}
 			}else if(task instanceof BeseyePushServiceTask.DelRegisterIDTask){

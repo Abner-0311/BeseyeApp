@@ -51,6 +51,6 @@ public class BeseyeError {
 	static public final int   E_CAM_INVALID_WIFI_SEC_TYPE 			       = 0x00200014;
 	static public final int   E_CAM_INVALID_WIFI_INFO 				       = 0x00200015;
 	
-	//# Baidu Push related
-	static public final int	  E_BE_BAIDU_ALREADY_REGISTER				   = 0x00500002;	 
+	//# Push related
+	static public final int	  E_BE_PUSH_ALREADY_REGISTER				   = 0x00500002;	 
 }

@@ -1307,8 +1307,11 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					BeseyeJSONUtil.setJSONObject(mUpdateVcamList, strVcamId, result.get(0));
 					updateCamUpdateProgress();
 				}else{
-					mLstUpdateCandidate.remove(strVcamId);
-					miUpdateCamNum-=1;		
+					//If task timeout, keep tracking 
+					if(Integer.MIN_VALUE != iRetCode){
+						mLstUpdateCandidate.remove(strVcamId);
+						miUpdateCamNum-=1;
+					}
 				}
 				
 				if(isCamUpdatingCompleted() || 0 == miUpdateCamNum){
