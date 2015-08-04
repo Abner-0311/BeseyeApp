@@ -13,7 +13,6 @@
 		0713D8841932F0D900BF6968 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161331856A07F00CFBC99 /* libavformat.a */; };
 		0713D8851932F0D900BF6968 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161341856A07F00CFBC99 /* libavutil.a */; };
 		0713D8871932F0D900BF6968 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161301856A07F00CFBC99 /* libswscale.a */; };
-		0713D8881932F0D900BF6968 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161351856A07F00CFBC99 /* librtmp.a */; };
 		0713D8891932F0D900BF6968 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161361856A07F00CFBC99 /* libcrypto.a */; };
 		0713D88A1932F0D900BF6968 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161371856A07F00CFBC99 /* libssl.a */; };
 		076160F218569D3800CFBC99 /* BeseyeStreamer.xcodeproj in Resources */ = {isa = PBXBuildFile; fileRef = 076160F118569D3800CFBC99 /* BeseyeStreamer.xcodeproj */; };
@@ -51,6 +50,9 @@
 		07E19FDF18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 07E19FDE18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm */; };
 		07EC6C8018B4D6920018BEA4 /* libBeseyeSoundPairing.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07EC6C7F18B4D6920018BEA4 /* libBeseyeSoundPairing.a */; };
 		07F3AACE1754B0D50046934B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07F3AACD1754B0D50046934B /* Default-568h@2x.png */; };
+		07FB894F1B704ADD00177EF5 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FB894E1B704ADD00177EF5 /* AVFoundation.framework */; };
+		07FB89501B704B0600177EF5 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161351856A07F00CFBC99 /* librtmp.a */; };
+		07FB89521B709ADA00177EF5 /* ad-hoc.c in Sources */ = {isa = PBXBuildFile; fileRef = 07FB89511B709ADA00177EF5 /* ad-hoc.c */; };
 		0918E6D110F839FC00300130 /* sophie.mov in Resources */ = {isa = PBXBuildFile; fileRef = 0918E6D010F839FC00300130 /* sophie.mov */; };
 		0921E14110FADAFB004EAA40 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0921E14010FADAFB004EAA40 /* Utilities.m */; };
 		0921E14610FADB97004EAA40 /* VideoFrameExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0921E14510FADB97004EAA40 /* VideoFrameExtractor.m */; };
@@ -150,6 +152,8 @@
 		07E19FDE18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iFrameExtractorAppDelegate.mm; sourceTree = "<group>"; };
 		07EC6C7F18B4D6920018BEA4 /* libBeseyeSoundPairing.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBeseyeSoundPairing.a; path = "BeseyeSoundPairing/build/Debug-iphoneos/libBeseyeSoundPairing.a"; sourceTree = "<group>"; };
 		07F3AACD1754B0D50046934B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		07FB894E1B704ADD00177EF5 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		07FB89511B709ADA00177EF5 /* ad-hoc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "ad-hoc.c"; sourceTree = "<group>"; };
 		0918E6D010F839FC00300130 /* sophie.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = sophie.mov; sourceTree = "<group>"; };
 		0921E13F10FADAFB004EAA40 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
 		0921E14010FADAFB004EAA40 /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
@@ -180,13 +184,14 @@
 				0713D8841932F0D900BF6968 /* libavformat.a in Frameworks */,
 				0713D8851932F0D900BF6968 /* libavutil.a in Frameworks */,
 				0713D8871932F0D900BF6968 /* libswscale.a in Frameworks */,
-				0713D8881932F0D900BF6968 /* librtmp.a in Frameworks */,
+				07FB89501B704B0600177EF5 /* librtmp.a in Frameworks */,
 				0713D8891932F0D900BF6968 /* libcrypto.a in Frameworks */,
 				0713D88A1932F0D900BF6968 /* libssl.a in Frameworks */,
 				0761611118569DC500CFBC99 /* libBeseyeStreamer.a in Frameworks */,
 				07EC6C8018B4D6920018BEA4 /* libBeseyeSoundPairing.a in Frameworks */,
 				07AD70711855A07D000BCD88 /* libSDL2.a in Frameworks */,
 				156A981B15DCDD8C00898981 /* libbz2.1.0.dylib in Frameworks */,
+				07FB894F1B704ADD00177EF5 /* AVFoundation.framework in Frameworks */,
 				09A69722110EC23900FE1DA8 /* Foundation.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -264,6 +269,7 @@
 				0921E14010FADAFB004EAA40 /* Utilities.m */,
 				0921E14410FADB97004EAA40 /* VideoFrameExtractor.h */,
 				0921E14510FADB97004EAA40 /* VideoFrameExtractor.m */,
+				07FB89511B709ADA00177EF5 /* ad-hoc.c */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -341,6 +347,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				07FB894E1B704ADD00177EF5 /* AVFoundation.framework */,
 				07EC6C7F18B4D6920018BEA4 /* libBeseyeSoundPairing.a */,
 				0761612F1856A07F00CFBC99 /* libswresample.a */,
 				076161301856A07F00CFBC99 /* libswscale.a */,
@@ -490,6 +497,7 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				0921E14110FADAFB004EAA40 /* Utilities.m in Sources */,
 				07E19FDF18505DFB00E0CA98 /* iFrameExtractorAppDelegate.mm in Sources */,
+				07FB89521B709ADA00177EF5 /* ad-hoc.c in Sources */,
 				0921E14610FADB97004EAA40 /* VideoFrameExtractor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -501,6 +509,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++98";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -516,17 +525,16 @@
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/include\"",
 				);
 				INFOPLIST_FILE = "iFrameExtractor-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../../RTMP_Streaming/rtmpdump-2.3_2/lib",
 					"$(SRCROOT)/../../RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
-					"$(SRCROOT)/../../RTMP_Streaming/openssl-1.0.1e/build_ios/lib",
-					"/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
+					"$(PROJECT_DIR)/ffmpeg/compiled/i386/lib",
 				);
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 				a = a;
 			};
 			name = Debug;
@@ -535,6 +543,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++98";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -548,17 +557,16 @@
 					"\"$(SRCROOT)/ffmpeg/compiled/i386/include\"",
 				);
 				INFOPLIST_FILE = "iFrameExtractor-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../../RTMP_Streaming/rtmpdump-2.3_2/lib",
 					"$(SRCROOT)/../../RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
-					"$(SRCROOT)/../../RTMP_Streaming/openssl-1.0.1e/build_ios/lib",
-					"/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/ffmpeg/compiled/i386/lib",
+					"$(PROJECT_DIR)/ffmpeg/compiled/i386/lib",
 				);
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 				a = a;
 			};
 			name = Release;
@@ -582,7 +590,7 @@
 					./BeseyeSoundPairing,
 					./ffmpeg/compiled/i386/include/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-I",
@@ -591,7 +599,7 @@
 					/compiled/i386/include/include/,
 				);
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 			};
 			name = Debug;
 		};
@@ -614,7 +622,7 @@
 					./BeseyeSoundPairing,
 					./ffmpeg/compiled/i386/include/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-I",
@@ -623,7 +631,7 @@
 					/compiled/i386/include/include/,
 				);
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 			};
 			name = Release;
 		};

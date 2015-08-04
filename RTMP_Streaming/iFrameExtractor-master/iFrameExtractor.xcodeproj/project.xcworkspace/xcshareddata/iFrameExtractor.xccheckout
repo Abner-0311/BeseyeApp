@@ -14,7 +14,7 @@
 		<string>https://github.com/BesEye/BS_HomeSecurity_App_Modules.git</string>
 		<key>9A54B7CE-40E5-4E8A-A77A-CD55BC62403B</key>
 		<string>ssh://github.com/BesEye/BS_HomeSecurity_V1_Android.git</string>
-		<key>C9B052F7-99D6-459F-BBF0-1B91A06A2E54</key>
+		<key>E47B38741633CE1FFE6F45A792E24279016EB7E1</key>
 		<string>https://github.com/BesEye/HomeSecurity_FE_Android.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
@@ -25,15 +25,15 @@
 		<string>../../../../../BS_HomeSecurity_App_Modules</string>
 		<key>9A54B7CE-40E5-4E8A-A77A-CD55BC62403B</key>
 		<string>../../../../../BS_HomeSecurity_V1_Android</string>
-		<key>C9B052F7-99D6-459F-BBF0-1B91A06A2E54</key>
+		<key>E47B38741633CE1FFE6F45A792E24279016EB7E1</key>
 		<string>../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/BesEye/HomeSecurity_FE_Android.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>C9B052F7-99D6-459F-BBF0-1B91A06A2E54</string>
+	<string>E47B38741633CE1FFE6F45A792E24279016EB7E1</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -56,7 +56,7 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>C9B052F7-99D6-459F-BBF0-1B91A06A2E54</string>
+			<string>E47B38741633CE1FFE6F45A792E24279016EB7E1</string>
 			<key>IDESourceControlWCCName</key>
 			<string>HomeSecurity_FE_Android</string>
 		</dict>

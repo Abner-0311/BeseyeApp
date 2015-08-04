@@ -7,21 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		070E2C4D19375124007D0189 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615A1856A0B200CFBC99 /* libswresample.a */; };
-		0713D88B1932F12700BF6968 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161531856A0B200CFBC99 /* libavcodec.a */; };
-		0713D88C1932F12700BF6968 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161541856A0B200CFBC99 /* libavfilter.a */; };
-		0713D88D1932F12700BF6968 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161551856A0B200CFBC99 /* libavformat.a */; };
-		0713D88E1932F12700BF6968 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161561856A0B200CFBC99 /* libavutil.a */; };
-		0713D8901932F12700BF6968 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615B1856A0B200CFBC99 /* libswscale.a */; };
-		0713D8911932F12700BF6968 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161581856A0B200CFBC99 /* librtmp.a */; };
-		0713D8921932F12700BF6968 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161571856A0B200CFBC99 /* libcrypto.a */; };
-		0713D8931932F12700BF6968 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161591856A0B200CFBC99 /* libssl.a */; };
 		07BC6F391921116E009541A3 /* beseye_rtmp_observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F2D1921116E009541A3 /* beseye_rtmp_observer.cpp */; };
 		07BC6F3A1921116E009541A3 /* beseyeplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F2E1921116E009541A3 /* beseyeplayer.cpp */; };
 		07BC6F3B1921116E009541A3 /* cmdutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F2F1921116E009541A3 /* cmdutils.c */; };
 		07BC6F401921116E009541A3 /* librtmp_ext.c in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F341921116E009541A3 /* librtmp_ext.c */; };
 		07BC6F411921116E009541A3 /* pkt_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F351921116E009541A3 /* pkt_queue.c */; };
 		07BC6F431921116E009541A3 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07BC6F371921116E009541A3 /* utils.cpp */; };
+		07FB89451B70454400177EF5 /* libavformat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161551856A0B200CFBC99 /* libavformat.a */; };
+		07FB89461B70454400177EF5 /* libavutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161561856A0B200CFBC99 /* libavutil.a */; };
+		07FB89471B70454400177EF5 /* libswresample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615A1856A0B200CFBC99 /* libswresample.a */; };
+		07FB89481B70454400177EF5 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0761615B1856A0B200CFBC99 /* libswscale.a */; };
+		07FB89491B70454400177EF5 /* libavcodec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161531856A0B200CFBC99 /* libavcodec.a */; };
+		07FB894A1B70454400177EF5 /* libavfilter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161541856A0B200CFBC99 /* libavfilter.a */; };
+		07FB894B1B70454400177EF5 /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161581856A0B200CFBC99 /* librtmp.a */; };
+		07FB894C1B70454400177EF5 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161571856A0B200CFBC99 /* libcrypto.a */; };
+		07FB894D1B70454400177EF5 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 076161591856A0B200CFBC99 /* libssl.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -148,15 +148,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				070E2C4D19375124007D0189 /* libswresample.a in Frameworks */,
-				0713D88B1932F12700BF6968 /* libavcodec.a in Frameworks */,
-				0713D88C1932F12700BF6968 /* libavfilter.a in Frameworks */,
-				0713D88D1932F12700BF6968 /* libavformat.a in Frameworks */,
-				0713D88E1932F12700BF6968 /* libavutil.a in Frameworks */,
-				0713D8901932F12700BF6968 /* libswscale.a in Frameworks */,
-				0713D8911932F12700BF6968 /* librtmp.a in Frameworks */,
-				0713D8921932F12700BF6968 /* libcrypto.a in Frameworks */,
-				0713D8931932F12700BF6968 /* libssl.a in Frameworks */,
+				07FB89451B70454400177EF5 /* libavformat.a in Frameworks */,
+				07FB89461B70454400177EF5 /* libavutil.a in Frameworks */,
+				07FB89471B70454400177EF5 /* libswresample.a in Frameworks */,
+				07FB89481B70454400177EF5 /* libswscale.a in Frameworks */,
+				07FB89491B70454400177EF5 /* libavcodec.a in Frameworks */,
+				07FB894A1B70454400177EF5 /* libavfilter.a in Frameworks */,
+				07FB894B1B70454400177EF5 /* librtmp.a in Frameworks */,
+				07FB894C1B70454400177EF5 /* libcrypto.a in Frameworks */,
+				07FB894D1B70454400177EF5 /* libssl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

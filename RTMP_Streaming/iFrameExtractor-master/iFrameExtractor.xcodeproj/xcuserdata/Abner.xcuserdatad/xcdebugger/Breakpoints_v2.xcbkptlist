@@ -52,6 +52,7 @@
                   continueAfterRunningActions = "No"
                   symbolName = "-[iFrameExtractorAppDelegate window]"
                   moduleName = "iFrameExtractor"
+                  usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/Abner/Documents/Develop/iOS/iFrameExtractor-master/Classes/iFrameExtractorAppDelegate.h"
                   timestampString = "408254878.128588"
                   startingColumnNumber = "9223372036854775807"
@@ -66,6 +67,7 @@
                   continueAfterRunningActions = "No"
                   symbolName = "-[iFrameExtractorAppDelegate setWindow:]"
                   moduleName = "iFrameExtractor"
+                  usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/Abner/Documents/Develop/iOS/iFrameExtractor-master/Classes/iFrameExtractorAppDelegate.h"
                   timestampString = "408254878.128817"
                   startingColumnNumber = "9223372036854775807"
@@ -114,13 +116,14 @@
                   continueAfterRunningActions = "No"
                   symbolName = "-[iFrameExtractorAppDelegate video]"
                   moduleName = "iFrameExtractor"
+                  usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/Classes/iFrameExtractorAppDelegate.h"
-                  timestampString = "457942653.786451"
+                  timestampString = "460364966.197233"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "59"
                   endingLineNumber = "59"
-                  offsetFromSymbolStart = "24">
+                  offsetFromSymbolStart = "16">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -128,13 +131,14 @@
                   continueAfterRunningActions = "No"
                   symbolName = "-[iFrameExtractorAppDelegate setVideo:]"
                   moduleName = "iFrameExtractor"
+                  usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/Classes/iFrameExtractorAppDelegate.h"
-                  timestampString = "457942653.788175"
+                  timestampString = "460364966.197638"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "59"
                   endingLineNumber = "59"
-                  offsetFromSymbolStart = "31">
+                  offsetFromSymbolStart = "22">
                </Location>
             </Locations>
          </BreakpointContent>

@@ -142,28 +142,31 @@ then
 		mkdir -p "$SCRATCH/$ARCH"
 		cd "$SCRATCH/$ARCH"
 
-        CFLAGS="-arch $ARCH -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include -no-integrated-as"
+        CFLAGS="-arch $ARCH"
+
+#remove  -no-integrated-as for ios 8.4
 
 		if [ "$ARCH" = "i386" -o "$ARCH" = "x86_64" ]
 		then
 		    PLATFORM="iPhoneSimulator"
-            CFLAGS="$CFLAGS -mios-simulator-version-min=$DEPLOYMENT_TARGET -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include -no-integrated-as"
+            CFLAGS="$CFLAGS -mios-simulator-version-min=$DEPLOYMENT_TARGET -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include"
 		else
 		    PLATFORM="iPhoneOS"
-            CFLAGS="$CFLAGS -mios-version-min=$DEPLOYMENT_TARGET -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include -no-integrated-as"
+            CFLAGS="$CFLAGS -mios-version-min=$DEPLOYMENT_TARGET -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include"
 		    if [ "$ARCH" = "arm64" ]
 		    then
 		        EXPORT="GASPP_FIX_XCODE5=1"
 		    fi
 		fi
 
-CPU=
-#if [ $ARCH = "armv7s" ]
-#then
-#CPU="--cpu=cortex-a9"
-#fi
 
-if [ $ARCH = "armv7" ]
+	CPU=
+	#if [ $ARCH = "armv7s" ]
+	#then
+	#CPU="--cpu=cortex-a9"
+	#fi
+
+	if [ $ARCH = "armv7" ]
 then
 CPU="--cpu="
 fi
