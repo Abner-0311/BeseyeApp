@@ -109,38 +109,6 @@
             endingLineNumber = "59"
             landmarkName = "video"
             landmarkType = "19">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[iFrameExtractorAppDelegate video]"
-                  moduleName = "iFrameExtractor"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/Classes/iFrameExtractorAppDelegate.h"
-                  timestampString = "460364966.197233"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "59"
-                  endingLineNumber = "59"
-                  offsetFromSymbolStart = "16">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[iFrameExtractorAppDelegate setVideo:]"
-                  moduleName = "iFrameExtractor"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/RTMP_Streaming/iFrameExtractor-master/Classes/iFrameExtractorAppDelegate.h"
-                  timestampString = "460364966.197638"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "59"
-                  endingLineNumber = "59"
-                  offsetFromSymbolStart = "22">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -296,7 +296,7 @@ void RTMP_ParsePlaypath(AVal *in, AVal *out) {
 
 	*destptr = '\0';
 
-	RTMP_Log(RTMP_LOGERROR, "streamname:[%s] 1", streamname?streamname:"");
+	//RTMP_Log(RTMP_LOGERROR, "streamname:[%s] 1", streamname?streamname:"");
 
 	out->av_val = streamname;
 	out->av_len = destptr - streamname;

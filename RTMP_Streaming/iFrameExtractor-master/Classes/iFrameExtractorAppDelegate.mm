@@ -291,7 +291,7 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
 
 - (void)playLive1{
     if(!player1){
-        setDebugMode(0);
+        setDebugMode(1);
         player1 = new CBeseyePlayer(imageView, PIX_FMT_RGB24, 0, 0);
         player1->registerVideoCallback(videoCallback, videoDeinitCallback);
         player1->registerCallback(rtmpStreamStatusCb);
@@ -306,7 +306,7 @@ void playToneCB(void* userData, FreqGenerator::Play_Tone_Status status, const ch
 //                                 //"rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin/_definst_/3313916c77ff42cf82f8c7ad9c437442"
 //                                 "rtmp://54.238.191.39:1935/live-edge/_definst_/{o}54.250.149.50/live-origin-record/_definst_/2e26ea2bccb34937a65dfa02488e58dc"
 //                                 );
-        player1->createStreaming("rtmps://oregon-p1-stage-ss-edge-1-2.beseye.com:443/live-edge/_definst_/{o}172.31.38.135/live-origin-record/_definst_/01d0f4f7b68e48a583e28449eacf99b2?ua={HTC}_{HTC+Butterfly}&se=1cc1856f3a8fb9cc91550b85fc12cd7a7728329e092409840262d1268f1f7e504a08bc50ee8799188792f7098771ad00c1cb3c5f6af9eb4bb11a99179e5f1b14&dd={Mobile}_{Android}_{1c48d14a-b1b1-38ce-abf3-5340e5ed13f3-alpha}");
+        player1->createStreaming("rtmps://oregon-p1-stage-ss-edge-1-3.beseye.com:443/live-edge/_definst_/{o}172.31.39.17/live-origin-record/_definst_/3313916c77ff42cf82f8c7ad9c437442?ua={HTC}_{HTC+Butterfly}&se=1e959d31c0b5d315bc19f6ffaa8d1d44186acd034dfeaa94e43c8b01674b4c9e160303399d4814675a89fb82f8cfa7040c7c3e0b2ce4bc1473d2a052b060ee64&dd={Mobile}_{Android}_{1c48d14a-b1b1-38ce-abf3-5340e5ed13f3-debug}");
         
         const char* path[] = {"mp4:amazons3/0-beseyeuser-policy01-us-west-2/rec/2e26ea2bccb34937a65dfa02488e58dc/aac/2014/12-10/08/{sEnd}1418198457942_{dur}10336_{r}1418190829206.mp4",
                               "mp4:amazons3/0-beseyeuser-policy01-us-west-2/rec/2e26ea2bccb34937a65dfa02488e58dc/aac/2014/12-10/08/{sEnd}1418198468052_{dur}10385_{r}1418190829206.mp4",

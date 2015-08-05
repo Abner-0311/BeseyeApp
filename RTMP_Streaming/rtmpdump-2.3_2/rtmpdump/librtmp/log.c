@@ -38,7 +38,7 @@ static int neednl;
 
 static FILE *fmsg;
 
-static RTMP_LogCallback rtmp_log_default, *cb = rtmp_log_default;
+static RTMP_LogCallback rtmp_log_default, *cb = NULL;//rtmp_log_default;
 static RTMP_LogCallback2 *cb2 = 0;
 static const char *levels[] = {
   "CRIT", "ERROR", "WARNING", "INFO",
@@ -99,7 +99,9 @@ void RTMP_Log(int level, const char *format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	cb(level, format, args);
+	if(cb){
+		cb(level, format, args);
+	}
 
 	if(cb2){
 		vsnprintf(strcb2, MAX_PRINT_LEN-1, format, args);
