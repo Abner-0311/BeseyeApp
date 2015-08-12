@@ -457,7 +457,6 @@
   <!--Dialog Title for listing Market App Web version to update beseye -->
   <string name="dialog_title_download_app_via_web">Update Beseye APP via web</string>
   
-  <string name="cam_setting_fail_to_modify_schdule">Fail to modify schedule. Please try again later.</string>
   <string name="cam_setting_schedule_conflict_be_on">Due to your setting, cam will be turn on</string>
   <string name="cam_setting_schedule_conflict_be_off">Due to your setting, cam will be turn off</string>
 </resources>

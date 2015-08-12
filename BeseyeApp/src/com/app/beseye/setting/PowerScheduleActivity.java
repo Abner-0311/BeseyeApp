@@ -122,9 +122,13 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 							try {
 								// The Format of WorkDay is [Day, From, Day, To]
 								// Use the first array to get the time 
-								//[Abner Review 0812]Need to add null pointer check after getJSONArray
-								iFromTime = (BeseyeJSONUtil.getJSONArray(holder.objSchdl, SCHED_DAYS).getJSONArray(0)).getInt(1);
-								iToTime = (BeseyeJSONUtil.getJSONArray(holder.objSchdl, SCHED_DAYS).getJSONArray(0)).getInt(3);
+								if(null != BeseyeJSONUtil.getJSONArray(holder.objSchdl, SCHED_DAYS)){
+									JSONArray objSchdlFirstItem = BeseyeJSONUtil.getJSONArray(holder.objSchdl, SCHED_DAYS).getJSONArray(0);
+									if(null != objSchdlFirstItem){
+										iFromTime = objSchdlFirstItem.getInt(1);
+										iToTime = objSchdlFirstItem.getInt(3);
+									}
+								}
 							} catch (JSONException e1) {
 								Log.e(TAG, "PowerScheduleActivity::addScheduleItm(), error to get time, e1:"+e1.toString());
 							}
