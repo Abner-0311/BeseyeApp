@@ -340,6 +340,7 @@ public class BeseyeUtils {
 				strRet += ",";
 			}
 			try {
+				//[Abner Review 0812]Need to add null pointer check after getJSONArray
 				strRet+=getSchdelDayInShort(arrDays.getJSONArray(idx).getInt(0));
 			} catch (JSONException e) {
 				Log.e(TAG, "PowerScheduleEditActivity::getSchdelDaysInShort(), failed to parse, e:"+e.toString());

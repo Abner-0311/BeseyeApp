@@ -137,7 +137,9 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 				mSched_obj_edit = new JSONObject();
 				mSched_obj_edit.put(SCHED_ACTION, BeseyeJSONUtil.SCHED_ACTION_ADD);
 
+				//[Abner Review 0812]allArrDays is not a suitable name. Maybe arrSched
 				JSONArray allArrDays = new JSONArray();
+				//[Abner Review 0812]arrDays is not a suitable name. Maybe arrSubSched
 				JSONArray arrDays = new JSONArray();
 				arrDays.put(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-Calendar.SUNDAY);
 				arrDays.put(BeseyeUtils.DEFAULT_FROM_TIME);
@@ -206,6 +208,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 			JSONArray arrDays = new JSONArray();
 			for(int idx=0; idx<workDays.length(); idx++){
 				if(0 == idx){
+					//[Abner Review 0812]Null pointer check after getJSONArray
 					mSched_local.put(SCHED_LOCAL_FROM, workDays.getJSONArray(idx).getInt(1));
 					mSched_local.put(SCHED_LOCAL_TO, workDays.getJSONArray(idx).getInt(3));
 				}
@@ -325,6 +328,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
+					//[Abner review 0812] Better to show different warning msg for add/update/delete action
 					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_modify_schdule));
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
