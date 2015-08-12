@@ -6,11 +6,9 @@ import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
 import static com.app.beseye.util.BeseyeJSONUtil.OBJ_TIMESTAMP;
 import static com.app.beseye.util.BeseyeJSONUtil.SCHEDULE_STATUS;
 import static com.app.beseye.util.BeseyeJSONUtil.SCHED_DAYS;
-import static com.app.beseye.util.BeseyeJSONUtil.SCHED_FROM;
 import static com.app.beseye.util.BeseyeJSONUtil.SCHED_LIST;
 import static com.app.beseye.util.BeseyeJSONUtil.SCHED_OBJ;
 import static com.app.beseye.util.BeseyeJSONUtil.SCHED_STATUS;
-import static com.app.beseye.util.BeseyeJSONUtil.SCHED_TO;
 import static com.app.beseye.util.BeseyeJSONUtil.getJSONBoolean;
 
 import java.util.ArrayList;
@@ -40,6 +38,8 @@ import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.widget.BaseOneBtnDialog;
+import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
@@ -100,12 +100,6 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 		}
 		
 		mVgPowerScheduleContainer = (ViewGroup)findViewById(R.id.vg_power_schedule_itm_container);
-//		try {
-//			addScheduleItm(new JSONObject("{\""+SCHED_FROM+"\":3600, \""+SCHED_TO+"\":36000, \""+SCHED_DAYS+"\":[0,1,3,5,6]}"));
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 	}
 	
 	private void addScheduleItm(String strIdx, JSONObject objSchdl){
@@ -123,16 +117,24 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 						}
 						holder.txtSchdlPeriod = (TextView)vgScheduleItm.findViewById(R.id.txt_schedule_period);
 						if(null != holder.txtSchdlPeriod){
-							int iFromTime = BeseyeJSONUtil.getJSONInt(holder.objSchdl, SCHED_FROM);
-							int iToTime = BeseyeJSONUtil.getJSONInt(holder.objSchdl, SCHED_TO);
-							boolean bAllDay = (BeseyeUtils.DAY_IN_SECONDS == (iToTime-iFromTime));
+							int iFromTime = BeseyeUtils.DEFAULT_FROM_TIME;
+							int iToTime = BeseyeUtils.DEFAULT_TO_TIME;
+							try {
+								// The Format of WorkDay is [Day, From, Day, To]
+								// Use the first array to get the time 
+								iFromTime = (BeseyeJSONUtil.getJSONArray(holder.objSchdl, SCHED_DAYS).getJSONArray(0)).getInt(1);
+								iToTime = (BeseyeJSONUtil.getJSONArray(holder.objSchdl, SCHED_DAYS).getJSONArray(0)).getInt(3);
+							} catch (JSONException e1) {
+								Log.e(TAG, "PowerScheduleActivity::addScheduleItm(), error to get time, e1:"+e1.toString());
+							}
+							boolean bAllDay = (iToTime == iFromTime);
 							if(bAllDay){
 								holder.txtSchdlPeriod.setText(getString(R.string.cam_setting_all_day_indicator));
 							}else{
 								holder.txtSchdlPeriod.setText(String.format(getString(R.string.cam_setting_desc_turnoff_during), 
 										BeseyeUtils.getTimeBySeconds(iFromTime),
 										BeseyeUtils.getTimeBySeconds(iToTime))
-										+(BeseyeUtils.DAY_IN_SECONDS<=iToTime?getString(R.string.cam_setting_next_day_indicator):""));
+										+(iFromTime >= iToTime?getString(R.string.cam_setting_next_day_indicator):""));
 							}
 							
 						}
@@ -280,12 +282,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 				if(null != schedObj){
 					boolean bSchedStatus = getJSONBoolean(schedObj, SCHED_STATUS, false);
 					if(null != mScheduleSwitchBtn){
-						if(BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj)){
-							mScheduleSwitchBtn.setEnabled(false);
-						}else{
-							mScheduleSwitchBtn.setEnabled(true);
-							mScheduleSwitchBtn.setSwitchState(bSchedStatus?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-						}
+						mScheduleSwitchBtn.setSwitchState(bSchedStatus?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
 					}
 					
 					JSONObject schedListObj = BeseyeJSONUtil.getJSONObject(schedObj, SCHED_LIST);
@@ -301,9 +298,8 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 						for(int idx = 0; idx < iLenSchedule;idx++){
 							try {
 								addScheduleItm(arrScheduleIdx.getString(idx), BeseyeJSONUtil.getJSONObject(schedListObj, arrScheduleIdx.getString(idx)));
-							} catch (JSONException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+							} catch (JSONException e1) {
+								Log.e(TAG, "PowerScheduleActivity::updateScheduleStatus(), e1:"+e1.toString());
 							}
 						}
 					}
@@ -318,6 +314,8 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 				JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
 				if(null != dataObj){
 					JSONObject schedObj = BeseyeJSONUtil.getJSONObject(dataObj, SCHED_OBJ);
+					
+					
 					if(null != schedObj){
 						JSONObject schedListObj = BeseyeJSONUtil.getJSONObject(schedObj, SCHED_LIST);
 						if(null != schedListObj){
@@ -358,6 +356,8 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if(REQUEST_SCHEDULE_CHANGED == requestCode && resultCode == RESULT_OK){
+			checkConflict(intent.getBooleanExtra(PowerScheduleEditActivity.KEY_SCHED_CONFLICT, true), intent.getBooleanExtra(PowerScheduleEditActivity.KEY_SCHED_CONFLICT_WILL_BE, false));
+			
 			try {
 				boolean bDeleteCase =intent.getBooleanExtra(PowerScheduleEditActivity.KEY_SCHED_OBJ_DEL, false);
 				if(bDeleteCase){
@@ -365,16 +365,18 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 				}else{
 					JSONObject sched_obj_edit = new JSONObject(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_OBJ));
 					updateSchedueItm(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_IDX), sched_obj_edit);
+					updateScheduleStatus();
 				}
 				
 				BeseyeJSONUtil.setJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP, intent.getLongExtra(PowerScheduleEditActivity.KEY_SCHED_TS, System.currentTimeMillis()));
 				BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 				
-				//setScheduleDays();
 			} catch (JSONException e) {
 				Log.e(TAG, "onActivityResult(), e:"+e.toString());
 			}
 		}else if(REQUEST_SCHEDULE_ADD == requestCode && resultCode == RESULT_OK){
+			checkConflict(intent.getBooleanExtra(PowerScheduleEditActivity.KEY_SCHED_CONFLICT, true), intent.getBooleanExtra(PowerScheduleEditActivity.KEY_SCHED_CONFLICT_WILL_BE, false));
+			
 			JSONObject sched_obj_edit;
 			try {
 				sched_obj_edit = new JSONObject(intent.getStringExtra(PowerScheduleEditActivity.KEY_SCHED_OBJ));
@@ -385,12 +387,7 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 						if(null != schedObj){
 							boolean bSchedStatus = getJSONBoolean(schedObj, SCHED_STATUS, false);
 							if(null != mScheduleSwitchBtn){
-								if(BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj)){
-									mScheduleSwitchBtn.setEnabled(false);
-								}else{
-									mScheduleSwitchBtn.setEnabled(true);
-									mScheduleSwitchBtn.setSwitchState(bSchedStatus?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-								}
+								mScheduleSwitchBtn.setSwitchState(bSchedStatus?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
 							}
 							
 							JSONObject schedListObj = BeseyeJSONUtil.getJSONObject(schedObj, SCHED_LIST);
@@ -409,5 +406,22 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 			}
 		}else
 			super.onActivityResult(requestCode, resultCode, intent);
+	}
+	
+	private void checkConflict(boolean schedConflict, boolean schedConflictWillBe){
+		if(true == schedConflict){
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			if(true == schedConflictWillBe){
+				d.setBodyText(getString(R.string.cam_setting_schedule_conflict_be_on));
+			}else{
+				d.setBodyText(getString(R.string.cam_setting_schedule_conflict_be_off));
+			}
+			d.setTitleText(getString(R.string.signup_watch_out_title));
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+				@Override
+				public void onBtnClick() {
+				}});
+			d.show();
+		}
 	}
 }

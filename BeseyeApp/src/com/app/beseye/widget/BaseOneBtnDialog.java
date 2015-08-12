@@ -31,7 +31,7 @@ import android.widget.TextView;
  * 			@Override
  *			public void onBtnClick() {
  *				//do something
- *			});
+ *			}});
  *
  * Setting:
  * 		setBodyText(int resid);

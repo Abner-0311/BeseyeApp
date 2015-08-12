@@ -127,11 +127,22 @@ public class BeseyeJSONUtil {
 	public static final String SCHED_STATUS 			= "Status";
 	public static final String SCHED_LIST 				= "List";
 	public static final String SCHEDULE_STATUS 			= "ScheduleStatus";
-	public static final String SCHED_FROM 				= "StartTime";
-	public static final String SCHED_TO 				= "EndTime";
 	public static final String SCHED_DAYS 				= "WorkDay";
 	public static final String SCHED_PERIOD 			= "Peroid";
 	public static final String SCHED_ENABLE 			= "Enable";
+	public static final String SCHED_ACTION				= "Action";
+	public static final String SCHED_LOCAL_DAY			= "Day";
+	public static final String SCHED_LOCAL_FROM			= "From";
+	public static final String SCHED_LOCAL_TO			= "To";
+	public static final String SCHED_INDEX				= "SchIdx";
+	public static final String SCHED_CONFLICT			= "PowerConflict";
+	public static final String SCHED_CONFLICT_WILL_BE 	= "PowerStatusWillBe";
+	
+	//Schedule JSON value of {key:value}
+	public static final String SCHED_DEFAULT_PEROID 	= "week"; 
+	public static final String SCHED_ACTION_ADD			= "Add";
+	public static final String SCHED_ACTION_UPDATE		= "Update";
+	public static final String SCHED_ACTION_DELETE		= "Delete";
 	
 	public static final String LOCATION_OBJ 			= "Locale";
 	public static final String LOCATION_LAT 			= "Latitude";

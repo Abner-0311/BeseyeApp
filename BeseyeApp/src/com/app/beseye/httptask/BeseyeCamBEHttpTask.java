@@ -45,7 +45,6 @@ public class BeseyeCamBEHttpTask  {
 	
 	static private final String URL_CAM_SCHEDULE_STATUS = "cam/%s/schedule/onoff";
 	static private final String URL_CAM_SCHEDULE  		= "cam/%s/schedule";
-	static private final String URL_CAM_SCHEDULE_IDX  	= "cam/%s/schedule/%s";
 	
 	static private final String URL_CAM_LOCATION_POS 	= "cam/%s/locale";
 	
@@ -661,8 +660,8 @@ public class BeseyeCamBEHttpTask  {
 		}
 	}
 	
-	public static class AddScheduleTask extends BeseyeHttpTask{
-		public AddScheduleTask(OnHttpTaskCallback cb) {
+	public static class ModifyScheduleTask extends BeseyeHttpTask{
+		public ModifyScheduleTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
 		}
@@ -671,32 +670,6 @@ public class BeseyeCamBEHttpTask  {
 		protected List<JSONObject> doInBackground(String... strParams) {
 			setVCamIdForPerm(strParams[0]);
 			return super.doInBackground(SessionMgr.getInstance().getCamBEHostUrl()+String.format(URL_CAM_SCHEDULE, strParams[0]), strParams[1]);
-		}
-	}
-	
-	public static class UpdateScheduleTask extends BeseyeHttpTask{
-		public UpdateScheduleTask(OnHttpTaskCallback cb) {
-			super(cb);
-			setHttpMethod(HttpPut.METHOD_NAME);
-		}
-		
-		@Override
-		protected List<JSONObject> doInBackground(String... strParams) {
-			setVCamIdForPerm(strParams[0]);
-			return super.doInBackground(SessionMgr.getInstance().getCamBEHostUrl()+String.format(URL_CAM_SCHEDULE_IDX, strParams[0], strParams[1]), strParams[2]);
-		}
-	}
-	
-	public static class DeleteScheduleTask extends BeseyeHttpTask{
-		public DeleteScheduleTask(OnHttpTaskCallback cb) {
-			super(cb);
-			setHttpMethod(HttpDelete.METHOD_NAME);
-		}
-		
-		@Override
-		protected List<JSONObject> doInBackground(String... strParams) {
-			setVCamIdForPerm(strParams[0]);
-			return super.doInBackground(SessionMgr.getInstance().getCamBEHostUrl()+String.format(URL_CAM_SCHEDULE_IDX, strParams[0], strParams[1]));
 		}
 	}
 	
