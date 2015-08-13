@@ -331,7 +331,26 @@ public class BeseyeUtils {
 		return c.getTime();
 	}
 	
+	//JSON for the BE
 	static public String getSchdelDaysInShort(JSONArray arrDays){
+		String strRet = "";
+		int iSize = (null != arrDays)?arrDays.length():0;
+		for(int idx = 0;idx < iSize;idx++){
+			if(idx > 0){
+				strRet += ",";
+			}
+			try {
+				//[Abner Review 0812]Need to add null pointer check after getJSONArray
+				strRet+=getSchdelDayInShort(arrDays.getJSONArray(idx).getInt(0));
+			} catch (JSONException e) {
+				Log.e(TAG, "PowerScheduleEditActivity::getSchdelDaysInShort(), failed to parse, e:"+e.toString());
+			}
+		}
+		return strRet;
+	}
+
+	//JSON for communication between PowerScheduleEditActivity and PowerScheduleDayPickerActivity
+	static public String getSchdelLocalDaysInShort(JSONArray arrDays){
 		String strRet = "";
 		int iSize = (null != arrDays)?arrDays.length():0;
 		for(int idx = 0;idx < iSize;idx++){
@@ -341,7 +360,7 @@ public class BeseyeUtils {
 			try {
 				strRet+=getSchdelDayInShort(arrDays.getInt(idx));
 			} catch (JSONException e) {
-				Log.e(TAG, "PowerScheduleEditActivity::getSchdelDaysInShort(), failed to parse, e:"+e.toString());
+				Log.e(TAG, "PowerScheduleEditActivity::getSchdelLocalDaysInShort(), failed to parse, e:"+e.toString());
 			}
 		}
 		return strRet;

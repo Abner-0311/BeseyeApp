@@ -1,7 +1,21 @@
+/*
+ * Communication between PowerScheduleEditActivity.java and PowerScheduleDayPickerActivity.java
+ * 
+ * JSON format:
+ * 	{
+ * 		Day: [<int> ...]
+ * 		From: <int>
+ * 		To: <int>
+ * 	}
+ * 
+ * Modify Day in this file
+ * 
+ */
+
 package com.app.beseye.setting;
 
 import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeJSONUtil.SCHED_DAYS;
+import static com.app.beseye.util.BeseyeJSONUtil.SCHED_LOCAL_DAY;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,7 +111,7 @@ public class PowerScheduleDayPickerActivity extends BeseyeBaseActivity{
 			}
 		}
 		
-		JSONArray arrDays = BeseyeJSONUtil.getJSONArray(mSched_obj, SCHED_DAYS);
+		JSONArray arrDays = BeseyeJSONUtil.getJSONArray(mSched_obj, SCHED_LOCAL_DAY);
 		int iSize = (null != arrDays)?arrDays.length():0;
 		for(int idx = 0;idx < iSize;idx++){
 			try {
@@ -170,7 +184,7 @@ public class PowerScheduleDayPickerActivity extends BeseyeBaseActivity{
 		
 		if(null != mSched_obj){
 			try {
-				mSched_obj.put(SCHED_DAYS, arrRet);
+				mSched_obj.put(SCHED_LOCAL_DAY, arrRet);
 				Intent intent = new Intent();
 				intent.putExtra(PowerScheduleEditActivity.KEY_SCHED_OBJ, mSched_obj.toString());
 				setResult(RESULT_OK, intent);
