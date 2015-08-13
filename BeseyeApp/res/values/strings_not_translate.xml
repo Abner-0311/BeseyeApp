@@ -78,19 +78,6 @@
     <!-- DO NOT TRANSLATE END-->
     
    	<string name="cam_setting_Location_aware_setting">Turn off around&#8230;</string>
-	<string name="cam_setting_schedule_turnoff_every">Turn off camera on every</string>
-	<string name="cam_setting_schedule_turnoff_from">From:</string>
-	<string name="cam_setting_schedule_turnoff_to">To:</string>
-	<string name="cam_setting_title_turnoff_all_day">Turn off all day</string>
-	<string name="cam_setting_desc_turnoff_during">Turn off from %1$s to %2$s</string>
-	<string name="cam_setting_all_day_indicator">All day</string>
-	<string name="cam_setting_next_day_indicator"> (next day)</string>
-	<string name="cam_setting_schedule_edit_title">Please select</string>
-	<string name="cam_setting_schedule_picker_title">Select Days</string>
-	
-	<string name="cam_setting_schedule_error_same_time">Please change turn off or on times to make difference</string>
-	<string name="cam_setting_schedule_delete_confirm">Are you sure you want to delete this schedule?</string>
-	<string name="cam_setting_schedule_abort_confirm">Are you sure you want to exit without saving this schedule?</string>	
     
 	<string name="download_app_web_360">360手机助手</string>
     <string name="download_app_web_mi">小米应用商店</string>
