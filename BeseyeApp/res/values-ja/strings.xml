@@ -260,13 +260,13 @@
   <string name="signup_learn_more">詳細はこちら</string>
   <string name="signup_beseye">Beseye</string>
   <string name="signup_bottom_login">ログイン</string>
-  <string name="signup_bottom_signup">カメラのセットアップ</string>
+  <string name="signup_bottom_signup">新規アカウントの作成</string>
   <string name="signup_before_setup_start">スタート</string>
   <!-- Hint Message in before setup page-->
   <string name="signup_before_setup_description">カメラをコンセントに繋ぎ、緑ライトが点滅するまでお待ちください。カメラはご自分から30センチ以内の場所に置いてください。</string>
   <string name="signup_sound_reminder_description">カメラを起動するため、スマホの音が鳴るように設定してください。</string>
   <!-- Hint Message for TOS and privacy policy-->
-  <string name="signup_createAccount_description_title">下記の Beseye 規約に同意するなら次へお進み下さい</string>
+  <string name="signup_createAccount_description_title">下記のBeseye規約に同意するなら次へお進み下さい</string>
   <string name="signup_createAccount_description_terms">利用規約</string>
   <string name="signup_createAccount_description_and">と</string>
   <string name="signup_createAccount_description_policy">プライバシー・ポリシー</string>
@@ -299,7 +299,7 @@
   <!-- Hint message in camera list item when the cam is disconnected-->
   <string name="camera_list_more">詳細はこちら</string>
   <!-- Hint message in camera list item when there is no camera-->
-  <string name="camera_list_add">新しいカメラを追加できます。\nまたはデモカメラを見て、左上のメニューをクリックしてください。</string>
+  <string name="camera_list_add">新しいカメラを追加できます。\nデモカメラを見る場合は、左上のメニューをクリックしてください。</string>
   <!-- Hint message in camera list item when servers are down or network issue-->
   <string name="camera_list_failed_title">カメラの接続に失敗しました</string>
   <string name="camera_list_failed_content">スマホとカメラのネットワーク接続を確認し、再実行してください。</string>
@@ -400,14 +400,14 @@
   <string name="signup_plug_in_title">電源コードを差し込む</string>
   <string name="signup_plug_in_done">電源を入れ、設定を開始する</string>
   <string name="signup_watch_out_title">注意</string>
-  <string name="signup_watch_out_desc">注意!!携帯のをカメラに向かってください\n次へお進み下さい。</string>
+  <string name="signup_watch_out_desc">注意注意！%1$s!\n、%2$sをカメラに向けてください。</string>
   <string name="signup_watch_out_desc_bebebe">ビープ音を発します</string>
-  <string name="signup_watch_out_desc_speaker">スピーカー</string>
-  <string name="signup_watch_out_done">デバイスを認識しました、設定を始まる</string>
+  <string name="signup_watch_out_desc_speaker">スマホ</string>
+  <string name="signup_watch_out_done">デバイス認識完了、設定を開始します</string>
   <string name="signup_confirm_led_title">ステータスライトを確認</string>
-  <string name="signup_confirm_led_desc">ステータスライトが%sか？\n緑ライトに点滅しない場合、\n数秒お待ちください!</string>
-  <string name="signup_confirm_led_twinkling_green_light">緑ライトに点滅しています</string>
-  <string name="signup_confirm_led_done">緑ライトに点滅しています、次へ</string>
+  <string name="signup_confirm_led_desc">緑色のライトが%sか？\n点滅していない場合、\n少しお待ちください。</string>
+  <string name="signup_confirm_led_twinkling_green_light">点滅しています</string>
+  <string name="signup_confirm_led_done">ライトの点滅を確認し、次へ</string>
   <string name="signup_pairing_fail_desc">再びプラグを外し、ステータスランプが緑ライトに点滅していたら、カメラに向かって10センチ以内に装置を置いてもう一度 Let it Bee™ を再実行してください。</string>
   <string name="signup_guideline_try_again_btn">OK，再実行してください</string>
   <!--Toast message for poor quality when talking-->
@@ -418,11 +418,11 @@
   <!--Warning message for detaching cam failed case-->
   <string name="cam_setting_failed_detach_cam">カメラを削除することができません、再実行してください。</string>
   <!--Dialog message for player pic capture-->
-  <string name="player_screenshot_capturing">カメラの映像を保存します</string>
+  <string name="player_screenshot_capturing">画像を保存します</string>
   <!--Toast message for complete pic capture-->
-  <string name="player_screenshot_capture_ok">カメラの映像が保存されました</string>
+  <string name="player_screenshot_capture_ok">画像を保存されました</string>
   <!--Toast message for fail to pic capture-->
-  <string name="player_screenshot_capture_failed">カメラの映像を保存することができません、もう一度やり直してくだ。</string>
+  <string name="player_screenshot_capture_failed">カメラの画像を保存することができません、もう一度やり直してください。</string>
   <!--Toast message for mic occupied-->
   <string name="hint_hold_to_talk_conn_occupied">相手はマイクを使用しています、後ほど再実行してください</string>
   <!--Share button on screenshot dialog-->
@@ -432,7 +432,7 @@
   <!--Title on share list dialog-->
   <string name="share_way">共有</string>
   <!--Description show on share app-->
-  <string name="share_hash">Beseye で保存された映像を見る</string>
+  <string name="share_hash">Beseye で保存された映像画像を見る</string>
   <!--To reply the question 'are you sure?' -->
   <string name="sure">確定</string>
   <!--the title of motion zone image preview-->
