@@ -1518,6 +1518,9 @@ void* AudioTest::verifyToken(void* userdata){
 
 				do{
 					if(0 == (invokeSystem("/beseye/cam_main/beseye_network_check") >> 8)){
+						int iRetChkTime = invokeSystem("/beseye/cam_main/cam-util -checkTime");
+						LOGE("Check time iRetChkTime:%d , time_ms:%lld .............-------------------\n", iRetChkTime, time_ms());
+
 						if(0 == (invokeSystemWithTimeout("/beseye/cam_main/beseye_token_check", 40) >> 8)){
 							AudioTest::getInstance()->setPairingReturnCode(CMD_RET_CODE_TOKEN_STILL_VALID);
 							setLedLight(0,1,0);

@@ -141,7 +141,7 @@ void FreqAnalyzer::setSenderMode(bool bIsSenderMode){
 void FreqAnalyzer::beginToTrace(string strCode){
 	mstrCodeTrace = strCode;
 	mlTraceTs = time_ms();
-	mlMaxWaitingTime = (0 == strCode.length())?90000:(strCode.length()*400+4000);
+	mlMaxWaitingTime = (0 == strCode.length())?90000:(strCode.length()*400+4000);//90 seconds is experiment result
 	if(DEBUG_MODE){
 		LOGW("beginToTrace(), mlTraceTs:%lld, mlMaxWaitingTime: %lld\n", mlTraceTs, mlMaxWaitingTime);
 	}
@@ -370,6 +370,8 @@ void FreqAnalyzer::fillEmptyCodeRecord(msec_t lCurSesBeginTs){
 		if(NULL != lastCodeRec){
 			msec_t lBeginTs = lastCodeRec->lStartTs;
 			msec_t lDelta = lCurSesBeginTs - lBeginTs;
+
+			int iFillCount = 0;
 			while(SoundPair_Config::TONE_PERIOD < lDelta){
 				if(SoundPair_Config::PRE_EMPTY && (lBeginTs-mSessionBeginTs) == SoundPair_Config::TONE_PERIOD){
 					LOGD("fillEmptyCodeRecord()**, ====>>>> no need to add CodeRecord at %lld, due to PRE_EMPTY\n", (lBeginTs+SoundPair_Config::TONE_PERIOD));
@@ -382,6 +384,11 @@ void FreqAnalyzer::fillEmptyCodeRecord(msec_t lCurSesBeginTs){
 				}
 				lBeginTs += SoundPair_Config::TONE_PERIOD;
 				lDelta = lCurSesBeginTs - lBeginTs;
+
+				if(100 < ++iFillCount){
+					LOGD("fillEmptyCodeRecord()**, ====>>>> too many fill, break !!!!!!!!!!!!!\n" );
+					break;
+				}
 			}
 		}
 	}
