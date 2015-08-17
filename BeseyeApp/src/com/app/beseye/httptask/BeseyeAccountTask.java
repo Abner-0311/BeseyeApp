@@ -209,7 +209,7 @@ public class BeseyeAccountTask {
 			try {
 				obj.put(ACC_PAIRING_TYPE, Integer.parseInt(strParams[0]));
 				obj.put(ACC_PAIRING_COUNT, 1);
-				obj.put(ACC_PAIRING_AP_MAC, strParams[1]/*.replaceAll(":", "")*/);
+				//obj.put(ACC_PAIRING_AP_MAC, strParams[1]/*.replaceAll(":", "")*/);//deprecated from 20150817
 				obj.put(ACC_PAIRING_META_DATA, strParams[1]/*.replaceAll(":", "")*/);
 				
 				appendDevInfo(obj);
