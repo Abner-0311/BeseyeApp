@@ -9,7 +9,7 @@
 #                      -i                     ==> install apk
 
 #Assign your ANT_HOME here
-ANT_HOME="../../../apache-ant-1.9.3/bin"
+ANT_HOME="/Users/kelly79126/Desktop/apache-ant-1.9.6/bin/"
 
 #Check if ANT_HOME exists
 test ! -d "$ANT_HOME" && echo "Can't find ANT_HOME: $ANT_HOME" && exit 0
