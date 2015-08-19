@@ -170,6 +170,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                     break;
                 case MSG_CAM_WIFI_CONFIG_CHANGED:{
                 	JSONObject msgObj;
+                	Log.d(TAG, "Kelly in MSG_CAM_WIFI_CONFIG_CHANGED");
 					try {
 						msgObj = new JSONObject((String)msg.obj);
 						JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
@@ -944,13 +945,18 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	                // hence the use of AsyncTask instead of a raw thread.
 	            	JSONObject obj = new JSONObject();
 	            	try {
-						obj.put(PS_REG_DEV_UUID, BeseyeUtils.getAndroidUUid());
 						obj.put(PS_REG_DEV_NAME, Build.MODEL);
-						obj.put(PS_REG_ID, regId);
+						obj.put(PS_TOKEN, regId);
+						obj.put(PS_PLATFORM, PS_GCM);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
 	            	mRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.AddRegisterIDTask(this).execute(obj.toString());
+	            	
+	            	Log.d(TAG, "Kelly registerPushServer(), regId: "+regId+", obj:"+obj.toString());
+	            	
+	            	Log.d(TAG, "Kelly BeseyeUtils.getAndroidUUid(): " + BeseyeUtils.getAndroidUUid());
+	            	
 	            	//showRegIdNotification();
 	            	if(DEBUG)
 	            		Log.d(TAG, "registerPushServer(), regId: "+regId+", obj:"+obj.toString());
@@ -987,16 +993,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     private void unregisterPushServer(){
     	final String regId = getRegistrationId(this);
     	if(null != regId && 0 < regId.length() && null == mUnRegisterPushServerTask){
-    		JSONObject obj = new JSONObject();
-        	try {
-        		JSONArray arrRegIds = new JSONArray();
-        		arrRegIds.put(regId);
-				obj.put(PS_REG_IDS, arrRegIds);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+        	mUnRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.DelRegisterIDTask(this).execute();
         	
-        	mUnRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.DelRegisterIDTask(this).execute(obj.toString());
+        	Log.e(TAG, "Kelly unregisterPushServer()");
+        	
     	}else{
     		Log.e(TAG, "unregisterPushServer(), invalid regId "+regId);
     	}
@@ -1105,11 +1105,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		}else if(task instanceof BeseyePushServiceTask.GetBaiduApiKeyTask){
 			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetBaiduApiKeyTask, iErrType = "+iErrType);
 		}else if(task instanceof BeseyePushServiceTask.AddRegisterIDTask){
-			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), AddRegisterIDTask, iErrType = "+iErrType);
+			Log.e(TAG, "Kelly BeseyeNotificationService::onPostExecute(), AddRegisterIDTask, iErrType = "+iErrType);
 		}else if(task instanceof BeseyePushServiceTask.AddBaiduIDTask){
 			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), AddBaiduIDTask, iErrType = "+iErrType);
 		}else if(task instanceof BeseyePushServiceTask.DelRegisterIDTask){
-			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), DelRegisterIDTask, iErrType = "+iErrType);
+			Log.e(TAG, "Kelly BeseyeNotificationService::onPostExecute(), DelRegisterIDTask, iErrType = "+iErrType);
 		}else if(task instanceof BeseyePushServiceTask.DelBaiduIDTask){
 			Log.e(TAG, "BeseyeNotificationService::onPostExecute(), DelBaiduIDTask, iErrType = "+iErrType + " msg = " + strMsg);
 		}
@@ -1162,6 +1162,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 			}else if(task instanceof BeseyePushServiceTask.AddRegisterIDTask){
 				if(0 == iRetCode || 2 == iRetCode && null != result && 0 < result.size()){
+					
+					Log.i(TAG, "Kelly BeseyeNotificationService::onPostExecute(), AddRegisterIDTask OK");
+					
 					if(DEBUG)
 						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), AddRegisterIDTask OK");
 					mbRegisterPushServer = true;
@@ -1180,6 +1183,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 			}else if(task instanceof BeseyePushServiceTask.DelRegisterIDTask){
 				if(0 == iRetCode && null != result && 0 < result.size()){
+					
+					Log.i(TAG, "Kelly BeseyeNotificationService::onPostExecute(), DelRegisterIDTask OK");
+					
 					if(DEBUG)
 						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), DelRegisterIDTask OK");
 					

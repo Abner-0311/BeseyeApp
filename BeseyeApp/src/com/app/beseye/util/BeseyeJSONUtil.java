@@ -443,6 +443,9 @@ public class BeseyeJSONUtil {
 	public static final String PS_REG_ID 				= "regId";
 	public static final String PS_REG_DEV_UUID 			= "devUuid";
 	public static final String PS_REG_DEV_NAME 			= "devName";
+	public static final String PS_TOKEN					= "token";
+	public static final String PS_PLATFORM				= "platform";
+	public static final String PS_GCM					= "gcm";
 	
 	//Baidu Push service
 	public static final String PS_USER_ID 				= "userId";

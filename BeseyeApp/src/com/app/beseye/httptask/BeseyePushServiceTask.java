@@ -2,6 +2,7 @@ package com.app.beseye.httptask;
 
 import java.util.List;
 
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.json.JSONObject;
 
@@ -15,6 +16,7 @@ public class BeseyePushServiceTask {
 	public static final String FORMAT_ADD_BAIDU_ID		= "notify/android/add_baidu_reg_info";
 	public static final String FORMAT_DEL_BAIDU_ID		= "notify/android/del_baidu_reg_infos";
 	public static final String FORMAT_GET_APIKEY		= "notify/android/get_baidu_app_info";
+	public static final String FORMAT_SNSENDPOINT		= "notify/push/device";
 	
 	static public class GetProjectIDTask extends BeseyeHttpTask{
 		public GetProjectIDTask(OnHttpTaskCallback cb) {
@@ -57,7 +59,7 @@ public class BeseyePushServiceTask {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {			
-			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+FORMAT_ADD_REG_ID, strParams[0]);
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+FORMAT_SNSENDPOINT, strParams[0]);
 		}
 	}
 	
@@ -89,12 +91,12 @@ public class BeseyePushServiceTask {
 	static public class DelRegisterIDTask extends BeseyeHttpTask{
 		public DelRegisterIDTask(OnHttpTaskCallback cb) {
 			super(cb);
-			setHttpMethod(HttpPost.METHOD_NAME);
+			setHttpMethod(HttpDelete.METHOD_NAME);
 		}
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {			
-			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+FORMAT_DEL_REG_ID, strParams[0]);
+			return super.doInBackground(SessionMgr.getInstance().getNSBEHostUrl()+FORMAT_SNSENDPOINT);
 		}
 	}
 	
