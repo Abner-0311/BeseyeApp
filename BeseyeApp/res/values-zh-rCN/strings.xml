@@ -456,4 +456,30 @@
   <string name="dialog_title_download_app_via">更新云守护摄像头APP</string>
   <!--Dialog Title for listing Market App Web version to update beseye -->
   <string name="dialog_title_download_app_via_web">网页更新云守护摄像头APP</string>
+  <!--Turn off on every <Mon> ... etc.-->
+  <!-- TODO: string name="cam_setting_schedule_turnoff_every" -->
+  <!--From: <time>-->
+  <!-- TODO: string name="cam_setting_schedule_turnoff_from" -->
+  <!--To: <time>-->
+  <!-- TODO: string name="cam_setting_schedule_turnoff_to" -->
+  <!-- TODO: string name="cam_setting_title_turnoff_all_day" -->
+  <!--from <time> to <time>-->
+  <!-- TODO: string name="cam_setting_desc_turnoff_during" -->
+  <!-- TODO: string name="cam_setting_all_day_indicator" -->
+  <!--ex. 19:00~7:00 (next day)-->
+  <!-- TODO: string name="cam_setting_next_day_indicator" -->
+  <!--The title of setting schedule page-->
+  <!-- TODO: string name="cam_setting_schedule_edit_title" -->
+  <!--The title of select days page-->
+  <!-- TODO: string name="cam_setting_schedule_picker_title" -->
+  <!--message dialog to user-->
+  <!-- TODO: string name="cam_setting_schedule_error_same_time" -->
+  <!--message dialog to user-->
+  <!-- TODO: string name="cam_setting_schedule_delete_confirm" -->
+  <!--message dialog to user-->
+  <!-- TODO: string name="cam_setting_schedule_abort_confirm" -->
+  <!--message dialog to user-->
+  <!-- TODO: string name="cam_setting_schedule_conflict_be_on" -->
+  <!--message dialog to user-->
+  <!-- TODO: string name="cam_setting_schedule_conflict_be_off" -->
 </resources>

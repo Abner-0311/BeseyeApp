@@ -235,7 +235,7 @@
   <!-- Warning Message of dialog when failed to set new camera name-->
   <string name="msg_set_cam_name_fail">カメラ名の設定ができませんでした、再実行してください。</string>
   <!-- Warning Message of dialog when email format is invalid-->
-  <string name="msg_invalid_account_format">ㄑ</string>
+  <string name="msg_invalid_account_format">メールアドレスが間違っています</string>
   <!-- Warning Message of dialog when password format is invalid-->
   <string name="msg_pw_length_error">パスワードの規定外です、パスワードは6-32文字で、半角アルファベットと数字を含む文字列を入力してください。</string>
   <!-- Warning Message of dialog when password is too short-->
@@ -456,4 +456,30 @@
   <string name="dialog_title_download_app_via">Beseye APP を更新する</string>
   <!--Dialog Title for listing Market App Web version to update beseye -->
   <string name="dialog_title_download_app_via_web">ウェブサイトでBeseye APP を更新する</string>
+  <!--Turn off on every <Mon> ... etc.-->
+  <!-- TODO: string name="cam_setting_schedule_turnoff_every" -->
+  <!--From: <time>-->
+  <!-- TODO: string name="cam_setting_schedule_turnoff_from" -->
+  <!--To: <time>-->
+  <!-- TODO: string name="cam_setting_schedule_turnoff_to" -->
+  <!-- TODO: string name="cam_setting_title_turnoff_all_day" -->
+  <!--from <time> to <time>-->
+  <!-- TODO: string name="cam_setting_desc_turnoff_during" -->
+  <!-- TODO: string name="cam_setting_all_day_indicator" -->
+  <!--ex. 19:00~7:00 (next day)-->
+  <!-- TODO: string name="cam_setting_next_day_indicator" -->
+  <!--The title of setting schedule page-->
+  <!-- TODO: string name="cam_setting_schedule_edit_title" -->
+  <!--The title of select days page-->
+  <!-- TODO: string name="cam_setting_schedule_picker_title" -->
+  <!--message dialog to user-->
+  <!-- TODO: string name="cam_setting_schedule_error_same_time" -->
+  <!--message dialog to user-->
+  <!-- TODO: string name="cam_setting_schedule_delete_confirm" -->
+  <!--message dialog to user-->
+  <!-- TODO: string name="cam_setting_schedule_abort_confirm" -->
+  <!--message dialog to user-->
+  <!-- TODO: string name="cam_setting_schedule_conflict_be_on" -->
+  <!--message dialog to user-->
+  <!-- TODO: string name="cam_setting_schedule_conflict_be_off" -->
 </resources>
