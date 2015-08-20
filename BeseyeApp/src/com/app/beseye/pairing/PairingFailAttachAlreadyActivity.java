@@ -67,7 +67,8 @@ public class PairingFailAttachAlreadyActivity extends BeseyeAccountBaseActivity 
 		mBtnDetach = (Button)findViewById(R.id.button_detach);
 		if(null != mBtnDetach){
 			mBtnDetach.setOnClickListener(this);
-			mBtnDetach.setText(null != mObjAttachedCam?R.string.btn_detach_cam_now:R.string.btn_contact_cs);
+			//mBtnDetach.setText(null != mObjAttachedCam?R.string.btn_detach_cam_now:R.string.btn_contact_cs);
+			mBtnDetach.setText(R.string.signup_try_again_btn);
 		}
 	}
 	
