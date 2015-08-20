@@ -2883,6 +2883,11 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 						}
 					}else{
 						LOGE("Wrong cPurpose for verify\n");
+
+						//Do addtional attach for notify client about attach errors
+						sprintf(cmd, "/beseye/cam_main/cam-util -attach '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
+						iRet = invokeSystemWithTimeout(cmd, 30) >> 8;
+
 						//roll back wifi settings
 						sPairingErrType = PAIRING_ERR_ATTACH_ALREADY;
 						onSPFailed();

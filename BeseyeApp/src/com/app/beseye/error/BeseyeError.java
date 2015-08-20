@@ -24,6 +24,12 @@ public class BeseyeError {
 	
 	static public final int   E_BE_ACC_SESSION_NOT_FOUND                   = 0x00102008;   
 	
+	static public final int   E_BE_ACC_VCAM_CAM_HW_UID_ALREADY_USED_BY_OTHER_VCAM = 0x00104001;
+	static public final int   E_BE_ACC_PS_KEEP_POLLING 							  = 0x00104500;
+	static public final int   E_BE_ACC_PS_ALL_DEV_HW_FAILED						  = 0x00104501;
+	static public final int   E_BE_ACC_PS_SOME_DEV_HW_FAILED					  = 0x00104502;
+	static public final int   E_BE_ACC_PS_VCAM_WAIT_FOR_ATTACH_CONFIRM			  = 0x00104505;
+	
 	//# session sub-module
 	static public final int   E_BE_ACC_SESSION_CLIENT_DEV_UDID_INVALID     = 0x00012000;
 	static public final int   E_BE_ACC_SESSION_CLIENT_USR_AGENT_INVALID    = 0x00012001;

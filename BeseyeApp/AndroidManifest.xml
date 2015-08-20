@@ -313,6 +313,13 @@
         </activity>
         
         <activity
+    		android:name=".pairing.PairingFailAttachAlreadyActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:exported="false">
+        </activity>
+        
+        <activity
             android:name=".SignupActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 

@@ -482,4 +482,9 @@
   <string name="cam_setting_schedule_conflict_be_on">Please be aware that your camera will be turned on due to latest schedule setting</string>
   <!--message dialog to user-->
   <string name="cam_setting_schedule_conflict_be_off">Please be aware that your camera will be turned off due to latest schedule setting</string>
+  <string name="title_cam_attached_already">Already attached camera</string>
+  <string name="btn_detach_cam_now">Remove camera now</string>
+  <string name="btn_contact_cs">Contact Custumer service</string>
+  <string name="cam_attach_under_your_account_error">This camera whose name is (%s) was already awaken by your account.</string>
+  <string name="cam_attach_under_other_account_error">This camera was already awaken by other\'s account.\nPlease contact custumer service for help.\n[Camera HW ID is %s]</string>
 </resources>
