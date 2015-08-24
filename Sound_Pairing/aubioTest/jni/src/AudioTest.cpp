@@ -2384,6 +2384,8 @@ static int onSPSuccess(){
 		iRet = invokeSystem("/beseye/cam_main/beseye_token_check");
 	}while(0 != iRet && 3 > ++iTrials);
 
+	slLastTimeCheckToken = time_ms();
+
 	deleteOldWiFiFile();
 	saveWiFiRec();
 	//removeOldRegionId();
@@ -2859,6 +2861,9 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				LOGE("Check time ret:%d , time_ms:%lld .............-------------------\n", iRet, time_ms());
 
 				iRet = invokeSystem("/beseye/cam_main/beseye_token_check") >> 8;
+
+				slLastTimeCheckToken = time_ms();
+
 				if(0 == iRet){
 					sbTokenExisted = true;
 					LOGE("Token is already existed, check tmp token\n");
@@ -2882,15 +2887,25 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 							onSPFailed();
 						}
 					}else{
-						LOGE("Wrong cPurpose for verify\n");
+						LOGE("Wrong cPurpose for verify, try re-attach...\n");
 
 						//Do addtional attach for notify client about attach errors
 						sprintf(cmd, "/beseye/cam_main/cam-util -attach '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
 						iRet = invokeSystemWithTimeout(cmd, 30) >> 8;
-
-						//roll back wifi settings
-						sPairingErrType = PAIRING_ERR_ATTACH_ALREADY;
-						onSPFailed();
+						if(0 == iRet){
+							LOGE("Cam re-attach OK\n");
+							onSPSuccess();
+						}else{
+							LOGE("Cam re-attach failed, iRet:%d\n", iRet);
+							if(CMD_RET_CODE_SSL_ERROR == iRet){
+								sPairingErrType = PAIRING_ERR_SSL_ERROR;
+							}else if(CMD_RET_CODE_CAM_ATTACH_ALREADY == iRet){
+								sPairingErrType = PAIRING_ERR_ATTACH_ALREADY;
+							}else if(CMD_RET_CODE_CAM_INVALID_HW_ID == iRet){
+								sPairingErrType = PAIRING_ERR_INVALID_HW_ID;
+							}
+							onSPFailed();
+						}
 					}
 				}else{
 					if(0 == cPurpose){

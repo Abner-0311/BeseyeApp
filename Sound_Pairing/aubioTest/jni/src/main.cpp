@@ -24,7 +24,7 @@ void sighandler(int sig){
 }
 
 int main(int argc, char** argv) {
-	LOGE( "SoundPairnig version:[2015/08/20 09]...................., ts:[%lld]\n", time_ms());
+	LOGE( "SoundPairnig version:[2015/08/24 11]...................., ts:[%lld]\n", time_ms());
 
 	signal(SIGINT, sighandler);
 
