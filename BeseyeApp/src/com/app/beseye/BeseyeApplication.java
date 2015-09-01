@@ -82,8 +82,13 @@ public class BeseyeApplication extends Application {
 		checkServerMode();
 		
 		DeviceUuidFactory.getInstance(getApplicationContext());
+		
+		Log.i(TAG, "Kelly BeseyeApplication ::onCreate() start to startService");
+		
 		startService(new Intent(this,BeseyeNotificationService.class));
 		BeseyeMemCache.init(this);
+		
+		Log.i(TAG, "Kelly BeseyeApplication ::onCreate() end to startService and BeseyeMemCache");
 		
 		if(null != s_checkBackgroundRunnable){
 			s_checkBackgroundRunnable.updateContext(this);
