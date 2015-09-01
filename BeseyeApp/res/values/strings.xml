@@ -456,21 +456,35 @@
   <string name="dialog_title_download_app_via">Update Beseye APP via</string>
   <!--Dialog Title for listing Market App Web version to update beseye -->
   <string name="dialog_title_download_app_via_web">Update Beseye APP via web</string>
-  
+  <!--Turn off on every <Mon> ... etc.-->
   <string name="cam_setting_schedule_turnoff_every">Turn off camera on every</string>
+  <!--From: <time>-->
   <string name="cam_setting_schedule_turnoff_from">From:</string>
+  <!--To: <time>-->
   <string name="cam_setting_schedule_turnoff_to">To:</string>
   <string name="cam_setting_title_turnoff_all_day">Turn off all day</string>
+  <!--from <time> to <time>-->
   <string name="cam_setting_desc_turnoff_during">Turn off from %1$s to %2$s</string>
   <string name="cam_setting_all_day_indicator">All day</string>
-  <string name="cam_setting_next_day_indicator"> (next day)</string>
+  <!--ex. 19:00~7:00 (next day)-->
+  <string name="cam_setting_next_day_indicator">(next day)</string>
+  <!--The title of setting schedule page-->
   <string name="cam_setting_schedule_edit_title">Please select</string>
+  <!--The title of select days page-->
   <string name="cam_setting_schedule_picker_title">Select Days</string>
-	
+  <!--message dialog to user-->
   <string name="cam_setting_schedule_error_same_time">Please change turn off or on times to make difference</string>
+  <!--message dialog to user-->
   <string name="cam_setting_schedule_delete_confirm">Are you sure you want to delete this schedule?</string>
-  <string name="cam_setting_schedule_abort_confirm">Are you sure you want to exit without saving this schedule?</string>	
-	
+  <!--message dialog to user-->
+  <string name="cam_setting_schedule_abort_confirm">Are you sure you want to exit without saving this schedule?</string>
+  <!--message dialog to user-->
   <string name="cam_setting_schedule_conflict_be_on">Please be aware that your camera will be turned on due to latest schedule setting</string>
+  <!--message dialog to user-->
   <string name="cam_setting_schedule_conflict_be_off">Please be aware that your camera will be turned off due to latest schedule setting</string>
+  <string name="title_cam_attached_already">Already attached camera</string>
+  <string name="btn_detach_cam_now">Remove camera now</string>
+  <string name="btn_contact_cs">Contact Custumer service</string>
+  <string name="cam_attach_under_your_account_error">This camera whose name is (%s) was already awaken by your account.</string>
+  <string name="cam_attach_under_other_account_error">This camera was already awaken by other\'s account.\nPlease contact custumer service for help.\n[Camera HW ID is %s]</string>
 </resources>

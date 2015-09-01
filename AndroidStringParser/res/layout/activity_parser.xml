@@ -39,6 +39,6 @@
         android:layout_alignLeft="@+id/btn_export"
         android:layout_below="@+id/btn_import"
         android:layout_marginTop="10dp"
-        android:text="Android_0323.xls"/>
+        android:text="android_strings_0819.xls"/>
 
 </RelativeLayout>

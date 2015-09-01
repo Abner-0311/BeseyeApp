@@ -948,9 +948,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						obj.put(PS_REG_DEV_NAME, Build.MODEL);
 						obj.put(PS_TOKEN, regId);
 						obj.put(PS_PLATFORM, PS_GCM);
+
+						//obj.put(PS_PLATFORM, BeseyeConfig.PRODUCTION_VER?PS_GCM:(BeseyeConfig.ALPHA_VER?PS_GCM_ALPHA:PS_GCM_DEV));
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
+	            	
 	            	mRegisterPushServerTask = (BeseyeHttpTask) new BeseyePushServiceTask.AddRegisterIDTask(this).execute(obj.toString());
 	            	
 	            	Log.d(TAG, "Kelly registerPushServer(), regId: "+regId+", obj:"+obj.toString());

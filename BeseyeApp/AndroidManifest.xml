@@ -41,6 +41,10 @@
 	<uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 	<uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    
+    <!--  
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    -->
 	
     <!-- For Push server GCM -->
     <permission android:name="com.app.beseye.permission.C2D_MESSAGE" android:protectionLevel="signature" />
@@ -307,6 +311,13 @@
         
         <activity
     		android:name=".pairing.PairingFailActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:exported="false">
+        </activity>
+        
+        <activity
+    		android:name=".pairing.PairingFailAttachAlreadyActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
