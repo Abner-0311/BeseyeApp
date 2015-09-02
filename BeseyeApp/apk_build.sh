@@ -14,6 +14,8 @@
 
 ANT_HOME="../../../apache-ant-1.9.3/bin"
 SDK_ROOT="../../../adt-bundle-mac-x86_64-20140702/sdk"
+NDK_ROOT="../../android-ndk-r8e"
+NDK_MODULE_ROOT="../RTMP_Streaming"
 
 #Check if ANT_HOME exists
 test ! -d "$ANT_HOME" && echo "Can't find ANT_HOME: $ANT_HOME" && exit 0
@@ -37,22 +39,32 @@ if [ "$1" = "-b" ]; then
     echo "Invalid Build type !!!! -- $2" && exit 0
   fi
 
-  echo "Build $2 Version ..."
+  echo "#################### Build $2 Version Start ####################"
+
+  echo "#################### Build native library ####################"
+  
+  "$NDK_ROOT"/ndk-build NDK_MODULE_PATH="$NDK_MODULE_ROOT" && echo "#################### Build native library pass ####################" && export NDK_BUILD_PASS=Y
+  
+  echo $NDK_BUILD_PASS
+  
+  if [ "$NDK_BUILD_PASS" != "Y" ]; then
+    echo "#################### Build native library failed ####################" && exit 0
+  fi
 
   #Check if last build is failed and restore AndroidManifest.xml
-  test -e "AndroidManifest-backup.xml" && echo "AndroidManifest-backup.xml exist, restore it" && mv AndroidManifest-backup.xml AndroidManifest.xml && echo "Restore AndroidManifest.xml Done..."
+  test -e "AndroidManifest-backup.xml" && echo "#################### AndroidManifest-backup.xml exist, restore it ####################" && mv AndroidManifest-backup.xml AndroidManifest.xml && echo "#################### Restore AndroidManifest.xml Done ####################"
 
   #Copy config files based on build type
-  echo "Copy from config folder: $CFG_DIR"
+  echo "#################### Copy from config folder: $CFG_DIR ####################"
 
-  cp "$CFG_DIR"/ant.properties . && cp "$CFG_DIR"/beseye.release.keystore . && "$ANT_HOME"/ant clean  && "$ANT_HOME"/ant release "$BUILD_PRM" -Dsdk.dir=$ANDROID_HOME && echo "Build $2 Version Done ..." && exit 0
+  "$ANT_HOME"/ant clean && cp "$CFG_DIR"/ant.properties . && cp "$CFG_DIR"/beseye.release.keystore . && "$ANT_HOME"/ant release "$BUILD_PRM" -Dsdk.dir=$ANDROID_HOME && echo "#################### Build $2 Version Done ####################" && exit 0
 
-  echo "Build $2 Version Failed ..."
+  echo "#################### Build $2 Version Failed ####################"
 
 elif [ "$1" = "-c" ]; then
-  "$ANT_HOME"/ant clean && echo "Clean Done..." && exit 0
+  "$ANT_HOME"/ant clean && echo "#################### Clean Done ####################" && exit 0
 elif [ "$1" = "-i" ]; then
-  "$ANT_HOME"/ant installr && echo "Install $2 apk Done..." && exit 0
+  "$ANT_HOME"/ant installr && echo "#################### Install beseye apk Done... ####################" && exit 0
 elif [ "$1" = "-h" ]; then
   echo "Availalbe parameters:"
   echo "                      -b [alpha|beta|prod]   ==> build by type"

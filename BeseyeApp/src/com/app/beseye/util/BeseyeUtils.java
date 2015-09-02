@@ -37,6 +37,7 @@ import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -247,6 +248,15 @@ public class BeseyeUtils {
 	
 	static public String getUserAgent(){
 		return ("{"+Build.MANUFACTURER+"}_{"+Build.MODEL+"}");
+	}
+	
+	static public String getDevName(){
+		String strRet = "";
+		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+		if(null != adapter){
+			strRet = adapter.getName();
+		}
+		return strRet;
 	}
 	
 	static public String getStreamSecInfo(){

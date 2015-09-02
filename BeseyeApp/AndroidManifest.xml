@@ -42,9 +42,8 @@
 	<uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     
-    <!--  
+    <!-- For dev name notification when login -->
     <uses-permission android:name="android.permission.BLUETOOTH"/>
-    -->
 	
     <!-- For Push server GCM -->
     <permission android:name="com.app.beseye.permission.C2D_MESSAGE" android:protectionLevel="signature" />
