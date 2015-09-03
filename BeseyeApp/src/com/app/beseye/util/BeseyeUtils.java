@@ -251,10 +251,12 @@ public class BeseyeUtils {
 	}
 	
 	static public String getDevName(){
-		String strRet = "";
-		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-		if(null != adapter){
-			strRet = adapter.getName();
+		String strRet = NetworkMgr.getInstance().getHotspotName();
+		if(null == strRet || "".equals(strRet)){
+			BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+			if(null != adapter){
+				strRet = adapter.getName();
+			}
 		}
 		return strRet;
 	}

@@ -74,13 +74,15 @@ public class BeseyeApplication extends Application {
 			Log.i(TAG, "*****************BeseyeApplication::onCreate(), can update:"+BeseyeUtils.canUpdateFromHockeyApp()+", CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK+", SessionMgr.getInstance().getIsCamSWUpdateSuspended():"+SessionMgr.getInstance().getIsCamSWUpdateSuspended());
 		}
 
-		//Log.i(TAG, "*****************BeseyeApplication::onCreate(), android.os.Build.MODEL:"+android.os.Build.MODEL+", System.getProperty():"+System.getProperty("net.hostname")+", BluetoothAdapter.getDefaultAdapter():"+BluetoothAdapter.getDefaultAdapter().getName());
 
 		ACRA.init(this);
 		ACRA.getErrorReporter().setReportSender(new HockeySender());
 		
 		NetworkMgr.createInstance(getApplicationContext());
 		CamSettingMgr.createInstance(getApplicationContext());
+		
+		//Log.i(TAG, "*****************BeseyeApplication::onCreate(), Hotspot name:"+NetworkMgr.getInstance().getHotspotName());
+
 		
 		checkServerMode();
 		

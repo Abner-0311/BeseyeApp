@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -131,6 +132,29 @@ public class NetworkMgr {
 			}
 		}
 		return null;
+	}
+	
+	public String getHotspotName() { 
+		String strRet = "";
+	    try {
+	        Method getConfigMethod = mWifiManager.getClass().getMethod("getWifiApConfiguration");
+	        if(null != getConfigMethod){
+		        WifiConfiguration wifiConfig = (WifiConfiguration) getConfigMethod.invoke(mWifiManager);
+		        if(null != wifiConfig){
+		        	strRet = wifiConfig.SSID;
+		        }else{
+		        	Log.e(TAG, "getHotspotName(), wifiConfig is null:");
+		        }
+	        }else{
+	        	Log.e(TAG, "getHotspotName(), getConfigMethod is null:");
+	        }
+	    }
+	    catch (Exception e) {
+	        e.printStackTrace();
+        	Log.e(TAG, "getHotspotName(), e:"+e.toString());
+
+	    }
+	    return strRet;
 	}
 	
 //	//Only check Mobile/Wifi/Wimax
