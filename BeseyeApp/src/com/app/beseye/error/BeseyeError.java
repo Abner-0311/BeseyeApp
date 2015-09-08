@@ -20,10 +20,7 @@ public class BeseyeError {
 	static public final int   E_BE_ACC_USER_BOTH_USER_UID_N_VCAM_UID_BLANK = 0x0010100e;//freeze,
 	static public final int   E_BE_ACC_USER_NEW_PASSWORD_BLANK             = 0x0010100f;//New password is empty or blank!" }.freeze,
 	static public final int   E_BE_ACC_USER_NEW_PASSWORD_STRENGTH_TOO_LOW  = 0x00101010;//New password's strength is too low!" }.freeze,
-	
-	
-	static public final int   E_BE_ACC_SESSION_NOT_FOUND                   = 0x00102008;   
-	
+		
 	static public final int   E_BE_ACC_VCAM_CAM_HW_UID_ALREADY_USED_BY_OTHER_VCAM = 0x00104001;
 	static public final int   E_BE_ACC_PS_KEEP_POLLING 							  = 0x00104500;
 	static public final int   E_BE_ACC_PS_ALL_DEV_HW_FAILED						  = 0x00104501;
@@ -31,17 +28,19 @@ public class BeseyeError {
 	static public final int   E_BE_ACC_PS_VCAM_WAIT_FOR_ATTACH_CONFIRM			  = 0x00104505;
 	
 	//# session sub-module
-	static public final int   E_BE_ACC_SESSION_CLIENT_DEV_UDID_INVALID     = 0x00012000;
-	static public final int   E_BE_ACC_SESSION_CLIENT_USR_AGENT_INVALID    = 0x00012001;
-	static public final int   E_BE_ACC_SESSION_CLIENT_LOCATION_INVALID     = 0x00012002;
-	static public final int   E_BE_ACC_SESSION_CLIENT_IP_INVALID           = 0x00012003;
-	static public final int   E_BE_ACC_SESSION_CREATE_FAILED               = 0x00012004;   
-	static public final int   E_BE_ACC_SESSION_DESTROY_FAILED              = 0x00012005;   
-	static public final int   E_BE_ACC_SESSION_SAVE_FAILED                 = 0x00012006;
-	static public final int   E_BE_ACC_SESSION_NOT_EXIST                   = 0x00012007;   
-	static public final int   E_BE_ACC_SESSION_EXPIRED                     = 0x00012008;   
-	static public final int   E_BE_ACC_SESSION_CLIENT_DEV_UDID_NOT_MATCH   = 0x00012009;   
-	static public final int   E_BE_ACC_SESSION_CLIENT_USR_AGENT_NOT_MATCH  = 0x0001200a;
+	static public final int   E_BE_ACC_USER_SESSION_CLIENT_DEV_UDID_NOT_UNIQUE    = 0x00102000;
+	static public final int   E_BE_ACC_USER_SESSION_CLIENT_DEV_UDID_BLANK    	  = 0x00102001;
+	static public final int   E_BE_ACC_USER_SESSION_CLIENT_DEV_UDID_NOT_MATCH     = 0x00102002;
+	static public final int   E_BE_ACC_USER_SESSION_CLIENT_USR_AGENT_BLANK        = 0x00102003;
+	static public final int   E_BE_ACC_USER_SESSION_CLIENT_USR_AGENT_NOT_MATCH    = 0x00102004;   
+	static public final int   E_BE_ACC_USER_SESSION_CLIENT_IP_BLANK               = 0x00102005;   
+	static public final int   E_BE_ACC_USER_SESSION_CLIENT_IP_FORMAT_INVALID      = 0x00102006;
+	static public final int   E_BE_ACC_USER_SESSION_CLIENT_LOCATION_BLANK         = 0x00102007;   
+	static public final int   E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN            = 0x00102008;   
+	static public final int   E_BE_ACC_USER_SESSION_NOT_FOUND_BY_CLIENT_DEV_UDID  = 0x00102009;   
+	static public final int   E_BE_ACC_USER_SESSION_TOKEN_NOT_UNIQUE  			  = 0x0010200a;
+	static public final int   E_BE_ACC_USER_SESSION_TOKEN_BLANK  			  	  = 0x0010200b;
+	static public final int   E_BE_ACC_USER_SESSION_EXPIRED  			  		  = 0x0010200c;
 	
 	//# OTA related
 	static public final int   E_OTA_SW_ALRADY_LATEST  					   = 0x00500202;

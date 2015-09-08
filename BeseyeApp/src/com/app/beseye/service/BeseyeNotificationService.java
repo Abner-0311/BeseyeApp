@@ -1136,7 +1136,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					}else{
 						Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetProjectIDTask, invalid senderId ");
 					}
-				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_FOUND == iRetCode){
+				}else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
 					Log.i(TAG, "BeseyeNotificationService::onPostExecute(), E_BE_ACC_SESSION_NOT_FOUND ");
 					SessionMgr.getInstance().cleanSession();
 				}
@@ -1156,7 +1156,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					}else{
 						Log.e(TAG, "BeseyeNotificationService::onPostExecute(), GetBaiduApiKeyTask, invalid apiKey "+ apiKey);
 					}
-				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_FOUND == iRetCode){
+				}else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
 					Log.i(TAG, "BeseyeNotificationService::onPostExecute(), E_BE_ACC_SESSION_NOT_FOUND ");
 					SessionMgr.getInstance().cleanSession();
 				}
