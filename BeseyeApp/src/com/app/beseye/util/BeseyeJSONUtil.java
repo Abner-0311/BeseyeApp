@@ -231,8 +231,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_PAIRING_STATUS_CNT 	= "PairingStatusCount";
 	public static final String ACC_PAIRING_CONFLICT_VCAM= "ConflictVcam";
 	public static final String ACC_PAIRING_CAM_HWID		= "DevHwUid";
-	
-	
+	public static final String ACC_PAIRING_KEEP_POLLING	= "KeepPolling";
 	
 	public static final String ACC_REGION 				= "Region";
 	public static final String ACC_VCAM_FILTER 			= "VcamFilter";

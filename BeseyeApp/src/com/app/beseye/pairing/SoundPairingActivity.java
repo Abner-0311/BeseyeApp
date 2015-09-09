@@ -511,25 +511,37 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 				String strAttachedHWID = null;
 				
 				if(0 == iRetCode){
-					JSONObject objVcam = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_VCAM);
-					if(null != objVcam){
-						if(isPairingTokenValid()){
-							startPairingNamePage(objVcam);
-							bPairingFailed = false;
-						}
-					}else{
-						JSONObject objPairStatus = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_PAIRING_STATUS);
-						if(null != objPairStatus){
-							JSONObject objVcamInStatus = BeseyeJSONUtil.getJSONObject(objPairStatus, BeseyeJSONUtil.ACC_VCAM);
-							if(null != objVcamInStatus){
-								if(isPairingTokenValid()){
-									startPairingNamePage(objVcam);
-									bPairingFailed = false;
+					boolean bKeepPolling = BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.ACC_PAIRING_KEEP_POLLING, false);//Handle for ver 3(2015/09/10)
+					if(false == bKeepPolling){
+						JSONObject objVcam = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_VCAM);//Handle for ver 1
+						if(null != objVcam){
+							if(isPairingTokenValid()){
+								startPairingNamePage(objVcam);
+								bPairingFailed = false;
+							}
+						}else{
+							JSONObject objPairStatus = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_PAIRING_STATUS);//Handle for ver 2
+							if(null != objPairStatus){
+								JSONObject objVcamInStatus = BeseyeJSONUtil.getJSONObject(objPairStatus, BeseyeJSONUtil.ACC_VCAM);
+								if(null != objVcamInStatus){
+									if(isPairingTokenValid()){
+										startPairingNamePage(objVcam);
+										bPairingFailed = false;
+									}
 								}
 							}
 						}
+					}else{
+						if(DEBUG){
+							Log.e(TAG, "onPostExecute(), find ACC_PAIRING_KEEP_POLLING");
+						}
+						if(null != mPairingCounter && mPairingCounter.isFinished() && sbFinishToPlay){
+							bNeedRequery = false;
+						}else{
+							bNeedRequery = true;
+						}
 					}
-				}else if(BeseyeError.E_BE_ACC_VCAM_CAM_HW_UID_ALREADY_USED_BY_OTHER_VCAM == iRetCode){
+				}else if(BeseyeError.E_BE_ACC_VCAM_CAM_HW_UID_ALREADY_USED_BY_OTHER_VCAM == iRetCode){//Handle for ver 2
 					Log.e(TAG, "onPostExecute(), E_BE_ACC_VCAM_CAM_HW_UID_ALREADY_USED_BY_OTHER_VCAM");
 					strAttachedHWID = "";
 					JSONArray objPairStatusArr = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_PAIRING_STATUS);
@@ -547,7 +559,7 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 					}else{
 						Log.e(TAG, "onPostExecute(), null objPairStatusArr");
 					}
-				}else if(BeseyeError.E_BE_ACC_PS_KEEP_POLLING == iRetCode || BeseyeError.E_BE_ACC_PS_VCAM_WAIT_FOR_ATTACH_CONFIRM == iRetCode ){
+				}else if(BeseyeError.E_BE_ACC_PS_KEEP_POLLING == iRetCode || BeseyeError.E_BE_ACC_PS_VCAM_WAIT_FOR_ATTACH_CONFIRM == iRetCode ){//Handle for ver 2
 					//if(3 > ++miFailTry){
 					if(null != mPairingCounter && mPairingCounter.isFinished() && sbFinishToPlay){
 						bNeedRequery = false;
