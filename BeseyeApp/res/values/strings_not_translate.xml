@@ -80,4 +80,16 @@
     
 	<string name="download_app_web_360">360手机助手</string>
     <string name="download_app_web_mi">小米应用商店</string>
+    
+    <string name="pincode_num_0">0</string>
+    <string name="pincode_num_1">1</string>
+    <string name="pincode_num_2">2</string>
+    <string name="pincode_num_3">3</string>
+    <string name="pincode_num_4">4</string>
+    <string name="pincode_num_5">5</string>
+    <string name="pincode_num_6">6</string>
+    <string name="pincode_num_7">7</string>
+    <string name="pincode_num_8">8</string>
+    <string name="pincode_num_9">9</string>
+    
 </resources>

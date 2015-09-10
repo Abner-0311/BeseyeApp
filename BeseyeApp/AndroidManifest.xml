@@ -261,6 +261,20 @@
         </activity>
         
         <activity
+            android:name=".BeseyeTrustDevMgtActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false" >
+        </activity>
+        
+        <activity
+            android:name=".BeseyeTrustDevAuthActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false" >
+        </activity>
+        
+        <activity
             android:name=".BeseyeAboutActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"

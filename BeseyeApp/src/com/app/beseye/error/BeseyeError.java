@@ -33,7 +33,7 @@ public class BeseyeError {
 	static public final int   E_BE_ACC_USER_SESSION_CLIENT_DEV_UDID_NOT_MATCH     = 0x00102002;
 	static public final int   E_BE_ACC_USER_SESSION_CLIENT_USR_AGENT_BLANK        = 0x00102003;
 	static public final int   E_BE_ACC_USER_SESSION_CLIENT_USR_AGENT_NOT_MATCH    = 0x00102004;   
-	static public final int   E_BE_ACC_USER_SESSION_CLIENT_IP_BLANK               = 0x00102005;   
+	static public final int   E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED         = 0x00102005;   
 	static public final int   E_BE_ACC_USER_SESSION_CLIENT_IP_FORMAT_INVALID      = 0x00102006;
 	static public final int   E_BE_ACC_USER_SESSION_CLIENT_LOCATION_BLANK         = 0x00102007;   
 	static public final int   E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN            = 0x00102008;   
@@ -41,6 +41,10 @@ public class BeseyeError {
 	static public final int   E_BE_ACC_USER_SESSION_TOKEN_NOT_UNIQUE  			  = 0x0010200a;
 	static public final int   E_BE_ACC_USER_SESSION_TOKEN_BLANK  			  	  = 0x0010200b;
 	static public final int   E_BE_ACC_USER_SESSION_EXPIRED  			  		  = 0x0010200c;
+	
+	static public final int   E_BE_ACC_TT_PINCODE_VERIFY_FAILED  			  	  = 0x00102302;
+	static public final int   E_BE_ACC_TT_PINCODE_VERIFY_FAILED_TOO_MANY_TIMES    = 0x00102303;
+	
 	
 	//# OTA related
 	static public final int   E_OTA_SW_ALRADY_LATEST  					   = 0x00500202;

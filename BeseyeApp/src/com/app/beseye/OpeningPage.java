@@ -32,7 +32,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	public static final String KEY_EVENT_RELAUNCH_FLAG 	= "KEY_EVENT_RELAUNCH_FLAG";
 	public static final String KEY_EVENT_INTENT 		= "KEY_EVENT_INTENT";
 	public static final String KEY_IGNORE_ACTIVATED_FLAG= "KEY_IGNORE_ACTIVATED_FLAG";
-	public static final String FIRST_PAGE 				= CameraListActivity.class.getName();
+	public static final String FIRST_PAGE 				= BeseyeTrustDevAuthActivity.class.getName();
 	
 	private static boolean sbFirstLaunch = true;
 	private static final long TIME_TO_CLOSE_OPENING_PAGE = 3000L;

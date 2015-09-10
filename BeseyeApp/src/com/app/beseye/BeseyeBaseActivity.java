@@ -654,6 +654,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_PLAYER_CAPTURE		= DIALOG_ID_WIFI_BASE+20; 
 	static public final int DIALOG_ID_UPDATE_VIA_MARKET		= DIALOG_ID_WIFI_BASE+21; 
 	static public final int DIALOG_ID_UPDATE_VIA_WEB		= DIALOG_ID_WIFI_BASE+22; 
+	static public final int DIALOG_ID_DELETE_TRUST_DEV		= DIALOG_ID_WIFI_BASE+23; 
+	static public final int DIALOG_ID_PIN_VERIFY_FAIL		= DIALOG_ID_WIFI_BASE+24; 
+	static public final int DIALOG_ID_PIN_VERIFY_FAIL_3_TIME= DIALOG_ID_WIFI_BASE+25; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
@@ -1154,6 +1157,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				}else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
 					Toast.makeText(this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
 					onSessionInvalid();
+				}else if(BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iRetCode){
+					launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
 				}else{
 					onServerError();
 				}

@@ -40,6 +40,11 @@ public class BeseyeAccountTask {
 	
 	public static final String URL_CAM_DEATTACH_SALE="vcam/detach_by_sales?UidList=%s&SalesDemoToken=skHGU1TsnbfHIqKWyKFlapJ8BVMV0UeZM1I2Bm41NQBil9JepgOLV4Agf1h84a82";
 	
+	public static final String URL_TRUST_NEW_PIN	="user/trust/pincode_new";
+	public static final String URL_TRUST_VERIFY_PIN	="user/trust/pincode_verify";
+	public static final String URL_TRUST_DEV_LST	="user/trust/list";
+	public static final String URL_TRUST_DEV_DEL	="user/trust/delete";
+	
 	
 	static private void appendDevInfo(JSONObject obj){
 		if(null != obj){
@@ -433,6 +438,73 @@ public class BeseyeAccountTask {
 				e.printStackTrace();
 			}
 			return null;	
+		}
+	}
+	
+	
+	static public class PinCodeRenewTask extends BeseyeHttpTask {	 	
+		public PinCodeRenewTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_NEW_PIN);
+		}
+	}
+	
+	static public class PinCodeVerifyTask extends BeseyeHttpTask {	 	
+		public PinCodeVerifyTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(ACC_TRUST_PIN, strParams[0]);
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_VERIFY_PIN, obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;			
+		}
+	}
+	
+	static public class GetTrustDevListTask extends BeseyeHttpTask {	 	
+		public GetTrustDevListTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_DEV_LST);
+		}
+	}
+	
+	static public class DeleteTrustDevTask extends BeseyeHttpTask {	 	
+		public DeleteTrustDevTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(ACC_TRUST_DEV_LST, strParams[0]);
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_DEV_DEL, obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;			
 		}
 	}
 	

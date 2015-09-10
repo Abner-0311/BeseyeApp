@@ -245,5 +245,11 @@
     
     <dimen name="alertdialog_padding_left">20dp</dimen>
     <dimen name="alertdialog_padding_top">10dp</dimen>
-        
+    
+    <dimen name="pincode_verify_desc_margin_top">36dp</dimen>
+    <dimen name="pincode_verify_resend_pin_margin_top">10dp</dimen>
+    <dimen name="pincode_verify_font">12sp</dimen>
+    <dimen name="pincode_num_font">25sp</dimen>
+    
+    <dimen name="pincode_num_border">2dp</dimen>
 </resources>

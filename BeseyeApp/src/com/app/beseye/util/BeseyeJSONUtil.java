@@ -210,6 +210,16 @@ public class BeseyeJSONUtil {
 	public static final String ACC_VCAM 				= "Vcam";
 	public static final String ACC_BESEYE_ACCOUNT 		= "IsBeseyeAccount";
 	
+	public static final String ACC_TRUST_PIN 			= "TrustedPinCode";
+	public static final String ACC_TRUST_DEV_LST 		= "TrustedDevices";
+	public static final String ACC_TRUST_DEV_CNT 		= "TrustedDeviceCnt";
+	public static final String ACC_TRUST_DEV_NAME 		= "Name";
+	public static final String ACC_TRUST_DEV_ID 		= "Id";
+	public static final String ACC_TRUST_DEV_HOST 		= "IsHost";
+	public static final String ACC_TRUST_DEV_CHECK 		= "Checked";
+	public static final String ACC_TRUST_ERR_CNT 		= "ErrorCnt";
+	public static final String ACC_TRUST_ERR_LST 		= "Errors";
+	
 	public static final String ACC_SES 					= "UserSession";
 	public static final String ACC_SES_TOKEN 			= "SessionToken";
 	public static final String ACC_DATA 				= "Data";

@@ -487,4 +487,21 @@
   <string name="btn_contact_cs">Contact Custumer service</string>
   <string name="cam_attach_under_your_account_error">This camera whose name is (%s) was already awaken by your account.</string>
   <string name="cam_attach_under_other_account_error">This camera was already awaken by other\'s account.\nPlease contact custumer service for help.\n[Camera HW ID is %s]</string>
+  
+  <string name="cam_menu_trust_dev_mgt">Trust Devices Management</string>
+  <string name="btn_delete_trust_dev_mgt">Delete(%s)</string>
+  <string name="dialog_delete_trust_dev">Do you want to delete %s ?</string>
+  
+  <string name="pincode_clear">Clear</string>
+  <string name="pincode_done">Done</string>
+  
+  <string name="pincode_verify_desc">To protect your account, please get your pin code from another authorized mobile device or by Email box. Each device only needs to be authorized once.</string>
+  <string name="pincode_verify_resend">Resend pin code</string>
+  <string name="msg_pincode_verify_resend_done">New pin code is sent.</string>
+  <string name="msg_pincode_verify_resend_fail">Fail to resend pin code. Please try again later.</string>
+  <string name="pincode_verify_title">Device authorization</string>
+  
+  <string name="msg_pincode_verify_fail">Incorrect pin code. Please enter again.</string>
+  <string name="msg_pincode_verify_fail_three_times">You input incorrect pin code for three times. Please log in again.</string>
+  
 </resources>

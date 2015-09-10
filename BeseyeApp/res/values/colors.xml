@@ -16,6 +16,7 @@
     <color name="cam_menu_background_gray">#88000000</color>
     <color name="cam_menu_background_gray_line">#9e9e9e</color>
     
+    <color name="pincode_num_highlight_color">@color/word_white</color>
     <color name="liveview_font_normal_color">#727171</color>
     <color name="liveview_font_disabled_color">#B3727171</color>
     <color name="liveview_background">#e5e5e5</color>
