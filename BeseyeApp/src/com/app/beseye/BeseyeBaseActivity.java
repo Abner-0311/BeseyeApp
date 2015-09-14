@@ -1196,6 +1196,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 								BeseyeJSONUtil.setJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ATTACHED, BeseyeJSONUtil.getJSONBoolean(cam_obj, BeseyeJSONUtil.ACC_VCAM_ATTACHED));
 								BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN, BeseyeJSONUtil.getJSONInt(cam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN));
 							}else{
+								if(DEBUG)
+									Log.i(TAG, getClass().getSimpleName()+":: GetCamInfoTask,  mCam_obj is replaced");
 								mCam_obj = cam_obj;
 							}
 							
@@ -1220,14 +1222,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					if(DEBUG)
-						Log.i(TAG, "onPostExecute(), "+result.toString());
+						Log.i(TAG, getClass().getSimpleName()+"::onPostExecute(), "+result.toString());
 					
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
 						if(null != dataObj){
-							//int iCamStatus = getJSONInt(dataObj, CAM_STATUS, 0);
-							//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(iCamStatus).getValue());
 							BeseyeJSONUtil.setJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(obj, BeseyeJSONUtil.OBJ_TIMESTAMP));
 							BeseyeJSONUtil.setJSONObject(mCam_obj, ACC_DATA, dataObj);
 							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
@@ -1888,7 +1888,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     protected OnResumeUpdateCamInfoRunnable mOnResumeUpdateCamInfoRunnable = null;
     protected void setOnResumeUpdateCamInfoRunnable(OnResumeUpdateCamInfoRunnable run){
     	if(DEBUG)
-    		Log.i(TAG, "setOnResumeUpdateCamInfoRunnable()");
+    		Log.i(TAG, getClass().getSimpleName()+"::setOnResumeUpdateCamInfoRunnable()");
     	mOnResumeUpdateCamInfoRunnable = run;
     }
     
@@ -2044,6 +2044,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			if(DEBUG)
 				Log.i(TAG, getClass().getSimpleName()+"::onCamSetupChanged(),  lTs = "+lTs+", lTsOldTs="+lTsOldTs);
 			if(0 < lTs && lTs >= lTsOldTs){
+				if(DEBUG)
+					Log.i(TAG, getClass().getSimpleName()+"::onCamSetupChanged(),  mCam_obj is replaced");
+				
 				mCam_obj = objCamSetup;
 				mOnResumeUpdateCamInfoRunnable = null;
 				updateUICallback();

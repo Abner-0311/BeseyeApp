@@ -665,7 +665,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					Bundle b = new Bundle();
 					b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
 					b.putBoolean(KEY_DEMO_CAM_MODE, mbIsDemoCamMode);
-					launchActivityForResultByClassName(CameraViewActivity.class.getName(), b, REQUEST_CAM_VIEW_CHANGE);
+					launchActivityByClassName(CameraViewActivity.class.getName(), b);
 					//Log.e(TAG, "onClick(), "+cam_obj.toString());
 				}
 			}
@@ -797,39 +797,6 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		if(null != mCameraListMenuAnimator && !mCameraListMenuAnimator.isInAnimation()){
 			mCameraListMenuAnimator.performMenuAnimation();
 		}
-	}
-	
-	static public final int REQUEST_CAM_VIEW_CHANGE = 1;
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if(REQUEST_CAM_VIEW_CHANGE == requestCode){
-			if(resultCode == RESULT_OK){
-				//monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(CameraListActivity.this), true);
-//				try {
-//					JSONObject Cam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
-//					if(null != Cam_obj){
-//						JSONArray camArr = (null != mCameraListAdapter)?mCameraListAdapter.getJSONList():null;
-//						int iCount = (null != camArr)?camArr.length():0;
-//						String strVcamId = BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_ID);
-//						for(int i = 0;i<iCount;i++){
-//							JSONObject obj = camArr.getJSONObject(i);
-//							if(null != obj && BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID).equals(strVcamId)){
-//								camArr.put(i, Cam_obj);
-//								//BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.ACC_NAME, BeseyeJSONUtil.getJSONString(Cam_obj, BeseyeJSONUtil.ACC_NAME));
-//								//BeseyeJSONUtil.setJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(Cam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE));
-//								refreshList();
-//								break;
-//							}
-//						}
-//					}
-//					
-//				} catch (JSONException e) {
-//					e.printStackTrace();
-//				}
-			}
-		}else
-			super.onActivityResult(requestCode, resultCode, intent);
 	}
 
 	@Override

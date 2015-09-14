@@ -630,7 +630,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			try {
 				mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 				setActivityResultWithCamObj();
-				setResult(RESULT_OK);
+//				setResult(RESULT_OK);
 			} catch (JSONException e) {
 				Log.e(TAG, "onActivityResult(), e:"+e.toString());
 			}
