@@ -190,7 +190,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			updatePlayPauseBtnEnabledStatus();
 			    			updatePlayPauseBtnByStatus(status);
 		    			}
-		    			setCursorVisiblity(View.GONE);
+		    			
+		    			//#2546 need to show cursor when no network
+		    			if(NetworkMgr.getInstance().isNetworkConnected()){
+		    				setCursorVisiblity(View.GONE);
+		    			}
+		    			
 		    			hideInvalidStateMask();
 		    			break;
 		    		}
