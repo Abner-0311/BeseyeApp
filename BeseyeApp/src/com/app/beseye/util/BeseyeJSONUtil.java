@@ -926,6 +926,7 @@ public class BeseyeJSONUtil {
 	}
 	
 	static public void setVCamConnStatus(JSONObject objCam, CAM_CONN_STATUS status){
+		//Log.e(TAG, "setVCamConnStatus(), status:"+status);
 		if(null != objCam){
 			JSONObject dataObj = getJSONObject(objCam, ACC_DATA);
 			if(null != dataObj){
