@@ -210,9 +210,9 @@ public class BeseyeJSONUtil {
 	public static final String ACC_VCAM 				= "Vcam";
 	public static final String ACC_BESEYE_ACCOUNT 		= "IsBeseyeAccount";
 	
-	public static final String ACC_TRUST_PIN 			= "TrustedPinCode";
-	public static final String ACC_TRUST_DEV_LST 		= "TrustedDevices";
-	public static final String ACC_TRUST_DEV_CNT 		= "TrustedDeviceCnt";
+	public static final String ACC_TRUST_PIN 			= "TrustPinCode";
+	public static final String ACC_TRUST_DEV_LST 		= "TrustDevices";
+	public static final String ACC_TRUST_DEV_CNT 		= "TrustDeviceCnt";
 	public static final String ACC_TRUST_DEV_NAME 		= "Name";
 	public static final String ACC_TRUST_DEV_ID 		= "Id";
 	public static final String ACC_TRUST_DEV_HOST 		= "IsHost";
@@ -484,6 +484,9 @@ public class BeseyeJSONUtil {
 	public static final String PS_USER_UUID 			= "userUuid";
 	public static final String PS_CAM_NAME 				= "camName";
 	public static final String PS_EVT_TS 				= "evt_ts";
+	
+	public static final String PS_DISPLAY_NAME 			= "displayName";
+	public static final String PS_PINCODE 				= "pinCode";
 	
 	
 	//Helper functions

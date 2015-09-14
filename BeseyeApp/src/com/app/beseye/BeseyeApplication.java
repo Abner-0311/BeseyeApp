@@ -199,7 +199,6 @@ public class BeseyeApplication extends Application {
 				sLastBeseyeAppStateChangeListener = new WeakReference<BeseyeAppStateChangeListener>(listener);
 			}
 		}
-		
 	}
 	
 	static public boolean s_bSeesionBegun = false;

@@ -117,6 +117,7 @@ public class SessionMgr {
 	static private final String SESSION_USERID				= "beseye_userid";
 	static private final String SESSION_ACCOUNT				= "beseye_account";
 	static private final String SESSION_ACC_CERTIFICATED	= "beseye_certificated";
+	static private final String SESSION_ACC_TRUSTED			= "beseye_trust_dev";
 	static private final String SESSION_OWNER_INFO			= "beseye_owner_data";
 	static private final String SESSION_OWNER_VPC_NUM		= "beseye_owner_vpc_no";
 	
@@ -165,6 +166,7 @@ public class SessionMgr {
 				mSessionData.setDomain(getPrefStringValue(mPref, SESSION_DOMAIN));
 				mSessionData.setAuthToken(getPrefStringValue(mPref, SESSION_TOKEN));
 				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
+				mSessionData.setIsTrustDev(getPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, false));
 				mSessionData.setIsCamSWUpdateSuspended(getPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, false));
 				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal())));
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
@@ -189,6 +191,7 @@ public class SessionMgr {
 		setAccount("");
 		setOwnerInfo("");
 		setIsCertificated(false);
+		setIsTrustDev(false);
 		setVPCNumber(1);
 		setNewsHistory("");
 		BeseyeNewsHistoryMgr.deinit();
@@ -479,6 +482,16 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
+	public boolean getIsTrustDev(){
+		return mSessionData.getIsTrustDev();
+	}
+	
+	public void setIsTrustDev(boolean bIsTrustDev){
+		setPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, bIsTrustDev);
+		mSessionData.setIsTrustDev(bIsTrustDev);
+		notifySessionUpdate();
+	}
+
 	public SERVER_MODE getServerMode(){
 		return mSessionData.getServerMode();
 	}
@@ -567,7 +580,7 @@ public class SessionMgr {
 	
 	public static class SessionData implements Parcelable{
 		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
-		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended;
+		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended, mbIsTrustDev;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
 		private String mStrCamUpdateList, mStrDetachHWID, mStrSignupEmail;
@@ -591,6 +604,7 @@ public class SessionMgr {
 			mStrPairToken = "";
 			mbIsCertificated = false;
 			mbIsCamSWUpdateSuspended = false;
+			mbIsTrustDev = false;
 			mServerMode = BeseyeConfig.DEFAULT_SERVER_MODE;
 			
 			mlCamUpdateTs = 0;
@@ -739,6 +753,14 @@ public class SessionMgr {
 			mbIsCamSWUpdateSuspended = bIsCamSWUpdateSuspended;
 		}
 		
+		public boolean getIsTrustDev(){
+			return mbIsTrustDev;
+		}
+		
+		public void setIsTrustDev(boolean bIsTrustDev){
+			mbIsTrustDev = bIsTrustDev;
+		}
+		
 		public SERVER_MODE getServerMode(){
 			return mServerMode;
 		}
@@ -825,6 +847,7 @@ public class SessionMgr {
 			
 			dest.writeInt(mbIsCertificated?1:0);
 			dest.writeInt(mbIsCamSWUpdateSuspended?1:0);
+			dest.writeInt(mbIsTrustDev?1:0);
 			
 			dest.writeInt(mServerMode.ordinal());
 			
@@ -871,6 +894,7 @@ public class SessionMgr {
 			
 			mbIsCertificated = in.readInt()>0?true:false;
 			mbIsCamSWUpdateSuspended = in.readInt()>0?true:false;
+			mbIsTrustDev = in.readInt()>0?true:false;
 			mServerMode = SERVER_MODE.translateToMode(in.readInt());
 			
 			mlCamUpdateTs = in.readLong();

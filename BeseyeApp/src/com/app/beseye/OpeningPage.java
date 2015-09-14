@@ -19,8 +19,11 @@ import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.widget.BaseOneBtnDialog;
+import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 
@@ -32,7 +35,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	public static final String KEY_EVENT_RELAUNCH_FLAG 	= "KEY_EVENT_RELAUNCH_FLAG";
 	public static final String KEY_EVENT_INTENT 		= "KEY_EVENT_INTENT";
 	public static final String KEY_IGNORE_ACTIVATED_FLAG= "KEY_IGNORE_ACTIVATED_FLAG";
-	public static final String FIRST_PAGE 				= BeseyeTrustDevAuthActivity.class.getName();
+	public static final String KEY_PINCODE_AUTH			= "KEY_PINCODE_AUTH";
+	public static final String FIRST_PAGE 				= CameraListActivity.class.getName();//BeseyeTrustDevAuthActivity.class.getName();
 	
 	private static boolean sbFirstLaunch = true;
 	private static final long TIME_TO_CLOSE_OPENING_PAGE = 3000L;
@@ -227,7 +231,18 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			if(null != intent.getExtras())
 				intentLanuch.putExtras(intent.getExtras());
 			
-			intentLanuch.setClassName(this, strCls);
+			if(intent.getBooleanExtra(OpeningPage.KEY_PINCODE_AUTH, false)){
+//				//Try to show pin code dialog from service
+				Intent intentBroadcast = new Intent(BeseyeNotificationService.ACTION_FORWARD_PINCODE_CLICKED);
+				intentBroadcast.putExtras(intent.getExtras());
+		        sendBroadcast(intentBroadcast);
+		        
+		        if(0 < BeseyeBaseActivity.getActiveActivityCount()){
+		        	return;//just bring up if app launched already
+		        }
+			}else{
+				intentLanuch.setClassName(this, strCls);
+			}
 		}else{
 //			//Try to close push dialog when launch from status bar
 //			Intent intentBroadcast = new Intent(GCMIntentService.FORWARD_PUSH_MSG_ACTION);

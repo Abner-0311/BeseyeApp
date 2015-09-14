@@ -44,6 +44,8 @@ public class BeseyeError {
 	
 	static public final int   E_BE_ACC_TT_PINCODE_VERIFY_FAILED  			  	  = 0x00102302;
 	static public final int   E_BE_ACC_TT_PINCODE_VERIFY_FAILED_TOO_MANY_TIMES    = 0x00102303;
+	static public final int   E_BE_ACC_TT_PINCODE_NOT_FOUND    					  = 0x00102304;
+	static public final int   E_BE_ACC_TT_PINCODE_IS_EXPIRED				      = 0x00102305;
 	
 	
 	//# OTA related

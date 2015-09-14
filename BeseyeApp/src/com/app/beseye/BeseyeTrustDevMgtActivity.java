@@ -8,6 +8,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.app.beseye.adapter.TrustDevListAdapter;
+import com.app.beseye.error.BeseyeError;
+import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BaseTwoBtnDialog;
@@ -15,16 +18,20 @@ import com.app.beseye.widget.PullToRefreshListView;
 import com.app.beseye.widget.BaseTwoBtnDialog.OnTwoBtnClickListener;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 	private View mVwNavBar;
@@ -70,7 +77,7 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 			if(null != mIvDelete){
 				mIvDelete.setOnClickListener(this);
 				mIvDelete.setVisibility(View.VISIBLE);
-				mIvDelete.setImageResource(R.drawable.sl_cam_list_add);
+				mIvDelete.setImageResource(R.drawable.sl_trust_list_delete);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
@@ -79,33 +86,28 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 		}
 		
 		mArrTrustDev = new JSONArray();
-		JSONObject obj1 = new JSONObject();
-		BeseyeJSONUtil.setJSONString(obj1, BeseyeJSONUtil.ACC_TRUST_DEV_NAME, "HTC Butterfly");
-		BeseyeJSONUtil.setJSONInt(obj1, BeseyeJSONUtil.ACC_TRUST_DEV_ID, 1);
-		BeseyeJSONUtil.setJSONBoolean(obj1, BeseyeJSONUtil.ACC_TRUST_DEV_HOST, false);
 		
-		JSONObject obj2 = new JSONObject();
-		BeseyeJSONUtil.setJSONString(obj2, BeseyeJSONUtil.ACC_TRUST_DEV_NAME, "HTC Desire Eye");
-		BeseyeJSONUtil.setJSONInt(obj2, BeseyeJSONUtil.ACC_TRUST_DEV_ID, 2);
-		BeseyeJSONUtil.setJSONBoolean(obj2, BeseyeJSONUtil.ACC_TRUST_DEV_HOST, true);
-		
-		JSONObject obj3 = new JSONObject();
-		BeseyeJSONUtil.setJSONString(obj3, BeseyeJSONUtil.ACC_TRUST_DEV_NAME, "Abner's iPhone6 HaHaHaHaHaHaHaHaHa");
-		BeseyeJSONUtil.setJSONInt(obj3, BeseyeJSONUtil.ACC_TRUST_DEV_ID, 3);
-		BeseyeJSONUtil.setJSONBoolean(obj3, BeseyeJSONUtil.ACC_TRUST_DEV_HOST, false);
-		
-		mArrTrustDev.put(obj1);
-		mArrTrustDev.put(obj2);
-		mArrTrustDev.put(obj3);
+		mArrTrustDev.put(createTmpDevObj("HTC Butterfly", 1, false));
+		mArrTrustDev.put(createTmpDevObj("HTC Desire Eye", 2, true));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 3, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 1", 4, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 5, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 2", 6, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 7, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 3", 8, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 9, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 4", 10, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 11, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 5", 12, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 13, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 6", 14, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 15, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 7", 16, false));
+		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 17, false));
+
 		
 		mArrTrustDev = reorderTrustDev(mArrTrustDev);
-		
-//		mArrTrustDev.put(obj1);
-//		mArrTrustDev.put(obj2);
-//		mArrTrustDev.put(obj3);
-//		mArrTrustDev.put(obj1);
-//		mArrTrustDev.put(obj2);
-//		mArrTrustDev.put(obj3);
+	
 		
 		mMainListView = (PullToRefreshListView)findViewById(R.id.lv_trust_dev_lst);
 		if(null != mMainListView){
@@ -128,26 +130,94 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 		enterReadMode();
 	}
 	
+	private JSONObject createTmpDevObj(String name, int id, boolean isHost){
+		JSONObject obj = new JSONObject();
+		BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.ACC_TRUST_DEV_NAME, name);
+		BeseyeJSONUtil.setJSONInt(obj, BeseyeJSONUtil.ACC_TRUST_DEV_ID,id);
+		BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.ACC_TRUST_DEV_HOST, isHost);
+		return obj;
+	}
+	
 	@Override
 	protected int getLayoutId() {
 		return R.layout.layout_trust_dev_mgt;
 	}
 	
-	
-	
 	@Override
 	protected void onSessionComplete() {
 		super.onSessionComplete();
+		//monitorAsyncTask(new BeseyeAccountTask.GetTrustDevListTask(BeseyeTrustDevMgtActivity.this), true);
 	}
 
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
-		super.onErrorReport(task, iErrType, strTitle, strMsg);
+		if(task instanceof BeseyeAccountTask.DeleteTrustDevTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_delete_trust_dev_fail));
+					showMyDialog(DIALOG_ID_WARNING, b);
+				}}, 0);
+		}else if(task instanceof BeseyeAccountTask.GetTrustDevListTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					onServerError();
+				}}, 0);
+		}else{
+			super.onErrorReport(task, iErrType, strTitle, strMsg);
+		}
+	}
+	
+	@Override
+	protected void onServerError(){
+		super.onServerError();
+//		LayoutInflater inflater = getLayoutInflater();
+//		if(null != inflater){
+//			if(null != mTrustDevListAdapter){
+//				mTrustDevListAdapter.updateResultList(null);
+//			}
+//			ViewGroup mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
+//			if(null != mVgEmptyView){
+//				mMainListView.setEmptyView(mVgEmptyView);
+//			}
+//		}
 	}
 
 	@Override
 	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
-		super.onPostExecute(task, result, iRetCode);
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeAccountTask.DeleteTrustDevTask){
+				if(0 == iRetCode){
+					removeDeletedTrustDev();
+				}
+			}else if(task instanceof BeseyeAccountTask.GetTrustDevListTask){
+				if(0 == iRetCode){
+					mArrTrustDev = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_TRUST_DEV_LST);
+					if(null != mTrustDevListAdapter){
+						mTrustDevListAdapter.updateResultList(mArrTrustDev);
+					}
+					refreshList();
+				}
+			}else{
+				super.onPostExecute(task, result, iRetCode);
+			}
+		}		
+	}
+	
+	private void removeDeletedTrustDev(){
+		int iDeleteCount = (null != mArrTrustDevForDelete)?mArrTrustDevForDelete.length():0;
+		JSONArray arrNew = new JSONArray();
+		for(int idxDel = 0; idxDel < iDeleteCount; idxDel++){
+			JSONObject objDel = mArrTrustDevForDelete.optJSONObject(idxDel);
+			if(null != objDel && false == BeseyeJSONUtil.getJSONBoolean(objDel, BeseyeJSONUtil.ACC_TRUST_DEV_CHECK)){
+				arrNew.put(objDel);
+			}
+		}	
+		
+		mArrTrustDev = arrNew;
+		enterReadMode();
 	}
 
 	static private JSONArray reorderTrustDev(JSONArray arrSrc){
@@ -190,7 +260,7 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 				strRet += ", ";
 			}
 			try {
-				strRet+=arrSrc.getString(idx);
+				strRet+=("["+arrSrc.getString(idx)+"]");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -367,14 +437,8 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 				d.setOnTwoBtnClickListener(new OnTwoBtnClickListener(){
 					@Override
 					public void onBtnYesClick() {
-//						try {
-//							mSched_obj_edit.put(SCHED_INDEX, mStrSchedIdx);
-//							mSched_obj_edit.put(SCHED_ACTION, BeseyeJSONUtil.SCHED_ACTION_DELETE);
-//						} catch (JSONException e1) {
-//							Log.e(TAG, "PowerScheduleEditActivity DIALOG_ID_CAM_SCHED_DELETE, e1:"+e1.toString());
-//						}
-//						mDeleteTask = new BeseyeCamBEHttpTask.ModifyScheduleTask(PowerScheduleEditActivity.this);
-//						monitorAsyncTask(mDeleteTask, true, mStrVCamID, mSched_obj_edit.toString());
+						//monitorAsyncTask(new BeseyeAccountTask.DeleteTrustDevTask(BeseyeTrustDevMgtActivity.this), true, mArrTrustDevIdsForDelete.toString());
+						removeDeletedTrustDev();
 					}
 					@Override
 					public void onBtnNoClick() {
@@ -385,7 +449,26 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 			}
 			default:
 				dialog = super.onCreateDialog(id);
+				dialog.setOnDismissListener(new OnDismissListener(){
+
+					@Override
+					public void onDismiss(DialogInterface dialog) {
+						removeMyDialog(DIALOG_ID_DELETE_TRUST_DEV);
+					}});
 		}
 		return dialog;
+	}
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+		switch (id) {
+			case DIALOG_ID_DELETE_TRUST_DEV:{
+				BaseTwoBtnDialog d = (BaseTwoBtnDialog)dialog;
+				d.setBodyText(String.format(getString(R.string.dialog_delete_trust_dev), getTrustDevDeleteList(mArrTrustDevNamesForDelete)));
+				break;
+			}
+	        default:
+	        	super.onPrepareDialog(id, dialog, args);
+	    }
 	}
 }

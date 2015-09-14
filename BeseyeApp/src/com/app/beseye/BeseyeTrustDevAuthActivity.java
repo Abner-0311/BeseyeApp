@@ -160,7 +160,8 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.CheckAccountTask){
 				if(0 == iRetCode){
-					//launchDelegateActivity(CameraListActivity.class.getName());
+					SessionMgr.getInstance().setIsTrustDev(true);
+					launchDelegateActivity(CameraListActivity.class.getName());
 				}else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
 					Toast.makeText(this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
 					onSessionInvalid();
@@ -187,6 +188,8 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 					onPincodeVerifyFailed();
 				}else if(BeseyeError.E_BE_ACC_TT_PINCODE_VERIFY_FAILED_TOO_MANY_TIMES == iRetCode){
 					showMyDialog(DIALOG_ID_PIN_VERIFY_FAIL_3_TIME);
+				}else if(BeseyeError.E_BE_ACC_TT_PINCODE_IS_EXPIRED == iRetCode || BeseyeError.E_BE_ACC_TT_PINCODE_NOT_FOUND == iRetCode){
+					showMyDialog(DIALOG_ID_PIN_VERIFY_FAIL_EXPIRED);
 				}else{
 					onServerError();
 				}
@@ -296,6 +299,11 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 			}
 			case R.id.tv_resend_pincode:{
 				resendPincode();
+				break;
+			}
+			case R.id.iv_nav_left_btn:{
+				invalidDevSession();
+				break;
 			}
 			default:
 				super.onClick(view);
@@ -318,6 +326,18 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 				dialog = d;
 				break;
 			}
+			case DIALOG_ID_PIN_VERIFY_FAIL_EXPIRED:{
+				BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+				d.setBodyText(getString(R.string.msg_pincode_verify_expired));
+				d.setTitleText(getString(R.string.dialog_title_warning));
+				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+					@Override
+					public void onBtnClick() {
+						removeMyDialog(DIALOG_ID_PIN_VERIFY_FAIL_EXPIRED);	
+					}});
+				dialog = d;
+				break;
+			}
 			case DIALOG_ID_PIN_VERIFY_FAIL_3_TIME:{
 				BaseOneBtnDialog d = new BaseOneBtnDialog(this);
 				d.setBodyText(getString(R.string.msg_pincode_verify_fail_three_times));
@@ -325,7 +345,7 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
 					@Override
 					public void onBtnClick() {
-						removeMyDialog(DIALOG_ID_PIN_VERIFY_FAIL);	
+						removeMyDialog(DIALOG_ID_PIN_VERIFY_FAIL_3_TIME);	
 					}});
 				dialog = d;
 				dialog.setOnDismissListener(new OnDismissListener(){
@@ -339,5 +359,11 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 				dialog = super.onCreateDialog(id);
 		}
 		return dialog;
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		invalidDevSession();
 	}
 }
