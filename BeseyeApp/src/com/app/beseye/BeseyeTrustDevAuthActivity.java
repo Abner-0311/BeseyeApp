@@ -170,7 +170,9 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 					BeseyeUtils.postRunnable(new Runnable(){
 						@Override
 						public void run() {
-							monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(BeseyeTrustDevAuthActivity.this).setDialogId(-1), true, SessionMgr.getInstance().getAuthToken());
+							if(mActivityResume){
+								monitorAsyncTask(new BeseyeAccountTask.CheckAccountTask(BeseyeTrustDevAuthActivity.this).setDialogId(-1), true, SessionMgr.getInstance().getAuthToken());
+							}
 						}}, 10000L);
 				}
 			}else if(task instanceof BeseyeAccountTask.PinCodeRenewTask){
@@ -178,10 +180,13 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 					Toast.makeText(getApplication(), getString(R.string.msg_pincode_verify_resend_done), Toast.LENGTH_SHORT).show();
 					clearPincode();
 				}else{
-					Toast.makeText(getApplication(), getString(R.string.msg_pincode_verify_resend_fail), Toast.LENGTH_SHORT).show();
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_pincode_verify_resend_fail));
+					showMyDialog(DIALOG_ID_WARNING, b);
 				}
 			}else if(task instanceof BeseyeAccountTask.PinCodeVerifyTask){
 				if(0 == iRetCode){
+					SessionMgr.getInstance().setIsTrustDev(true);
 					launchDelegateActivity(CameraListActivity.class.getName());
 				}else if(BeseyeError.E_BE_ACC_TT_PINCODE_VERIFY_FAILED == iRetCode){
 					showMyDialog(DIALOG_ID_PIN_VERIFY_FAIL);
@@ -212,6 +217,7 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 	}
 	
 	private void onPincodeVerifyFailed(){
+		mStrPincode = "";
 		mbPincodeCheckError = true;
 		updatePincodeUIState();
 	}

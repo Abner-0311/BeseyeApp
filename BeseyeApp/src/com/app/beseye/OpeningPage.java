@@ -232,14 +232,36 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 				intentLanuch.putExtras(intent.getExtras());
 			
 			if(intent.getBooleanExtra(OpeningPage.KEY_PINCODE_AUTH, false)){
-//				//Try to show pin code dialog from service
-				Intent intentBroadcast = new Intent(BeseyeNotificationService.ACTION_FORWARD_PINCODE_CLICKED);
-				intentBroadcast.putExtras(intent.getExtras());
-		        sendBroadcast(intentBroadcast);
-		        
-		        if(0 < BeseyeBaseActivity.getActiveActivityCount()){
-		        	return;//just bring up if app launched already
-		        }
+				//Abner: special handle for launch activity from notification
+	        	if(false == intent.getBooleanExtra(KEY_EVENT_RELAUNCH_FLAG, false) && BeseyeBaseActivity.getActiveActivityCount() == 0){
+	        		if(DEBUG)
+	        			Log.i(TAG, "OpeningPage::launchActivityByIntent(), relaunch for pin");
+	        		intentRelaunch = new Intent();
+	        		intentRelaunch.setClassName(this, OpeningPage.class.getName());
+	        		intentRelaunch.setAction("android.intent.action.MAIN"); 
+	        		intentRelaunch.addCategory("android.intent.category.LAUNCHER"); 
+	        		intentRelaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP/* | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET*/);
+	        		intentRelaunch.putExtra(KEY_EVENT_RELAUNCH_FLAG, true);
+	        		intentRelaunch.putExtras(intent.getExtras());
+	        		
+	        		finish();
+	        		return;
+	        	}else /*if(intent.getBooleanExtra(KEY_EVENT_RELAUNCH_FLAG, false))*/{
+	        		if(DEBUG)
+	        			Log.i(TAG, "OpeningPage::launchActivityByIntent(), reach relaunch case for pin");
+	        		
+//					//Try to show pin code dialog from service
+					Intent intentBroadcast = new Intent(BeseyeNotificationService.ACTION_FORWARD_PINCODE_CLICKED);
+					intentBroadcast.putExtras(intent.getExtras());
+			        sendBroadcast(intentBroadcast);
+			        if(BeseyeBaseActivity.getActiveActivityCount() == 0){
+			        	intentLanuch.setClassName(this, strCls);
+			        }else{
+			        	finish();
+		        		return;
+			        }
+	        	}
+				
 			}else{
 				intentLanuch.setClassName(this, strCls);
 			}
@@ -250,6 +272,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 //	        sendBroadcast(intentBroadcast);
 	        
 	        if(intent.getBooleanExtra(KEY_EVENT_FLAG, false) ){
+	        	//Abner: special handle for launch activity from notification
 	        	if(false == intent.getBooleanExtra(KEY_EVENT_RELAUNCH_FLAG, false) && BeseyeBaseActivity.getActiveActivityCount() == 0){
 	        		if(DEBUG)
 	        			Log.i(TAG, "OpeningPage::launchActivityByIntent(), relaunch");

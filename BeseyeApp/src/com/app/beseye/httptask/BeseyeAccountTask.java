@@ -148,10 +148,13 @@ public class BeseyeAccountTask {
 			JSONObject obj = new JSONObject();
 			try {
 				appendDevInfo(obj);
+				obj.put(ACC_LANG, BeseyeUtils.getLocaleString());
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_LOGOUT, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-			} 
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 			return null;
 		}
 	}
@@ -190,6 +193,7 @@ public class BeseyeAccountTask {
 			try {
 				obj.put(ACC_EMAIL, strParams[0]);
 				obj.put(ACC_PASSWORD, strParams[1]);
+				obj.put(ACC_LANG, BeseyeUtils.getLocaleString());
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_REGISTER, obj.toString());
 			} catch (NumberFormatException e) {
@@ -450,7 +454,14 @@ public class BeseyeAccountTask {
  
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_NEW_PIN);
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(ACC_LANG, BeseyeUtils.getLocaleString());	
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_NEW_PIN, obj.toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
 		}
 	}
 	
@@ -495,16 +506,7 @@ public class BeseyeAccountTask {
  
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			JSONObject obj = new JSONObject();
-			try {
-				obj.put(ACC_TRUST_DEV_LST, strParams[0]);
-				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_DEV_DEL, obj.toString());
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			return null;			
+			return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_DEV_DEL, strParams[0]);		
 		}
 	}
 	

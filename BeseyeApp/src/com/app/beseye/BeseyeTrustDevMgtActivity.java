@@ -1,6 +1,10 @@
 package com.app.beseye;
 
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_TRUST_DEV_ID_LST;
+
 import java.util.List;
 
 import org.json.JSONArray;
@@ -16,6 +20,8 @@ import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BaseTwoBtnDialog;
 import com.app.beseye.widget.PullToRefreshListView;
 import com.app.beseye.widget.BaseTwoBtnDialog.OnTwoBtnClickListener;
+import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
+import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -23,6 +29,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -84,35 +91,48 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
-		
-		mArrTrustDev = new JSONArray();
-		
-		mArrTrustDev.put(createTmpDevObj("HTC Butterfly", 1, false));
-		mArrTrustDev.put(createTmpDevObj("HTC Desire Eye", 2, true));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 3, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 1", 4, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 5, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 2", 6, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 7, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 3", 8, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 9, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 4", 10, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 11, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 5", 12, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 13, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 6", 14, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 15, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 7", 16, false));
-		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 17, false));
-
-		
-		mArrTrustDev = reorderTrustDev(mArrTrustDev);
+//		
+//		mArrTrustDev = new JSONArray();
+//		
+//		mArrTrustDev.put(createTmpDevObj("HTC Butterfly", 1, false));
+//		mArrTrustDev.put(createTmpDevObj("HTC Desire Eye", 2, true));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 3, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 1", 4, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 5, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 2", 6, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 7, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 3", 8, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 9, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 4", 10, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 11, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 5", 12, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 13, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 6", 14, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 15, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 7", 16, false));
+//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 17, false));
+//		mArrTrustDev = reorderTrustDev(mArrTrustDev);
 	
 		
 		mMainListView = (PullToRefreshListView)findViewById(R.id.lv_trust_dev_lst);
 		if(null != mMainListView){
 			mTrustDevListAdapter = new TrustDevListAdapter(this, mArrTrustDev, R.layout.layout_trust_dev_itm, this);
 			mMainListView.setAdapter(mTrustDevListAdapter);
+			mMainListView.setMode(LvExtendedMode.PULL_DOWN_TO_REFRESH);
+			mMainListView.setOnRefreshListener(new OnRefreshListener() {
+    			@Override
+    			public void onRefresh() {
+    				if(DEBUG)
+    					Log.i(TAG, "onRefresh()");	
+    				mMainListView.dettachFooterLoadMoreView();
+    				monitorAsyncTask(new BeseyeAccountTask.GetTrustDevListTask(BeseyeTrustDevMgtActivity.this), true);
+       			}
+
+				@Override
+				public void onRefreshCancel() {
+
+				}
+    		});
 		}
 		
 		mVgBtnBundle = (ViewGroup)findViewById(R.id.vg_delete_bundle);
@@ -128,6 +148,17 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 		}
 		
 		enterReadMode();
+	}
+	
+	private void postToLvRreshComplete(){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(null != mMainListView){
+					mMainListView.onRefreshComplete();
+					mMainListView.updateLatestTimestamp();
+				}
+			}}, 0);
 	}
 	
 	private JSONObject createTmpDevObj(String name, int id, boolean isHost){
@@ -146,7 +177,7 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 	@Override
 	protected void onSessionComplete() {
 		super.onSessionComplete();
-		//monitorAsyncTask(new BeseyeAccountTask.GetTrustDevListTask(BeseyeTrustDevMgtActivity.this), true);
+		monitorAsyncTask(new BeseyeAccountTask.GetTrustDevListTask(BeseyeTrustDevMgtActivity.this), true);
 	}
 
 	@Override
@@ -194,12 +225,13 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 				}
 			}else if(task instanceof BeseyeAccountTask.GetTrustDevListTask){
 				if(0 == iRetCode){
-					mArrTrustDev = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_TRUST_DEV_LST);
+					mArrTrustDev = reorderTrustDev(BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_TRUST_DEV_LST));
 					if(null != mTrustDevListAdapter){
 						mTrustDevListAdapter.updateResultList(mArrTrustDev);
 					}
 					refreshList();
 				}
+				postToLvRreshComplete();
 			}else{
 				super.onPostExecute(task, result, iRetCode);
 			}
@@ -260,7 +292,7 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 				strRet += ", ";
 			}
 			try {
-				strRet+=("["+arrSrc.getString(idx)+"]");
+				strRet+=(arrSrc.getString(idx));
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -394,7 +426,7 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 	
 	@Override
 	public void onClick(View view) {
-		if(view.getTag() instanceof TrustDevListAdapter.TrustDevItmHolder){
+		if(mbIsDeleteMode && view.getTag() instanceof TrustDevListAdapter.TrustDevItmHolder){
 			TrustDevListAdapter.TrustDevItmHolder holder  = (TrustDevListAdapter.TrustDevItmHolder)view.getTag();
 			JSONObject devObj = holder.mObjTrustDev;
 			toggleTrustDevDeleteState(devObj);
@@ -437,8 +469,17 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 				d.setOnTwoBtnClickListener(new OnTwoBtnClickListener(){
 					@Override
 					public void onBtnYesClick() {
-						//monitorAsyncTask(new BeseyeAccountTask.DeleteTrustDevTask(BeseyeTrustDevMgtActivity.this), true, mArrTrustDevIdsForDelete.toString());
-						removeDeletedTrustDev();
+						try {
+							JSONObject obj = new JSONObject();
+							obj.put(ACC_TRUST_DEV_ID_LST, mArrTrustDevIdsForDelete);
+							//String strID =/* (null != mArrTrustDevIdsForDelete && mArrTrustDevIdsForDelete.length()==1)?mArrTrustDevIdsForDelete.getString(0):*/mArrTrustDevIdsForDelete.toString();
+							monitorAsyncTask(new BeseyeAccountTask.DeleteTrustDevTask(BeseyeTrustDevMgtActivity.this), true,obj.toString());
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						//removeDeletedTrustDev();
 					}
 					@Override
 					public void onBtnNoClick() {

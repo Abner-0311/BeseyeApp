@@ -22,6 +22,8 @@ import android.app.PendingIntent.CanceledException;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -225,6 +227,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	mRunnableRenewDialogPincodeInfo = new Runnable(){
 						@Override
 						public void run() {
+							if(null != mDialogPincodeInfo && mDialogPincodeInfo.isShowing()){
+		                		mDialogPincodeInfo.dismiss();
+		                		BeseyeUtils.postRunnable(this, 500L);
+		                		return;
+		                	}
 							showPincodeInfoDialog(strInfo);
 							mRunnableRenewDialogPincodeInfo = null;
 						}};
@@ -467,10 +474,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			@Override
 			public void onBtnClick() {
 				mDialogPincodeInfo.dismiss();
-				mDialogPincodeInfo = null;
 			}});
 		mDialogPincodeInfo.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
 		mDialogPincodeInfo.setCancelable(true);
+		mDialogPincodeInfo.setOnDismissListener(new OnDismissListener(){
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				mDialogPincodeInfo = null;
+			}});
 		mDialogPincodeInfo.show();
     }
     
@@ -578,7 +589,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	//Step 2: register local push service and get reg id/channel id
 	//Step 3: register Push server via reg id/channel id
     private void checkBaiduService(){	
-    	if(SessionMgr.getInstance().isTokenValid()){
+    	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()){
     		if(false == mbBaiduApiKey){
     			if(null == mGetBaiduApiKeyTask){
     				(mGetBaiduApiKeyTask = new BeseyePushServiceTask.GetBaiduApiKeyTask(this)).execute();
@@ -596,7 +607,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
     
     private void checkGCMService(){  
-        if(SessionMgr.getInstance().isTokenValid()){
+        if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()){
      	   if(false == mbRegisterLocalPushSerivce){
  			   registerGCMServer();
  		   }else if(false == mbRegisterPushServer){
@@ -611,7 +622,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     	if(DEBUG)
     		Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
     	
-    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() /*&& SessionMgr.getInstance().getIsCertificated()*/){
+    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev() /*&& SessionMgr.getInstance().getIsCertificated()*/){
     		if(NetworkMgr.getInstance().isNetworkConnected()){
     			if(false == WebsocketsMgr.getInstance().isWSChannelAlive()){
     				if("".equals(SessionMgr.getInstance().getWSHostUrl())){
@@ -690,7 +701,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	    		Log.i(TAG, "mCheckPushMsgRunnable::run(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+mbRegisterPushServer+", "+mbRegisterLocalPushSerivce+"]");
 	    	
 			beginToCheckPushMsgState();
-			if(mbAppInBackground && SessionMgr.getInstance().isTokenValid()){
+			if(mbAppInBackground && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()){
 				if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
 					if(false == mbBaiduApiKey){
 		    			if(null == mGetBaiduApiKeyTask){
@@ -895,7 +906,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
     private void registerGCMService(String strSenderId){
-    	if(SessionMgr.getInstance().isTokenValid()){
+    	if(SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()){
     		GCMIntentService.updateSenderId(strSenderId);
         	try{
     	    	final String regId = getRegistrationId(BeseyeNotificationService.this);//GCMRegistrar.getRegistrationId(getApplicationContext());
@@ -1092,6 +1103,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     private final BroadcastReceiver mHandlePincodeNotifyClickedReceiver = new BroadcastReceiver() {
     	@Override
         public void onReceive(Context context, Intent intent) {
+    		 if(DEBUG)
+             	Log.i(TAG, "onReceive(), MSG_PIN_CODE_NOTIFY_CLICKED");
+    		 
     		Message msg = Message.obtain(null,MSG_PIN_CODE_NOTIFY_CLICKED,0,0);
             try {
             	if(null != mMessenger && null != msg){
@@ -1391,7 +1405,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		if(DEBUG)
 			Log.i(TAG, "ws onChannelClosed()---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
-		if(/*miWSDisconnectRetry < MAX_WS_RETRY_TIME && */false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() /*&& NetworkMgr.getInstance().isNetworkConnected()*/){
+		if(/*miWSDisconnectRetry < MAX_WS_RETRY_TIME && */false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()/*&& NetworkMgr.getInstance().isNetworkConnected()*/){
 			Log.e(TAG, "ws onChannelClosed(), abnormal close, retry-----");
 			long lTimeToWait = (miWSDisconnectRetry++)*1000;
 			if(lTimeToWait > 10000){
@@ -1419,7 +1433,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	private boolean handleNotificationEvent(JSONObject msgObj, boolean bFromGCM){
-		if(!SessionMgr.getInstance().isTokenValid()){
+		if(!SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()){
 			return true;
 		}
 		if(DEBUG)
@@ -1502,8 +1516,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					break;
 				}
 				case NCODE_PIN_CODE_REQUEST:{
-					BeseyeJSONUtil.setJSONString(objCus, BeseyeJSONUtil.PS_PINCODE, (0 == siRequestCode%2)?"111111":"654321");
-					BeseyeJSONUtil.setJSONString(objCus, BeseyeJSONUtil.PS_DISPLAY_NAME, (0 == siRequestCode%2)?"Abner's Desire Eye":"iPhone6");
+//					BeseyeJSONUtil.setJSONString(objCus, BeseyeJSONUtil.PS_PINCODE, (0 == siRequestCode%2)?"111111":"654321");
+//					BeseyeJSONUtil.setJSONString(objCus, BeseyeJSONUtil.PS_DISPLAY_NAME, (0 == siRequestCode%2)?"Abner's Desire Eye":"iPhone6");
 					
 					String strPincode = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_PINCODE);
 					String strDisplayName = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_DISPLAY_NAME);
@@ -1519,11 +1533,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					intent.putExtra(OpeningPage.KEY_PINCODE_AUTH, true);
 					intent.putExtra(BeseyeBaseActivity.KEY_INFO_TEXT, strDialogInfo);
 
-					if(!bFromGCM){
-						iMsgType = MSG_PIN_CODE_NOTIFY_CLICKED;
-						msgBundle = new Bundle();
-						msgBundle.putString(BeseyeBaseActivity.KEY_INFO_TEXT, strDialogInfo);
-					}
+//					if(!bFromGCM){
+//						iMsgType = MSG_PIN_CODE_NOTIFY_CLICKED;
+//						msgBundle = new Bundle();
+//						msgBundle.putString(BeseyeBaseActivity.KEY_INFO_TEXT, strDialogInfo);
+//					}
 					break;
 				}
 				case NCODE_PEOPLE_DETECT:
@@ -1631,7 +1645,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	}
 	
 	private void handleWSEvent(JSONObject dataObj){
-		if(!SessionMgr.getInstance().isTokenValid()){
+		if(!SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()){
 			return;
 		}
     	if(null != dataObj){
@@ -1676,7 +1690,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
 	
 	private void handleGCMEvents(String strRegularData, String strCusData){
-		if(!SessionMgr.getInstance().isTokenValid()){
+		if(!SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()){
 			return;
 		}
 		

@@ -212,6 +212,7 @@ public class BeseyeJSONUtil {
 	
 	public static final String ACC_TRUST_PIN 			= "TrustPinCode";
 	public static final String ACC_TRUST_DEV_LST 		= "TrustDevices";
+	public static final String ACC_TRUST_DEV_ID_LST 	= "TrustDeviceId";
 	public static final String ACC_TRUST_DEV_CNT 		= "TrustDeviceCnt";
 	public static final String ACC_TRUST_DEV_NAME 		= "Name";
 	public static final String ACC_TRUST_DEV_ID 		= "Id";
