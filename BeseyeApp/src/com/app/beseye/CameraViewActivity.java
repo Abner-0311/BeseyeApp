@@ -195,6 +195,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			if(NetworkMgr.getInstance().isNetworkConnected()){
 		    				setCursorVisiblity(View.GONE);
 		    			}
+
 		    			hideInvalidStateMask();
 		    			break;
 		    		}
