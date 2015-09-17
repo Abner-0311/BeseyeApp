@@ -5,6 +5,13 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeSharedPreferenceUtil.*;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 
@@ -15,9 +22,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.app.beseye.BeseyeApplication;
 import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 
 //SessionMgr is responsible for storing back-end URL, token, user Userid in storage/memory
 public class SessionMgr {
@@ -112,6 +121,10 @@ public class SessionMgr {
 	
 	
 	static private final String SESSION_PREF 				= "beseye_ses";
+	static private final String SESSION_PREF_SEC 			= "beseye_ses_sec";
+	
+	
+	
 	static private final String SESSION_TOKEN 				= "beseye_token";
 	static private final String SESSION_DOMAIN 				= "beseye_domain";
 	static private final String SESSION_USERID				= "beseye_userid";
@@ -119,6 +132,7 @@ public class SessionMgr {
 	static private final String SESSION_ACC_CERTIFICATED	= "beseye_certificated";
 	static private final String SESSION_OWNER_INFO			= "beseye_owner_data";
 	static private final String SESSION_OWNER_VPC_NUM		= "beseye_owner_vpc_no";
+	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
 	
 	static private final String SESSION_UPDATE_TS			= "beseye_cam_update_ts";
 	static private final String SESSION_UPDATE_CAMS			= "beseye_cam_update_list";
@@ -126,13 +140,13 @@ public class SessionMgr {
 	
 	static private final String SESSION_SERVER_MODE	    	= "beseye_server_mode";
 	static private final String SESSION_DETACH_HW_ID	    = "beseye_detach_hw_id";//Computex
-	static private final String SESSION_SIGNUP_EMAIL	    = "beseye_signup_email";
-	
-	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
+	static private final String SESSION_SIGNUP_EMAIL	    = "beseye_signup_email";//Computex
 	
 	static private final String SESSION_NEWS_HISTORY	    = "beseye_news_history";
 	static private final String SESSION_NEWS_LAST_MAX	    = "beseye_news_last_max";
 	static private final String SESSION_NEWS_IND_SHOW	    = "beseye_news_show_ind";
+	
+	static private final String SESSION_TRANFER_TO_SEC	    = "beseye_transfer_to_sec";
 	
 	//static private final String SESSION_SCREENSHOT_FEATURE	= "beseye_screen_feature";
 	
@@ -156,27 +170,69 @@ public class SessionMgr {
 	
 	private SessionMgr(Context context){
 		if(null != context){
-			mPref = getSharedPreferences(context, SESSION_PREF);
-			mSecuredPref = getSecuredSharedPreferences(context, SESSION_PREF);
+			//mPref = getSharedPreferences(context, SESSION_PREF);
+			mPref = getSecuredSharedPreferences(context, SESSION_PREF_SEC);
+			//setPrefBooleanValue(mPref, SESSION_TRANFER_TO_SEC, false);
+			if(false == getPrefBooleanValue(mPref, SESSION_TRANFER_TO_SEC, false) && BeseyeApplication.isInMainProcess()){
+				transferToSecuMode(context);
+			}
 			mSessionData = new SessionData();
 			if(null != mSessionData){
 				mSessionData.setUserid(getPrefStringValue(mPref, SESSION_USERID));
 				mSessionData.setAccount(getPrefStringValue(mPref, SESSION_ACCOUNT));
 				mSessionData.setDomain(getPrefStringValue(mPref, SESSION_DOMAIN));
 				mSessionData.setAuthToken(getPrefStringValue(mPref, SESSION_TOKEN));
-				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
-				mSessionData.setIsCamSWUpdateSuspended(getPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, false));
-				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal())));
-				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
+				mSessionData.setVPCNumber(getPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, 1));
 				mSessionData.setPairToken(getPrefStringValue(mPref, SESSION_PAIR_TOKEN));
+				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
+				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
+				
 				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
 				mSessionData.setCamUpdateList(getPrefStringValue(mPref, SESSION_UPDATE_CAMS));
+				mSessionData.setIsCamSWUpdateSuspended(getPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, false));
+				
+				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal())));
 				mSessionData.setDetachHWID(getPrefStringValue(mPref, SESSION_DETACH_HW_ID));
 				mSessionData.setSignupEmail(getPrefStringValue(mPref, SESSION_SIGNUP_EMAIL));
-				
-				mSessionData.setVPCNumber(getPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, 1));
 			}
 		}
+	}
+	
+	private void transferToSecuMode(Context context){
+		Log.e(TAG, "transferToSecuMode() ++");
+		SharedPreferences mPrefOld = getSharedPreferences(context, SESSION_PREF);
+		//SharedPreferences mPrefOld = getSecuredSharedPreferences(context, SESSION_PREF_SEC);
+		if(null != mPrefOld){
+			setPrefStringValue(mPref, SESSION_USERID, getPrefStringValue(mPrefOld, SESSION_USERID));
+			setPrefStringValue(mPref, SESSION_ACCOUNT, getPrefStringValue(mPrefOld, SESSION_ACCOUNT));
+			setPrefStringValue(mPref, SESSION_DOMAIN, getPrefStringValue(mPrefOld, SESSION_DOMAIN));
+			setPrefStringValue(mPref, SESSION_TOKEN, getPrefStringValue(mPrefOld, SESSION_TOKEN));
+			setPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, getPrefIntValue(mPrefOld, SESSION_OWNER_VPC_NUM));
+			setPrefIntValue(mPref, SESSION_ACC_CERTIFICATED, getPrefIntValue(mPrefOld, SESSION_ACC_CERTIFICATED));
+			setPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, getPrefBooleanValue(mPrefOld, SESSION_UPDATE_SUSPEND, false));
+			setPrefStringValue(mPref, SESSION_PAIR_TOKEN, getPrefStringValue(mPrefOld, SESSION_PAIR_TOKEN));
+
+			setPrefStringValue(mPref, SESSION_OWNER_INFO, getPrefStringValue(mPrefOld, SESSION_OWNER_INFO));
+			setPrefLongValue(mPref, SESSION_UPDATE_TS, getPrefLongValue(mPrefOld, SESSION_UPDATE_TS));
+			setPrefStringValue(mPref, SESSION_UPDATE_CAMS, getPrefStringValue(mPrefOld, SESSION_UPDATE_CAMS));
+			
+			setPrefIntValue(mPref, SESSION_SERVER_MODE, getPrefIntValue(mPrefOld, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal()));
+			setPrefStringValue(mPref, SESSION_DETACH_HW_ID, getPrefStringValue(mPrefOld, SESSION_DETACH_HW_ID));
+			setPrefStringValue(mPref, SESSION_SIGNUP_EMAIL, getPrefStringValue(mPrefOld, SESSION_SIGNUP_EMAIL));
+			
+			setPrefStringValue(mPref, SESSION_NEWS_HISTORY, getPrefStringValue(mPrefOld, SESSION_NEWS_HISTORY));
+			setPrefIntValue(mPref, SESSION_NEWS_LAST_MAX, getPrefIntValue(mPrefOld, SESSION_NEWS_LAST_MAX, 0));
+			setPrefIntValue(mPref, SESSION_NEWS_IND_SHOW, getPrefIntValue(mPrefOld, SESSION_NEWS_IND_SHOW));
+			clearSharedPreferences(mPrefOld);
+		}
+		setPrefBooleanValue(mPref, SESSION_TRANFER_TO_SEC, true);
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				notifySessionUpdate();
+			}}, 5000L);
+		
+		Log.e(TAG, "transferToSecuMode() --");
 	}
 	
 	public void cleanSession(){
