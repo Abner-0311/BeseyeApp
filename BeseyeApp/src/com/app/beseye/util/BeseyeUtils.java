@@ -263,7 +263,7 @@ public class BeseyeUtils {
 	
 	static public String getStreamSecInfo(){
 		try {
-			return String.format("?ua=%s&se=%s&dd=%s", URLEncoder.encode(getUserAgent(), "utf-8"), SessionMgr.getInstance().getAuthToken(), getAndroidUUid());
+			return String.format("?ua=%s&se=%s&dd=%s", URLEncoder.encode(getUserAgent(), "utf-8"), SessionMgr.getInstance().getAuthToken(), getAndroidUUid())+BeseyeApplication.getAppMark();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return null;
