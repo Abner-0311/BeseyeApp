@@ -56,15 +56,15 @@ public class BeseyeApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		sApplication = this;
+		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
+		
 		BeseyeUtils.init();
 		SessionMgr.createInstance(getApplicationContext());
 		BeseyeNewFeatureMgr.createInstance(getApplicationContext());
 		BeseyeUtils.setPackageVersion(getApplicationContext());
 		//facebook
 		FacebookSdk.sdkInitialize(getApplicationContext());
-		
-		sApplication = this;
-		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
 		
 		if(BeseyeConfig.DEBUG){
 			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" HOCKEY_APP_ID:"+HOCKEY_APP_ID+", can update:"+BeseyeUtils.canUpdateFromHockeyApp()+", Build.VERSION.RELEASE:"+Build.VERSION.RELEASE);

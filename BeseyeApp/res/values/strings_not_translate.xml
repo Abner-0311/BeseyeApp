@@ -75,9 +75,11 @@
 	<string name="pull_to_refresh_from_bottom_release_label">@string/pull_to_refresh_release_label</string>
     <string name="pull_to_refresh_from_bottom_refreshing_label">@string/pull_to_refresh_refreshing_label</string>
 	
-    <!-- DO NOT TRANSLATE END-->    
-   	<string name="cam_setting_Location_aware_setting">Turn off around&#8230;</string>
+    <string name="cam_setting_Location_aware_setting">Turn off around&#8230;</string>
     
 	<string name="download_app_web_360">360手机助手</string>
     <string name="download_app_web_mi">小米应用商店</string>
+    
+    <string name="cam_info_vcam_id">Vcam ID</string>
+    <!-- DO NOT TRANSLATE END-->    
 </resources>
