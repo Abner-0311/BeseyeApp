@@ -497,34 +497,11 @@ public class BeseyeUtils {
 							writer.close();
 						}
 						
-						Intent intent = new Intent(Intent.ACTION_SEND);
-						intent.setType("text/plain");
-						
-						final PackageManager pm = context.getPackageManager();
-					    final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
-					    if(matches.isEmpty()){
-					    	Toast.makeText(context, "No mail related app", Toast.LENGTH_LONG).show();
-					    }else{
-					    	ResolveInfo best = null;
-						    for (final ResolveInfo info : matches)
-						      if (info.activityInfo.packageName.endsWith(".gm") ||
-						          info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
-						    if (best != null)
-						      intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
-						    
-						    if(SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)){
-						    	intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"15219425820@163.com"});
-						    }else{
-						    	intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"abner.huang@beseye.com"});
-						    }
-							
-							intent.putExtra(Intent.EXTRA_SUBJECT, "[Android Log]"+logFile.getName());
-							intent.putExtra(Intent.EXTRA_TEXT, "This is log from "+SessionMgr.getInstance().getAccount()+"\nIssue occurred on [Cam name]");
-							
-							Uri uri = Uri.parse("file://" + logFile);
-							intent.putExtra(Intent.EXTRA_STREAM, uri);
-							context.startActivity(Intent.createChooser(intent, "Send email..."));
-					    }
+						launchEmail(context, 
+									logFile, 
+									"[Android Log]"+logFile.getName(), 
+									"This is log from "+SessionMgr.getInstance().getAccount()+"\nIssue occurred on [Cam name]",
+									SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)?"15219425820@163.com":"abner.huang@beseye.com");
 					} catch (IOException e) {
 						if(e instanceof FileNotFoundException){
 							Log.e(TAG, "cannot find log :"+logFile.getAbsolutePath());
@@ -537,6 +514,45 @@ public class BeseyeUtils {
 			}
 			
 		}
+	}
+	
+	static public void launchEmail(Context context, File fAttachPath, String strSubject, String strContent, String strReceiverEmail){
+		
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		
+		final PackageManager pm = context.getPackageManager();
+	    final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
+	    if(matches.isEmpty()){
+	    	Toast.makeText(context, "No mail related app", Toast.LENGTH_LONG).show();
+	    }else{
+	    	ResolveInfo best = null;
+		    for (final ResolveInfo info : matches)
+		      if (info.activityInfo.packageName.endsWith(".gm") ||
+		          info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
+		    if (best != null)
+		      intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+		    
+		    if(null != strReceiverEmail){
+		    	intent.putExtra(Intent.EXTRA_EMAIL, new String[] {strReceiverEmail});
+		    }
+			
+		    if(null != strSubject){
+		    	intent.putExtra(Intent.EXTRA_SUBJECT, strSubject);
+		    }
+		    
+		    if(null != strContent){
+		    	intent.putExtra(Intent.EXTRA_TEXT, strContent);
+		    }
+			
+		    if(null != fAttachPath){
+		    	Uri uri = Uri.parse("file://" + fAttachPath);
+				intent.putExtra(Intent.EXTRA_STREAM, uri);
+		    }
+			
+			context.startActivity(Intent.createChooser(intent, "Send email..."));
+	    }
+		
 	}
 	
 	static CharsetEncoder asciiEncoder = Charset.forName("US-ASCII").newEncoder(); // or "ISO-8859-1" for ISO Latin 1
