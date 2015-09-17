@@ -1,0 +1,104 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+   	android:layout_height="match_parent"
+   	android:orientation="vertical"
+   	android:background="@color/signup_bg_color" >
+	<RelativeLayout
+	    android:id="@+id/rl_cameralist_video_block"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="@dimen/cameralist_videoblock_margin"
+	    android:layout_marginLeft="@dimen/cameralist_videoblock_margin"
+	    android:layout_marginRight="@dimen/cameralist_videoblock_margin"
+	    android:paddingBottom="@dimen/cameralist_videoblock_padding_bottom"		
+	    android:paddingLeft="@dimen/cameralist_videoblock_thunmbnail_padding"		
+	    android:paddingRight="@dimen/cameralist_videoblock_thunmbnail_padding"		    
+	    android:background="@drawable/sl_cam_list_itm_bg" >
+	    <RelativeLayout
+	        android:id="@+id/rl_cameralist_video"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/rl_cameralist_title"
+	        android:layout_centerHorizontal="true"
+	        android:background="@color/camera_list_video_bg" >
+
+		    <com.app.beseye.widget.RemoteImageView
+		        android:id="@+id/iv_cameralist_thumbnail"
+		        android:layout_width="330dp"
+		        android:layout_height="180dp"
+		        android:background="@color/camera_list_video_bg"
+		        android:visibility="visible" />
+		    
+		    <RelativeLayout
+		        android:id="@+id/rl_camera_disconnected_solid"
+		        android:layout_width="330dp"
+		        android:layout_height="180dp"
+		        android:background="@color/camera_list_video_mask">
+				<RelativeLayout
+				    android:id="@+id/rl_camera_disconnected_content"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_centerHorizontal="true"
+			        android:layout_centerVertical="true" 
+			        android:visibility="invisible">
+			        <TextView
+			            android:id="@+id/tv_camera_disconnected"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_centerHorizontal="true"
+			            android:text="@string/camera_list_disconected"
+			            android:textColor="@color/beseye_color_gray"
+	           			android:textSize="@dimen/login_fontNormal" />
+			        
+			        <TextView
+			            android:id="@+id/tv_camera_more"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_below="@+id/tv_camera_disconnected"
+			            android:layout_centerHorizontal="true"
+			            android:text="@string/camera_list_more"
+			            android:textColor="@color/csl_link_font_color"
+	           			android:textSize="@dimen/login_fontSmall" 
+	           			android:visibility="visible"/>
+		        </RelativeLayout>
+			</RelativeLayout>
+			
+		    <RelativeLayout
+		        android:id="@+id/rl_cameralist_no_video"
+		       	android:layout_width="330dp"
+		        android:layout_height="180dp"
+		        android:background="@color/camera_list_video_mask"
+		        android:visibility="invisible" >
+
+			    <RelativeLayout
+			        android:id="@+id/rl_camera_disconnected_mask"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_centerHorizontal="true"
+			        android:layout_centerVertical="true" >
+			
+			        <TextView
+			            android:id="@+id/tv_camera_disconnected_2"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_centerHorizontal="true"
+			            android:text="@string/camera_list_off"
+			            android:textColor="@color/beseye_color_gray"
+           				android:textSize="@dimen/login_fontNormal" />
+			    
+				</RelativeLayout>
+			</RelativeLayout>
+		</RelativeLayout>
+	</RelativeLayout>
+</LinearLayout>
+
+
+
+   
+		
+	
+ 
+
+
