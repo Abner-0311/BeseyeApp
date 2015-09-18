@@ -84,4 +84,17 @@
         <item name="android:ellipsize">end</item>
         <item name="android:singleLine">true</item>
     </style>
+    
+    <style name="StyleButton_Pincode">
+        <item name="android:textColor">@color/csl_pincode_num_font_color</item>
+        <item name="android:textSize">@dimen/pincode_num_font</item>
+        <item name="android:background">@drawable/sl_pincode_num_bg</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="StyleButton_Pincode.Func">
+        <item name="android:background">@drawable/sl_pincode_func_bg</item>
+    </style>
 </resources>

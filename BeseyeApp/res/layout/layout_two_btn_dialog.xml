@@ -32,7 +32,9 @@
 	   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
    			android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
 	   		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
-	   		android:textColor="@color/wifi_info_dialog_attr_font_color"/>
+	   		android:textColor="@color/wifi_info_dialog_attr_font_color"
+	   		android:maxLines = "15"
+			android:scrollbars = "vertical"/>
 	</LinearLayout>
    	<LinearLayout 
         android:id="@+id/vg_button_holder"

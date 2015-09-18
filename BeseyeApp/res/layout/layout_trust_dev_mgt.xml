@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color" >
+	<com.app.beseye.widget.PullToRefreshListView 
+	    android:id="@+id/lv_trust_dev_lst"
+	    android:layout_width="match_parent"
+   		android:layout_height="0dp"
+   		android:layout_weight="1">
+	</com.app.beseye.widget.PullToRefreshListView>	
+	<LinearLayout 
+        android:id="@+id/vg_delete_bundle"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+		<Button
+		    android:id="@+id/btn_cancel"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:background="@drawable/sl_account_bottom_btn"
+		    android:text="@string/cancel"
+		    android:textColor="@color/word_white"
+		    android:textColorLink="@color/word_white"
+		    android:textSize="@dimen/login_fontMedium" />
+		<View 
+		    android:layout_width="0.33dp"
+		    android:layout_height="match_parent"
+		    android:background="@color/beseye_color_gray"/>
+		<Button
+		    android:id="@+id/btn_delete"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:background="@drawable/sl_account_bottom_btn"
+		    android:text="@string/btn_delete_trust_dev_mgt"
+		    android:textColor="@color/word_white"
+
+		    android:textSize="@dimen/login_fontMedium" />
+	</LinearLayout>
+</LinearLayout>

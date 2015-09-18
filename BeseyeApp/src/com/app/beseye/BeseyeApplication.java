@@ -52,6 +52,7 @@ public class BeseyeApplication extends Application {
 	   -- Begin */
 	final static public String BESEYE_MAIN_PROCESS = "com.app.beseye";
 	static private String sCurProcessName = null;
+	static private String sStrAppMark = "";
 	
 	@Override
 	public void onCreate() {
@@ -93,10 +94,16 @@ public class BeseyeApplication extends Application {
 		if(null != s_checkBackgroundRunnable){
 			s_checkBackgroundRunnable.updateContext(this);
 		}    
+		
+		sStrAppMark = (BeseyeConfig.ALPHA_VER?getString(R.string.alpha):(BeseyeConfig.BETA_VER?getString(R.string.beta):(BeseyeConfig.DEBUG?" (dev)":"")));
 	}
 	
 	static synchronized public Application getApplication(){
 		return sApplication;
+	}
+	
+	static public String getAppMark(){
+		return sStrAppMark;
 	}
 	
 //	public static void broadcastEventToMainProcess(Context context, UBT_Event event, int iSes, boolean bIsBeginEvent){
@@ -199,7 +206,6 @@ public class BeseyeApplication extends Application {
 				sLastBeseyeAppStateChangeListener = new WeakReference<BeseyeAppStateChangeListener>(listener);
 			}
 		}
-		
 	}
 	
 	static public boolean s_bSeesionBegun = false;

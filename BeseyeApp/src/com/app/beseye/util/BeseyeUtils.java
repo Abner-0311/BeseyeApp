@@ -258,7 +258,7 @@ public class BeseyeUtils {
 				strRet = adapter.getName();
 			}
 		}
-		return strRet;
+		return strRet+BeseyeApplication.getAppMark();
 	}
 	
 	static public String getStreamSecInfo(){

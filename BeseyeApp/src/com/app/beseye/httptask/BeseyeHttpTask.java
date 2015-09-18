@@ -67,6 +67,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.error.BeseyeError;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -356,8 +357,8 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    			httpRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
 	    		}
 	    		
-	    		//for Dev name notification when login
-	    		if(this instanceof BeseyeAccountTask.LoginHttpTask){
+	    		//for Dev name notification when login and signup
+	    		if(this instanceof BeseyeAccountTask.LoginHttpTask || this instanceof BeseyeAccountTask.RegisterTask){
 	    			httpRequest.addHeader("Bes-Client-Dev-Name", BeseyeUtils.getDevName());
 	    		}
 	    		
@@ -519,7 +520,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		
 		if(0 != miRetCode || miErrType != ERR_TYPE_NO_ERR){
 	       	if(miErrType == ERR_TYPE_NO_ERR){
-	       		if(/*SessionMgr.getInstance().isMdidValid() && */-1 == miRetCode){//invalid seesion from login BE
+	       		if(/*SessionMgr.getInstance().isMdidValid() && */-1 == miRetCode || miRetCode == BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN){//invalid seesion from login BE
 	       			Log.e(TAG, "getJSONfromURL(), invalid seesion from login BE");
 	       			//if(this instanceof iKalaAccountTask.LogoutHttpTask){
 	       			//	miRetCode = 0;//Let it pass

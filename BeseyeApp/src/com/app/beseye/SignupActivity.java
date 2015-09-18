@@ -245,6 +245,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 							SessionMgr.getInstance().setUserid(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_ID));
 							SessionMgr.getInstance().setAccount(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_EMAIL));
 							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
+							SessionMgr.getInstance().setIsTrustDev(true);//temp validation
 						}
 						
 						if(null != mstrSN){

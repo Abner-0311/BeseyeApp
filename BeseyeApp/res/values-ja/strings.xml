@@ -263,7 +263,7 @@
   <string name="signup_bottom_signup">新規アカウントの作成</string>
   <string name="signup_before_setup_start">スタート</string>
   <!-- Hint Message in before setup page-->
-  <string name="signup_before_setup_description">カメラをコンセントに繋ぎ、緑ライトが点滅するまでお待ちください。カメラはご自分から30センチ以内の場所に置いてください。</string>
+  <string name="signup_before_setup_description">カメラをコンセントに繋ぎ、緑ライトが点滅するまでお待ちください。カメラはご自分から10センチ以内の場所に置いてください。</string>
   <string name="signup_sound_reminder_description">カメラを起動するため、スマホの音が鳴るように設定してください。</string>
   <!-- Hint Message for TOS and privacy policy-->
   <string name="signup_createAccount_description_title">下記のBeseye規約に同意するなら次へお進み下さい</string>
@@ -455,7 +455,7 @@
   <!--Dialog Title for listing Market App to update beseye -->
   <string name="dialog_title_download_app_via">Beseye APP を更新する</string>
   <!--Dialog Title for listing Market App Web version to update beseye -->
-  <string name="dialog_title_download_app_via_web">ウェブサイトでBeseye APP を更新する</string>
+  <string name="dialog_title_download_app_via_web">ウェブサイトで Beseye APP を更新する</string>
   <!--Turn off on every <Mon> ... etc.-->
   <!-- TODO: string name="cam_setting_schedule_turnoff_every" -->
   <!--From: <time>-->
@@ -482,4 +482,36 @@
   <!-- TODO: string name="cam_setting_schedule_conflict_be_on" -->
   <!--message dialog to user-->
   <!-- TODO: string name="cam_setting_schedule_conflict_be_off" -->
+  <!--Entry title for trust device management-->
+  <!-- TODO: string name="cam_menu_trust_dev_mgt" -->
+  <!--Button for removing multiple devices from white list-->
+  <!-- TODO: string name="btn_delete_trust_dev_mgt" -->
+  <!--Dialog to remind multiple devices will be removed from white list-->
+  <!-- TODO: string name="dialog_delete_trust_dev" -->
+  <!--Button to clear pin code-->
+  <!-- TODO: string name="pincode_clear" -->
+  <!--Button to verify pin code-->
+  <!-- TODO: string name="pincode_done" -->
+  <!--Description in pin code verification page-->
+  <!-- TODO: string name="pincode_verify_desc" -->
+  <!--Button to resend pin code-->
+  <!-- TODO: string name="pincode_verify_resend" -->
+  <!--Toast message for sending new pin code successfully-->
+  <!-- TODO: string name="msg_pincode_verify_resend_done" -->
+  <!--Toast message for sending new pin code failed-->
+  <!-- TODO: string name="msg_pincode_verify_resend_fail" -->
+  <!--Title of pin code verification page-->
+  <!-- TODO: string name="pincode_verify_title" -->
+  <!--Error message for incorrect pin code-->
+  <!-- TODO: string name="msg_pincode_verify_fail" -->
+  <!--Error message for expired pin code-->
+  <!-- TODO: string name="msg_pincode_verify_expired" -->
+  <!--Error message for incorrect pin code trials over 3 times-->
+  <!-- TODO: string name="msg_pincode_verify_fail_three_times" -->
+  <!--Error message for failing to verify pin code due to unknown reasons-->
+  <!-- TODO: string name="msg_delete_trust_dev_fail" -->
+  <!--Pin code request message shown on Android Notification -->
+  <!-- TODO: string name="notification_pincode_auth" -->
+  <!--Pin code request dialog message shown in Beseye App-->
+  <!-- TODO: string name="dialog_notification_pincode_auth" -->
 </resources>

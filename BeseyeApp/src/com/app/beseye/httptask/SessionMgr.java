@@ -130,6 +130,7 @@ public class SessionMgr {
 	static private final String SESSION_USERID				= "beseye_userid";
 	static private final String SESSION_ACCOUNT				= "beseye_account";
 	static private final String SESSION_ACC_CERTIFICATED	= "beseye_certificated";
+	static private final String SESSION_ACC_TRUSTED			= "beseye_trust_dev";
 	static private final String SESSION_OWNER_INFO			= "beseye_owner_data";
 	static private final String SESSION_OWNER_VPC_NUM		= "beseye_owner_vpc_no";
 	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
@@ -186,6 +187,7 @@ public class SessionMgr {
 				mSessionData.setPairToken(getPrefStringValue(mPref, SESSION_PAIR_TOKEN));
 				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
+				mSessionData.setIsTrustDev(getPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, false));
 				
 				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
 				mSessionData.setCamUpdateList(getPrefStringValue(mPref, SESSION_UPDATE_CAMS));
@@ -211,6 +213,7 @@ public class SessionMgr {
 			setPrefIntValue(mPref, SESSION_ACC_CERTIFICATED, getPrefIntValue(mPrefOld, SESSION_ACC_CERTIFICATED));
 			setPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, getPrefBooleanValue(mPrefOld, SESSION_UPDATE_SUSPEND, false));
 			setPrefStringValue(mPref, SESSION_PAIR_TOKEN, getPrefStringValue(mPrefOld, SESSION_PAIR_TOKEN));
+			setPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, getPrefBooleanValue(mPrefOld, SESSION_ACC_TRUSTED, false));
 
 			setPrefStringValue(mPref, SESSION_OWNER_INFO, getPrefStringValue(mPrefOld, SESSION_OWNER_INFO));
 			setPrefLongValue(mPref, SESSION_UPDATE_TS, getPrefLongValue(mPrefOld, SESSION_UPDATE_TS));
@@ -245,6 +248,7 @@ public class SessionMgr {
 		setAccount("");
 		setOwnerInfo("");
 		setIsCertificated(false);
+		setIsTrustDev(false);
 		setVPCNumber(1);
 		setNewsHistory("");
 		BeseyeNewsHistoryMgr.deinit();
@@ -535,6 +539,16 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
+	public boolean getIsTrustDev(){
+		return mSessionData.getIsTrustDev();
+	}
+	
+	public void setIsTrustDev(boolean bIsTrustDev){
+		setPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, bIsTrustDev);
+		mSessionData.setIsTrustDev(bIsTrustDev);
+		notifySessionUpdate();
+	}
+
 	public SERVER_MODE getServerMode(){
 		return mSessionData.getServerMode();
 	}
@@ -623,7 +637,7 @@ public class SessionMgr {
 	
 	public static class SessionData implements Parcelable{
 		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
-		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended;
+		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended, mbIsTrustDev;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
 		private String mStrCamUpdateList, mStrDetachHWID, mStrSignupEmail;
@@ -647,6 +661,7 @@ public class SessionMgr {
 			mStrPairToken = "";
 			mbIsCertificated = false;
 			mbIsCamSWUpdateSuspended = false;
+			mbIsTrustDev = false;
 			mServerMode = BeseyeConfig.DEFAULT_SERVER_MODE;
 			
 			mlCamUpdateTs = 0;
@@ -795,6 +810,14 @@ public class SessionMgr {
 			mbIsCamSWUpdateSuspended = bIsCamSWUpdateSuspended;
 		}
 		
+		public boolean getIsTrustDev(){
+			return mbIsTrustDev;
+		}
+		
+		public void setIsTrustDev(boolean bIsTrustDev){
+			mbIsTrustDev = bIsTrustDev;
+		}
+		
 		public SERVER_MODE getServerMode(){
 			return mServerMode;
 		}
@@ -881,6 +904,7 @@ public class SessionMgr {
 			
 			dest.writeInt(mbIsCertificated?1:0);
 			dest.writeInt(mbIsCamSWUpdateSuspended?1:0);
+			dest.writeInt(mbIsTrustDev?1:0);
 			
 			dest.writeInt(mServerMode.ordinal());
 			
@@ -927,6 +951,7 @@ public class SessionMgr {
 			
 			mbIsCertificated = in.readInt()>0?true:false;
 			mbIsCamSWUpdateSuspended = in.readInt()>0?true:false;
+			mbIsTrustDev = in.readInt()>0?true:false;
 			mServerMode = SERVER_MODE.translateToMode(in.readInt());
 			
 			mlCamUpdateTs = in.readLong();
