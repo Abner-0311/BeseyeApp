@@ -95,7 +95,7 @@ public class BeseyeApplication extends Application {
 			s_checkBackgroundRunnable.updateContext(this);
 		}    
 		
-		sStrAppMark = (BeseyeConfig.ALPHA_VER?getString(R.string.alpha):(BeseyeConfig.BETA_VER?getString(R.string.beta):(BeseyeConfig.DEBUG?" (dev)":"")));
+		sStrAppMark = (BeseyeConfig.ALPHA_VER?" (alpha)":(BeseyeConfig.BETA_VER?" (beta)":(BeseyeConfig.DEBUG?" (dev)":"")));
 	}
 	
 	static synchronized public Application getApplication(){
