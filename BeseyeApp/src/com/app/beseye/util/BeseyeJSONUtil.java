@@ -283,6 +283,10 @@ public class BeseyeJSONUtil {
 	
 	public static final String MM_FACE_IDS 				= "faceIds";
 	
+	public static final String MM_HD_IMG 				= "img";
+	public static final String MM_HD_IMG_PATH 			= "pathToImg";
+	public static final String MM_HD_IMG_DELETE 		= "imgToDel";
+	
 	static public class FACE_LIST{
 		public int miId;
 		public String mstrName;

@@ -487,4 +487,11 @@
   <string name="btn_contact_cs">Contact Custumer service</string>
   <string name="cam_attach_under_your_account_error">This camera whose name is (%s) was already awaken by your account.</string>
   <string name="cam_attach_under_other_account_error">This camera was already awaken by other\'s account.\nPlease contact custumer service for help.\n[Camera HW ID is %s]</string>
+  
+  
+  <string name="title_human_detect_train">Choose Non-human picture</string>
+  <string name="confirm">Confirm</string>
+  <string name="cam_setting_title_human_detect">Human detection</string>
+  <string name="enhance_human_detect">Enhance Human Detect</string>
+  <string name="reset_human_detect">Reset Human Detect</string>
 </resources>

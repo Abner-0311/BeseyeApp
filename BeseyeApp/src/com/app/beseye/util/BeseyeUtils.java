@@ -66,6 +66,7 @@ public class BeseyeUtils {
 	}
 	
 	static public final float BESEYE_THUMBNAIL_RATIO_9_16 = 9.0f/16.0f;
+	static public final float BESEYE_THUMBNAIL_RATIO_2_1 = 2.0f/1.0f;
 	
 	static public int getDeviceWidth(Activity act){
 		if(null != act){

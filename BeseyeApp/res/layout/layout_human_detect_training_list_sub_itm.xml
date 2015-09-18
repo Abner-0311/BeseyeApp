@@ -1,0 +1,41 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+   	xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vg_training_pic"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/cameralist_videoblock_margin"
+    android:paddingLeft="@dimen/cameralist_videoblock_margin"
+    android:paddingRight="@dimen/cameralist_videoblock_margin"
+    android:background="@color/signup_bg_color" >
+    <com.app.beseye.widget.RemoteImageView
+        android:id="@+id/iv_training_pic"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@color/camera_list_video_bg"
+        android:visibility="visible" 
+        android:scaleType="centerCrop"/>
+    
+    <RelativeLayout
+        android:id="@+id/rl_training_pic_mask"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@color/camera_list_video_mask"
+        android:visibility="invisible">
+		<ImageView 
+		    android:layout_width="wrap_content"
+       		android:layout_height="wrap_content"
+       		android:src="@drawable/common_navicon_cancel_default"
+       		android:layout_centerInParent="true"/>
+	</RelativeLayout>
+</RelativeLayout>
+
+
+
+   
+		
+	
+ 
+
+
+

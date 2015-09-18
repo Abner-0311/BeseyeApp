@@ -142,6 +142,22 @@
         </activity>
         
         <activity
+            android:name=".setting.HumanDetectNotificationSettingActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:exported="false">
+        </activity>
+        
+        <activity
+            android:name=".setting.HumanDetectTrainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:exported="false">
+        </activity>
+        
+        <activity
             android:name=".setting.HWSettingsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
