@@ -520,7 +520,9 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		
 		if(0 != miRetCode || miErrType != ERR_TYPE_NO_ERR){
 	       	if(miErrType == ERR_TYPE_NO_ERR){
-	       		if(/*SessionMgr.getInstance().isMdidValid() && */-1 == miRetCode || miRetCode == BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN){//invalid seesion from login BE
+	       		if(/*SessionMgr.getInstance().isMdidValid() && */-1 == miRetCode || 
+	       			BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == miRetCode ||
+	       			BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == miRetCode ){//invalid seesion from login BE
 	       			Log.e(TAG, "getJSONfromURL(), invalid seesion from login BE");
 	       			//if(this instanceof iKalaAccountTask.LogoutHttpTask){
 	       			//	miRetCode = 0;//Let it pass

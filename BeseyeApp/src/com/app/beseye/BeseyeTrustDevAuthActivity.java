@@ -162,10 +162,10 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 				if(0 == iRetCode){
 					SessionMgr.getInstance().setIsTrustDev(true);
 					launchDelegateActivity(CameraListActivity.class.getName());
-				}else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
+				}/*else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
 					Toast.makeText(this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
-					onSessionInvalid();
-				}else {
+					onSessionInvalid(false);
+				}*/else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED != iRetCode  && BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN != iRetCode){
 					//BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iRetCode
 					BeseyeUtils.postRunnable(new Runnable(){
 						@Override
@@ -357,7 +357,7 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 				dialog.setOnDismissListener(new OnDismissListener(){
 					@Override
 					public void onDismiss(DialogInterface dialog) {
-						onSessionInvalid();
+						onSessionInvalid(true);
 					}});
 				break;
 			}

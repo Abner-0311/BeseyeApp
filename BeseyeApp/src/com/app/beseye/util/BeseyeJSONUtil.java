@@ -209,6 +209,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_ACTIVATED 			= "IsActivated";
 	public static final String ACC_VCAM 				= "Vcam";
 	public static final String ACC_BESEYE_ACCOUNT 		= "IsBeseyeAccount";
+	public static final String ACC_PRIVATECAM_ACCOUNT 	= "IsPrivatecamGroup";
 	
 	public static final String ACC_TRUST_PIN 			= "TrustPinCode";
 	public static final String ACC_TRUST_DEV_LST 		= "TrustDevices";

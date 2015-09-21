@@ -226,7 +226,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}	
 		else{
 			Log.e(TAG, "checkSession(), need to get new session");
-			onSessionInvalid();
+			onSessionInvalid(false);
 			//monitorAsyncTask(new iKalaAddrTask.GetSessionTask(this), true);
 		}
 		return false;
@@ -1125,7 +1125,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			//onSessionInvalid();
 		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 			//SessionMgr.getInstance().cleanSession();
-			onSessionInvalid();
+			onSessionInvalid(true);
 		}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 			//onToastShow(task, "failed to update sw");
 		}else if(task instanceof BeseyeCamBEHttpTask.GetCamUpdateStatusTask){
@@ -1159,10 +1159,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				if(0 == iRetCode){
 					slLastTimeToCheckSession = System.currentTimeMillis();
 					invokeSessionComplete();
-				}else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
+				}/*else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
 					Toast.makeText(this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
-					onSessionInvalid();
-				}else if(BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iRetCode){
+					onSessionInvalid(false);
+				}*/else if(BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iRetCode){
 					launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
 				}else{
 					onServerError();
@@ -1212,7 +1212,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 				if(0 == iRetCode){
 					//Log.i(TAG, "onPostExecute(), "+result.toString());
-					onSessionInvalid();
+					onSessionInvalid(true);
 				}
 			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(task == mGetCamListTask){
@@ -1434,7 +1434,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 
 	@Override
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
-		onSessionInvalid();
+		onSessionInvalid(false);
 	}
 	
 	protected void invalidDevSession(){
@@ -1443,7 +1443,14 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		launchDelegateActivity(BeseyeEntryActivity.class.getName());
 	}
 	
-	protected void onSessionInvalid(){
+	protected void onSessionInvalid(boolean bIsLogoutCase){
+		if(false == bIsLogoutCase){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
+				}}, 0L);
+		}
 		invalidDevSession();
 	}
 	
@@ -2032,7 +2039,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     protected boolean onPasswordChanged(JSONObject msgObj){
     	Toast.makeText(this, getString(R.string.toast_password_changed), Toast.LENGTH_SHORT).show();
-    	onSessionInvalid();
+    	onSessionInvalid(false);
     	return true;
     }
     
