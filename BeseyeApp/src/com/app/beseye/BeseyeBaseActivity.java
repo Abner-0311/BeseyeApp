@@ -226,7 +226,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}	
 		else{
 			Log.e(TAG, "checkSession(), need to get new session");
-			onSessionInvalid();
+			onSessionInvalid(false);
 			//monitorAsyncTask(new iKalaAddrTask.GetSessionTask(this), true);
 		}
 		return false;
@@ -654,6 +654,11 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_PLAYER_CAPTURE		= DIALOG_ID_WIFI_BASE+20; 
 	static public final int DIALOG_ID_UPDATE_VIA_MARKET		= DIALOG_ID_WIFI_BASE+21; 
 	static public final int DIALOG_ID_UPDATE_VIA_WEB		= DIALOG_ID_WIFI_BASE+22; 
+	static public final int DIALOG_ID_DELETE_TRUST_DEV		= DIALOG_ID_WIFI_BASE+23; 
+	static public final int DIALOG_ID_PIN_VERIFY_FAIL		= DIALOG_ID_WIFI_BASE+24; 
+	static public final int DIALOG_ID_PIN_VERIFY_FAIL_3_TIME= DIALOG_ID_WIFI_BASE+25; 
+	static public final int DIALOG_ID_PIN_VERIFY_FAIL_EXPIRED	= DIALOG_ID_WIFI_BASE+26; 
+	static public final int DIALOG_ID_PIN_AUTH_REQUEST		= DIALOG_ID_WIFI_BASE+27; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
@@ -701,6 +706,20 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					removeMyDialog(DIALOG_ID_INFO);	
 				}});
 			dialog = d;
+			break;
+		}
+		case DIALOG_ID_PIN_AUTH_REQUEST:{
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			d.setBodyText(bundle.getString(KEY_INFO_TEXT));
+			d.setTitleText(getString(R.string.dialog_title_info));
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+			
+				@Override
+				public void onBtnClick() {
+					removeMyDialog(DIALOG_ID_INFO);	
+				}});
+			dialog = d;
+			
 			break;
 		}
 //			case DIALOG_ID_WARNING:{
@@ -876,19 +895,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					if(0 < strMsgRes.length())
 						((android.app.AlertDialog) dialog).setMessage(strMsgRes);
 				}
+				break;
 			}
-//			case DIALOG_ID_UPDATE_VIA_MARKET:{
-//				if(null != mMarketAppAdapter){
-//					mMarketAppAdapter.notifyDataSetChanged();
-//				}
-//				break;
-//			}
-//			case DIALOG_ID_UPDATE_VIA_WEB:{
-//				if(null != mMarketWebAdapter){
-//					mMarketWebAdapter.notifyDataSetChanged();
-//				}
-//				break;
-//			}
 	        default:
 	        	super.onPrepareDialog(id, dialog, args);
 	    }
@@ -1117,7 +1125,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			//onSessionInvalid();
 		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 			//SessionMgr.getInstance().cleanSession();
-			onSessionInvalid();
+			onSessionInvalid(true);
 		}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 			//onToastShow(task, "failed to update sw");
 		}else if(task instanceof BeseyeCamBEHttpTask.GetCamUpdateStatusTask){
@@ -1151,9 +1159,11 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				if(0 == iRetCode){
 					slLastTimeToCheckSession = System.currentTimeMillis();
 					invokeSessionComplete();
-				}else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
+				}/*else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
 					Toast.makeText(this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
-					onSessionInvalid();
+					onSessionInvalid(false);
+				}*/else if(BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iRetCode){
+					launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
 				}else{
 					onServerError();
 				}
@@ -1202,7 +1212,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 				if(0 == iRetCode){
 					//Log.i(TAG, "onPostExecute(), "+result.toString());
-					onSessionInvalid();
+					onSessionInvalid(true);
 				}
 			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(task == mGetCamListTask){
@@ -1424,13 +1434,24 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 
 	@Override
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
-		onSessionInvalid();
+		onSessionInvalid(false);
 	}
 	
-	protected void onSessionInvalid(){
+	protected void invalidDevSession(){
 		SessionMgr.getInstance().cleanSession();
 		BeseyeNewFeatureMgr.getInstance().reset();
 		launchDelegateActivity(BeseyeEntryActivity.class.getName());
+	}
+	
+	protected void onSessionInvalid(boolean bIsLogoutCase){
+		if(false == bIsLogoutCase){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
+				}}, 0L);
+		}
+		invalidDevSession();
 	}
 	
 	public void launchActivityByIntent(Intent intent){
@@ -1501,6 +1522,16 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		if(null != mNotifyService){
 			try {
 				mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_APP_TO_BACKGROUND));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	final public void notifyServicePincodeNotifyClick(String strPincodeInfo){
+		if(null != mNotifyService){
+			try {
+				mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_PIN_CODE_NOTIFY_CLICKED));
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -1712,6 +1743,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 							Log.i(TAG, "handleMessage(), e:"+e.toString());
 						}
                 	}
+                	break;
                 }
                 case BeseyeNotificationService.MSG_RESPOND_DEL_PUSH:{
                 	BeseyeBaseActivity act = mActivity.get();
@@ -1721,6 +1753,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	                		act.mLogoutRunnable.run();
 	                	}
                 	}
+                	break;
                 }
 //                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{
 //                	BeseyeBaseActivity act = mActivity.get();
@@ -1814,10 +1847,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
         // Establish a connection with the service.  We use an explicit
         // class name because there is no reason to be able to let other
         // applications replace our component.
-        bindService(new Intent(BeseyeBaseActivity.this, 
-        		BeseyeNotificationService.class), mConnection, Context.BIND_AUTO_CREATE);
-//        bindService(new Intent(BeseyeBaseActivity.this, 
-//        		iKalaUploadWorksService.class), mUploadConnection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(BeseyeBaseActivity.this, BeseyeNotificationService.class), mConnection, Context.BIND_AUTO_CREATE);
         mIsBound = true;
     }
     
@@ -2009,7 +2039,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     protected boolean onPasswordChanged(JSONObject msgObj){
     	Toast.makeText(this, getString(R.string.toast_password_changed), Toast.LENGTH_SHORT).show();
-    	onSessionInvalid();
+    	onSessionInvalid(false);
     	return true;
     }
     

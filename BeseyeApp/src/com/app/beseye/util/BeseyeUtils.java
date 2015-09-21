@@ -259,7 +259,16 @@ public class BeseyeUtils {
 				strRet = adapter.getName();
 			}
 		}
-		return strRet;
+		return toUtf8(strRet+BeseyeApplication.getAppMark());
+	}
+	
+	public static String toUtf8(String str) {
+		try {
+			return new String(str.getBytes("UTF-8"),"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+		}
+		return "";
 	}
 	
 	static public String getStreamSecInfo(){

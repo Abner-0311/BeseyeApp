@@ -33,6 +33,9 @@
 			    android:id="@+id/vg_news"
 			    layout="@layout/layout_cam_list_menu_itm"></include>
 			<include 
+			    android:id="@+id/vg_trust_mgt"
+			    layout="@layout/layout_cam_list_menu_itm"></include>
+			<include 
 			    android:id="@+id/vg_about"
 			    layout="@layout/layout_cam_list_menu_itm"></include>
 			<include 

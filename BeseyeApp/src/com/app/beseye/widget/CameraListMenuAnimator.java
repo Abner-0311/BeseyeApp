@@ -74,6 +74,7 @@ public class CameraListMenuAnimator {
 		setupMenu(R.id.vg_demo_cam, R.drawable.sl_menu_demo_cam_icon, R.string.cam_menu_demo_cam);
 		setupMenu(R.id.vg_private_cam, R.drawable.sl_menu_demo_cam_icon, R.string.cam_menu_private_demo_cam);
 		setupMenu(R.id.vg_news, R.drawable.sl_menu_news_icon, R.string.cam_menu_news);
+		setupMenu(R.id.vg_trust_mgt, R.drawable.sl_menu_trust_dev_mgt_icon, R.string.cam_menu_trust_dev_mgt);
 		setupMenu(R.id.vg_about, R.drawable.sl_menu_about_icon, R.string.cam_menu_about);
 		setupMenu(R.id.vg_support, R.drawable.sl_menu_support_icon, R.string.cam_menu_support);
 		setupMenu(R.id.vg_logout, R.drawable.sl_menu_logout_icon, R.string.cam_menu_logout);

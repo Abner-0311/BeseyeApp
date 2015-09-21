@@ -440,7 +440,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						//Log.i(TAG, "onPostExecute(), obj "+obj);
 						JSONObject objUser = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_USER);
 						if(null != objUser){
-							if(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_BESEYE_ACCOUNT)){
+							if(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_BESEYE_ACCOUNT) || BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_PRIVATECAM_ACCOUNT)){
 								SessionMgr.getInstance().setShowPirvateCam(true);
 								mCameraListMenuAnimator.showPrivateCam();
 							}
@@ -735,6 +735,9 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}
 		}else if(R.id.vg_about == view.getId()){
 			launchActivityByClassName(BeseyeAboutActivity.class.getName(), null);
+			immediateHideMenu();
+		}else if(R.id.vg_trust_mgt == view.getId()){
+			launchActivityByClassName(BeseyeTrustDevMgtActivity.class.getName(), null);
 			immediateHideMenu();
 		}else if(R.id.vg_support == view.getId()){
 			immediateHideMenu();
