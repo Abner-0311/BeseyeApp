@@ -3,6 +3,7 @@ package com.app.beseye.setting;
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_TRUST_DEV_ID_LST;
 import static com.app.beseye.util.BeseyeJSONUtil.NOTIFY_OBJ;
 import static com.app.beseye.util.BeseyeJSONUtil.OBJ_TIMESTAMP;
 import static com.app.beseye.util.BeseyeJSONUtil.STATUS;
@@ -13,6 +14,9 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,6 +39,7 @@ import android.graphics.Region.Op;
 import android.graphics.Region;
 
 import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.BeseyeTrustDevMgtActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
@@ -45,8 +50,12 @@ import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeMotionZoneUtil;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.widget.BaseOneBtnDialog;
+import com.app.beseye.widget.BaseTwoBtnDialog;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.RemoteImageView;
+import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
+import com.app.beseye.widget.BaseTwoBtnDialog.OnTwoBtnClickListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
@@ -61,7 +70,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 	private ViewGroup mVgHumanDetectTraining, mVgHumanDetectReset;
 
 	private BeseyeSwitchBtn mNotifyMeSwitchBtn;
-	private boolean mbModified = false;
+	//private boolean mbModified = false;
 
 	
 	@Override
@@ -83,7 +92,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 						
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
-				txtTitle.setText(R.string.cam_setting_title_human_detect);
+				txtTitle.setText(R.string.cam_setting_title_human_detect_notify);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
@@ -169,6 +178,10 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 				launchActivityByClassName(HumanDetectTrainActivity.class.getName(),b);
 				break;
 			} 
+			case R.id.vg_human_detect_reset:{
+				showMyDialog(DIALOG_ID_RESET_HUMAN_DETECT);
+				break;
+			}
 			default:
 				super.onClick(view);	
 		}
@@ -199,7 +212,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 
 	@Override
 	public void onSwitchBtnStateChanged(SwitchState state, View view) {
-		mbModified = true;
+		//mbModified = true;
 		JSONObject obj =  new JSONObject();
 		if(null != obj){
 			boolean bTurnOn = (null != mNotifyMeSwitchBtn && mNotifyMeSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON);
@@ -220,25 +233,58 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 
 	private void updateNotificationTypeState(){
 		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
-		if(false == mbModified){
-			boolean bNotifyMe = false;
-			if(null != notify_obj){
-				bNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
-			}
-			
-			if(bNotifyMe){
-				JSONObject type_obj = BeseyeJSONUtil.getJSONObject(notify_obj, BeseyeJSONUtil.TYPE);
-				bNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_PEOPLE);
-			}
-			
-			if(null != mNotifyMeSwitchBtn){
-				mNotifyMeSwitchBtn.setSwitchState((bNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-			}
-		}else{
-			boolean bNotifyMe = false;
-			if(null != mNotifyMeSwitchBtn){
-				bNotifyMe = mNotifyMeSwitchBtn.getSwitchState().equals(SwitchState.SWITCH_ON);
-			}
+		boolean bNotifyMe = false;
+		if(null != notify_obj){
+			bNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
 		}
+		
+		if(bNotifyMe){
+			JSONObject type_obj = BeseyeJSONUtil.getJSONObject(notify_obj, BeseyeJSONUtil.TYPE);
+			bNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_PEOPLE);
+		}
+		
+		if(null != mNotifyMeSwitchBtn){
+			mNotifyMeSwitchBtn.setSwitchState((bNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+		}
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id, final Bundle bundle) {
+		Dialog dialog;
+		switch(id){
+			case DIALOG_ID_RESET_HUMAN_DETECT:{
+				BaseTwoBtnDialog d = new BaseTwoBtnDialog(this);
+				d.setBodyText(getString(R.string.dialog_reset_human_detect));
+				d.setTitleText(getString(R.string.dialog_title_warning));
+				d.setOnTwoBtnClickListener(new OnTwoBtnClickListener(){
+					@Override
+					public void onBtnYesClick() {
+//						try {
+//							JSONObject obj = new JSONObject();
+//							obj.put(ACC_TRUST_DEV_ID_LST, mArrTrustDevIdsForDelete);
+//							//String strID =/* (null != mArrTrustDevIdsForDelete && mArrTrustDevIdsForDelete.length()==1)?mArrTrustDevIdsForDelete.getString(0):*/mArrTrustDevIdsForDelete.toString();
+//							monitorAsyncTask(new BeseyeAccountTask.DeleteTrustDevTask(BeseyeTrustDevMgtActivity.this), true,obj.toString());
+//						} catch (JSONException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+					
+					}
+					@Override
+					public void onBtnNoClick() {
+						
+					}} );
+				dialog = d;
+				dialog.setOnDismissListener(new OnDismissListener(){
+					@Override
+					public void onDismiss(DialogInterface dialog) {
+						removeMyDialog(DIALOG_ID_RESET_HUMAN_DETECT);
+					}});
+				break;
+			}
+			default:
+				dialog = super.onCreateDialog(id, bundle);
+		}
+		return dialog;
 	}
 }

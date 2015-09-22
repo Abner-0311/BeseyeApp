@@ -659,6 +659,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_PIN_VERIFY_FAIL_3_TIME= DIALOG_ID_WIFI_BASE+25; 
 	static public final int DIALOG_ID_PIN_VERIFY_FAIL_EXPIRED	= DIALOG_ID_WIFI_BASE+26; 
 	static public final int DIALOG_ID_PIN_AUTH_REQUEST		= DIALOG_ID_WIFI_BASE+27; 
+	static public final int DIALOG_ID_RESET_HUMAN_DETECT	= DIALOG_ID_WIFI_BASE+28; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {

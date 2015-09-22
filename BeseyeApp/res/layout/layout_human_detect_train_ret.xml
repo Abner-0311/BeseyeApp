@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="@color/signup_bg_color">
+	<LinearLayout 
+	    android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="4"
+		android:orientation="vertical">
+		
+	    <View 
+	        android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="6"/>
+	    
+	    <RelativeLayout 
+	        android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="74">
+	        <TextView
+			    android:id="@+id/tv_training_percent"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_centerHorizontal="true"
+			    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+			    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+			    android:text="@string/recognition_percentage"
+			    android:textColor="@color/signup_font_description_color"
+			    android:textSize="@dimen/login_fontNormal" />
+	        <TextView
+			    android:id="@+id/tv_training_desc"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_centerHorizontal="true"
+			    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+			    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+			    android:text="@string/enhance_human_detect_reward_desc"
+			    android:layout_below="@+id/tv_training_percent"
+			    android:textColor="@color/signup_font_description_color"
+			    android:textSize="@dimen/login_fontNormal" />
+		    
+		    <ImageView
+		       android:id="@+id/iv_before_setup_top_img"
+		       android:layout_width="fill_parent"
+		       android:layout_height="fill_parent"
+			   android:layout_below="@+id/tv_training_desc"
+			   android:layout_marginTop="25dp"
+		       android:src="@drawable/signup_sound_caution" />
+	    </RelativeLayout>
+	</LinearLayout>
+		
+	<RelativeLayout 
+	    android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1">
+		<LinearLayout 
+	        android:id="@+id/vg_delete_bundle"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:layout_alignParentBottom="true">
+			<Button
+			    android:id="@+id/btn_continue"
+			    android:layout_width="0dp"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:background="@drawable/sl_account_bottom_btn"
+			    android:text="@string/continue_refine"
+			    android:textColor="@color/word_white"
+			    android:textColorLink="@color/word_white"
+			    android:textSize="@dimen/login_fontMedium" />
+			<View 
+			    android:layout_width="0.33dp"
+			    android:layout_height="match_parent"
+			    android:background="@color/beseye_color_gray"/>
+			<Button
+			    android:id="@+id/btn_finish"
+			    android:layout_width="0dp"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1"
+			    android:background="@drawable/sl_account_bottom_btn"
+			    android:text="@string/done"
+			    android:textColor="@color/word_white"
+	
+			    android:textSize="@dimen/login_fontMedium" />
+		</LinearLayout>
+	</RelativeLayout> 
+</LinearLayout>

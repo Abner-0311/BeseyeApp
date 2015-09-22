@@ -521,11 +521,34 @@
   <string name="cam_attach_under_your_account_error">This camera whose name is (%s) was already awaken by your account.</string>
   <string name="cam_attach_under_other_account_error">This camera was already awaken by other\'s account.\nPlease contact custumer service for help.\n[Camera HW ID is %s]</string>
   
-  
   <string name="title_human_detect_train">Choose Non-human picture</string>
   <string name="confirm">Confirm</string>
   <string name="cam_setting_title_human_detect">Human detection</string>
+  <string name="cam_setting_title_human_detect_notify">人員偵測通知</string>
   <string name="enhance_human_detect">Enhance Human Detect</string>
+  <string name="enhance_human_detect_hint">系統會自動偵測移動人員．但若下頁影像中無任何人，請點擊去除，以取得最佳辨識結果．</string>
+  <string name="recognition_percentage">最佳化進度：%s</string>
+  <string name="recognition_percentage_done">已完成！</string>
   <string name="reset_human_detect">Reset Human Detect</string>
+  <string name="reset_human_detect_hint">若攝影機移動拍攝場景，或是想重設已選擇的場景，可以選擇重置．</string>
+  <string name="dialog_reset_human_detect">如此會刪除所有最佳化的過程，您確定嗎</string>
+  
+  <string name="enhance_human_detect_intro_p1_desc1">準備迎接未來科技</string>
+  <string name="enhance_human_detect_intro_p1_desc2">Beseye先進科技研發實驗室向您介紹目前全世界最精準同時又兼顧隱私保護的移動人員偵測技術，已在您的攝影機上運行．</string>
+  
+  <string name="enhance_human_detect_intro_p2_desc">透過此技術，當攝影機偵測到有人員行經時，會自動發出通知到您的手機．讓你不在現場，也可以簡單知道現場是否有移動的人員．</string>
+  
+  <string name="enhance_human_detect_intro_p3_desc1">世上最好的技術，現在還可對您的攝影機作最佳化．</string>
+  <string name="enhance_human_detect_intro_p3_desc2">透過點擊攝影機拍攝的[無]人員之影像，讓此技術變得更加適合您，就像是為您量身定做．</string>
+  <string name="enhance_human_detect_intro_p3_desc2_highlight">無</string>
+  
+  <string name="enhance_human_detect_intro_next_step">Next step</string>
+  
+  <string name="continue_refine">Continue to refine</string>
+  
+  <string name="enhance_human_detect_reward_desc">辨識率更加提高了</string>
+  <string name="enhance_human_detect_no_pic_desc">Beseye將會在近期送上攝影機影像讓您篩選．</string>
+  <string name="enhance_human_detect_train_done_desc">Beseye移動人員辨識系統目前已對您的攝影機作最佳化．</string>
+  
 </resources>
 

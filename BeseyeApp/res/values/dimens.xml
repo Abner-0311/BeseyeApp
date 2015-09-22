@@ -38,7 +38,7 @@
     
     <dimen name="wifi_list_item_height">60dp</dimen>
     <dimen name="wifi_list_item_horizontal_padding">20dp</dimen>
-    <dimen name="wifi_list_item_padding_top">8dp</dimen>
+    <dimen name="wifi_list_item_padding_top">4dp</dimen>
     
     <dimen name="wifi_list_item_main_font_size">20sp</dimen>
     <dimen name="wifi_list_item_sub_font_size">13sp</dimen>

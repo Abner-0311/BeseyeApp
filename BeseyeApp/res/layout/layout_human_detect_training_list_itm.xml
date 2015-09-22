@@ -23,6 +23,12 @@
    		android:layout_height="wrap_content"
    		android:layout_weight="1"
 	    layout="@layout/layout_human_detect_training_list_sub_itm"></include>
+	<include 
+	    android:id="@+id/vg_train_pic_4"
+	    android:layout_width="0dp"
+   		android:layout_height="wrap_content"
+   		android:layout_weight="1"
+	    layout="@layout/layout_human_detect_training_list_sub_itm"></include>
 </LinearLayout>
 
 

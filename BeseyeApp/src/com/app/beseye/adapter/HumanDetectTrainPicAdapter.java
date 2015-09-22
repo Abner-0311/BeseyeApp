@@ -25,6 +25,7 @@ import com.app.beseye.widget.RemoteImageView;
 import com.app.beseye.widget.RemoteImageView.RemoteImageCallback;
 
 public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
+	static final public int NUM_OF_SUB_ITM = 4;
 	private int miThumbnailWidth;
 	private int miBlockWidth;
 	
@@ -39,8 +40,6 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 		if(DEBUG)
 			Log.i(TAG, "miThumbnailWidth:"+miThumbnailWidth);
 	}
-
-	static final public int NUM_OF_SUB_ITM = 3;
 	
 	static public class HumanDetectTrainItmHolder{
 		public ViewGroup mVgHumanDetectTrainSubItm;
@@ -113,6 +112,10 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 				
 				holder[2] = new HumanDetectTrainItmHolder();
 				inflateSubItm(convertView, holder[2] , R.id.vg_train_pic_3);
+				
+				holder[3] = new HumanDetectTrainItmHolder();
+				inflateSubItm(convertView, holder[3] , R.id.vg_train_pic_4);
+				
 				convertView.setTag(holder);
 			}
 		}
