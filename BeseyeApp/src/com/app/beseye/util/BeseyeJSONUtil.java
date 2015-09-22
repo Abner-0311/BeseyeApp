@@ -221,6 +221,8 @@ public class BeseyeJSONUtil {
 	public static final String ACC_TRUST_DEV_CHECK 		= "Checked";
 	public static final String ACC_TRUST_ERR_CNT 		= "ErrorCnt";
 	public static final String ACC_TRUST_ERR_LST 		= "Errors";
+	public static final String ACC_TRUST_DEV_NAME_SIGNIN= "DeviceName";
+	
 	
 	public static final String ACC_SES 					= "UserSession";
 	public static final String ACC_SES_TOKEN 			= "SessionToken";
@@ -294,6 +296,10 @@ public class BeseyeJSONUtil {
 	public static final int MM_TYPE_ID_FACE				= 2;
 	
 	public static final String MM_FACE_IDS 				= "faceIds";
+	
+	public static final String MM_HD_IMG 				= "img";
+	public static final String MM_HD_IMG_PATH 			= "pathToImg";
+	public static final String MM_HD_IMG_DELETE 		= "imgToDel";
 	
 	static public class FACE_LIST{
 		public int miId;
