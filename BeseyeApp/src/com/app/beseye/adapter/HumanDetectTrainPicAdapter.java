@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.beseye.R;
@@ -28,23 +29,26 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 	static final public int NUM_OF_SUB_ITM = 4;
 	private int miThumbnailWidth;
 	private int miBlockWidth;
+	private int miMarginWidth;
 	
 	public HumanDetectTrainPicAdapter(Context context, JSONArray list, int iLayoutId, OnClickListener itemOnClickListener) {
 		super(context, list, iLayoutId, itemOnClickListener);
 		if(DEBUG){
-			Log.i(TAG, "context.getResources().getDimension(R.dimen.cameralist_videoblock_margin):"+context.getResources().getDimension(R.dimen.cameralist_videoblock_margin));
-			Log.i(TAG, "context.getResources().getDimension(cameralist_videoblock_thunmbnail_padding):"+context.getResources().getDimension(R.dimen.cameralist_videoblock_thunmbnail_padding));
+			Log.i(TAG, "context.getResources().getDimension(R.dimen.human_detect_pic_margin):"+context.getResources().getDimension(R.dimen.human_detect_pic_margin));
 		}
-		miBlockWidth = (BeseyeUtils.getDeviceWidth((Activity)context)) / NUM_OF_SUB_ITM;
-		miThumbnailWidth = (int) ((BeseyeUtils.getDeviceWidth((Activity)context) - (context.getResources().getDimension(R.dimen.cameralist_videoblock_margin))*2*NUM_OF_SUB_ITM))/NUM_OF_SUB_ITM; 
+		miMarginWidth = (int) context.getResources().getDimension(R.dimen.human_detect_pic_margin);
+		miBlockWidth = (int)  ((BeseyeUtils.getDeviceWidth((Activity)context)) - miMarginWidth) / NUM_OF_SUB_ITM;
+		miThumbnailWidth = (int) ((BeseyeUtils.getDeviceWidth((Activity)context) - miMarginWidth*(NUM_OF_SUB_ITM+1)))/NUM_OF_SUB_ITM; 
+		
 		if(DEBUG)
 			Log.i(TAG, "miThumbnailWidth:"+miThumbnailWidth);
 	}
 	
 	static public class HumanDetectTrainItmHolder{
 		public ViewGroup mVgHumanDetectTrainSubItm;
-		public ViewGroup mVgHumanDetectTrainSubItmMask;
+		public TextView mTxtHumanDetectTrainSubItmMask;
 		public RemoteImageView mImgTrainPic;
+		public ImageView mImgPicBorder;
 		public JSONObject mObjCam;
 	}
 	
@@ -79,18 +83,25 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 		if(null != holder){
 			holder.mVgHumanDetectTrainSubItm = (ViewGroup)convertView.findViewById(iVgId);
 			if(null != holder.mVgHumanDetectTrainSubItm){
-				if(null != holder.mVgHumanDetectTrainSubItm){
-					BeseyeUtils.setThumbnailRatio(holder.mVgHumanDetectTrainSubItm, miBlockWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
-				}
-				holder.mVgHumanDetectTrainSubItmMask = (ViewGroup)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.rl_training_pic_mask);
-
-				if(null != holder.mVgHumanDetectTrainSubItmMask){
-					BeseyeUtils.setThumbnailRatio(holder.mVgHumanDetectTrainSubItmMask, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
+				int iThumbnailHeight = -1;
+				holder.mTxtHumanDetectTrainSubItmMask = (TextView)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.txt_human_pic_no_human);
+				if(null != holder.mTxtHumanDetectTrainSubItmMask){
+					iThumbnailHeight = BeseyeUtils.setThumbnailRatio(holder.mTxtHumanDetectTrainSubItmMask, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
 				}
 				
 				holder.mImgTrainPic = (RemoteImageView)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.iv_training_pic);
 				if(null != holder.mImgTrainPic){
 					BeseyeUtils.setThumbnailRatio(holder.mImgTrainPic, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
+				}
+				
+				holder.mImgPicBorder = (ImageView)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.iv_human_pic_border);
+				if(null != holder.mImgPicBorder){
+					BeseyeUtils.setThumbnailRatio(holder.mImgPicBorder, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
+				}
+				
+				if(null != holder.mVgHumanDetectTrainSubItm){
+					//BeseyeUtils.setThumbnailRatio(holder.mVgHumanDetectTrainSubItm, miBlockWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
+					BeseyeUtils.setWidthAndHeight(holder.mVgHumanDetectTrainSubItm, miThumbnailWidth+miMarginWidth, iThumbnailHeight+miMarginWidth);
 				}
 				holder.mVgHumanDetectTrainSubItm.setOnClickListener(mItemOnClickListener);
 				holder.mVgHumanDetectTrainSubItm.setTag(holder);
@@ -133,7 +144,8 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 				holder.mObjCam = obj;
 				holder.mVgHumanDetectTrainSubItm.setTag(holder);
 				
-				BeseyeUtils.setVisibility(holder.mVgHumanDetectTrainSubItmMask, (null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false))?View.VISIBLE:View.INVISIBLE);
+				BeseyeUtils.setVisibility(holder.mImgPicBorder, (null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false))?View.INVISIBLE:View.VISIBLE);
+				BeseyeUtils.setVisibility(holder.mTxtHumanDetectTrainSubItmMask, (null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false))?View.VISIBLE:View.INVISIBLE);
 				BeseyeUtils.setVisibility(holder.mVgHumanDetectTrainSubItm, (null != obj)?View.VISIBLE:View.INVISIBLE);
 			}
 		}

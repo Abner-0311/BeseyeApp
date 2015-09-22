@@ -49,8 +49,8 @@
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
 		    android:background="@drawable/dsl_setting_item_bg"
-		    android:paddingTop="@dimen/wifi_list_item_padding_top"
-		    android:paddingBottom="@dimen/wifi_list_item_padding_top"
+		    android:paddingTop="@dimen/human_detect_entry_padding_vertical"
+		    android:paddingBottom="@dimen/human_detect_entry_padding_vertical"
 		    tools:context=".MainActivity" >
 		
 		    <View 
@@ -81,13 +81,13 @@
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
 			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/enhance_human_detect"
-			   		android:paddingBottom="@dimen/wifi_list_item_padding_top"/>
+			   		android:paddingBottom="@dimen/human_detect_desc_padding_vertical"/>
 				
 				<TextView 
 			       	android:id="@+id/human_detect_notification_title_hint"
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
-			   		android:textSize="@dimen/wifi_list_item_sub_font_size"
+			   		android:textSize="@dimen/human_detect_item_sub_font_size"
 			   		android:textColor="@color/csl_wifi_list_sub_font_color"
 			   		android:layout_below="@+id/human_detect_notification_title"
 			   		android:text="@string/enhance_human_detect_hint" />
@@ -99,8 +99,8 @@
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
 		    android:background="@drawable/dsl_setting_item_bg"
-		    android:paddingTop="@dimen/wifi_list_item_padding_top"
-		    android:paddingBottom="@dimen/wifi_list_item_padding_top"
+		    android:paddingTop="@dimen/human_detect_entry_padding_vertical"
+		    android:paddingBottom="@dimen/human_detect_entry_padding_vertical"
 		    tools:context=".MainActivity" >
 		    <View 
 		        android:layout_width="1dp"
@@ -128,14 +128,14 @@
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
 			   		android:textColor="@color/csl_wifi_list_main_font_color"
-			   		android:paddingBottom="@dimen/wifi_list_item_padding_top"
-			   		android:text="@string/app_name"/>
+			   		android:paddingBottom="@dimen/human_detect_desc_padding_vertical"
+			   		android:text="@string/reset_human_detect"/>
 				
 				<TextView 
 			       	android:id="@+id/human_detect_notification_reset_hint"
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
-			   		android:textSize="@dimen/wifi_list_item_sub_font_size"
+			   		android:textSize="@dimen/human_detect_item_sub_font_size"
 			   		android:textColor="@color/csl_wifi_list_sub_font_color"
 			   		android:layout_below="@+id/human_detect_notification_reset"
 			   		android:text="@string/reset_human_detect_hint" />

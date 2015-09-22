@@ -46,8 +46,8 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 	private Button mbtnDone;
 	
 	private ViewGroup mVgResultPage = null;
-	private TextView mTxtTrainPercent, mTxtRetDesc;
-	private Button mbtnFinish, mbtnContinue;
+	private TextView  mTxtRetDesc;
+	private Button mbtnFinish, mbtnContinue, mbtnConfirm;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,10 +108,18 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 			mVpIntro.setAdapter(new IntroPageAdapter(this));
 		}
 		
+		mbtnContinue = (Button)findViewById(R.id.button_confirm);
+		if(null != mbtnContinue){
+			mbtnContinue.setOnClickListener(HumanDetectTrainActivity.this);
+		}
+		
 		mVgResultPage = (ViewGroup)findViewById(R.id.vg_human_detect_train_ret);
 		if(null != mVgResultPage){
-			mTxtTrainPercent = (TextView)mVgResultPage.findViewById(R.id.tv_training_percent);
+			//mTxtTrainPercent = (TextView)mVgResultPage.findViewById(R.id.tv_training_percent);
 			mTxtRetDesc = (TextView)mVgResultPage.findViewById(R.id.tv_training_desc);
+			if(null != mTxtRetDesc){
+				mTxtRetDesc.setText(String.format(getString(R.string.recognition_percentage), "23%")+getString(R.string.enhance_human_detect_reward_desc));
+			}
 			mbtnFinish = (Button)findViewById(R.id.btn_finish);
 			if(null != mbtnFinish){
 				mbtnFinish.setOnClickListener(HumanDetectTrainActivity.this);
@@ -120,6 +128,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 			if(null != mbtnContinue){
 				mbtnContinue.setOnClickListener(HumanDetectTrainActivity.this);
 			}
+			BeseyeUtils.setVisibility(mVgResultPage, View.GONE);
 		}
 	}
 
@@ -145,6 +154,8 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 					mHumanDetectTrainPicAdapter.notifyDataSetChanged();
 				}
 			}
+		}else if(R.id.button_confirm == view.getId()){
+			BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 		}else if(R.id.button_done == view.getId()){
 			BeseyeUtils.setVisibility(mVpIntro, View.GONE);
 		}else if(R.id.btn_continue == view.getId()){
@@ -196,16 +207,16 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 						mbtnDone.setOnClickListener(HumanDetectTrainActivity.this);
 					}
 					
-					TextView tvDesc = (TextView)findViewById(R.id.tv_enhance_human_detect_intro_p3_desc2);
+					TextView tvDesc = (TextView)vGroup.findViewById(R.id.tv_enhance_human_detect_intro_p3_desc1);
 					if(null != tvDesc){
-						String strNone = getString(R.string.enhance_human_detect_intro_p3_desc2_highlight);
-						String strDesc = getString(R.string.enhance_human_detect_intro_p3_desc2);
+						String strNone = getString(R.string.enhance_human_detect_intro_p3_desc_highlight);
+						String strDesc = getString(R.string.enhance_human_detect_intro_p3_desc);
 						Spannable wordtoSpan = new SpannableString(strDesc);          
 
 						//Spannable str = (Spannable) tvDesc.getEditableText();
 					    int i = strDesc.indexOf(strNone);
 					    if(i >=0){
-						    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(android.R.color.holo_red_light)), i, i+strNone.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.csl_link_font_color)), i, i+strNone.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 					    }
 					    tvDesc.setText(wordtoSpan);
 					}

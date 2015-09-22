@@ -21,6 +21,8 @@
 		    android:layout_width="0dp"
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
+		    android:paddingBottom="@dimen/login_marginMedium"
+        	android:paddingTop="@dimen/login_marginMedium"
 		    android:background="@drawable/sl_account_bottom_btn"
 		    android:text="@string/cancel"
 		    android:textColor="@color/word_white"
@@ -35,10 +37,11 @@
 		    android:layout_width="0dp"
 		    android:layout_height="wrap_content"
 		    android:layout_weight="1"
+		    android:paddingBottom="@dimen/login_marginMedium"
+        	android:paddingTop="@dimen/login_marginMedium"
 		    android:background="@drawable/sl_account_bottom_btn"
 		    android:text="@string/btn_delete_trust_dev_mgt"
 		    android:textColor="@color/word_white"
-
 		    android:textSize="@dimen/login_fontMedium" />
 	</LinearLayout>
 </LinearLayout>

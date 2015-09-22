@@ -445,6 +445,20 @@ public class BeseyeUtils {
 		return lp.height;
 	}
 	
+	public static void setWidthAndHeight(View view, int iWidth, int iHeight){
+		LayoutParams lp = view.getLayoutParams();
+		if(null == lp){
+			lp = new AbsListView.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		}
+		else{
+			lp =view.getLayoutParams();
+		}
+		
+		lp.width = iWidth;
+		lp.height = iHeight;
+		view.setLayoutParams(lp);
+	}
+	
 	static public boolean isHiddenFeature(){
 		return BeseyeConfig.PRODUCTION_VER || BeseyeConfig.BETA_VER || BeseyeConfig.ALPHA_VER;
 	}

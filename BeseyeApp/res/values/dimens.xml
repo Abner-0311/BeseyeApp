@@ -252,4 +252,15 @@
     <dimen name="pincode_num_font">25sp</dimen>
     
     <dimen name="pincode_num_border">2dp</dimen>
+    
+    <dimen name="swipe_desc_margin_top">40dp</dimen>
+    <dimen name="swipe_dot_horiz_margin">6dp</dimen>
+    
+    <dimen name="human_detect_entry_padding_vertical">10dp</dimen>
+    <dimen name="human_detect_desc_padding_vertical">9dp</dimen>
+    <dimen name="human_detect_font">15sp</dimen>
+    
+    <dimen name="human_detect_pic_margin">4dp</dimen>
+    <dimen name="human_detect_item_sub_font_size">16sp</dimen>
+    
 </resources>

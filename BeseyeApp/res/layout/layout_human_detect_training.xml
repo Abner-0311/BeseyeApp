@@ -8,7 +8,6 @@
 	    android:id="@+id/button_confirm"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_centerHorizontal="true"
 	    android:layout_alignParentBottom="true"
 	    android:background="@drawable/sl_account_bottom_btn"
 	    android:paddingBottom="@dimen/login_marginMedium"
@@ -21,6 +20,7 @@
 	    android:id="@+id/lv_train_pic_lst"
 	    android:layout_width="match_parent"
    		android:layout_height="match_parent"
+   		android:paddingBottom="@dimen/human_detect_pic_margin"
    		android:layout_above="@+id/button_confirm">
 	</com.app.beseye.widget.PullToRefreshListView>	
 	

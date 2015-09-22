@@ -80,5 +80,7 @@
     <!-- motion zone -->
     <color name="mask_black">#00000000</color>
     
+    <color name="human_detect_no_human_mask">#b3ffffff</color>
+    <color name="human_detect_no_human_text">#4c4c4c</color>
     
 </resources>
