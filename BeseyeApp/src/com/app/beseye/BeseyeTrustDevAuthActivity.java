@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
@@ -201,6 +202,13 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 			}else{
 				super.onPostExecute(task, result, iRetCode);
 			}
+		}
+	}
+	
+	@Override
+	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
+		if(iInvalidReason != BeseyeHttpTask.ERR_TYPE_SESSION_NOT_TRUST){
+			onSessionInvalid(false);
 		}
 	}
 

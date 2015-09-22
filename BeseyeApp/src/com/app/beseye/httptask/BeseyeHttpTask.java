@@ -109,6 +109,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	public static final int ERR_TYPE_CONNECTION_TIMEOUT  	= 4;//network connection timeout
 	public static final int ERR_TYPE_REQUEST_RET_ERR  	    = 5;//when ret code is not equal to 0
 	public static final int ERR_TYPE_SESSION_INVALID  	    = 6;//when seesion is invalid
+	public static final int ERR_TYPE_SESSION_NOT_TRUST  	= 7;//when client isn't in trust list
 	
 	public static final int ERR_TYPE_COUNT				  	= 7;
 	//
@@ -509,25 +510,27 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	}
 	
 	protected void checkError(JSONObject jsonRet, String... strParams){
-		if(0 == miRetCode /*&& SessionMgr.getInstance().isMdidValid()*/){
-			int iSessionMdid = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.SESSION_MDID, -1);
-			if(0 == iSessionMdid /*|| this instanceof iKalaChannelTask.LoadAboutMeInfoTask*/){//invalid session from social BE
-				Log.e(TAG, "getJSONfromURL(), invalid seesion from social BE");
-				miRetCode = ERR_TYPE_SESSION_INVALID;
-				//miRetCode = -1;
-			}
-		}
+//		if(0 == miRetCode /*&& SessionMgr.getInstance().isMdidValid()*/){
+//			int iSessionMdid = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.SESSION_MDID, -1);
+//			if(0 == iSessionMdid /*|| this instanceof iKalaChannelTask.LoadAboutMeInfoTask*/){//invalid session from social BE
+//				Log.e(TAG, "getJSONfromURL(), invalid seesion from social BE");
+//				miRetCode = ERR_TYPE_SESSION_INVALID;
+//				//miRetCode = -1;
+//			}
+//		}
 		
 		if(0 != miRetCode || miErrType != ERR_TYPE_NO_ERR){
 	       	if(miErrType == ERR_TYPE_NO_ERR){
 	       		if(/*SessionMgr.getInstance().isMdidValid() && */-1 == miRetCode || 
 	       			BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == miRetCode ||
-	       			BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == miRetCode ){//invalid seesion from login BE
+	       			BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == miRetCode ||
+	       			BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == miRetCode){//invalid seesion from login BE
 	       			Log.e(TAG, "getJSONfromURL(), invalid seesion from login BE");
 	       			//if(this instanceof iKalaAccountTask.LogoutHttpTask){
 	       			//	miRetCode = 0;//Let it pass
 	       			//}else
-	       			miErrType = ERR_TYPE_SESSION_INVALID;
+	       			miErrType = (BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == miRetCode)?ERR_TYPE_SESSION_NOT_TRUST:ERR_TYPE_SESSION_INVALID;
+	       			
 	       		}else{
 	       			miErrType = ERR_TYPE_REQUEST_RET_ERR;
 	       		}
@@ -553,8 +556,8 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	       	    	sb.append (", body: "+jsonRet.toString());
 	       	    }
 	       	    
-	       	    if(ERR_TYPE_SESSION_INVALID == miErrType){
-	       			mOnHttpTaskCallback.get().onSessionInvalid(this, 0);
+	       	    if(ERR_TYPE_SESSION_INVALID == miErrType || ERR_TYPE_SESSION_NOT_TRUST == miErrType){
+	       			mOnHttpTaskCallback.get().onSessionInvalid(this, miErrType);
 	       		}else{
 	       			mOnHttpTaskCallback.get().onErrorReport(this, miRetCode, "", sb.toString());
 	       		}
