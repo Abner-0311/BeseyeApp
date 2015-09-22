@@ -76,6 +76,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_EMAIL, strParams[0]);
 				obj.put(ACC_PASSWORD, strParams[1]);
 				obj.put(ACC_REMEM_ME, true);
+				obj.put(ACC_TRUST_DEV_NAME_SIGNIN, BeseyeUtils.getDevName());
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_LOGIN, obj.toString());
 			} catch (NumberFormatException e) {
@@ -194,6 +195,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_EMAIL, strParams[0]);
 				obj.put(ACC_PASSWORD, strParams[1]);
 				obj.put(ACC_LANG, BeseyeUtils.getLocaleString());
+				obj.put(ACC_TRUST_DEV_NAME_SIGNIN, BeseyeUtils.getDevName());
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_REGISTER, obj.toString());
 			} catch (NumberFormatException e) {
