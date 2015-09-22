@@ -221,6 +221,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_TRUST_DEV_CHECK 		= "Checked";
 	public static final String ACC_TRUST_ERR_CNT 		= "ErrorCnt";
 	public static final String ACC_TRUST_ERR_LST 		= "Errors";
+	public static final String ACC_TRUST_DEV_NAME_SIGNIN= "DeviceName";
 	
 	public static final String ACC_SES 					= "UserSession";
 	public static final String ACC_SES_TOKEN 			= "SessionToken";

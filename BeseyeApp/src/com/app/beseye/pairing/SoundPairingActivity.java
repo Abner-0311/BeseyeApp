@@ -520,13 +520,20 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 								bPairingFailed = false;
 							}
 						}else{
-							JSONObject objPairStatus = BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.ACC_PAIRING_STATUS);//Handle for ver 2
-							if(null != objPairStatus){
-								JSONObject objVcamInStatus = BeseyeJSONUtil.getJSONObject(objPairStatus, BeseyeJSONUtil.ACC_VCAM);
-								if(null != objVcamInStatus){
-									if(isPairingTokenValid()){
-										startPairingNamePage(objVcam);
-										bPairingFailed = false;
+							int iCntPairStatus = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_PAIRING_STATUS_CNT);
+							JSONArray arrPairStatus = BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.ACC_PAIRING_STATUS);//Handle for ver 2
+							if(null != arrPairStatus){
+								for(int idx = 0; idx < iCntPairStatus; idx++){
+									JSONObject objPairStatus = arrPairStatus.optJSONObject(idx);
+									if(null != objPairStatus && 0 == BeseyeJSONUtil.getJSONInt(objPairStatus, BeseyeJSONUtil.RET_CODE, -1)){
+										JSONObject objVcamInStatus = BeseyeJSONUtil.getJSONObject(objPairStatus, BeseyeJSONUtil.ACC_VCAM);
+										if(null != objVcamInStatus){
+											if(isPairingTokenValid()){
+												startPairingNamePage(objVcamInStatus);
+												bPairingFailed = false;
+												break;
+											}
+										}
 									}
 								}
 							}
