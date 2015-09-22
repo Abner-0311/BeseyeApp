@@ -148,6 +148,9 @@ public class SessionMgr {
 	static private final String SESSION_NEWS_IND_SHOW	    = "beseye_news_show_ind";
 	
 	static private final String SESSION_TRANFER_TO_SEC	    = "beseye_transfer_to_sec";
+	//Below items are after security mode
+	
+	static private final String SESSION_DEBUG_SHOW_NOTIFY	= "beseye_debug_show_notify";
 	
 	//static private final String SESSION_SCREENSHOT_FEATURE	= "beseye_screen_feature";
 	
@@ -196,6 +199,8 @@ public class SessionMgr {
 				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal())));
 				mSessionData.setDetachHWID(getPrefStringValue(mPref, SESSION_DETACH_HW_ID));
 				mSessionData.setSignupEmail(getPrefStringValue(mPref, SESSION_SIGNUP_EMAIL));
+				
+				mSessionData.setIsShowNotificationFromToast(getPrefBooleanValue(mPref, SESSION_DEBUG_SHOW_NOTIFY, false));
 			}
 		}
 	}
@@ -548,6 +553,16 @@ public class SessionMgr {
 		mSessionData.setIsTrustDev(bIsTrustDev);
 		notifySessionUpdate();
 	}
+	
+	public boolean getIsShowNotificationFromToast(){
+		return mSessionData.getIsShowNotificationFromToast();
+	}
+	
+	public void setIsShowNotificationFromToast(boolean bIsShowNotificationFromToast){
+		setPrefBooleanValue(mPref, SESSION_DEBUG_SHOW_NOTIFY, bIsShowNotificationFromToast);
+		mSessionData.setIsShowNotificationFromToast(bIsShowNotificationFromToast);
+		notifySessionUpdate();
+	}
 
 	public SERVER_MODE getServerMode(){
 		return mSessionData.getServerMode();
@@ -637,7 +652,7 @@ public class SessionMgr {
 	
 	public static class SessionData implements Parcelable{
 		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
-		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended, mbIsTrustDev;
+		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended, mbIsTrustDev, mbIsShowNotificationFromToast;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
 		private String mStrCamUpdateList, mStrDetachHWID, mStrSignupEmail;
@@ -662,6 +677,7 @@ public class SessionMgr {
 			mbIsCertificated = false;
 			mbIsCamSWUpdateSuspended = false;
 			mbIsTrustDev = false;
+			mbIsShowNotificationFromToast = false;
 			mServerMode = BeseyeConfig.DEFAULT_SERVER_MODE;
 			
 			mlCamUpdateTs = 0;
@@ -818,6 +834,14 @@ public class SessionMgr {
 			mbIsTrustDev = bIsTrustDev;
 		}
 		
+		public boolean getIsShowNotificationFromToast(){
+			return mbIsShowNotificationFromToast;
+		}
+		
+		public void setIsShowNotificationFromToast(boolean bIsShowNotificationFromToast){
+			mbIsShowNotificationFromToast = bIsShowNotificationFromToast;
+		}
+		
 		public SERVER_MODE getServerMode(){
 			return mServerMode;
 		}
@@ -905,6 +929,7 @@ public class SessionMgr {
 			dest.writeInt(mbIsCertificated?1:0);
 			dest.writeInt(mbIsCamSWUpdateSuspended?1:0);
 			dest.writeInt(mbIsTrustDev?1:0);
+			dest.writeInt(mbIsShowNotificationFromToast?1:0);
 			
 			dest.writeInt(mServerMode.ordinal());
 			
@@ -952,6 +977,7 @@ public class SessionMgr {
 			mbIsCertificated = in.readInt()>0?true:false;
 			mbIsCamSWUpdateSuspended = in.readInt()>0?true:false;
 			mbIsTrustDev = in.readInt()>0?true:false;
+			mbIsShowNotificationFromToast = in.readInt()>0?true:false;
 			mServerMode = SERVER_MODE.translateToMode(in.readInt());
 			
 			mlCamUpdateTs = in.readLong();

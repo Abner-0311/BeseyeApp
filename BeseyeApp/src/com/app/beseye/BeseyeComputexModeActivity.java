@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeUtils;
 
 public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 //	private RadioButton mRbDemomode;
@@ -22,9 +23,9 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 //	private EditText mTxtIP;
 //	private EditText mTxtCamName;
 //	private EditText mTxtPeriod;
-	private Button mBtnApply;
+	private Button mBtnApply, mBtnSendLog;
 	private Spinner mSpServerType, mSpDetachHWID;
-	private CheckBox mCbCamSWUpdateSuspended;
+	private CheckBox mCbCamSWUpdateSuspended, mCbCamShowNotificationToast;
 	private EditText mEtDefEmail = null;
 	private static String[] hwids = new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"};
 	
@@ -51,11 +52,11 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		mCbCamSWUpdateSuspended = (CheckBox)findViewById(R.id.ck_suspend_cam_sw_update);
 		if(null != mCbCamSWUpdateSuspended){
 			mCbCamSWUpdateSuspended.setChecked(SessionMgr.getInstance().getIsCamSWUpdateSuspended());
-			mCbCamSWUpdateSuspended.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-				@Override
-				public void onCheckedChanged(CompoundButton arg0, boolean bChecked) {
-					//SessionMgr.getInstance().setIsCamSWUpdateSuspended(bChecked);
-				}});
+		}
+		
+		mCbCamShowNotificationToast = (CheckBox)findViewById(R.id.ck_enable_notify_show);
+		if(null != mCbCamShowNotificationToast){
+			mCbCamShowNotificationToast.setChecked(SessionMgr.getInstance().getIsShowNotificationFromToast());
 		}
 		
 		mSpServerType = (Spinner)findViewById(R.id.sp_server_type);
@@ -90,6 +91,11 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		if(null != mEtDefEmail){
 			mEtDefEmail.setText(SessionMgr.getInstance().getSignupEmail());
 		}
+		
+		mBtnSendLog = (Button)findViewById(R.id.btn_send_log);
+		if(null != mBtnSendLog){
+			mBtnSendLog.setOnClickListener(this);
+		}
 		checkMode();
 	}
 
@@ -98,6 +104,10 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		switch(view.getId()){
 			case R.id.button_confirm:{
 				applyMode();
+				break;
+			}
+			case R.id.btn_send_log:{
+				BeseyeUtils.saveLogToFile(this);
 				break;
 			}
 			default:
@@ -149,6 +159,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			SessionMgr.getInstance().setServerMode(mode);
 			SessionMgr.getInstance().setBEHostUrl(mode);
 			SessionMgr.getInstance().setIsCamSWUpdateSuspended(mCbCamSWUpdateSuspended.isChecked());
+			SessionMgr.getInstance().setIsShowNotificationFromToast(mCbCamShowNotificationToast.isChecked());
 
 			if(null != mSpDetachHWID){
 				SessionMgr.getInstance().setDetachHWID(hwids[mSpDetachHWID.getSelectedItemPosition()]);
