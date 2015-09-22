@@ -41,13 +41,32 @@
 	        	android:layout_marginTop="10dp"
 	        	android:text="Cam SW Update Suspended"/>
 		    
+		    <CheckBox 
+	            android:id="@+id/ck_enable_notify_show" 
+	            android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/ck_suspend_cam_sw_update"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:text="Show notification from toast"/>
+		    
+		    <Button 
+		        android:id="@+id/btn_send_log" 
+	            android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/ck_enable_notify_show"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:text="Send log"/>
+		    
 		    <RelativeLayout 
 		        android:id="@+id/vg_detach_hw" 
 		        android:layout_width="wrap_content"  
 	        	android:layout_height="wrap_content"
 	        	android:layout_below="@+id/ck_suspend_cam_sw_update"
 	        	android:layout_centerHorizontal="true"
-	        	android:layout_marginTop="10dp">
+	        	android:layout_marginTop="10dp"
+	        	android:visibility="gone">
 		        <TextView 
 		            android:id="@+id/txt_detach_hw_id" 
 		            android:layout_width="wrap_content"  
@@ -67,7 +86,8 @@
 	        	android:layout_height="wrap_content"
 	        	android:layout_below="@+id/vg_detach_hw"
 	        	android:layout_centerHorizontal="true"
-	        	android:layout_marginTop="10dp">
+	        	android:layout_marginTop="10dp"
+	        	android:visibility="gone">
 		        <TextView 
 		            android:id="@+id/txt_signup_email" 
 		            android:layout_width="wrap_content"  

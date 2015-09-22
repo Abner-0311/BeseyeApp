@@ -1644,7 +1644,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		return bRet;
 	}
 	
-	private void handleWSEvent(JSONObject dataObj){
+	private void handleWSEvent(final JSONObject dataObj){
 		if(!SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()){
 			return;
 		}
@@ -1653,6 +1653,14 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			if(DEBUG)
 				Log.i(TAG, "handleWSEvent(),iCmd="+iCmd);	
 			final JSONObject DataObj = BeseyeJSONUtil.getJSONObject(dataObj, WS_ATTR_INTERNAL_DATA);
+			
+			if(SessionMgr.getInstance().getIsShowNotificationFromToast()){
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+		    			Toast.makeText(BeseyeNotificationService.this, "From ws:\ndataObj:"+((null != dataObj)?dataObj.toString():""), Toast.LENGTH_LONG).show();
+					}}, 0L);
+			}
 			
 			int iMsgType = -1;
 			switch(iCmd){
@@ -1692,6 +1700,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private void handleGCMEvents(String strRegularData, String strCusData){
 		if(!SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()){
 			return;
+		}
+		
+		if(SessionMgr.getInstance().getIsShowNotificationFromToast()){
+			Toast.makeText(BeseyeNotificationService.this, "From push:\nPS_REGULAR_DATA:"+((null != strRegularData)?strRegularData:"")+"\nPS_CUSTOM_DATA:"+((null != strCusData)?strCusData:""), Toast.LENGTH_LONG).show();
 		}
 		
 		if(null != strRegularData){

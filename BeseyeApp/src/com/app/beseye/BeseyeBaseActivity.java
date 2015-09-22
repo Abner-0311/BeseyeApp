@@ -1141,7 +1141,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}*/
 		
 		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-			onToastShow(task, strMsg);
+			if(null != strMsg && 0 < strMsg.length())
+				onToastShow(task, strMsg);
 			Log.e(TAG, "onErrorReport(), task:["+task.getClass().getSimpleName()+"], iErrType:"+iErrType+", strTitle:"+strTitle+", strMsg:"+strMsg);
 		}
 	}
@@ -1163,9 +1164,11 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				}/*else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
 					Toast.makeText(this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
 					onSessionInvalid(false);
-				}*/else if(BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iRetCode){
+				}else if(BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iRetCode){
 					launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
-				}else{
+				}*/else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED != iRetCode && 
+						   BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN != iRetCode && 
+						   BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED != iRetCode){
 					onServerError();
 				}
 			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
@@ -1435,7 +1438,11 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 
 	@Override
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
-		onSessionInvalid(false);
+		if(iInvalidReason == BeseyeHttpTask.ERR_TYPE_SESSION_NOT_TRUST){
+			launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
+		}else{
+			onSessionInvalid(false);
+		}
 	}
 	
 	protected void invalidDevSession(){
