@@ -297,8 +297,15 @@ public class BeseyeJSONUtil {
 	public static final String MM_FACE_IDS 				= "faceIds";
 	
 	public static final String MM_HD_IMG 				= "img";
+	public static final String MM_HD_IMG_LABEL 			= "label";
+	public static final String MM_HD_IMG_LABEL_HUMAN 	= "human";
+	public static final String MM_HD_IMG_LABEL_NO_HUMAN = "non-human";
+	public static final String MM_HD_IMG_LABEL_UNDEFINE = "undefine";
 	public static final String MM_HD_IMG_PATH 			= "pathToImg";
+	public static final String MM_HD_IMG_PAGING 		= "pagingFlag";
 	public static final String MM_HD_IMG_DELETE 		= "imgToDel";
+	public static final String MM_HD_IMG_LOADED 		= "imgLoaded";
+	
 	
 	static public class FACE_LIST{
 		public int miId;

@@ -1,12 +1,20 @@
 package com.app.beseye.setting;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
+import static com.app.beseye.util.BeseyeJSONUtil.NOTIFY_OBJ;
+import static com.app.beseye.util.BeseyeJSONUtil.OBJ_TIMESTAMP;
+import static com.app.beseye.util.BeseyeJSONUtil.getJSONObject;
+
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
@@ -29,18 +37,25 @@ import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.adapter.HumanDetectTrainPicAdapter;
 import com.app.beseye.adapter.HumanDetectTrainPicAdapter.HumanDetectTrainItmHolder;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.BeseyeIMPMMBEHttpTask;
+import com.app.beseye.util.BeseyeCamInfoSyncMgr;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshListView;
 
 public class HumanDetectTrainActivity extends BeseyeBaseActivity {
+	final private static int NUM_OF_REFINE_IMG = 20;
 	private PullToRefreshListView mlvHumanDetectTrainPicList;
 	private HumanDetectTrainPicAdapter mHumanDetectTrainPicAdapter;
 	
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
-	private JSONArray mArrTrainPic;
+	private JSONArray mArrTrainPic, mArrTrainPicToSend;
+	private boolean mbHaveNextPage = false;
+	
 	private ViewPager mVpIntro;
 	private IntroPageAdapter mIntroPageAdapter;
 	private Button mbtnDone;
@@ -100,6 +115,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 			
 			mHumanDetectTrainPicAdapter = new HumanDetectTrainPicAdapter(this, mArrTrainPic, R.layout.layout_human_detect_training_list_itm, this);
 			if(null != mHumanDetectTrainPicAdapter){
+				mHumanDetectTrainPicAdapter.setVCamid(mStrVCamID);
 				mlvHumanDetectTrainPicList.setAdapter(mHumanDetectTrainPicAdapter);
 			}
 		}
@@ -148,33 +164,145 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 	}
 	
 	@Override
+	protected void onSessionComplete() {
+		super.onSessionComplete();
+		if(null == mVpIntro || View.VISIBLE != mVpIntro.getVisibility()){
+			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
+		}
+	}
+	
+	@Override
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
+		if(BeseyeConfig.DEBUG)
+			Log.d(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask){
+				if(0 == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+				
+					mArrTrainPic =  BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_HD_IMG);
+					
+					mbHaveNextPage = BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.MM_HD_IMG_PAGING);
+					if(null != mHumanDetectTrainPicAdapter){
+						mHumanDetectTrainPicAdapter.updateResultList(mArrTrainPic);
+						mHumanDetectTrainPicAdapter.notifyDataSetChanged();
+					}
+					
+					try {
+						mArrTrainPicToSend = new JSONArray(mArrTrainPic.toString());
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}else if(task instanceof BeseyeIMPMMBEHttpTask.SetHumanDetectRefineLabelTask){
+				if(0 == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+				
+					if(mbHaveNextPage){
+						onTrainProcessFinished();
+					}else{
+						onNoTrainPicAvailable(49);
+					}
+				}
+			}else{
+				super.onPostExecute(task, result, iRetCode);
+			}
+		}
+	}
+	
+	@Override
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
+			String strMsg) {
+		// GetLatestThumbnailTask don't need to have onErrorReport because it has default image
+		if(task instanceof BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask){
+			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true);
+		}else{
+			super.onErrorReport(task, iErrType, strTitle, strMsg);
+		}
+	}
+
+	@Override
 	public void onClick(View view) {
 		if(view.getTag() instanceof HumanDetectTrainItmHolder){
 			HumanDetectTrainItmHolder info = (HumanDetectTrainItmHolder)view.getTag();
 			if(null != info){
-				BeseyeJSONUtil.setJSONBoolean(info.mObjCam, BeseyeJSONUtil.MM_HD_IMG_DELETE, !BeseyeJSONUtil.getJSONBoolean(info.mObjCam, BeseyeJSONUtil.MM_HD_IMG_DELETE, false));
-				if(null != mHumanDetectTrainPicAdapter){
-					mHumanDetectTrainPicAdapter.notifyDataSetChanged();
+				int iLenPic = (null != mArrTrainPic)?mArrTrainPic.length():0;
+				if(0 < iLenPic){
+					String strPath = BeseyeJSONUtil.getJSONString(info.mObjCam, BeseyeJSONUtil.MM_HD_IMG_PATH);
+					for(int idx = 0 ;idx < iLenPic;idx++){
+						JSONObject objCheck = mArrTrainPic.optJSONObject(idx);
+						if(strPath.equals(BeseyeJSONUtil.getJSONString(objCheck, BeseyeJSONUtil.MM_HD_IMG_PATH))){
+							boolean bImgLoaded = BeseyeJSONUtil.getJSONBoolean(info.mObjCam, BeseyeJSONUtil.MM_HD_IMG_LOADED, false);
+							if(false == bImgLoaded){
+								bImgLoaded = (null != info.mImgTrainPic)?info.mImgTrainPic.isLoaded():false;
+							}
+							if(bImgLoaded){
+								BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED, true);
+								BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_DELETE, !BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_DELETE, false));
+								try {
+									mArrTrainPic.put(idx, objCheck);
+									if(null != mHumanDetectTrainPicAdapter){
+										mHumanDetectTrainPicAdapter.updateResultList(mArrTrainPic);
+										mHumanDetectTrainPicAdapter.notifyDataSetChanged();
+									}
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+					}
 				}
 			}
 		}else if(R.id.button_confirm == view.getId()){
-			BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
-			int iMode = (int) (System.currentTimeMillis()%3);
-			if(0 == iMode){
-				onNoTrainPicAvailable(49);
-			}else if(1 == iMode){
-				onTrainPicAvailable(57);
-			}else{
-				onTrainProcessFinished();
-			}
+			
+			
+//			BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
+//			int iMode = (int) (System.currentTimeMillis()%3);
+//			if(0 == iMode){
+//				onNoTrainPicAvailable(49);
+//			}else if(1 == iMode){
+//				onTrainPicAvailable(57);
+//			}else{
+//				onTrainProcessFinished();
+//			}
+			
+			sendLabelResult();
 		}else if(R.id.button_done == view.getId()){
 			BeseyeUtils.setVisibility(mVpIntro, View.GONE);
+			//monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
 		}else if(R.id.btn_continue == view.getId()){
 			BeseyeUtils.setVisibility(mVgResultPage, View.GONE);
+			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
 		}else if(R.id.btn_finish == view.getId()){
 			finish();
 		}else {
 			super.onClick(view);
+		}
+	}
+	
+	private void sendLabelResult(){
+		int iLenPic = (null != mArrTrainPic)?mArrTrainPic.length():0;
+		if(0 < iLenPic){
+			for(int idx = 0 ;idx < iLenPic;idx++){
+				JSONObject objSend = mArrTrainPicToSend.optJSONObject(idx);
+				JSONObject objDel = mArrTrainPic.optJSONObject(idx);
+				String strLabel = (false == BeseyeJSONUtil.getJSONBoolean(objDel, BeseyeJSONUtil.MM_HD_IMG_LOADED))?BeseyeJSONUtil.MM_HD_IMG_LABEL_UNDEFINE:
+					             ((false == BeseyeJSONUtil.getJSONBoolean(objDel, BeseyeJSONUtil.MM_HD_IMG_DELETE))?BeseyeJSONUtil.MM_HD_IMG_LABEL_HUMAN:BeseyeJSONUtil.MM_HD_IMG_LABEL_NO_HUMAN);
+				BeseyeJSONUtil.setJSONString(objSend, BeseyeJSONUtil.MM_HD_IMG_LABEL, strLabel);
+				try {
+					mArrTrainPicToSend.put(idx, objSend);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			JSONObject objPost = new JSONObject();
+			BeseyeJSONUtil.setJSONArray(objPost, BeseyeJSONUtil.MM_HD_IMG, mArrTrainPicToSend);
+			
+			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.SetHumanDetectRefineLabelTask(this), true, mStrVCamID, objPost.toString());
 		}
 	}
 	

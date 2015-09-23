@@ -81,6 +81,12 @@ public class SessionMgr {
 												"https://oregon-p1-stage-api-%d.beseye.com/mm/",
 												"https://oregon-p2-stage-api-%d.beseye.com/mm/",
 												"https://bj-p2-stage-api-%d.beseye.cn/mm/"}; 
+	
+	static private final String[] IMPMM_BE_URL = {  "https://oregon-p2-dev-api-1.beseye.com/impmm/",
+													"https://mm-dev.beseye.com/",
+													"https://oregon-p1-stage-api-%d.beseye.com/impmm/",
+													"https://oregon-p2-stage-api-%d.beseye.com/impmm/",
+													"https://bj-p2-stage-api-%d.beseye.cn/impmm/"}; 
 
 	static private final String[] CAM_BE_URL = { "https://oregon-p2-dev-api-1.beseye.com/cam/",
 												 "https://ns-dev.beseye.com/",
@@ -266,6 +272,7 @@ public class SessionMgr {
 		setAccountBEHostUrl("");
 		setVPCAccountBEHostUrl("");
 		setMMBEHostUrl("");
+		setIMPMMBEHostUrl("");
 		setCamBEHostUrl("");
 		setNSBEHostUrl("");
 		setCamWSBEHostUrl("");
@@ -310,6 +317,7 @@ public class SessionMgr {
 		setAccountBEHostUrl(mode);
 		setVPCAccountBEHostUrl(mode);
 		setMMBEHostUrl(mode);
+		setIMPMMBEHostUrl(mode);
 		setCamBEHostUrl(mode);
 		setNSBEHostUrl(mode);
 		setCamWSBEHostUrl(mode);
@@ -380,6 +388,19 @@ public class SessionMgr {
 	
 	synchronized public void setMMBEHostUrl(String strURL){
 		mSessionData.setMMBEHostUrl(strURL);
+		notifySessionUpdate();
+	}
+	
+	public String getIMPMMBEHostUrl(){
+		return mSessionData.getIMPMMBEHostUrl();
+	}
+	
+	public void setIMPMMBEHostUrl(SERVER_MODE mode){
+		setIMPMMBEHostUrl(String.format(IMPMM_BE_URL[mode.ordinal()], getVPCNumber()));
+	}
+	
+	synchronized public void setIMPMMBEHostUrl(String strURL){
+		mSessionData.setIMPMMBEHostUrl(strURL);
 		notifySessionUpdate();
 	}
 	
@@ -651,7 +672,7 @@ public class SessionMgr {
 	}
 	
 	public static class SessionData implements Parcelable{
-		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
+		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrIMPMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
 		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended, mbIsTrustDev, mbIsShowNotificationFromToast;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
@@ -662,6 +683,7 @@ public class SessionMgr {
 			mStrHostUrl = "";
 			mStrVPCHostUrl = "";
 			mStrMMHostUrl = "";
+			mStrIMPMMHostUrl = "";
 			mStrCamHostUrl = "";
 			mStrNSHostUrl = "";
 			mStrCamWsHostUrl = "";
@@ -710,6 +732,14 @@ public class SessionMgr {
 		
 		synchronized public void setMMBEHostUrl(String strURL){
 			mStrMMHostUrl = strURL;
+		}
+		
+		public String getIMPMMBEHostUrl(){
+			return mStrIMPMMHostUrl;
+		}
+		
+		synchronized public void setIMPMMBEHostUrl(String strURL){
+			mStrIMPMMHostUrl = strURL;
 		}
 		
 		public String getCAMBEHostUrl(){
@@ -912,6 +942,7 @@ public class SessionMgr {
 			dest.writeString(mStrHostUrl);
 			dest.writeString(mStrVPCHostUrl);
 			dest.writeString(mStrMMHostUrl);
+			dest.writeString(mStrIMPMMHostUrl);
 			dest.writeString(mStrCamHostUrl);
 			dest.writeString(mStrNSHostUrl);
 			dest.writeString(mStrCamWsHostUrl);
@@ -960,6 +991,7 @@ public class SessionMgr {
 			mStrHostUrl = in.readString();
 			mStrVPCHostUrl = in.readString();
 			mStrMMHostUrl = in.readString();
+			mStrIMPMMHostUrl = in.readString();
 			mStrCamHostUrl = in.readString();
 			mStrNSHostUrl = in.readString();
 			mStrCamWsHostUrl = in.readString();

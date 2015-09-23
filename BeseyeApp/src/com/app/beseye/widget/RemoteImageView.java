@@ -70,6 +70,8 @@ public class RemoteImageView extends ImageView {
 	
 	protected String mStrVCamId = null;
 	private String mStrVCamIdLoad = null;
+	private boolean mbLoadLastImgByVCamId = true;
+	private boolean mbBmpTransitionEffect = true;
 	
 	static public final String CACHE_POSTFIX_SAMPLE_1 = "_s1";//set sample as 1
 	static public final String CACHE_POSTFIX_SAMPLE_2 = "_s2";//set sample as 2
@@ -112,6 +114,14 @@ public class RemoteImageView extends ImageView {
 			mbEnableShadow = bEnable;
 			invalidate();
 		}
+	}
+	
+	public void disableLoadLastImgByVCamId(){
+		mbLoadLastImgByVCamId = false;
+	}
+	
+	public void disablebBmpTransitionEffect(){
+		mbBmpTransitionEffect = false;
 	}
 	
 	public void setMatchWidth(boolean bMatch){
@@ -350,7 +360,7 @@ public class RemoteImageView extends ImageView {
 			return;
 		} else {
 			String fileCache = null;
-			if(null != mStrVCamId){
+			if(mbLoadLastImgByVCamId && null != mStrVCamId){
 				fileCache = findLastPhotoByVCamid(mStrVCamId);
 			}else{
 				fileCache = mCachePath+(mbIsPhoto?CACHE_POSTFIX_SAMPLE_1:CACHE_POSTFIX_SAMPLE_2);
@@ -364,6 +374,7 @@ public class RemoteImageView extends ImageView {
 					if(DEBUG)
 						Log.i(TAG, "loadImage(), have file cache in mem");
 					setImageBitmap(cBmpFile);
+					imageLoaded(true);
 				}else if(null == mStrVCamIdLoad || !mStrVCamIdLoad.equals(mStrVCamId)){
 					loadDefaultImage();
 				}
@@ -381,15 +392,17 @@ public class RemoteImageView extends ImageView {
 		if(DEBUG)
 			Log.d(TAG, "setImageBitmap(), mStrVCamIdLoad:["+mStrVCamIdLoad+"], id:"+this.getId());
 		
-		//setImageBitmap(bm);
-		
-		Drawable[] layers = new Drawable[2];
-		layers[0] = this.getDrawable();
-		layers[1] = new BitmapDrawable(bm);
+		if(mbBmpTransitionEffect){
+			Drawable[] layers = new Drawable[2];
+			layers[0] = this.getDrawable();
+			layers[1] = new BitmapDrawable(bm);
 
-		TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
-		setImageDrawable(transitionDrawable);
-		transitionDrawable.startTransition(300);
+			TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
+			setImageDrawable(transitionDrawable);
+			transitionDrawable.startTransition(300);
+		}else{
+			setImageBitmap(bm);
+		}
 	}
 
 //	@Override
@@ -408,7 +421,7 @@ public class RemoteImageView extends ImageView {
 		}
 		
 		if(null != mURI && 0 < mURI.length()){
-			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath, mURI, mIsPreload, mbIsPhoto, mbIsPhotoViewMode, mStrVCamId));
+			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath, mURI, mIsPreload, mbIsPhoto, mbIsPhotoViewMode, mStrVCamId, mbLoadLastImgByVCamId));
 		}
 	}
 
@@ -430,15 +443,17 @@ public class RemoteImageView extends ImageView {
 		private String mLocalSample, mLocalSampleHQ;
 		private String mRemote;
 		private String mStrVCamId = null;
+		private boolean mbLoadLastImgByVCamId = true;
 		private boolean mIsPreload, mbIsPhoto, mbIsPhotoViewMode;
 
-		public LoadImageRunnable(String local, String remote, boolean isPreload, boolean bIsPhoto, boolean bIsPhotoViewMode, String strVCamId) {
+		public LoadImageRunnable(String local, String remote, boolean isPreload, boolean bIsPhoto, boolean bIsPhotoViewMode, String strVCamId, boolean bLoadLastImgByVCamId) {
 			mLocal = local;
 			mRemote = remote;
 			mIsPreload = isPreload;
 			mbIsPhoto = bIsPhoto;
 			mbIsPhotoViewMode = bIsPhotoViewMode;
 			mStrVCamId = strVCamId;
+			mbLoadLastImgByVCamId = bLoadLastImgByVCamId;
 			
 			mLocalSample = mLocal+(mbIsPhoto?CACHE_POSTFIX_SAMPLE_1:CACHE_POSTFIX_SAMPLE_2);
 			mLocalSampleHQ = mbIsPhotoViewMode?(mLocalSample+CACHE_POSTFIX_HIGH_RES):null;
@@ -512,7 +527,7 @@ public class RemoteImageView extends ImageView {
 					String strCachePath = mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample;
 					cacheFileName = strCachePath.substring(strCachePath.lastIndexOf("/")+1);
 					
-					if(null != mStrVCamId){
+					if(mbLoadLastImgByVCamId && null != mStrVCamId){
 						if(DEBUG)
 							Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
 						vcamidDir = getDirByVCamid(mStrVCamId);
