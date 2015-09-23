@@ -1437,11 +1437,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 
 	@Override
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
-		Log.i(TAG, "onSessionInvalid(), iInvalidReason:"+iInvalidReason);
-		if(iInvalidReason == BeseyeHttpTask.ERR_TYPE_SESSION_NOT_TRUST){
-			launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
-		}else{
-			onSessionInvalid(false);
+		Log.i(TAG, "onSessionInvalid(), iInvalidReason:"+iInvalidReason+", mbIgnoreSessionCheck:"+mbIgnoreSessionCheck);
+		if(!mbIgnoreSessionCheck){
+			if(iInvalidReason == BeseyeHttpTask.ERR_TYPE_SESSION_NOT_TRUST){
+				launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
+			}else{
+				onSessionInvalid(false);
+			}
 		}
 	}
 	
