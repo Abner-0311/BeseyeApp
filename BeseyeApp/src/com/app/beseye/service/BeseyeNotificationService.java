@@ -321,7 +321,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			
                 			BeseyeStorageAgent.doDeleteCache(BeseyeNotificationService.this.getApplicationContext());
                 		}//If Login
-                		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid()){
+                		else if(!bLoginBefore && SessionMgr.getInstance().isUseridValid() && SessionMgr.getInstance().getIsTrustDev()){
                 			if(null == mGetVCamListTask){
                 				(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this)).execute();
                 			}
@@ -1162,6 +1162,16 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				mMapNotificationId.clear();
 			}
 			
+			mNotificationManager.cancel(NOTIFICATION_TYPE_PIN);
+			if(0 < mMapNotificationIdByDevName.size()){
+				for(String strDevName : mMapNotificationIdByDevName.keySet()){
+					if(null != mNotificationManager){
+						mNotificationManager.cancel(mMapNotificationIdByDevName.get(strDevName));
+					}
+				}
+				mMapNotificationIdByDevName.clear();
+			}
+			
 			if(0 < mMapNCode.size()){
 				mMapNCode.clear();
 			}
@@ -1332,6 +1342,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	//Handle multiple beseye apps in same device and login via different accounts
 	private Map<String, Integer> mMapNotificationId = new HashMap<String, Integer>();
+	private Map<String, Integer> mMapNotificationIdByDevName = new HashMap<String, Integer>();
 	private Map<String, Integer> mMapNCode = new HashMap<String, Integer>();
 	private List<String> mListBlackVCamId = new ArrayList<String>();//vcamid list that doesn't belong to current account
 	private BeseyeHttpTask mGetVCamListTask = null;
@@ -1524,6 +1535,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					String strDialogInfo = String.format(getString(R.string.dialog_notification_pincode_auth),strPincode,strDisplayName);
 					iNotifyType = NOTIFICATION_TYPE_PIN+((null != strDisplayName)?strDisplayName.hashCode():0);
 
+					mMapNotificationIdByDevName.put(strDisplayName, iNotifyType);
+					
 					strNotifyMsg =String.format(getString(R.string.notification_pincode_auth), strPincode, strDisplayName);
 					
 					intent.setClassName(this, OpeningPage.class.getName());

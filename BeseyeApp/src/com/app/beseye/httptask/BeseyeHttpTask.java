@@ -379,7 +379,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    	}
 	    	
 	    	if(DEBUG)
-	    		Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl)+", ["+(null != mStrVCamIdForPerm && 0 < mStrVCamIdForPerm.length())+", "+(SessionMgr.getInstance().isTokenValid())+"]");
+	    		Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl)+", ["+(null != mStrVCamIdForPerm && 0 < mStrVCamIdForPerm.length())+", "+(SessionMgr.getInstance().isTokenValid())+"], "+(null != mOnHttpTaskCallback?mOnHttpTaskCallback.get().toString():""));
 	    	
 	    	long startTime = System.currentTimeMillis();
 	        HttpResponse response = httpclient.execute(httpRequest);
