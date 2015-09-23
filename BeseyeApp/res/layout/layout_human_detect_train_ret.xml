@@ -13,8 +13,8 @@
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
 		    android:layout_centerHorizontal="true"
-		    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
-		    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+		    android:layout_marginLeft="@dimen/human_detect_train_marginSide"
+		    android:layout_marginRight="@dimen/human_detect_train_marginSide"
 		    android:layout_marginTop="@dimen/swipe_desc_margin_top"
 		    android:text="@string/enhance_human_detect_reward_desc"
 		    android:textColor="@color/signup_font_description_color"
@@ -25,12 +25,12 @@
 		android:layout_height="0dp"
 		android:layout_weight="71">
 	    <ImageView
-	        android:id="@+id/iv_before_setup_top_img"
+	        android:id="@+id/iv_train_ret"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 		    android:layout_alignParentTop="true"
 		    android:layout_centerHorizontal="true"
-	        android:src="@drawable/h_detection_swipe_03_image" />
+	        android:src="@drawable/h_detection_ya_image" />
 		<LinearLayout 
 	        android:id="@+id/vg_delete_bundle"
 		    android:layout_width="match_parent"

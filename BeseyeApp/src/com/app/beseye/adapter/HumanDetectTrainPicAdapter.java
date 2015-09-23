@@ -46,7 +46,8 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 	
 	static public class HumanDetectTrainItmHolder{
 		public ViewGroup mVgHumanDetectTrainSubItm;
-		public TextView mTxtHumanDetectTrainSubItmMask;
+		public ImageView mIvHumanDetectTrainSubItmMask;
+		public TextView mTxtNoHuman;
 		public RemoteImageView mImgTrainPic;
 		public ImageView mImgPicBorder;
 		public JSONObject mObjCam;
@@ -68,7 +69,7 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 			final int iCount = (getCount()-1 == position)?mArrList.length()-iStartIdx:NUM_OF_SUB_ITM;
 			JSONObject[] objs = new JSONObject[iCount];
 			
-			Log.i(TAG, "getView(), position:"+position+", iStartIdx:"+iStartIdx+", iCount:"+iCount);
+			//Log.i(TAG, "getView(), position:"+position+", iStartIdx:"+iStartIdx+", iCount:"+iCount);
 
 			for(int idx = 0; idx < iCount ;idx++){
 				objs[idx] = mArrList.optJSONObject(iStartIdx+idx);
@@ -84,9 +85,9 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 			holder.mVgHumanDetectTrainSubItm = (ViewGroup)convertView.findViewById(iVgId);
 			if(null != holder.mVgHumanDetectTrainSubItm){
 				int iThumbnailHeight = -1;
-				holder.mTxtHumanDetectTrainSubItmMask = (TextView)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.txt_human_pic_no_human);
-				if(null != holder.mTxtHumanDetectTrainSubItmMask){
-					iThumbnailHeight = BeseyeUtils.setThumbnailRatio(holder.mTxtHumanDetectTrainSubItmMask, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
+				holder.mIvHumanDetectTrainSubItmMask = (ImageView)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.iv_human_pic_mask);
+				if(null != holder.mIvHumanDetectTrainSubItmMask){
+					iThumbnailHeight = BeseyeUtils.setThumbnailRatio(holder.mIvHumanDetectTrainSubItmMask, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
 				}
 				
 				holder.mImgTrainPic = (RemoteImageView)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.iv_training_pic);
@@ -99,8 +100,12 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 					BeseyeUtils.setThumbnailRatio(holder.mImgPicBorder, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
 				}
 				
+				holder.mTxtNoHuman = (TextView)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.txt_human_pic_no_human);
+				if(null != holder.mTxtNoHuman){
+					BeseyeUtils.setWidthAndHeight(holder.mTxtNoHuman, miThumbnailWidth, -1);
+				}
+				
 				if(null != holder.mVgHumanDetectTrainSubItm){
-					//BeseyeUtils.setThumbnailRatio(holder.mVgHumanDetectTrainSubItm, miBlockWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
 					BeseyeUtils.setWidthAndHeight(holder.mVgHumanDetectTrainSubItm, miThumbnailWidth+miMarginWidth, iThumbnailHeight+miMarginWidth);
 				}
 				holder.mVgHumanDetectTrainSubItm.setOnClickListener(mItemOnClickListener);
@@ -138,14 +143,15 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 			if(null != holder.mVgHumanDetectTrainSubItm){
 				if(null != holder.mImgTrainPic){
 					final String strPath = BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.MM_HD_IMG_PATH);
-					holder.mImgTrainPic.setURI(strPath, R.drawable.cameralist_s_view_noview_bg, BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID));
+					holder.mImgTrainPic.setURI(strPath, R.drawable.h_detection_loading_image, BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_ID));
 					holder.mImgTrainPic.loadImage();
 				}
 				holder.mObjCam = obj;
 				holder.mVgHumanDetectTrainSubItm.setTag(holder);
 				
 				BeseyeUtils.setVisibility(holder.mImgPicBorder, (null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false))?View.INVISIBLE:View.VISIBLE);
-				BeseyeUtils.setVisibility(holder.mTxtHumanDetectTrainSubItmMask, (null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false))?View.VISIBLE:View.INVISIBLE);
+				BeseyeUtils.setVisibility(holder.mIvHumanDetectTrainSubItmMask, (null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false))?View.VISIBLE:View.INVISIBLE);
+				BeseyeUtils.setVisibility(holder.mTxtNoHuman, (null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false))?View.VISIBLE:View.INVISIBLE);
 				BeseyeUtils.setVisibility(holder.mVgHumanDetectTrainSubItm, (null != obj)?View.VISIBLE:View.INVISIBLE);
 			}
 		}

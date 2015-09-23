@@ -25,15 +25,23 @@
             android:layout_width="match_parent"
        		android:layout_height="match_parent"
        		android:background="@drawable/h_detection_green_frame"/>
+        <ImageView 
+            android:id="@+id/iv_human_pic_mask"
+            android:layout_width="match_parent"
+       		android:layout_height="match_parent"
+       		android:background="@color/human_detect_no_human_mask"/>
 		<TextView 
             android:id="@+id/txt_human_pic_no_human"
 		    android:layout_width="match_parent"
-       		android:layout_height="match_parent"
+       		android:layout_height="wrap_content"
+       		android:layout_centerVertical="true"
+       		android:paddingTop="@dimen/human_detect_no_human_text_padding"
+       		android:paddingBottom="@dimen/human_detect_no_human_text_padding"
        		android:text="@string/human_detect_no_human"
        		android:textColor="@color/human_detect_no_human_text"
        		android:textSize="@dimen/human_detect_font"
        		android:gravity="center"
-       		android:background="@color/human_detect_no_human_mask"/>
+       		android:background="@color/background_white"/>
 	</RelativeLayout>
 </RelativeLayout>
 

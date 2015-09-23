@@ -44,6 +44,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 	private ViewPager mVpIntro;
 	private IntroPageAdapter mIntroPageAdapter;
 	private Button mbtnDone;
+	private ImageView mIvTrainRet;
 	
 	private ViewGroup mVgResultPage = null;
 	private TextView  mTxtRetDesc;
@@ -130,6 +131,8 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 			}
 			BeseyeUtils.setVisibility(mVgResultPage, View.GONE);
 		}
+		
+		mIvTrainRet = (ImageView)findViewById(R.id.iv_train_ret);
 	}
 
 	private void addTempObj(){
@@ -156,6 +159,14 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 			}
 		}else if(R.id.button_confirm == view.getId()){
 			BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
+			int iMode = (int) (System.currentTimeMillis()%3);
+			if(0 == iMode){
+				onNoTrainPicAvailable(49);
+			}else if(1 == iMode){
+				onTrainPicAvailable(57);
+			}else{
+				onTrainProcessFinished();
+			}
 		}else if(R.id.button_done == view.getId()){
 			BeseyeUtils.setVisibility(mVpIntro, View.GONE);
 		}else if(R.id.btn_continue == view.getId()){
@@ -165,6 +176,51 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 		}else {
 			super.onClick(view);
 		}
+	}
+	
+	private void onNoTrainPicAvailable(int iCompletePercent){
+		if(null != mIvTrainRet){
+			mIvTrainRet.setImageResource(R.drawable.h_detection_ya_image);
+		}
+		
+		if(null != mTxtRetDesc){
+			mTxtRetDesc.setText(String.format(getString(R.string.recognition_percentage), iCompletePercent+"%")+getString(R.string.enhance_human_detect_no_pic_desc));
+		}
+		
+		BeseyeUtils.setVisibility(mbtnContinue, View.GONE);
+	}
+	
+	private void onTrainPicAvailable(int iCompletePercent){
+		if(null != mIvTrainRet){
+			mIvTrainRet.setImageResource(R.drawable.h_detection_ya_image);
+		}
+		
+		if(null != mTxtRetDesc){
+			mTxtRetDesc.setText(String.format(getString(R.string.recognition_percentage), iCompletePercent+"%")+getString(R.string.enhance_human_detect_reward_desc));
+		}
+		
+		BeseyeUtils.setVisibility(mbtnContinue, View.VISIBLE);
+
+	}
+	
+	private void onTrainProcessFinished(){
+		if(null != mIvTrainRet){
+			mIvTrainRet.setImageResource(R.drawable.h_detection_phd_image);
+		}
+		
+		if(null != mTxtRetDesc){
+			String strDone = getString(R.string.recognition_percentage_done);
+			String strDesc = String.format(getString(R.string.recognition_percentage), getString(R.string.recognition_percentage_done))+getString(R.string.enhance_human_detect_train_done_desc);
+			Spannable wordtoSpan = new SpannableString(strDesc);          
+
+		    int i = strDesc.indexOf(strDone);
+		    if(i >=0){
+			    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.csl_link_font_color)), i, i+strDone.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    }
+			mTxtRetDesc.setText(wordtoSpan);
+		}
+		
+		BeseyeUtils.setVisibility(mbtnContinue, View.GONE);
 	}
 	
 	public class IntroPageAdapter extends PagerAdapter {

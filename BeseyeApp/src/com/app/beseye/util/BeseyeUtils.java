@@ -453,9 +453,10 @@ public class BeseyeUtils {
 		else{
 			lp =view.getLayoutParams();
 		}
-		
-		lp.width = iWidth;
-		lp.height = iHeight;
+		if(0 <= iWidth)
+			lp.width = iWidth;
+		if(0 <= iHeight)
+			lp.height = iHeight;
 		view.setLayoutParams(lp);
 	}
 	

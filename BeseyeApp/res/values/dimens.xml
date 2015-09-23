@@ -261,6 +261,8 @@
     <dimen name="human_detect_font">15sp</dimen>
     
     <dimen name="human_detect_pic_margin">4dp</dimen>
+    <dimen name="human_detect_no_human_text_padding">4dp</dimen>
     <dimen name="human_detect_item_sub_font_size">16sp</dimen>
+    <dimen name="human_detect_train_marginSide">42dp</dimen>
     
 </resources>

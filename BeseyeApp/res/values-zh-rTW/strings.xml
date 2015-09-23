@@ -396,22 +396,22 @@
   <string name="tz_euro_austria">奧地利</string>
   <string name="tz_euro_italy">義大利</string>
   <string name="cam_name_update_success">成功更新攝影機名稱</string>
-  <string name="signup_plug_in_description">首先，請幫攝影機插上電源插頭．</string>
+  <string name="signup_plug_in_description">首先，請幫攝影機插上電源插頭。</string>
   <string name="signup_plug_in_title">連接攝影機電源</string>
   <string name="signup_plug_in_done">插上電源了，開始設定吧</string>
   <string name="signup_watch_out_title">注意</string>
-  <string name="signup_watch_out_desc">注意注意，您的手機即將%1$s!\n請將您的%2$s對準鏡頭．\n再按下一步。</string>
+  <string name="signup_watch_out_desc">注意注意，您的手機即將%1$s!\n請將您的%2$s對準鏡頭。\n再按下一步。</string>
   <string name="signup_watch_out_desc_bebebe">「發出嗶嗶聲」</string>
   <string name="signup_watch_out_desc_speaker">「手機喇叭」</string>
   <string name="signup_watch_out_done">手機就位，下一步</string>
   <string name="signup_confirm_led_title">確認指示燈號</string>
-  <string name="signup_confirm_led_desc">鏡頭指示燈是否顯示為%s呢?\n如果尚未閃爍綠燈，表示攝影機暖機中．\n請靜候數分鐘!</string>
+  <string name="signup_confirm_led_desc">鏡頭指示燈是否顯示為%s呢?\n如果尚未閃爍綠燈，表示攝影機暖機中。\n請靜候數分鐘!</string>
   <string name="signup_confirm_led_twinkling_green_light">「閃爍綠燈」</string>
   <string name="signup_confirm_led_done">已閃綠燈，下一步</string>
   <string name="signup_pairing_fail_desc">請你拔掉插頭重新插上，確認鏡頭燈號為「閃爍綠燈」，且手機喇叭距離鏡頭10公分，再開始Let it Bee™。</string>
   <string name="signup_guideline_try_again_btn">OK，再設定一次看看</string>
   <!--Toast message for poor quality when talking-->
-  <string name="hint_hold_to_talk_poor_network_quality">網路連線不穩定，\n請再次嘗試通話．</string>
+  <string name="hint_hold_to_talk_poor_network_quality">網路連線不穩定，\n請再次嘗試通話。</string>
   <string name="msg_wifi_pw_length_error_wpa">無效的Wi-Fi 密碼長度。密碼必須是8 到 64個字母。</string>
   <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5或13個字母。</string>
   <string name="msg_wifi_setting_info_error">無效的Wi-Fi設定。</string>
@@ -424,7 +424,7 @@
   <!--Toast message for fail to pic capture-->
   <string name="player_screenshot_capture_failed">無法儲存攝影機影像，請稍候再試。</string>
   <!--Toast message for mic occupied-->
-  <string name="hint_hold_to_talk_conn_occupied">麥克風使用中，請稍後再試．</string>
+  <string name="hint_hold_to_talk_conn_occupied">麥克風使用中，請稍後再試。</string>
   <!--Share button on screenshot dialog-->
   <string name="share">分享</string>
   <!--Close button on screenshot dialog-->
@@ -520,22 +520,22 @@
   <string name="cam_setting_title_human_detect">移動人員偵測</string>
   <string name="cam_setting_title_human_detect_notify">人員偵測通知</string>
   <string name="enhance_human_detect">偵測功能最佳化</string>
-  <string name="enhance_human_detect_hint">系統會自動偵測移動人員．但若下頁影像中無任何人，請點擊去除，以取得最佳辨識結果．</string>
+  <string name="enhance_human_detect_hint">系統會自動偵測移動人員。但若下頁影像中無任何人，請點擊去除，以取得最佳辨識結果。</string>
   <string name="recognition_percentage">最佳化進度：%s</string>
   <string name="recognition_percentage_done">已完成！</string>
   <string name="reset_human_detect">重置偵測功能</string>
-  <string name="reset_human_detect_hint">若攝影機移動拍攝場景，或是想重設已選擇的場景，可以選擇重置．</string>
+  <string name="reset_human_detect_hint">若攝影機移動拍攝場景，或是想重設已選擇的場景，可以選擇重置。</string>
   <string name="dialog_reset_human_detect">如此會刪除過去所有最佳化的成果，並需要重新執行最佳化流程，您確定嗎</string>
   <string name="human_detect_no_human">無人</string>
   
-  <string name="enhance_human_detect_intro_p1_desc">準備迎接未來科技．Beseye先進科技研發實驗室向您介紹目前全世界最精準同時又兼顧隱私保護的移動人員偵測技術，已在您的攝影機上運行．</string>
-  <string name="enhance_human_detect_intro_p2_desc">透過此技術，當攝影機偵測到有人員行經時，會自動發出通知到您的手機．讓你不在現場，也可以簡單知道現場是否有移動的人員．</string>
-  <string name="enhance_human_detect_intro_p3_desc">世上最好的技術，現在還可對您的攝影機作最佳化．透過點擊攝影機拍攝的無人員之影像，讓此技術變得更加適合您，就像是為您量身定做．</string>
+  <string name="enhance_human_detect_intro_p1_desc">準備迎接未來科技。\nBeseye 先進技術實驗室推出全世界最精準，同時兼顧隱私保護的移動人員偵測技術。</string>
+  <string name="enhance_human_detect_intro_p2_desc">透過此技術，當偵測到人員行經時，系統會自動發出通知到您的裝置。讓你不在現場，也可以簡單知道是否有移動的人員。</string>
+  <string name="enhance_human_detect_intro_p3_desc">世上最好的技術，現在還可針對您做最佳化。\n透過點擊無人員之影像，讓此技術變得更加適合您，就像是為您量身定做。</string>
   <string name="enhance_human_detect_intro_p3_desc_highlight">無</string>
   
   <string name="enhance_human_detect_intro_next_step">下一步</string>
     
-  <string name="enhance_human_detect_reward_desc">,辨識率更加提高了</string>
-  <string name="enhance_human_detect_no_pic_desc">Beseye將會在近期送上攝影機影像讓您篩選．</string>
-  <string name="enhance_human_detect_train_done_desc">Beseye移動人員辨識系統目前已對您的攝影機作最佳化．</string>
+  <string name="enhance_human_detect_reward_desc">\n辨識率更加提高了！</string>
+  <string name="enhance_human_detect_no_pic_desc">\nBeseye 將會在近期提供疑似人員影像讓您篩選。</string>
+  <string name="enhance_human_detect_train_done_desc">\nBeseye 移動人員辨識系統針對此攝影機的最佳化流程已完成，您無須再次點擊影像。</string>
 </resources>
