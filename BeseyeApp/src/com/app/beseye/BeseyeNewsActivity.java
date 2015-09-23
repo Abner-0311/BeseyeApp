@@ -57,10 +57,7 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 		}
 		super.onCreate(savedInstanceState);
 		
-		mStrLocale = BeseyeUtils.getLocaleString();
-		
-		mbIgnoreSessionCheck = true;
-		
+		mStrLocale = BeseyeUtils.getLocaleString();		
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
 		

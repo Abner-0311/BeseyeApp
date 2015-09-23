@@ -207,7 +207,7 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 	
 	@Override
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
-		if(iInvalidReason != BeseyeHttpTask.ERR_TYPE_SESSION_NOT_TRUST){
+		if(task instanceof BeseyeAccountTask.CheckAccountTask && iInvalidReason != BeseyeHttpTask.ERR_TYPE_SESSION_NOT_TRUST){
 			onSessionInvalid(false);
 		}
 	}
