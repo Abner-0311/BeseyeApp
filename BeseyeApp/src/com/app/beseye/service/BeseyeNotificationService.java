@@ -40,6 +40,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.app.beseye.BeseyeApplication;
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.CameraViewActivity;
@@ -1103,8 +1104,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     private final BroadcastReceiver mHandlePincodeNotifyClickedReceiver = new BroadcastReceiver() {
     	@Override
         public void onReceive(Context context, Intent intent) {
-    		 if(DEBUG)
-             	Log.i(TAG, "onReceive(), MSG_PIN_CODE_NOTIFY_CLICKED");
+    		if(!BeseyeApplication.getAppMark().equals(intent.getStringExtra(OpeningPage.KEY_APP_TYPE))){
+    			return;
+    		}
+    		
+    		if(DEBUG)
+    			Log.i(TAG, "onReceive(), MSG_PIN_CODE_NOTIFY_CLICKED");
     		 
     		Message msg = Message.obtain(null,MSG_PIN_CODE_NOTIFY_CLICKED,0,0);
             try {

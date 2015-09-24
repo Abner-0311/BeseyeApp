@@ -36,6 +36,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	public static final String KEY_EVENT_INTENT 		= "KEY_EVENT_INTENT";
 	public static final String KEY_IGNORE_ACTIVATED_FLAG= "KEY_IGNORE_ACTIVATED_FLAG";
 	public static final String KEY_PINCODE_AUTH			= "KEY_PINCODE_AUTH";
+	public static final String KEY_APP_TYPE				= "KEY_APP_TYPE";
 	public static final String FIRST_PAGE 				= CameraListActivity.class.getName();//BeseyeTrustDevAuthActivity.class.getName();
 	
 	private static boolean sbFirstLaunch = true;
@@ -253,6 +254,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 //					//Try to show pin code dialog from service
 					Intent intentBroadcast = new Intent(BeseyeNotificationService.ACTION_FORWARD_PINCODE_CLICKED);
 					intentBroadcast.putExtras(intent.getExtras());
+					intentBroadcast.putExtra(KEY_APP_TYPE, BeseyeApplication.getAppMark());
+					
 			        sendBroadcast(intentBroadcast);
 			        if(BeseyeBaseActivity.getActiveActivityCount() == 0){
 			        	intentLanuch.setClassName(this, strCls);
