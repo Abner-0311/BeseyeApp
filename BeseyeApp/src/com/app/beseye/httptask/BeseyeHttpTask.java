@@ -131,6 +131,8 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	// the timeout for waiting for data
 	private static final int SOCKET_TIMEOUT = 10000; /* 10 seconds */
 	
+	public static final int TIMEOUT_SET_RELATED = 30000;
+	
 	protected static void setTimeouts(HttpParams params, int iConTimeout, int iSocketTimeout) {
 	    params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
 	    params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, SOCKET_TIMEOUT);
