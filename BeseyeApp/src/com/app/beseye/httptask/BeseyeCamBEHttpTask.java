@@ -442,6 +442,9 @@ public class BeseyeCamBEHttpTask  {
 		public SetWiFiConfigTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 		}
 		
 		@Override

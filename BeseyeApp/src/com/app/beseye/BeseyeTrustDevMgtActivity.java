@@ -91,29 +91,7 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
 		}
-//		
-//		mArrTrustDev = new JSONArray();
-//		
-//		mArrTrustDev.put(createTmpDevObj("HTC Butterfly", 1, false));
-//		mArrTrustDev.put(createTmpDevObj("HTC Desire Eye", 2, true));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 3, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 1", 4, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 5, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 2", 6, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 7, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 3", 8, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 9, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 4", 10, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 11, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 5", 12, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 13, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 6", 14, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 15, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 7", 16, false));
-//		mArrTrustDev.put(createTmpDevObj("Abner's iPhone6 HaHaHaHaHaHaHaHaHa", 17, false));
-//		mArrTrustDev = reorderTrustDev(mArrTrustDev);
 	
-		
 		mMainListView = (PullToRefreshListView)findViewById(R.id.lv_trust_dev_lst);
 		if(null != mMainListView){
 			mTrustDevListAdapter = new TrustDevListAdapter(this, mArrTrustDev, R.layout.layout_trust_dev_itm, this);
@@ -161,14 +139,6 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 			}}, 0);
 	}
 	
-	private JSONObject createTmpDevObj(String name, int id, boolean isHost){
-		JSONObject obj = new JSONObject();
-		BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.ACC_TRUST_DEV_NAME, name);
-		BeseyeJSONUtil.setJSONInt(obj, BeseyeJSONUtil.ACC_TRUST_DEV_ID,id);
-		BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.ACC_TRUST_DEV_HOST, isHost);
-		return obj;
-	}
-	
 	@Override
 	protected int getLayoutId() {
 		return R.layout.layout_trust_dev_mgt;
@@ -199,21 +169,6 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 		}
-	}
-	
-	@Override
-	protected void onServerError(){
-		super.onServerError();
-//		LayoutInflater inflater = getLayoutInflater();
-//		if(null != inflater){
-//			if(null != mTrustDevListAdapter){
-//				mTrustDevListAdapter.updateResultList(null);
-//			}
-//			ViewGroup mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
-//			if(null != mVgEmptyView){
-//				mMainListView.setEmptyView(mVgEmptyView);
-//			}
-//		}
 	}
 
 	@Override

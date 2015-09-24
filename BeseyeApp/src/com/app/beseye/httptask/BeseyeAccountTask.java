@@ -66,6 +66,9 @@ public class BeseyeAccountTask {
 			super(cb);
 			//setDialogResId(0, R.string.dialog_msg_login);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 			//enableHttps();
 		}
  
@@ -185,6 +188,9 @@ public class BeseyeAccountTask {
 			super(cb);
 			//setDialogResId(0, R.string.dialog_msg_signup);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 			//enableHttps();
 		}
  
@@ -238,6 +244,9 @@ public class BeseyeAccountTask {
 		public SetCamAttrTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 			//enableHttps();
 		}
  
@@ -266,6 +275,9 @@ public class BeseyeAccountTask {
 		public SendForgetPWTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 		}
  
 		@Override
@@ -426,6 +438,9 @@ public class BeseyeAccountTask {
 		public CamDettachTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 		}
  
 		@Override
@@ -452,6 +467,9 @@ public class BeseyeAccountTask {
 		public PinCodeRenewTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 		}
  
 		@Override
@@ -471,6 +489,9 @@ public class BeseyeAccountTask {
 		public PinCodeVerifyTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 		}
  
 		@Override
@@ -504,6 +525,9 @@ public class BeseyeAccountTask {
 		public DeleteTrustDevTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 		}
  
 		@Override
@@ -515,6 +539,9 @@ public class BeseyeAccountTask {
 	static public class CamDettachByHWIDTask extends BeseyeHttpTask {	 	
 		public CamDettachByHWIDTask(OnHttpTaskCallback cb) {
 			super(cb);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 		}
  
 		@Override
