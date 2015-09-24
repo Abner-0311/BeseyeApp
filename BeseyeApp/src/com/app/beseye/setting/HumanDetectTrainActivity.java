@@ -39,6 +39,7 @@ import com.app.beseye.adapter.HumanDetectTrainPicAdapter;
 import com.app.beseye.adapter.HumanDetectTrainPicAdapter.HumanDetectTrainItmHolder;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeIMPMMBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -104,6 +105,8 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 //		for(int idx= 0 ;idx<20;idx++){
 //			addTempObj();
 //		}
+		
+		mbNeedToShowIntro = !SessionMgr.getInstance().getHumanDetectIntroShowOnce() || !SessionMgr.getInstance().getHumanDetectIntroShown();
 
 		mlvHumanDetectTrainPicList = (PullToRefreshListView) findViewById(R.id.lv_train_pic_lst);
 		if(null != mlvHumanDetectTrainPicList){
@@ -304,6 +307,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		}else if(R.id.button_confirm == view.getId()){			
 			sendLabelResult();
 		}else if(R.id.button_done == view.getId()){
+			SessionMgr.getInstance().setHumanDetectIntroShown(true);
 			BeseyeUtils.setVisibility(mVpIntro, View.GONE);
 			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
 		}else if(R.id.btn_continue == view.getId()){

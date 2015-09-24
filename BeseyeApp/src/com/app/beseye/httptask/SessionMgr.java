@@ -157,6 +157,8 @@ public class SessionMgr {
 	//Below items are after security mode
 	
 	static private final String SESSION_DEBUG_SHOW_NOTIFY	= "beseye_debug_show_notify";
+	static private final String SESSION_HD_INTRO_SHOWN		= "beseye_human_detect_intro_shown";
+	static private final String SESSION_SHOW_HD_INTRO_ONCE	= "beseye_show_human_detect_intro_once";
 	
 	//static private final String SESSION_SCREENSHOT_FEATURE	= "beseye_screen_feature";
 	
@@ -262,6 +264,7 @@ public class SessionMgr {
 		setIsTrustDev(false);
 		setVPCNumber(1);
 		setNewsHistory("");
+		setHumanDetectIntroShown(false);
 		BeseyeNewsHistoryMgr.deinit();
 		//setOwnerChannelInfo(null);
 		mbShowPirvateCam = false;
@@ -311,6 +314,22 @@ public class SessionMgr {
 	
 	public void setNewsShowInd(int iValue){
 		setPrefIntValue(mPref, SESSION_NEWS_IND_SHOW, iValue);
+	}
+	
+	public boolean getHumanDetectIntroShown(){
+		return getPrefBooleanValue(mPref, SESSION_HD_INTRO_SHOWN, false);
+	}
+	
+	public void setHumanDetectIntroShown(boolean bValue){
+		setPrefBooleanValue(mPref, SESSION_HD_INTRO_SHOWN, bValue);
+	}
+	
+	public boolean getHumanDetectIntroShowOnce(){
+		return getPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ONCE, false);
+	}
+	
+	public void setHumanDetectIntroShowOnce(boolean bValue){
+		setPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ONCE, bValue);
 	}
 	
 	public void setBEHostUrl(SERVER_MODE mode){
