@@ -1455,14 +1455,18 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	protected void onSessionInvalid(boolean bIsLogoutCase){
-		if(false == bIsLogoutCase){
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
-				}}, 0L);
+		if(SessionMgr.getInstance().isTokenValid()){
+			if(false == bIsLogoutCase){
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
+					}}, 0L);
+			}
+			invalidDevSession();
+		}else{
+			Log.i(TAG, "onSessionInvalid(), token is invalid");
 		}
-		invalidDevSession();
 	}
 	
 	public void launchActivityByIntent(Intent intent){

@@ -95,8 +95,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 		}
 		
-//		mStrVCamID = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_ID);
-//		mStrVCamName = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_NAME);
 		mCamSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_camera_switch);
 		if(null != mCamSwitchBtn){
 			mCamSwitchBtn.setOnSwitchBtnStateChangedListener(this);

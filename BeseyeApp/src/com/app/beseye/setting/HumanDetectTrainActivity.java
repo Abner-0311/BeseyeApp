@@ -59,7 +59,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 	private boolean mbHaveNextPage = false, mbNeedToShowIntro = true;
 	
 	private ViewPager mVpIntro;
-	private IntroPageAdapter mIntroPageAdapter;
+	//private IntroPageAdapter mIntroPageAdapter;
 	private Button mbtnDone;
 	private ImageView mIvTrainRet;
 	
@@ -70,6 +70,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mbIgnoreCamVerCheck = true;
 		
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
