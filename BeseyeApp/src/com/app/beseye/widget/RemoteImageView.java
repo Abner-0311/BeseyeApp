@@ -83,7 +83,7 @@ public class RemoteImageView extends ImageView {
 	protected float mShadowWidth = SHADOW_WIDTH;
 		
 	public interface RemoteImageCallback {
-		public void imageLoaded(boolean success);
+		public void imageLoaded(boolean success, String StrUri);
 	}
 	
 	public RemoteImageView(Context context) {
@@ -426,16 +426,14 @@ public class RemoteImageView extends ImageView {
 	}
 
 	private void imageLoaded(final boolean success) {
-		post(new Runnable(){
-
+		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
 				mbIsLoaded = success;
 				if (mCallback != null) {
-					mCallback.imageLoaded(success);
+					mCallback.imageLoaded(success, mURI);
 				}
-			}});
-		
+			}}, 0);
 	}
 
 	class LoadImageRunnable implements Runnable {		
@@ -527,29 +525,32 @@ public class RemoteImageView extends ImageView {
 					String strCachePath = mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample;
 					cacheFileName = strCachePath.substring(strCachePath.lastIndexOf("/")+1);
 					
-					if(mbLoadLastImgByVCamId && null != mStrVCamId){
-						if(DEBUG)
-							Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
-						vcamidDir = getDirByVCamid(mStrVCamId);
-						String strLastPhoto = findLastPhotoByVCamid(mStrVCamId);
-						if(DEBUG)
-							Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");
-						Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(strLastPhoto);
-						if(null == cBmpFile && fileExist(strLastPhoto)){
-							bitmap = BitmapFactory.decodeFile(strLastPhoto);
-							if(null != bitmap){
-								setImage(bitmap, mStrVCamId);
-								
-								// write low quality image to memory cache
-								BeseyeMemCache.addBitmapToMemoryCache(strLastPhoto, bitmap);
-								
-								//bitmap = null;
-								
-								if(DEBUG)
-									Log.i(TAG, "use file cache first");
+					if(null != mStrVCamId){
+						if(mbLoadLastImgByVCamId){
+							if(DEBUG)
+								Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
+							
+							vcamidDir = getDirByVCamid(mStrVCamId);
+							String strLastPhoto = findLastPhotoByVCamid(mStrVCamId);
+							if(DEBUG)
+								Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");
+							Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(strLastPhoto);
+							if(null == cBmpFile && fileExist(strLastPhoto)){
+								bitmap = BitmapFactory.decodeFile(strLastPhoto);
+								if(null != bitmap){
+									setImage(bitmap, mStrVCamId);
+									
+									// write low quality image to memory cache
+									BeseyeMemCache.addBitmapToMemoryCache(strLastPhoto, bitmap);
+									
+									//bitmap = null;
+									
+									if(DEBUG)
+										Log.i(TAG, "use file cache first");
+								}
 							}
+							bSameFileForVCamid = (null != strLastPhoto)?strLastPhoto.endsWith(cacheFileName):false;
 						}
-						bSameFileForVCamid = (null != strLastPhoto)?strLastPhoto.endsWith(cacheFileName):false;
 					}
 					
 					if(mbIsPhotoViewMode && !fileExist(mLocalSampleHQ) && fileExist(mLocalSample)){
@@ -566,7 +567,6 @@ public class RemoteImageView extends ImageView {
 							}
 						}
 					}
-					
 					
 					if(!bSameFileForVCamid){
 						if(fileExist(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample)){
@@ -680,6 +680,8 @@ public class RemoteImageView extends ImageView {
 				}
 				
 				loaded = true;
+				//Log.w(TAG, "mLocal:"+mLocal+" loaded ok");
+
 			} finally {
 				imageLoaded(loaded);
 			}

@@ -45,8 +45,9 @@ import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshListView;
+import com.app.beseye.widget.RemoteImageView.RemoteImageCallback;
 
-public class HumanDetectTrainActivity extends BeseyeBaseActivity {
+public class HumanDetectTrainActivity extends BeseyeBaseActivity implements RemoteImageCallback{
 	final private static int NUM_OF_REFINE_IMG = 20;
 	private PullToRefreshListView mlvHumanDetectTrainPicList;
 	private HumanDetectTrainPicAdapter mHumanDetectTrainPicAdapter;
@@ -54,7 +55,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	private JSONArray mArrTrainPic, mArrTrainPicToSend;
-	private boolean mbHaveNextPage = false;
+	private boolean mbHaveNextPage = false, mbNeedToShowIntro = true;
 	
 	private ViewPager mVpIntro;
 	private IntroPageAdapter mIntroPageAdapter;
@@ -83,11 +84,6 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 			if(null != txtTitle){
 				txtTitle.setText(R.string.title_human_detect_train);
 			}
-//			
-//			ImageView mIvRight = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_right_btn);
-//			if(null != mIvRight){
-//				mIvRight.setVisibility(View.GONE);
-//			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 			//mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
@@ -104,16 +100,16 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 			Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 		}
 		
-		mArrTrainPic = new JSONArray();
-		for(int idx= 0 ;idx<20;idx++){
-			addTempObj();
-		}
+//		mArrTrainPic = new JSONArray();
+//		for(int idx= 0 ;idx<20;idx++){
+//			addTempObj();
+//		}
 
 		mlvHumanDetectTrainPicList = (PullToRefreshListView) findViewById(R.id.lv_train_pic_lst);
 		if(null != mlvHumanDetectTrainPicList){
 			mlvHumanDetectTrainPicList.setMode(LvExtendedMode.NONE);
 			
-			mHumanDetectTrainPicAdapter = new HumanDetectTrainPicAdapter(this, mArrTrainPic, R.layout.layout_human_detect_training_list_itm, this);
+			mHumanDetectTrainPicAdapter = new HumanDetectTrainPicAdapter(this, mArrTrainPic, R.layout.layout_human_detect_training_list_itm, this, this);
 			if(null != mHumanDetectTrainPicAdapter){
 				mHumanDetectTrainPicAdapter.setVCamid(mStrVCamID);
 				mlvHumanDetectTrainPicList.setAdapter(mHumanDetectTrainPicAdapter);
@@ -123,6 +119,9 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 		mVpIntro = (ViewPager)findViewById(R.id.intro_gallery);
 		if(null != mVpIntro){
 			mVpIntro.setAdapter(new IntroPageAdapter(this));
+			if(mbNeedToShowIntro){
+				BeseyeUtils.setVisibility(mVpIntro, View.VISIBLE);
+			}
 		}
 		
 		mbtnContinue = (Button)findViewById(R.id.button_confirm);
@@ -166,7 +165,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 	@Override
 	protected void onSessionComplete() {
 		super.onSessionComplete();
-		if(null == mVpIntro || View.VISIBLE != mVpIntro.getVisibility()){
+		if(!mbNeedToShowIntro){
 			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
 		}
 	}
@@ -182,27 +181,37 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 						Log.i(TAG, "onPostExecute(), "+result.toString());
 				
 					mArrTrainPic =  BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_HD_IMG);
-					
-					mbHaveNextPage = BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.MM_HD_IMG_PAGING);
-					if(null != mHumanDetectTrainPicAdapter){
-						mHumanDetectTrainPicAdapter.updateResultList(mArrTrainPic);
-						mHumanDetectTrainPicAdapter.notifyDataSetChanged();
-					}
-					
-					try {
-						mArrTrainPicToSend = new JSONArray(mArrTrainPic.toString());
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					if(null == mArrTrainPic || 0 == mArrTrainPic.length()){
+						onNoTrainPicAvailable(49);
+					}else{
+						mbHaveNextPage = BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.MM_HD_IMG_PAGING);
+						if(null != mHumanDetectTrainPicAdapter){
+							mHumanDetectTrainPicAdapter.updateResultList(mArrTrainPic);
+							mHumanDetectTrainPicAdapter.notifyDataSetChanged();
+						}
+						
+						try {
+							mArrTrainPicToSend = new JSONArray(mArrTrainPic.toString());
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}else if(task instanceof BeseyeIMPMMBEHttpTask.SetHumanDetectRefineLabelTask){
 				if(0 == iRetCode){
 					if(DEBUG)
-						Log.i(TAG, "onPostExecute(), "+result.toString());
+						Log.i(TAG, "onPostExecute(), "+result.toString()+", mbHaveNextPage:"+mbHaveNextPage);
 				
+					mArrTrainPic = null;
+					mArrTrainPicToSend = null;
+					if(null != mHumanDetectTrainPicAdapter){
+						mHumanDetectTrainPicAdapter.updateResultList(null);
+						mHumanDetectTrainPicAdapter.notifyDataSetChanged();
+					}
+					
 					if(mbHaveNextPage){
-						onTrainProcessFinished();
+						onTrainPicAvailable(33);
 					}else{
 						onNoTrainPicAvailable(49);
 					}
@@ -218,9 +227,44 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 			String strMsg) {
 		// GetLatestThumbnailTask don't need to have onErrorReport because it has default image
 		if(task instanceof BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask){
-			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true);
+			showErrorDialog(R.string.enhance_human_detect_train_fail_to_load_pic, true);
+		}else if(task instanceof BeseyeIMPMMBEHttpTask.SetHumanDetectRefineLabelTask){
+			showErrorDialog(R.string.enhance_human_detect_train_fail_to_label, false);
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
+		}
+	}
+	
+//	private Runnable mRefreshListRunnable = new Runnable(){
+//		@Override
+//		public void run() {
+//			if(null != mHumanDetectTrainPicAdapter){
+//				mHumanDetectTrainPicAdapter.notifyDataSetChanged();
+//			}
+//		}};
+	
+	@Override
+	public void imageLoaded(boolean success, String strPath) {
+		//Log.i(TAG, "imageLoaded(), strPath:"+strPath+", success:"+success);
+		if(success && null != strPath){
+			int iLenPic = (null != mArrTrainPic)?mArrTrainPic.length():0;
+			if(0 < iLenPic){
+				for(int idx = 0 ;idx < iLenPic;idx++){
+					JSONObject objCheck = mArrTrainPic.optJSONObject(idx);
+					if(strPath.endsWith(BeseyeJSONUtil.getJSONString(objCheck, BeseyeJSONUtil.MM_HD_IMG_PATH))){
+						BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED, true);
+						try {
+							mArrTrainPic.put(idx, objCheck);
+							if(null != mHumanDetectTrainPicAdapter){
+								mHumanDetectTrainPicAdapter.updateResultList(mArrTrainPic);
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						break;
+					}
+				}
+			}
 		}
 	}
 
@@ -236,9 +280,9 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 						JSONObject objCheck = mArrTrainPic.optJSONObject(idx);
 						if(strPath.equals(BeseyeJSONUtil.getJSONString(objCheck, BeseyeJSONUtil.MM_HD_IMG_PATH))){
 							boolean bImgLoaded = BeseyeJSONUtil.getJSONBoolean(info.mObjCam, BeseyeJSONUtil.MM_HD_IMG_LOADED, false);
-							if(false == bImgLoaded){
-								bImgLoaded = (null != info.mImgTrainPic)?info.mImgTrainPic.isLoaded():false;
-							}
+//							if(false == bImgLoaded){
+//								bImgLoaded = (null != info.mImgTrainPic)?info.mImgTrainPic.isLoaded():false;
+//							}
 							if(bImgLoaded){
 								BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED, true);
 								BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_DELETE, !BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_DELETE, false));
@@ -252,27 +296,16 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 									e.printStackTrace();
 								}
 							}
+							break;
 						}
 					}
 				}
 			}
-		}else if(R.id.button_confirm == view.getId()){
-			
-			
-//			BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
-//			int iMode = (int) (System.currentTimeMillis()%3);
-//			if(0 == iMode){
-//				onNoTrainPicAvailable(49);
-//			}else if(1 == iMode){
-//				onTrainPicAvailable(57);
-//			}else{
-//				onTrainProcessFinished();
-//			}
-			
+		}else if(R.id.button_confirm == view.getId()){			
 			sendLabelResult();
 		}else if(R.id.button_done == view.getId()){
 			BeseyeUtils.setVisibility(mVpIntro, View.GONE);
-			//monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
+			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
 		}else if(R.id.btn_continue == view.getId()){
 			BeseyeUtils.setVisibility(mVgResultPage, View.GONE);
 			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
@@ -312,23 +345,25 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 		}
 		
 		if(null != mTxtRetDesc){
-			mTxtRetDesc.setText(String.format(getString(R.string.recognition_percentage), iCompletePercent+"%")+getString(R.string.enhance_human_detect_no_pic_desc));
+			mTxtRetDesc.setText(/*String.format(getString(R.string.recognition_percentage), iCompletePercent+"%")+*/getString(R.string.enhance_human_detect_no_pic_desc));
 		}
 		
 		BeseyeUtils.setVisibility(mbtnContinue, View.GONE);
+		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 	}
 	
 	private void onTrainPicAvailable(int iCompletePercent){
+		
 		if(null != mIvTrainRet){
 			mIvTrainRet.setImageResource(R.drawable.h_detection_ya_image);
 		}
 		
 		if(null != mTxtRetDesc){
-			mTxtRetDesc.setText(String.format(getString(R.string.recognition_percentage), iCompletePercent+"%")+getString(R.string.enhance_human_detect_reward_desc));
+			mTxtRetDesc.setText(/*String.format(getString(R.string.recognition_percentage), iCompletePercent+"%")+*/getString(R.string.enhance_human_detect_reward_desc));
 		}
 		
 		BeseyeUtils.setVisibility(mbtnContinue, View.VISIBLE);
-
+		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 	}
 	
 	private void onTrainProcessFinished(){
@@ -338,7 +373,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 		
 		if(null != mTxtRetDesc){
 			String strDone = getString(R.string.recognition_percentage_done);
-			String strDesc = String.format(getString(R.string.recognition_percentage), getString(R.string.recognition_percentage_done))+getString(R.string.enhance_human_detect_train_done_desc);
+			String strDesc = /*String.format(getString(R.string.recognition_percentage), getString(R.string.recognition_percentage_done))+*/getString(R.string.enhance_human_detect_train_done_desc);
 			Spannable wordtoSpan = new SpannableString(strDesc);          
 
 		    int i = strDesc.indexOf(strDone);
@@ -349,6 +384,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 		}
 		
 		BeseyeUtils.setVisibility(mbtnContinue, View.GONE);
+		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 	}
 	
 	public class IntroPageAdapter extends PagerAdapter {
@@ -431,5 +467,5 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity {
 
 		@Override
 		public void startUpdate(View view) {}
-	}
+	}	
 }

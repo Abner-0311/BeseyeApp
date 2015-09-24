@@ -171,7 +171,7 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 								BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID),
 								new RemoteImageView.RemoteImageCallback(){
 									@Override
-									public void imageLoaded(boolean success) {
+									public void imageLoaded(boolean success, String StrUri) {
 										if(true == success){
 											drawMotionZoneRect();
 											BeseyeUtils.setVisibility(mPbLoadingCursor, View.GONE);

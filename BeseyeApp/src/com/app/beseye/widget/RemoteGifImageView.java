@@ -305,7 +305,7 @@ public class RemoteGifImageView extends RemoteImageView {
 			public void run() {
 				mbIsLoaded = success;
 				if (mCallback != null) {
-					mCallback.imageLoaded(success);
+					mCallback.imageLoaded(success, null);
 				}
 				RemoteGifImageView.this.removeCallbacks(mLoadNextBmpRunnable);
 				RemoteGifImageView.this.postDelayed(mLoadNextBmpRunnable, THUMBNAIL_PLAY_INTERVAL);

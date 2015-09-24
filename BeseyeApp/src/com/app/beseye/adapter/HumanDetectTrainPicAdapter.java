@@ -4,6 +4,7 @@ import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -26,14 +27,15 @@ import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.RemoteImageView;
 import com.app.beseye.widget.RemoteImageView.RemoteImageCallback;
 
-public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
+public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter{
 	static final public int NUM_OF_SUB_ITM = 4;
 	private int miThumbnailWidth;
 	private int miBlockWidth;
 	private int miMarginWidth;
 	private String mStrVCamId = null;
+	private RemoteImageCallback mRemoteImageCallback = null;
 	
-	public HumanDetectTrainPicAdapter(Context context, JSONArray list, int iLayoutId, OnClickListener itemOnClickListener) {
+	public HumanDetectTrainPicAdapter(Context context, JSONArray list, int iLayoutId, OnClickListener itemOnClickListener, RemoteImageCallback remoteImageCallback) {
 		super(context, list, iLayoutId, itemOnClickListener);
 		if(DEBUG){
 			Log.i(TAG, "context.getResources().getDimension(R.dimen.human_detect_pic_margin):"+context.getResources().getDimension(R.dimen.human_detect_pic_margin));
@@ -41,6 +43,7 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 		miMarginWidth = (int) context.getResources().getDimension(R.dimen.human_detect_pic_margin);
 		miBlockWidth = (int)  ((BeseyeUtils.getDeviceWidth((Activity)context)) - miMarginWidth) / NUM_OF_SUB_ITM;
 		miThumbnailWidth = (int) ((BeseyeUtils.getDeviceWidth((Activity)context) - miMarginWidth*(NUM_OF_SUB_ITM+1)))/NUM_OF_SUB_ITM; 
+		mRemoteImageCallback = remoteImageCallback;
 		
 		if(DEBUG)
 			Log.i(TAG, "miThumbnailWidth:"+miThumbnailWidth);
@@ -147,10 +150,13 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 	private void setupSubItm(HumanDetectTrainItmHolder holder, JSONObject obj){
 		if(null != holder){
 			if(null != holder.mVgHumanDetectTrainSubItm){
+				final String strPath = BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.MM_HD_IMG_PATH);
+
 				boolean bImgLoaded = BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_LOADED, false);
-				if(null != holder.mImgTrainPic){
-					final String strPath = BeseyeIMPMMBEHttpTask.getRefineImgPath(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.MM_HD_IMG_PATH));
-					holder.mImgTrainPic.setURI(strPath, R.drawable.h_detection_loading_image, mStrVCamId);
+				boolean bImgDeleted = null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false);
+
+				if(null != holder.mImgTrainPic && null != strPath && 0 < strPath.length()){
+					holder.mImgTrainPic.setURI(BeseyeIMPMMBEHttpTask.getRefineImgPath(strPath), R.drawable.h_detection_loading_image, mStrVCamId, mRemoteImageCallback);
 					holder.mImgTrainPic.disableLoadLastImgByVCamId();
 					holder.mImgTrainPic.disablebBmpTransitionEffect();
 					holder.mImgTrainPic.loadImage();
@@ -158,11 +164,12 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 				holder.mObjCam = obj;
 				holder.mVgHumanDetectTrainSubItm.setTag(holder);
 				
-				BeseyeUtils.setVisibility(holder.mImgPicBorder, (bImgLoaded && (null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false)))?View.INVISIBLE:View.VISIBLE);
-				BeseyeUtils.setVisibility(holder.mIvHumanDetectTrainSubItmMask, (bImgLoaded && null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false))?View.VISIBLE:View.INVISIBLE);
-				BeseyeUtils.setVisibility(holder.mTxtNoHuman, (bImgLoaded && null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false))?View.VISIBLE:View.INVISIBLE);
+				BeseyeUtils.setVisibility(holder.mImgPicBorder, 				(bImgLoaded && bImgDeleted)?View.INVISIBLE:View.VISIBLE);
+				BeseyeUtils.setVisibility(holder.mIvHumanDetectTrainSubItmMask, (bImgLoaded && bImgDeleted)?View.VISIBLE:View.INVISIBLE);
+				BeseyeUtils.setVisibility(holder.mTxtNoHuman, 					(bImgLoaded && bImgDeleted)?View.VISIBLE:View.INVISIBLE);				
+				BeseyeUtils.setVisibility(holder.mVgHumanDetectTrainSubItm, 	(null != obj)?View.VISIBLE:View.INVISIBLE);
 				
-				BeseyeUtils.setVisibility(holder.mVgHumanDetectTrainSubItm, (null != obj)?View.VISIBLE:View.INVISIBLE);
+				Log.i(TAG, "setupSubItm(), strPath:"+strPath+", bImgLoaded:"+bImgLoaded+", bImgDeleted:"+bImgDeleted);
 			}
 		}
 	}
@@ -182,8 +189,5 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter {
 	@Override
 	protected void setupItem(int iPosition, View convertView, ViewGroup parent,
 			JSONObject obj) {
-		// TODO Auto-generated method stub
-		
 	}
-
 }

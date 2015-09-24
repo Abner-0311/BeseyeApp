@@ -544,5 +544,9 @@
   <string name="enhance_human_detect_reward_desc">\n辨識率更加提高了！</string>
   <string name="enhance_human_detect_no_pic_desc">\nBeseye 將會在近期提供疑似人員影像讓您篩選。</string>
   <string name="enhance_human_detect_train_done_desc">\nBeseye 移動人員辨識系統針對此攝影機的最佳化流程已完成，您無須再次點擊影像。</string>
+  
+  <string name="enhance_human_detect_train_fail_to_load_pic">Fail to load the pictures. Please try again later.</string>
+  <string name="enhance_human_detect_train_fail_to_label">Fail to label the pictures. Please try again later.</string>
+  
 </resources>
 
