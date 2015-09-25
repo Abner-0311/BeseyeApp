@@ -57,11 +57,11 @@ public class BeseyeError {
 	static public final int   E_WEBSOCKET_AUDIO_CONN_FAILED                = 0x00500603;
 	
 	//# Cam related
-	
 	static public final int   E_CAM_INVALID_WIFI_PW_LENGTH			   	   = 0x00200013;
 	static public final int   E_CAM_INVALID_WIFI_SEC_TYPE 			       = 0x00200014;
 	static public final int   E_CAM_INVALID_WIFI_INFO 				       = 0x00200015;
 	
 	//# Push related
-	static public final int	  E_BE_PUSH_ALREADY_REGISTER				   = 0x00500002;	 
+	static public final int	  E_BE_PUSH_ALREADY_REGISTER				   = 0x00500002;	
+	static public final int	  E_BE_CAM_INFO_NOT_EXIST				   	   = 0x0050000f;	
 }

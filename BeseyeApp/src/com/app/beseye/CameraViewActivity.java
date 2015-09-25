@@ -54,6 +54,7 @@ import com.app.beseye.TouchSurfaceView.CameraStatusCallback;
 import com.app.beseye.TouchSurfaceView.OnBitmapScreenshotCallback;
 import com.app.beseye.TouchSurfaceView.OnTouchSurfaceCallback;
 import com.app.beseye.audio.AudioChannelMgr;
+import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
@@ -135,6 +136,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private boolean mbIsWifiSettingChanged = false;
 	private boolean mbIsSwitchPlayer = false;
 	private boolean mbManualPaused = false; 
+	private boolean mbWaitForFirstWSConnected = false; //for better UX in first ws connection
 	
 	//CameraView internal status
     enum CameraView_Internal_Status{
@@ -434,17 +436,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			Log.i(TAG, "CameraViewActivity::onCreate(), width:"+BeseyeUtils.getDeviceWidth(this));
 		super.onCreate(savedInstanceState);
 		
-//		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
 		WindowManager.LayoutParams attributes = getWindow().getAttributes();
 		attributes.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
 		getWindow().setAttributes(attributes);
-		
-//		getWindow().setFlags(
-//        	    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-//        	    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED); 
-		
 		getSupportActionBar().hide();
 		
 		updateAttrByIntent(getIntent(), false);
@@ -480,8 +474,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 		
 		mPbLoadingCursor = (ProgressBar)findViewById(R.id.pb_loadingCursor);
-		
-		
 		mCameraViewControlAnimator = new CameraViewControlAnimator(this, mVgHeader, mVgToolbar,(ViewGroup)findViewById(R.id.vg_hold_to_talk), getStatusBarHeight(this));
 		updateUIByMode();
 		
@@ -620,6 +612,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				
 				if(intent.getBooleanExtra(KEY_PAIRING_DONE, false) && false == intent.getBooleanExtra(KEY_PAIRING_DONE_HANDLED, false) ){
 					mlRetryConnectBeginTs = System.currentTimeMillis();
+					if(DEBUG){
+						Log.d(TAG, "set mbWaitForFirstWSConnected is true");
+					}
+					mbWaitForFirstWSConnected = true;
+					setCursorVisiblity(View.VISIBLE);
+					
 					mVgPairingDone = (ViewGroup)findViewById(R.id.vg_pairing_done);
 					if(null != mVgPairingDone){
 						BeseyeUtils.setVisibility(mVgPairingDone, View.VISIBLE);
@@ -1016,8 +1014,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			@Override
 			public void run() {
 				if(DEBUG)
-					Log.i(TAG, "CameraViewActivity::showInvalidStateMask()");
-				if(null != mVgCamInvalidState && isCamPowerDisconnected()){
+					Log.i(TAG, "CameraViewActivity::showInvalidStateMask(),"+mbWaitForFirstWSConnected);
+				if(mbWaitForFirstWSConnected){
+					setCursorVisiblity(View.VISIBLE);
+				}else if(null != mVgCamInvalidState && isCamPowerDisconnected()){
 					mVgCamInvalidState.setVisibility(View.VISIBLE);
 				}
 			}}, 0);
@@ -1310,6 +1310,22 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					boolean bIsCamStatusUnknown = BeseyeJSONUtil.isCamPowerUnknown(mCam_obj);
 					super.onPostExecute(task, result, iRetCode);
 					if(mbIsLiveMode){
+						if(mbWaitForFirstWSConnected){
+							if(isCamPowerOn()){
+								if(DEBUG)
+									Log.i(TAG, "onPostExecute(), set mbWaitForFirstWSConnected is false");
+								mbWaitForFirstWSConnected = false;
+							}else{
+								if(DEBUG)
+									Log.i(TAG, "CameraViewActivity::onPostExecute(), retry to avoid broken ws");
+								BeseyeUtils.postRunnable(new Runnable(){
+									@Override
+									public void run() {
+										monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(CameraViewActivity.this).setDialogId(-1), true, mStrVCamID);
+									}}, 5000L);
+							}	
+						}
+						
 						if(bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED)){
 							closeStreaming();
 //							if(BeseyeFeatureConfig.ADV_TWO_WAY_tALK){
@@ -1347,6 +1363,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							removeMyDialog(DIALOG_ID_WARNING);
 						}
 					}
+				}else if(BeseyeError.E_BE_CAM_INFO_NOT_EXIST == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "CameraViewActivity::onPostExecute(), E_BE_CAM_INFO_NOT_EXIST, retry");
+					BeseyeUtils.postRunnable(new Runnable(){
+						@Override
+						public void run() {
+							monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(CameraViewActivity.this).setDialogId(-1), true, mStrVCamID);
+						}}, 1000L);
+					setCursorVisiblity(View.VISIBLE);
 				}
 			}else{
 				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());	
@@ -1379,7 +1404,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}
 				
 				if(null != mVgPairingDone){
-					setCursorVisiblity(isCamPowerOn()?View.VISIBLE:View.GONE);
+					setCursorVisiblity(mbWaitForFirstWSConnected || isCamPowerOn()?View.VISIBLE:View.GONE);
 				}
 			}}, lDelay);
 	}
@@ -3224,6 +3249,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		if(null != strVcamId && strVcamId.equals(mStrVCamID)){
 			if(mbIsLiveMode){
+				if(mbWaitForFirstWSConnected && isCamPowerOn()){
+					if(DEBUG)
+						Log.i(TAG, "onCamSetupChanged(), set mbWaitForFirstWSConnected is false");
+					mbWaitForFirstWSConnected = false;
+				}
+				
 				if(bIsCamOn && !isCamPowerOn() && isBetweenCamViewStatus(CameraView_Internal_Status.CV_STREAM_CONNECTING, CameraView_Internal_Status.CV_STREAM_PAUSED))
 					closeStreaming();
 				

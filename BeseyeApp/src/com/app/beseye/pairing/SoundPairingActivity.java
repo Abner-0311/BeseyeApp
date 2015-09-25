@@ -191,10 +191,6 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		}
 		
 		if(false == sbFinishToPlay){
-			if(null != mPairingCounter){
-				mPairingCounter.cancel();
-				mPairingCounter = null;
-			}
 			//siPairingFailedTimes++;
 			onPairingFailed(null, null);
 		}
@@ -471,6 +467,12 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 		WifiControlBaseActivity.updateWiFiPasswordHistory("");
 		siPairingFailedTimes = 0;
 		SessionMgr.getInstance().setPairToken("");
+		
+		if(null != mPairingCounter){
+			mPairingCounter.cancel();
+			mPairingCounter = null;
+		}
+		
 		mbGetPairingresult = true;
 	}
 	
@@ -582,7 +584,9 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 						BeseyeUtils.postRunnable(new Runnable(){
 							@Override
 							public void run() {
-								launchGetPairingStatusHttpTask(false);
+								if(mActivityResume){
+									launchGetPairingStatusHttpTask(false);
+								}
 							}}, 3000L);
 					}else{
 						// if pairing failed
@@ -699,6 +703,11 @@ public class SoundPairingActivity extends BeseyeBaseActivity {
 			}
 			
 			launchActivityByClassName(PairingFailAttachAlreadyActivity.class.getName(), bundle);
+		}
+		
+		if(null != mPairingCounter){
+			mPairingCounter.cancel();
+			mPairingCounter = null;
 		}
 		
 		mbGetPairingresult = true;

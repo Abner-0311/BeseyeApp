@@ -620,6 +620,21 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this, iSeed).setDialogId(-1), true, strCamUID);
 					}
 					//monitorAsyncTask(new BeseyeMMBEHttpTask.GetLiveStreamTask(CameraListActivity.this, iSeed).setDialogId(-1), true, BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID), "false");
+				}else if(miCurUpdateIdx == iCount){
+					for(int idx = 0; idx  < iCount; idx++){
+						final JSONObject camObj = arrCamList.getJSONObject(idx);
+						if(null != camObj){
+							JSONObject dataObj = BeseyeJSONUtil.getJSONObject(camObj, BeseyeJSONUtil.ACC_DATA);
+							if(null == dataObj){
+								String strCamUID = BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID);
+								Log.e(TAG, "updateCamItm(), find null data for strCamUID="+strCamUID);
+								if(null != strCamUID){
+									monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this, iSeed).setDialogId(-1), true, strCamUID);
+								}
+								break;
+							}
+						}
+					}
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
