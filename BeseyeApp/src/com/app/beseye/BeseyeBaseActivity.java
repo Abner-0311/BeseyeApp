@@ -1160,6 +1160,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			if(task instanceof BeseyeAccountTask.CheckAccountTask){
 				if(0 == iRetCode){
 					slLastTimeToCheckSession = System.currentTimeMillis();
+					if(false == SessionMgr.getInstance().getIsTrustDev()){
+						SessionMgr.getInstance().setIsTrustDev(true);
+					}
 					invokeSessionComplete();
 				}/*else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
 					Toast.makeText(this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();

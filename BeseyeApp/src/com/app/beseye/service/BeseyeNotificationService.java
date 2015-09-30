@@ -1253,7 +1253,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 			}else if(task instanceof BeseyePushServiceTask.AddRegisterIDTask){
 				if(0 == iRetCode || 2 == iRetCode && null != result && 0 < result.size()){
-					if(DEBUG)
+					//if(DEBUG)
 						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), AddRegisterIDTask OK");
 					mbRegisterPushServer = true;
 				}else if(BeseyeError.E_BE_PUSH_ALREADY_REGISTER == iRetCode){
@@ -1262,7 +1262,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 			}else if(task instanceof BeseyePushServiceTask.AddBaiduIDTask){
 				if(0 == iRetCode || 2 == iRetCode && null != result && 0 < result.size()){
-					if(DEBUG)
+					//if(DEBUG)
 						Log.i(TAG, "BeseyeNotificationService::onPostExecute(), AddBaiduIDTask OK");
 					mbRegisterPushServer = true;
 				}else if(BeseyeError.E_BE_PUSH_ALREADY_REGISTER == iRetCode){

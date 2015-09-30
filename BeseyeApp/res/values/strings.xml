@@ -479,12 +479,12 @@
   <!--message dialog to user-->
   <string name="cam_setting_schedule_abort_confirm">Are you sure you want to exit without saving this schedule?</string>
   <!--message dialog to user-->
-  <string name="cam_setting_schedule_conflict_be_on">Please be aware that your camera will be turned on due to latest schedule setting</string>
+  <string name="cam_setting_schedule_conflict_be_on">Your camera is scheduled to turn on automatically.</string>
   <!--message dialog to user-->
-  <string name="cam_setting_schedule_conflict_be_off">Please be aware that your camera will be turned off due to latest schedule setting</string>
+  <string name="cam_setting_schedule_conflict_be_off">Your camera is scheduled to turn off automatically.</string>
   <!--Entry title for trust device management-->
   <string name="cam_menu_trust_dev_mgt">Authorized devices</string>
-  <!--Button for removing multiple devices from white list-->
+  <!--Button for removing multiple devices from white list , (%s) will be replaced by deleted device number-->
   <string name="btn_delete_trust_dev_mgt">Delete(%s)</string>
   <!--Dialog to remind multiple devices will be removed from white list-->
   <string name="dialog_delete_trust_dev">Do you want to remove %s from authorized list?</string>
@@ -493,7 +493,7 @@
   <!--Button to verify pin code-->
   <string name="pincode_done">Done</string>
   <!--Description in pin code verification page-->
-  <string name="pincode_verify_desc">To protect your account, please get your authorization code from another authorized mobile device or by Email box. Each device only needs to be authorized once.</string>
+  <string name="pincode_verify_desc">To login from a new device, please use your authorization code from a pre-authorized mobile device or from your email. Each device only needs authorizing once.</string>
   <!--Button to resend pin code-->
   <string name="pincode_verify_resend">Resend authorization code</string>
   <!--Toast message for sending new pin code successfully-->
@@ -505,15 +505,15 @@
   <!--Error message for incorrect pin code-->
   <string name="msg_pincode_verify_fail">Incorrect authorization code. Please enter again.</string>
   <!--Error message for expired pin code-->
-  <string name="msg_pincode_verify_expired">Your latest authorization code was expired. Please resend and enter again.</string>
+  <string name="msg_pincode_verify_expired">Your authorization code has expired. Please resend authorization code</string>
   <!--Error message for incorrect pin code trials over 3 times-->
-  <string name="msg_pincode_verify_fail_three_times">You input incorrect authorization code for three times. Please log in again.</string>
+  <string name="msg_pincode_verify_fail_three_times">You input the incorrect authorization code three times. Please login again.</string>
   <!--Error message for failing to verify pin code due to unknown reasons-->
   <string name="msg_delete_trust_dev_fail">Fail to remove authorized device. Please try again later.</string>
   <!--Pin code request message shown on Android Notification -->
   <string name="notification_pincode_auth">Authorization code %1$s requested from %2$s</string>
   <!--Pin code request dialog message shown in Beseye App-->
-  <string name="dialog_notification_pincode_auth">Authorization code is %1$s. Someone try to log into your account by %2$s. It can logs into your account by inputting authorization code.</string>
+  <string name="dialog_notification_pincode_auth">Authorization code is %1$s. Someone try to log into your account by %2$s. It can log into your account by inputting authorization code.</string>
   
   <string name="title_cam_attached_already">Already attached camera</string>
   <string name="btn_detach_cam_now">Remove camera now</string>

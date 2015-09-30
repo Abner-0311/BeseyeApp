@@ -396,22 +396,22 @@
   <string name="tz_euro_austria">奧地利</string>
   <string name="tz_euro_italy">義大利</string>
   <string name="cam_name_update_success">成功更新攝影機名稱</string>
-  <string name="signup_plug_in_description">首先，請幫攝影機插上電源插頭。</string>
+  <string name="signup_plug_in_description">首先，請幫攝影機插上電源插頭．</string>
   <string name="signup_plug_in_title">連接攝影機電源</string>
   <string name="signup_plug_in_done">插上電源了，開始設定吧</string>
   <string name="signup_watch_out_title">注意</string>
-  <string name="signup_watch_out_desc">注意注意，您的手機即將%1$s!\n請將您的%2$s對準鏡頭。\n再按下一步。</string>
+  <string name="signup_watch_out_desc">注意注意，您的手機即將%1$s!\n請將您的%2$s對準鏡頭．\n再按下一步。</string>
   <string name="signup_watch_out_desc_bebebe">「發出嗶嗶聲」</string>
   <string name="signup_watch_out_desc_speaker">「手機喇叭」</string>
   <string name="signup_watch_out_done">手機就位，下一步</string>
   <string name="signup_confirm_led_title">確認指示燈號</string>
-  <string name="signup_confirm_led_desc">鏡頭指示燈是否顯示為%s呢?\n如果尚未閃爍綠燈，表示攝影機暖機中。\n請靜候數分鐘!</string>
+  <string name="signup_confirm_led_desc">鏡頭指示燈是否顯示為%s呢?\n如果尚未閃爍綠燈，表示攝影機暖機中．\n請靜候數分鐘!</string>
   <string name="signup_confirm_led_twinkling_green_light">「閃爍綠燈」</string>
   <string name="signup_confirm_led_done">已閃綠燈，下一步</string>
   <string name="signup_pairing_fail_desc">請你拔掉插頭重新插上，確認鏡頭燈號為「閃爍綠燈」，且手機喇叭距離鏡頭10公分，再開始Let it Bee™。</string>
   <string name="signup_guideline_try_again_btn">OK，再設定一次看看</string>
   <!--Toast message for poor quality when talking-->
-  <string name="hint_hold_to_talk_poor_network_quality">網路連線不穩定，\n請再次嘗試通話。</string>
+  <string name="hint_hold_to_talk_poor_network_quality">網路連線不穩定，\n請再次嘗試通話．</string>
   <string name="msg_wifi_pw_length_error_wpa">無效的Wi-Fi 密碼長度。密碼必須是8 到 64個字母。</string>
   <string name="msg_wifi_pw_length_error_wep">無效的Wi-Fi密碼長度。密碼必須是5或13個字母。</string>
   <string name="msg_wifi_setting_info_error">無效的Wi-Fi設定。</string>
@@ -424,7 +424,7 @@
   <!--Toast message for fail to pic capture-->
   <string name="player_screenshot_capture_failed">無法儲存攝影機影像，請稍候再試。</string>
   <!--Toast message for mic occupied-->
-  <string name="hint_hold_to_talk_conn_occupied">麥克風使用中，請稍後再試。</string>
+  <string name="hint_hold_to_talk_conn_occupied">麥克風使用中，請稍後再試．</string>
   <!--Share button on screenshot dialog-->
   <string name="share">分享</string>
   <!--Close button on screenshot dialog-->
@@ -484,7 +484,7 @@
   <string name="cam_setting_schedule_conflict_be_off">依照目前的排程設定，您的攝影機會立刻關閉</string>
   <!--Entry title for trust device management-->
   <string name="cam_menu_trust_dev_mgt">已授權裝置</string>
-  <!--Button for removing multiple devices from white list-->
+  <!--Button for removing multiple devices from white list , (%s) will be replaced by deleted device number-->
   <string name="btn_delete_trust_dev_mgt">刪除(%s)</string>
   <!--Dialog to remind multiple devices will be removed from white list-->
   <string name="dialog_delete_trust_dev">刪除 %s 後將無法登入您的帳號，直到再次授權，您確定嗎？</string>

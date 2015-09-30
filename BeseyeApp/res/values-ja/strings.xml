@@ -484,7 +484,7 @@
   <!-- TODO: string name="cam_setting_schedule_conflict_be_off" -->
   <!--Entry title for trust device management-->
   <!-- TODO: string name="cam_menu_trust_dev_mgt" -->
-  <!--Button for removing multiple devices from white list-->
+  <!--Button for removing multiple devices from white list , (%s) will be replaced by deleted device number-->
   <!-- TODO: string name="btn_delete_trust_dev_mgt" -->
   <!--Dialog to remind multiple devices will be removed from white list-->
   <!-- TODO: string name="dialog_delete_trust_dev" -->

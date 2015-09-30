@@ -3240,7 +3240,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	@Override
 	public void onCamSetupChanged(String strVcamId, long lTs, JSONObject objCamSetup){
-		Log.i(TAG, "onCamSetupChanged(), before mCam_obj:"+mCam_obj);
+		if(DEBUG)
+			Log.d(TAG, "onCamSetupChanged(), before mCam_obj:"+mCam_obj);
 
 		boolean bIsCamOn = isCamPowerOn();
 		boolean bIsCamDisconnected = isCamPowerDisconnected();
