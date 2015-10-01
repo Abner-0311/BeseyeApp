@@ -174,23 +174,30 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		//}
 	}
 	
+	private RemoteImageCallback mRemoteImageCallbackForPreload = new RemoteImageCallback(){
+		@Override
+		public void imageLoaded(boolean success, String StrUri) {
+			updateImgLoadState(success, StrUri, true);
+		}};
+	
 	private RemoteImageView mImgPreload[] = null;
 	private void preloadImages(final int iCntToPreload){
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
 				if(null != mArrTrainPic){
-					int iCount = mArrTrainPic.length();
-					int iRealCntToPreload = iCount - (NUM_OF_REFINE_IMG - iCntToPreload);
+//					int iCount = mArrTrainPic.length();
+//					int iRealCntToPreload = iCount - (NUM_OF_REFINE_IMG - iCntToPreload);
+					int iRealCntToPreload = mArrTrainPic.length();
 					if(0 < iRealCntToPreload){
 						mImgPreload = new RemoteImageView[iRealCntToPreload];
 						for(int idx = 0; idx < iRealCntToPreload;idx++){
 							mImgPreload[idx] = new RemoteImageView(HumanDetectTrainActivity.this);
-							final String strPath = BeseyeJSONUtil.getJSONString(mArrTrainPic.optJSONObject(iCount - 1 - idx), BeseyeJSONUtil.MM_HD_IMG_PATH);
+							final String strPath = BeseyeJSONUtil.getJSONString(mArrTrainPic.optJSONObject(/*iCount - 1 - */idx), BeseyeJSONUtil.MM_HD_IMG_PATH);
 							Log.i(TAG, "preloadImages(), strPath:"+strPath.toString());
 
 							if(null != mImgPreload[idx] && null != strPath && 0 < strPath.length()){
-								mImgPreload[idx].setURI(BeseyeIMPMMBEHttpTask.getRefineImgPath(strPath), R.drawable.h_detection_loading_image, mStrVCamID, HumanDetectTrainActivity.this);
+								mImgPreload[idx].setURI(BeseyeIMPMMBEHttpTask.getRefineImgPath(strPath), R.drawable.h_detection_loading_image, mStrVCamID, mRemoteImageCallbackForPreload);
 								mImgPreload[idx].disableLoadLastImgByVCamId();
 								mImgPreload[idx].disablebBmpTransitionEffect();
 								mImgPreload[idx].loadImage();
@@ -248,7 +255,9 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 				int iCount = mArrTrainPic.length();
 				for(int idx = 0; idx < iCount;idx++){
 					JSONObject objChk = mArrTrainPic.optJSONObject(idx);
-					if(!BeseyeJSONUtil.getJSONBoolean(objChk, BeseyeJSONUtil.MM_HD_IMG_LOADED) && !BeseyeJSONUtil.getJSONBoolean(objChk, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED)){
+					if(!BeseyeJSONUtil.getJSONBoolean(objChk, BeseyeJSONUtil.MM_HD_IMG_LOADED) && 
+					   !BeseyeJSONUtil.getJSONBoolean(objChk, BeseyeJSONUtil.MM_HD_IMG_PRELOAD_LOADED) && 
+					   !BeseyeJSONUtil.getJSONBoolean(objChk, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED)){
 						bDisabledBtn = true;
 						break;
 					}
@@ -282,7 +291,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 							mHumanDetectTrainPicAdapter.updateResultList(mArrTrainPic);
 							mHumanDetectTrainPicAdapter.notifyDataSetChanged();
 						}
-						preloadImages(8);
+						preloadImages(mArrTrainPic.length());
 						
 						try {
 							mArrTrainPicToSend = new JSONArray(mArrTrainPic.toString());
@@ -291,6 +300,8 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 							e.printStackTrace();
 						}
 					}
+				}else{
+					onNoTrainPicAvailable(49);
 				}
 			}else if(task instanceof BeseyeIMPMMBEHttpTask.SetHumanDetectRefineLabelTask){
 				if(0 == iRetCode){
@@ -304,11 +315,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 						mHumanDetectTrainPicAdapter.notifyDataSetChanged();
 					}
 					
-					if(mbHaveNextPage){
-						onTrainPicAvailable(33);
-					}else{
-						onNoTrainPicAvailable(49);
-					}
+					onTrainRetAndPicAvailable(33, mbHaveNextPage);
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);
@@ -321,7 +328,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			String strMsg) {
 		// GetLatestThumbnailTask don't need to have onErrorReport because it has default image
 		if(task instanceof BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask){
-			showErrorDialog(R.string.enhance_human_detect_train_fail_to_load_pic, true);
+			//showErrorDialog(R.string.enhance_human_detect_train_fail_to_load_pic, true);
 		}else if(task instanceof BeseyeIMPMMBEHttpTask.SetHumanDetectRefineLabelTask){
 			showErrorDialog(R.string.enhance_human_detect_train_fail_to_label, false);
 		}else{
@@ -339,21 +346,32 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 	
 	@Override
 	public void imageLoaded(boolean success, String strPath) {
-		//Log.i(TAG, "imageLoaded(), strPath:"+strPath+", success:"+success);
+		updateImgLoadState(success, strPath, false);
+	}
+	
+	private void updateImgLoadState(boolean success, String strPath, boolean bIsPreload){
+		if(DEBUG)
+			Log.i(TAG, "updateImgLoadState(), strPath:"+strPath+", success:"+success+", bIsPreload:"+bIsPreload);
 		if(null != strPath){
 			int iLenPic = (null != mArrTrainPic)?mArrTrainPic.length():0;
 			if(0 < iLenPic){
 				for(int idx = 0 ;idx < iLenPic;idx++){
 					JSONObject objCheck = mArrTrainPic.optJSONObject(idx);
 					if(strPath.endsWith(BeseyeJSONUtil.getJSONString(objCheck, BeseyeJSONUtil.MM_HD_IMG_PATH))){
-						BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED, success);
+						boolean bHavePreLoaded = BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_PRELOAD_LOADED);
+						if(bIsPreload){
+							BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_PRELOAD_LOADED, success);
+						}else{
+							BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED, success);
+						}
+							
 						boolean bHaveFailed = BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED);
 						BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED, !success);
 						try {
 							mArrTrainPic.put(idx, objCheck);
 							if(null != mHumanDetectTrainPicAdapter){
 								mHumanDetectTrainPicAdapter.updateResultList(mArrTrainPic);
-								if(bHaveFailed == success){
+								if((bHaveFailed == success || bHavePreLoaded != success)){
 									mHumanDetectTrainPicAdapter.notifyDataSetChanged();
 								}
 							}
@@ -447,10 +465,10 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		}
 		
 		BeseyeUtils.setVisibility(mbtnContinue, View.GONE);
-		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
+		BeseyeUtils.setVisibility(mVgResultPage, View.GONE);
 	}
 	
-	private void onTrainPicAvailable(int iCompletePercent){
+	private void onTrainRetAndPicAvailable(int iCompletePercent, boolean bHaveMorrePic){
 		
 		if(null != mIvTrainRet){
 			mIvTrainRet.setImageResource(R.drawable.h_detection_ya_image);
@@ -460,7 +478,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			mTxtRetDesc.setText(/*String.format(getString(R.string.recognition_percentage), iCompletePercent+"%")+*/getString(R.string.enhance_human_detect_reward_desc));
 		}
 		
-		BeseyeUtils.setVisibility(mbtnContinue, View.VISIBLE);
+		BeseyeUtils.setVisibility(mbtnContinue, bHaveMorrePic?View.VISIBLE:View.INVISIBLE);
 		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 	}
 	
@@ -482,6 +500,6 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		}
 		
 		BeseyeUtils.setVisibility(mbtnContinue, View.GONE);
-		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
+		BeseyeUtils.setVisibility(mVgResultPage, View.GONE);
 	}
 }

@@ -30,7 +30,7 @@ import com.app.beseye.widget.RemoteImageView.RemoteImageCallback;
 public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter{
 	static final public int NUM_OF_SUB_ITM = 4;
 	private int miThumbnailWidth;
-	private int miBlockWidth;
+	//private int miBlockWidth;
 	private int miMarginWidth;
 	private String mStrVCamId = null;
 	private RemoteImageCallback mRemoteImageCallback = null;
@@ -41,7 +41,7 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter{
 			Log.i(TAG, "context.getResources().getDimension(R.dimen.human_detect_pic_margin):"+context.getResources().getDimension(R.dimen.human_detect_pic_margin));
 		}
 		miMarginWidth = (int) context.getResources().getDimension(R.dimen.human_detect_pic_margin);
-		miBlockWidth = (int)  ((BeseyeUtils.getDeviceWidth((Activity)context)) - miMarginWidth) / NUM_OF_SUB_ITM;
+		//miBlockWidth = (int)  ((BeseyeUtils.getDeviceWidth((Activity)context)) - miMarginWidth) / NUM_OF_SUB_ITM;
 		miThumbnailWidth = (int) ((BeseyeUtils.getDeviceWidth((Activity)context) - miMarginWidth*(NUM_OF_SUB_ITM+1)))/NUM_OF_SUB_ITM; 
 		mRemoteImageCallback = remoteImageCallback;
 		
@@ -151,25 +151,31 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter{
 		if(null != holder){
 			if(null != holder.mVgHumanDetectTrainSubItm){
 				final String strPath = BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.MM_HD_IMG_PATH);
-
+				boolean bImgPreLoaded = BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_PRELOAD_LOADED, false);
 				boolean bImgLoaded = BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_LOADED, false);
 				boolean bImgDeleted = null != obj && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_DELETE, false);
 				boolean bImgFailed = BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED, false);
 				if(null != holder.mImgTrainPic && null != strPath && 0 < strPath.length()){
-					holder.mImgTrainPic.setURI(BeseyeIMPMMBEHttpTask.getRefineImgPath(strPath), bImgFailed?R.drawable.h_detection_fail_loading_image:R.drawable.h_detection_loading_image, mStrVCamId, mRemoteImageCallback);
-					holder.mImgTrainPic.disableLoadLastImgByVCamId();
-					holder.mImgTrainPic.disablebBmpTransitionEffect();
-					holder.mImgTrainPic.loadImage();
+					if(bImgFailed){
+						holder.mImgTrainPic.cancelRemoteImageLoad();
+						holder.mImgTrainPic.setImageResource(R.drawable.h_detection_fail_loading_image);
+					}else if(bImgPreLoaded){
+						holder.mImgTrainPic.setURI(BeseyeIMPMMBEHttpTask.getRefineImgPath(strPath), R.drawable.h_detection_loading_image, mStrVCamId, mRemoteImageCallback);
+						holder.mImgTrainPic.disableLoadLastImgByVCamId();
+						holder.mImgTrainPic.disablebBmpTransitionEffect();
+						holder.mImgTrainPic.loadImage();
+					}					
 				}
 				holder.mObjCam = obj;
 				holder.mVgHumanDetectTrainSubItm.setTag(holder);
 				
-				BeseyeUtils.setVisibility(holder.mImgPicBorder, 				(bImgLoaded && bImgDeleted)?View.INVISIBLE:View.VISIBLE);
+				BeseyeUtils.setVisibility(holder.mImgPicBorder, 				((bImgPreLoaded || bImgLoaded) && !bImgDeleted)?View.VISIBLE:View.INVISIBLE);
 				BeseyeUtils.setVisibility(holder.mIvHumanDetectTrainSubItmMask, (bImgLoaded && bImgDeleted)?View.VISIBLE:View.INVISIBLE);
 				BeseyeUtils.setVisibility(holder.mTxtNoHuman, 					(bImgLoaded && bImgDeleted)?View.VISIBLE:View.INVISIBLE);				
 				BeseyeUtils.setVisibility(holder.mVgHumanDetectTrainSubItm, 	(null != obj)?View.VISIBLE:View.INVISIBLE);
 				
-				Log.i(TAG, "setupSubItm(), strPath:"+strPath+", bImgLoaded:"+bImgLoaded+", bImgDeleted:"+bImgDeleted+", bImgFailed:"+bImgFailed);
+				if(BeseyeConfig.DEBUG)
+					Log.i(TAG, "setupSubItm(), strPath:"+strPath+", ("+bImgPreLoaded+","+bImgLoaded+","+bImgDeleted+",:"+bImgFailed+")");
 			}
 		}
 	}

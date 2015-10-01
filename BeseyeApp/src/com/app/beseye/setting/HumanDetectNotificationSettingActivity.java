@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -30,6 +31,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -64,7 +68,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 	private BeseyeSwitchBtn mNotifyMeSwitchBtn;
 	//private boolean mbModified = false;
 	private ViewPager mVpIntro;
-	private Button mbtnDone;
+	private Button mbtnNextStep;
 	private boolean mbNeedToShowIntro = true;
 	
 	@Override
@@ -125,6 +129,70 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 		mVpIntro = (ViewPager)findViewById(R.id.intro_gallery);
 		if(null != mVpIntro){
 			mVpIntro.setAdapter(new IntroPageAdapter(this));
+			mVpIntro.setOnPageChangeListener(new OnPageChangeListener(){
+				int iCurPage = 0;
+				AlphaAnimation aniFadeIn = new AlphaAnimation(0.0f, 1.0f);
+				AlphaAnimation aniFadeOut = new AlphaAnimation(1.0f, 0.0f);
+				@Override
+				public void onPageScrollStateChanged(int arg0) {
+
+				}
+
+				@Override
+				public void onPageScrolled(int arg0, float arg1, int arg2) {
+					
+				}
+
+				@Override
+				public void onPageSelected(int position) {
+					Log.d(TAG, "onPageSelected(), iCurPage:"+iCurPage+", position="+position);	
+
+					if(iCurPage != position){
+						if(1 == iCurPage && 2 == position){
+							aniFadeOut.cancel();
+							aniFadeIn.setDuration(1000);
+							aniFadeIn.setAnimationListener(new AnimationListener(){
+								@Override
+								public void onAnimationStart(Animation animation) {
+									BeseyeUtils.setVisibility(mbtnNextStep, View.INVISIBLE);
+								}
+
+								@Override
+								public void onAnimationEnd(Animation animation) {
+									BeseyeUtils.setVisibility(mbtnNextStep, View.VISIBLE);
+								}
+
+								@Override
+								public void onAnimationRepeat(
+										Animation animation) {
+									
+								}});
+							
+							mbtnNextStep.startAnimation(aniFadeIn);
+						}else if(2 == iCurPage && 1 == position){
+							aniFadeIn.cancel();
+							aniFadeOut.setDuration(10);
+							aniFadeOut.setAnimationListener(new AnimationListener(){
+								@Override
+								public void onAnimationStart(Animation animation) {
+									BeseyeUtils.setVisibility(mbtnNextStep, View.VISIBLE);
+								}
+
+								@Override
+								public void onAnimationEnd(Animation animation) {
+									BeseyeUtils.setVisibility(mbtnNextStep, View.INVISIBLE);
+								}
+
+								@Override
+								public void onAnimationRepeat(
+										Animation animation) {
+									
+								}});
+							mbtnNextStep.startAnimation(aniFadeOut);
+						}
+						iCurPage = position;
+					}
+				}});
 			if(mbNeedToShowIntro){
 				BeseyeUtils.setVisibility(mVpIntro, View.VISIBLE);
 			}
@@ -343,9 +411,10 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 			ViewGroup vGroup = (ViewGroup) mInflater.inflate(iLayoutId, null);
 			if(null != vGroup){
 				if(2 == position){
-					mbtnDone = (Button)vGroup.findViewById(R.id.button_done);
-					if(null != mbtnDone){
-						mbtnDone.setOnClickListener(HumanDetectNotificationSettingActivity.this);
+					mbtnNextStep = (Button)vGroup.findViewById(R.id.button_done);
+					if(null != mbtnNextStep){
+						mbtnNextStep.setOnClickListener(HumanDetectNotificationSettingActivity.this);
+						mbtnNextStep.setVisibility(View.INVISIBLE);
 					}
 					
 					TextView tvDesc = (TextView)vGroup.findViewById(R.id.tv_enhance_human_detect_intro_p3_desc1);

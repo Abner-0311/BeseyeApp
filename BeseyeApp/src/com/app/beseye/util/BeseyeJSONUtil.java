@@ -305,6 +305,7 @@ public class BeseyeJSONUtil {
 	public static final String MM_HD_IMG_PAGING 		= "pagingFlag";
 	public static final String MM_HD_IMG_DELETE 		= "imgToDel";
 	public static final String MM_HD_IMG_LOADED 		= "imgLoaded";
+	public static final String MM_HD_IMG_PRELOAD_LOADED = "preloadImgLoaded";
 	public static final String MM_HD_IMG_LOAD_FAILED 	= "imgLoadFailed";
 	
 	

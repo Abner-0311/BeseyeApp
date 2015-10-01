@@ -417,16 +417,20 @@ public class RemoteImageView extends ImageView {
 //	}
 
 	public void loadRemoteImage() {
-		if (null != mFuture) {
-			mFuture.cancel(true);
-			mFuture = null;
-		}
+		cancelRemoteImageLoad();
 		
 		if(null != mURI && 0 < mURI.length()){
 			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath, mURI, mIsPreload, mbIsPhoto, mbIsPhotoViewMode, mStrVCamId, mbLoadLastImgByVCamId));
 		}
 	}
 
+	public void cancelRemoteImageLoad(){
+		if (null != mFuture) {
+			mFuture.cancel(true);
+			mFuture = null;
+		}
+	}
+	
 	private void imageLoaded(final boolean success) {
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
@@ -702,7 +706,7 @@ public class RemoteImageView extends ImageView {
 		long lStartTs = System.currentTimeMillis();
 		try {
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-			HttpGet getRequest = new HttpGet(convertURL(uri));
+			HttpGet getRequest = new HttpGet(convertURL(uri/*+(((uri.hashCode()%2)==1)?"":"a")*/));
 			try{
 				if(null != getRequest){
 					getRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
@@ -716,7 +720,6 @@ public class RemoteImageView extends ImageView {
 					if(null != strVcamId){
 						getRequest.addHeader("Bes-VcamPermission-VcamUid", strVcamId);
 						//Log.w(TAG, "begin to download, uri:" + uri);
-						
 				      	HttpResponse response = client.execute(getRequest);
 						//Log.w(TAG, "end to download, uri:" + uri);
 				      	final int statusCode = response.getStatusLine().getStatusCode();

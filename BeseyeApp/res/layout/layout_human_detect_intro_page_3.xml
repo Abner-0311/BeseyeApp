@@ -24,35 +24,6 @@
 	    android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_weight="71">
-	    <ImageView
-	        android:id="@+id/iv_before_setup_top_img"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-		    android:layout_alignParentTop="true"
-		    android:layout_centerHorizontal="true"
-	        android:src="@drawable/h_detection_swipe_03_image" />
-	    <LinearLayout 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerHorizontal="true"
-	        android:orientation="horizontal"
-	        android:layout_below="@+id/iv_before_setup_top_img">
-	        <ImageView 
-	            android:layout_width="wrap_content"
-	        	android:layout_height="wrap_content"
-	        	android:src="@drawable/h_detection_highlighted_default" 
-	        	android:layout_marginRight="@dimen/swipe_dot_horiz_margin"/>
-	        <ImageView 
-	            android:layout_width="wrap_content"
-	        	android:layout_height="wrap_content"
-	        	android:src="@drawable/h_detection_highlighted_default" 
-	        	android:layout_marginRight="@dimen/swipe_dot_horiz_margin"/>
-	        <ImageView 
-	            android:layout_width="wrap_content"
-	        	android:layout_height="wrap_content"
-	        	android:src="@drawable/h_detection_highlighted_dot" />
-	    </LinearLayout>
-	    
 	    <Button
 		    android:id="@+id/button_done"
 		    android:layout_width="fill_parent"
@@ -61,10 +32,46 @@
 		    android:layout_alignParentBottom="true"
 		    android:background="@drawable/sl_account_bottom_btn"
 		    android:paddingBottom="@dimen/login_marginMedium"
+		    android:layout_marginTop="@dimen/login_marginMedium"
 		    android:paddingTop="@dimen/login_marginMedium"
-		    android:text="@string/confirm"
+		    android:text="@string/enhance_human_detect_intro_next_step"
 		    android:textColor="@color/word_white"
 		    android:textColorLink="@color/word_white"
 		    android:textSize="@dimen/login_fontMedium" />
+	    <LinearLayout 
+		    android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:layout_alignParentTop="true"
+			android:layout_centerHorizontal="true"
+			android:layout_above="@+id/button_done">
+	        <ImageView
+		        android:id="@+id/iv_before_setup_top_img"
+		        android:layout_width="wrap_content"
+		        android:layout_height="0dp"
+		        android:layout_weight="1"
+		        android:layout_gravity="center"
+		        android:src="@drawable/h_detection_swipe_03_image" />
+		    <LinearLayout 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal"
+		        android:layout_gravity="center">
+		        <ImageView 
+		            android:layout_width="wrap_content"
+		        	android:layout_height="wrap_content"
+		        	android:src="@drawable/h_detection_highlighted_default" 
+		        	android:layout_marginRight="@dimen/swipe_dot_horiz_margin"/>
+		        <ImageView 
+		            android:layout_width="wrap_content"
+		        	android:layout_height="wrap_content"
+		        	android:src="@drawable/h_detection_highlighted_default" 
+		        	android:layout_marginRight="@dimen/swipe_dot_horiz_margin"/>
+		        <ImageView 
+		            android:layout_width="wrap_content"
+		        	android:layout_height="wrap_content"
+		        	android:src="@drawable/h_detection_highlighted_dot" />
+		    </LinearLayout>
+	    </LinearLayout>
 	</RelativeLayout> 
 </LinearLayout>
