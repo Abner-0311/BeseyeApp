@@ -46,6 +46,7 @@ import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshListView;
+import com.app.beseye.widget.RemoteImageView;
 import com.app.beseye.widget.RemoteImageView.RemoteImageCallback;
 
 public class HumanDetectTrainActivity extends BeseyeBaseActivity implements RemoteImageCallback{
@@ -56,11 +57,11 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	private JSONArray mArrTrainPic, mArrTrainPicToSend;
-	private boolean mbHaveNextPage = false, mbNeedToShowIntro = true;
+	private boolean mbHaveNextPage = false;
 	
-	private ViewPager mVpIntro;
+	//private ViewPager mVpIntro;
 	//private IntroPageAdapter mIntroPageAdapter;
-	private Button mbtnDone;
+	//private Button mbtnDone;
 	private ImageView mIvTrainRet;
 	
 	private ViewGroup mVgResultPage = null;
@@ -106,9 +107,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 //		for(int idx= 0 ;idx<20;idx++){
 //			addTempObj();
 //		}
-		
-		mbNeedToShowIntro = !SessionMgr.getInstance().getHumanDetectIntroShowOnce() || !SessionMgr.getInstance().getHumanDetectIntroShown();
-
+	
 		mlvHumanDetectTrainPicList = (PullToRefreshListView) findViewById(R.id.lv_train_pic_lst);
 		if(null != mlvHumanDetectTrainPicList){
 			mlvHumanDetectTrainPicList.setMode(LvExtendedMode.NONE);
@@ -120,17 +119,18 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			}
 		}
 		
-		mVpIntro = (ViewPager)findViewById(R.id.intro_gallery);
-		if(null != mVpIntro){
-			mVpIntro.setAdapter(new IntroPageAdapter(this));
-			if(mbNeedToShowIntro){
-				BeseyeUtils.setVisibility(mVpIntro, View.VISIBLE);
-			}
-		}
-		
-		mbtnContinue = (Button)findViewById(R.id.button_confirm);
-		if(null != mbtnContinue){
-			mbtnContinue.setOnClickListener(HumanDetectTrainActivity.this);
+//		mVpIntro = (ViewPager)findViewById(R.id.intro_gallery);
+//		if(null != mVpIntro){
+//			mVpIntro.setAdapter(new IntroPageAdapter(this));
+//			if(mbNeedToShowIntro){
+//				BeseyeUtils.setVisibility(mVpIntro, View.VISIBLE);
+//			}
+//		}
+//		
+		mbtnConfirm = (Button)findViewById(R.id.button_confirm);
+		if(null != mbtnConfirm){
+			mbtnConfirm.setOnClickListener(HumanDetectTrainActivity.this);
+			mbtnConfirm.setEnabled(false);
 		}
 		
 		mVgResultPage = (ViewGroup)findViewById(R.id.vg_human_detect_train_ret);
@@ -169,9 +169,96 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 	@Override
 	protected void onSessionComplete() {
 		super.onSessionComplete();
-		if(!mbNeedToShowIntro){
+		//if(!mbNeedToShowIntro){
 			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
+		//}
+	}
+	
+	private RemoteImageView mImgPreload[] = null;
+	private void preloadImages(final int iCntToPreload){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(null != mArrTrainPic){
+					int iCount = mArrTrainPic.length();
+					int iRealCntToPreload = iCount - (NUM_OF_REFINE_IMG - iCntToPreload);
+					if(0 < iRealCntToPreload){
+						mImgPreload = new RemoteImageView[iRealCntToPreload];
+						for(int idx = 0; idx < iRealCntToPreload;idx++){
+							mImgPreload[idx] = new RemoteImageView(HumanDetectTrainActivity.this);
+							final String strPath = BeseyeJSONUtil.getJSONString(mArrTrainPic.optJSONObject(iCount - 1 - idx), BeseyeJSONUtil.MM_HD_IMG_PATH);
+							Log.i(TAG, "preloadImages(), strPath:"+strPath.toString());
+
+							if(null != mImgPreload[idx] && null != strPath && 0 < strPath.length()){
+								mImgPreload[idx].setURI(BeseyeIMPMMBEHttpTask.getRefineImgPath(strPath), R.drawable.h_detection_loading_image, mStrVCamID, HumanDetectTrainActivity.this);
+								mImgPreload[idx].disableLoadLastImgByVCamId();
+								mImgPreload[idx].disablebBmpTransitionEffect();
+								mImgPreload[idx].loadImage();
+							}
+						}
+					}	
+				}
+			}}, 100L);
+	}
+
+	static final private long TIME_TO_CHECK_IMG_STATE = 10000L;
+	private boolean mbHaveCheckImgState = false;
+	private Runnable mCheckImageStateRunnable = new Runnable(){
+		@Override
+		public void run() {
+			if(DEBUG)
+				Log.i(TAG, "mCheckImageStateRunnable::run(), mbHaveCheckImgState:"+mbHaveCheckImgState);
+			mbHaveCheckImgState = true;
+			int iLenPic = (null != mArrTrainPic)?mArrTrainPic.length():0;
+			if(0 < iLenPic){
+				boolean bNeedToRefresh = false;
+				for(int idx = 0 ;idx < iLenPic;idx++){
+					JSONObject objCheck = mArrTrainPic.optJSONObject(idx);
+					if(false == BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED) && false == BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED)){
+						BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED, true);
+						try {
+							mArrTrainPic.put(idx, objCheck);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						bNeedToRefresh = true;
+					}
+				}
+				if(bNeedToRefresh){
+					if(null != mHumanDetectTrainPicAdapter){
+						mHumanDetectTrainPicAdapter.updateResultList(mArrTrainPic);
+						mHumanDetectTrainPicAdapter.notifyDataSetChanged();
+					}
+				}
+			}
+			checkImgState();
+		}};
+		
+	private void postheckImageStateRunnable(){
+		BeseyeUtils.setEnabled(mbtnConfirm, false);
+		mbHaveCheckImgState = false;
+		BeseyeUtils.removeRunnable(mCheckImageStateRunnable);
+		BeseyeUtils.postRunnable(mCheckImageStateRunnable, TIME_TO_CHECK_IMG_STATE);
+	}
+		
+	private void checkImgState(){
+		boolean bDisabledBtn = false;
+		if(false == mbHaveCheckImgState){
+			if(null != mArrTrainPic && 0 < mArrTrainPic.length()){
+				int iCount = mArrTrainPic.length();
+				for(int idx = 0; idx < iCount;idx++){
+					JSONObject objChk = mArrTrainPic.optJSONObject(idx);
+					if(!BeseyeJSONUtil.getJSONBoolean(objChk, BeseyeJSONUtil.MM_HD_IMG_LOADED) && !BeseyeJSONUtil.getJSONBoolean(objChk, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED)){
+						bDisabledBtn = true;
+						break;
+					}
+				}
+			}else{
+				bDisabledBtn = true;
+			}
 		}
+		
+		BeseyeUtils.setEnabled(mbtnConfirm, !bDisabledBtn);
 	}
 	
 	@Override
@@ -188,11 +275,14 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 					if(null == mArrTrainPic || 0 == mArrTrainPic.length()){
 						onNoTrainPicAvailable(49);
 					}else{
+						postheckImageStateRunnable();
+						
 						mbHaveNextPage = BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.MM_HD_IMG_PAGING);
 						if(null != mHumanDetectTrainPicAdapter){
 							mHumanDetectTrainPicAdapter.updateResultList(mArrTrainPic);
 							mHumanDetectTrainPicAdapter.notifyDataSetChanged();
 						}
+						preloadImages(8);
 						
 						try {
 							mArrTrainPicToSend = new JSONArray(mArrTrainPic.toString());
@@ -250,21 +340,28 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 	@Override
 	public void imageLoaded(boolean success, String strPath) {
 		//Log.i(TAG, "imageLoaded(), strPath:"+strPath+", success:"+success);
-		if(success && null != strPath){
+		if(null != strPath){
 			int iLenPic = (null != mArrTrainPic)?mArrTrainPic.length():0;
 			if(0 < iLenPic){
 				for(int idx = 0 ;idx < iLenPic;idx++){
 					JSONObject objCheck = mArrTrainPic.optJSONObject(idx);
 					if(strPath.endsWith(BeseyeJSONUtil.getJSONString(objCheck, BeseyeJSONUtil.MM_HD_IMG_PATH))){
-						BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED, true);
+						BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED, success);
+						boolean bHaveFailed = BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED);
+						BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED, !success);
 						try {
 							mArrTrainPic.put(idx, objCheck);
 							if(null != mHumanDetectTrainPicAdapter){
 								mHumanDetectTrainPicAdapter.updateResultList(mArrTrainPic);
+								if(bHaveFailed == success){
+									mHumanDetectTrainPicAdapter.notifyDataSetChanged();
+								}
 							}
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
+						
+						checkImgState();
 						break;
 					}
 				}
@@ -307,10 +404,6 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			}
 		}else if(R.id.button_confirm == view.getId()){			
 			sendLabelResult();
-		}else if(R.id.button_done == view.getId()){
-			SessionMgr.getInstance().setHumanDetectIntroShown(true);
-			BeseyeUtils.setVisibility(mVpIntro, View.GONE);
-			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
 		}else if(R.id.btn_continue == view.getId()){
 			BeseyeUtils.setVisibility(mVgResultPage, View.GONE);
 			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
@@ -391,86 +484,4 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		BeseyeUtils.setVisibility(mbtnContinue, View.GONE);
 		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 	}
-	
-	public class IntroPageAdapter extends PagerAdapter {
-		private static final int NUM_OF_INTRO_PAGE = 3;
-		private Context mContext;
-		private LayoutInflater mInflater;
-		
-		public IntroPageAdapter(Context c) {
-	        mContext = c;
-	        mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    }
-		
-		@Override
-		public void destroyItem(View view, int position, Object object) {
-			((ViewPager) view).removeView((View)object);
-		}
-
-		@Override
-		public void finishUpdate(View arg0) {}
-
-		@Override
-		public int getCount() {
-			return NUM_OF_INTRO_PAGE;
-		}
-
-		@Override
-		public Object instantiateItem(View view, int position) {
-			int iLayoutId = R.layout.layout_human_detect_intro_page_1;
-			if(1 == position){
-				iLayoutId = R.layout.layout_human_detect_intro_page_2;
-			}else if(2 == position){
-				iLayoutId = R.layout.layout_human_detect_intro_page_3;
-			}
-			
-			ViewGroup vGroup = (ViewGroup) mInflater.inflate(iLayoutId, null);
-			if(null != vGroup){
-				if(2 == position){
-					mbtnDone = (Button)vGroup.findViewById(R.id.button_done);
-					if(null != mbtnDone){
-						mbtnDone.setOnClickListener(HumanDetectTrainActivity.this);
-					}
-					
-					TextView tvDesc = (TextView)vGroup.findViewById(R.id.tv_enhance_human_detect_intro_p3_desc1);
-					if(null != tvDesc){
-						String strNone = getString(R.string.enhance_human_detect_intro_p3_desc_highlight);
-						String strDesc = getString(R.string.enhance_human_detect_intro_p3_desc);
-						Spannable wordtoSpan = new SpannableString(strDesc);          
-
-						//Spannable str = (Spannable) tvDesc.getEditableText();
-					    int i = strDesc.indexOf(strNone);
-					    if(i >=0){
-						    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.csl_link_font_color)), i, i+strNone.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-					    }
-					    tvDesc.setText(wordtoSpan);
-					}
-				}
-				((ViewPager) view).addView(/*img*/vGroup);
-	            return vGroup;
-			}
-			return null;
-		}
-		
-		@Override
-		public void notifyDataSetChanged() {
-		    super.notifyDataSetChanged();
-		}
-
-		@Override
-		public boolean isViewFromObject(View view, Object object) {
-			return view == object;
-		}
-
-		@Override
-		public void restoreState(Parcelable arg0, ClassLoader arg1) {}
-
-		@Override
-		public Parcelable saveState() {
-			return null;
-		}
-
-		@Override
-		public void startUpdate(View view) {}
-	}	
 }

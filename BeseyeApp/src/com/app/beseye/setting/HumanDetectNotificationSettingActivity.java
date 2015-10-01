@@ -2,9 +2,7 @@ package com.app.beseye.setting;
 
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_TRUST_DEV_ID_LST;
-import static com.app.beseye.util.BeseyeJSONUtil.NOTIFY_OBJ;
+import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;import static com.app.beseye.util.BeseyeJSONUtil.NOTIFY_OBJ;
 import static com.app.beseye.util.BeseyeJSONUtil.OBJ_TIMESTAMP;
 import static com.app.beseye.util.BeseyeJSONUtil.STATUS;
 import static com.app.beseye.util.BeseyeJSONUtil.getJSONObject;
@@ -15,52 +13,46 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.graphics.Region.Op;
-import android.graphics.Region;
+import android.widget.Toast;
 
 import com.app.beseye.BeseyeBaseActivity;
-import com.app.beseye.BeseyeTrustDevMgtActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeMotionZoneUtil;
+import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.widget.BaseOneBtnDialog;
 import com.app.beseye.widget.BaseTwoBtnDialog;
+import com.app.beseye.widget.BeseyeMemCache;
 import com.app.beseye.widget.BeseyeSwitchBtn;
-import com.app.beseye.widget.RemoteImageView;
-import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
 import com.app.beseye.widget.BaseTwoBtnDialog.OnTwoBtnClickListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
-import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
-
-
 
 public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity 
 												implements OnSwitchBtnStateChangedListener{
@@ -71,7 +63,9 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 
 	private BeseyeSwitchBtn mNotifyMeSwitchBtn;
 	//private boolean mbModified = false;
-
+	private ViewPager mVpIntro;
+	private Button mbtnDone;
+	private boolean mbNeedToShowIntro = true;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +87,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
 				txtTitle.setText(R.string.cam_setting_title_human_detect_notify);
+				txtTitle.setOnClickListener(this);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
@@ -122,6 +117,17 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 		mVgHumanDetectReset = (ViewGroup)findViewById(R.id.vg_human_detect_reset);
 		if(null != mVgHumanDetectReset){
 			mVgHumanDetectReset.setOnClickListener(this);
+		}
+		
+		mbNeedToShowIntro = !SessionMgr.getInstance().getHumanDetectIntroShowOnce() || !SessionMgr.getInstance().getHumanDetectIntroShown();
+
+		
+		mVpIntro = (ViewPager)findViewById(R.id.intro_gallery);
+		if(null != mVpIntro){
+			mVpIntro.setAdapter(new IntroPageAdapter(this));
+			if(mbNeedToShowIntro){
+				BeseyeUtils.setVisibility(mVpIntro, View.VISIBLE);
+			}
 		}
 	}
 
@@ -180,6 +186,20 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 			} 
 			case R.id.vg_human_detect_reset:{
 				showMyDialog(DIALOG_ID_RESET_HUMAN_DETECT);
+				break;
+			}
+			case R.id.txt_nav_title:{
+				if(BeseyeConfig.DEBUG){
+					//BeseyeStorageAgent.doDeleteCacheByFolder(this, mStrVCamID);
+					BeseyeStorageAgent.doDeleteCache(this);
+					BeseyeMemCache.cleanMemCache();
+					Toast.makeText(this, "Delete cache...", Toast.LENGTH_SHORT).show();
+				}
+				break;
+			}
+			case R.id.button_done:{
+				SessionMgr.getInstance().setHumanDetectIntroShown(true);
+				BeseyeUtils.setVisibility(mVpIntro, View.GONE);
 				break;
 			}
 			default:
@@ -287,4 +307,86 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 		}
 		return dialog;
 	}
+	
+	public class IntroPageAdapter extends PagerAdapter {
+		private static final int NUM_OF_INTRO_PAGE = 3;
+		private Context mContext;
+		private LayoutInflater mInflater;
+		
+		public IntroPageAdapter(Context c) {
+	        mContext = c;
+	        mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	    }
+		
+		@Override
+		public void destroyItem(View view, int position, Object object) {
+			((ViewPager) view).removeView((View)object);
+		}
+
+		@Override
+		public void finishUpdate(View arg0) {}
+
+		@Override
+		public int getCount() {
+			return NUM_OF_INTRO_PAGE;
+		}
+
+		@Override
+		public Object instantiateItem(View view, int position) {
+			int iLayoutId = R.layout.layout_human_detect_intro_page_1;
+			if(1 == position){
+				iLayoutId = R.layout.layout_human_detect_intro_page_2;
+			}else if(2 == position){
+				iLayoutId = R.layout.layout_human_detect_intro_page_3;
+			}
+			
+			ViewGroup vGroup = (ViewGroup) mInflater.inflate(iLayoutId, null);
+			if(null != vGroup){
+				if(2 == position){
+					mbtnDone = (Button)vGroup.findViewById(R.id.button_done);
+					if(null != mbtnDone){
+						mbtnDone.setOnClickListener(HumanDetectNotificationSettingActivity.this);
+					}
+					
+					TextView tvDesc = (TextView)vGroup.findViewById(R.id.tv_enhance_human_detect_intro_p3_desc1);
+					if(null != tvDesc){
+						String strNone = getString(R.string.enhance_human_detect_intro_p3_desc_highlight);
+						String strDesc = getString(R.string.enhance_human_detect_intro_p3_desc);
+						Spannable wordtoSpan = new SpannableString(strDesc);          
+
+						//Spannable str = (Spannable) tvDesc.getEditableText();
+					    int i = strDesc.indexOf(strNone);
+					    if(i >=0){
+						    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.csl_link_font_color)), i, i+strNone.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+					    }
+					    tvDesc.setText(wordtoSpan);
+					}
+				}
+				((ViewPager) view).addView(/*img*/vGroup);
+	            return vGroup;
+			}
+			return null;
+		}
+		
+		@Override
+		public void notifyDataSetChanged() {
+		    super.notifyDataSetChanged();
+		}
+
+		@Override
+		public boolean isViewFromObject(View view, Object object) {
+			return view == object;
+		}
+
+		@Override
+		public void restoreState(Parcelable arg0, ClassLoader arg1) {}
+
+		@Override
+		public Parcelable saveState() {
+			return null;
+		}
+
+		@Override
+		public void startUpdate(View view) {}
+	}	
 }

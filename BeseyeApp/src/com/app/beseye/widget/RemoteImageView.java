@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.zip.GZIPInputStream;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -59,7 +61,7 @@ public class RemoteImageView extends ImageView {
 	protected RemoteImageCallback mCallback;
 	protected int mDefaultImage = EMPTY_DEFAULT_IMAGE;
 	protected Handler mHandler = new Handler();
-	protected static ExecutorService sExecutor = Executors.newFixedThreadPool(10);
+	protected static ExecutorService sExecutor = Executors.newFixedThreadPool(20);
 	protected Future<?> mFuture;
 	protected boolean mIsPreload;
 	protected boolean mbMatchWidth = false;
@@ -699,98 +701,64 @@ public class RemoteImageView extends ImageView {
 		Bitmap bitmap = null;
 		long lStartTs = System.currentTimeMillis();
 		try {
-			if(uri.startsWith("http")){
-//				URL url = new URL(uri);
-//				URLConnection conn = url.openConnection();
-//				HttpURLConnection httpConn = (HttpURLConnection) conn;
-//				httpConn.setRequestProperty("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
-//				httpConn.setRequestProperty("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
-//				httpConn.setRequestProperty("Bes-User-Agent", BeseyeUtils.getUserAgent());
-//				httpConn.setRequestProperty("User-Agent", BeseyeUtils.getUserAgent());
-//				if(null != strVcamId)
-//					httpConn.setRequestProperty("Bes-VcamPermission-VcamUid", strVcamId);
-//				httpConn.setRequestMethod("GET");
-//				httpConn.connect();
-//				if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//					inputStream = httpConn.getInputStream();
-//					if (inputStream != null) {
-//						BitmapFactory.Options options = new BitmapFactory.Options();
-//						options.inSampleSize = iSample;
-//						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-//					}else{
-//						Log.w(TAG, "inputStream is null");
-//					}
-//				}
-				
-				final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-				HttpGet getRequest = new HttpGet(convertURL(uri));
-				try{
-					if(null != getRequest){
-						getRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
-						getRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
-						getRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
-						getRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
-						getRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
-						getRequest.addHeader("Bes-Android-Ver", Build.VERSION.RELEASE);
-						if(null != strVcamId){
-							getRequest.addHeader("Bes-VcamPermission-VcamUid", strVcamId);
-					      	HttpResponse response = client.execute(getRequest);
-					      	final int statusCode = response.getStatusLine().getStatusCode();
-					      	if(statusCode == HttpStatus.SC_OK){
-					      		final HttpEntity entity = response.getEntity();
-					      		if(entity != null){
-					      			inputStream = entity.getContent();
-					      			if (inputStream != null) {
-										BitmapFactory.Options options = new BitmapFactory.Options();
-										options.inSampleSize = iSample;
-										bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-									}else{
-										Log.w(TAG, "inputStream is null");
-									}
-					      			entity.consumeContent();
-					      		}
-					      	}
-					    }
-					}
-				}catch(Exception e){
-				      // Could provide a more explicit error message for IOException or
-				      // IllegalStateException
-				    	Log.w(TAG, "Http Get image fail: " + e);
-				    	if(null != getRequest){
-				    		getRequest.abort();
-				    	}
-				 }finally{
-				      if(client != null){
-				    	  client.close();
-				      }
-				 }
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			HttpGet getRequest = new HttpGet(convertURL(uri));
+			try{
+				if(null != getRequest){
+					getRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+					getRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
+					getRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
+					getRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
+					getRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
+					getRequest.addHeader("Bes-Android-Ver", Build.VERSION.RELEASE);
+					getRequest.addHeader("Accept-Encoding", "gzip");
+					
+					if(null != strVcamId){
+						getRequest.addHeader("Bes-VcamPermission-VcamUid", strVcamId);
+						//Log.w(TAG, "begin to download, uri:" + uri);
+						
+				      	HttpResponse response = client.execute(getRequest);
+						//Log.w(TAG, "end to download, uri:" + uri);
+				      	final int statusCode = response.getStatusLine().getStatusCode();
+				      	if(statusCode == HttpStatus.SC_OK){
+				      		final HttpEntity entity = response.getEntity();
+				      		if(entity != null){
+				      			inputStream = AndroidHttpClient.getUngzippedContent(entity);
+				      			
+				      			if (inputStream != null) {
+									BitmapFactory.Options options = new BitmapFactory.Options();
+									options.inSampleSize = iSample;
+									//Log.w(TAG, "begin to decodeStream, uri:" + uri);
+									bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+									//Log.w(TAG, "end to decodeStream, uri:" + uri);
+
+								}else{
+									Log.w(TAG, "inputStream is null");
+								}
+				      			entity.consumeContent();
+				      		}
+				      	}
+				    }
+				}
+			}catch(Exception e){
+			      // Could provide a more explicit error message for IOException or
+			      // IllegalStateException
+				Log.w(TAG, "Http Get image fail: " + e);
+			    if(null != getRequest){
+			    	getRequest.abort();
+			    }
+			}finally{
+			    if(client != null){
+			    	client.close();
+			    }
 			}
-//			else if(uri.startsWith(S3_FILE_PREFIX)){
-//				int iBucketPos = S3_FILE_PREFIX.length();
-//				int iFilePos = uri.indexOf("/", iBucketPos);
-//				if(iFilePos > iBucketPos){
-//					String strBucket = uri.substring(iBucketPos, iFilePos);
-//					String strPath = uri.substring(iFilePos+1);
-//					AmazonS3Client s3Client = new AmazonS3Client(myCredentials);
-//					S3Object object = s3Client.getObject(new GetObjectRequest(strBucket, strPath));
-//					//S3Object object = s3Client.getObject(new GetObjectRequest("2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser", "thumbnail/400x225/2014/05-22/09/{sEnd}1400751551309_{dur}10426_{r}1400750317346_{th}1400751550883.jpg"));
-//					inputStream = new BufferedInputStream(object.getObjectContent()); //
-//					if (inputStream != null) {
-//						BitmapFactory.Options options = new BitmapFactory.Options();
-//						options.inSampleSize = iSample;
-//						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-//						
-//						Log.w(TAG, "image decode "+uri+", bitmap="+(null == bitmap?"null":"not null"));
-//					}
-//				}
-//			}
 		} catch (Exception e) {
 			Log.w(TAG, "Http Get image fail: " + e);
 		} finally {
 			closeStream(inputStream);
 		}
 		if(BeseyeConfig.DEBUG)
-			Log.w(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs));
+			Log.w(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs)+", uri:"+uri);
 		return bitmap;
 	}
 

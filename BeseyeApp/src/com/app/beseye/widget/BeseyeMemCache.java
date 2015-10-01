@@ -51,6 +51,11 @@ public class BeseyeMemCache {
 	    return (null != key)?sMemoryCache.get(key):null;
 	}
 	
+	static public void cleanMemCache() {
+		if(null != sMemoryCache)
+			sMemoryCache.evictAll();
+	}
+	
 	static private final String RES_PREFIX = "res_drawable_";
 	static public Bitmap getBmpByResId(Context context, int iResId, int iDeisreWidth, int iDesireHeight){
 		Bitmap bmp = sMemoryCache.get(RES_PREFIX+iResId);

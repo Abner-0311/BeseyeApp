@@ -293,7 +293,7 @@ public class BeseyeStorageAgent {
 		}
 	}
 	
-	public static void deleteCache(Context context){
+	private static void deleteCache(Context context){
 		if(DEBUG)
 			Log.d(LOG_TAG, "deleteCache() +");
 		//File cacheFolder = new File(context.getCacheDir().getAbsolutePath()+ File.separator + CACHE_FOLDER);
