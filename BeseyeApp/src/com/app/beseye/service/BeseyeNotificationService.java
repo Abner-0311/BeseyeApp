@@ -1012,7 +1012,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
             String action = intent.getExtras().getString(GCMIntentService.FORWARD_ACTION_TYPE);
             Message msg = null;
             if(DEBUG)
-            	Log.i(TAG, "onReceive(), action "+action+", data:"+intent);
+            	Log.i(TAG, "Kelly onReceive(), action "+action+", data:"+intent);
           
             if(GCMIntentService.FORWARD_ACTION_TYPE_REG.equals(action)){	
             	msg = Message.obtain(null,MSG_GCM_REGISTER,0,0);
