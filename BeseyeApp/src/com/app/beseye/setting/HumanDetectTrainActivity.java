@@ -50,7 +50,7 @@ import com.app.beseye.widget.RemoteImageView;
 import com.app.beseye.widget.RemoteImageView.RemoteImageCallback;
 
 public class HumanDetectTrainActivity extends BeseyeBaseActivity implements RemoteImageCallback{
-	final private static int NUM_OF_REFINE_IMG = 20;
+	final private static int NUM_OF_REFINE_IMG = 12;
 	private PullToRefreshListView mlvHumanDetectTrainPicList;
 	private HumanDetectTrainPicAdapter mHumanDetectTrainPicAdapter;
 	

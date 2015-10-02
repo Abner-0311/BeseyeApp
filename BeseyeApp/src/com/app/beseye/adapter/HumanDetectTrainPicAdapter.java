@@ -164,6 +164,9 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter{
 						holder.mImgTrainPic.disableLoadLastImgByVCamId();
 						holder.mImgTrainPic.disablebBmpTransitionEffect();
 						holder.mImgTrainPic.loadImage();
+					}else{
+						holder.mImgTrainPic.cancelRemoteImageLoad();
+						holder.mImgTrainPic.setImageResource(R.drawable.h_detection_loading_image);
 					}					
 				}
 				holder.mObjCam = obj;
