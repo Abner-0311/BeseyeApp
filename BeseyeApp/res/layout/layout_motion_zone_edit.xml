@@ -17,7 +17,6 @@
 	        android:layout_height="wrap_content" 
 	        android:layout_centerInParent="true">
 		   	<com.app.beseye.widget.RemoteImageView
-		   	    android:background="#ff0000"
 		        android:id="@+id/iv_motion_zone_thumbnail"
 		       	android:layout_width="match_parent"
 		        android:layout_height="match_parent"

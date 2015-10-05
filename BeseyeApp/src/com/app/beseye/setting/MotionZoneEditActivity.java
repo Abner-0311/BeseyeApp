@@ -164,10 +164,10 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 	
 	private void setThumbnail(){
 		if(null != mImgThumbnail){
-			Log.d(TAG, "Kelly in Activity setThumbnail");
 			int miThumbnailWidth = BeseyeUtils.getDeviceWidth(this);
 			BeseyeUtils.setThumbnailRatio(mImgThumbnail, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
-				
+			BeseyeUtils.setThumbnailRatio(mMotionZoneEditView, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);	
+			
 			mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_THUMB), 
 								R.drawable.cameralist_s_view_noview_bg, 
 								BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID),
@@ -175,7 +175,6 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 									@Override
 									public void imageLoaded(boolean success, String StrUri) {
 										if(true == success){
-											Log.d(TAG, "Kelly in Activity in suceess");
 											drawMotionZoneRect();
 											BeseyeUtils.setVisibility(mPbLoadingCursor, View.GONE);
 											BeseyeUtils.setVisibility(mMotionZoneEditView, View.VISIBLE);
@@ -200,13 +199,7 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 			BeseyeMotionZoneUtil.setDefaultRatio(mdRatios);
 		}
 		
-		Log.d(TAG, "Kelly in Activity, mImgThumbnail getWidth: " + mImgThumbnail.getWidth() + ", mImgThumbnail getHeight: " + mImgThumbnail.getHeight());
-		Log.d(TAG, "Kelly in Activity, mImgThumbnail getLeft: " + mImgThumbnail.getLeft() + ", mImgThumbnail getTop: " + mImgThumbnail.getTop());
-		
-//		Rect r = mImgThumbnail.getDrawable().getBounds();
-//		mMotionZoneEditView.init(r.right-r.left, r.bottom-r.top, r.left, r.top, mdRatios);	
-//		mMotionZoneEditView.init(mImgThumbnail.getWidth(), mImgThumbnail.getHeight(), mImgThumbnail.getLeft(), mImgThumbnail.getTop(), mdRatios);	
-		mMotionZoneEditView.init(mImgThumbnail.getWidth(), mImgThumbnail.getBottom() - mImgThumbnail.getTop(), mImgThumbnail.getLeft(), mImgThumbnail.getTop(), mdRatios);	
+		mMotionZoneEditView.init(mImgThumbnail.getWidth(), mImgThumbnail.getHeight(), mdRatios);	
 	}
 	
 	private int setRatio(double[] newRatios){

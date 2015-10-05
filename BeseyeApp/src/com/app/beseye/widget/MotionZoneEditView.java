@@ -94,9 +94,6 @@ public class MotionZoneEditView extends View {
         if(null == mPoints[0]){
         	 Log.e(TAG, "onDraw: mPoints are null");
         } else{
-        	
-        	 Log.d(TAG, "Kelly onDraw mPoints: " + mPoints[0].x + " "+ mPoints[0].y + " "+  mPoints[2].x + " "+ mPoints[2].y);
-
         	 // draw mask
 	        canvas.drawRect(mpThumbnailTopLeft.x, mpThumbnailTopLeft.y, mpThumbnailBotRight.x, mPoints[0].y, mRectPaint);	             
 	        canvas.drawRect(mpThumbnailTopLeft.x, mPoints[0].y, mPoints[0].x, mPoints[2].y, mRectPaint);
@@ -105,7 +102,6 @@ public class MotionZoneEditView extends View {
 	        // draw line
 	        canvas.drawRect(mPoints[0].x, mPoints[0].y, mPoints[2].x, mPoints[2].y, mLinePaint);       
 	        // draw balls
-	        Log.d(TAG, "Kelly mArrColorballs: " + mArrColorballs.size());
 	        for (int i =0; i < mArrColorballs.size(); i ++) {
 	            ColorBall ball = mArrColorballs.get(i);
 	            canvas.drawBitmap(ball.getBitmap(), ball.getX()-ball.getWidthOfBall()/2, ball.getY()-ball.getHeightOfBall()/2, null);
@@ -120,8 +116,6 @@ public class MotionZoneEditView extends View {
         int X = (int) event.getX();
         int Y = (int) event.getY();
         int dX = 0, dY = 0;
-        
-        Log.d(TAG, "Kelly onTouchEvent X: " + X + ", Y: " + Y);
         
         switch (eventaction) {
 
@@ -294,34 +288,27 @@ public class MotionZoneEditView extends View {
     	return true;
     }
     
-    public void init(int viewWidth, int viewHeight, int viewX, int viewY, double[] r){
-    	
-    	Log.d(TAG, "Kelly in init");
-    	
+    public void init(int viewWidth, int viewHeight, double[] r){	
     	float padding = getResources().getDimensionPixelSize(R.dimen.motion_zone_padding);
-    	Log.d(TAG, "Kelly padding: " + padding);
-    	Log.d(TAG, "Kelly viewWidth: " + viewWidth + ", viewHeight: " + viewHeight + ", padding: "+padding); 
-    	
+    
     	if(viewWidth>0 && viewHeight>0){
 		    if((double)viewWidth/16.0 >= (double)viewHeight/9.0){
-		    	Log.d(TAG, "Kelly Hi I am top");
 		    	miThumbnailHeight = (int) (viewHeight - padding*2);
 		    	miThumbnailWidth = (int) ((double)miThumbnailHeight/9.0*16);
 		        
 		       	mpThumbnailTopLeft.x= (int) ((viewWidth - miThumbnailWidth)/2);
-		    	mpThumbnailTopLeft.y= (int) (padding + viewY);
+		    	mpThumbnailTopLeft.y= (int) (padding);
 		    	mpThumbnailBotRight.x= (int) (viewWidth - (viewWidth - miThumbnailWidth)/2);
-		    	mpThumbnailBotRight.y= (int) (viewHeight - padding + viewY);
+		    	mpThumbnailBotRight.y= (int) (viewHeight - padding);
 		    } else {
-		    	Log.d(TAG, "Kelly Hi I am bottom");
 		    	
 		    	miThumbnailWidth = (int) (viewWidth - padding*2);
 		    	miThumbnailHeight = (int) ((double)miThumbnailWidth/16.0*9);
 		    	
-		       	mpThumbnailTopLeft.x= (int) (padding + viewX);
-		    	mpThumbnailTopLeft.y= (int) ((viewHeight - miThumbnailHeight)/2+viewY);
-		    	mpThumbnailBotRight.x= (int) (viewWidth - padding + viewX);
-		    	mpThumbnailBotRight.y= (int) (viewHeight - (viewHeight - miThumbnailHeight)/2+viewY);
+		       	mpThumbnailTopLeft.x= (int) (padding);
+		    	mpThumbnailTopLeft.y= (int) ((viewHeight - miThumbnailHeight)/2);
+		    	mpThumbnailBotRight.x= (int) (viewWidth - padding);
+		    	mpThumbnailBotRight.y= (int) (viewHeight - (viewHeight - miThumbnailHeight)/2);
 		    }
 		    
 		    miMinMotionZoneL = (int) ((double)(mpThumbnailBotRight.y - mpThumbnailTopLeft.y)*BeseyeMotionZoneUtil.sdMinZoneRatio);
@@ -331,9 +318,8 @@ public class MotionZoneEditView extends View {
     
     private void setInitMotionZone(double leftR, double topR, double rightR, double botR){
     	//initialize rectangle.
-    //	if(null == mPoints[0]){
-    	mArrColorballs.clear();
-    	
+    	if(null == mPoints[0]){
+    		//mArrColorballs.clear();
 	        mPoints[0] = new Point();
 	        mPoints[0].x = (int) (mpThumbnailTopLeft.x + leftR*miThumbnailWidth);
 	        mPoints[0].y = (int) (mpThumbnailTopLeft.y + topR*miThumbnailHeight);
@@ -360,7 +346,7 @@ public class MotionZoneEditView extends View {
 	        }
 	      
 	        invalidate();
-   // 	}
+    	}
     }
 
     public static class ColorBall {
