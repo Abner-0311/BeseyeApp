@@ -1364,6 +1364,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						
 						if(isCamPowerOff() || isCamPowerDisconnected()){
 							removeMyDialog(DIALOG_ID_WARNING);
+							setCursorVisiblity(View.GONE);
 						}
 					}
 				}else if(BeseyeError.E_BE_CAM_INFO_NOT_EXIST == iRetCode){
@@ -3286,6 +3287,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				
 				if(isCamPowerOff() || isCamPowerDisconnected()){
 					removeMyDialog(DIALOG_ID_WARNING);
+					setCursorVisiblity(View.GONE);
 				}
 			}
 		}
