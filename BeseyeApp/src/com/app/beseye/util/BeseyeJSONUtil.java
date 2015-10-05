@@ -63,6 +63,8 @@ public class BeseyeJSONUtil {
 	public static final String LED_STATUS 				= "LEDStatus";
 	public static final String STATUS 					= "Status";
 	public static final String TYPE 					= "Type";
+	public static final String CAM_CHANGE_DATA 			= "chgData";
+	
 	
 	public static final String SPEAKER_STATUS 			= "SpeakerStatus";
 	public static final String SPEAKER_VOLUME 			= "SpeakerVolume";

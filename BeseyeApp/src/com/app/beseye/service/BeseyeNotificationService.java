@@ -1480,8 +1480,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				case NCODE_CAM_STATUS_CHANGED_EVT:{
 					iMsgType = MSG_CAM_STATUS_CHANGED_FOR_EVT;
 					if(bFromGCM){
-						boolean bTurnOn = BeseyeJSONUtil.getJSONBoolean(objCus, BeseyeJSONUtil.CAM_STATUS);
-						strNotifyMsg = getString(bTurnOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
+						JSONObject objCamChgData = BeseyeJSONUtil.getJSONObject(objCus, CAM_CHANGE_DATA);
+						boolean bCamStatusOn = (BeseyeJSONUtil.getJSONInt(objCamChgData, BeseyeJSONUtil.CAM_STATUS) == 1);
+						strNotifyMsg = getString(bCamStatusOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
 						iNotifyType = NOTIFICATION_TYPE_EVT;
 //						
 //						intent.setClassName(this, OpeningPage.class.getName());

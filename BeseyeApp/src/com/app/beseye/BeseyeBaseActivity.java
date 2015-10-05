@@ -2,6 +2,7 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
+import static com.app.beseye.util.BeseyeJSONUtil.CAM_CHANGE_DATA;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
 
 import java.lang.ref.WeakReference;
@@ -2075,7 +2076,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     		if(null != msgObj){
         		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
         		if(null != objCus){
-        			boolean bCamStatusOn = BeseyeJSONUtil.getJSONBoolean(objCus, BeseyeJSONUtil.CAM_STATUS);
+        			JSONObject objCamChgData = BeseyeJSONUtil.getJSONObject(objCus, CAM_CHANGE_DATA);
+        			boolean bCamStatusOn = (BeseyeJSONUtil.getJSONInt(objCamChgData, BeseyeJSONUtil.CAM_STATUS) == 1);
 					String strNotifyMsg = getString(bCamStatusOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
     				Toast.makeText(this, strNotifyMsg, Toast.LENGTH_SHORT).show();
         			return true;
