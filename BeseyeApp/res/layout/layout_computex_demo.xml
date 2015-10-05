@@ -81,6 +81,17 @@
 		            android:layout_width="wrap_content"  
 	        		android:layout_height="wrap_content"
 	        		android:text="Check the Detach Cam HW IDs:"/>
+		        <LinearLayout 
+		            android:id="@+id/vg_detach_hw_ids" 
+		            android:layout_width="wrap_content"  
+	        		android:layout_height="wrap_content"
+	        		android:layout_below="@+id/txt_detach_hw_id"
+		        	android:layout_centerHorizontal="true"
+		        	android:orientation="vertical">
+		            
+		        </LinearLayout>
+		        
+		        <!-- 
 	        	<CheckBox 
 		            android:id="@+id/ck_hw_id_1" 
 		            android:layout_width="wrap_content"  
@@ -96,7 +107,7 @@
 		        	android:layout_centerHorizontal="true"
 		        	android:text="HW ID 2"/>
 		        
-		        <!-- <Spinner 
+		        <Spinner 
 			        android:id="@+id/sp_detach_hw_id" 
 			        android:layout_width="wrap_content"  
 			        android:layout_height="wrap_content"  

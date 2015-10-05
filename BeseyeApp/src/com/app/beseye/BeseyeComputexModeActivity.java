@@ -1,10 +1,20 @@
 package com.app.beseye;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -12,6 +22,8 @@ import android.widget.Toast;
 
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 
 public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
@@ -26,8 +38,8 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 	private CheckBox mCbCamSWUpdateSuspended, mCbCamShowNotificationToast, mCbShowHumanDetectOneTime, mCbDetachHWIDs[];
 	private EditText mEtDefEmail = null;
 	private static String[] hwids = new String[]{"00409O92TX91", "00409T95HZSR"};//new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"}
-	private static int[] ctrlhwids = new int[]{R.id.ck_hw_id_1, R.id.ck_hw_id_2};
-	
+	//private static int[] ctrlhwids = new int[]{R.id.ck_hw_id_1, R.id.ck_hw_id_2};
+	private ArrayList<String> arrHWIDs = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,82 +81,55 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			mSpServerType.setAdapter(adapter);
 		}
 		
-		mCbDetachHWIDs = new CheckBox[hwids.length];
-		String[] strDeatchHWID = SessionMgr.getInstance().getDetachHWID().split(",");
-		for(int idx = 0; idx < hwids.length; idx ++){
-			mCbDetachHWIDs[idx] = (CheckBox)findViewById(ctrlhwids[idx]);
-			if(null != mCbDetachHWIDs[idx]){
-				mCbDetachHWIDs[idx].setText(hwids[idx]);
-				for(int idxChk = 0; idxChk < strDeatchHWID.length;idxChk++){
-					if(hwids[idx].equals(strDeatchHWID[idxChk])){
-						mCbDetachHWIDs[idx].setChecked(true);
-						break;
+		LinearLayout vgHWIDs = (LinearLayout)findViewById(R.id.vg_detach_hw_ids);
+		if(null != vgHWIDs){
+			arrHWIDs = new ArrayList<String>();
+			File fileHWIDs = BeseyeStorageAgent.getFileInDownloadDir(getApplicationContext(), "hwids.txt");
+			if(null != fileHWIDs && fileHWIDs.isFile() && fileHWIDs.exists()){
+				try {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileHWIDs)));
+					try {
+						String strHWID = "";
+						while(null != (strHWID = (null != reader)?reader.readLine():null)){
+							if(null != strHWID && 0 < strHWID.length()){
+								arrHWIDs.add(strHWID);
+							}
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(0 == arrHWIDs.size()){
+				Log.e(BeseyeConfig.TAG, "file is not exist");
+				for(int idx =0; idx < hwids.length;idx++){
+					arrHWIDs.add(hwids[idx]);
+				}
+			}
+			
+			if(0 < arrHWIDs.size()){
+				mCbDetachHWIDs = new CheckBox[arrHWIDs.size()];
+				String[] strDeatchHWID = SessionMgr.getInstance().getDetachHWID().split(",");
+
+				for(int idx2 = 0; idx2 < arrHWIDs.size(); idx2++){
+					mCbDetachHWIDs[idx2] = new CheckBox(this);
+					if(null != mCbDetachHWIDs[idx2]){
+						String strHWID = arrHWIDs.get(idx2);
+						mCbDetachHWIDs[idx2].setText(strHWID);
+						for(int idxChk = 0; idxChk < strDeatchHWID.length;idxChk++){
+							if(strHWID.equals(strDeatchHWID[idxChk])){
+								mCbDetachHWIDs[idx2].setChecked(true);
+								break;
+							}
+						}
+						vgHWIDs.addView(mCbDetachHWIDs[idx2]);
 					}
 				}
 			}
-		}
-		
-//		AsyncTask task = new AsyncTask(){
-//
-//			@Override
-//			protected Object doInBackground(Object... params) {
-//
-//				
-//				String path = "https://www.dropbox.com/s/7dslg5u6dxbkema/hwids.txt?dl=0";//"https://drive.google.com/file/d/0B--ub8Utz0EXWDVXdEYtREpHZmc/view?usp=sharing";
-//				InputStream inputStream = null;
-//				try {
-//					AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-//					HttpGet getRequest = new HttpGet(path);
-//					try{
-//						if(null != getRequest){
-//					      	HttpResponse response = client.execute(getRequest);
-//							//Log.w(TAG, "end to download, uri:" + uri);
-//					      	final int statusCode = response.getStatusLine().getStatusCode();
-//					      	if(statusCode == HttpStatus.SC_OK){
-//					      		final HttpEntity entity = response.getEntity();
-//					      		if(entity != null){
-//					      			inputStream = AndroidHttpClient.getUngzippedContent(entity);
-//					      			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-//									try {
-//										String strPeriod = (null != reader)?reader.readLine():null;
-//										if(null != strPeriod && 0 < strPeriod.length())
-//											Log.e(BeseyeConfig.TAG, strPeriod);
-//											//iPeriod = Integer.parseInt(strPeriod);
-//									} catch (IOException e) {
-//										e.printStackTrace();
-//									}
-//					      			entity.consumeContent();
-//					      		}
-//					      	}
-//						    
-//						}
-//					}catch(Exception e){
-//					      // Could provide a more explicit error message for IOException or
-//					      // IllegalStateException
-//						Log.w(TAG, "Http Get image fail: " + e);
-//					    if(null != getRequest){
-//					    	getRequest.abort();
-//					    }
-//					}finally{
-//					    if(client != null){
-//					    	client.close();
-//					    }
-//					}
-//				} catch (Exception e) {
-//					Log.w(TAG, "Http Get image fail: " + e);
-//				} finally {
-//					if(null != inputStream){
-//						try {
-//							inputStream.close();
-//						} catch (IOException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//					}
-//				}
-//				return null;
-//			}};
-//		task.execute();
+		}	
 		
 //		File notifyFile = new File(path);
 //		//int iPeriod = 5;
@@ -266,15 +251,18 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 //			}
 			
 			String strHWIds = "";
-			for(int idx = 0; idx < hwids.length; idx ++){
-				if(mCbDetachHWIDs[idx].isChecked()){
-					if(strHWIds.equals("")){
-						strHWIds = hwids[idx];
-					}else{
-						strHWIds += (","+hwids[idx]);
+			if(null != arrHWIDs){
+				for(int idx = 0; idx < arrHWIDs.size(); idx ++){
+					if(mCbDetachHWIDs[idx].isChecked()){
+						if(strHWIds.equals("")){
+							strHWIds = arrHWIDs.get(idx);
+						}else{
+							strHWIds += (","+arrHWIDs.get(idx));
+						}
 					}
 				}
 			}
+			
 			
 			SessionMgr.getInstance().setDetachHWID(strHWIds);
 			
