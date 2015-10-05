@@ -198,7 +198,7 @@ public class SessionMgr {
 				mSessionData.setPairToken(getPrefStringValue(mPref, SESSION_PAIR_TOKEN));
 				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
-				mSessionData.setIsTrustDev(getPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, false));
+				mSessionData.setIsTrustDev(getPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, true));
 				
 				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
 				mSessionData.setCamUpdateList(getPrefStringValue(mPref, SESSION_UPDATE_CAMS));
@@ -980,7 +980,6 @@ public class SessionMgr {
 			dest.writeInt(mbIsCamSWUpdateSuspended?1:0);
 			dest.writeInt(mbIsTrustDev?1:0);
 			dest.writeInt(mbIsShowNotificationFromToast?1:0);
-			
 			dest.writeInt(mServerMode.ordinal());
 			
 			dest.writeLong(mlCamUpdateTs);

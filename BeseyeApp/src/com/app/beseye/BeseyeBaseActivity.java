@@ -1445,6 +1445,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		Log.i(TAG, "onSessionInvalid(), iInvalidReason:"+iInvalidReason+", mbIgnoreSessionCheck:"+mbIgnoreSessionCheck);
 		if(!mbIgnoreSessionCheck){
 			if(iInvalidReason == BeseyeHttpTask.ERR_TYPE_SESSION_NOT_TRUST){
+				SessionMgr.getInstance().setIsTrustDev(false);
 				launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
 			}else{
 				onSessionInvalid(false);

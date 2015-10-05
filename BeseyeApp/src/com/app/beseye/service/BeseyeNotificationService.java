@@ -559,7 +559,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     		SessionMgr.createInstance(getApplicationContext());
     	}    		
     	mNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        
         try {
 			mMessenger.send(Message.obtain(null,MSG_CHECK_CACHE_STATE,0,0));
 		} catch (RemoteException e) {
@@ -574,10 +573,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         }
 
         WebsocketsMgr.getInstance().registerOnWSChannelStateChangeListener(this);
-        checkUserLoginState();
-        beginToCheckPushMsgState();
-        
+        NetworkMgr.getInstance().registerNetworkChangeCallback(this);
 		registerReceiver(mHandlePincodeNotifyClickedReceiver,new IntentFilter(ACTION_FORWARD_PINCODE_CLICKED));
+		
+		checkUserLoginState();
+        beginToCheckPushMsgState();
     }
     
     private void initPushVarialbes(){
@@ -626,23 +626,27 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     
     private void checkUserLoginState(){
     	if(DEBUG)
-    		Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+"]");
+    		Log.i(TAG, "checkUserLoginState(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+WebsocketsMgr.getInstance().isWSChannelAlive()+", "+NetworkMgr.getInstance().isNetworkConnected()+", "+SessionMgr.getInstance().getIsTrustDev()+"]");
     	
-    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev() /*&& SessionMgr.getInstance().getIsCertificated()*/){
-    		if(NetworkMgr.getInstance().isNetworkConnected()){
-    			if(false == WebsocketsMgr.getInstance().isWSChannelAlive()){
-    				if("".equals(SessionMgr.getInstance().getWSHostUrl())){
-    					new BeseyeNotificationBEHttpTask.GetWSServerTask(this).execute();
-    				}else{
-    					WebsocketsMgr.getInstance().setWSServerIP(SessionMgr.getInstance().getWSHostUrl());
-    					WebsocketsMgr.getInstance().destroyWSChannel();
-        				WebsocketsMgr.getInstance().constructWSChannel();
-    				}
-    			}else if(true ==  WebsocketsMgr.getInstance().checkLastTimeToGetKeepAlive()){
-    				Log.e(TAG, "Too long to receive keepalive");
-    		
-    				WebsocketsMgr.getInstance().destroyWSChannel();
-    			}
+    	if(false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() /*&& SessionMgr.getInstance().getIsCertificated()*/){
+    		if(SessionMgr.getInstance().getIsTrustDev()){
+    			if(NetworkMgr.getInstance().isNetworkConnected()){
+        			if(false == WebsocketsMgr.getInstance().isWSChannelAlive()){
+        				if("".equals(SessionMgr.getInstance().getWSHostUrl())){
+        					new BeseyeNotificationBEHttpTask.GetWSServerTask(this).execute();
+        				}else{
+        					WebsocketsMgr.getInstance().setWSServerIP(SessionMgr.getInstance().getWSHostUrl());
+        					WebsocketsMgr.getInstance().destroyWSChannel();
+            				WebsocketsMgr.getInstance().constructWSChannel();
+        				}
+        			}else if(true ==  WebsocketsMgr.getInstance().checkLastTimeToGetKeepAlive()){
+        				Log.e(TAG, "Too long to receive keepalive");
+        		
+        				WebsocketsMgr.getInstance().destroyWSChannel();
+        			}
+        		}
+    		}else{
+        		Log.i(TAG, "checkUserLoginState(), not a trusted devices");
     		}
     	}else{
     		postToCloseWs((-1 != mlTimeToCloseWs && mlTimeToCloseWs >= System.currentTimeMillis())?(mlTimeToCloseWs - System.currentTimeMillis()):0);
@@ -704,39 +708,42 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		@Override
 		public void run() {
 			if(DEBUG)
-	    		Log.i(TAG, "mCheckPushMsgRunnable::run(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+mbRegisterPushServer+", "+mbRegisterLocalPushSerivce+"]");
+	    		Log.i(TAG, "mCheckPushMsgRunnable::run(), ["+mbAppInBackground+", "+SessionMgr.getInstance().isTokenValid()+", "+SessionMgr.getInstance().getIsTrustDev()+", "+mbRegisterPushServer+", "+mbRegisterLocalPushSerivce+"]");
 	    	
 			beginToCheckPushMsgState();
-			if(mbAppInBackground && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()){
-				if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
-					if(false == mbBaiduApiKey){
-		    			if(null == mGetBaiduApiKeyTask){
-		    				(mGetBaiduApiKeyTask = new BeseyePushServiceTask.GetBaiduApiKeyTask(BeseyeNotificationService.this)).execute();
-		    			}
-		    		}else if(false == mbRegisterLocalPushSerivce){
-		    			if(null != mStrBaiduApiKey) {
-		    				PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, mStrBaiduApiKey);
-		    			}else {
-		    				mbBaiduApiKey = false;
-		    			}
-		    		}else if(false == mbRegisterPushServer){
-		    			registerBaiDuPushServer();
-		    		}else{
-		 		   		finishToCheckPushMsgState();
-		 		   	}
-		        } else {
-		        	if(false == mbRegisterLocalPushSerivce){
-		 			   	registerGCMServer();
-		 		   	}else if(false == mbRegisterPushServer){
-		 		   		registerPushServer();
-		 		   	}else{
-		 		   		finishToCheckPushMsgState();
-		 		   	}
-		        }
+			if(mbAppInBackground && SessionMgr.getInstance().isTokenValid()){
+				if(SessionMgr.getInstance().getIsTrustDev()){
+					if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_CHINA_STAGE) {        	
+						if(false == mbBaiduApiKey){
+			    			if(null == mGetBaiduApiKeyTask){
+			    				(mGetBaiduApiKeyTask = new BeseyePushServiceTask.GetBaiduApiKeyTask(BeseyeNotificationService.this)).execute();
+			    			}
+			    		}else if(false == mbRegisterLocalPushSerivce){
+			    			if(null != mStrBaiduApiKey) {
+			    				PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, mStrBaiduApiKey);
+			    			}else {
+			    				mbBaiduApiKey = false;
+			    			}
+			    		}else if(false == mbRegisterPushServer){
+			    			registerBaiDuPushServer();
+			    		}else{
+			 		   		finishToCheckPushMsgState();
+			 		   	}
+			        } else {
+			        	if(false == mbRegisterLocalPushSerivce){
+			 			   	registerGCMServer();
+			 		   	}else if(false == mbRegisterPushServer){
+			 		   		registerPushServer();
+			 		   	}else{
+			 		   		finishToCheckPushMsgState();
+			 		   	}
+			        }
+				}else{
+	        		Log.i(TAG, "mCheckPushMsgRunnable::run()(), not a trusted devices");
+	    		}
 			}else{
 				finishToCheckPushMsgState();
 			}
-			
 		}};
 		
     @Override
