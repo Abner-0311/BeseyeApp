@@ -184,7 +184,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    		case CV_STATUS_UNINIT:{
 		    			stopUpdateTime();
 		    			if(null != mCameraViewControlAnimator){
-		    				setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
+		    				//setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
+			    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getTalkView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getRewindView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getFastForwardView(), false);
@@ -260,11 +261,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    				closeStreaming();
 		    			}else{
 		    				//if(mCamViewStatus.equals(CameraView_Internal_Status.CV_STREAM_PAUSED)){
-		    				
 		    				updatePlayPauseBtnByStatus(status);
 		    				
 		    				if(null != mCameraViewControlAnimator){
 			    				setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
+				    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), !mbIsDemoCam);
 		    				}
 		    				
 		    				if(mbIsLiveMode){
@@ -282,7 +283,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    		}
 		    		case CV_STREAM_WAITING_PAUSE:{
 		    			//if(!mbIsLiveMode || isCamPowerOn())
-		    				setCursorVisiblity(View.VISIBLE);
+		    			setCursorVisiblity(View.VISIBLE);
 		    			break;
 		    		}
 		    		case CV_STREAM_PAUSED:{
@@ -290,7 +291,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			setEnabled(mCameraViewControlAnimator.getRewindView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
 			    			setEnabled(mCameraViewControlAnimator.getFastForwardView(), false);
-			    			
+			    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
 			    			updatePlayPauseBtnByStatus(status);
 		    			}
 		    			setCursorVisiblity(View.GONE);
@@ -338,6 +339,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			}
 		    			}
 		    			
+		    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
+
 		    			if(!mActivityResume){
 		    				if(DEBUG)
 		    					Log.w(TAG, "mActivityResume is false when eof");

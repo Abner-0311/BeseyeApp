@@ -1773,6 +1773,20 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
                 	}
                 	break;
                 }
+                case BeseyeNotificationService.MSG_CAM_STATUS_CHANGED_FOR_EVT:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCamStatusChangedForEvt(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                	break;
+                }
 //                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{
 //                	BeseyeBaseActivity act = mActivity.get();
 //                	if(null != act)
@@ -2054,6 +2068,22 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     protected boolean onCameraMotionEvent(JSONObject msgObj){return false;}
     protected boolean onCameraPeopleEvent(JSONObject msgObj){return false;}
     protected boolean onCameraOfflineEvent(JSONObject msgObj){return false;}
+    
+    public boolean onCamStatusChangedForEvt(JSONObject msgObj){
+    	Log.i(TAG, getClass().getSimpleName()+"::onCamStatusChangedForEvt(),  msgObj = "+msgObj);
+    	if(mActivityResume){
+    		if(null != msgObj){
+        		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+        		if(null != objCus){
+        			boolean bCamStatusOn = BeseyeJSONUtil.getJSONBoolean(objCus, BeseyeJSONUtil.CAM_STATUS);
+					String strNotifyMsg = getString(bCamStatusOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
+    				Toast.makeText(this, strNotifyMsg, Toast.LENGTH_SHORT).show();
+        			return true;
+        		}
+    		}
+    	}
+    	return false;
+    }
     
     protected boolean onPasswordChanged(JSONObject msgObj){
     	Toast.makeText(this, getString(R.string.toast_password_changed), Toast.LENGTH_SHORT).show();

@@ -86,6 +86,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private static final int NOTIFICATION_TYPE_MSG  = NOTIFICATION_TYPE_INFO;//NOTIFICATION_TYPE_BASE+2;
 	private static final int NOTIFICATION_TYPE_CAM  = NOTIFICATION_TYPE_BASE+2;
 	private static final int NOTIFICATION_TYPE_PIN  = NOTIFICATION_TYPE_BASE+3;
+	private static final int NOTIFICATION_TYPE_EVT  = NOTIFICATION_TYPE_BASE+4;
+
 	
 	
 	public static final String MSG_REF_JSON_OBJ 	= "MSG_REF_JSON_OBJ";
@@ -161,6 +163,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public static final int MSG_BAIDU_MSG 					= 41;
     public static final int MSG_PIN_CODE_NOTIFY_CLICKED 	= 42;
     
+    public static final int MSG_CAM_STATUS_CHANGED_FOR_EVT 	= 43;
+    
     /**
      * Handler of incoming messages from clients.
      */
@@ -199,7 +203,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_CAM_OFFLINE:
                 case MSG_CAM_EVENT_PEOPLE:
                 case MSG_CAM_EVENT_MOTION:
-                case MSG_CAM_EVENT_OFFLINE:{
+                case MSG_CAM_EVENT_OFFLINE:
+                case MSG_CAM_STATUS_CHANGED_FOR_EVT:{
                 	for (int i=mClients.size()-1; i>=0; i--) {
                 		try {
                 			Bundle b = new Bundle();
@@ -1472,6 +1477,25 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			Intent intent = new Intent();
 			long lTs = System.currentTimeMillis();
 			switch(iNCode){
+				case NCODE_CAM_STATUS_CHANGED_EVT:{
+					iMsgType = MSG_CAM_STATUS_CHANGED_FOR_EVT;
+					if(bFromGCM){
+						boolean bTurnOn = BeseyeJSONUtil.getJSONBoolean(objCus, BeseyeJSONUtil.CAM_STATUS);
+						strNotifyMsg = getString(bTurnOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
+						iNotifyType = NOTIFICATION_TYPE_EVT;
+//						
+//						intent.setClassName(this, OpeningPage.class.getName());
+//						
+//						Intent delegateIntent = new Intent();
+//						delegateIntent.setClassName(this, CameraListActivity.class.getName());
+//						
+//						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//						intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);
+//						
+//						lTs = BeseyeJSONUtil.getJSONLong(objReg, BeseyeJSONUtil.PS_TS);
+					}
+					break;
+				} 
 				case NCODE_CAM_ACTIVATE:{
 					iMsgType = MSG_CAM_ACTIVATE;
 					if(bFromGCM){
@@ -1776,6 +1800,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	private static final int NCODE_CAM_SETTING_UPDATE 			= 0X2000;
 	
+	private static final int NCODE_CAM_STATUS_CHANGED_EVT 		= 0x9478;//ATT event 
 	
 	
 //	private void showNotification(int iNotifyId, Intent intent, CharSequence text, long lTs) {

@@ -360,11 +360,11 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    			httpRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
 	    		}
 	    		
-	    		//for Dev name notification when login and signup
-	    		if(this instanceof BeseyeAccountTask.LoginHttpTask || this instanceof BeseyeAccountTask.RegisterTask){
-	    			httpRequest.addHeader("Bes-Client-Dev-Name", BeseyeUtils.getDevName());
-	    		}
-	    		
+//	    		//for Dev name notification when login and signup
+//	    		if(this instanceof BeseyeAccountTask.LoginHttpTask || this instanceof BeseyeAccountTask.RegisterTask){
+//	    			httpRequest.addHeader("Bes-Client-Dev-Name", BeseyeUtils.getDevName());
+//	    		}
+//	    		
 	    		httpRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
 	    		httpRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
 	    		httpRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());

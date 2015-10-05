@@ -72,22 +72,35 @@
 		        android:id="@+id/vg_detach_hw" 
 		        android:layout_width="wrap_content"  
 	        	android:layout_height="wrap_content"
-	        	android:layout_below="@+id/ck_suspend_cam_sw_update"
+	        	android:layout_below="@+id/btn_send_log"
 	        	android:layout_centerHorizontal="true"
 	        	android:layout_marginTop="10dp"
-	        	android:visibility="gone">
+	        	android:visibility="visible">
 		        <TextView 
 		            android:id="@+id/txt_detach_hw_id" 
 		            android:layout_width="wrap_content"  
 	        		android:layout_height="wrap_content"
-	        		android:layout_alignBaseline="@+id/sp_detach_hw_id"
-	        		android:text="Detach Cam HW ID:"/>
+	        		android:text="Check the Detach Cam HW IDs:"/>
+	        	<CheckBox 
+		            android:id="@+id/ck_hw_id_1" 
+		            android:layout_width="wrap_content"  
+		        	android:layout_height="wrap_content"
+		        	android:layout_below="@+id/txt_detach_hw_id"
+		        	android:layout_centerHorizontal="true"
+		        	android:text="HW ID 1"/>
+	        	<CheckBox 
+		            android:id="@+id/ck_hw_id_2" 
+		            android:layout_width="wrap_content"  
+		        	android:layout_height="wrap_content"
+		        	android:layout_below="@+id/ck_hw_id_1"
+		        	android:layout_centerHorizontal="true"
+		        	android:text="HW ID 2"/>
 		        
-		        <Spinner 
+		        <!-- <Spinner 
 			        android:id="@+id/sp_detach_hw_id" 
 			        android:layout_width="wrap_content"  
 			        android:layout_height="wrap_content"  
-			        android:layout_toRightOf="@+id/txt_detach_hw_id"/>
+			        android:layout_toRightOf="@+id/txt_detach_hw_id"/> -->
 		    </RelativeLayout>
 		    
 		    <RelativeLayout 

@@ -91,7 +91,7 @@ public class BeseyeEntryActivity extends BeseyeBaseActivity {
 				break;
 			}
 			case R.id.iv_signup_sun:{
-				if(BeseyeConfig.DEBUG && SessionMgr.getInstance().getServerMode() == SessionMgr.SERVER_MODE.MODE_STAGING){
+				if(BeseyeConfig.DEBUG){
 					miDetachCount++;
 					if(miDetachCount >=2){
 						//Toast.makeText(this, "Detach by HW ID", Toast.LENGTH_SHORT).show();
