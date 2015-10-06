@@ -134,8 +134,8 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	public static final int TIMEOUT_SET_RELATED = 30000;
 	
 	protected static void setTimeouts(HttpParams params, int iConTimeout, int iSocketTimeout) {
-	    params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
-	    params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, SOCKET_TIMEOUT);
+	    params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, iConTimeout);
+	    params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, iSocketTimeout);
 	}
 	
 	static public interface OnHttpTaskCallback{

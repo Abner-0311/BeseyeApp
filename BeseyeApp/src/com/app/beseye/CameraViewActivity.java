@@ -713,7 +713,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		
 		checkAndExtendHideHeader();
 		
-		if(!mbFirstResume || mbIsRetryAtNextResume || mbIsSwitchPlayer){
+		if(!mbFirstResume || mbIsRetryAtNextResume || mbIsSwitchPlayer || mbWaitForFirstWSConnected){
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this, true).setDialogId(-1), true, mStrVCamID);
 			triggerPlay();
 		}
@@ -1324,7 +1324,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 								BeseyeUtils.postRunnable(new Runnable(){
 									@Override
 									public void run() {
-										monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(CameraViewActivity.this).setDialogId(-1), true, mStrVCamID);
+										if(mActivityResume)
+											monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(CameraViewActivity.this).setDialogId(-1), true, mStrVCamID);
 									}}, 5000L);
 							}	
 						}
@@ -1395,7 +1396,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
 	private void setCursorVisiblity(int iVisibility){
-		setVisibility(mPbLoadingCursor, iVisibility);
+		if(View.GONE == iVisibility && (isCamPowerDisconnected() && mbWaitForFirstWSConnected)){
+			setVisibility(mPbLoadingCursor, View.VISIBLE);
+		}else{
+			setVisibility(mPbLoadingCursor, iVisibility);
+		}
 	}
 	
 	private void checkLiveStreaming(long lDelay){
