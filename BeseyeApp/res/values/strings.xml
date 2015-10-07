@@ -521,15 +521,15 @@
   <string name="cam_attach_under_your_account_error">This camera whose name is (%s) was already awaken by your account.</string>
   <string name="cam_attach_under_other_account_error">This camera was already awaken by other\'s account.\nPlease contact custumer service for help.\n[Camera HW ID is %s]</string>
   
-  <string name="title_human_detect_train">Choose Non-human picture</string>
-  <string name="confirm">Confirm</string>
-  <string name="cam_setting_title_human_detect">Human detection</string>
+  <string name="title_human_detect_train">點擊無人影像</string>
+  <string name="confirm">完成</string>
+  <string name="cam_setting_title_human_detect">移動人員偵測</string>
   <string name="cam_setting_title_human_detect_notify">人員偵測通知</string>
-  <string name="enhance_human_detect">Enhance Human Detect</string>
+  <string name="enhance_human_detect">偵測功能最佳化</string>
   <string name="enhance_human_detect_hint">系統會自動偵測移動人員。但若下頁影像中無任何人，請點擊去除，以取得最佳辨識結果。</string>
   <string name="recognition_percentage">最佳化進度：%s</string>
   <string name="recognition_percentage_done">已完成！</string>
-  <string name="reset_human_detect">Reset Human Detect</string>
+  <string name="reset_human_detect">重置偵測功能</string>
   <string name="reset_human_detect_hint">若攝影機移動拍攝場景，或是想重設已選擇的場景，可以選擇重置。</string>
   <string name="dialog_reset_human_detect">如此會刪除過去所有最佳化的成果，並需要重新執行最佳化流程，您確定嗎</string>
   <string name="human_detect_no_human">無人</string>
@@ -539,7 +539,7 @@
   <string name="enhance_human_detect_intro_p3_desc">世上最好的技術，現在還可針對您做最佳化。\n透過點擊無人員之影像，讓此技術變得更加適合您，就像是為您量身定做。</string>
   <string name="enhance_human_detect_intro_p3_desc_highlight">無</string>
   
-  <string name="enhance_human_detect_intro_next_step">Next step</string>
+  <string name="enhance_human_detect_intro_next_step">下一步</string>
     
   <string name="enhance_human_detect_reward_desc">\n辨識率更加提高了！</string>
   <string name="enhance_human_detect_no_pic_desc">\nBeseye 將會在近期提供疑似人員影像讓您篩選。</string>
@@ -551,4 +551,3 @@
   <string name="att_event_cam_status_on">外出請注意安全，Beseye 已開啟攝影機保護您的空間。</string>
   <string name="att_event_cam_status_off">歡迎回來，Beseye 已將攝影機關閉，但隨時待命。</string>
 </resources>
-
