@@ -23,6 +23,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.app.beseye.BeseyeApplication;
+import com.app.beseye.BeseyeComputexModeActivity;
 import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -154,6 +155,7 @@ public class SessionMgr {
 	static private final String SESSION_NEWS_IND_SHOW	    = "beseye_news_show_ind";
 	
 	static private final String SESSION_TRANFER_TO_SEC	    = "beseye_transfer_to_sec";
+	static private final String SESSION_TRANFER_TO_ATT_EVENT= "beseye_transfer_to_att_event_hw_id";
 	//Below items are after security mode
 	
 	static private final String SESSION_DEBUG_SHOW_NOTIFY	= "beseye_debug_show_notify";
@@ -209,6 +211,22 @@ public class SessionMgr {
 				mSessionData.setSignupEmail(getPrefStringValue(mPref, SESSION_SIGNUP_EMAIL));
 				
 				mSessionData.setIsShowNotificationFromToast(getPrefBooleanValue(mPref, SESSION_DEBUG_SHOW_NOTIFY, false));
+			}
+			
+			if(false == getPrefBooleanValue(mPref, SESSION_TRANFER_TO_ATT_EVENT, false) && BeseyeApplication.isInMainProcess()){
+				String strHWIds = "";
+				if(null != BeseyeComputexModeActivity.hwids_prod){
+					for(int idx = 0; idx <  BeseyeComputexModeActivity.hwids_prod.length; idx ++){
+						if(strHWIds.equals("")){
+							strHWIds =  BeseyeComputexModeActivity.hwids_prod[idx];
+						}else{
+							strHWIds += (","+BeseyeComputexModeActivity.hwids_prod[idx]);
+						}
+					}
+					Log.e(TAG, "transferToAttEvent() ++");
+					setDetachHWID(strHWIds);
+				}
+				setPrefBooleanValue(mPref, SESSION_TRANFER_TO_ATT_EVENT, true);
 			}
 		}
 	}

@@ -38,7 +38,7 @@ public class BeseyeAccountTask {
 	public static final String URL_CAM_VALIDATE		="vcam/validate";
 	public static final String URL_CAM_VALIDATE_BEE	="vcam/bee_validate";
 	
-	public static final String URL_CAM_DEATTACH_SALE="vcam/detach_by_sales?UidList=%s&SalesDemoToken=skHGU1TsnbfHIqKWyKFlapJ8BVMV0UeZM1I2Bm41NQBil9JepgOLV4Agf1h84a82";
+	public static final String URL_CAM_DEATTACH_SALE="vcam/detach_by_sales?UidList=%s&SalesDemoToken=skHGU1TsnbfHIqKWyKFlapJ8BVMV0UeZM1I2Bm41NQBil9JepgOLV4Agf1h84a82&UidExistCheck=false";
 	
 	public static final String URL_TRUST_NEW_PIN	="user/trust/pincode_new";
 	public static final String URL_TRUST_VERIFY_PIN	="user/trust/pincode_verify";

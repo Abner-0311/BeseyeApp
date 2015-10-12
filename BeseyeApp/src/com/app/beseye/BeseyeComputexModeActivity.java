@@ -42,7 +42,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 	private LinearLayout mVgHWIDs;
 	private static String[] hwids_dev = new String[]{"00409O92TX91", "00409T95HZSR"};//new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"}
 	//private static int[] ctrlhwids = new int[]{R.id.ck_hw_id_1, R.id.ck_hw_id_2};
-	private static String[] hwids_prod = new String[]{"0090G101A232", "0090G101A235","0090G101A225"};
+	public static String[] hwids_prod = new String[]{"0090G101A232", "0090G101A235","0090G101A225"};
 	private String[] hwids = null;
 	private ArrayList<String> mArrHWIDs = null;
 	@Override
