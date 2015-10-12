@@ -176,7 +176,7 @@
   <!-- Warning Message of dialog when failed to change schedule on/off status-->
   <string name="cam_setting_fail_to_update_schdule_status">スケジュールの更新ができませんでした。再試行してください。</string>
   <!-- Message of dialog when adding a new schedule-->
-  <string name="cam_setting_schedule_add">作成中…</string>
+  <string name="cam_setting_schedule_add">追加</string>
   <!-- Warning Message of dialog when failed to add schedule-->
   <string name="cam_setting_fail_to_add_schdule">スケジュールの作成ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to update schedule-->
@@ -259,7 +259,7 @@
   <string name="signup_title_wifi_list">Wi- Fi 一覧</string>
   <string name="signup_learn_more">詳しくはこちら</string>
   <string name="signup_beseye">Beseye について</string>
-  <string name="signup_bottom_login">OK</string>
+  <string name="signup_bottom_login">ログイン</string>
   <string name="signup_bottom_signup">新規アカウントの作成</string>
   <string name="signup_before_setup_start">スタート</string>
   <!-- Hint Message in before setup page-->
@@ -346,7 +346,7 @@
   <string name="notify_cam_off_detect_cam_list">%sカメラをオフにする</string>
   <string name="about_title">Beseye について</string>
   <string name="about_ver">Beseye バージョン%s</string>
-  <string name="about_desc">Beseye について\nBeseye（ベスアイ）は、古代エジプトの家庭の守護女神で、家族のシンボルであるBes（ベス）に由来しています。\nベスは古代エジプトにおいて、家の守護神、特に、母子や出産における神として崇拝され、後に、すべての良き事を護り、そしてすべての悪しきことから護ってくれる神と考えられるように成りました。\nBes Eye Cloud Security Co.（ベスアイ クラウドセキュリティー社）は、「ベスの目を通して」をモットーにご自宅とご家族を献身的に見守ります。 クラウドアップデートと監視テクノロジーを通じ、よりスマートで安全な生活をご提供いたします。\nご家庭でのセキュリティーに関する不安とリスクに対するお悩みから解消されたいですか。日に日に成長するお子さんを一瞬も見逃さずに見守りつづけたいですか。私たちはクラウドを活用し、あなたの愛する家族を見守り、ご自宅を護ります。\nBeseyeカメラを活用し、家族との時間をお楽しみください！\nよりスマートに、より自由に!\nご家族とお子さんとの時間を大切に、進化したクラウドセキュリティーサービスの、刷新的なベスアイカメラがまもなくリリース予定！\nその革新的な特許でComputex d&amp;i award を受賞、ベスアイの新製品が世界を魅了！あなたにもきっと、ベスアイの新商品を気に入っていただけるはずです！</string>
+  <string name="about_desc">Beseye について\nBeseye（ベスアイ）は、古代エジプトの家庭の守護女神で、家族のシンボルであるBes（ベス）に由来しています。\nベスは古代エジプトにおいて、家の守護神、特に、母子や出産における神として崇拝され、後に、すべての良き事を護り、そしてすべての悪しきことから護ってくれる神と考えられるように成りました。\nBes Eye Cloud Security Co.（ベスアイ クラウドセキュリティー社）は、「ベスの目を通して」をモットーにご自宅とご家族を献身的に見守ります。 クラウドアップデートと監視テクノロジーを通じ、よりスマートで安全な生活をご提供いたします。\nご家庭でのセキュリティーに関する不安とリスクに対するお悩みから解消されたいですか。日に日に成長するお子さんを一瞬も見逃さずに見守りつづけたいですか。私たちはクラウドを活用し、あなたの愛する家族を見守り、ご自宅を護ります。\nベスアイカメラを活用し、家族との時間をお楽しみください！\nよりスマートに、より自由に!\nご家族とお子さんとの時間を大切に、進化したクラウドセキュリティーサービスの、刷新的なベスアイカメラがまもなくリリース予定！\nその革新的な特許でComputex d&amp;i award を受賞、ベスアイの新製品が世界を魅了！あなたにもきっと、ベスアイの新商品を気に入っていただけるはずです！</string>
   <!-- descriptions of pull to refresh listview-->
   <string name="loading_latest_update">最終アップデート時間</string>
   <string name="pull_to_refresh_pull_label">スクロールして、更新できます。</string>
@@ -457,11 +457,11 @@
   <!--Dialog Title for listing Market App Web version to update beseye -->
   <string name="dialog_title_download_app_via_web">ウェブサイトでBeseye APP を更新する</string>
   <!--Turn off on every <Mon> ... etc.-->
-  <string name="cam_setting_schedule_turnoff_every">指定日に毎回電源オフにする</string>
+  <string name="cam_setting_schedule_turnoff_every">カメラオフの時間設定</string>
   <!--From: <time>-->
-  <string name="cam_setting_schedule_turnoff_from">開始時間:</string>
+  <string name="cam_setting_schedule_turnoff_from">オフの開始時間：</string>
   <!--To: <time>-->
-  <string name="cam_setting_schedule_turnoff_to">終了時間:</string>
+  <string name="cam_setting_schedule_turnoff_to">オフの終了時間:</string>
   <string name="cam_setting_title_turnoff_all_day">終日電源オフ</string>
   <!--from <time> to <time>-->
   <string name="cam_setting_desc_turnoff_during">%1$s から %2$s まで電源オフ</string>

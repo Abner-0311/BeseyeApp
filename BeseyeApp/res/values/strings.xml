@@ -514,14 +514,15 @@
   <string name="notification_pincode_auth">Authorization code %1$s requested from %2$s</string>
   <!--Pin code request dialog message shown in Beseye App-->
   <string name="dialog_notification_pincode_auth">Authorization code is %1$s. Someone try to log into your account by %2$s. It can log into your account by inputting authorization code.</string>
-  
+
+   
   <string name="title_cam_attached_already">Already attached camera</string>
   <string name="btn_detach_cam_now">Remove camera now</string>
   <string name="btn_contact_cs">Contact Custumer service</string>
   <string name="cam_attach_under_your_account_error">This camera whose name is (%s) was already awaken by your account.</string>
   <string name="cam_attach_under_other_account_error">This camera was already awaken by other\'s account.\nPlease contact custumer service for help.\n[Camera HW ID is %s]</string>
   
-  <string name="title_human_detect_train">點擊無人影像</string>
+ <string name="title_human_detect_train">點擊無人影像</string>
   <string name="confirm">完成</string>
   <string name="cam_setting_title_human_detect">移動人員偵測</string>
   <string name="cam_setting_title_human_detect_notify">人員偵測通知</string>
