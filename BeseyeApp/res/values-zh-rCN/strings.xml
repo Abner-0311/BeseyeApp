@@ -271,7 +271,7 @@
   <string name="signup_createAccount_description_and">与</string>
   <string name="signup_createAccount_description_policy">隐私保护政策</string>
   <!-- Hint Message in pairing failed page-->
-  <string name="signup_try_again_description_1">请将摄像头插上电源，并将行动装置拿至距离摄像头30 公分左右，并检查无线网络密码是正确的。</string>
+  <string name="signup_try_again_description_1">请将摄像头插上电源，并将行动装置拿至距离摄像头10 公分左右，并检查无线网络密码是正确的。</string>
   <string name="signup_try_again_description_2">还是有问题？请参阅我们的</string>
   <string name="signup_try_again_description_3">安装指南</string>
   <string name="signup_try_again_btn">好，再试一次</string>
