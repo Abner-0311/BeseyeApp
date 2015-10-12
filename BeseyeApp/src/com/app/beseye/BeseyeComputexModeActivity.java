@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -37,9 +39,12 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 	private Spinner mSpServerType;//, mSpDetachHWID;
 	private CheckBox mCbCamSWUpdateSuspended, mCbCamShowNotificationToast, mCbShowHumanDetectOneTime, mCbDetachHWIDs[];
 	private EditText mEtDefEmail = null;
-	private static String[] hwids = new String[]{"00409O92TX91", "00409T95HZSR"};//new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"}
+	private LinearLayout mVgHWIDs;
+	private static String[] hwids_dev = new String[]{"00409O92TX91", "00409T95HZSR"};//new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"}
 	//private static int[] ctrlhwids = new int[]{R.id.ck_hw_id_1, R.id.ck_hw_id_2};
-	private ArrayList<String> arrHWIDs = null;
+	private static String[] hwids_prod = new String[]{"0090G101A232", "0090G101A235","0090G101A225"};
+	private String[] hwids = null;
+	private ArrayList<String> mArrHWIDs = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,57 +84,20 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server(deprecated)","Production Server", "Staging Server (Computex)", "China p2-Stage Server"});
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			mSpServerType.setAdapter(adapter);
+//			mSpServerType.setOnItemSelectedListener(new OnItemSelectedListener(){
+//				@Override
+//				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//					
+//				}
+//
+//				@Override
+//				public void onNothingSelected(AdapterView<?> parent) {
+//				}});
 		}
 		
-		LinearLayout vgHWIDs = (LinearLayout)findViewById(R.id.vg_detach_hw_ids);
-		if(null != vgHWIDs){
-			arrHWIDs = new ArrayList<String>();
-			File fileHWIDs = BeseyeStorageAgent.getFileInDownloadDir(getApplicationContext(), "hwids.txt");
-			if(null != fileHWIDs && fileHWIDs.isFile() && fileHWIDs.exists()){
-				try {
-					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileHWIDs)));
-					try {
-						String strHWID = "";
-						while(null != (strHWID = (null != reader)?reader.readLine():null)){
-							if(null != strHWID && 0 < strHWID.length()){
-								arrHWIDs.add(strHWID);
-							}
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			if(0 == arrHWIDs.size()){
-				Log.e(BeseyeConfig.TAG, "file is not exist");
-				for(int idx =0; idx < hwids.length;idx++){
-					arrHWIDs.add(hwids[idx]);
-				}
-			}
-			
-			if(0 < arrHWIDs.size()){
-				mCbDetachHWIDs = new CheckBox[arrHWIDs.size()];
-				String[] strDeatchHWID = SessionMgr.getInstance().getDetachHWID().split(",");
-
-				for(int idx2 = 0; idx2 < arrHWIDs.size(); idx2++){
-					mCbDetachHWIDs[idx2] = new CheckBox(this);
-					if(null != mCbDetachHWIDs[idx2]){
-						String strHWID = arrHWIDs.get(idx2);
-						mCbDetachHWIDs[idx2].setText(strHWID);
-						for(int idxChk = 0; idxChk < strDeatchHWID.length;idxChk++){
-							if(strHWID.equals(strDeatchHWID[idxChk])){
-								mCbDetachHWIDs[idx2].setChecked(true);
-								break;
-							}
-						}
-						vgHWIDs.addView(mCbDetachHWIDs[idx2]);
-					}
-				}
-			}
-		}	
+		hwids = hwids_prod;
+		
+		mVgHWIDs = (LinearLayout)findViewById(R.id.vg_detach_hw_ids);
 		
 //		File notifyFile = new File(path);
 //		//int iPeriod = 5;
@@ -234,6 +202,57 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		if(null != mSpServerType){
 			mSpServerType.setSelection(mode.ordinal());
 		}
+		
+		if(null != mVgHWIDs){
+			mVgHWIDs.removeAllViews();
+			
+			mArrHWIDs = new ArrayList<String>();
+			File fileHWIDs = BeseyeStorageAgent.getFileInDownloadDir(getApplicationContext(), "hwids.txt");
+			if(null != fileHWIDs && fileHWIDs.isFile() && fileHWIDs.exists()){
+				try {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileHWIDs)));
+					try {
+						String strHWID = "";
+						while(null != (strHWID = (null != reader)?reader.readLine():null)){
+							if(null != strHWID && 0 < strHWID.length()){
+								mArrHWIDs.add(strHWID);
+							}
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(0 == mArrHWIDs.size()){
+				Log.e(BeseyeConfig.TAG, "file is not exist");
+				for(int idx =0; idx < hwids.length;idx++){
+					mArrHWIDs.add(hwids[idx]);
+				}
+			}
+			
+			if(0 < mArrHWIDs.size()){
+				mCbDetachHWIDs = new CheckBox[mArrHWIDs.size()];
+				String[] strDeatchHWID = SessionMgr.getInstance().getDetachHWID().split(",");
+
+				for(int idx2 = 0; idx2 < mArrHWIDs.size(); idx2++){
+					mCbDetachHWIDs[idx2] = new CheckBox(this);
+					if(null != mCbDetachHWIDs[idx2]){
+						String strHWID = mArrHWIDs.get(idx2);
+						mCbDetachHWIDs[idx2].setText(strHWID);
+						for(int idxChk = 0; idxChk < strDeatchHWID.length;idxChk++){
+							if(strHWID.equals(strDeatchHWID[idxChk])){
+								mCbDetachHWIDs[idx2].setChecked(true);
+								break;
+							}
+						}
+						mVgHWIDs.addView(mCbDetachHWIDs[idx2]);
+					}
+				}
+			}
+		}	
 	}
 	
 	private void applyMode(){
@@ -251,13 +270,13 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 //			}
 			
 			String strHWIds = "";
-			if(null != arrHWIDs){
-				for(int idx = 0; idx < arrHWIDs.size(); idx ++){
+			if(null != mArrHWIDs){
+				for(int idx = 0; idx < mArrHWIDs.size(); idx ++){
 					if(mCbDetachHWIDs[idx].isChecked()){
 						if(strHWIds.equals("")){
-							strHWIds = arrHWIDs.get(idx);
+							strHWIds = mArrHWIDs.get(idx);
 						}else{
-							strHWIds += (","+arrHWIDs.get(idx));
+							strHWIds += (","+mArrHWIDs.get(idx));
 						}
 					}
 				}
