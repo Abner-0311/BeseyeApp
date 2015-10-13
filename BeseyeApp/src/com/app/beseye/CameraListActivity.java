@@ -412,7 +412,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			updateCamItm(++miTaskSeedNum);
 		}
 		
-		if((isAppVersionChecked() && !isCamUpdating()) || checkCamUpdateValid()){
+		if((isAppVersionChecked() && !isCamUpdatingInCurrentPage()) || checkWithinCamUpdatePeriod()){
 			getCamUpdateCandidateList(mObjVCamList);
 			mObjVCamList = null;
 		}

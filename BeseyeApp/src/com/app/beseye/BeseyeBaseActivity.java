@@ -608,12 +608,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	private void onAppUpdateNotAvailable(){
-		if(this instanceof CameraListActivity && !checkCamUpdateValid() && !isCamUpdating() && null != mObjVCamList){
+		if(this instanceof CameraListActivity /*&& !checkWithinCamUpdatePeriod()*/ && !isCamUpdatingInCurrentPage() && null != mObjVCamList){
 			getCamUpdateCandidateList(mObjVCamList);
 		}
 		
 		mbHaveCheckAppVer = true;
-		if((false == this instanceof CameraListActivity && false == mbIgnoreCamVerCheck && !checkCamUpdateValid() && !isCamUpdating()) || mbIsNetworkDisconnectedWhenCamUpdating)
+		if((false == this instanceof CameraListActivity && false == mbIgnoreCamVerCheck /*&& !checkWithinCamUpdatePeriod()*/ && !isCamUpdatingInCurrentPage()) || mbIsNetworkDisconnectedWhenCamUpdating)
 			getCamListAndCheckCamUpdateVersions();
 	}
 	
@@ -1019,7 +1019,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     		checkForUpdates();
     	}else{
     		showNoNetworkDialog();
-    		if(isCamUpdating()){
+    		if(isCamUpdatingInCurrentPage()){
     			mbIsNetworkDisconnectedWhenCamUpdating = true;
     		}
     	}
@@ -1351,7 +1351,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						BeseyeUtils.postRunnable(new Runnable(){
 							@Override
 							public void run() {
-								if(checkCamUpdateValid()){
+								if(checkWithinCamUpdatePeriod()){
 									monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(BeseyeBaseActivity.this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++%miUpdateCamNum));
 								}else{
 									Bundle b = new Bundle();
@@ -1404,7 +1404,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			
 			
 			if(0 < arrVcamIdList.length()){
-				if(checkCamUpdateValid()){
+				if(checkWithinCamUpdatePeriod()){
 					resumeCamUpdate(arrVcamIdList);
 				}else{
 					BeseyeCamInfoSyncMgr.getInstance().queryCamUpdateVersions(arrVcamIdList);
@@ -2188,7 +2188,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected boolean mbSilentUpdate = true;
 	
 	protected void triggerCamUpdate(JSONArray VcamList, boolean bSilent){
-		if(isCamUpdating()){
+		if(isCamUpdatingInCurrentPage()){
 			if(DEBUG)
 				Log.i(TAG, "triggerCamUpdate(), isCamUpdating... return");
 			return;
@@ -2243,7 +2243,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	protected void resumeCamUpdate(JSONArray VcamList){
-		if(isCamUpdating() && false == mbIsNetworkDisconnectedWhenCamUpdating){
+		if(isCamUpdatingInCurrentPage() && false == mbIsNetworkDisconnectedWhenCamUpdating){
 			if(DEBUG)
 				Log.i(TAG, "resumeCamUpdate(), isCamUpdating... return");
 			return;
@@ -2354,7 +2354,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}	
 	}
 	
-	protected boolean isCamUpdating(){
+	protected boolean isCamUpdatingInCurrentPage(){
 		return (null != mLstUpdateCandidate && 0 < mLstUpdateCandidate.size());
 	}
 	
@@ -2383,7 +2383,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	//Wait cam for 10 mins at most
-	protected boolean checkCamUpdateValid(){
+	protected boolean checkWithinCamUpdatePeriod(){
 		boolean  bRet = true;
 		long lDelta = System.currentTimeMillis() - SessionMgr.getInstance().getCamUpdateTimestamp();
 		if(lDelta > 10*60*1000){//timeout after 10 mis
