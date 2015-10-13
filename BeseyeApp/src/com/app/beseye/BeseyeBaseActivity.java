@@ -211,6 +211,11 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			return;
 		}
 		
+		if((0 != slLastGetCamListTs && (System.currentTimeMillis() - slLastGetCamListTs) < 300000L) && !mbIsNetworkDisconnectedWhenCamUpdating){//Not check update within 5 mins
+			Log.e(TAG, "getCamListAndCheckCamUpdateVersions(), within checked duration");
+			return;
+		}
+		
 		if(false == this instanceof CameraListActivity /*|| (null == ( setVcamList = BeseyeCamInfoSyncMgr.getInstance().getVCamIdList()) || 0 == setVcamList.size())*/){
 			if(null != mGetCamListTask && false == mGetCamListTask.isCancelled()){
 				mGetCamListTask.cancel(true);
@@ -608,7 +613,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}
 		
 		mbHaveCheckAppVer = true;
-		if(false == this instanceof CameraListActivity && false == mbIgnoreCamVerCheck && !checkCamUpdateValid() && !isCamUpdating())
+		if((false == this instanceof CameraListActivity && false == mbIgnoreCamVerCheck && !checkCamUpdateValid() && !isCamUpdating()) || mbIsNetworkDisconnectedWhenCamUpdating)
 			getCamListAndCheckCamUpdateVersions();
 	}
 	
@@ -1011,8 +1016,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	if(bNetworkConnected){
     		hideNoNetworkDialog();
     		onSessionComplete();
+    		checkForUpdates();
     	}else{
     		showNoNetworkDialog();
+    		if(isCamUpdating()){
+    			mbIsNetworkDisconnectedWhenCamUpdating = true;
+    		}
     	}
     }
     
@@ -1373,10 +1382,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
 			return;
 		}
-		
-		if(checkCamUpdateValid()){
-			return ;
-		}
+//		
+//		if(checkCamUpdateValid()){
+//			return ;
+//		}
 		
 		JSONArray arrVcamIdList = new JSONArray();
 		int iVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_VCAM_CNT);
@@ -1393,10 +1402,17 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				}
 			}
 			
+			
 			if(0 < arrVcamIdList.length()){
-				BeseyeCamInfoSyncMgr.getInstance().queryCamUpdateVersions(arrVcamIdList);
+				if(checkCamUpdateValid()){
+					resumeCamUpdate(arrVcamIdList);
+				}else{
+					BeseyeCamInfoSyncMgr.getInstance().queryCamUpdateVersions(arrVcamIdList);
+				}
 			}
 		}
+		
+		slLastGetCamListTs = System.currentTimeMillis();
 	}
 
 	@Override
@@ -2136,6 +2152,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	private int miCurUpdateCamStatusIdx = 0;
 	private JSONArray mVcamUpdateList = null;
 	protected JSONObject mObjVCamList = null; //for cam list
+	static private long slLastGetCamListTs = 0; 
+	private boolean mbIsNetworkDisconnectedWhenCamUpdating = false;
 	
 	private String findCamNameFromVcamUpdateList(String strVCamId){
 		String strRet = "";
@@ -2161,6 +2179,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		miCheckUpdateCamIdx = 0;
 		mUpdateVcamList = new JSONObject();
 		mLstUpdateCandidate = new ArrayList<String>();
+		miCurUpdateCamStatusIdx = 0;
 		if(false == bResumeCase){
 			SessionMgr.getInstance().setCamUpdateTimestamp(0);
 		}
@@ -2224,11 +2243,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	protected void resumeCamUpdate(JSONArray VcamList){
-		if(isCamUpdating()){
+		if(isCamUpdating() && false == mbIsNetworkDisconnectedWhenCamUpdating){
 			if(DEBUG)
 				Log.i(TAG, "resumeCamUpdate(), isCamUpdating... return");
 			return;
 		}
+		
+		mbIsNetworkDisconnectedWhenCamUpdating = false;
 		
 		String[] strCamUpdate = SessionMgr.getInstance().getCamUpdateList().split(";");
 		if(null != strCamUpdate){

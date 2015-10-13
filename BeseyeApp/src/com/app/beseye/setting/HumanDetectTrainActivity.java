@@ -465,7 +465,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		}
 		
 		BeseyeUtils.setVisibility(mbtnContinue, View.GONE);
-		BeseyeUtils.setVisibility(mVgResultPage, View.GONE);
+		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 	}
 	
 	private void onTrainRetAndPicAvailable(int iCompletePercent, boolean bHaveMorrePic){

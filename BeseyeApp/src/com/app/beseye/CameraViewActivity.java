@@ -929,18 +929,19 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(DEBUG)
 			Log.d(TAG, "CameraViewActivity::onConnectivityChanged(), bNetworkConnected="+bNetworkConnected+", state="+getCamViewStatus());
 		
+		super.onConnectivityChanged(bNetworkConnected);
 		if(false == bNetworkConnected){
 			if(!isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
 				closeStreaming();
 			}
 			mbIsRetryAtNextResume = true;
-			showNoNetworkDialog();
+			//showNoNetworkDialog();
 		}else{
 			if(isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
 				mbIsRetryAtNextResume = true;
 				checkPlayState();
 			}
-			hideNoNetworkDialog();
+			//hideNoNetworkDialog();
 		}
 	}
 	
