@@ -478,7 +478,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			mTxtRetDesc.setText(/*String.format(getString(R.string.recognition_percentage), iCompletePercent+"%")+*/getString(R.string.enhance_human_detect_reward_desc));
 		}
 		
-		BeseyeUtils.setVisibility(mbtnContinue, bHaveMorrePic?View.VISIBLE:View.INVISIBLE);
+		BeseyeUtils.setVisibility(mbtnContinue, bHaveMorrePic?View.VISIBLE:View.GONE);
 		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 	}
 	

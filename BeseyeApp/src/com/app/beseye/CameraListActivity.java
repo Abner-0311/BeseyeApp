@@ -1114,7 +1114,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		if(null != inflater){
 			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
 			if(null != mVgEmptyView){
-				mMainListView.setEmptyView(mVgEmptyView);
+				mVgEmptyView.post(new Runnable(){
+					@Override
+					public void run() {
+						mMainListView.setEmptyView(mVgEmptyView);						
+					}});
 			}
 		}
 	}
