@@ -1,5 +1,12 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
+import java.util.List;
+
+import org.json.JSONObject;
+
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeConfig;
@@ -9,8 +16,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -110,5 +119,22 @@ public class BeseyeAboutActivity extends BeseyeBaseActivity {
 			default:
 				super.onClick(view);
 		}		
+	}
+	
+	@Override
+	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
+		if(!task.isCancelled()){
+			if(task instanceof BeseyeAccountTask.CamDettachByHWIDTask){
+				if(0 == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+					onToastShow(task, "Detach Cam (HW_ID is "+SessionMgr.getInstance().getDetachHWID()+") successfully.");
+				}else{
+					onToastShow(task, "Detach Cam (HW_ID is "+SessionMgr.getInstance().getDetachHWID()+") falsed.");
+				}
+			}else{
+				super.onPostExecute(task, result, iRetCode);
+			}
+		}
 	}
 }
