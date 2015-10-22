@@ -1186,8 +1186,9 @@ unsigned long FreqGenerator::getSoundPairingDuration(const char* ssid, const cha
 							(wifiKey?strlen(wifiKey):0)*2+
 							2+//SSID len
 							4+//user temp id
-							6+//purpose
-							6;//prefix+postfix+divider
+							8+//purpose
+							6+//prefix+postfix+divider
+							10;//additional err toleration
 
 	unsigned long lTimeToWait = iNumWords*4*100 + 45*1000;
 	if(MIN_TIME_TO_WAIT_ATTACH > lTimeToWait){
