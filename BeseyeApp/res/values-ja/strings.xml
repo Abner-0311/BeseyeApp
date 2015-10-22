@@ -256,7 +256,7 @@
   <string name="signup_title_create_account">アカウント作成</string>
   <string name="signup_title_cam_wifi_settings">Wi-Fi 設定</string>
   <string name="signup_title_cam_pair_fail">もう一度実行してください</string>
-  <string name="signup_title_wifi_list">Wi- Fi 一覧</string>
+  <string name="signup_title_wifi_list">Wi-Fi 一覧</string>
   <string name="signup_learn_more">詳しくはこちら</string>
   <string name="signup_beseye">Beseye について</string>
   <string name="signup_bottom_login">ログイン</string>

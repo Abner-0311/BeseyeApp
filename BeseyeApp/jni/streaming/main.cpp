@@ -139,11 +139,11 @@ static jmethodID  s_getBitmapMethod, s_drawStreamBitmapMethod, s_rtmpStatusCBMet
 static jclass mActivityClass = NULL;
 static jobject mThisObj= NULL;
 /* method signatures */
-static jmethodID midAudioInit= NULL;
-static jmethodID midAudioGetBufSize= NULL;
-static jmethodID midAudioWriteShortBuffer= NULL;
-static jmethodID midAudioWriteByteBuffer= NULL;
-static jmethodID midAudioQuit= NULL;
+//static jmethodID midAudioInit= NULL;
+//static jmethodID midAudioGetBufSize= NULL;
+//static jmethodID midAudioWriteShortBuffer= NULL;
+//static jmethodID midAudioWriteByteBuffer= NULL;
+//static jmethodID midAudioQuit= NULL;
 
 static pthread_mutex_t mutexlock;
 
@@ -198,20 +198,20 @@ JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_nativeClassIni
 
 	mActivityClass = (jclass)(env->NewGlobalRef(clss));
 
-	midAudioInit = env->GetStaticMethodID(mActivityClass,
-								"audioInit", "(IZZI)I");
-
-	midAudioGetBufSize = env->GetStaticMethodID(mActivityClass,
-								"getAudioBufSize", "(I)I");
-
-	midAudioWriteShortBuffer = env->GetStaticMethodID(mActivityClass,
-								"audioWriteShortBuffer", "([S)V");
-
-	midAudioWriteByteBuffer = env->GetStaticMethodID(mActivityClass,
-								"audioWriteByteBuffer", "([B)V");
-
-	midAudioQuit = env->GetStaticMethodID(mActivityClass,
-								"audioQuit", "()V");
+//	midAudioInit = env->GetStaticMethodID(mActivityClass,
+//								"audioInit", "(IZZI)I");
+//
+//	midAudioGetBufSize = env->GetStaticMethodID(mActivityClass,
+//								"getAudioBufSize", "(I)I");
+//
+//	midAudioWriteShortBuffer = env->GetStaticMethodID(mActivityClass,
+//								"audioWriteShortBuffer", "([S)V");
+//
+//	midAudioWriteByteBuffer = env->GetStaticMethodID(mActivityClass,
+//								"audioWriteByteBuffer", "([B)V");
+//
+//	midAudioQuit = env->GetStaticMethodID(mActivityClass,
+//								"audioQuit", "()V");
 
 	midIsDebugMode= env->GetStaticMethodID(mActivityClass, "isDebugMode", "()Z");
 
@@ -274,7 +274,7 @@ extern void SDL_Android_Init(JNIEnv* env, jclass cls);
 void JNICALL Java_com_app_beseye_CameraViewActivity_nativeInit(JNIEnv* env, jclass cls, jobject obj)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
-    SDL_Android_Init(env, cls);
+    SDL_Android_Init(env, cls);//[Abner]SDL audio init, in SDL2-2.0.1/src/core/android/SDL_android.c
 
     SDL_SetMainReady();
 
@@ -646,212 +646,213 @@ JNIEXPORT int JNICALL Java_com_app_beseye_CameraViewActivity_closeStreaming(JNIE
 	pthread_mutex_unlock(&mutexlock);
 	return iRet;
 }
-
-/*
- * Audio support
- */
-static jboolean audioBuffer16Bit = JNI_FALSE;
-static jboolean audioBufferStereo = JNI_FALSE;
-static jobject audioBuffer = NULL;
-static void* audioBufferPinned = NULL;
-
-int Android_JNI_GetAudioBufferSize(int sampleRate){
-	DECLARE_JNIENV_WITH_RETURN()
-    int iRet = jni_env->CallStaticIntMethod(mActivityClass, midAudioGetBufSize, sampleRate);
-	//jvm->DetachCurrentThread();
-	return iRet;
-}
-
-int Android_JNI_OpenAudioDevice2(int sampleRate, int is16Bit, int channelCount, int desiredBufferFrames){
-	DECLARE_JNIENV_WITH_RETURN()
-
-    int audioBufferFrames;
-
-    if (!jni_env) {
-        LOGE("callback_handler: failed to attach current thread");
-    }
-   // Android_JNI_SetupThread();
-
-    //__android_log_print(ANDROID_LOG_VERBOSE, "SDL", "SDL audio: opening device");
-    audioBuffer16Bit = is16Bit;
-    audioBufferStereo = channelCount > 1;
-
-    audioBufferFrames = desiredBufferFrames = Android_JNI_GetAudioBufferSize(sampleRate);
-    if(isDebugMode()){
-    	LOGW("audioBufferFrames:%d", audioBufferFrames);
-    }
-
-    if (jni_env->CallStaticIntMethod(mActivityClass, midAudioInit, sampleRate, audioBuffer16Bit, audioBufferStereo, desiredBufferFrames) != 0) {
-        /* Error during audio initialization */
-        LOGW("SDL audio: error on AudioTrack initialization!");
-        return 0;
-    }
-
-    /* Allocating the audio buffer from the Java side and passing it as the return value for audioInit no longer works on
-     * Android >= 4.2 due to a "stale global reference" error. So now we allocate this buffer directly from this side. */
-
-//    if (is16Bit) {
-        jshortArray audioBufferLocal = jni_env->NewShortArray( desiredBufferFrames * (audioBufferStereo ? 2 : 1));
-        if (audioBufferLocal) {
-            audioBuffer = jni_env->NewGlobalRef( audioBufferLocal);
-            jni_env->DeleteLocalRef( audioBufferLocal);
-        }
+//
+///*
+// * Audio support
+// */
+//static jboolean audioBuffer16Bit = JNI_FALSE;
+//static jboolean audioBufferStereo = JNI_FALSE;
+//static jobject audioBuffer = NULL;
+//static void* audioBufferPinned = NULL;
+//
+//int Android_JNI_GetAudioBufferSize(int sampleRate){
+//	DECLARE_JNIENV_WITH_RETURN()
+//    int iRet = jni_env->CallStaticIntMethod(mActivityClass, midAudioGetBufSize, sampleRate);
+//	//jvm->DetachCurrentThread();
+//	return iRet;
+//}
+//
+//int Android_JNI_OpenAudioDevice2(int sampleRate, int is16Bit, int channelCount, int desiredBufferFrames){
+//	DECLARE_JNIENV_WITH_RETURN()
+//    LOGW("Android_JNI_OpenAudioDevice2(), sampleRate:%d", sampleRate);
+//
+//    int audioBufferFrames;
+//
+//    if (!jni_env) {
+//        LOGE("callback_handler: failed to attach current thread");
 //    }
-//    else {
-//        jbyteArray audioBufferLocal = jni_env->NewByteArray(desiredBufferFrames * (audioBufferStereo ? 2 : 1));
+//   // Android_JNI_SetupThread();
+//
+//    //__android_log_print(ANDROID_LOG_VERBOSE, "SDL", "SDL audio: opening device");
+//    audioBuffer16Bit = is16Bit;
+//    audioBufferStereo = channelCount > 1;
+//
+//    audioBufferFrames = desiredBufferFrames = Android_JNI_GetAudioBufferSize(sampleRate);
+//    if(isDebugMode()){
+//    	LOGW("audioBufferFrames:%d", audioBufferFrames);
+//    }
+//
+//    if (jni_env->CallStaticIntMethod(mActivityClass, midAudioInit, sampleRate, audioBuffer16Bit, audioBufferStereo, desiredBufferFrames) != 0) {
+//        /* Error during audio initialization */
+//        LOGW("SDL audio: error on AudioTrack initialization!");
+//        return 0;
+//    }
+//
+//    /* Allocating the audio buffer from the Java side and passing it as the return value for audioInit no longer works on
+//     * Android >= 4.2 due to a "stale global reference" error. So now we allocate this buffer directly from this side. */
+//
+////    if (is16Bit) {
+//        jshortArray audioBufferLocal = jni_env->NewShortArray( desiredBufferFrames * (audioBufferStereo ? 2 : 1));
 //        if (audioBufferLocal) {
-//            audioBuffer = jni_env->NewGlobalRef(audioBufferLocal);
-//            jni_env->DeleteLocalRef(audioBufferLocal);
+//            audioBuffer = jni_env->NewGlobalRef( audioBufferLocal);
+//            jni_env->DeleteLocalRef( audioBufferLocal);
 //        }
+////    }
+////    else {
+////        jbyteArray audioBufferLocal = jni_env->NewByteArray(desiredBufferFrames * (audioBufferStereo ? 2 : 1));
+////        if (audioBufferLocal) {
+////            audioBuffer = jni_env->NewGlobalRef(audioBufferLocal);
+////            jni_env->DeleteLocalRef(audioBufferLocal);
+////        }
+////    }
+//
+//    if (audioBuffer == NULL) {
+//        __android_log_print(ANDROID_LOG_WARN, "SDL", "SDL audio: could not allocate an audio buffer!");
+//        return 0;
 //    }
-
-    if (audioBuffer == NULL) {
-        __android_log_print(ANDROID_LOG_WARN, "SDL", "SDL audio: could not allocate an audio buffer!");
-        return 0;
-    }
-
-    jboolean isCopy = JNI_FALSE;
-//    if (audioBuffer16Bit) {
-        audioBufferPinned = jni_env->GetShortArrayElements( (jshortArray)audioBuffer, &isCopy);
-        audioBufferFrames = jni_env->GetArrayLength( (jshortArray)audioBuffer);
-//    } else {
-//        audioBufferPinned = jni_env->GetByteArrayElements((jbyteArray)audioBuffer, &isCopy);
-//        audioBufferFrames = jni_env->GetArrayLength( (jbyteArray)audioBuffer);
+//
+//    jboolean isCopy = JNI_FALSE;
+////    if (audioBuffer16Bit) {
+//        audioBufferPinned = jni_env->GetShortArrayElements( (jshortArray)audioBuffer, &isCopy);
+//        audioBufferFrames = jni_env->GetArrayLength( (jshortArray)audioBuffer);
+////    } else {
+////        audioBufferPinned = jni_env->GetByteArrayElements((jbyteArray)audioBuffer, &isCopy);
+////        audioBufferFrames = jni_env->GetArrayLength( (jbyteArray)audioBuffer);
+////    }
+////    if (audioBufferStereo) {
+////        audioBufferFrames /= 2;
+////    }
+//    //jvm->DetachCurrentThread();
+//    return audioBufferFrames;
+//}
+//
+//void * Android_JNI_GetAudioBuffer2(){
+//    return audioBufferPinned;
+//}
+//
+//void Android_JNI_WriteAudioBuffer2(){
+//	//LOGW("Android_JNI_WriteAudioBuffer2()+");
+//	DECLARE_JNIENV_WITHOUT_RETURN()
+//	jni_env->ReleaseShortArrayElements((jshortArray)audioBuffer, (jshort *)audioBufferPinned, JNI_COMMIT);
+//	jni_env->CallStaticVoidMethod(mActivityClass, midAudioWriteByteBuffer, (jshortArray)audioBuffer);
+//    /* JNI_COMMIT means the changes are committed to the VM but the buffer remains pinned */
+//	//jvm->DetachCurrentThread();
+//
+//	//LOGW("Android_JNI_WriteAudioBuffer2()-");
+//}
+//
+//void Android_JNI_CloseAudioDevice2(){
+//	DECLARE_JNIENV_WITHOUT_RETURN()
+//
+//    jni_env->CallStaticVoidMethod(mActivityClass, midAudioQuit);
+//
+//    if (audioBuffer) {
+//        jni_env->DeleteGlobalRef(audioBuffer);
+//        audioBuffer = NULL;
+//        audioBufferPinned = NULL;
 //    }
-//    if (audioBufferStereo) {
-//        audioBufferFrames /= 2;
-//    }
-    //jvm->DetachCurrentThread();
-    return audioBufferFrames;
-}
-
-void * Android_JNI_GetAudioBuffer2(){
-    return audioBufferPinned;
-}
-
-void Android_JNI_WriteAudioBuffer2(){
-	//LOGW("Android_JNI_WriteAudioBuffer2()+");
-	DECLARE_JNIENV_WITHOUT_RETURN()
-	jni_env->ReleaseShortArrayElements((jshortArray)audioBuffer, (jshort *)audioBufferPinned, JNI_COMMIT);
-	jni_env->CallStaticVoidMethod(mActivityClass, midAudioWriteByteBuffer, (jshortArray)audioBuffer);
-    /* JNI_COMMIT means the changes are committed to the VM but the buffer remains pinned */
-	//jvm->DetachCurrentThread();
-
-	//LOGW("Android_JNI_WriteAudioBuffer2()-");
-}
-
-void Android_JNI_CloseAudioDevice2(){
-	DECLARE_JNIENV_WITHOUT_RETURN()
-
-    jni_env->CallStaticVoidMethod(mActivityClass, midAudioQuit);
-
-    if (audioBuffer) {
-        jni_env->DeleteGlobalRef(audioBuffer);
-        audioBuffer = NULL;
-        audioBufferPinned = NULL;
-    }
-    //jvm->DetachCurrentThread();
-}
+//    //jvm->DetachCurrentThread();
+//}
 
 void Android_JNI_detachCurrentThread(){
 	DECLARE_JNIENV_WITHOUT_RETURN()
 	jvm->DetachCurrentThread();
 }
-#include "http_cgi.h"
-using namespace std;
-
-static pthread_t mReceiveAudioThread(0);
-
-//const int G711_SAMPLES_PER_FRAME = 160;
-const int TABLE_SIZE = 8;
-const int BIAS = 0x84;		/* Bias for linear code. */
-const int CLIP = 8159;
-const int SIGN_BIT = 0x80;	/* Sign bit for a A-law byte. */
-const int QUANT_MASK = 0xf;  /* Quantization field mask. */
-const int NSEGS = 8;         /* Number of A-law segments. */
-const int SEG_SHIFT = 4;     /* Left shift for segment number. */
-const int SEG_MASK = 0x70;   /* Segment field mask. */
-
-short ulaw2linear(unsigned char u_val)
-{
-   short t;
-
-   /* Complement to obtain normal u-law value. */
-   u_val = ~u_val;
-
-   /*
-    * Extract and bias the quantization bits. Then
-    * shift up by the segment number and subtract out the bias.
-    */
-   t = ((u_val & QUANT_MASK) << 3) + BIAS;
-   t <<= ((unsigned)u_val & SEG_MASK) >> SEG_SHIFT;
-
-   return ((u_val & SIGN_BIT) ? (BIAS - t) : (t - BIAS));
-}
-
-void writeBuf(unsigned char* charBuf, int iLen){
-	//LOGW("writeBuf:%d", iLen);
-	short* shortBuf = (short*)audioBufferPinned;
-	for(int i = 0 ; i < iLen; i++){
-		shortBuf[i] = ulaw2linear(charBuf[i]);
-	}
-	Android_JNI_WriteAudioBuffer2();
-}
-
-void* runReceiveBufViaCGI(void* userdata){
-	int res;
-	Android_JNI_OpenAudioDevice2(16000, 1, 1, 1280);
-	char data[BUF_SIZE];
-	char session[SESSION_SIZE];
-
-	// clear our memory
-	memset(session, 0, sizeof(session));
-	memset(data, 0, BUF_SIZE*sizeof(char));
-
-	if(GetSession(session) != 0) {
-		LOGE("Get session failed.");
-		//return 0;
-	}else{
-		//res = GetCGI("getSystemName", data, session);
-		res = GetAudioBufCGI("receive", data, session, writeBuf);
-		LOGE("GetAudioBufCGI:res(%d)\n%s",res);
-		Android_JNI_CloseAudioDevice2();
-	}
-	Android_JNI_detachCurrentThread();
-	mReceiveAudioThread = 0;
-}
-
-void receiveBufViaCGI(){
-	if(!mReceiveAudioThread){
-		if (0 != (errno = pthread_create(&mReceiveAudioThread, NULL, runReceiveBufViaCGI, NULL))) {
-			LOGE("receiveBufViaCGI(), error when create mReceiveAudioThread,%d\n", errno);
-		}else{
-			pthread_setname_np(mReceiveAudioThread, "mReceiveAudioThread");
-		}
-	}
-}
-
-JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_receiveAudioBufFromCam(JNIEnv * env, jobject obj, jstring strPath)
-{
-	DECLARE_JNIENV_WITH_RETURN()
-	jboolean iRet = false;
-	if(0 == mReceiveAudioThread){
-		receiveBufViaCGI();
-	}
-	return iRet;
-}
-
-JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_receiveAudioBufThreadRunning(){
-	return mReceiveAudioThread != 0;
-}
-
-JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_stopReceiveAudioBufThread(){
-	if(mReceiveAudioThread){
-		stopReceiveAudioBuf();
-		return true;
-	}
-	return false;
-}
+//#include "http_cgi.h"
+//using namespace std;
+//
+//static pthread_t mReceiveAudioThread(0);
+//
+////const int G711_SAMPLES_PER_FRAME = 160;
+//const int TABLE_SIZE = 8;
+//const int BIAS = 0x84;		/* Bias for linear code. */
+//const int CLIP = 8159;
+//const int SIGN_BIT = 0x80;	/* Sign bit for a A-law byte. */
+//const int QUANT_MASK = 0xf;  /* Quantization field mask. */
+//const int NSEGS = 8;         /* Number of A-law segments. */
+//const int SEG_SHIFT = 4;     /* Left shift for segment number. */
+//const int SEG_MASK = 0x70;   /* Segment field mask. */
+//
+//short ulaw2linear(unsigned char u_val)
+//{
+//   short t;
+//
+//   /* Complement to obtain normal u-law value. */
+//   u_val = ~u_val;
+//
+//   /*
+//    * Extract and bias the quantization bits. Then
+//    * shift up by the segment number and subtract out the bias.
+//    */
+//   t = ((u_val & QUANT_MASK) << 3) + BIAS;
+//   t <<= ((unsigned)u_val & SEG_MASK) >> SEG_SHIFT;
+//
+//   return ((u_val & SIGN_BIT) ? (BIAS - t) : (t - BIAS));
+//}
+//
+//void writeBuf(unsigned char* charBuf, int iLen){
+//	//LOGW("writeBuf:%d", iLen);
+//	short* shortBuf = (short*)audioBufferPinned;
+//	for(int i = 0 ; i < iLen; i++){
+//		shortBuf[i] = ulaw2linear(charBuf[i]);
+//	}
+//	Android_JNI_WriteAudioBuffer2();
+//}
+//
+//void* runReceiveBufViaCGI(void* userdata){
+//	int res;
+//	Android_JNI_OpenAudioDevice2(16000, 1, 1, 1280);
+//	char data[BUF_SIZE];
+//	char session[SESSION_SIZE];
+//
+//	// clear our memory
+//	memset(session, 0, sizeof(session));
+//	memset(data, 0, BUF_SIZE*sizeof(char));
+//
+//	if(GetSession(session) != 0) {
+//		LOGE("Get session failed.");
+//		//return 0;
+//	}else{
+//		//res = GetCGI("getSystemName", data, session);
+//		res = GetAudioBufCGI("receive", data, session, writeBuf);
+//		LOGE("GetAudioBufCGI:res(%d)\n%s",res);
+//		Android_JNI_CloseAudioDevice2();
+//	}
+//	Android_JNI_detachCurrentThread();
+//	mReceiveAudioThread = 0;
+//}
+//
+//void receiveBufViaCGI(){
+//	if(!mReceiveAudioThread){
+//		if (0 != (errno = pthread_create(&mReceiveAudioThread, NULL, runReceiveBufViaCGI, NULL))) {
+//			LOGE("receiveBufViaCGI(), error when create mReceiveAudioThread,%d\n", errno);
+//		}else{
+//			pthread_setname_np(mReceiveAudioThread, "mReceiveAudioThread");
+//		}
+//	}
+//}
+//
+//JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_receiveAudioBufFromCam(JNIEnv * env, jobject obj, jstring strPath)
+//{
+//	DECLARE_JNIENV_WITH_RETURN()
+//	jboolean iRet = false;
+//	if(0 == mReceiveAudioThread){
+//		receiveBufViaCGI();
+//	}
+//	return iRet;
+//}
+//
+//JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_receiveAudioBufThreadRunning(){
+//	return mReceiveAudioThread != 0;
+//}
+//
+//JNIEXPORT jboolean JNICALL Java_com_app_beseye_CameraViewActivity_stopReceiveAudioBufThread(){
+//	if(mReceiveAudioThread){
+//		stopReceiveAudioBuf();
+//		return true;
+//	}
+//	return false;
+//}
 
 ///* Called from the main */
 int main(int argc, char **argv)

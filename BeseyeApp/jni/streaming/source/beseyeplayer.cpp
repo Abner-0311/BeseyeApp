@@ -1536,6 +1536,8 @@ void sdl_audio_callback(void *opaque, Uint8 *stream, int len)
         if (len1 > len)
             len1 = len;
 
+		//av_log(NULL, AV_LOG_INFO, "sdl_audio_callback()++, player->isAudioMute():%d, len1:%d\n", player->isAudioMute(), len1);
+
         if(player->isAudioMute()){
         	memset(stream, 0, len1);
         }else{
@@ -1571,7 +1573,7 @@ int CBeseyePlayer::audio_open(void *opaque, int64_t wanted_channel_layout, int w
     wanted_spec.channels = av_get_channel_layout_nb_channels(wanted_channel_layout);
     wanted_spec.freq = wanted_sample_rate;
     if (wanted_spec.freq <= 0 || wanted_spec.channels <= 0) {
-        fprintf(stderr, "Invalid sample rate or channel count!\n");
+    	av_log(NULL, AV_LOG_ERROR, "Invalid sample rate or channel count!\n");
         return -1;
     }
     wanted_spec.format = AUDIO_S16SYS;
@@ -1583,22 +1585,22 @@ int CBeseyePlayer::audio_open(void *opaque, int64_t wanted_channel_layout, int w
     ci->is = (VideoState *)opaque;
     wanted_spec.userdata = ci;//opaque;
     while (SDL_OpenAudio(&wanted_spec, &spec) < 0) {
-        fprintf(stderr, "SDL_OpenAudio (%d channels): %s\n", wanted_spec.channels, SDL_GetError());
+    	av_log(NULL, AV_LOG_ERROR, "SDL_OpenAudio (%d channels): %s\n", wanted_spec.channels, SDL_GetError());
         wanted_spec.channels = next_nb_channels[FFMIN(7, wanted_spec.channels)];
         if (!wanted_spec.channels) {
-            fprintf(stderr, "No more channel combinations to try, audio open failed\n");
+        	av_log(NULL, AV_LOG_ERROR, "No more channel combinations to try, audio open failed\n");
             return -1;
         }
         wanted_channel_layout = av_get_default_channel_layout(wanted_spec.channels);
     }
     if (spec.format != AUDIO_S16SYS) {
-        fprintf(stderr, "SDL advised audio format %d is not supported!\n", spec.format);
+    	av_log(NULL, AV_LOG_ERROR, "SDL advised audio format %d is not supported!\n", spec.format);
         return -1;
     }
     if (spec.channels != wanted_spec.channels) {
         wanted_channel_layout = av_get_default_channel_layout(spec.channels);
         if (!wanted_channel_layout) {
-            fprintf(stderr, "SDL advised channel count %d is not supported!\n", spec.channels);
+        	av_log(NULL, AV_LOG_ERROR, "SDL advised channel count %d is not supported!\n", spec.channels);
             return -1;
         }
     }
