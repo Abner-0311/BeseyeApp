@@ -2395,7 +2395,7 @@ void CBeseyePlayer::step_to_next_frame(VideoState *is)
 void CBeseyePlayer::event_loop(CBeseyePlayer *cur_player)
 {
 	if(isDebugMode()){
-		av_log(NULL, AV_LOG_INFO, "event_loop(), cur_player:%d\n", cur_player);
+		av_log(NULL, AV_LOG_INFO, "event_loop(), cur_player:0x%x\n", cur_player);
 	}
     SDL_Event event;
     //double incr, pos, frac;
@@ -2422,12 +2422,12 @@ void CBeseyePlayer::event_loop(CBeseyePlayer *cur_player)
                     //addStreamingPath("dummy");//workaround, trigger read_thread
 					do_exit(cur_player->is/*cur_stream*/);
 					if(isDebugMode()){
-						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_player:%d\n", cur_player);
+						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_player:0x%x\n", cur_player);
 					}
 					cur_player = NULL;
 				}else{
 					if(isDebugMode()){
-						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_player:%d, event.user.data1:%d\n", cur_player, event.user.data1);
+						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_player:0x%x, event.user.data1:0x%x\n", cur_player, event.user.data1);
 					}
 					//SDL_PushEvent(&event);
 				}
@@ -2465,7 +2465,7 @@ void CBeseyePlayer::event_loop(CBeseyePlayer *cur_player)
 					alloc_picture((BeseyeAllocEventProps*)event.user.data1);
 				}else{
 					if(isDebugMode()){
-						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_ALLOC_EVENT, [%d, %d]\n", cur_player, ((AllocEventProps*)event.user.data1)->is);
+						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_ALLOC_EVENT, [0x%x, 0x%x]\n", cur_player, ((AllocEventProps*)event.user.data1)->is);
 					}
 					SDL_PushEvent(&event);
 				}
