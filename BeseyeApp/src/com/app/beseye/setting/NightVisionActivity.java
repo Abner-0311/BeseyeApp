@@ -167,7 +167,7 @@ public class NightVisionActivity extends BeseyeBaseActivity {
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					showErrorDialog(R.string.cam_setting_fail_to_update_night_vision, true);
+					showErrorDialog(R.string.cam_setting_fail_to_update_night_vision, true, 0);
 				}}, 0);
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);

@@ -195,9 +195,9 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 			String strMsg) {
 		// GetLatestThumbnailTask don't need to have onErrorReport because it has default image
 		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
-			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true);
+			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true, 0);
 		}else if(task instanceof BeseyeCamBEHttpTask.SetNotifySettingTask){
-			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true);
+			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true, 0);
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 		}

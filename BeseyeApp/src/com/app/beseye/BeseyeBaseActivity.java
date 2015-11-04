@@ -1149,7 +1149,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	protected void onServerError(){
-		showErrorDialog(R.string.server_error, false);
+		showErrorDialog(R.string.server_error, false, 0);
 	}
 
 	@Override
@@ -2388,7 +2388,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	//Camera update end
 	
-	protected void showErrorDialog(final int iMsgId, final boolean bCloseSelf){
+	protected void showErrorDialog(final int iMsgId, final boolean bCloseSelf, final int iErrCode){
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
