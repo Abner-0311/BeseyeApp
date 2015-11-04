@@ -514,4 +514,6 @@
   <!-- TODO: string name="notification_pincode_auth" -->
   <!--Pin code request dialog message shown in Beseye App-->
   <!-- TODO: string name="dialog_notification_pincode_auth" -->
+  
+  <string name="error_code_fmt">\n(錯誤代碼 = 0x%x)</string>
 </resources>

@@ -551,4 +551,6 @@
   
   <string name="att_event_cam_status_on">外出請注意安全，Beseye 已開啟攝影機保護您的空間。</string>
   <string name="att_event_cam_status_off">歡迎回來，Beseye 已將攝影機關閉，但隨時待命。</string>
+  
+  <string name="error_code_fmt">\n(Error code = 0x%x)</string>
 </resources>

@@ -77,7 +77,7 @@
   <!-- Title of info dialog-->
   <string name="dialog_title_info">ข้อมูล</string>
   <!-- Message of dialog when no network connection-->
-  <string name="dialog_no_connectivity">กรุณาตรวจสอบการเชื่อมต่อสัญญาณ</string>
+  <string name="dialog_no_connectivity">คำเตือน - กรุณาตรวจสอบการเชื่อมต่อสัญญาณ</string>
   <!-- Title of loading dialog-->
   <string name="dialog_loading">กำลังโหลด</string>
   <string name="dialog_setting">การตั้งค่า</string>
@@ -515,4 +515,6 @@
   <!-- TODO: string name="notification_pincode_auth" -->
   <!--Pin code request dialog message shown in Beseye App-->
   <!-- TODO: string name="dialog_notification_pincode_auth" -->
+  
+  <string name="error_code_fmt">\n(รหัสข้อผิดพลาด = 0x%x)</string>
 </resources>
