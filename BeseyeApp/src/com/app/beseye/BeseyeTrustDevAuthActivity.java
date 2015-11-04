@@ -197,7 +197,7 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 				}else if(BeseyeError.E_BE_ACC_TT_PINCODE_IS_EXPIRED == iRetCode || BeseyeError.E_BE_ACC_TT_PINCODE_NOT_FOUND == iRetCode){
 					showMyDialog(DIALOG_ID_PIN_VERIFY_FAIL_EXPIRED);
 				}else{
-					onServerError();
+					onServerError(iRetCode);
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);

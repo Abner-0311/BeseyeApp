@@ -19,6 +19,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -642,5 +643,27 @@ public class BeseyeUtils {
 		Log.e(TAG, "getLocaleStringForRegion(), Locale.getDefault():"+Locale.getDefault()+", strLocale:"+strLocale);
 
 		return strLocale;
+	}
+	
+	static public String appendErrorCode(Context context, String strOrigin, int iErrCode){
+		return strOrigin+(BeseyeFeatureConfig.APPEND_ERR_CODE?String.format(context.getString(R.string.error_code_fmt), iErrCode):"");
+	}
+	
+	static List<Integer> sLstSeriousWorningMsgIds = new ArrayList<Integer>();
+	static{
+		if(BeseyeFeatureConfig.TRANS_SERIOUS_WARNING){
+			sLstSeriousWorningMsgIds.add(R.string.server_error);
+			sLstSeriousWorningMsgIds.add(R.string.streaming_invalid_dvr);
+			sLstSeriousWorningMsgIds.add(R.string.streaming_playing_error);
+			sLstSeriousWorningMsgIds.add(R.string.streaming_error_unknown);
+			sLstSeriousWorningMsgIds.add(R.string.streaming_error_low_mem);
+			sLstSeriousWorningMsgIds.add(R.string.cam_update_timeout);
+			
+		}
+	}
+	
+	static public String appendErrorCode(Context context, int iOriginStrId, int iErrCode){
+		return context.getString((BeseyeFeatureConfig.TRANS_SERIOUS_WARNING && sLstSeriousWorningMsgIds.contains(iOriginStrId))?R.string.dialog_no_connectivity:iOriginStrId)+
+				(BeseyeFeatureConfig.APPEND_ERR_CODE?String.format(context.getString(R.string.error_code_fmt), iErrCode):"");
 	}
 }

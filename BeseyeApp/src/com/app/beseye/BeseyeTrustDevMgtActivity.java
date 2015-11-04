@@ -151,7 +151,7 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeAccountTask.DeleteTrustDevTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
@@ -164,7 +164,7 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					onServerError();
+					onServerError(iErrType);
 				}}, 0);
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);

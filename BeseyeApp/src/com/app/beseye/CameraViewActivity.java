@@ -1274,7 +1274,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	            			}else if(0 == mstrDiffStreamPathList.size()){
 	            				if(isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
 		            				Bundle b = new Bundle();
-		        					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
+		        					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(this, R.string.streaming_invalid_dvr, BeseyeError.E_FE_AND_INVALID_DVR_PATH));
 		        					b.putBoolean(KEY_WARNING_CLOSE, true);
 		        					showMyDialog(DIALOG_ID_WARNING, b);
 	            				}else{
@@ -1448,7 +1448,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						if(isCamPowerOn()){
 							Log.e(TAG, "run(), show streaming_playing_error");
 							Bundle b = new Bundle();
-							b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_playing_error));
+							b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, R.string.streaming_playing_error, BeseyeError.E_FE_AND_PLAYER_ERROR));
 							//b.putBoolean(KEY_WARNING_CLOSE, true);
 							showMyDialog(DIALOG_ID_WARNING, b);
 							updatePlayPauseBtnEnabledStatus();
@@ -1467,7 +1467,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				public void run() {
 					if(BeseyeHttpTask.ERR_TYPE_NO_CONNECTION != iErrType){
 						Bundle b = new Bundle();
-						b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
+    					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, R.string.streaming_invalid_dvr, BeseyeError.E_FE_AND_INVALID_DVR_PATH));
 						b.putBoolean(KEY_WARNING_CLOSE, true);
 						showMyDialog(DIALOG_ID_WARNING, b);
 					}else{
@@ -1894,7 +1894,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
    							@Override
    							public void run() {
    								Bundle b = new Bundle();
-   								b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
+   								b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, R.string.streaming_invalid_dvr, BeseyeError.E_FE_AND_INVALID_DVR_PATH));
    								showMyDialog(DIALOG_ID_WARNING, b);
    							}}, 0);
             				

@@ -219,7 +219,7 @@ public class SignupActivity extends BeseyeAccountBaseActivity {
 			if(BeseyeError.E_BE_ACC_USER_ALREADY_EXIST == iErrType){
 				iErrMsgId = R.string.msg_signup_err_email_used;
 			}
-			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(iErrMsgId));
+			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), BeseyeUtils.appendErrorCode(this, iErrMsgId, iErrType));
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}

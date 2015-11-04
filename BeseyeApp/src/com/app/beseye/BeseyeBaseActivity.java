@@ -1148,8 +1148,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}
 	}
 	
-	protected void onServerError(){
-		showErrorDialog(R.string.server_error, false, 0);
+	protected void onServerError(int iErrCode){
+		showErrorDialog(R.string.server_error, false, iErrCode);
 	}
 
 	@Override
@@ -1173,7 +1173,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				}*/else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED != iRetCode && 
 						   BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN != iRetCode && 
 						   BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED != iRetCode){
-					onServerError();
+					onServerError(iRetCode);
 				}
 			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
 				if(0 == iRetCode){
@@ -1346,7 +1346,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 									monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(BeseyeBaseActivity.this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++%miUpdateCamNum));
 								}else{
 									Bundle b = new Bundle();
-									b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_update_timeout));
+									b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(BeseyeBaseActivity.this, R.string.cam_update_timeout, BeseyeError.E_FE_AND_OTA_TIMEOUT));
 									showMyDialog(DIALOG_ID_WARNING, b);
 									removeMyDialog(DIALOG_ID_CAM_UPDATE);
 								}
@@ -2321,7 +2321,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			if(0 == iNumOfFail){
 				strRet = getResources().getString(R.string.cam_update_success);
 			}else if(0 == iNumOfDone){
-				strRet = getResources().getString(R.string.cam_update_failed);
+				strRet = BeseyeUtils.appendErrorCode(BeseyeBaseActivity.this, R.string.cam_update_failed, BeseyeError.E_FE_AND_OTA_TIMEOUT);
 			}else{
 				strRet = String.format(getResources().getString(R.string.cam_update_result), iNumOfDone, iNumOfFail);
 			}
@@ -2393,7 +2393,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			@Override
 			public void run() {
 				Bundle b = new Bundle();
-				b.putString(KEY_WARNING_TEXT, getResources().getString(iMsgId));
+				b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(BeseyeBaseActivity.this, iMsgId, iErrCode));
 				if(bCloseSelf)
 					b.putBoolean(KEY_WARNING_CLOSE, true);
 				showMyDialog(DIALOG_ID_WARNING, b);

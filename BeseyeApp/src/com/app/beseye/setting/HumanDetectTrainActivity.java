@@ -330,7 +330,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		if(task instanceof BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask){
 			//showErrorDialog(R.string.enhance_human_detect_train_fail_to_load_pic, true);
 		}else if(task instanceof BeseyeIMPMMBEHttpTask.SetHumanDetectRefineLabelTask){
-			showErrorDialog(R.string.enhance_human_detect_train_fail_to_label, false, 0);
+			showErrorDialog(R.string.enhance_human_detect_train_fail_to_label, false, iErrType);
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 		}

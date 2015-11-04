@@ -64,4 +64,13 @@ public class BeseyeError {
 	//# Push related
 	static public final int	  E_BE_PUSH_ALREADY_REGISTER				   = 0x00500002;	
 	static public final int	  E_BE_CAM_INFO_NOT_EXIST				   	   = 0x0050000f;	
+	
+	//Android Error
+	static public final int	  E_FE_AND_SERVER_ERROR				   		   = 0x00400001;	//server_error
+	static public final int	  E_FE_AND_INVALID_DVR_PATH				   	   = 0x00400002;	//streaming_invalid_dvr
+	static public final int	  E_FE_AND_PLAYER_ERROR				   		   = 0x00400003;	//streaming_playing_error
+	static public final int	  E_FE_AND_PLAYER_UNKNOWN_ERR				   = 0x00400004;	//streaming_error_unknown
+	static public final int	  E_FE_AND_PLAYER_LOW_MEM				   	   = 0x00400005;	//streaming_error_low_mem
+	static public final int	  E_FE_AND_OTA_TIMEOUT				   		   = 0x00400006;	//cam_update_timeout
+	static public final int	  E_FE_AND_OTA_UPDATE_FAILED				   = 0x00400007;	//cam_update_failed
 }

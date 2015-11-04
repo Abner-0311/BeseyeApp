@@ -1087,8 +1087,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	@Override
-	protected void onServerError(){
-		super.onServerError();
+	protected void onServerError(int iErrCode){
+		super.onServerError(iErrCode);
 		LayoutInflater inflater = getLayoutInflater();
 		if(null != inflater){
 			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);
