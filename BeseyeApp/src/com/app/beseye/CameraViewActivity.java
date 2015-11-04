@@ -1108,6 +1108,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					monitorAsyncTask(mDVRStreamTask = new BeseyeMMBEHttpTask.GetDVRStreamTask(this).setDialogId(bShowDialog?DIALOG_ID_LOADING:-1), true, mStrVCamID, (mlDVRCurrentStartTs)+"", (mlLastDurationForDVR = DVR_REQ_TIME)+"");
 					mlDVRFirstSegmentStartTs = -1;
 					setCursorVisiblity(View.VISIBLE);
+					setStreamingAudioMute(false);
 				}else{
 					Log.e(TAG, "CameraViewActivity::getStreamingInfo(), mDVRStreamTask is not null");
 				}
@@ -2967,7 +2968,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
         			}else{
         				AudioWebSocketsMgr.getInstance().setVCamId(mStrVCamID);
     					AudioWebSocketsMgr.getInstance().setAudioWSServerIP(SessionMgr.getInstance().getWSAHostUrl());
-    					setAudioMute(true);
+    					setStreamingAudioMute(true);
     					
     					if(null == mAudioOpenThread){
     						mAudioOpenThread = new Thread(new Runnable(){
@@ -3007,7 +3008,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 	}
     
-    private void setAudioMute(boolean bMute){
+    private void setStreamingAudioMute(boolean bMute){
+		Log.i(TAG, "setStreamingAudioMute(), bMute ..........."+bMute);
     	AudioWebSocketsMgr.getInstance().setSienceFlag(!bMute);
 		muteStreaming(miStreamIdx, bMute);
     }
@@ -3016,7 +3018,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
     		mbAutoAudioWSConnect = false;
-    		setAudioMute(true);
+    		setStreamingAudioMute(true);
     		BeseyeUtils.removeRunnable(mTerminateAudioChannelRunnable);
     		
     		if(mbNeedToRequestCamAudioConnected){
@@ -3037,7 +3039,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     public void releaseTalkMode(){
 		setEnabled(mCameraViewControlAnimator.getScreenshotView(), true);
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
-    		setAudioMute(false);
+    		setStreamingAudioMute(false);
 
     		postTerminateAudioChannelRunnable(false);
     	}
@@ -3045,7 +3047,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     
     public void closeAudioChannel(boolean bImmediateClose){
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
-    		setAudioMute(false);
+    		setStreamingAudioMute(false);
     		postTerminateAudioChannelRunnable(bImmediateClose);
 		}else if(null != mGetAudioWSServerTask){
 			mGetAudioWSServerTask.cancel(true);
