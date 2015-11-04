@@ -12,17 +12,18 @@
 	    <RelativeLayout 
 	         android:id="@+id/iv_timeline_grayline_holder"
 		     android:layout_width="wrap_content"
-		     android:layout_height="match_parent"
+		     android:layout_height="wrap_content"
 		     android:layout_marginLeft="@dimen/eventlist_timeline_dot_left"
 		     android:layout_marginRight="@dimen/eventlist_gray_line_right"
+		     android:layout_alignParentTop="true"
 		     android:layout_alignBottom="@+id/v_dummy">
 	       	<ImageView
 		        android:id="@+id/iv_timeline_grayline"
 		        android:layout_width="@dimen/eventlist_gray_line_width"
 		        android:layout_height="match_parent"
 		        android:layout_alignParentTop="true"
-		        android:layout_centerHorizontal="true"
-		        android:src="@color/eventlist_gray_line" />
+		        android:layout_alignParentBottom="true"
+		        android:src="@color/eventlist_gray_line" android:contentDescription="TODO"/>
 		    
 		    <ImageView
 		        android:id="@+id/iv_timeline_dot_greenblue"
@@ -31,109 +32,113 @@
 		        android:layout_centerVertical="true"
 		        android:src="@drawable/eventlist_timeline_point_bluegreen" />
 	    </RelativeLayout>
-	    <TextView
-	        android:id="@+id/tv_eventlist_event_name"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_marginTop="@dimen/eventlist_content_top"
-	        android:layout_toRightOf="@id/iv_timeline_grayline_holder"
-	        android:singleLine="true"
-	        android:textColor="@color/liveview_font_normal_color"
-	        android:textSize="@dimen/login_fontRegular" 
-	        android:layout_alignRight="@+id/vg_timeline_video_thumbnail"
-	        android:visibility="invisible"/>
 	    
 	    <RelativeLayout 
-	        android:id="@+id/vg_timeline_video_thumbnail"
-	        android:layout_width="wrap_content"
+	        android:id="@+id/iv_timeline_main_holder"
+	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@id/iv_timeline_grayline_holder"
-	        android:layout_toLeftOf="@+id/iv_timeline_icon_face"
-		    android:layout_below="@+id/tv_eventlist_event_name"
-		    android:layout_marginTop="@dimen/eventlist_thumbnail_top"
-	        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
-	        android:layout_marginRight="@dimen/eventlist_thumbnail_right">
-	        <com.app.beseye.widget.RemoteGifImageView
-		        android:id="@+id/iv_timeline_video_thumbnail"
-		        android:layout_width="fill_parent"
-		        android:layout_height="128dp"
-		        android:src="@drawable/eventlist_s_eventview_noview_bg" />
+	        android:layout_toRightOf="@id/iv_timeline_grayline_holder">
+	        <TextView
+		        android:id="@+id/tv_eventlist_event_name"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="@dimen/eventlist_content_top"
+		        android:singleLine="true"
+		        android:textColor="@color/liveview_font_normal_color"
+		        android:textSize="@dimen/login_fontRegular" 
+		        android:layout_alignRight="@+id/vg_timeline_video_thumbnail"
+		        android:visibility="invisible"/>
+		    
+		    <RelativeLayout 
+		        android:id="@+id/vg_timeline_video_thumbnail"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_toLeftOf="@+id/iv_timeline_icon_face"
+			    android:layout_below="@+id/tv_eventlist_event_name"
+			    android:layout_marginTop="@dimen/eventlist_thumbnail_top"
+		        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
+		        android:layout_marginRight="@dimen/eventlist_thumbnail_right">
+		        <com.app.beseye.widget.RemoteGifImageView
+			        android:id="@+id/iv_timeline_video_thumbnail"
+			        android:layout_width="fill_parent"
+			        android:layout_height="128dp"
+			        android:src="@drawable/eventlist_s_eventview_noview_bg" />
+		    </RelativeLayout>
+		    
+		    <RelativeLayout 
+		        android:id="@+id/vg_timeline_go_live"
+		        android:layout_width="225dp"
+			    android:layout_height="128dp"
+			    android:layout_below="@+id/tv_eventlist_event_name"
+			    android:layout_marginTop="@dimen/eventlist_thumbnail_top"
+		        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
+		        android:layout_alignRight="@+id/vg_timeline_video_thumbnail"
+		        android:background="@color/liveview_background"
+		        android:visibility="gone">
+		        <TextView 
+			        android:id="@+id/btn_go_live"
+			        android:layout_width="135dp"
+			        android:layout_height="45dp"
+			        android:paddingTop="10dp"
+			        android:paddingBottom="10dp"
+			        android:text="@string/event_go_live"
+			        android:textSize="20sp"
+			        android:textColor="@color/word_white"
+			        android:gravity="center"
+			     	android:background="@drawable/sl_event_list_live_btn_bg"
+			     	android:layout_centerInParent="true"
+			     	android:duplicateParentState="true"/>
+		    </RelativeLayout>
+		    
+		    <ImageView
+		        android:id="@+id/iv_timeline_icon_face"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_below="@+id/tv_eventlist_event_name"
+		        android:layout_marginTop="@dimen/eventlist_thumbnail_top"
+		        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+		        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
+		        android:src="@drawable/eventlist_filter_icon_familyface"
+		        android:visibility="invisible" />
+		    
+		    <ImageView
+		        android:id="@+id/iv_timeline_icon_fire"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_below="@+id/iv_timeline_icon_face"
+		        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+		        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
+		        android:src="@drawable/eventlist_filter_icon_fire" 
+		        android:visibility="invisible" />
+		    <ImageView
+		        android:id="@+id/iv_timeline_icon_sound"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_below="@+id/iv_timeline_icon_fire"
+		        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+		        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
+		        android:src="@drawable/eventlist_filter_icon_sound" 
+		        android:visibility="invisible" />
+		    <ImageView
+		        android:id="@+id/iv_timeline_icon_motion"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_below="@+id/iv_timeline_icon_sound"
+		        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+		        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
+		        android:src="@drawable/eventlist_filter_icon_motion" 
+		        android:visibility="invisible" />
 	    </RelativeLayout>
-	    
-	    <RelativeLayout 
-	        android:id="@+id/vg_timeline_go_live"
-	        android:layout_width="225dp"
-		    android:layout_height="128dp"
-	        android:layout_toRightOf="@id/iv_timeline_grayline_holder"
-		    android:layout_below="@+id/tv_eventlist_event_name"
-		    android:layout_marginTop="@dimen/eventlist_thumbnail_top"
-	        android:layout_marginBottom="@dimen/eventlist_thumbnail_bottom"
-	        android:layout_alignRight="@+id/vg_timeline_video_thumbnail"
-	        android:background="@color/liveview_background"
-	        android:visibility="gone">
-	        <TextView 
-		        android:id="@+id/btn_go_live"
-		        android:layout_width="135dp"
-		        android:layout_height="45dp"
-		        android:paddingTop="10dp"
-		        android:paddingBottom="10dp"
-		        android:text="@string/event_go_live"
-		        android:textSize="20sp"
-		        android:textColor="@color/word_white"
-		        android:gravity="center"
-		     	android:background="@drawable/sl_event_list_live_btn_bg"
-		     	android:layout_centerInParent="true"
-		     	android:duplicateParentState="true"/>
-	    </RelativeLayout>
-	    
-	    <ImageView
-	        android:id="@+id/iv_timeline_icon_face"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentRight="true"
-	        android:layout_below="@+id/tv_eventlist_event_name"
-	        android:layout_marginTop="@dimen/eventlist_thumbnail_top"
-	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
-	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
-	        android:src="@drawable/eventlist_filter_icon_familyface"
-	        android:visibility="invisible" />
-	    
-	    <ImageView
-	        android:id="@+id/iv_timeline_icon_fire"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentRight="true"
-	        android:layout_below="@+id/iv_timeline_icon_face"
-	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
-	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
-	        android:src="@drawable/eventlist_filter_icon_fire" 
-	        android:visibility="invisible" />
-	    <ImageView
-	        android:id="@+id/iv_timeline_icon_sound"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentRight="true"
-	        android:layout_below="@+id/iv_timeline_icon_fire"
-	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
-	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
-	        android:src="@drawable/eventlist_filter_icon_sound" 
-	        android:visibility="invisible" />
-	    <ImageView
-	        android:id="@+id/iv_timeline_icon_motion"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentRight="true"
-	        android:layout_below="@+id/iv_timeline_icon_sound"
-	        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
-	        android:layout_marginRight="@dimen/eventlist_thumbnail_right"
-	        android:src="@drawable/eventlist_filter_icon_motion" 
-	        android:visibility="invisible" />
 	    
 	    <View 
 	        android:id="@+id/v_dummy"
 	        android:layout_width="0dp"
 	        android:layout_height="@dimen/eventlist_content_bottom"
-	        android:layout_below="@+id/vg_timeline_video_thumbnail"/>
+	        android:layout_below="@+id/iv_timeline_main_holder"/>
 	</RelativeLayout>
 </LinearLayout>
 

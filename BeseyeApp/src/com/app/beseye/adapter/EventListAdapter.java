@@ -80,6 +80,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 			convertView = mInflater.inflate(miLayoutId, null);
 			if(null != convertView){
 				EventListItmHolder holder = new EventListItmHolder();
+				
 				holder.mTxtEventType = (TextView)convertView.findViewById(R.id.tv_eventlist_event_name);
 				
 				holder.mImgThumbnail = (RemoteGifImageView)convertView.findViewById(R.id.iv_timeline_video_thumbnail);
@@ -87,6 +88,12 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 					convertView.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(0, MeasureSpec.AT_MOST));
 					BeseyeUtils.setThumbnailRatio(holder.mImgThumbnail, holder.mImgThumbnail.getMeasuredWidth(), BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
 				}
+				
+				ViewGroup vgGrayLine = (ViewGroup)convertView.findViewById(R.id.iv_timeline_grayline_holder);
+				if(null != vgGrayLine){
+					vgGrayLine.requestLayout();
+				}
+				
 				holder.mImgDot = (ImageView)convertView.findViewById(R.id.iv_timeline_dot_greenblue);
 				holder.mImgFace = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_face);
 				holder.mImgFire = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_fire);
