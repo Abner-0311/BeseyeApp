@@ -157,7 +157,7 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_delete_trust_dev_fail));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(BeseyeTrustDevMgtActivity.this, R.string.msg_delete_trust_dev_fail, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
 		}else if(task instanceof BeseyeAccountTask.GetTrustDevListTask){

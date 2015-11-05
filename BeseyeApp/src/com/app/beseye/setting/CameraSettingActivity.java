@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.BeseyeTrustDevAuthActivity;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
@@ -467,7 +468,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle,
 			String strMsg) {
 		/*if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 			onToastShow(task, "Notify SW Update Failed.");
@@ -477,7 +478,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_get_cam_info));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraSettingActivity.this, R.string.cam_setting_fail_to_get_cam_info, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
 			
@@ -486,7 +487,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_get_cam_info));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraSettingActivity.this, R.string.cam_setting_fail_to_get_cam_info, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 					
 					BeseyeJSONUtil.setVCamConnStatus(mCam_obj, CAM_CONN_STATUS.CAM_DISCONNECTED);
@@ -500,7 +501,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_update_cam_status));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraSettingActivity.this, R.string.cam_setting_fail_to_update_cam_status, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 					
 					if(null != mCamSwitchBtn){
@@ -512,7 +513,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_failed_detach_cam));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraSettingActivity.this, R.string.cam_setting_failed_detach_cam, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
 		}else

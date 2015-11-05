@@ -683,7 +683,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 						int iErrCode = BeseyeJSONUtil.getJSONInt(dataObj, BeseyeJSONUtil.RET_CODE_CAMBE);
 						if(0 != iErrCode){
 							Bundle b = new Bundle();  
-        					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_wifi_setting_info_error));
+        					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(HWSettingsActivity.this, R.string.msg_wifi_setting_info_error, iErrCode));
 
 							if(BeseyeError.E_CAM_INVALID_WIFI_PW_LENGTH == iErrCode){
 								if(null != mChosenWifiAPInfo){

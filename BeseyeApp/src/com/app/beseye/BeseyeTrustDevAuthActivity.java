@@ -182,7 +182,7 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 					clearPincode();
 				}else{
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_pincode_verify_resend_fail));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(BeseyeTrustDevAuthActivity.this, R.string.msg_pincode_verify_resend_fail, iRetCode));
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}
 			}else if(task instanceof BeseyeAccountTask.PinCodeVerifyTask){

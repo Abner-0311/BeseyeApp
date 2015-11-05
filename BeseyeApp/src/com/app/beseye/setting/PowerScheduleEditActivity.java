@@ -315,14 +315,14 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_get_cam_info));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(PowerScheduleEditActivity.this, R.string.cam_setting_fail_to_get_cam_info, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
 		}else if(task instanceof BeseyeCamBEHttpTask.ModifyScheduleTask){
@@ -332,7 +332,7 @@ public class PowerScheduleEditActivity extends BeseyeBaseActivity{
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, errorMessage);
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCodeByString(PowerScheduleEditActivity.this, errorMessage, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
 		}else
