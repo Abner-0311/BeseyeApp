@@ -20,6 +20,8 @@ import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.util.NetworkMgr.OnWifiScanResultAvailableCallback;
 import com.app.beseye.util.NetworkMgr.OnWifiStatusChangeCallback;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
+import com.app.beseye.widget.BaseOneBtnDialog;
+import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
 
 import android.app.Dialog;
 
@@ -182,49 +184,52 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				break;
 			}
 			case DIALOG_ID_WIFI_TURN_ON_FAILED:{
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setIcon(android.R.drawable.ic_dialog_alert);
-            	builder.setTitle(getString(R.string.dialog_title_warning));
-            	builder.setMessage(getString(R.string.dialog_wifi_fail_on));
-				builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-				    public void onClick(DialogInterface dialog, int item) {
-				    	dialog.dismiss();
-				    	setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_TURNING_ON);
-				    }
-				});
+				dialog = new BaseOneBtnDialog(this);
+				BaseOneBtnDialog d = (BaseOneBtnDialog)dialog;
+				d.setBodyText(BeseyeUtils.appendErrorCode(this, R.string.dialog_wifi_fail_on, 0));
+				d.setTitleText(getString(R.string.dialog_title_warning));
+
+				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
 				
-				builder.setOnCancelListener(new OnCancelListener(){
+					@Override
+					public void onBtnClick() {
+						removeMyDialog(DIALOG_ID_WIFI_TURN_ON_FAILED);		
+					}});
+				
+				d.setOnCancelListener(new OnCancelListener(){
 					@Override
 					public void onCancel(DialogInterface dialog) {
 						//finish();
 						dialog.dismiss();
 						setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_TURNING_ON);
 					}});
-				dialog = builder.create();
+				
 				if(null != dialog){
 					dialog.setCanceledOnTouchOutside(true);
 				}
             	break;
             }
-			case DIALOG_ID_WIFI_SCAN_FAILED:{
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setIcon(android.R.drawable.ic_dialog_alert);
-            	builder.setTitle(getString(R.string.dialog_title_warning));
-            	builder.setMessage(getString(R.string.dialog_wifi_fail_scan));
-				builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-				    public void onClick(DialogInterface dialog, int item) {
-				    	dialog.dismiss();
-				    	setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_ON);
-				    }
-				});
-				builder.setOnCancelListener(new OnCancelListener(){
+			case DIALOG_ID_WIFI_SCAN_FAILED:{				
+				dialog = new BaseOneBtnDialog(this);
+				BaseOneBtnDialog d = (BaseOneBtnDialog)dialog;
+				d.setBodyText(BeseyeUtils.appendErrorCode(this, R.string.dialog_wifi_fail_scan, 0));
+				d.setTitleText(getString(R.string.dialog_title_warning));
+
+				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+				
+					@Override
+					public void onBtnClick() {
+						removeMyDialog(DIALOG_ID_WIFI_SCAN_FAILED);		
+					}});
+				
+				d.setOnCancelListener(new OnCancelListener(){
 					@Override
 					public void onCancel(DialogInterface dialog) {
 						//finish();
 						dialog.dismiss();
-						setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_ON);
+						setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_TURNING_ON);
 					}});
-				dialog = builder.create();
+				
 				if(null != dialog){
 					dialog.setCanceledOnTouchOutside(true);
 				}
