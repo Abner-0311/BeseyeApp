@@ -40,7 +40,11 @@ import com.app.beseye.util.BeseyeJSONUtil.CAM_CONN_STATUS;
 import com.app.beseye.util.BeseyeNewFeatureMgr.BESEYE_NEW_FEATURE;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.ShareMgr;
+import com.app.beseye.widget.BaseOneBtnDialog;
+import com.app.beseye.widget.BaseTwoBtnDialog;
 import com.app.beseye.widget.BeseyeSwitchBtn;
+import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
+import com.app.beseye.widget.BaseTwoBtnDialog.OnTwoBtnClickListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
@@ -384,60 +388,39 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		Dialog dialog;
 		switch(id){
 			case DIALOG_ID_CAM_DETTACH_CONFIRM:{
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            	builder.setTitle(getString(R.string.dialog_title_warning));
-            	builder.setMessage(String.format(getString(R.string.dialog_dettach_cam),mStrVCamName));
-				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				    public void onClick(DialogInterface dialog, int item) {
-				    	removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
-				    	
-				    	mbTriggerDetachAfterReboot = true;
-				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(DIALOG_ID_SYNCING), true, mStrVCamID);
-				    	
-//				    	monitorAsyncTask(new BeseyeAccountTask.CamDettachTask(CameraSettingActivity.this), true, mStrVCamID);	
-				    	
-				    	//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(-1), true, mStrVCamID);
-				    }
-				});
-				builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-				    public void onClick(DialogInterface dialog, int item) {
-				    	removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
-				    }
-				});
-				builder.setOnCancelListener(new OnCancelListener(){
+				BaseTwoBtnDialog d = new BaseTwoBtnDialog(this);
+				d.setBodyText(String.format(getString(R.string.dialog_dettach_cam),mStrVCamName));
+				d.setTitleText(getString(R.string.dialog_title_warning));
+				d.setOnTwoBtnClickListener(new OnTwoBtnClickListener(){
 					@Override
-					public void onCancel(DialogInterface dialog) {
+					public void onBtnYesClick() {
 						removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
-					}});
-				
-				dialog = builder.create();
-				if(null != dialog){
-					dialog.setCanceledOnTouchOutside(true);
-				}
+				    	mbTriggerDetachAfterReboot = true;
+				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this).setDialogId(DIALOG_ID_SYNCING), true, mStrVCamID);					
+				    }
+					@Override
+					public void onBtnNoClick() {
+						removeMyDialog(DIALOG_ID_CAM_DETTACH_CONFIRM);
+					}} );
+				dialog = d;
 				break;
 			}
 			case DIALOG_ID_CAM_REBOOT_CONFIRM:{
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            	builder.setTitle(getString(R.string.dialog_title_warning));
-            	builder.setMessage(String.format(getString(R.string.dialog_reboot_cam),mStrVCamName));
-				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				    public void onClick(DialogInterface dialog, int item) {
-				    	removeMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
-				    	monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this), true, mStrVCamID);
-				    }
-				});
-				builder.setOnCancelListener(new OnCancelListener(){
+				BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+				d.setBodyText(String.format(getString(R.string.dialog_reboot_cam),mStrVCamName));
+				d.setTitleText(getString(R.string.dialog_title_warning));
+
+				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+		
 					@Override
-					public void onCancel(DialogInterface dialog) {
-						removeMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+					public void onBtnClick() {
+						removeMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);	
+						monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(CameraSettingActivity.this), true, mStrVCamID);
 					}});
-				
-				dialog = builder.create();
-				if(null != dialog){
-					dialog.setCanceledOnTouchOutside(true);
-				}
+				dialog = d;
 				break;
 			}
+				
 			default:
 				dialog = super.onCreateDialog(id);
 		}

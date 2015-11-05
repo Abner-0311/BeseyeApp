@@ -718,7 +718,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			
 				@Override
 				public void onBtnClick() {
-					removeMyDialog(DIALOG_ID_INFO);	
+					removeMyDialog(DIALOG_ID_PIN_AUTH_REQUEST);	
 				}});
 			dialog = d;
 			
