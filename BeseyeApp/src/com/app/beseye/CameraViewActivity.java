@@ -1481,7 +1481,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_update_cam_status));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, R.string.cam_setting_fail_to_update_cam_status, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 
 				}}, 0);
@@ -2659,10 +2659,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(!isInP2PMode())
 					showInvalidStateMask();
 				
+				int iErrCode = BeseyeError.E_FE_AND_PLAYER_UNKNOWN_ERR;
+				
 				Log.w(TAG, "updateRTMPErrorCallback(), iMajorType:"+iMajorType+", iMinorType="+iMinorType+", msg="+msg);
 				if(Player_Major_Error.INTERNAL_STREAM_ERR.ordinal() == iMajorType){
 					if(Stream_Error.INVALID_APP_ERROR.ordinal() <= iMinorType && iMinorType < Stream_Error.SERVER_REQUEST_CLOSE_ERROR.ordinal()){
 						iErrStrId = R.string.streaming_playing_error;
+						iErrCode = BeseyeError.E_FE_AND_PLAYER_ERROR;
 						//showInvalidStateMask();
 					}else if(Stream_Error.NETWORK_CONNECTION_ERROR.ordinal() <= iMinorType && iMinorType <= Stream_Error.UNKOWN_NETWORK_ERROR.ordinal()){
 						iErrStrId = R.string.streaming_error_no_network;
@@ -2689,6 +2692,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					}
 				}else if(Player_Major_Error.NOMEM_CB.ordinal() == iMajorType){
 					iErrStrId = R.string.streaming_error_low_mem;
+					iErrCode = BeseyeError.E_FE_AND_PLAYER_LOW_MEM;
 				}else if(Player_Major_Error.UNKNOWN_ERR.ordinal() == iMajorType){
 					iErrStrId = R.string.streaming_error_unknown;
 				}
@@ -2705,7 +2709,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //								Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
 					}else{
 						Bundle b = new Bundle();
-						b.putString(KEY_WARNING_TEXT, getResources().getString(iErrStrId));
+						b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, iErrStrId, iErrCode));
 						showMyDialog(DIALOG_ID_WARNING, b);
 				    	closeStreaming();
 					}
