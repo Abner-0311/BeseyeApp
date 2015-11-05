@@ -516,5 +516,5 @@
   <!--Pin code request dialog message shown in Beseye App-->
   <!-- TODO: string name="dialog_notification_pincode_auth" -->
   
-  <string name="error_code_fmt">\n(รหัสข้อผิดพลาด = 0x%x)</string>
+  <string name="error_code_fmt">\n(รหัสข้อผิดพลาด = 0x%08x)</string>
 </resources>

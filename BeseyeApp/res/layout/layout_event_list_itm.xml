@@ -19,8 +19,8 @@
 		     android:layout_alignBottom="@+id/v_dummy"/>
 	    <ImageView
 	        android:id="@+id/iv_timeline_dot_greenblue"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_width="@dimen/eventlist_dot_width"
+	        android:layout_height="@dimen/eventlist_dot_width"
 	        android:layout_centerVertical="true"
 	        android:layout_marginLeft="@dimen/eventlist_timeline_dot_left"
 		    android:layout_marginRight="@dimen/eventlist_gray_line_right"

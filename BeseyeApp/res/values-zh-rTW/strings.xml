@@ -539,5 +539,5 @@
   <string name="enhance_human_detect_no_pic_desc">\nBeseye 將會在近期提供疑似人員影像讓您篩選。</string>
   <string name="enhance_human_detect_train_done_desc">\nBeseye 移動人員辨識系統針對此攝影機的最佳化流程已完成，您無須再次點擊影像。</string>
   	
-  <string name="error_code_fmt">\n(錯誤代碼 = 0x%x)</string>
+  <string name="error_code_fmt">\n(錯誤代碼 = 0x%08x)</string>
 </resources>

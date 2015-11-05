@@ -684,7 +684,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}
 		case DIALOG_ID_NO_NETWORK:{
 			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
-			d.setBodyText(R.string.streaming_error_no_network);
+			d.setBodyText(BeseyeUtils.appendErrorCode(this, R.string.streaming_error_no_network, 0));
 			d.setTitleText(getString(R.string.dialog_title_warning));
 
 			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){

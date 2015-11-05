@@ -645,10 +645,6 @@ public class BeseyeUtils {
 		return strLocale;
 	}
 	
-	static public String appendErrorCode(Context context, String strOrigin, int iErrCode){
-		return strOrigin+(BeseyeFeatureConfig.APPEND_ERR_CODE?String.format(context.getString(R.string.error_code_fmt), iErrCode):"");
-	}
-	
 	static List<Integer> sLstSeriousWorningMsgIds = new ArrayList<Integer>();
 	static{
 		if(BeseyeFeatureConfig.TRANS_SERIOUS_WARNING){
@@ -658,12 +654,17 @@ public class BeseyeUtils {
 			sLstSeriousWorningMsgIds.add(R.string.streaming_error_unknown);
 			sLstSeriousWorningMsgIds.add(R.string.streaming_error_low_mem);
 			sLstSeriousWorningMsgIds.add(R.string.cam_update_timeout);
-			
+			//Append the serious warning msg string ids
 		}
 	}
 	
 	static public String appendErrorCode(Context context, int iOriginStrId, int iErrCode){
-		return context.getString((BeseyeFeatureConfig.TRANS_SERIOUS_WARNING && sLstSeriousWorningMsgIds.contains(iOriginStrId))?R.string.dialog_no_connectivity:iOriginStrId)+
-				(BeseyeFeatureConfig.APPEND_ERR_CODE?String.format(context.getString(R.string.error_code_fmt), iErrCode):"");
+		return appendErrorCodeByString( context, 
+										context.getString((BeseyeFeatureConfig.TRANS_SERIOUS_WARNING && sLstSeriousWorningMsgIds.contains(iOriginStrId))?R.string.dialog_no_connectivity:iOriginStrId),
+										iErrCode);
+	}
+	
+	static public String appendErrorCodeByString(Context context, String strOrigin, int iErrCode){
+		return strOrigin+(BeseyeFeatureConfig.APPEND_ERR_CODE?String.format(context.getString(R.string.error_code_fmt), iErrCode):"");
 	}
 }
