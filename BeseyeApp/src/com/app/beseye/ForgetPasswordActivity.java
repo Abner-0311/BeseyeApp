@@ -87,13 +87,13 @@ public class ForgetPasswordActivity extends BeseyeAccountBaseActivity {
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,String strMsg) {	
 		if(task instanceof BeseyeAccountTask.SendForgetPWTask){
-			int iErrMsg = R.string.msg_login_error;
+			int iErrMsg = R.string.forget_password_request_fail;
 			if(BeseyeError.E_BE_ACC_USER_EMAIL_FORMAT_INVALID == iErrType){
 				iErrMsg = R.string.msg_invalid_account_format;
 			}else if(BeseyeError.E_BE_ACC_USER_NOT_FOUND_BY_EMAIL == iErrType){
 				iErrMsg = R.string.msg_account_not_found;
 			}
-			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(iErrMsg));
+			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), BeseyeUtils.appendErrorCode(this, iErrMsg, iErrType));
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
