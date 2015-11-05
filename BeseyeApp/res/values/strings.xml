@@ -522,7 +522,7 @@
   <string name="cam_attach_under_your_account_error">This camera whose name is (%s) was already awaken by your account.</string>
   <string name="cam_attach_under_other_account_error">This camera was already awaken by other\'s account.\nPlease contact custumer service for help.\n[Camera HW ID is %s]</string>
   
- <string name="title_human_detect_train">點擊無人影像</string>
+  <string name="title_human_detect_train">點擊無人影像</string>
   <string name="confirm">完成</string>
   <string name="cam_setting_title_human_detect">移動人員偵測</string>
   <string name="cam_setting_title_human_detect_notify">人員偵測通知</string>
@@ -553,4 +553,6 @@
   <string name="att_event_cam_status_off">歡迎回來，Beseye 已將攝影機關閉，但隨時待命。</string>
   
   <string name="error_code_fmt">\n(Error code = 0x%08x)</string>
+  <!-- warning of forget password failure case -->
+  <string name="forget_password_request_fail">Fail to send forget password confirmation letter. Please try again later.</string>
 </resources>
