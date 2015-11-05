@@ -186,7 +186,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 			case DIALOG_ID_WIFI_TURN_ON_FAILED:{
 				dialog = new BaseOneBtnDialog(this);
 				BaseOneBtnDialog d = (BaseOneBtnDialog)dialog;
-				d.setBodyText(BeseyeUtils.appendErrorCode(this, R.string.dialog_wifi_fail_on, 0));
+				d.setBodyText(getString(R.string.dialog_wifi_fail_on));
 				d.setTitleText(getString(R.string.dialog_title_warning));
 
 				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
@@ -212,7 +212,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 			case DIALOG_ID_WIFI_SCAN_FAILED:{				
 				dialog = new BaseOneBtnDialog(this);
 				BaseOneBtnDialog d = (BaseOneBtnDialog)dialog;
-				d.setBodyText(BeseyeUtils.appendErrorCode(this, R.string.dialog_wifi_fail_scan, 0));
+				d.setBodyText(getString( R.string.dialog_wifi_fail_scan));
 				d.setTitleText(getString(R.string.dialog_title_warning));
 
 				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){

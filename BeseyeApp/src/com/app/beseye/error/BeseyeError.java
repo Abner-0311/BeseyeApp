@@ -73,4 +73,9 @@ public class BeseyeError {
 	static public final int	  E_FE_AND_PLAYER_LOW_MEM				   	   = 0x00400005;	//streaming_error_low_mem
 	static public final int	  E_FE_AND_OTA_TIMEOUT				   		   = 0x00400006;	//cam_update_timeout
 	static public final int	  E_FE_AND_OTA_UPDATE_FAILED				   = 0x00400007;	//cam_update_failed
+	static public final int	  E_FE_AND_HTTP_UNKNOWN_ERR				   	   = 0x00400008;
+	static public final int	  E_FE_AND_HTTP_INVALID_DATA				   = 0x00400009;
+	static public final int	  E_FE_AND_HTTP_NO_CONN				   		   = 0x0040000A;
+	static public final int	  E_FE_AND_HTTP_CONN_TIMEOUT				   = 0x0040000B;
+	
 }

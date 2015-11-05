@@ -103,10 +103,10 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	 *Define the error types in http tasks 
 	 * */
 	public static final int ERR_TYPE_NO_ERR 				= 0;//init value
-	public static final int ERR_TYPE_GENERAL_ERR  			= 1;//no idea about the err
-	public static final int ERR_TYPE_INVALID_DATA   		= 2;//err occurred from the invalid format/parse failed
-	public static final int ERR_TYPE_NO_CONNECTION  		= 3;//there is no network connection
-	public static final int ERR_TYPE_CONNECTION_TIMEOUT  	= 4;//network connection timeout
+	public static final int ERR_TYPE_GENERAL_ERR  			= BeseyeError.E_FE_AND_HTTP_UNKNOWN_ERR;//no idea about the err
+	public static final int ERR_TYPE_INVALID_DATA   		= BeseyeError.E_FE_AND_HTTP_INVALID_DATA;//err occurred from the invalid format/parse failed
+	public static final int ERR_TYPE_NO_CONNECTION  		= BeseyeError.E_FE_AND_HTTP_NO_CONN;//there is no network connection
+	public static final int ERR_TYPE_CONNECTION_TIMEOUT  	= BeseyeError.E_FE_AND_HTTP_CONN_TIMEOUT;//network connection timeout
 	public static final int ERR_TYPE_REQUEST_RET_ERR  	    = 5;//when ret code is not equal to 0
 	public static final int ERR_TYPE_SESSION_INVALID  	    = 6;//when seesion is invalid
 	public static final int ERR_TYPE_SESSION_NOT_TRUST  	= 7;//when client isn't in trust list
