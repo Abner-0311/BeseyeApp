@@ -116,7 +116,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
-				txtTitle.setText(mStrVCamName);
+				txtTitle.setText(R.string.title_event_list);
 				txtTitle.setOnClickListener(this);
 			}
 			

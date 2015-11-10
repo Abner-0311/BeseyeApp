@@ -553,6 +553,7 @@
   <string name="att_event_cam_status_off">歡迎回來，Beseye 已將攝影機關閉，但隨時待命。</string>
   
   <string name="error_code_fmt">\n(Error code = 0x%08x)</string>
+  <string name="title_event_list">Event list</string>
   <!-- warning of forget password failure case -->
   <string name="forget_password_request_fail">Fail to send forget password confirmation letter. Please try again later.</string>
 </resources>

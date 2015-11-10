@@ -516,4 +516,5 @@
   <!-- TODO: string name="dialog_notification_pincode_auth" -->
   
   <string name="error_code_fmt">\n(错误代码 = 0x%08x)</string>
+  <string name="title_event_list">录像事件表</string>
 </resources>
