@@ -151,20 +151,20 @@ public class BeseyeTrustDevMgtActivity extends BeseyeBaseActivity {
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeAccountTask.DeleteTrustDevTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_delete_trust_dev_fail));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(BeseyeTrustDevMgtActivity.this, R.string.msg_delete_trust_dev_fail, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
 		}else if(task instanceof BeseyeAccountTask.GetTrustDevListTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					onServerError();
+					onServerError(iErrType);
 				}}, 0);
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);

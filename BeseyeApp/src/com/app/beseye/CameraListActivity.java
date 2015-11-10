@@ -554,7 +554,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeAccountTask.GetVCamListTask){
 			postToLvRreshComplete();
 		}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
@@ -562,7 +562,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_update_cam_status));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraListActivity.this, R.string.cam_setting_fail_to_update_cam_status, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 					
 					refreshList();
@@ -1083,8 +1083,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	@Override
-	protected void onServerError(){
-		super.onServerError();
+	protected void onServerError(int iErrCode){
+		super.onServerError(iErrCode);
 		LayoutInflater inflater = getLayoutInflater();
 		if(null != inflater){
 			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);

@@ -167,6 +167,9 @@
     <dimen name="indicator_internal_padding">4dp</dimen>
     
     <dimen name="eventlist_ind_margin_left">20dp</dimen>
+    <dimen name="eventlist_dot_width">24dp</dimen>
+    <dimen name="eventlist_dot_width_half">10.5dp</dimen> <!-- half icon width - half line width -->
+    <dimen name="eventlist_icon_width">26dp</dimen>
     
     <dimen name="eventlist_gray_line_width">3dp</dimen>
     <dimen name="eventlist_gray_line_left">60dp</dimen>

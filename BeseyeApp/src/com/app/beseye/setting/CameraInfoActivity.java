@@ -175,14 +175,14 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask && null != mVgSWVer && View.VISIBLE == mVgSWVer.getVisibility()){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_get_cam_info));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraInfoActivity.this, R.string.cam_setting_fail_to_get_cam_info, iErrType));
 					//b.putBoolean(KEY_WARNING_CLOSE, true);
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);

@@ -19,6 +19,7 @@ import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_STATE;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.pairing.SoundPairingActivity;
+import com.app.beseye.setting.PowerScheduleActivity;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
@@ -555,14 +556,14 @@ public class WifiListActivity extends WifiControlBaseActivity
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetWiFiSSIDListTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_get_wifi_list));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(WifiListActivity.this, R.string.cam_setting_fail_to_get_wifi_list, iErrType));
 					b.putBoolean(KEY_WARNING_CLOSE, true);
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);

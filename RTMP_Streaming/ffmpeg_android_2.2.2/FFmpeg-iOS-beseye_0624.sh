@@ -82,7 +82,8 @@ CONFIGURE_FLAGS="--enable-cross-compile \
 # avresample
 #CONFIGURE_FLAGS="$CONFIGURE_FLAGS --enable-avresample"
 
-ARCHS="armv7 arm64 armv7s x86_64 i386"
+ARCHS="armv7 arm64 armv7s i386"
+# x86_64
 
 COMPILE="y"
 LIPO="y"

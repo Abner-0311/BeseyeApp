@@ -562,7 +562,7 @@
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
+				VALID_ARCHS = "arm64 armv7 armv7s i386";
 				a = a;
 			};
 			name = Debug;
@@ -594,7 +594,7 @@
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
+				VALID_ARCHS = "arm64 armv7 armv7s i386";
 				a = a;
 			};
 			name = Release;
@@ -627,7 +627,7 @@
 					/compiled/i386/include/include/,
 				);
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
+				VALID_ARCHS = "arm64 armv7 armv7s  i386";
 			};
 			name = Debug;
 		};
@@ -659,7 +659,7 @@
 					/compiled/i386/include/include/,
 				);
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
+				VALID_ARCHS = "arm64 armv7 armv7s  i386";
 			};
 			name = Release;
 		};

@@ -1275,7 +1275,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	            			}else if(0 == mstrDiffStreamPathList.size()){
 	            				if(isCamViewStatus(CameraView_Internal_Status.CV_STATUS_UNINIT)){
 		            				Bundle b = new Bundle();
-		        					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
+		        					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(this, R.string.streaming_invalid_dvr, BeseyeError.E_FE_AND_INVALID_DVR_PATH));
 		        					b.putBoolean(KEY_WARNING_CLOSE, true);
 		        					showMyDialog(DIALOG_ID_WARNING, b);
 	            				}else{
@@ -1449,7 +1449,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						if(isCamPowerOn()){
 							Log.e(TAG, "run(), show streaming_playing_error");
 							Bundle b = new Bundle();
-							b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_playing_error));
+							b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, R.string.streaming_playing_error, BeseyeError.E_FE_AND_PLAYER_ERROR));
 							//b.putBoolean(KEY_WARNING_CLOSE, true);
 							showMyDialog(DIALOG_ID_WARNING, b);
 							updatePlayPauseBtnEnabledStatus();
@@ -1468,7 +1468,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				public void run() {
 					if(BeseyeHttpTask.ERR_TYPE_NO_CONNECTION != iErrType){
 						Bundle b = new Bundle();
-						b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
+    					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, R.string.streaming_invalid_dvr, BeseyeError.E_FE_AND_INVALID_DVR_PATH));
 						b.putBoolean(KEY_WARNING_CLOSE, true);
 						showMyDialog(DIALOG_ID_WARNING, b);
 					}else{
@@ -1482,7 +1482,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_update_cam_status));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, R.string.cam_setting_fail_to_update_cam_status, iErrType));
 					showMyDialog(DIALOG_ID_WARNING, b);
 
 				}}, 0);
@@ -1895,7 +1895,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
    							@Override
    							public void run() {
    								Bundle b = new Bundle();
-   								b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.streaming_invalid_dvr));
+   								b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, R.string.streaming_invalid_dvr, BeseyeError.E_FE_AND_INVALID_DVR_PATH));
    								showMyDialog(DIALOG_ID_WARNING, b);
    							}}, 0);
             				
@@ -2660,10 +2660,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				if(!isInP2PMode())
 					showInvalidStateMask();
 				
+				int iErrCode = BeseyeError.E_FE_AND_PLAYER_UNKNOWN_ERR;
+				
 				Log.w(TAG, "updateRTMPErrorCallback(), iMajorType:"+iMajorType+", iMinorType="+iMinorType+", msg="+msg);
 				if(Player_Major_Error.INTERNAL_STREAM_ERR.ordinal() == iMajorType){
 					if(Stream_Error.INVALID_APP_ERROR.ordinal() <= iMinorType && iMinorType < Stream_Error.SERVER_REQUEST_CLOSE_ERROR.ordinal()){
 						iErrStrId = R.string.streaming_playing_error;
+						iErrCode = BeseyeError.E_FE_AND_PLAYER_ERROR;
 						//showInvalidStateMask();
 					}else if(Stream_Error.NETWORK_CONNECTION_ERROR.ordinal() <= iMinorType && iMinorType <= Stream_Error.UNKOWN_NETWORK_ERROR.ordinal()){
 						iErrStrId = R.string.streaming_error_no_network;
@@ -2690,6 +2693,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					}
 				}else if(Player_Major_Error.NOMEM_CB.ordinal() == iMajorType){
 					iErrStrId = R.string.streaming_error_low_mem;
+					iErrCode = BeseyeError.E_FE_AND_PLAYER_LOW_MEM;
 				}else if(Player_Major_Error.UNKNOWN_ERR.ordinal() == iMajorType){
 					iErrStrId = R.string.streaming_error_unknown;
 				}
@@ -2706,7 +2710,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //								Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
 					}else{
 						Bundle b = new Bundle();
-						b.putString(KEY_WARNING_TEXT, getResources().getString(iErrStrId));
+						b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, iErrStrId, iErrCode));
 						showMyDialog(DIALOG_ID_WARNING, b);
 				    	closeStreaming();
 					}
@@ -3014,7 +3018,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
     
     private void setStreamingAudioMute(boolean bMute){
-		Log.i(TAG, "setAudioMute(), bMute ..........."+bMute);
+		Log.i(TAG, "setStreamingAudioMute(), bMute ..........."+bMute);
     	AudioWebSocketsMgr.getInstance().setSienceFlag(!bMute);
 		muteStreaming(miStreamIdx, bMute);
     }

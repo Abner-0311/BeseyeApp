@@ -167,7 +167,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 				iErrMsg = -1;//trust device handle
 			}
 			if(-1 != iErrMsg){
-				onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(iErrMsg));
+				onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), BeseyeUtils.appendErrorCode(this, iErrMsg, iErrType));
 			}
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);

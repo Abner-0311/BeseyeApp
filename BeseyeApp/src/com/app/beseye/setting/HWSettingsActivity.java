@@ -427,15 +427,15 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
-			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true);
+			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true, iErrType);
 		}else if(task instanceof BeseyeCamBEHttpTask.SetLEDStatusTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					showErrorDialog(R.string.cam_setting_fail_to_update_led_status, false);
+					showErrorDialog(R.string.cam_setting_fail_to_update_led_status, false, iErrType);
 					if(null != mStatusLightSwitchBtn){
 						mStatusLightSwitchBtn.setSwitchState((mStatusLightSwitchBtn.getSwitchState()==SwitchState.SWITCH_ON)?SwitchState.SWITCH_OFF:SwitchState.SWITCH_ON);
 					}
@@ -444,7 +444,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					showErrorDialog(R.string.cam_setting_fail_to_update_mic_status, false);
+					showErrorDialog(R.string.cam_setting_fail_to_update_mic_status, false, iErrType);
 					if(null != mMicSenSwitchBtn){
 						mMicSenSwitchBtn.setSwitchState((mMicSenSwitchBtn.getSwitchState()==SwitchState.SWITCH_ON)?SwitchState.SWITCH_OFF:SwitchState.SWITCH_ON);
 					}
@@ -453,18 +453,18 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					showErrorDialog(R.string.cam_setting_fail_to_update_night_vision, false);
+					showErrorDialog(R.string.cam_setting_fail_to_update_night_vision, false, iErrType);
 					if(null != mMicSenSwitchBtn){
 						mMicSenSwitchBtn.setSwitchState((mMicSenSwitchBtn.getSwitchState()==SwitchState.SWITCH_ON)?SwitchState.SWITCH_OFF:SwitchState.SWITCH_ON);
 					}
 				}}, 0);
 		}else if(task instanceof BeseyeCamBEHttpTask.SetWiFiConfigTask){
-			showErrorDialog(R.string.cam_setting_fail_to_update_wifi_setting, false);
+			showErrorDialog(R.string.cam_setting_fail_to_update_wifi_setting, false, iErrType);
 		}else if(task instanceof BeseyeCamBEHttpTask.SetVideoResTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					showErrorDialog(R.string.cam_setting_fail_to_update_hd_quality, false);
+					showErrorDialog(R.string.cam_setting_fail_to_update_hd_quality, false, iErrType);
 					if(null != mHDQualitySwitchBtn){
 						mHDQualitySwitchBtn.setSwitchState((mHDQualitySwitchBtn.getSwitchState()==SwitchState.SWITCH_ON)?SwitchState.SWITCH_OFF:SwitchState.SWITCH_ON);
 					}
@@ -473,7 +473,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					showErrorDialog(R.string.cam_setting_fail_to_update_mic_sensitivity, false);
+					showErrorDialog(R.string.cam_setting_fail_to_update_mic_sensitivity, false, iErrType);
 					if(null != mSbMicSensitivity){			
 						mSbMicSensitivity.setProgress(miBeginPosOfMicGain);
 						miBeginPosOfMicGain = -1;
@@ -483,13 +483,13 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					showErrorDialog(R.string.cam_setting_fail_to_update_video_upside_down, false);
+					showErrorDialog(R.string.cam_setting_fail_to_update_video_upside_down, false, iErrType);
 					if(null != mIvViewUpDownCheck){
 						mIvViewUpDownCheck.setVisibility((View.VISIBLE == mIvViewUpDownCheck.getVisibility())?View.INVISIBLE:View.VISIBLE);
 					}
 				}}, 0);
 		}else if(task instanceof BeseyeCamBEHttpTask.SetCamTimezoneTask){
-			showErrorDialog(R.string.cam_setting_fail_to_update_timezone, false);
+			showErrorDialog(R.string.cam_setting_fail_to_update_timezone, false, iErrType);
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -683,7 +683,7 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 						int iErrCode = BeseyeJSONUtil.getJSONInt(dataObj, BeseyeJSONUtil.RET_CODE_CAMBE);
 						if(0 != iErrCode){
 							Bundle b = new Bundle();  
-        					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_wifi_setting_info_error));
+        					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(HWSettingsActivity.this, R.string.msg_wifi_setting_info_error, iErrCode));
 
 							if(BeseyeError.E_CAM_INVALID_WIFI_PW_LENGTH == iErrCode){
 								if(null != mChosenWifiAPInfo){

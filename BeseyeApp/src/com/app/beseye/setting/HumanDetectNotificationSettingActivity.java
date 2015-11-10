@@ -226,7 +226,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 			String strMsg) {
 		// GetLatestThumbnailTask don't need to have onErrorReport because it has default image
 		if(task instanceof BeseyeCamBEHttpTask.SetNotifySettingTask){
-			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true);
+			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true, iErrType);
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 		}

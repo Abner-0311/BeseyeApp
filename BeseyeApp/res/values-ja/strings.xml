@@ -514,4 +514,7 @@
   <string name="notification_pincode_auth">%2$sから要求された認証コード %1$s</string>
   <!--Pin code request dialog message shown in Beseye App-->
   <string name="dialog_notification_pincode_auth">認証コードは %1$s です。あなたのアカウントへ %2$s から誰かがログインしようとしています。認証コードを入力すると、ログインできます。</string>
+  
+  <string name="error_code_fmt">\n(エラーコード = 0x%08x)</string>
+  <string name="title_event_list">イベント一覧</string>
 </resources>

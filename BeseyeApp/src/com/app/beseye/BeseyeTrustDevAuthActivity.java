@@ -182,7 +182,7 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 					clearPincode();
 				}else{
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.msg_pincode_verify_resend_fail));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(BeseyeTrustDevAuthActivity.this, R.string.msg_pincode_verify_resend_fail, iRetCode));
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}
 			}else if(task instanceof BeseyeAccountTask.PinCodeVerifyTask){
@@ -197,7 +197,7 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 				}else if(BeseyeError.E_BE_ACC_TT_PINCODE_IS_EXPIRED == iRetCode || BeseyeError.E_BE_ACC_TT_PINCODE_NOT_FOUND == iRetCode){
 					showMyDialog(DIALOG_ID_PIN_VERIFY_FAIL_EXPIRED);
 				}else{
-					onServerError();
+					onServerError(iRetCode);
 				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);

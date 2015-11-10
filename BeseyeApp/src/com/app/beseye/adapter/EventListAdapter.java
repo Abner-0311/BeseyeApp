@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 	private int miSelectedImt = 0;
 	private String mStrFamilyDetectFormat, mStrPeopleDetect, mStrSoundDetect, mStrFireDetect, mStrMotionDetect, mStrEventDetect, mStrStranger;
 	private IListViewScrollListenser mIListViewScrollListenser;
+	private int miThumbnailWidth = 0;
 	
 	private boolean mbShowPeoeple = false;
 	public void setPeopleDetectEnabled(boolean bEnabled){
@@ -48,6 +50,12 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		mStrMotionDetect = context.getResources().getString(R.string.event_list_motion_detected);
 		mStrEventDetect = context.getResources().getString(R.string.event_list_unknown_detected);
 		mStrStranger = context.getResources().getString(R.string.event_list_people_detected_stranger);
+		
+		miThumbnailWidth = (int) (BeseyeUtils.getDeviceWidth((Activity)context) - (context.getResources().getDimension(R.dimen.eventlist_thumbnail_right)*2+
+				                                                                   context.getResources().getDimension(R.dimen.eventlist_timeline_dot_left)+
+				                                                                   context.getResources().getDimension(R.dimen.eventlist_gray_line_right)+
+				                                                                   context.getResources().getDimension(R.dimen.eventlist_dot_width)+
+				                                                                   context.getResources().getDimension(R.dimen.eventlist_icon_width))); 
 	}
 	
 	private String mStrVCamID;
@@ -66,6 +74,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		public View mVGoLiveHolder;
 		public TextView mBtnGoLive;
 		public JSONObject mObjEvent;
+		public boolean mbHaveAdjustWidth =false;
 	}
 	
 	public boolean setSelectedItm(int iItm){
@@ -80,31 +89,31 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 			convertView = mInflater.inflate(miLayoutId, null);
 			if(null != convertView){
 				EventListItmHolder holder = new EventListItmHolder();
-				
+
 				holder.mTxtEventType = (TextView)convertView.findViewById(R.id.tv_eventlist_event_name);
+				holder.mVGoLiveHolder = convertView.findViewById(R.id.vg_timeline_go_live);
+				if(null != holder.mVGoLiveHolder){
+					BeseyeUtils.setThumbnailRatio(holder.mVGoLiveHolder, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
+				}
 				
 				holder.mImgThumbnail = (RemoteGifImageView)convertView.findViewById(R.id.iv_timeline_video_thumbnail);
 				if(null != holder.mImgThumbnail){
-					convertView.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.AT_MOST), MeasureSpec.makeMeasureSpec(0, MeasureSpec.AT_MOST));
-					BeseyeUtils.setThumbnailRatio(holder.mImgThumbnail, holder.mImgThumbnail.getMeasuredWidth(), BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
+					BeseyeUtils.setThumbnailRatio(holder.mImgThumbnail, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
 				}
 				
-				ViewGroup vgGrayLine = (ViewGroup)convertView.findViewById(R.id.iv_timeline_grayline_holder);
-				if(null != vgGrayLine){
-					vgGrayLine.requestLayout();
-				}
 				
 				holder.mImgDot = (ImageView)convertView.findViewById(R.id.iv_timeline_dot_greenblue);
 				holder.mImgFace = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_face);
 				holder.mImgFire = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_fire);
 				holder.mImgSound = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_sound);
 				holder.mImgMotion = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_motion);
-				
-				holder.mVGoLiveHolder = convertView.findViewById(R.id.vg_timeline_go_live);
-				
 				holder.mBtnGoLive = (TextView)convertView.findViewById(R.id.btn_go_live);
+				
+				
 				convertView.setOnClickListener(mItemOnClickListener);
 				convertView.setTag(holder);
+				
+				Log.d(TAG, "inflateItem(), convertView:"+convertView.getHeight());	
 			}
 		}
 		return convertView;
@@ -124,12 +133,14 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 				BeseyeUtils.setVisibility(holder.mTxtEventType, (0 == iPosition)?View.INVISIBLE:View.VISIBLE);
 				BeseyeUtils.setVisibility(holder.mVGoLiveHolder, (0 == iPosition)?View.VISIBLE:View.GONE);
 				
+				Log.d(TAG, "setupItem(), convertView:"+convertView.getHeight());	
+
+				
 //				if(0 == iPosition){
 //					if(null != holder.mTxtEventType){
 //						holder.mTxtEventType.setText(R.string.event_itm_live);
 //					}
 //				}
-				
 				if(null != holder.mImgThumbnail){
 					if(0 < iPosition){
 						JSONArray arr = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_THUMBNAIL_PATH);

@@ -162,12 +162,12 @@ public class NightVisionActivity extends BeseyeBaseActivity {
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle, String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.SetIRCutStatusTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					showErrorDialog(R.string.cam_setting_fail_to_update_night_vision, true);
+					showErrorDialog(R.string.cam_setting_fail_to_update_night_vision, true, iErrType);
 				}}, 0);
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
