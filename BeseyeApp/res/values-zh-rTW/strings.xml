@@ -245,7 +245,7 @@
   <!-- Warning Message of dialog when wrong password to login-->
   <string name="msg_login_wrong_password">錯誤的密碼，請輸入正確密碼。</string>
   <!-- Warning Message of dialog when the email to login is not found in server-->
-  <string name="msg_account_not_found">不正確的電子郵件地址，請輸入正確地址。</string>
+  <string name="msg_account_not_found">您嘗試要登入的帳號不存在，請確認輸入是否正確</string>
   <!-- Hint Message of dialog when pairing is processing-->
   <string name="toast_pairing_wait">攝影機設定中，請稍待。</string>
   <string name="toast_pairing_enter_cam_name">幫您的Beseye 取個名字吧。</string>
@@ -541,5 +541,5 @@
   	
   <string name="error_code_fmt">\n(錯誤代碼 = 0x%08x)</string>
   <string name="title_event_list">錄影事件表</string>
-  
+  <string name="msg_account_not_activated">此帳號還未結束正常註冊流程，請再次執行註冊流程</string>
 </resources>

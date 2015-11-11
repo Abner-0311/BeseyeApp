@@ -163,6 +163,10 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 				iErrMsg = R.string.msg_invalid_account_format;
 			}else if(BeseyeError.E_BE_ACC_USER_PASSWORD_INCORRET == iErrType){
 				iErrMsg = R.string.msg_login_wrong_password;
+			}else if(BeseyeError.E_BE_ACC_USER_NOT_FOUND_BY_EMAIL == iErrType){
+				iErrMsg = R.string.msg_account_not_found;
+			}else if(BeseyeError.E_BE_ACC_USER_IS_INACTIVATED_THUS_SIGN_IN_FORBIDDEN == iErrType){
+				iErrMsg = R.string.msg_account_not_activated;
 			}else if(BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iErrType){
 				iErrMsg = -1;//trust device handle
 			}

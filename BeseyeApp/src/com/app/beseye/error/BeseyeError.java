@@ -20,6 +20,8 @@ public class BeseyeError {
 	static public final int   E_BE_ACC_USER_BOTH_USER_UID_N_VCAM_UID_BLANK = 0x0010100e;//freeze,
 	static public final int   E_BE_ACC_USER_NEW_PASSWORD_BLANK             = 0x0010100f;//New password is empty or blank!" }.freeze,
 	static public final int   E_BE_ACC_USER_NEW_PASSWORD_STRENGTH_TOO_LOW  = 0x00101010;//New password's strength is too low!" }.freeze,
+	static public final int   E_BE_ACC_USER_IS_INACTIVATED_THUS_SIGN_IN_FORBIDDEN  = 0x00101019;
+	
 		
 	static public final int   E_BE_ACC_VCAM_CAM_HW_UID_ALREADY_USED_BY_OTHER_VCAM = 0x00104001;
 	static public final int   E_BE_ACC_PS_KEEP_POLLING 							  = 0x00104500;
