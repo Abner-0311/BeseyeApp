@@ -59,6 +59,7 @@ import com.app.beseye.httptask.SessionMgr.SessionData;
 import com.app.beseye.receiver.BaiduPushReceiver;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeNewFeatureMgr;
 import com.app.beseye.util.BeseyeSharedPreferenceUtil;
 import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
@@ -1224,7 +1225,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	@Override
 	public void onSessionInvalid(AsyncTask<String, Double, List<JSONObject>> task, int iInvalidReason){
-		
+		SessionMgr.getInstance().cleanSession();
+		BeseyeNewFeatureMgr.getInstance().reset();
 	}
 
 	@Override
