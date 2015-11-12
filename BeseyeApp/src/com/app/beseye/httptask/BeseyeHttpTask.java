@@ -67,6 +67,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.error.BeseyeError;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -102,12 +103,13 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	 *Define the error types in http tasks 
 	 * */
 	public static final int ERR_TYPE_NO_ERR 				= 0;//init value
-	public static final int ERR_TYPE_GENERAL_ERR  			= 1;//no idea about the err
-	public static final int ERR_TYPE_INVALID_DATA   		= 2;//err occurred from the invalid format/parse failed
-	public static final int ERR_TYPE_NO_CONNECTION  		= 3;//there is no network connection
-	public static final int ERR_TYPE_CONNECTION_TIMEOUT  	= 4;//network connection timeout
+	public static final int ERR_TYPE_GENERAL_ERR  			= BeseyeError.E_FE_AND_HTTP_UNKNOWN_ERR;//no idea about the err
+	public static final int ERR_TYPE_INVALID_DATA   		= BeseyeError.E_FE_AND_HTTP_INVALID_DATA;//err occurred from the invalid format/parse failed
+	public static final int ERR_TYPE_NO_CONNECTION  		= BeseyeError.E_FE_AND_HTTP_NO_CONN;//there is no network connection
+	public static final int ERR_TYPE_CONNECTION_TIMEOUT  	= BeseyeError.E_FE_AND_HTTP_CONN_TIMEOUT;//network connection timeout
 	public static final int ERR_TYPE_REQUEST_RET_ERR  	    = 5;//when ret code is not equal to 0
 	public static final int ERR_TYPE_SESSION_INVALID  	    = 6;//when seesion is invalid
+	public static final int ERR_TYPE_SESSION_NOT_TRUST  	= 7;//when client isn't in trust list
 	
 	public static final int ERR_TYPE_COUNT				  	= 7;
 	//
@@ -129,9 +131,11 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	// the timeout for waiting for data
 	private static final int SOCKET_TIMEOUT = 10000; /* 10 seconds */
 	
+	public static final int TIMEOUT_SET_RELATED = 30000;
+	
 	protected static void setTimeouts(HttpParams params, int iConTimeout, int iSocketTimeout) {
-	    params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
-	    params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, SOCKET_TIMEOUT);
+	    params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, iConTimeout);
+	    params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, iSocketTimeout);
 	}
 	
 	static public interface OnHttpTaskCallback{
@@ -356,6 +360,11 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    			httpRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
 	    		}
 	    		
+//	    		//for Dev name notification when login and signup
+//	    		if(this instanceof BeseyeAccountTask.LoginHttpTask || this instanceof BeseyeAccountTask.RegisterTask){
+//	    			httpRequest.addHeader("Bes-Client-Dev-Name", BeseyeUtils.getDevName());
+//	    		}
+//	    		
 	    		httpRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
 	    		httpRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
 	    		httpRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
@@ -372,7 +381,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	    	}
 	    	
 	    	if(DEBUG)
-	    		Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl)+", ["+(null != mStrVCamIdForPerm && 0 < mStrVCamIdForPerm.length())+", "+(SessionMgr.getInstance().isTokenValid())+"]");
+	    		Log.i(TAG, "Send Http Request:"+filterPrivacyData(strUrl)+", ["+(null != mStrVCamIdForPerm && 0 < mStrVCamIdForPerm.length())+", "+(SessionMgr.getInstance().isTokenValid())+", "+miConTimeout+", "+miSocketTimeout+"], "+(null != mOnHttpTaskCallback?mOnHttpTaskCallback.get().toString():""));
 	    	
 	    	long startTime = System.currentTimeMillis();
 	        HttpResponse response = httpclient.execute(httpRequest);
@@ -503,23 +512,27 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	}
 	
 	protected void checkError(JSONObject jsonRet, String... strParams){
-		if(0 == miRetCode /*&& SessionMgr.getInstance().isMdidValid()*/){
-			int iSessionMdid = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.SESSION_MDID, -1);
-			if(0 == iSessionMdid /*|| this instanceof iKalaChannelTask.LoadAboutMeInfoTask*/){//invalid session from social BE
-				Log.e(TAG, "getJSONfromURL(), invalid seesion from social BE");
-				miRetCode = ERR_TYPE_SESSION_INVALID;
-				//miRetCode = -1;
-			}
-		}
+//		if(0 == miRetCode /*&& SessionMgr.getInstance().isMdidValid()*/){
+//			int iSessionMdid = BeseyeJSONUtil.getJSONInt(jsonRet, BeseyeJSONUtil.SESSION_MDID, -1);
+//			if(0 == iSessionMdid /*|| this instanceof iKalaChannelTask.LoadAboutMeInfoTask*/){//invalid session from social BE
+//				Log.e(TAG, "getJSONfromURL(), invalid seesion from social BE");
+//				miRetCode = ERR_TYPE_SESSION_INVALID;
+//				//miRetCode = -1;
+//			}
+//		}
 		
 		if(0 != miRetCode || miErrType != ERR_TYPE_NO_ERR){
 	       	if(miErrType == ERR_TYPE_NO_ERR){
-	       		if(/*SessionMgr.getInstance().isMdidValid() && */-1 == miRetCode){//invalid seesion from login BE
+	       		if(/*SessionMgr.getInstance().isMdidValid() && */-1 == miRetCode || 
+	       			BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == miRetCode ||
+	       			BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == miRetCode ||
+	       			BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == miRetCode){//invalid seesion from login BE
 	       			Log.e(TAG, "getJSONfromURL(), invalid seesion from login BE");
 	       			//if(this instanceof iKalaAccountTask.LogoutHttpTask){
 	       			//	miRetCode = 0;//Let it pass
 	       			//}else
-	       			miErrType = ERR_TYPE_SESSION_INVALID;
+	       			miErrType = (BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == miRetCode)?ERR_TYPE_SESSION_NOT_TRUST:ERR_TYPE_SESSION_INVALID;
+	       			
 	       		}else{
 	       			miErrType = ERR_TYPE_REQUEST_RET_ERR;
 	       		}
@@ -545,8 +558,8 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	       	    	sb.append (", body: "+jsonRet.toString());
 	       	    }
 	       	    
-	       	    if(ERR_TYPE_SESSION_INVALID == miErrType){
-	       			mOnHttpTaskCallback.get().onSessionInvalid(this, 0);
+	       	    if(ERR_TYPE_SESSION_INVALID == miErrType || ERR_TYPE_SESSION_NOT_TRUST == miErrType){
+	       			mOnHttpTaskCallback.get().onSessionInvalid(this, miErrType);
 	       		}else{
 	       			mOnHttpTaskCallback.get().onErrorReport(this, miRetCode, "", sb.toString());
 	       		}

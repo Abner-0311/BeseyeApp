@@ -30,12 +30,14 @@ public class BeseyeWebsocketsUtil {
     static public final String WS_FUNC_LOOPBACK 		= "wsc_loopback";
     static public final String WS_FUNC_BIN_CONN 		= "wsc_binary_connect";
     static public final String WS_FUNC_BIN_TRANSFER 	= "wsc_binary_transfer";
+    static public final String WS_FUNC_ACK  			= "wsc_ack";
     
     static public final String WS_FUNC_RAILS_PING 		= "websocket_rails.ping";
     static public final String WS_FUNC_RAILS_PONG 		= "websocket_rails.pong";
 
     static public final String WSA_WS_ID 				= "ws_id";
     static public final String WS_ATTR_DATA 			= "data";
+    static public final String WS_ATTR_IDX 				= "idx";
 
     static public final String WS_ATTR_TYPE 			= "Type";
     static public final int WS_ATTR_TYPE_GET 			= 0;

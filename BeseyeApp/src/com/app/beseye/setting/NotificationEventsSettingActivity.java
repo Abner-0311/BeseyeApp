@@ -347,9 +347,9 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
-			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true);
+			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true, iErrType);
 		}else if(task instanceof BeseyeCamBEHttpTask.SetNotifySettingTask){
-			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true);
+			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true, iErrType);
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 		}

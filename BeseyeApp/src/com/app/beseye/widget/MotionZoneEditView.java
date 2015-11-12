@@ -94,7 +94,7 @@ public class MotionZoneEditView extends View {
         if(null == mPoints[0]){
         	 Log.e(TAG, "onDraw: mPoints are null");
         } else{
-        	// draw mask
+        	 // draw mask
 	        canvas.drawRect(mpThumbnailTopLeft.x, mpThumbnailTopLeft.y, mpThumbnailBotRight.x, mPoints[0].y, mRectPaint);	             
 	        canvas.drawRect(mpThumbnailTopLeft.x, mPoints[0].y, mPoints[0].x, mPoints[2].y, mRectPaint);
 	        canvas.drawRect(mPoints[2].x, mPoints[0].y, mpThumbnailBotRight.x, mPoints[2].y, mRectPaint);      
@@ -288,12 +288,11 @@ public class MotionZoneEditView extends View {
     	return true;
     }
     
-    public void init(int viewWidth, int viewHeight, double[] r){
-    	
+    public void init(int viewWidth, int viewHeight, double[] r){	
     	float padding = getResources().getDimensionPixelSize(R.dimen.motion_zone_padding);
-
+    
     	if(viewWidth>0 && viewHeight>0){
-		    if((double)viewWidth/16.0 > (double)viewHeight/9.0){
+		    if((double)viewWidth/16.0 >= (double)viewHeight/9.0){
 		    	miThumbnailHeight = (int) (viewHeight - padding*2);
 		    	miThumbnailWidth = (int) ((double)miThumbnailHeight/9.0*16);
 		        
@@ -302,8 +301,9 @@ public class MotionZoneEditView extends View {
 		    	mpThumbnailBotRight.x= (int) (viewWidth - (viewWidth - miThumbnailWidth)/2);
 		    	mpThumbnailBotRight.y= (int) (viewHeight - padding);
 		    } else {
+		    	
 		    	miThumbnailWidth = (int) (viewWidth - padding*2);
-		    	miThumbnailHeight = (int) ((double)viewWidth/16.0*9);
+		    	miThumbnailHeight = (int) ((double)miThumbnailWidth/16.0*9);
 		    	
 		       	mpThumbnailTopLeft.x= (int) (padding);
 		    	mpThumbnailTopLeft.y= (int) ((viewHeight - miThumbnailHeight)/2);
@@ -318,32 +318,35 @@ public class MotionZoneEditView extends View {
     
     private void setInitMotionZone(double leftR, double topR, double rightR, double botR){
     	//initialize rectangle.
-        mPoints[0] = new Point();
-        mPoints[0].x = (int) (mpThumbnailTopLeft.x + leftR*miThumbnailWidth);
-        mPoints[0].y = (int) (mpThumbnailTopLeft.y + topR*miThumbnailHeight);
-
-        mPoints[1] = new Point();
-        mPoints[1].x = (int) (mpThumbnailTopLeft.x + leftR*miThumbnailWidth);
-        mPoints[1].y = (int) (mpThumbnailTopLeft.y + botR*miThumbnailHeight);
-
-        mPoints[2] = new Point();
-        mPoints[2].x = (int) (mpThumbnailTopLeft.x + rightR*miThumbnailWidth);
-        mPoints[2].y = (int) (mpThumbnailTopLeft.y + botR*miThumbnailHeight);
-
-        mPoints[3] = new Point();
-        mPoints[3].x = (int) (mpThumbnailTopLeft.x + rightR*miThumbnailWidth);
-        mPoints[3].y = (int) (mpThumbnailTopLeft.y + topR*miThumbnailHeight);
-
-        miBalId = 2;
-        miGroupId = 1;
-        for (int i=0; i<mPoints.length; i++) {
-             mArrColorballs.add(new ColorBall(getContext(), mPoints[i], i));
-             mOldPoints[i] = new Point();
-             mOldPoints[i].x = mPoints[i].x;
-             mOldPoints[i].y = mPoints[i].y;
-        }
-      
-        invalidate();
+    	if(null == mPoints[0]){
+    		//mArrColorballs.clear();
+	        mPoints[0] = new Point();
+	        mPoints[0].x = (int) (mpThumbnailTopLeft.x + leftR*miThumbnailWidth);
+	        mPoints[0].y = (int) (mpThumbnailTopLeft.y + topR*miThumbnailHeight);
+	
+	        mPoints[1] = new Point();
+	        mPoints[1].x = (int) (mpThumbnailTopLeft.x + leftR*miThumbnailWidth);
+	        mPoints[1].y = (int) (mpThumbnailTopLeft.y + botR*miThumbnailHeight);
+	
+	        mPoints[2] = new Point();
+	        mPoints[2].x = (int) (mpThumbnailTopLeft.x + rightR*miThumbnailWidth);
+	        mPoints[2].y = (int) (mpThumbnailTopLeft.y + botR*miThumbnailHeight);
+	
+	        mPoints[3] = new Point();
+	        mPoints[3].x = (int) (mpThumbnailTopLeft.x + rightR*miThumbnailWidth);
+	        mPoints[3].y = (int) (mpThumbnailTopLeft.y + topR*miThumbnailHeight);
+	
+	        miBalId = 2;
+	        miGroupId = 1;
+	        for (int i=0; i<mPoints.length; i++) {
+	             mArrColorballs.add(new ColorBall(getContext(), mPoints[i], i));
+	             mOldPoints[i] = new Point();
+	             mOldPoints[i].x = mPoints[i].x;
+	             mOldPoints[i].y = mPoints[i].y;
+	        }
+	      
+	        invalidate();
+    	}
     }
 
     public static class ColorBall {

@@ -63,6 +63,8 @@ public class BeseyeJSONUtil {
 	public static final String LED_STATUS 				= "LEDStatus";
 	public static final String STATUS 					= "Status";
 	public static final String TYPE 					= "Type";
+	public static final String CAM_CHANGE_DATA 			= "chgData";
+	
 	
 	public static final String SPEAKER_STATUS 			= "SpeakerStatus";
 	public static final String SPEAKER_VOLUME 			= "SpeakerVolume";
@@ -209,6 +211,19 @@ public class BeseyeJSONUtil {
 	public static final String ACC_ACTIVATED 			= "IsActivated";
 	public static final String ACC_VCAM 				= "Vcam";
 	public static final String ACC_BESEYE_ACCOUNT 		= "IsBeseyeAccount";
+	public static final String ACC_PRIVATECAM_ACCOUNT 	= "IsPrivatecamGroup";
+	
+	public static final String ACC_TRUST_PIN 			= "TrustPinCode";
+	public static final String ACC_TRUST_DEV_LST 		= "TrustDevices";
+	public static final String ACC_TRUST_DEV_ID_LST 	= "TrustDeviceId";
+	public static final String ACC_TRUST_DEV_CNT 		= "TrustDeviceCnt";
+	public static final String ACC_TRUST_DEV_NAME 		= "Name";
+	public static final String ACC_TRUST_DEV_ID 		= "Id";
+	public static final String ACC_TRUST_DEV_HOST 		= "IsHost";
+	public static final String ACC_TRUST_DEV_CHECK 		= "Checked";
+	public static final String ACC_TRUST_ERR_CNT 		= "ErrorCnt";
+	public static final String ACC_TRUST_ERR_LST 		= "Errors";
+	public static final String ACC_TRUST_DEV_NAME_SIGNIN= "DeviceName";
 	
 	public static final String ACC_SES 					= "UserSession";
 	public static final String ACC_SES_TOKEN 			= "SessionToken";
@@ -231,8 +246,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_PAIRING_STATUS_CNT 	= "PairingStatusCount";
 	public static final String ACC_PAIRING_CONFLICT_VCAM= "ConflictVcam";
 	public static final String ACC_PAIRING_CAM_HWID		= "DevHwUid";
-	
-	
+	public static final String ACC_PAIRING_KEEP_POLLING	= "KeepPolling";
 	
 	public static final String ACC_REGION 				= "Region";
 	public static final String ACC_VCAM_FILTER 			= "VcamFilter";
@@ -283,6 +297,19 @@ public class BeseyeJSONUtil {
 	public static final int MM_TYPE_ID_FACE				= 2;
 	
 	public static final String MM_FACE_IDS 				= "faceIds";
+	
+	public static final String MM_HD_IMG 				= "img";
+	public static final String MM_HD_IMG_LABEL 			= "label";
+	public static final String MM_HD_IMG_LABEL_HUMAN 	= "human";
+	public static final String MM_HD_IMG_LABEL_NO_HUMAN = "non-human";
+	public static final String MM_HD_IMG_LABEL_UNDEFINE = "undefine";
+	public static final String MM_HD_IMG_PATH 			= "pathToImg";
+	public static final String MM_HD_IMG_PAGING 		= "pagingFlag";
+	public static final String MM_HD_IMG_DELETE 		= "imgToDel";
+	public static final String MM_HD_IMG_LOADED 		= "imgLoaded";
+	public static final String MM_HD_IMG_PRELOAD_LOADED = "preloadImgLoaded";
+	public static final String MM_HD_IMG_LOAD_FAILED 	= "imgLoadFailed";
+	
 	
 	static public class FACE_LIST{
 		public int miId;
@@ -480,6 +507,9 @@ public class BeseyeJSONUtil {
 	public static final String PS_USER_UUID 			= "userUuid";
 	public static final String PS_CAM_NAME 				= "camName";
 	public static final String PS_EVT_TS 				= "evt_ts";
+	
+	public static final String PS_DISPLAY_NAME 			= "displayName";
+	public static final String PS_PINCODE 				= "pinCode";
 	
 	
 	//Helper functions
@@ -932,6 +962,7 @@ public class BeseyeJSONUtil {
 	}
 	
 	static public void setVCamConnStatus(JSONObject objCam, CAM_CONN_STATUS status){
+		//Log.e(TAG, "setVCamConnStatus(), status:"+status);
 		if(null != objCam){
 			JSONObject dataObj = getJSONObject(objCam, ACC_DATA);
 			if(null != dataObj){

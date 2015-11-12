@@ -1,19 +1,32 @@
 package com.app.beseye;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
+
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.util.BeseyeConfig;
+import com.app.beseye.util.BeseyeStorageAgent;
+import com.app.beseye.util.BeseyeUtils;
 
 public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 //	private RadioButton mRbDemomode;
@@ -22,13 +35,16 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 //	private EditText mTxtIP;
 //	private EditText mTxtCamName;
 //	private EditText mTxtPeriod;
-	private Button mBtnApply;
-	private Spinner mSpServerType, mSpDetachHWID;
-	private CheckBox mCbCamSWUpdateSuspended;
+	private Button mBtnApply, mBtnSendLog;
+	private Spinner mSpServerType;//, mSpDetachHWID;
+	private CheckBox mCbCamSWUpdateSuspended, mCbCamShowNotificationToast, mCbShowHumanDetectOneTime, mCbDetachHWIDs[];
 	private EditText mEtDefEmail = null;
-	private static String[] hwids = new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"};
-	
-	
+	private LinearLayout mVgHWIDs;
+	private static String[] hwids_dev = new String[]{"00409O92TX91", "00409T95HZSR"};//new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"}
+	//private static int[] ctrlhwids = new int[]{R.id.ck_hw_id_1, R.id.ck_hw_id_2};
+	public static String[] hwids_prod = new String[]{"0090G101A232", "0090G101A235","0090G101A225"};
+	private String[] hwids = null;
+	private ArrayList<String> mArrHWIDs = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,11 +67,16 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		mCbCamSWUpdateSuspended = (CheckBox)findViewById(R.id.ck_suspend_cam_sw_update);
 		if(null != mCbCamSWUpdateSuspended){
 			mCbCamSWUpdateSuspended.setChecked(SessionMgr.getInstance().getIsCamSWUpdateSuspended());
-			mCbCamSWUpdateSuspended.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-				@Override
-				public void onCheckedChanged(CompoundButton arg0, boolean bChecked) {
-					//SessionMgr.getInstance().setIsCamSWUpdateSuspended(bChecked);
-				}});
+		}
+		
+		mCbCamShowNotificationToast = (CheckBox)findViewById(R.id.ck_enable_notify_show);
+		if(null != mCbCamShowNotificationToast){
+			mCbCamShowNotificationToast.setChecked(SessionMgr.getInstance().getIsShowNotificationFromToast());
+		}
+		
+		mCbShowHumanDetectOneTime = (CheckBox)findViewById(R.id.ck_enable_human_detect_intro_show_once);
+		if(null != mCbShowHumanDetectOneTime){
+			mCbShowHumanDetectOneTime.setChecked(SessionMgr.getInstance().getHumanDetectIntroShowOnce());
 		}
 		
 		mSpServerType = (Spinner)findViewById(R.id.sp_server_type);
@@ -63,32 +84,69 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"Develop Server","Develop 2 Server(deprecated)","Production Server", "Staging Server (Computex)", "China p2-Stage Server"});
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			mSpServerType.setAdapter(adapter);
+//			mSpServerType.setOnItemSelectedListener(new OnItemSelectedListener(){
+//				@Override
+//				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//					
+//				}
+//
+//				@Override
+//				public void onNothingSelected(AdapterView<?> parent) {
+//				}});
 		}
 		
-		mSpDetachHWID = (Spinner)findViewById(R.id.sp_detach_hw_id);
-		if(null != mSpDetachHWID){
-			String strDeatchHWID = SessionMgr.getInstance().getDetachHWID();
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,hwids);
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			mSpDetachHWID.setAdapter(adapter);
-			
-			if(null != strDeatchHWID){
-				mSpDetachHWID.setSelection(0);
-				if(0 == strDeatchHWID.length()){
-					SessionMgr.getInstance().setDetachHWID(hwids[0]);
-				}else{
-					for(int idx = 0;idx < hwids.length;idx++){
-						if(strDeatchHWID.equals(hwids[idx])){
-							mSpDetachHWID.setSelection(idx);
-						}
-					}
-				}
-			}
-		}
+		hwids = hwids_prod;
+		
+		mVgHWIDs = (LinearLayout)findViewById(R.id.vg_detach_hw_ids);
+		
+//		File notifyFile = new File(path);
+//		//int iPeriod = 5;
+//		if(null != notifyFile && notifyFile.exists()){
+//			try {
+//				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(notifyFile)));
+//				try {
+//					String strPeriod = (null != reader)?reader.readLine():null;
+//					if(null != strPeriod && 0 < strPeriod.length())
+//						Log.e(BeseyeConfig.TAG, strPeriod);
+//						//iPeriod = Integer.parseInt(strPeriod);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			} catch (FileNotFoundException e) {
+//				e.printStackTrace();
+//			}
+//		}else{
+//			Log.e(BeseyeConfig.TAG, "file not exist");
+//		}
+//		mSpDetachHWID = (Spinner)findViewById(R.id.sp_detach_hw_id);
+//		if(null != mSpDetachHWID){
+//			String strDeatchHWID = SessionMgr.getInstance().getDetachHWID();
+//			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,hwids);
+//			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//			mSpDetachHWID.setAdapter(adapter);
+//			
+//			if(null != strDeatchHWID){
+//				mSpDetachHWID.setSelection(0);
+//				if(0 == strDeatchHWID.length()){
+//					SessionMgr.getInstance().setDetachHWID(hwids[0]);
+//				}else{
+//					for(int idx = 0;idx < hwids.length;idx++){
+//						if(strDeatchHWID.equals(hwids[idx])){
+//							mSpDetachHWID.setSelection(idx);
+//						}
+//					}
+//				}
+//			}
+//		}
 		
 		mEtDefEmail = (EditText)findViewById(R.id.et_signup_email);
 		if(null != mEtDefEmail){
 			mEtDefEmail.setText(SessionMgr.getInstance().getSignupEmail());
+		}
+		
+		mBtnSendLog = (Button)findViewById(R.id.btn_send_log);
+		if(null != mBtnSendLog){
+			mBtnSendLog.setOnClickListener(this);
 		}
 		checkMode();
 	}
@@ -98,6 +156,10 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		switch(view.getId()){
 			case R.id.button_confirm:{
 				applyMode();
+				break;
+			}
+			case R.id.btn_send_log:{
+				BeseyeUtils.saveLogToFile(this);
 				break;
 			}
 			default:
@@ -140,6 +202,57 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		if(null != mSpServerType){
 			mSpServerType.setSelection(mode.ordinal());
 		}
+		
+		if(null != mVgHWIDs){
+			mVgHWIDs.removeAllViews();
+			
+			mArrHWIDs = new ArrayList<String>();
+			File fileHWIDs = BeseyeStorageAgent.getFileInDownloadDir(getApplicationContext(), "hwids.txt");
+			if(null != fileHWIDs && fileHWIDs.isFile() && fileHWIDs.exists()){
+				try {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileHWIDs)));
+					try {
+						String strHWID = "";
+						while(null != (strHWID = (null != reader)?reader.readLine():null)){
+							if(null != strHWID && 0 < strHWID.length()){
+								mArrHWIDs.add(strHWID);
+							}
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if(0 == mArrHWIDs.size()){
+				Log.e(BeseyeConfig.TAG, "file is not exist");
+				for(int idx =0; idx < hwids.length;idx++){
+					mArrHWIDs.add(hwids[idx]);
+				}
+			}
+			
+			if(0 < mArrHWIDs.size()){
+				mCbDetachHWIDs = new CheckBox[mArrHWIDs.size()];
+				String[] strDeatchHWID = SessionMgr.getInstance().getDetachHWID().split(",");
+
+				for(int idx2 = 0; idx2 < mArrHWIDs.size(); idx2++){
+					mCbDetachHWIDs[idx2] = new CheckBox(this);
+					if(null != mCbDetachHWIDs[idx2]){
+						String strHWID = mArrHWIDs.get(idx2);
+						mCbDetachHWIDs[idx2].setText(strHWID);
+						for(int idxChk = 0; idxChk < strDeatchHWID.length;idxChk++){
+							if(strHWID.equals(strDeatchHWID[idxChk])){
+								mCbDetachHWIDs[idx2].setChecked(true);
+								break;
+							}
+						}
+						mVgHWIDs.addView(mCbDetachHWIDs[idx2]);
+					}
+				}
+			}
+		}	
 	}
 	
 	private void applyMode(){
@@ -149,17 +262,35 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			SessionMgr.getInstance().setServerMode(mode);
 			SessionMgr.getInstance().setBEHostUrl(mode);
 			SessionMgr.getInstance().setIsCamSWUpdateSuspended(mCbCamSWUpdateSuspended.isChecked());
-
-			if(null != mSpDetachHWID){
-				SessionMgr.getInstance().setDetachHWID(hwids[mSpDetachHWID.getSelectedItemPosition()]);
+			SessionMgr.getInstance().setIsShowNotificationFromToast(mCbCamShowNotificationToast.isChecked());
+			SessionMgr.getInstance().setHumanDetectIntroShowOnce(mCbShowHumanDetectOneTime.isChecked());
+			
+//			if(null != mSpDetachHWID){
+//				SessionMgr.getInstance().setDetachHWID(hwids[mSpDetachHWID.getSelectedItemPosition()]);
+//			}
+			
+			String strHWIds = "";
+			if(null != mArrHWIDs){
+				for(int idx = 0; idx < mArrHWIDs.size(); idx ++){
+					if(mCbDetachHWIDs[idx].isChecked()){
+						if(strHWIds.equals("")){
+							strHWIds = mArrHWIDs.get(idx);
+						}else{
+							strHWIds += (","+mArrHWIDs.get(idx));
+						}
+					}
+				}
 			}
+			
+			
+			SessionMgr.getInstance().setDetachHWID(strHWIds);
 			
 			if(null != mEtDefEmail){
 				SessionMgr.getInstance().setSignupEmail(mEtDefEmail.getText().toString());
 			}
 			//Toast.makeText(this, "Server mode is "+mode, Toast.LENGTH_LONG).show();
 			Toast.makeText(this, "Server mode is "+mode+"\nCam SW update is"+(SessionMgr.getInstance().getIsCamSWUpdateSuspended()?"":" not")+
-					" suspended.\nDetach HW ID:"+hwids[mSpDetachHWID.getSelectedItemPosition()]+"\n Email:"+SessionMgr.getInstance().getSignupEmail(), Toast.LENGTH_LONG).show();
+					" suspended.\nDetach HW ID:"+strHWIds+"\n Email:"+SessionMgr.getInstance().getSignupEmail(), Toast.LENGTH_LONG).show();
 		}
 		
 //		if(mRbDemomode.isChecked() && mode.ordinal() <= SERVER_MODE.MODE_COMPUTEX.ordinal()){

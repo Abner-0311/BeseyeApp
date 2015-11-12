@@ -34,6 +34,7 @@ import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -41,13 +42,13 @@ import com.app.beseye.util.BeseyeUtils;
 
 public class CameraInfoActivity extends BeseyeBaseActivity{
 
-	private TextView mTxtCamName, mTxtSwVersion, mTxtSerialNum, mTxtMacAddr;
+	private TextView mTxtCamName, mTxtSwVersion, mTxtSerialNum, mTxtMacAddr, mTxtVcamId;
 	private String mStrNameCandidate, mStrVCamSN = null;
 	private String mStrVCamMacAddr = null;
 	private String mStrSwVer = null;
 	
 	private View mVwNavBar;
-	private ViewGroup mVgSWVer;
+	private ViewGroup mVgSWVer, mVgVCamId;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
 	@Override
@@ -111,7 +112,18 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 		if(null != mTxtMacAddr){
 			mTxtMacAddr.setText(BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA), BeseyeJSONUtil.MAC_ADDR));
 		}
-
+		
+		mVgVCamId = (ViewGroup)findViewById(R.id.vg_vcam_id_holder);
+		if(null != mVgVCamId){
+			if(BeseyeConfig.PRODUCTION_VER){
+				mVgVCamId.setVisibility(View.GONE);
+			}
+			mVgVCamId.setOnClickListener(this);
+			mTxtVcamId = (TextView)findViewById(R.id.txt_vcam_id);
+			if(null != mTxtVcamId){
+				mTxtVcamId.setText(BeseyeConfig.PRODUCTION_VER?(mStrVCamID.substring(0, 6)+"..."):mStrVCamID);
+			}
+		}
 	}
 	
 	protected void onSessionComplete(){
@@ -139,6 +151,7 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	}
 
 	private int miHitCount = 0;
+	private int miHitCount2 = 0;
 	
 	@Override
 	public void onClick(View view) {
@@ -147,8 +160,14 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 		}else if(R.id.btn_ok == view.getId()){
 			removeMyDialog(DIALOG_ID_CAM_INFO);
 		}else if(R.id.txt_nav_title == view.getId()){
-			if(++miHitCount == 5){
+			if(++miHitCount == 3){
 				BeseyeUtils.setVisibility(mVgSWVer, View.VISIBLE);
+			}else if(++miHitCount == 5){
+				BeseyeUtils.setVisibility(mVgVCamId, View.VISIBLE);
+			}
+		}else if(R.id.vg_vcam_id_holder == view.getId()){
+			if(!BeseyeConfig.PRODUCTION_VER && SessionMgr.getInstance().getShowPirvateCam() && ++miHitCount2 == 3 ){
+				BeseyeUtils.launchEmail(this, null, "[Info] "+mStrVCamName+"'s VCam id", "VCam id is "+mStrVCamID, null);
 			}
 		}else{
 			super.onClick(view);
@@ -156,14 +175,14 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	}
 	
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle,
 			String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask && null != mVgSWVer && View.VISIBLE == mVgSWVer.getVisibility()){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
 					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_setting_fail_to_get_cam_info));
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraInfoActivity.this, R.string.cam_setting_fail_to_get_cam_info, iErrType));
 					//b.putBoolean(KEY_WARNING_CLOSE, true);
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);

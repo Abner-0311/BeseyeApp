@@ -1,0 +1,58 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+   	xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vg_training_pic"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/human_detect_pic_margin"
+    android:paddingRight="@dimen/human_detect_pic_margin"
+    android:background="@color/signup_bg_color" >
+    <com.app.beseye.widget.RemoteImageView
+        android:id="@+id/iv_training_pic"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@drawable/h_detection_loading_image"
+        android:visibility="visible" 
+        android:scaleType="centerCrop"/>
+    
+    <RelativeLayout
+        android:id="@+id/rl_training_pic_mask"
+        android:layout_width="match_parent"
+        android:layout_height="180dp">
+        <ImageView 
+            android:id="@+id/iv_human_pic_border"
+            android:layout_width="match_parent"
+       		android:layout_height="match_parent"
+       		android:background="@drawable/h_detection_green_frame"
+       		android:visibility="invisible"/>
+        <ImageView 
+            android:id="@+id/iv_human_pic_mask"
+            android:layout_width="match_parent"
+       		android:layout_height="match_parent"
+       		android:background="@color/human_detect_no_human_mask"
+       		android:visibility="invisible"/>
+		<TextView 
+            android:id="@+id/txt_human_pic_no_human"
+		    android:layout_width="match_parent"
+       		android:layout_height="wrap_content"
+       		android:layout_centerVertical="true"
+       		android:paddingTop="@dimen/human_detect_no_human_text_padding"
+       		android:paddingBottom="@dimen/human_detect_no_human_text_padding"
+       		android:text="@string/human_detect_no_human"
+       		android:textColor="@color/human_detect_no_human_text"
+       		android:textSize="@dimen/human_detect_font"
+       		android:gravity="center"
+       		android:background="@color/background_white"
+       		android:visibility="invisible"/>
+	</RelativeLayout>
+</RelativeLayout>
+
+
+
+   
+		
+	
+ 
+
+
+

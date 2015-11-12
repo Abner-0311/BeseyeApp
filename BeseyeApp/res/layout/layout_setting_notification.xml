@@ -143,6 +143,52 @@
 					android:visibility="invisible"/>
 		    </RelativeLayout>   
 		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:id="@+id/vg_human_detect_notification_events"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <ImageView
+		        android:id="@+id/iv_human_detect_notification_events_inf"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+		        android:src="@drawable/sl_setting_inside_icon" />
+		    
+		    <RelativeLayout
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_toLeftOf="@+id/iv_human_detect_notification_events_inf"
+		   		android:layout_centerVertical="true">
+		        <TextView
+		            android:id="@+id/human_detect_notification_title" 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_human_detect"/>
+		        <ImageView
+		        	android:id="@+id/iv_human_detect_notification_news"
+			    	android:layout_width="wrap_content"
+		    		android:layout_height="wrap_content"
+					android:src="@drawable/setting_list_news_icon"
+					android:layout_toRightOf="@+id/human_detect_notification_title"
+					android:layout_centerVertical="true"
+		        	android:layout_marginLeft="@dimen/cam_list_item_horizontal_padding"
+					android:visibility="invisible"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
 </LinearLayout>
 
 

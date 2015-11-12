@@ -74,6 +74,13 @@
 			remoteGlobalIDString = 076160C818569D2A00CFBC99;
 			remoteInfo = BeseyeStreamer;
 		};
+		0774FCDF1BB64ADB00F550C6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0774FCDB1BB64ADB00F550C6 /* BeseyeSoundPairing.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 07EC6BE118B4CD4F0018BEA4;
+			remoteInfo = BeseyeSoundPairing;
+		};
 		07E1977E185029D100E0CA98 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 07E19779185029D000E0CA98 /* SDL.xcodeproj */;
@@ -118,6 +125,7 @@
 		076161471856A09C00CFBC99 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = compiled/i386/lib/libssl.a; sourceTree = "<group>"; };
 		076161481856A09C00CFBC99 /* libswresample.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswresample.a; path = compiled/i386/lib/libswresample.a; sourceTree = "<group>"; };
 		076161491856A09C00CFBC99 /* libswscale.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libswscale.a; path = compiled/i386/lib/libswscale.a; sourceTree = "<group>"; };
+		0774FCDB1BB64ADB00F550C6 /* BeseyeSoundPairing.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BeseyeSoundPairing.xcodeproj; path = BeseyeSoundPairing/BeseyeSoundPairing.xcodeproj; sourceTree = "<group>"; };
 		07B458C71929A02F00BE79BC /* beseye_audio_streamer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_audio_streamer.h; path = BeseyeStreamer/inc/beseye_audio_streamer.h; sourceTree = "<group>"; };
 		07B458C81929A02F00BE79BC /* beseye_rtmp_observer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseye_rtmp_observer.h; path = BeseyeStreamer/inc/beseye_rtmp_observer.h; sourceTree = "<group>"; };
 		07B458C91929A02F00BE79BC /* beseyeplayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = beseyeplayer.h; path = BeseyeStreamer/inc/beseyeplayer.h; sourceTree = "<group>"; };
@@ -252,6 +260,14 @@
 			path = BeseyeStreamer/../ffmpeg;
 			sourceTree = "<group>";
 		};
+		0774FCDC1BB64ADB00F550C6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0774FCE01BB64ADB00F550C6 /* libBeseyeSoundPairing.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		07E1977A185029D000E0CA98 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -320,6 +336,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				0774FCDB1BB64ADB00F550C6 /* BeseyeSoundPairing.xcodeproj */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -417,6 +434,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 0774FCDC1BB64ADB00F550C6 /* Products */;
+					ProjectRef = 0774FCDB1BB64ADB00F550C6 /* BeseyeSoundPairing.xcodeproj */;
+				},
+				{
 					ProductGroup = 073AFAEF185A9C6E008CBD7E /* Products */;
 					ProjectRef = 076160F118569D3800CFBC99 /* BeseyeStreamer.xcodeproj */;
 				},
@@ -438,6 +459,13 @@
 			fileType = archive.ar;
 			path = libBeseyeStreamer.a;
 			remoteRef = 073AFAF2185A9C6E008CBD7E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		0774FCE01BB64ADB00F550C6 /* libBeseyeSoundPairing.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libBeseyeSoundPairing.a;
+			remoteRef = 0774FCDF1BB64ADB00F550C6 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		07E1977F185029D100E0CA98 /* libSDL2.a */ = {
@@ -534,7 +562,7 @@
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
+				VALID_ARCHS = "arm64 armv7 armv7s i386";
 				a = a;
 			};
 			name = Debug;
@@ -566,7 +594,7 @@
 				PRODUCT_NAME = iFrameExtractor;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
+				VALID_ARCHS = "arm64 armv7 armv7s i386";
 				a = a;
 			};
 			name = Release;
@@ -599,7 +627,7 @@
 					/compiled/i386/include/include/,
 				);
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
+				VALID_ARCHS = "arm64 armv7 armv7s  i386";
 			};
 			name = Debug;
 		};
@@ -631,7 +659,7 @@
 					/compiled/i386/include/include/,
 				);
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
+				VALID_ARCHS = "arm64 armv7 armv7s  i386";
 			};
 			name = Release;
 		};

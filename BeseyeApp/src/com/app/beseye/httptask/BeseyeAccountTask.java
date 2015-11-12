@@ -38,7 +38,12 @@ public class BeseyeAccountTask {
 	public static final String URL_CAM_VALIDATE		="vcam/validate";
 	public static final String URL_CAM_VALIDATE_BEE	="vcam/bee_validate";
 	
-	public static final String URL_CAM_DEATTACH_SALE="vcam/detach_by_sales?UidList=%s&SalesDemoToken=skHGU1TsnbfHIqKWyKFlapJ8BVMV0UeZM1I2Bm41NQBil9JepgOLV4Agf1h84a82";
+	public static final String URL_CAM_DEATTACH_SALE="vcam/detach_by_sales?UidList=%s&SalesDemoToken=skHGU1TsnbfHIqKWyKFlapJ8BVMV0UeZM1I2Bm41NQBil9JepgOLV4Agf1h84a82&UidExistCheck=false";
+	
+	public static final String URL_TRUST_NEW_PIN	="user/trust/pincode_new";
+	public static final String URL_TRUST_VERIFY_PIN	="user/trust/pincode_verify";
+	public static final String URL_TRUST_DEV_LST	="user/trust/list";
+	public static final String URL_TRUST_DEV_DEL	="user/trust/delete";
 	
 	
 	static private void appendDevInfo(JSONObject obj){
@@ -61,6 +66,9 @@ public class BeseyeAccountTask {
 			super(cb);
 			//setDialogResId(0, R.string.dialog_msg_login);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 			//enableHttps();
 		}
  
@@ -71,6 +79,7 @@ public class BeseyeAccountTask {
 				obj.put(ACC_EMAIL, strParams[0]);
 				obj.put(ACC_PASSWORD, strParams[1]);
 				obj.put(ACC_REMEM_ME, true);
+				obj.put(ACC_TRUST_DEV_NAME_SIGNIN, BeseyeUtils.getDevName());
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_LOGIN, obj.toString());
 			} catch (NumberFormatException e) {
@@ -143,10 +152,13 @@ public class BeseyeAccountTask {
 			JSONObject obj = new JSONObject();
 			try {
 				appendDevInfo(obj);
+				obj.put(ACC_LANG, BeseyeUtils.getLocaleString());
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_LOGOUT, obj.toString());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
-			} 
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 			return null;
 		}
 	}
@@ -176,6 +188,9 @@ public class BeseyeAccountTask {
 			super(cb);
 			//setDialogResId(0, R.string.dialog_msg_signup);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 			//enableHttps();
 		}
  
@@ -185,6 +200,8 @@ public class BeseyeAccountTask {
 			try {
 				obj.put(ACC_EMAIL, strParams[0]);
 				obj.put(ACC_PASSWORD, strParams[1]);
+				obj.put(ACC_LANG, BeseyeUtils.getLocaleString());
+				obj.put(ACC_TRUST_DEV_NAME_SIGNIN, BeseyeUtils.getDevName());
 				appendDevInfo(obj);
 				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_REGISTER, obj.toString());
 			} catch (NumberFormatException e) {
@@ -227,6 +244,9 @@ public class BeseyeAccountTask {
 		public SetCamAttrTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 			//enableHttps();
 		}
  
@@ -255,6 +275,9 @@ public class BeseyeAccountTask {
 		public SendForgetPWTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 		}
  
 		@Override
@@ -415,6 +438,9 @@ public class BeseyeAccountTask {
 		public CamDettachTask(OnHttpTaskCallback cb) {
 			super(cb);
 			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 		}
  
 		@Override
@@ -436,9 +462,86 @@ public class BeseyeAccountTask {
 		}
 	}
 	
+	
+	static public class PinCodeRenewTask extends BeseyeHttpTask {	 	
+		public PinCodeRenewTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(ACC_LANG, BeseyeUtils.getLocaleString());	
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_NEW_PIN, obj.toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+	
+	static public class PinCodeVerifyTask extends BeseyeHttpTask {	 	
+		public PinCodeVerifyTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			JSONObject obj = new JSONObject();
+			try {
+				obj.put(ACC_TRUST_PIN, strParams[0]);
+				return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_VERIFY_PIN, obj.toString());
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;			
+		}
+	}
+	
+	static public class GetTrustDevListTask extends BeseyeHttpTask {	 	
+		public GetTrustDevListTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_DEV_LST);
+		}
+	}
+	
+	static public class DeleteTrustDevTask extends BeseyeHttpTask {	 	
+		public DeleteTrustDevTask(OnHttpTaskCallback cb) {
+			super(cb);
+			setHttpMethod(HttpPost.METHOD_NAME);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
+		}
+ 
+		@Override
+		protected List<JSONObject> doInBackground(String... strParams) {
+			return super.doInBackground(SessionMgr.getInstance().getAccountBEHostUrl()+URL_TRUST_DEV_DEL, strParams[0]);		
+		}
+	}
+	
 	static public class CamDettachByHWIDTask extends BeseyeHttpTask {	 	
 		public CamDettachByHWIDTask(OnHttpTaskCallback cb) {
 			super(cb);
+			setConnectionTimeout(TIMEOUT_SET_RELATED);
+			setSocketTimeout(TIMEOUT_SET_RELATED);
+			setRetryCount(1);
 		}
  
 		@Override

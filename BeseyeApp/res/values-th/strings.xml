@@ -77,7 +77,7 @@
   <!-- Title of info dialog-->
   <string name="dialog_title_info">ข้อมูล</string>
   <!-- Message of dialog when no network connection-->
-  <string name="dialog_no_connectivity">กรุณาตรวจสอบการเชื่อมต่อสัญญาณ</string>
+  <string name="dialog_no_connectivity">คำเตือน - กรุณาตรวจสอบการเชื่อมต่อสัญญาณ</string>
   <!-- Title of loading dialog-->
   <string name="dialog_loading">กำลังโหลด</string>
   <string name="dialog_setting">การตั้งค่า</string>
@@ -483,4 +483,39 @@
   <!-- TODO: string name="cam_setting_schedule_conflict_be_on" -->
   <!--message dialog to user-->
   <!-- TODO: string name="cam_setting_schedule_conflict_be_off" -->
+  <!--Entry title for trust device management-->
+  <!-- TODO: string name="cam_menu_trust_dev_mgt" -->
+  <!--Button for removing multiple devices from white list , (%s) will be replaced by deleted device number-->
+  <!-- TODO: string name="btn_delete_trust_dev_mgt" -->
+  <!--Dialog to remind multiple devices will be removed from white list-->
+  <!-- TODO: string name="dialog_delete_trust_dev" -->
+  <!--Button to clear pin code-->
+  <!-- TODO: string name="pincode_clear" -->
+  <!--Button to verify pin code-->
+  <!-- TODO: string name="pincode_done" -->
+  <!--Description in pin code verification page-->
+  <!-- TODO: string name="pincode_verify_desc" -->
+  <!--Button to resend pin code-->
+  <!-- TODO: string name="pincode_verify_resend" -->
+  <!--Toast message for sending new pin code successfully-->
+  <!-- TODO: string name="msg_pincode_verify_resend_done" -->
+  <!--Toast message for sending new pin code failed-->
+  <!-- TODO: string name="msg_pincode_verify_resend_fail" -->
+  <!--Title of pin code verification page-->
+  <!-- TODO: string name="pincode_verify_title" -->
+  <!--Error message for incorrect pin code-->
+  <!-- TODO: string name="msg_pincode_verify_fail" -->
+  <!--Error message for expired pin code-->
+  <!-- TODO: string name="msg_pincode_verify_expired" -->
+  <!--Error message for incorrect pin code trials over 3 times-->
+  <!-- TODO: string name="msg_pincode_verify_fail_three_times" -->
+  <!--Error message for failing to verify pin code due to unknown reasons-->
+  <!-- TODO: string name="msg_delete_trust_dev_fail" -->
+  <!--Pin code request message shown on Android Notification -->
+  <!-- TODO: string name="notification_pincode_auth" -->
+  <!--Pin code request dialog message shown in Beseye App-->
+  <!-- TODO: string name="dialog_notification_pincode_auth" -->
+  
+  <string name="error_code_fmt">\n(รหัสข้อผิดพลาด = 0x%08x)</string>
+  <string name="title_event_list">รายการเหตุการณ์</string>
 </resources>

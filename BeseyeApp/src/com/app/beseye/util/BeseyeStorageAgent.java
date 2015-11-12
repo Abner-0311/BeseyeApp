@@ -5,6 +5,7 @@ import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
@@ -136,6 +137,48 @@ public class BeseyeStorageAgent {
 	    	dir.mkdir();
 	    }
 	    return new File(cachePath, uniqueName);
+	}
+    
+    static public File getFileInDownloadDir(Context context, final String uniqueName) {
+	    // Check if media is mounted or storage is built-in, if so, try and use external cache dir
+	    // otherwise use internal cache dir
+	    final String cachePath = (canUseExternalStorage()?Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS):(new ContextWrapper(context)).getDir("imageDir", Context.MODE_PRIVATE)).getAbsolutePath();
+	    final File dir = new File(cachePath);
+	    File fileRet = null;
+	    if(null != dir){
+	    	if(false == dir.exists()){
+	    		dir.mkdir();
+	    	}
+	    	
+	    	File[] files = dir.listFiles(new FilenameFilter(){
+				@Override
+				public boolean accept(File dirInternal, String filename) {
+					if(dirInternal.equals(dir) && filename.startsWith(uniqueName.substring(0 , uniqueName.lastIndexOf(".")))){
+						return true;
+					}
+					return false;
+				}});
+	    	
+	    	for(File file : files){
+	    		if(file.isFile()){
+	    			if(null == fileRet){
+	    				fileRet = file;
+	    			}else{
+	    				if(fileRet.lastModified() < file.lastModified()){
+	    					fileRet = file;
+	    				}
+	    			}
+	    		}
+	    	}
+	    }
+	    
+	    if(null == fileRet){
+    		fileRet = new File(cachePath, uniqueName);
+    	}
+	    
+		Log.e(LOG_TAG, "getFileInDownloadDir(), fileRet:"+fileRet.getAbsolutePath());
+
+	    return fileRet;
 	}
     
 	// Creates a unique subdirectory of the designated app cache directory. Tries to use external
@@ -293,7 +336,7 @@ public class BeseyeStorageAgent {
 		}
 	}
 	
-	public static void deleteCache(Context context){
+	private static void deleteCache(Context context){
 		if(DEBUG)
 			Log.d(LOG_TAG, "deleteCache() +");
 		//File cacheFolder = new File(context.getCacheDir().getAbsolutePath()+ File.separator + CACHE_FOLDER);

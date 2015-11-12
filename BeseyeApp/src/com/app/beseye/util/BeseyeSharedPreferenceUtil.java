@@ -182,7 +182,7 @@ public class BeseyeSharedPreferenceUtil {
 	 */
 	static public class ObscuredSharedPreferences implements SharedPreferences {
 	    protected static final String UTF8 = "utf-8";
-	    private static final char[] SEKRIT = {'i','k','a','l','a','I','s','B','E','s','T'} ; // INSERT A RANDOM PASSWORD HERE.
+	    private static final char[] SEKRIT = {'B','e','S','e','y','e','I','s','B','E','s','T'} ; // INSERT A RANDOM PASSWORD HERE.
 	                                               // Don't use anything you wouldn't want to
 	                                               // get out there if someone decompiled
 	                                               // your app.

@@ -2380,9 +2380,10 @@ static int onSPFailed(){
 static int onSPSuccess(){
 	int iRet = 0;
 	int iTrials = 0;
-	do{
-		iRet = invokeSystem("/beseye/cam_main/beseye_token_check");
-	}while(0 != iRet && 3 > ++iTrials);
+//	do{
+//		iRet = invokeSystem("/beseye/cam_main/beseye_token_check");
+//	}while(0 != iRet && 3 > ++iTrials);
+	iRet = invokeSystemWithTimeout("/beseye/cam_main/cam-util -camRegister", 30);
 
 	slLastTimeCheckToken = time_ms();
 

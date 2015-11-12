@@ -334,11 +334,24 @@ public class WebsocketsMgr {
 							}else if(WS_CB_EVT.equals(strCmd)){
 								if(DEBUG)
 									Log.i(TAG, "onStringAvailable(), strCmd=["+strCmd+"], strBody"+strBody);
-								JSONObject dataObj = BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.newJSONObject(strBody),WS_ATTR_DATA),WS_ATTR_DATA);
+								JSONObject dataObjOutside = BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.newJSONObject(strBody),WS_ATTR_DATA);
+								String strIdx = BeseyeJSONUtil.getJSONString(dataObjOutside, BeseyeWebsocketsUtil.WS_ATTR_IDX);
+								if(null != strIdx){
+									JSONObject objRet = new JSONObject();
+									JSONObject objRetData = new JSONObject();
+									objRetData.put(BeseyeWebsocketsUtil.WS_ATTR_IDX, strIdx);
+									objRetData.put(BeseyeWebsocketsUtil.WS_ATTR_CODE, 0);
+									objRet.put(WS_ATTR_DATA, objRetData);
+									webSocket.send(String.format(WS_CMD_FORMAT, BeseyeWebsocketsUtil.WS_FUNC_ACK, objRet.toString()));
+									Log.i(TAG, "onStringAvailable(), objRet=["+objRet.toString()+"]");
+								}
+								
+								JSONObject dataObj = BeseyeJSONUtil.getJSONObject(dataObjOutside, WS_ATTR_DATA);
 								OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 								if(null != listener){
 									listener.onMessageReceived(dataObj.toString());
 								}
+
 							}else{
 								if(DEBUG)
 									Log.w(TAG, "onStringAvailable(), not handle cmd=["+strCmd+"], strBody"+strBody);

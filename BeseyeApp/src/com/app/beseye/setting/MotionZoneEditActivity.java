@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -165,13 +166,14 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		if(null != mImgThumbnail){
 			int miThumbnailWidth = BeseyeUtils.getDeviceWidth(this);
 			BeseyeUtils.setThumbnailRatio(mImgThumbnail, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
-				
+			BeseyeUtils.setThumbnailRatio(mMotionZoneEditView, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);	
+			
 			mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_THUMB), 
 								R.drawable.cameralist_s_view_noview_bg, 
 								BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID),
 								new RemoteImageView.RemoteImageCallback(){
 									@Override
-									public void imageLoaded(boolean success) {
+									public void imageLoaded(boolean success, String StrUri) {
 										if(true == success){
 											drawMotionZoneRect();
 											BeseyeUtils.setVisibility(mPbLoadingCursor, View.GONE);

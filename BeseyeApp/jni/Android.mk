@@ -111,6 +111,7 @@ LOCAL_LDLIBS := -L$(NDK_PLATFORMS_ROOT)/$(TARGET_PLATFORM)/arch-arm/usr/lib \
 	libssl \
 	libcrypto \
 
+
 include $(BUILD_SHARED_LIBRARY)
 $(call import-module,SDL2-2.0.1)LOCAL_PATH := $(call my-dir)
 

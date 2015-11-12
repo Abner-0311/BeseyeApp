@@ -195,9 +195,9 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 			String strMsg) {
 		// GetLatestThumbnailTask don't need to have onErrorReport because it has default image
 		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
-			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true);
+			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true, iErrType);
 		}else if(task instanceof BeseyeCamBEHttpTask.SetNotifySettingTask){
-			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true);
+			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true, iErrType);
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 		}
@@ -338,7 +338,18 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 		mbModified = true;
 		JSONObject obj =  new JSONObject();
 		if(null != obj){
-			BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, (null != mNotifyMeSwitchBtn && mNotifyMeSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON));
+			boolean bTurnOn = (null != mNotifyMeSwitchBtn && mNotifyMeSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON);
+			
+			if(bTurnOn){
+				BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, bTurnOn);
+			}
+			
+			JSONObject type_obj =  new JSONObject();
+			if(null != type_obj){
+				BeseyeJSONUtil.setJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_MOTION, bTurnOn);	
+				BeseyeJSONUtil.setJSONObject(obj, BeseyeJSONUtil.TYPE, type_obj);
+			}
+			
 			monitorAsyncTask(new BeseyeCamBEHttpTask.SetNotifySettingTask(this), true, mStrVCamID, obj.toString());
 		}
 	}
@@ -349,6 +360,11 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 			boolean bNotifyMe = false;
 			if(null != notify_obj){
 				bNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
+			}
+			
+			if(bNotifyMe){
+				JSONObject type_obj = BeseyeJSONUtil.getJSONObject(notify_obj, BeseyeJSONUtil.TYPE);
+				bNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_MOTION);
 			}
 			
 			if(null != mNotifyMeSwitchBtn){

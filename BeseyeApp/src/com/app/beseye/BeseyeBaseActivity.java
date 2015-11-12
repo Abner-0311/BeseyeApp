@@ -2,6 +2,7 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
+import static com.app.beseye.util.BeseyeJSONUtil.CAM_CHANGE_DATA;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
 
 import java.lang.ref.WeakReference;
@@ -206,7 +207,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	private void getCamListAndCheckCamUpdateVersions(){
 		//Set<String> setVcamList = null;
-		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
+		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended() || !SessionMgr.getInstance().getIsTrustDev()){
+			return;
+		}
+		
+		if((0 != slLastGetCamListTs && (System.currentTimeMillis() - slLastGetCamListTs) < 300000L) && !mbIsNetworkDisconnectedWhenCamUpdating){//Not check update within 5 mins
+			Log.e(TAG, "getCamListAndCheckCamUpdateVersions(), within checked duration");
 			return;
 		}
 		
@@ -226,7 +232,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}	
 		else{
 			Log.e(TAG, "checkSession(), need to get new session");
-			onSessionInvalid();
+			onSessionInvalid(false);
 			//monitorAsyncTask(new iKalaAddrTask.GetSessionTask(this), true);
 		}
 		return false;
@@ -602,12 +608,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	private void onAppUpdateNotAvailable(){
-		if(this instanceof CameraListActivity && !checkCamUpdateValid() && !isCamUpdating() && null != mObjVCamList){
+		if(this instanceof CameraListActivity /*&& !checkWithinCamUpdatePeriod()*/ && !isCamUpdatingInCurrentPage() && null != mObjVCamList){
 			getCamUpdateCandidateList(mObjVCamList);
 		}
 		
 		mbHaveCheckAppVer = true;
-		if(false == this instanceof CameraListActivity && false == mbIgnoreCamVerCheck && !checkCamUpdateValid() && !isCamUpdating())
+		if((false == this instanceof CameraListActivity && false == mbIgnoreCamVerCheck /*&& !checkWithinCamUpdatePeriod()*/ && !isCamUpdatingInCurrentPage()) || mbIsNetworkDisconnectedWhenCamUpdating)
 			getCamListAndCheckCamUpdateVersions();
 	}
 	
@@ -654,6 +660,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_PLAYER_CAPTURE		= DIALOG_ID_WIFI_BASE+20; 
 	static public final int DIALOG_ID_UPDATE_VIA_MARKET		= DIALOG_ID_WIFI_BASE+21; 
 	static public final int DIALOG_ID_UPDATE_VIA_WEB		= DIALOG_ID_WIFI_BASE+22; 
+	static public final int DIALOG_ID_DELETE_TRUST_DEV		= DIALOG_ID_WIFI_BASE+23; 
+	static public final int DIALOG_ID_PIN_VERIFY_FAIL		= DIALOG_ID_WIFI_BASE+24; 
+	static public final int DIALOG_ID_PIN_VERIFY_FAIL_3_TIME= DIALOG_ID_WIFI_BASE+25; 
+	static public final int DIALOG_ID_PIN_VERIFY_FAIL_EXPIRED	= DIALOG_ID_WIFI_BASE+26; 
+	static public final int DIALOG_ID_PIN_AUTH_REQUEST		= DIALOG_ID_WIFI_BASE+27; 
+	static public final int DIALOG_ID_RESET_HUMAN_DETECT	= DIALOG_ID_WIFI_BASE+28; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
@@ -677,7 +689,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}
 		case DIALOG_ID_NO_NETWORK:{
 			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
-			d.setBodyText(R.string.streaming_error_no_network);
+			d.setBodyText(BeseyeUtils.appendErrorCode(this, R.string.streaming_error_no_network, 0));
 			d.setTitleText(getString(R.string.dialog_title_warning));
 
 			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
@@ -701,6 +713,20 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					removeMyDialog(DIALOG_ID_INFO);	
 				}});
 			dialog = d;
+			break;
+		}
+		case DIALOG_ID_PIN_AUTH_REQUEST:{
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			d.setBodyText(bundle.getString(KEY_INFO_TEXT));
+			d.setTitleText(getString(R.string.dialog_title_info));
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+			
+				@Override
+				public void onBtnClick() {
+					removeMyDialog(DIALOG_ID_PIN_AUTH_REQUEST);	
+				}});
+			dialog = d;
+			
 			break;
 		}
 //			case DIALOG_ID_WARNING:{
@@ -876,19 +902,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					if(0 < strMsgRes.length())
 						((android.app.AlertDialog) dialog).setMessage(strMsgRes);
 				}
+				break;
 			}
-//			case DIALOG_ID_UPDATE_VIA_MARKET:{
-//				if(null != mMarketAppAdapter){
-//					mMarketAppAdapter.notifyDataSetChanged();
-//				}
-//				break;
-//			}
-//			case DIALOG_ID_UPDATE_VIA_WEB:{
-//				if(null != mMarketWebAdapter){
-//					mMarketWebAdapter.notifyDataSetChanged();
-//				}
-//				break;
-//			}
 	        default:
 	        	super.onPrepareDialog(id, dialog, args);
 	    }
@@ -1001,8 +1016,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     	if(bNetworkConnected){
     		hideNoNetworkDialog();
     		onSessionComplete();
+    		checkForUpdates();
     	}else{
     		showNoNetworkDialog();
+    		if(isCamUpdatingInCurrentPage()){
+    			mbIsNetworkDisconnectedWhenCamUpdating = true;
+    		}
     	}
     }
     
@@ -1117,7 +1136,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			//onSessionInvalid();
 		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 			//SessionMgr.getInstance().cleanSession();
-			onSessionInvalid();
+			onSessionInvalid(true);
 		}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 			//onToastShow(task, "failed to update sw");
 		}else if(task instanceof BeseyeCamBEHttpTask.GetCamUpdateStatusTask){
@@ -1132,13 +1151,14 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}*/
 		
 		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-			onToastShow(task, strMsg);
+			if(null != strMsg && 0 < strMsg.length())
+				onToastShow(task, strMsg);
 			Log.e(TAG, "onErrorReport(), task:["+task.getClass().getSimpleName()+"], iErrType:"+iErrType+", strTitle:"+strTitle+", strMsg:"+strMsg);
 		}
 	}
 	
-	protected void onServerError(){
-		showErrorDialog(R.string.server_error, false);
+	protected void onServerError(int iErrCode){
+		showErrorDialog(R.string.server_error, false, iErrCode);
 	}
 
 	@Override
@@ -1150,12 +1170,19 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			if(task instanceof BeseyeAccountTask.CheckAccountTask){
 				if(0 == iRetCode){
 					slLastTimeToCheckSession = System.currentTimeMillis();
+					if(false == SessionMgr.getInstance().getIsTrustDev()){
+						SessionMgr.getInstance().setIsTrustDev(true);
+					}
 					invokeSessionComplete();
-				}else if(BeseyeError.E_BE_ACC_SESSION_NOT_EXIST == iRetCode  || BeseyeError.E_BE_ACC_SESSION_EXPIRED == iRetCode || BeseyeError.E_BE_ACC_SESSION_NOT_FOUND == iRetCode){
+				}/*else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode  || BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode){
 					Toast.makeText(this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
-					onSessionInvalid();
-				}else{
-					onServerError();
+					onSessionInvalid(false);
+				}else if(BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iRetCode){
+					launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
+				}*/else if(BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED != iRetCode && 
+						   BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN != iRetCode && 
+						   BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED != iRetCode){
+					onServerError(iRetCode);
 				}
 			}else if(task instanceof BeseyeAccountTask.GetCamInfoTask){
 				if(0 == iRetCode){
@@ -1186,6 +1213,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 								BeseyeJSONUtil.setJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ATTACHED, BeseyeJSONUtil.getJSONBoolean(cam_obj, BeseyeJSONUtil.ACC_VCAM_ATTACHED));
 								BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN, BeseyeJSONUtil.getJSONInt(cam_obj, BeseyeJSONUtil.ACC_VCAM_PLAN));
 							}else{
+								if(DEBUG)
+									Log.i(TAG, getClass().getSimpleName()+":: GetCamInfoTask,  mCam_obj is replaced");
 								mCam_obj = cam_obj;
 							}
 							
@@ -1200,7 +1229,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 				if(0 == iRetCode){
 					//Log.i(TAG, "onPostExecute(), "+result.toString());
-					onSessionInvalid();
+					onSessionInvalid(true);
 				}
 			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(task == mGetCamListTask){
@@ -1210,14 +1239,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					if(DEBUG)
-						Log.i(TAG, "onPostExecute(), "+result.toString());
+						Log.i(TAG, getClass().getSimpleName()+"::onPostExecute(), "+result.toString());
 					
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
 						if(null != dataObj){
-							//int iCamStatus = getJSONInt(dataObj, CAM_STATUS, 0);
-							//BeseyeJSONUtil.setJSONInt(mCam_obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.CAM_CONN_STATUS.toCamConnStatus(iCamStatus).getValue());
 							BeseyeJSONUtil.setJSONLong(mCam_obj, BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(obj, BeseyeJSONUtil.OBJ_TIMESTAMP));
 							BeseyeJSONUtil.setJSONObject(mCam_obj, ACC_DATA, dataObj);
 							BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
@@ -1324,11 +1351,11 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						BeseyeUtils.postRunnable(new Runnable(){
 							@Override
 							public void run() {
-								if(checkCamUpdateValid()){
+								if(checkWithinCamUpdatePeriod()){
 									monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(BeseyeBaseActivity.this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++%miUpdateCamNum));
 								}else{
 									Bundle b = new Bundle();
-									b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_update_timeout));
+									b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(BeseyeBaseActivity.this, R.string.cam_update_timeout, BeseyeError.E_FE_AND_OTA_TIMEOUT));
 									showMyDialog(DIALOG_ID_WARNING, b);
 									removeMyDialog(DIALOG_ID_CAM_UPDATE);
 								}
@@ -1355,10 +1382,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
 			return;
 		}
-		
-		if(checkCamUpdateValid()){
-			return ;
-		}
+//		
+//		if(checkCamUpdateValid()){
+//			return ;
+//		}
 		
 		JSONArray arrVcamIdList = new JSONArray();
 		int iVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_VCAM_CNT);
@@ -1375,10 +1402,17 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				}
 			}
 			
+			
 			if(0 < arrVcamIdList.length()){
-				BeseyeCamInfoSyncMgr.getInstance().queryCamUpdateVersions(arrVcamIdList);
+				if(checkWithinCamUpdatePeriod()){
+					resumeCamUpdate(arrVcamIdList);
+				}else{
+					BeseyeCamInfoSyncMgr.getInstance().queryCamUpdateVersions(arrVcamIdList);
+				}
 			}
 		}
+		
+		slLastGetCamListTs = System.currentTimeMillis();
 	}
 
 	@Override
@@ -1424,13 +1458,36 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 
 	@Override
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
-		onSessionInvalid();
+		Log.i(TAG, "onSessionInvalid(), iInvalidReason:"+iInvalidReason+", mbIgnoreSessionCheck:"+mbIgnoreSessionCheck);
+		if(!mbIgnoreSessionCheck){
+			if(iInvalidReason == BeseyeHttpTask.ERR_TYPE_SESSION_NOT_TRUST){
+				SessionMgr.getInstance().setIsTrustDev(false);
+				launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
+			}else{
+				onSessionInvalid(false);
+			}
+		}
 	}
 	
-	protected void onSessionInvalid(){
+	protected void invalidDevSession(){
 		SessionMgr.getInstance().cleanSession();
 		BeseyeNewFeatureMgr.getInstance().reset();
 		launchDelegateActivity(BeseyeEntryActivity.class.getName());
+	}
+	
+	protected void onSessionInvalid(boolean bIsLogoutCase){
+		if(SessionMgr.getInstance().isTokenValid()){
+			if(false == bIsLogoutCase){
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
+					}}, 0L);
+			}
+			invalidDevSession();
+		}else{
+			Log.i(TAG, "onSessionInvalid(), token is invalid");
+		}
 	}
 	
 	public void launchActivityByIntent(Intent intent){
@@ -1501,6 +1558,16 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		if(null != mNotifyService){
 			try {
 				mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_APP_TO_BACKGROUND));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	final public void notifyServicePincodeNotifyClick(String strPincodeInfo){
+		if(null != mNotifyService){
+			try {
+				mNotifyService.send(Message.obtain(null, BeseyeNotificationService.MSG_PIN_CODE_NOTIFY_CLICKED));
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -1712,6 +1779,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 							Log.i(TAG, "handleMessage(), e:"+e.toString());
 						}
                 	}
+                	break;
                 }
                 case BeseyeNotificationService.MSG_RESPOND_DEL_PUSH:{
                 	BeseyeBaseActivity act = mActivity.get();
@@ -1721,6 +1789,21 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	                		act.mLogoutRunnable.run();
 	                	}
                 	}
+                	break;
+                }
+                case BeseyeNotificationService.MSG_CAM_STATUS_CHANGED_FOR_EVT:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCamStatusChangedForEvt(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                	break;
                 }
 //                case BeseyeNotificationService.MSG_SET_UNREAD_MSG_NUM:{
 //                	BeseyeBaseActivity act = mActivity.get();
@@ -1814,10 +1897,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
         // Establish a connection with the service.  We use an explicit
         // class name because there is no reason to be able to let other
         // applications replace our component.
-        bindService(new Intent(BeseyeBaseActivity.this, 
-        		BeseyeNotificationService.class), mConnection, Context.BIND_AUTO_CREATE);
-//        bindService(new Intent(BeseyeBaseActivity.this, 
-//        		iKalaUploadWorksService.class), mUploadConnection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(BeseyeBaseActivity.this, BeseyeNotificationService.class), mConnection, Context.BIND_AUTO_CREATE);
         mIsBound = true;
     }
     
@@ -1865,7 +1945,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     protected OnResumeUpdateCamInfoRunnable mOnResumeUpdateCamInfoRunnable = null;
     protected void setOnResumeUpdateCamInfoRunnable(OnResumeUpdateCamInfoRunnable run){
     	if(DEBUG)
-    		Log.i(TAG, "setOnResumeUpdateCamInfoRunnable()");
+    		Log.i(TAG, getClass().getSimpleName()+"::setOnResumeUpdateCamInfoRunnable()");
     	mOnResumeUpdateCamInfoRunnable = run;
     }
     
@@ -2007,9 +2087,26 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     protected boolean onCameraPeopleEvent(JSONObject msgObj){return false;}
     protected boolean onCameraOfflineEvent(JSONObject msgObj){return false;}
     
+    public boolean onCamStatusChangedForEvt(JSONObject msgObj){
+    	Log.i(TAG, getClass().getSimpleName()+"::onCamStatusChangedForEvt(),  msgObj = "+msgObj);
+    	if(mActivityResume){
+    		if(null != msgObj){
+        		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+        		if(null != objCus){
+        			JSONObject objCamChgData = BeseyeJSONUtil.getJSONObject(objCus, CAM_CHANGE_DATA);
+        			boolean bCamStatusOn = (BeseyeJSONUtil.getJSONInt(objCamChgData, BeseyeJSONUtil.CAM_STATUS) == 1);
+					String strNotifyMsg = getString(bCamStatusOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
+    				Toast.makeText(this, strNotifyMsg, Toast.LENGTH_SHORT).show();
+        			return true;
+        		}
+    		}
+    	}
+    	return false;
+    }
+    
     protected boolean onPasswordChanged(JSONObject msgObj){
     	Toast.makeText(this, getString(R.string.toast_password_changed), Toast.LENGTH_SHORT).show();
-    	onSessionInvalid();
+    	onSessionInvalid(false);
     	return true;
     }
     
@@ -2021,6 +2118,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			if(DEBUG)
 				Log.i(TAG, getClass().getSimpleName()+"::onCamSetupChanged(),  lTs = "+lTs+", lTsOldTs="+lTsOldTs);
 			if(0 < lTs && lTs >= lTsOldTs){
+				if(DEBUG)
+					Log.i(TAG, getClass().getSimpleName()+"::onCamSetupChanged(),  mCam_obj is replaced");
+				
 				mCam_obj = objCamSetup;
 				mOnResumeUpdateCamInfoRunnable = null;
 				updateUICallback();
@@ -2052,6 +2152,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	private int miCurUpdateCamStatusIdx = 0;
 	private JSONArray mVcamUpdateList = null;
 	protected JSONObject mObjVCamList = null; //for cam list
+	static private long slLastGetCamListTs = 0; 
+	private boolean mbIsNetworkDisconnectedWhenCamUpdating = false;
 	
 	private String findCamNameFromVcamUpdateList(String strVCamId){
 		String strRet = "";
@@ -2077,6 +2179,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		miCheckUpdateCamIdx = 0;
 		mUpdateVcamList = new JSONObject();
 		mLstUpdateCandidate = new ArrayList<String>();
+		miCurUpdateCamStatusIdx = 0;
 		if(false == bResumeCase){
 			SessionMgr.getInstance().setCamUpdateTimestamp(0);
 		}
@@ -2085,7 +2188,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected boolean mbSilentUpdate = true;
 	
 	protected void triggerCamUpdate(JSONArray VcamList, boolean bSilent){
-		if(isCamUpdating()){
+		if(isCamUpdatingInCurrentPage()){
 			if(DEBUG)
 				Log.i(TAG, "triggerCamUpdate(), isCamUpdating... return");
 			return;
@@ -2140,11 +2243,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	protected void resumeCamUpdate(JSONArray VcamList){
-		if(isCamUpdating()){
+		if(isCamUpdatingInCurrentPage() && false == mbIsNetworkDisconnectedWhenCamUpdating){
 			if(DEBUG)
 				Log.i(TAG, "resumeCamUpdate(), isCamUpdating... return");
 			return;
 		}
+		
+		mbIsNetworkDisconnectedWhenCamUpdating = false;
 		
 		String[] strCamUpdate = SessionMgr.getInstance().getCamUpdateList().split(";");
 		if(null != strCamUpdate){
@@ -2237,7 +2342,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			if(0 == iNumOfFail){
 				strRet = getResources().getString(R.string.cam_update_success);
 			}else if(0 == iNumOfDone){
-				strRet = getResources().getString(R.string.cam_update_failed);
+				strRet = BeseyeUtils.appendErrorCode(BeseyeBaseActivity.this, R.string.cam_update_failed, BeseyeError.E_FE_AND_OTA_TIMEOUT);
 			}else{
 				strRet = String.format(getResources().getString(R.string.cam_update_result), iNumOfDone, iNumOfFail);
 			}
@@ -2249,7 +2354,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}	
 	}
 	
-	protected boolean isCamUpdating(){
+	protected boolean isCamUpdatingInCurrentPage(){
 		return (null != mLstUpdateCandidate && 0 < mLstUpdateCandidate.size());
 	}
 	
@@ -2278,7 +2383,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 	
 	//Wait cam for 10 mins at most
-	protected boolean checkCamUpdateValid(){
+	protected boolean checkWithinCamUpdatePeriod(){
 		boolean  bRet = true;
 		long lDelta = System.currentTimeMillis() - SessionMgr.getInstance().getCamUpdateTimestamp();
 		if(lDelta > 10*60*1000){//timeout after 10 mis
@@ -2304,12 +2409,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	
 	//Camera update end
 	
-	protected void showErrorDialog(final int iMsgId, final boolean bCloseSelf){
+	protected void showErrorDialog(final int iMsgId, final boolean bCloseSelf, final int iErrCode){
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
 				Bundle b = new Bundle();
-				b.putString(KEY_WARNING_TEXT, getResources().getString(iMsgId));
+				b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(BeseyeBaseActivity.this, iMsgId, iErrCode));
 				if(bCloseSelf)
 					b.putBoolean(KEY_WARNING_CLOSE, true);
 				showMyDialog(DIALOG_ID_WARNING, b);

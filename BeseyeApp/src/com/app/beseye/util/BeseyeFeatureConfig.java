@@ -9,4 +9,7 @@ public class BeseyeFeatureConfig {
 	public final static boolean VPC_2_TEST = false; 
 	public final static boolean PTOKEN_QUERY_TEST = true; 
 	
+	public final static boolean TRANS_SERIOUS_WARNING = true;
+	public final static boolean APPEND_ERR_CODE = true;
+	
 }

@@ -19,6 +19,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -37,6 +38,7 @@ import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -65,6 +67,7 @@ public class BeseyeUtils {
 	}
 	
 	static public final float BESEYE_THUMBNAIL_RATIO_9_16 = 9.0f/16.0f;
+	static public final float BESEYE_THUMBNAIL_RATIO_2_1 = 2.0f/1.0f;
 	
 	static public int getDeviceWidth(Activity act){
 		if(null != act){
@@ -249,6 +252,26 @@ public class BeseyeUtils {
 		return ("{"+Build.MANUFACTURER+"}_{"+Build.MODEL+"}");
 	}
 	
+	static public String getDevName(){
+		String strRet = NetworkMgr.getInstance().getHotspotName();
+		if(null == strRet || "".equals(strRet)){
+			BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+			if(null != adapter){
+				strRet = adapter.getName();
+			}
+		}
+		return toUtf8(strRet+BeseyeApplication.getAppMark());
+	}
+	
+	public static String toUtf8(String str) {
+		try {
+			return new String(str.getBytes("UTF-8"),"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+		}
+		return "";
+	}
+	
 	static public String getStreamSecInfo(){
 		try {
 			return String.format("?ua=%s&se=%s&dd=%s", URLEncoder.encode(getUserAgent(), "utf-8"), SessionMgr.getInstance().getAuthToken(), getAndroidUUid());
@@ -423,6 +446,21 @@ public class BeseyeUtils {
 		return lp.height;
 	}
 	
+	public static void setWidthAndHeight(View view, int iWidth, int iHeight){
+		LayoutParams lp = view.getLayoutParams();
+		if(null == lp){
+			lp = new AbsListView.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		}
+		else{
+			lp =view.getLayoutParams();
+		}
+		if(0 <= iWidth)
+			lp.width = iWidth;
+		if(0 <= iHeight)
+			lp.height = iHeight;
+		view.setLayoutParams(lp);
+	}
+	
 	static public boolean isHiddenFeature(){
 		return BeseyeConfig.PRODUCTION_VER || BeseyeConfig.BETA_VER || BeseyeConfig.ALPHA_VER;
 	}
@@ -485,34 +523,11 @@ public class BeseyeUtils {
 							writer.close();
 						}
 						
-						Intent intent = new Intent(Intent.ACTION_SEND);
-						intent.setType("text/plain");
-						
-						final PackageManager pm = context.getPackageManager();
-					    final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
-					    if(matches.isEmpty()){
-					    	Toast.makeText(context, "No mail related app", Toast.LENGTH_LONG).show();
-					    }else{
-					    	ResolveInfo best = null;
-						    for (final ResolveInfo info : matches)
-						      if (info.activityInfo.packageName.endsWith(".gm") ||
-						          info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
-						    if (best != null)
-						      intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
-						    
-						    if(SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)){
-						    	intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"15219425820@163.com"});
-						    }else{
-						    	intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"abner.huang@beseye.com"});
-						    }
-							
-							intent.putExtra(Intent.EXTRA_SUBJECT, "[Android Log]"+logFile.getName());
-							intent.putExtra(Intent.EXTRA_TEXT, "This is log from "+SessionMgr.getInstance().getAccount()+"\nIssue occurred on [Cam name]");
-							
-							Uri uri = Uri.parse("file://" + logFile);
-							intent.putExtra(Intent.EXTRA_STREAM, uri);
-							context.startActivity(Intent.createChooser(intent, "Send email..."));
-					    }
+						launchEmail(context, 
+									logFile, 
+									"[Android Log]"+logFile.getName(), 
+									"This is log from "+SessionMgr.getInstance().getAccount()+"\nIssue occurred on [Cam name]",
+									SessionMgr.getInstance().getServerMode().equals(SessionMgr.SERVER_MODE.MODE_CHINA_STAGE)?"15219425820@163.com":"abner.huang@beseye.com");
 					} catch (IOException e) {
 						if(e instanceof FileNotFoundException){
 							Log.e(TAG, "cannot find log :"+logFile.getAbsolutePath());
@@ -525,6 +540,45 @@ public class BeseyeUtils {
 			}
 			
 		}
+	}
+	
+	static public void launchEmail(Context context, File fAttachPath, String strSubject, String strContent, String strReceiverEmail){
+		
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		
+		final PackageManager pm = context.getPackageManager();
+	    final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
+	    if(matches.isEmpty()){
+	    	Toast.makeText(context, "No mail related app", Toast.LENGTH_LONG).show();
+	    }else{
+	    	ResolveInfo best = null;
+		    for (final ResolveInfo info : matches)
+		      if (info.activityInfo.packageName.endsWith(".gm") ||
+		          info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
+		    if (best != null)
+		      intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+		    
+		    if(null != strReceiverEmail){
+		    	intent.putExtra(Intent.EXTRA_EMAIL, new String[] {strReceiverEmail});
+		    }
+			
+		    if(null != strSubject){
+		    	intent.putExtra(Intent.EXTRA_SUBJECT, strSubject);
+		    }
+		    
+		    if(null != strContent){
+		    	intent.putExtra(Intent.EXTRA_TEXT, strContent);
+		    }
+			
+		    if(null != fAttachPath){
+		    	Uri uri = Uri.parse("file://" + fAttachPath);
+				intent.putExtra(Intent.EXTRA_STREAM, uri);
+		    }
+			
+			context.startActivity(Intent.createChooser(intent, "Send email..."));
+	    }
+		
 	}
 	
 	static CharsetEncoder asciiEncoder = Charset.forName("US-ASCII").newEncoder(); // or "ISO-8859-1" for ISO Latin 1
@@ -589,5 +643,28 @@ public class BeseyeUtils {
 		Log.e(TAG, "getLocaleStringForRegion(), Locale.getDefault():"+Locale.getDefault()+", strLocale:"+strLocale);
 
 		return strLocale;
+	}
+	
+	static List<Integer> sLstSeriousWarningMsgIds = new ArrayList<Integer>();
+	static{
+		if(BeseyeFeatureConfig.TRANS_SERIOUS_WARNING){
+			sLstSeriousWarningMsgIds.add(R.string.server_error);
+			sLstSeriousWarningMsgIds.add(R.string.streaming_invalid_dvr);
+			sLstSeriousWarningMsgIds.add(R.string.streaming_playing_error);
+			sLstSeriousWarningMsgIds.add(R.string.streaming_error_unknown);
+			sLstSeriousWarningMsgIds.add(R.string.streaming_error_low_mem);
+			sLstSeriousWarningMsgIds.add(R.string.cam_update_timeout);
+			//Append the serious warning msg string ids
+		}
+	} 
+	
+	static public String appendErrorCode(Context context, int iOriginStrId, int iErrCode){
+		return appendErrorCodeByString( context, 
+										context.getString((BeseyeFeatureConfig.TRANS_SERIOUS_WARNING && sLstSeriousWarningMsgIds.contains(iOriginStrId))?R.string.dialog_no_connectivity:iOriginStrId),
+										iErrCode);
+	}
+	
+	static public String appendErrorCodeByString(Context context, String strOrigin, int iErrCode){
+		return strOrigin+(BeseyeFeatureConfig.APPEND_ERR_CODE?String.format(context.getString(R.string.error_code_fmt), iErrCode):"");
 	}
 }

@@ -52,19 +52,20 @@ public class BeseyeApplication extends Application {
 	   -- Begin */
 	final static public String BESEYE_MAIN_PROCESS = "com.app.beseye";
 	static private String sCurProcessName = null;
+	static private String sStrAppMark = "";
 	
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		sApplication = this;
+		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
+		
 		BeseyeUtils.init();
 		SessionMgr.createInstance(getApplicationContext());
 		BeseyeNewFeatureMgr.createInstance(getApplicationContext());
 		BeseyeUtils.setPackageVersion(getApplicationContext());
 		//facebook
 		FacebookSdk.sdkInitialize(getApplicationContext());
-		
-		sApplication = this;
-		sCurProcessName = BeseyeUtils.getProcessName(this, android.os.Process.myPid());
 		
 		if(BeseyeConfig.DEBUG){
 			Log.i(TAG, "*****************BeseyeApplication::onCreate(), sCurProcessName = \""+sCurProcessName+"\" HOCKEY_APP_ID:"+HOCKEY_APP_ID+", can update:"+BeseyeUtils.canUpdateFromHockeyApp()+", Build.VERSION.RELEASE:"+Build.VERSION.RELEASE);
@@ -74,13 +75,15 @@ public class BeseyeApplication extends Application {
 			Log.i(TAG, "*****************BeseyeApplication::onCreate(), can update:"+BeseyeUtils.canUpdateFromHockeyApp()+", CAM_SW_UPDATE_CHK:"+BeseyeFeatureConfig.CAM_SW_UPDATE_CHK+", SessionMgr.getInstance().getIsCamSWUpdateSuspended():"+SessionMgr.getInstance().getIsCamSWUpdateSuspended());
 		}
 
-		//Log.i(TAG, "*****************BeseyeApplication::onCreate(), android.os.Build.MODEL:"+android.os.Build.MODEL+", System.getProperty():"+System.getProperty("net.hostname")+", BluetoothAdapter.getDefaultAdapter():"+BluetoothAdapter.getDefaultAdapter().getName());
 
 		ACRA.init(this);
 		ACRA.getErrorReporter().setReportSender(new HockeySender());
 		
 		NetworkMgr.createInstance(getApplicationContext());
 		CamSettingMgr.createInstance(getApplicationContext());
+		
+		//Log.i(TAG, "*****************BeseyeApplication::onCreate(), Hotspot name:"+NetworkMgr.getInstance().getHotspotName());
+
 		
 		checkServerMode();
 		
@@ -96,10 +99,16 @@ public class BeseyeApplication extends Application {
 		if(null != s_checkBackgroundRunnable){
 			s_checkBackgroundRunnable.updateContext(this);
 		}    
+		
+		sStrAppMark = (BeseyeConfig.ALPHA_VER?" (alpha)":(BeseyeConfig.BETA_VER?" (beta)":(BeseyeConfig.DEBUG?" (dev)":"")));
 	}
 	
 	static synchronized public Application getApplication(){
 		return sApplication;
+	}
+	
+	static public String getAppMark(){
+		return sStrAppMark;
 	}
 	
 //	public static void broadcastEventToMainProcess(Context context, UBT_Event event, int iSes, boolean bIsBeginEvent){
@@ -202,7 +211,6 @@ public class BeseyeApplication extends Application {
 				sLastBeseyeAppStateChangeListener = new WeakReference<BeseyeAppStateChangeListener>(listener);
 			}
 		}
-		
 	}
 	
 	static public boolean s_bSeesionBegun = false;

@@ -10,19 +10,19 @@
   <string name="password">パスワード</string>
   <!-- hint to unveil password mask -->
   <string name="show_password">パスワードを表示する</string>
-  <string name="forget_password">パスワードを忘れた</string>
+  <string name="forget_password">パスワードを忘れてしまった場合</string>
   <string name="username">Eメール</string>
   <!-- hint to create new account -->
   <string name="hint_to_create_account">アカウントをお持ちでない場合</string>
   <string name="account_create">アカウント作成</string>
   <string name="login">ログイン</string>
-  <string name="remove">取り除く</string>
+  <string name="remove">削除</string>
   <string name="cont">次へ</string>
   <!-- Title of sound remind page -->
   <string name="watch_out_sound">通知音</string>
   <!-- hint of password length -->
-  <string name="password_hint">半角アルファベットと数字を含む、6文字以上のパスワード</string>
-  <string name="action_settings">セッティング</string>
+  <string name="password_hint">パスワードは半角アルファベットと数字を使って、6文字以上で設定してください。</string>
+  <string name="action_settings">設定</string>
   <!-- entry to event list page -->
   <string name="event_cam_view">イベント</string>
   <!-- entry to live streaming page -->
@@ -30,34 +30,34 @@
   <!-- Item name to live streaming page in events page  -->
   <string name="event_itm_live">ライブ映像へ</string>
   <!-- Camera status: live streaming is off  -->
-  <string name="can_power_state_off">カメラはオフです</string>
+  <string name="can_power_state_off">カメラの電源がオフです</string>
   <!-- Camera status: live streaming is off and the connection to camera is down-->
-  <string name="can_power_state_disconnect">カメラはオフラインです。</string>
+  <string name="can_power_state_disconnect">カメラはオフラインです</string>
   <string name="cam_setting_title_detach_cam">カメラを削除</string>
   <!-- Warning message for removing camera -->
-  <string name="dialog_dettach_cam">[%s]このカメラ、および録画映像は削除されます、よろしいですか？</string>
+  <string name="dialog_dettach_cam">[%s]このカメラおよび録画映像は削除されます。よろしいですか。</string>
   <string name="network_ssid">ネットワーク名</string>
   <string name="network_other">その他</string>
   <!-- action to scan wifi ap -->
   <string name="menu_scan">スキャン</string>
   <!-- scanning wifi ap -->
-  <string name="network_scanning">スキャン中・・・</string>
+  <string name="network_scanning">スキャン中…</string>
   <!-- Title of dialog for adding hidden SSID network -->
   <string name="title_add_network">ネットワーク接続を追加</string>
   <!-- dscription of wifi ap security type-->
   <string name="network_secure_with">インターネットの暗号化テクノロジー%s</string>
   <!-- status of wifi ap : poor connection-->
-  <string name="network_avoid_poor_network">速度の遅いインターネットの接続は避けてください。</string>
+  <string name="network_avoid_poor_network">速度の遅いインターネット接続は避けてください。</string>
   <!-- status of wifi ap : authenticating-->
-  <string name="network_authenticating">認証中・・・</string>
+  <string name="network_authenticating">認証中…</string>
   <!-- status of wifi ap : obtain ip from wifi ap-->
-  <string name="network_obtaining_ip">IP アドレス取得中・・・</string>
+  <string name="network_obtaining_ip">IP アドレス取得中…</string>
   <!-- status of wifi ap : connecting to wifi ap-->
-  <string name="network_connecting">接続中・・・</string>
+  <string name="network_connecting">接続中…</string>
   <!-- status of wifi ap : connected to wifi ap-->
   <string name="network_connected">接続しました</string>
   <!-- status of wifi ap : disconnecting to wifi ap-->
-  <string name="network_disconnecting">切断中・・・</string>
+  <string name="network_disconnecting">切断中…</string>
   <!-- status of wifi ap : disconnected to wifi ap-->
   <string name="network_disconnected">切断しました</string>
   <!-- status of wifi ap : wifi ap is suspended-->
@@ -65,7 +65,7 @@
   <!-- status of wifi ap : wifi ap is failed to connect-->
   <string name="network_failed">失敗</string>
   <!-- status of wifi ap : wifi ap is idle-->
-  <string name="network_idle">アイドル中</string>
+  <string name="network_idle">アイドリング中</string>
   <!-- status of wifi ap : wifi ap is blocked to connect-->
   <string name="network_blocked">ブロックされました</string>
   <!-- Title of timezone select page-->
@@ -77,12 +77,12 @@
   <!-- Title of info dialog-->
   <string name="dialog_title_info">情報</string>
   <!-- Message of dialog when no network connection-->
-  <string name="dialog_no_connectivity">ネットワークが接続されているか、確認してください</string>
+  <string name="dialog_no_connectivity">ネットワークが接続されているか、確認してください。</string>
   <!-- Title of loading dialog-->
-  <string name="dialog_loading">ロード中・・・</string>
+  <string name="dialog_loading">ロード中…</string>
   <string name="dialog_setting">設定中…</string>
   <!-- Title of synchronizing dialog-->
-  <string name="dialog_syncing">同期中・・・</string>
+  <string name="dialog_syncing">同期中…</string>
   <!-- Message of dialog when turning on wifi on phone-->
   <string name="dialog_wifi_turning_on">Wi-Fi 接続をオンにしてください</string>
   <!-- Message of dialog when scanning wifi ap -->
@@ -90,23 +90,23 @@
   <!-- Message of dialog when setting up a wifi ap -->
   <string name="dialog_wifi_setting">Wi-Fi AP 設定</string>
   <!-- Message of dialog when failing to turn on phone wifi -->
-  <string name="dialog_wifi_fail_on">Wi-Fi 接続をオンにできません、Wi-Fi を確認してください。</string>
+  <string name="dialog_wifi_fail_on">Wi-Fi 接続をオンにできません。デバイスのWi-Fi接続状況 を確認してください。</string>
   <!-- Message of dialog when failing to scan wifi ap -->
-  <string name="dialog_wifi_fail_scan">Wi-Fi をスキャンできません、Wi-Fi を確認してください。</string>
+  <string name="dialog_wifi_fail_scan">Wi-Fi をスキャンできません。デバイスのWi-Fi状況 を確認してください。</string>
   <!-- Message of dialog when key(password) of wifi ap is wrong -->
-  <string name="dialog_wifi_incorrect_password">パスワードが違います、もう一度入力してください。</string>
+  <string name="dialog_wifi_incorrect_password">パスワードが違います。もう一度入力してください。</string>
   <!-- Message of dialog when key(password) of wifi ap is wrong for WEP secuity type-->
-  <string name="dialog_wifi_incorrect_password_wep">パスワードが違うか、ネットワークの問題で接続出来ませんでした。\nもう一度入力しますか？</string>
+  <string name="dialog_wifi_incorrect_password_wep">パスワードが違うか、ネットワークの問題で接続出来ませんでした。\n再試行しますか。</string>
   <!-- Message of dialog when failing to connect to specific wifi ap -->
-  <string name="dialog_wifi_fail_to_connect">Wi-Fi AP[%s]に接続できません、\nWi-Fi を確認してください。</string>
+  <string name="dialog_wifi_fail_to_connect">Wi-Fi AP[%s]に接続できません。\nWi-Fi を確認してください。</string>
   <!-- Message of dialog when no network connectivity via specific wifi ap-->
-  <string name="dialog_wifi_invalid_connectivity">Wi-Fi AP「%s」に接続できません、別の AP をご使用ください、それとも再度実行してください。</string>
+  <string name="dialog_wifi_invalid_connectivity">Wi-Fi AP「%s」に接続できません。別の AP をご使用いただくか、再試行してください。</string>
   <!-- description of wifi signal strength-->
   <string name="dialog_wifi_ap_signal">接続強度</string>
-  <string name="dialog_wifi_ap_signal_Excellent">とてもいいです</string>
-  <string name="dialog_wifi_ap_signal_Good">いいです</string>
+  <string name="dialog_wifi_ap_signal_Excellent">すばらしい</string>
+  <string name="dialog_wifi_ap_signal_Good">良い</string>
   <string name="dialog_wifi_ap_signal_Fair">あまりよくない</string>
-  <string name="dialog_wifi_ap_signal_Poor">わるいです</string>
+  <string name="dialog_wifi_ap_signal_Poor">わるい</string>
   <!-- description of wifi WEP security key index-->
   <string name="dialog_wifi_ap_key_index">索引キー</string>
   <!-- description of wifi Security type-->
@@ -118,14 +118,14 @@
   <!-- Event filter type: People-->
   <string name="notification_event_people">人</string>
   <!-- Event filter type: Motion-->
-  <string name="notification_event_motion">動くもの</string>
+  <string name="notification_event_motion">動き</string>
   <!-- Event filter type: Fire-->
   <string name="notification_event_fire">火</string>
   <!-- Event filter type: Sound-->
   <string name="notification_event_sound">音</string>
   <!-- Title of setting page-->
-  <string name="cam_setting_title">セッティング</string>
-  <string name="cam_hardware_setting_title">ハードウエア設定</string>
+  <string name="cam_setting_title">設定</string>
+  <string name="cam_hardware_setting_title">カメラ設定</string>
   <string name="cam_setting_title_power_setting">電源設定</string>
   <string name="cam_setting_title_power">カメラ電源</string>
   <string name="cam_setting_title_power_time">電源スケジュール</string>
@@ -133,10 +133,10 @@
   <string name="cam_setting_title_location">位置認識</string>
   <string name="cam_setting_title_setlocation">位置設定</string>
   <string name="cam_setting_title_notification_setting">通知設定</string>
-  <string name="cam_setting_title_notification_event">通知一覧</string>
+  <string name="cam_setting_title_notification_event">動きの検知</string>
   <string name="cam_setting_title_family_recognition">ファミリー認識</string>
-  <string name="cam_setting_title_hardware_setting">ハードウエア設定</string>
-  <string name="cam_setting_title_hardware_setting_inf">ハードウエア設定</string>
+  <string name="cam_setting_title_hardware_setting">カメラ設定</string>
+  <string name="cam_setting_title_hardware_setting_inf">カメラ設定</string>
   <string name="cam_setting_title_special_functions">その他の機能</string>
   <string name="cam_setting_title_emergency_siren">緊急警報</string>
   <string name="cam_setting_title_camera_inf">カメラ情報</string>
@@ -145,54 +145,54 @@
   <string name="cam_setting_title_power_off">オフ</string>
   <string name="cam_setting_title_power_disconnected">切断されました</string>
   <!-- options in notification setting page-->
-  <string name="cam_setting_title_notification_event_notify_me">お知らせ設定</string>
+  <string name="cam_setting_title_notification_event_notify_me">通知する</string>
   <string name="cam_setting_title_notification_event_people_detect">人検知</string>
-  <string name="cam_setting_title_notification_event_motion_detect">動くものを検知しました</string>
+  <string name="cam_setting_title_notification_event_motion_detect">動きを検知しました</string>
   <string name="cam_setting_title_notification_event_fire_detect">火を検知しました</string>
   <string name="cam_setting_title_notification_event_sound_detect">音を検知しました</string>
   <string name="cam_setting_title_notification_event_offline_detect">オフライン</string>
   <!-- Warning Message of dialog when failed to change cam status-->
-  <string name="cam_setting_fail_to_update_cam_status">カメラステータスの更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_cam_status">カメラステータスの更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to change video upload quality-->
-  <string name="cam_setting_fail_to_update_hd_quality">アップロード品質の更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_hd_quality">アップロード品質の更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to change notification settings-->
-  <string name="cam_setting_fail_to_update_notify_setting">通知設定の更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_notify_setting">通知設定の更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to change status light-->
-  <string name="cam_setting_fail_to_update_led_status">ステータスライト設定の更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_led_status">ステータスランプ設定の更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to change status of Camera microphone-->
-  <string name="cam_setting_fail_to_update_mic_status">マイク設定の更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_mic_status">カメラマイク設定の更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to change microphone sensitivity-->
-  <string name="cam_setting_fail_to_update_mic_sensitivity">マイク設定の更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_mic_sensitivity">マイク設定の更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to change camera Wi-Fi-->
-  <string name="cam_setting_fail_to_update_wifi_setting">Wi-Fi 設定の更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_wifi_setting">Wi-Fi 設定の更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to change timezone-->
-  <string name="cam_setting_fail_to_update_timezone">タイムゾーン設定の更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_timezone">タイムゾーン設定の更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to change night vision status-->
-  <string name="cam_setting_fail_to_update_night_vision">ナイトビジョンの更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_night_vision">ナイトビジョンの更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to change video upside-down-->
-  <string name="cam_setting_fail_to_update_video_upside_down">ビデオ映像の上下反転の更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_video_upside_down">ビデオ映像の上下反転の更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to get camera info-->
-  <string name="cam_setting_fail_to_get_cam_info">カメラ情報の取得ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_get_cam_info">カメラ情報の取得ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to change schedule on/off status-->
-  <string name="cam_setting_fail_to_update_schdule_status">スケジュールの更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_schdule_status">スケジュールの更新ができませんでした。再試行してください。</string>
   <!-- Message of dialog when adding a new schedule-->
-  <string name="cam_setting_schedule_add">作成中・・・</string>
+  <string name="cam_setting_schedule_add">追加</string>
   <!-- Warning Message of dialog when failed to add schedule-->
-  <string name="cam_setting_fail_to_add_schdule">スケジュールの作成ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_add_schdule">スケジュールの作成ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to update schedule-->
-  <string name="cam_setting_fail_to_update_schdule">スケジュールの更新ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_update_schdule">スケジュールの更新ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to delete schedule-->
-  <string name="cam_setting_fail_to_del_schdule">スケジュールの削除ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_del_schdule">スケジュールの削除ができませんでした。再試行してください。</string>
   <!-- Message of dialog when changing camera wifi-->
-  <string name="cam_setting_wifi_setting_apply">Wi-Fi 設定を適用中です、もうしばらくお待ちください。</string>
+  <string name="cam_setting_wifi_setting_apply">Wi-Fi 設定を適用中です。もうしばらくお待ちください。</string>
   <!-- Message of dialog when failed to change camera wifi-->
-  <string name="cam_setting_fail_to_apply_wifi_setting">Wi-Fi 設定の適用ができませんでした</string>
+  <string name="cam_setting_fail_to_apply_wifi_setting">Wi-Fi 設定の適用ができませんでした。</string>
   <!-- Message of dialog when changing camera wifi successfully-->
-  <string name="cam_setting_succeed_to_apply_wifi_setting">新しいWi-Fi に適用する</string>
+  <string name="cam_setting_succeed_to_apply_wifi_setting">新しいWi-Fi に適用</string>
   <!-- Warning Message of dialog when failed to get wifi ap scan list from camera -->
-  <string name="cam_setting_fail_to_get_wifi_list">Wi-Fi 一覧の取得ができませんでした、再実行してください。</string>
+  <string name="cam_setting_fail_to_get_wifi_list">Wi-Fi 一覧の取得ができませんでした。再試行してください。</string>
   <string name="cam_setting_hw_mic_sensitivity_title">マイク</string>
-  <string name="cam_setting_hw_status_light_title">ステータスライト</string>
+  <string name="cam_setting_hw_status_light_title">ステータスランプ</string>
   <!-- options in night vision setting page-->
   <string name="cam_setting_hw_night_vision_title">ナイトビジョン</string>
   <string name="cam_setting_hw_night_vision_auto">オート</string>
@@ -200,23 +200,23 @@
   <string name="cam_setting_hw_night_vision_off">オフ</string>
   <string name="cam_setting_hw_timezone_title">タイムゾーン</string>
   <string name="cam_setting_title_video_upside_down">ビデオ映像を上下反転する</string>
-  <string name="cam_setting_title_wifi_setting">Wi-Fi を設定する</string>
+  <string name="cam_setting_title_wifi_setting">Wi-Fi 設定</string>
   <string name="cam_setting_title_cam_info">カメラ情報</string>
   <!-- Warning Message of dialog when new camera name is empty -->
   <string name="cam_setting_empty_name_warning">カメラ名を入力してください</string>
-  <string name="cam_info_cam_name">カメラ名前</string>
+  <string name="cam_info_cam_name">カメラ名</string>
   <string name="cam_info_sw_ver">ソフトウェアバージョン</string>
   <string name="cam_info_sn">シリアルナンバー</string>
   <string name="cam_info_mac">MAC アドレス</string>
   <string name="unknown">N / A</string>
   <!-- Warning Message of dialog when network or server error in player page -->
-  <string name="server_error">ネットワーク、またはサーバーのエラーです、再実行してください。</string>
+  <string name="server_error">ネットワーク、またはサーバーのエラーです。再試行してください。</string>
   <!-- Warning Message of dialog when can not get valid DVR path -->
-  <string name="streaming_invalid_dvr">DVR ストリーミングのパスが違います。再実行してください。</string>
+  <string name="streaming_invalid_dvr">DVR ストリーミングのパスが違います。再試行してください。</string>
   <!-- Warning Message of dialog when out of DVR clip -->
   <string name="streaming_no_more_dvr">再生する DVR クリップがありません。</string>
   <!-- Warning Message of dialog when can not get valid live streaming path -->
-  <string name="streaming_playing_error">ストリーミングのパスが違うか、サーバーのエラーです、再実行してください。</string>
+  <string name="streaming_playing_error">ストリーミングのパスが違うか、サーバーのエラーです。再試行してください。</string>
   <!-- Warning Message of dialog when network connectivity is not good -->
   <string name="streaming_error_no_network">ネットワーク接続を確認してください。</string>
   <!-- Warning Message of dialog when error occurred and it cant be identified-->
@@ -224,61 +224,61 @@
   <!-- Warning Message of dialog when app is out of memory and ask user to relaunch it-->
   <string name="streaming_error_low_mem">メモリー不足のため、アプリが不安定です。再起動してください。</string>
   <!-- Description of sound pairing page-->
-  <string name="signup_paring_title_1">Let it Bee™ プロセスがカメラを 起動しています</string>
+  <string name="signup_paring_title_1">「Let it Bee™」プロセスでカメラと交信します</string>
   <string name="signup_paring_title_2">お待ちください</string>
   <!-- Warning Message of dialog when failed to Sign up-->
-  <string name="msg_signup_error">サインアップできませんでした、再実行してください。</string>
+  <string name="msg_signup_error">サインアップできませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to login-->
-  <string name="msg_login_error">ログイン出来ませんでした、再実行してください。</string>
+  <string name="msg_login_error">ログイン出来ませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to pairing-->
-  <string name="msg_pairing_error">ペアリングできませんでした、再実行してください。</string>
+  <string name="msg_pairing_error">ペアリングできませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to set new camera name-->
-  <string name="msg_set_cam_name_fail">カメラ名の設定ができませんでした、再実行してください。</string>
+  <string name="msg_set_cam_name_fail">カメラ名の設定ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when email format is invalid-->
-  <string name="msg_invalid_account_format">メールアドレスが間違っています</string>
+  <string name="msg_invalid_account_format">メールアドレスが違います。</string>
   <!-- Warning Message of dialog when password format is invalid-->
-  <string name="msg_pw_length_error">パスワードの規定外です、パスワードは6-32文字で、半角アルファベットと数字を含む文字列を入力してください。</string>
+  <string name="msg_pw_length_error">規定外のパスワードです。パスワードは6-32文字で、半角アルファベットと数字を含む文字列で入力してください。</string>
   <!-- Warning Message of dialog when password is too short-->
-  <string name="msg_pw_too_short">パスワードが短すぎます、パスワードは6文字以上の半角アルファベットと数字で設定してください。</string>
+  <string name="msg_pw_too_short">パスワードが短すぎます。パスワードは6文字以上の半角アルファベットと数字で設定してください。</string>
   <!-- Warning Message of dialog when registration email is used-->
-  <string name="msg_signup_err_email_used">このEメールアドレスは使用済みです、別のEメールアドレスを指定してください。</string>
+  <string name="msg_signup_err_email_used">このメールアドレスはすでに使用されています。他のメールアドレスをご使用ください。</string>
   <!-- Warning Message of dialog when wrong password to login-->
-  <string name="msg_login_wrong_password">パスワードが違います、もう一度入力してください。</string>
+  <string name="msg_login_wrong_password">パスワードが違います。もう一度入力してください。</string>
   <!-- Warning Message of dialog when the email to login is not found in server-->
-  <string name="msg_account_not_found">Eメールアドレスが違います、もう一度入力してください。</string>
+  <string name="msg_account_not_found">Eメールアドレスが違います。もう一度入力してください。</string>
   <!-- Hint Message of dialog when pairing is processing-->
-  <string name="toast_pairing_wait">ペアリング中です、お待ちください。</string>
+  <string name="toast_pairing_wait">ペアリング中です。お待ちください。</string>
   <string name="toast_pairing_enter_cam_name">カメラ名を設定してください</string>
-  <string name="dialog_msg_signup">サインアップ中・・・</string>
-  <string name="dialog_msg_login">ログイン中・・・</string>
-  <string name="dialog_msg_logiout">ログアウト中・・・</string>
-  <string name="signup_title_before_setup">セッティングする前</string>
+  <string name="dialog_msg_signup">サインアップ中…</string>
+  <string name="dialog_msg_login">ログイン中…</string>
+  <string name="dialog_msg_logiout">ログアウト中…</string>
+  <string name="signup_title_before_setup">設定前</string>
   <string name="signup_title_create_account">アカウント作成</string>
-  <string name="signup_title_cam_wifi_settings">Wi- Fi 設定</string>
+  <string name="signup_title_cam_wifi_settings">Wi-Fi 設定</string>
   <string name="signup_title_cam_pair_fail">もう一度実行してください</string>
-  <string name="signup_title_wifi_list">Wi- Fi 一覧</string>
-  <string name="signup_learn_more">詳細はこちら</string>
-  <string name="signup_beseye">Beseye</string>
+  <string name="signup_title_wifi_list">Wi-Fi 一覧</string>
+  <string name="signup_learn_more">詳しくはこちら</string>
+  <string name="signup_beseye">Beseye について</string>
   <string name="signup_bottom_login">ログイン</string>
   <string name="signup_bottom_signup">新規アカウントの作成</string>
   <string name="signup_before_setup_start">スタート</string>
   <!-- Hint Message in before setup page-->
-  <string name="signup_before_setup_description">カメラをコンセントに繋ぎ、緑ライトが点滅するまでお待ちください。カメラはご自分から30センチ以内の場所に置いてください。</string>
+  <string name="signup_before_setup_description">カメラをコンセントに繋ぎ、緑ランプが点滅するまでお待ちください。カメラはご自分から10 センチ以内の場所に置いてください。</string>
   <string name="signup_sound_reminder_description">カメラを起動するため、スマホの音が鳴るように設定してください。</string>
   <!-- Hint Message for TOS and privacy policy-->
-  <string name="signup_createAccount_description_title">下記のBeseye規約に同意するなら次へお進み下さい</string>
+  <string name="signup_createAccount_description_title">下記のBeseye規約に同意して、次へお進み下さい。</string>
   <string name="signup_createAccount_description_terms">利用規約</string>
   <string name="signup_createAccount_description_and">と</string>
-  <string name="signup_createAccount_description_policy">プライバシー・ポリシー</string>
+  <string name="signup_createAccount_description_policy">プライバシーポリシー</string>
   <!-- Hint Message in pairing failed page-->
-  <string name="signup_try_again_description_1">１、カメラをコンセントに繋ぎ、30センチ以内の場所に置いてください。\r２、Wi-Fi のパスワードが正しい事を確認してください、それでも解決しない場合、次のリンク先を参照してください。</string>
-  <string name="signup_try_again_description_2">それでも解決しない場合、次のリンク先を参照してください</string>
+  <string name="signup_try_again_description_1">1、カメラをコンセントに繋ぎ、10センチ以内の場所に置いてください。\r2、Wi-Fi のパスワードが正しい事を確認してください。それでも解決しない場合、次のリンク先を参照してください。</string>
+  <string name="signup_try_again_description_2">それでも解決しない場合、次のリンク先を参照してください。</string>
   <string name="signup_try_again_description_3">セットアップガイド</string>
   <string name="signup_try_again_btn">OK、再度実行してください</string>
   <!-- Hint Message after pairing is done and ask user to assign cam name-->
-  <string name="signup_name_camera">もうすぐセットアップ完了です、\n カメラに名前をつけましょう。</string>
+  <string name="signup_name_camera">もうすぐセットアップ完了です。\n カメラに名前をつけましょう。</string>
   <!-- Congratulation Message in live player page after pairing-->
-  <string name="signup_paring_done">セットアップ完了です！\nカメラのコンセントを抜き、お好きな場所にカメラを設置しましょう。セットアップ内容は、電源を切っても保存されています。設置の際は「ウォールマウントガイド」をご覧ください。Beseye提供するサービスを始めましょ！</string>
+  <string name="signup_paring_done">セットアップ完了です！\nベスアイのカメラをお好きな場所に設置してください。セットアップの内容は、コンセントを抜いても保存されています。最適な場所にカメラを設置してください。</string>
   <string name="datetime_month">月</string>
   <string name="datetime_day">日</string>
   <string name="datetime_hour">時</string>
@@ -289,7 +289,7 @@
   <string name="event_list_sound_detected">音を検知しました</string>
   <string name="event_list_fire_detected">火を検知しました</string>
   <string name="event_list_motion_detected">動きを検知しました</string>
-  <string name="event_list_unknown_detected">イベントを検知しました</string>
+  <string name="event_list_unknown_detected">事象を検知しました</string>
   <!-- Notification Messages for events-->
   <string name="notify_motion_detect">%s：動きを検知しました。確認してください。</string>
   <string name="notify_people_detect">%s：人を検知しました。確認してください。</string>
@@ -299,11 +299,11 @@
   <!-- Hint message in camera list item when the cam is disconnected-->
   <string name="camera_list_more">詳細はこちら</string>
   <!-- Hint message in camera list item when there is no camera-->
-  <string name="camera_list_add">新しいカメラを追加できます。\nデモカメラを見る場合は、左上のメニューをクリックしてください。</string>
+  <string name="camera_list_add">右上の「＋」アイコンから、新しいカメラを追加してください。\nカメラを追加せず、デモカメラをご覧になりたい場合は、左上のメニューをクリックしてください。</string>
   <!-- Hint message in camera list item when servers are down or network issue-->
-  <string name="camera_list_failed_title">カメラの接続に失敗しました</string>
-  <string name="camera_list_failed_content">スマホとカメラのネットワーク接続を確認し、再実行してください。</string>
-  <string name="cam_list_tilte">カメラ一覧</string>
+  <string name="camera_list_failed_title">カメラとの接続に失敗しました。</string>
+  <string name="camera_list_failed_content">スマホとカメラのネットワーク接続を確認し、再試行してください。</string>
+  <string name="cam_list_tilte">マイカメラ一覧</string>
   <!-- Menu items on camera list page-->
   <string name="cam_menu_demo_cam">デモカメラ一覧</string>
   <!-- Menu items on camera list page-->
@@ -315,49 +315,49 @@
   <string name="update_title">カメラアップデート</string>
   <!-- Action to update cam SW -->
   <string name="update_now">アップデート開始</string>
-  <string name="cam_update_progress">カメラアップデート中・・・%s</string>
-  <string name="cam_update_title">新しい Beseye バージョン％sを更新することができます</string>
-  <string name="cam_update_success">カメラのアップデートは成功しました</string>
-  <string name="cam_update_timeout">カメラのアップデートはタイムアウトしました、再実行してください。</string>
-  <string name="cam_update_failed">カメラのアップデートができませんでした、再実行してください。</string>
+  <string name="cam_update_progress">カメラアップデート中…%s</string>
+  <string name="cam_update_title">新しい Beseye バージョン%sを更新することができます。</string>
+  <string name="cam_update_success">カメラのアップデートに成功しました</string>
+  <string name="cam_update_timeout">カメラのアップデートはタイムアウトしました。再試行してください。</string>
+  <string name="cam_update_failed">カメラのファームウェアをアップデートできません。再試行してください。</string>
   <!-- Warning Message when all cameras are disconnected now and can not to update-->
-  <string name="cam_update_no_valid_cam">アップデートするカメラは見つかりません</string>
+  <string name="cam_update_no_valid_cam">アップデートするカメラが見つかりません</string>
   <!-- Title of forget password page -->
-  <string name="forget_password_check_title">Eメールをチェックする</string>
+  <string name="forget_password_check_title">メールをご確認ください</string>
   <string name="forget_password_btn_submit">スタート</string>
   <string name="forget_password_instruction">パスワードのリセット方法をメールで送ります。下の欄に、アカウント作成時に使用したメールアドレスを記入してください。</string>
   <string name="forget_password_check_mail_summary">パスワードのリセット方法を以下のメールアドレスに送りました。</string>
-  <string name="forget_password_check_mail_note">注意事項：メールはno-reply@beseye.comから送られてきます、メールを確認して見つからない場合、迷惑メールフォルダを確認してください。また、スパム対策ソフトによりブロックされている場合もあります。</string>
+  <string name="forget_password_check_mail_note">注意事項：メールは「no-reply@beseye.com」から送信されます。メールが見つからない場合は、迷惑メールフォルダをご確認ください。また、スパム対策ソフトにブロックされている可能性もあります。</string>
   <!-- Toast message when new camera is complete to pair and connected-->
   <string name="toast_new_cam_activated">新しいカメラはオンラインです。カメラ一覧を更新してください。</string>
   <!-- Toast message when camera is connected after cam wifi changed-->
   <string name="toast_cam_change_wifi_done">カメラ「%s」はオンラインです。カメラ一覧を更新してください。</string>
   <!-- Toast message when user password is changed by other devices-->
-  <string name="toast_password_changed">パスワードを変更しました、再度ログインしてください。</string>
+  <string name="toast_password_changed">パスワードを変更しました。再度ログインしてください。</string>
   <!-- Toast message when user session is invalid or expired-->
-  <string name="toast_session_invalid">セッションが切れました、再度ログインしてください。</string>
+  <string name="toast_session_invalid">セッションが切れました。再度ログインしてください。</string>
   <!-- Toast message when camera is removed from camera list -->
-  <string name="toast_cam_deactivated">%sは動作していません、カメラ一覧を更新してください。</string>
+  <string name="toast_cam_deactivated">%sは動作していません。カメラ一覧を更新してください。</string>
   <!-- Toast message when camera is disconnected due to network issue-->
-  <string name="notify_offline_detect_player">カメラはオフラインです、ネットワーク接続を確認してください。</string>
+  <string name="notify_offline_detect_player">カメラはオフラインです。ネットワーク接続を確認してください。</string>
   <!-- Toast message when camera is disconnected due to network issue in player page-->
   <string name="notify_cam_off_detect_player">カメラをオフにする</string>
   <!-- Toast message when camera is disconnected due to network issue in camera list page-->
   <string name="notify_cam_off_detect_cam_list">%sカメラをオフにする</string>
   <string name="about_title">Beseye について</string>
   <string name="about_ver">Beseye バージョン%s</string>
-  <string name="about_desc">The name Beseye was created with the Ancient Egyptian goddess, Bes, a protector of households and a symbol of family blessing.\n\nBes is an Ancient Egyptian deity worshipped as a protector of households, and in particular, of mothers and children and childbirth. Bes later came to be regarded as the defender of everything good and the enemy of all that is bad.\n\nBes Eye Cloud Security Co., in the name of "via Bes’ eye," is dedicated to home and family care. With th and never miss any precious moments? We propose a cloud solution to protect your loved ones and guard your home.\n\nAll you need to do is picking up your Beseye camera! Enjoy your family time!e up-to-date cloud and monitor hardware manufacturing technology, we are committed to a smarter and safer life for household users.\n\nWant to be free from anxiety and home security risks? Want to stay with your babies as they getting older day by day,</string>
+  <string name="about_desc">Beseye について\nBeseye（ベスアイ）は、古代エジプトの家庭の守護女神で、家族のシンボルであるBes（ベス）に由来しています。\nベスは古代エジプトにおいて、家の守護神、特に、母子や出産における神として崇拝され、後に、すべての良き事を護り、そしてすべての悪しきことから護ってくれる神と考えられるように成りました。\nBes Eye Cloud Security Co.（ベスアイ クラウドセキュリティー社）は、「ベスの目を通して」をモットーにご自宅とご家族を献身的に見守ります。 クラウドアップデートと監視テクノロジーを通じ、よりスマートで安全な生活をご提供いたします。\nご家庭でのセキュリティーに関する不安とリスクに対するお悩みから解消されたいですか。日に日に成長するお子さんを一瞬も見逃さずに見守りつづけたいですか。私たちはクラウドを活用し、あなたの愛する家族を見守り、ご自宅を護ります。\nベスアイカメラを活用し、家族との時間をお楽しみください！\nよりスマートに、より自由に!\nご家族とお子さんとの時間を大切に、進化したクラウドセキュリティーサービスの、刷新的なベスアイカメラがまもなくリリース予定！\nその革新的な特許でComputex d&amp;i award を受賞、ベスアイの新製品が世界を魅了！あなたにもきっと、ベスアイの新商品を気に入っていただけるはずです！</string>
   <!-- descriptions of pull to refresh listview-->
   <string name="loading_latest_update">最終アップデート時間</string>
-  <string name="pull_to_refresh_pull_label">スクロールをして、更新するできます</string>
-  <string name="pull_to_refresh_release_label">アップデートを更新することをできます</string>
-  <string name="pull_to_refresh_refreshing_label">アップデート中・・・</string>
-  <string name="pull_to_refresh_from_bottom_pull_label">スクロールをして、更新するできます</string>
+  <string name="pull_to_refresh_pull_label">スクロールして、更新できます。</string>
+  <string name="pull_to_refresh_release_label">更新できます</string>
+  <string name="pull_to_refresh_refreshing_label">アップデート中…</string>
+  <string name="pull_to_refresh_from_bottom_pull_label">スクロールして、更新できます。</string>
   <!-- Timezone definition begin -->
   <string name="tz_us_eastern">米国 - 東部</string>
   <string name="tz_us_central">米国 - 中央部</string>
   <string name="tz_us_pacific">米国 - 太平洋</string>
-  <string name="tz_us_mountain">米国 - マウンテン</string>
+  <string name="tz_us_mountain">米国 - 山岳部</string>
   <string name="tz_us_alaska">米国 - アラスカ州</string>
   <string name="tz_us_hawaii">米国 - ハワイ</string>
   <string name="tz_us_arizona">米国 - アリゾナ州</string>
@@ -365,7 +365,7 @@
   <string name="tz_can_newfoundland">カナダ - ニューファンドランド</string>
   <string name="tz_can_eastern">カナダ - 東部</string>
   <string name="tz_can_central">カナダ - 中央部</string>
-  <string name="tz_can_mountain">カナダ - マウンテン</string>
+  <string name="tz_can_mountain">カナダ - 山岳部</string>
   <string name="tz_can_pacific">カナダ - 太平洋</string>
   <string name="tz_asia_taiwan">台湾</string>
   <string name="tz_asia_china">中国</string>
@@ -396,39 +396,39 @@
   <string name="tz_euro_austria">オーストリア</string>
   <string name="tz_euro_italy">イタリア</string>
   <string name="cam_name_update_success">カメラの名前を更新しました</string>
-  <string name="signup_plug_in_description">カメラ設定をする前に、電源コードを差し込みます</string>
+  <string name="signup_plug_in_description">カメラ設定をする前に、電源コードを接続してください。</string>
   <string name="signup_plug_in_title">電源コードを差し込む</string>
-  <string name="signup_plug_in_done">電源を入れ、設定を開始する</string>
+  <string name="signup_plug_in_done">電源を入れ、設定を開始</string>
   <string name="signup_watch_out_title">注意</string>
-  <string name="signup_watch_out_desc">注意注意！%1$s!\n、%2$sをカメラに向けてください。</string>
-  <string name="signup_watch_out_desc_bebebe">ビープ音を発します</string>
-  <string name="signup_watch_out_desc_speaker">スマホ</string>
-  <string name="signup_watch_out_done">デバイス認識完了、設定を開始します</string>
-  <string name="signup_confirm_led_title">ステータスライトを確認</string>
-  <string name="signup_confirm_led_desc">緑色のライトが%sか？\n点滅していない場合、\n少しお待ちください。</string>
-  <string name="signup_confirm_led_twinkling_green_light">点滅しています</string>
-  <string name="signup_confirm_led_done">ライトの点滅を確認し、次へ</string>
-  <string name="signup_pairing_fail_desc">再びプラグを外し、ステータスランプが緑ライトに点滅していたら、カメラに向かって10センチ以内に装置を置いてもう一度 Let it Bee™ を再実行してください。</string>
-  <string name="signup_guideline_try_again_btn">OK，再実行してください</string>
+  <string name="signup_watch_out_desc">注意！お持ちのスマホが%1$sを出します。下の絵のように、%2$sをカメラに近づけ（10㎝以内）、次のステップへ進んでください。</string>
+  <string name="signup_watch_out_desc_bebebe">大きなピー音が発します</string>
+  <string name="signup_watch_out_desc_speaker">デバイスのスピーカー</string>
+  <string name="signup_watch_out_done">準備完了、次へ</string>
+  <string name="signup_confirm_led_title">ステータスランプを確認</string>
+  <string name="signup_confirm_led_desc">%sしていますか？\n点滅していない場合、少しお待ちください。</string>
+  <string name="signup_confirm_led_twinkling_green_light">緑色のステータスランプが点滅</string>
+  <string name="signup_confirm_led_done">ランプの点滅を確認し、次へ</string>
+  <string name="signup_pairing_fail_desc">コンセントを脱着し、ステータスランプが緑色に点滅しているのを確認してください。カメラから10cm以内にスマホを近づけ、「Let it Bee™」プロセスを再試行してください。</string>
+  <string name="signup_guideline_try_again_btn">OK、再試行してください。</string>
   <!--Toast message for poor quality when talking-->
-  <string name="hint_hold_to_talk_poor_network_quality">Wi-Fi は不安定です、\n再実行してください</string>
+  <string name="hint_hold_to_talk_poor_network_quality">Wi-Fi は不安定です。\n再試行してください。</string>
   <string name="msg_wifi_pw_length_error_wpa">パスワードは8文字以上の半角アルファベットと数字を入力してださい。</string>
-  <string name="msg_wifi_pw_length_error_wep">パスワードは5文字以上13文字以内半角アルファベットと数字を入力してださい。</string>
+  <string name="msg_wifi_pw_length_error_wep">無効なパスワードの長さです。パスワードは5または13文字で設定してください。</string>
   <string name="msg_wifi_setting_info_error">Wi-Fi は接続できません</string>
   <!--Warning message for detaching cam failed case-->
-  <string name="cam_setting_failed_detach_cam">カメラを削除することができません、再実行してください。</string>
+  <string name="cam_setting_failed_detach_cam">カメラを削除することができません。再試行してください。</string>
   <!--Dialog message for player pic capture-->
   <string name="player_screenshot_capturing">画像を保存します</string>
   <!--Toast message for complete pic capture-->
   <string name="player_screenshot_capture_ok">画像を保存されました</string>
   <!--Toast message for fail to pic capture-->
-  <string name="player_screenshot_capture_failed">カメラの画像を保存することができません、もう一度やり直してください。</string>
+  <string name="player_screenshot_capture_failed">カメラの画像を保存することができません。もう一度やり直してください。</string>
   <!--Toast message for mic occupied-->
-  <string name="hint_hold_to_talk_conn_occupied">相手はマイクを使用しています、後ほど再実行してください</string>
+  <string name="hint_hold_to_talk_conn_occupied">マイクは使用されています。後ほど再試行してください</string>
   <!--Share button on screenshot dialog-->
   <string name="share">シェア</string>
   <!--Close button on screenshot dialog-->
-  <string name="close">オフ</string>
+  <string name="close">閉じる</string>
   <!--Title on share list dialog-->
   <string name="share_way">共有</string>
   <!--Description show on share app-->
@@ -436,9 +436,9 @@
   <!--To reply the question 'are you sure?' -->
   <string name="sure">確定</string>
   <!--the title of motion zone image preview-->
-  <string name="motion_zone_title">見張るエリアを限定する</string>
+  <string name="motion_zone_title">通知エリアを限定する</string>
   <!--cancel dialog body-->
-  <string name="motion_zone_cancel_body">編集を終了をしますか？</string>
+  <string name="motion_zone_cancel_body">編集を終了をしますか</string>
   <!--cancel dialog title-->
   <string name="motion_zone_cancel_title">編集を中止します</string>
   <!--(in setting page)-->
@@ -446,40 +446,75 @@
   <!--dialog title for get thumbnail error in EditView-->
   <string name="thumbnail_error_title">接続失敗</string>
   <!--dialog body for get thumbnail error in EditView-->
-  <string name="thumbnail_error_body">ネットワークモバイルを確認し、再実行してください</string>
+  <string name="thumbnail_error_body">スマホとカメラのネットワーク接続を確認し、もう一度手順を実行してください。</string>
   <string name="fullscreen">全て選択</string>
   <!--Show on event list for people detected-->
   <string name="event_list_family_detected_ex">人を検知しました</string>
   <!--Show on event list-->
-  <string name="event_list_people_detected_stranger">見知らぬ人</string>
+  <string name="event_list_people_detected_stranger">不審者</string>
   <!--Dialog Title for listing Market App to update beseye -->
-  <string name="dialog_title_download_app_via">Beseye APP を更新する</string>
+  <string name="dialog_title_download_app_via">Beseye APP の更新：</string>
   <!--Dialog Title for listing Market App Web version to update beseye -->
   <string name="dialog_title_download_app_via_web">ウェブサイトでBeseye APP を更新する</string>
   <!--Turn off on every <Mon> ... etc.-->
-  <!-- TODO: string name="cam_setting_schedule_turnoff_every" -->
+  <string name="cam_setting_schedule_turnoff_every">カメラオフの時間設定</string>
   <!--From: <time>-->
-  <!-- TODO: string name="cam_setting_schedule_turnoff_from" -->
+  <string name="cam_setting_schedule_turnoff_from">オフの開始時間：</string>
   <!--To: <time>-->
-  <!-- TODO: string name="cam_setting_schedule_turnoff_to" -->
-  <!-- TODO: string name="cam_setting_title_turnoff_all_day" -->
+  <string name="cam_setting_schedule_turnoff_to">オフの終了時間:</string>
+  <string name="cam_setting_title_turnoff_all_day">終日電源オフ</string>
   <!--from <time> to <time>-->
-  <!-- TODO: string name="cam_setting_desc_turnoff_during" -->
-  <!-- TODO: string name="cam_setting_all_day_indicator" -->
+  <string name="cam_setting_desc_turnoff_during">%1$s から %2$s まで電源オフ</string>
+  <string name="cam_setting_all_day_indicator">終日</string>
   <!--ex. 19:00~7:00 (next day)-->
-  <!-- TODO: string name="cam_setting_next_day_indicator" -->
+  <string name="cam_setting_next_day_indicator">翌日</string>
   <!--The title of setting schedule page-->
-  <!-- TODO: string name="cam_setting_schedule_edit_title" -->
+  <string name="cam_setting_schedule_edit_title">選択してください</string>
   <!--The title of select days page-->
-  <!-- TODO: string name="cam_setting_schedule_picker_title" -->
+  <string name="cam_setting_schedule_picker_title">日付の設定</string>
   <!--message dialog to user-->
-  <!-- TODO: string name="cam_setting_schedule_error_same_time" -->
+  <string name="cam_setting_schedule_error_same_time">オンとオフに同時刻は使用できません。</string>
   <!--message dialog to user-->
-  <!-- TODO: string name="cam_setting_schedule_delete_confirm" -->
+  <string name="cam_setting_schedule_delete_confirm">この予定を削除します。よろしいですか。</string>
   <!--message dialog to user-->
-  <!-- TODO: string name="cam_setting_schedule_abort_confirm" -->
+  <string name="cam_setting_schedule_abort_confirm">この予定を保存せず終了します。よろしいですか。</string>
   <!--message dialog to user-->
-  <!-- TODO: string name="cam_setting_schedule_conflict_be_on" -->
+  <string name="cam_setting_schedule_conflict_be_on">最新のスケジュール設定により、カメラ電源がオンになります。ご注意ください。</string>
   <!--message dialog to user-->
-  <!-- TODO: string name="cam_setting_schedule_conflict_be_off" -->
+  <string name="cam_setting_schedule_conflict_be_off">最新のスケジュール設定により、カメラ電源がオフになります。ご注意ください。</string>
+  <!--Entry title for trust device management-->
+  <string name="cam_menu_trust_dev_mgt">認証済みデバイス</string>
+  <!--Button for removing multiple devices from white list , (%s) will be replaced by deleted device number-->
+  <string name="btn_delete_trust_dev_mgt">削除 (%s)</string>
+  <!--Dialog to remind multiple devices will be removed from white list-->
+  <string name="dialog_delete_trust_dev">%s を認証リストから削除しますか。</string>
+  <!--Button to clear pin code-->
+  <string name="pincode_clear">クリア</string>
+  <!--Button to verify pin code-->
+  <string name="pincode_done">完了</string>
+  <!--Description in pin code verification page-->
+  <string name="pincode_verify_desc">アカウント保護のため、認証コードを別の認証済みデバイスか、メールで取得してください。デバイスはそれぞれ、一旦認証が必要です。</string>
+  <!--Button to resend pin code-->
+  <string name="pincode_verify_resend">認証コードを再送</string>
+  <!--Toast message for sending new pin code successfully-->
+  <string name="msg_pincode_verify_resend_done">新しい認証コードが送信されました。</string>
+  <!--Toast message for sending new pin code failed-->
+  <string name="msg_pincode_verify_resend_fail">認証コードの送信に失敗しました。再試行してください。</string>
+  <!--Title of pin code verification page-->
+  <string name="pincode_verify_title">デバイス認証</string>
+  <!--Error message for incorrect pin code-->
+  <string name="msg_pincode_verify_fail">認証コードが違います。再入力してください。</string>
+  <!--Error message for expired pin code-->
+  <string name="msg_pincode_verify_expired">認証コードの有効期限が切れています。認証コードを再送し、入力してください。</string>
+  <!--Error message for incorrect pin code trials over 3 times-->
+  <string name="msg_pincode_verify_fail_three_times">認証コードを3回間違えました。ログインしなおしてください。</string>
+  <!--Error message for failing to verify pin code due to unknown reasons-->
+  <string name="msg_delete_trust_dev_fail">認証済みデバイスの取り外しに失敗しました。再試行してください。</string>
+  <!--Pin code request message shown on Android Notification -->
+  <string name="notification_pincode_auth">%2$sから要求された認証コード %1$s</string>
+  <!--Pin code request dialog message shown in Beseye App-->
+  <string name="dialog_notification_pincode_auth">認証コードは %1$s です。あなたのアカウントへ %2$s から誰かがログインしようとしています。認証コードを入力すると、ログインできます。</string>
+  
+  <string name="error_code_fmt">\n(エラーコード = 0x%08x)</string>
+  <string name="title_event_list">イベント一覧</string>
 </resources>

@@ -57,10 +57,7 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 		}
 		super.onCreate(savedInstanceState);
 		
-		mStrLocale = BeseyeUtils.getLocaleString();
-		
-		mbIgnoreSessionCheck = true;
-		
+		mStrLocale = BeseyeUtils.getLocaleString();		
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
 		
@@ -201,8 +198,8 @@ public class BeseyeNewsActivity extends BeseyeBaseActivity {
 	private ViewGroup mVgEmptyView;
 	
 	@Override
-	protected void onServerError(){
-		super.onServerError();
+	protected void onServerError(int iErrCode){
+		super.onServerError(iErrCode);
 		LayoutInflater inflater = getLayoutInflater();
 		if(null != inflater){
 			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);

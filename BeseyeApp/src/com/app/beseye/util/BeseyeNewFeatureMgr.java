@@ -25,55 +25,78 @@ public class BeseyeNewFeatureMgr {
 		return mBeseyeNewFeatureMgr;
 	}
 	
-	private SharedPreferences mPref, mSecuredPref;
-	private NewFeatureConfig mNewFeatureScreenshot;
-	private NewFeatureConfig mNewFeatureFaceRecognition;
-	private NewFeatureConfig mNewFeatureTriggerZone;
+	public enum BESEYE_NEW_FEATURE{
+		FEATURE_SCN_SHOT,
+		FEATURE_FACE_RECG,
+		FEATURE_TRG_ZONE,
+		FEATURE_HUMAN_DET,
+		FEATURE_COUNT
+	}
+	
+	private SharedPreferences mPref;
+	private NewFeatureConfig[] mNewFeatures;
+//	private NewFeatureConfig mNewFeatureScreenshot;
+//	private NewFeatureConfig mNewFeatureFaceRecognition;
+//	private NewFeatureConfig mNewFeatureTriggerZone;
+//	private NewFeatureConfig mNewFeatureHumanDetect;
 	
 	private BeseyeNewFeatureMgr(Context context){
 		if(null != context){
 			mPref = getSharedPreferences(context, FEATURE_PREF);
-			mSecuredPref = getSecuredSharedPreferences(context, FEATURE_PREF);
 			initValues();
 		}
 	}
 	
 	private void initValues(){
-		mNewFeatureScreenshot = new NewFeatureConfig(mPref, "beseye_screen_feature", BeseyeUtils.stringToDate("2015-05-13-23-59-59","yyyy-MM-dd-HH-mm-ss"));
-		mNewFeatureFaceRecognition = new NewFeatureConfig(mPref, "beseye_feature_face_recog", BeseyeUtils.stringToDate("2029-12-32-23-59-59","yyyy-MM-dd-HH-mm-ss"));
-		mNewFeatureTriggerZone = new NewFeatureConfig(mPref, "beseye_feature_trigger_zone", BeseyeUtils.stringToDate("2015-08-02-23-59-59","yyyy-MM-dd-HH-mm-ss"));
+		mNewFeatures = new NewFeatureConfig[BESEYE_NEW_FEATURE.FEATURE_COUNT.ordinal()];
+		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_SCN_SHOT.ordinal()] = new NewFeatureConfig(mPref, "beseye_screen_feature", BeseyeUtils.stringToDate("2015-05-13-23-59-59","yyyy-MM-dd-HH-mm-ss"));
+		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_FACE_RECG.ordinal()] = new NewFeatureConfig(mPref, "beseye_feature_face_recog", BeseyeUtils.stringToDate("2029-12-32-23-59-59","yyyy-MM-dd-HH-mm-ss"));
+		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_TRG_ZONE.ordinal()] = new NewFeatureConfig(mPref, "beseye_feature_trigger_zone", BeseyeUtils.stringToDate("2015-08-02-23-59-59","yyyy-MM-dd-HH-mm-ss"));
+		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET.ordinal()] = new NewFeatureConfig(mPref, "beseye_feature_human_detect", BeseyeUtils.stringToDate("2015-12-31-23-59-59","yyyy-MM-dd-HH-mm-ss"));
 	}
 	
 	public void reset(){
 		mPref.edit().clear().commit();
-		mNewFeatureScreenshot = null;
-		mNewFeatureFaceRecognition = null;
-		mNewFeatureTriggerZone = null;
+//		mNewFeatureScreenshot = null;
+//		mNewFeatureFaceRecognition = null;
+//		mNewFeatureTriggerZone = null;
+//		mNewFeatureHumanDetect = null;
+		for(int idx = 0; idx < BESEYE_NEW_FEATURE.FEATURE_COUNT.ordinal();idx++){
+			mNewFeatures[idx] = null;
+		}
 		initValues();
 	}
 	
 	public boolean isScreenshotFeatureClicked(){
-		return mNewFeatureScreenshot.isUsed();
+		return mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_SCN_SHOT.ordinal()].isUsed();
 	}
 	
 	public void setScreenshotFeatureClicked(boolean bClicked){
-		mNewFeatureScreenshot.setIsUsed(bClicked);
+		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_SCN_SHOT.ordinal()].setIsUsed(bClicked);
 	}
 	
 	public boolean isFaceRecognitionOn(){
-		return mNewFeatureFaceRecognition.isUsed();
+		return mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_FACE_RECG.ordinal()].isUsed();
 	}
 	
 	public void setFaceRecognitionOn(boolean bIsOn){
-		mNewFeatureFaceRecognition.setIsUsed(bIsOn);
+		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_FACE_RECG.ordinal()].setIsUsed(bIsOn);
 	}
 	
 	public boolean isTriggerZoneClicked(){
-		return mNewFeatureTriggerZone.isUsed();
+		return mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_TRG_ZONE.ordinal()].isUsed();
 	}
 	
 	public void setTriggerZoneClicked(boolean bClicked){
-		mNewFeatureTriggerZone.setIsUsed(bClicked);
+		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_TRG_ZONE.ordinal()].setIsUsed(bClicked);
+	}
+	
+	public boolean isFeatureClicked(BESEYE_NEW_FEATURE feature){
+		return mNewFeatures[feature.ordinal()].isUsed();
+	}
+	
+	public void setFeatureClicked(BESEYE_NEW_FEATURE feature, boolean bClicked){
+		mNewFeatures[feature.ordinal()].setIsUsed(bClicked);
 	}
 	
 	static public class NewFeatureConfig{

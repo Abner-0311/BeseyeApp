@@ -38,7 +38,7 @@
     
     <dimen name="wifi_list_item_height">60dp</dimen>
     <dimen name="wifi_list_item_horizontal_padding">20dp</dimen>
-    <dimen name="wifi_list_item_padding_top">8dp</dimen>
+    <dimen name="wifi_list_item_padding_top">4dp</dimen>
     
     <dimen name="wifi_list_item_main_font_size">20sp</dimen>
     <dimen name="wifi_list_item_sub_font_size">13sp</dimen>
@@ -167,6 +167,9 @@
     <dimen name="indicator_internal_padding">4dp</dimen>
     
     <dimen name="eventlist_ind_margin_left">20dp</dimen>
+    <dimen name="eventlist_dot_width">24dp</dimen>
+    <dimen name="eventlist_dot_width_half">10.5dp</dimen> <!-- half icon width - half line width -->
+    <dimen name="eventlist_icon_width">26dp</dimen>
     
     <dimen name="eventlist_gray_line_width">3dp</dimen>
     <dimen name="eventlist_gray_line_left">60dp</dimen>
@@ -245,5 +248,24 @@
     
     <dimen name="alertdialog_padding_left">20dp</dimen>
     <dimen name="alertdialog_padding_top">10dp</dimen>
-        
+    
+    <dimen name="pincode_verify_desc_margin_top">36dp</dimen>
+    <dimen name="pincode_verify_resend_pin_margin_top">10dp</dimen>
+    <dimen name="pincode_verify_font">12sp</dimen>
+    <dimen name="pincode_num_font">25sp</dimen>
+    
+    <dimen name="pincode_num_border">2dp</dimen>
+    
+    <dimen name="swipe_desc_margin_top">40dp</dimen>
+    <dimen name="swipe_dot_horiz_margin">6dp</dimen>
+    
+    <dimen name="human_detect_entry_padding_vertical">10dp</dimen>
+    <dimen name="human_detect_desc_padding_vertical">9dp</dimen>
+    <dimen name="human_detect_font">15sp</dimen>
+    
+    <dimen name="human_detect_pic_margin">4dp</dimen>
+    <dimen name="human_detect_no_human_text_padding">4dp</dimen>
+    <dimen name="human_detect_item_sub_font_size">16sp</dimen>
+    <dimen name="human_detect_train_marginSide">42dp</dimen>
+    
 </resources>

@@ -5,6 +5,7 @@ import com.app.beseye.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,9 @@ public class BaseTwoBtnDialog extends Dialog implements OnClickListener {
 			m_vgViewDialog = (ViewGroup)inflater.inflate(R.layout.layout_two_btn_dialog, null);	
 			
 			m_tvBody = (TextView)m_vgViewDialog.findViewById(R.id.txt_dialog_body);
+			if(null != m_tvBody){
+				m_tvBody.setMovementMethod(new ScrollingMovementMethod());
+			}
 			m_tvTitle = (TextView)m_vgViewDialog.findViewById(R.id.txt_dialog_title);
 			
 			if(null != m_vgViewDialog) {

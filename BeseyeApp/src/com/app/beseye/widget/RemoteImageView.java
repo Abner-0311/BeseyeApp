@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.zip.GZIPInputStream;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -59,7 +61,7 @@ public class RemoteImageView extends ImageView {
 	protected RemoteImageCallback mCallback;
 	protected int mDefaultImage = EMPTY_DEFAULT_IMAGE;
 	protected Handler mHandler = new Handler();
-	protected static ExecutorService sExecutor = Executors.newFixedThreadPool(10);
+	protected static ExecutorService sExecutor = Executors.newFixedThreadPool(20);
 	protected Future<?> mFuture;
 	protected boolean mIsPreload;
 	protected boolean mbMatchWidth = false;
@@ -70,6 +72,8 @@ public class RemoteImageView extends ImageView {
 	
 	protected String mStrVCamId = null;
 	private String mStrVCamIdLoad = null;
+	private boolean mbLoadLastImgByVCamId = true;
+	private boolean mbBmpTransitionEffect = true;
 	
 	static public final String CACHE_POSTFIX_SAMPLE_1 = "_s1";//set sample as 1
 	static public final String CACHE_POSTFIX_SAMPLE_2 = "_s2";//set sample as 2
@@ -81,7 +85,7 @@ public class RemoteImageView extends ImageView {
 	protected float mShadowWidth = SHADOW_WIDTH;
 		
 	public interface RemoteImageCallback {
-		public void imageLoaded(boolean success);
+		public void imageLoaded(boolean success, String StrUri);
 	}
 	
 	public RemoteImageView(Context context) {
@@ -112,6 +116,14 @@ public class RemoteImageView extends ImageView {
 			mbEnableShadow = bEnable;
 			invalidate();
 		}
+	}
+	
+	public void disableLoadLastImgByVCamId(){
+		mbLoadLastImgByVCamId = false;
+	}
+	
+	public void disablebBmpTransitionEffect(){
+		mbBmpTransitionEffect = false;
 	}
 	
 	public void setMatchWidth(boolean bMatch){
@@ -350,7 +362,7 @@ public class RemoteImageView extends ImageView {
 			return;
 		} else {
 			String fileCache = null;
-			if(null != mStrVCamId){
+			if(mbLoadLastImgByVCamId && null != mStrVCamId){
 				fileCache = findLastPhotoByVCamid(mStrVCamId);
 			}else{
 				fileCache = mCachePath+(mbIsPhoto?CACHE_POSTFIX_SAMPLE_1:CACHE_POSTFIX_SAMPLE_2);
@@ -364,6 +376,7 @@ public class RemoteImageView extends ImageView {
 					if(DEBUG)
 						Log.i(TAG, "loadImage(), have file cache in mem");
 					setImageBitmap(cBmpFile);
+					imageLoaded(true);
 				}else if(null == mStrVCamIdLoad || !mStrVCamIdLoad.equals(mStrVCamId)){
 					loadDefaultImage();
 				}
@@ -381,15 +394,17 @@ public class RemoteImageView extends ImageView {
 		if(DEBUG)
 			Log.d(TAG, "setImageBitmap(), mStrVCamIdLoad:["+mStrVCamIdLoad+"], id:"+this.getId());
 		
-		//setImageBitmap(bm);
-		
-		Drawable[] layers = new Drawable[2];
-		layers[0] = this.getDrawable();
-		layers[1] = new BitmapDrawable(bm);
+		if(mbBmpTransitionEffect){
+			Drawable[] layers = new Drawable[2];
+			layers[0] = this.getDrawable();
+			layers[1] = new BitmapDrawable(bm);
 
-		TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
-		setImageDrawable(transitionDrawable);
-		transitionDrawable.startTransition(300);
+			TransitionDrawable transitionDrawable = new TransitionDrawable(layers);
+			setImageDrawable(transitionDrawable);
+			transitionDrawable.startTransition(300);
+		}else{
+			setImageBitmap(bm);
+		}
 	}
 
 //	@Override
@@ -402,27 +417,29 @@ public class RemoteImageView extends ImageView {
 //	}
 
 	public void loadRemoteImage() {
+		cancelRemoteImageLoad();
+		
+		if(null != mURI && 0 < mURI.length()){
+			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath, mURI, mIsPreload, mbIsPhoto, mbIsPhotoViewMode, mStrVCamId, mbLoadLastImgByVCamId));
+		}
+	}
+
+	public void cancelRemoteImageLoad(){
 		if (null != mFuture) {
 			mFuture.cancel(true);
 			mFuture = null;
 		}
-		
-		if(null != mURI && 0 < mURI.length()){
-			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath, mURI, mIsPreload, mbIsPhoto, mbIsPhotoViewMode, mStrVCamId));
-		}
 	}
-
+	
 	private void imageLoaded(final boolean success) {
-		post(new Runnable(){
-
+		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
 				mbIsLoaded = success;
 				if (mCallback != null) {
-					mCallback.imageLoaded(success);
+					mCallback.imageLoaded(success, mURI);
 				}
-			}});
-		
+			}}, 0);
 	}
 
 	class LoadImageRunnable implements Runnable {		
@@ -430,15 +447,17 @@ public class RemoteImageView extends ImageView {
 		private String mLocalSample, mLocalSampleHQ;
 		private String mRemote;
 		private String mStrVCamId = null;
+		private boolean mbLoadLastImgByVCamId = true;
 		private boolean mIsPreload, mbIsPhoto, mbIsPhotoViewMode;
 
-		public LoadImageRunnable(String local, String remote, boolean isPreload, boolean bIsPhoto, boolean bIsPhotoViewMode, String strVCamId) {
+		public LoadImageRunnable(String local, String remote, boolean isPreload, boolean bIsPhoto, boolean bIsPhotoViewMode, String strVCamId, boolean bLoadLastImgByVCamId) {
 			mLocal = local;
 			mRemote = remote;
 			mIsPreload = isPreload;
 			mbIsPhoto = bIsPhoto;
 			mbIsPhotoViewMode = bIsPhotoViewMode;
 			mStrVCamId = strVCamId;
+			mbLoadLastImgByVCamId = bLoadLastImgByVCamId;
 			
 			mLocalSample = mLocal+(mbIsPhoto?CACHE_POSTFIX_SAMPLE_1:CACHE_POSTFIX_SAMPLE_2);
 			mLocalSampleHQ = mbIsPhotoViewMode?(mLocalSample+CACHE_POSTFIX_HIGH_RES):null;
@@ -513,28 +532,31 @@ public class RemoteImageView extends ImageView {
 					cacheFileName = strCachePath.substring(strCachePath.lastIndexOf("/")+1);
 					
 					if(null != mStrVCamId){
-						if(DEBUG)
-							Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
-						vcamidDir = getDirByVCamid(mStrVCamId);
-						String strLastPhoto = findLastPhotoByVCamid(mStrVCamId);
-						if(DEBUG)
-							Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");
-						Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(strLastPhoto);
-						if(null == cBmpFile && fileExist(strLastPhoto)){
-							bitmap = BitmapFactory.decodeFile(strLastPhoto);
-							if(null != bitmap){
-								setImage(bitmap, mStrVCamId);
-								
-								// write low quality image to memory cache
-								BeseyeMemCache.addBitmapToMemoryCache(strLastPhoto, bitmap);
-								
-								//bitmap = null;
-								
-								if(DEBUG)
-									Log.i(TAG, "use file cache first");
+						if(mbLoadLastImgByVCamId){
+							if(DEBUG)
+								Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
+							
+							vcamidDir = getDirByVCamid(mStrVCamId);
+							String strLastPhoto = findLastPhotoByVCamid(mStrVCamId);
+							if(DEBUG)
+								Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");
+							Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(strLastPhoto);
+							if(null == cBmpFile && fileExist(strLastPhoto)){
+								bitmap = BitmapFactory.decodeFile(strLastPhoto);
+								if(null != bitmap){
+									setImage(bitmap, mStrVCamId);
+									
+									// write low quality image to memory cache
+									BeseyeMemCache.addBitmapToMemoryCache(strLastPhoto, bitmap);
+									
+									//bitmap = null;
+									
+									if(DEBUG)
+										Log.i(TAG, "use file cache first");
+								}
 							}
+							bSameFileForVCamid = (null != strLastPhoto)?strLastPhoto.endsWith(cacheFileName):false;
 						}
-						bSameFileForVCamid = (null != strLastPhoto)?strLastPhoto.endsWith(cacheFileName):false;
 					}
 					
 					if(mbIsPhotoViewMode && !fileExist(mLocalSampleHQ) && fileExist(mLocalSample)){
@@ -551,7 +573,6 @@ public class RemoteImageView extends ImageView {
 							}
 						}
 					}
-					
 					
 					if(!bSameFileForVCamid){
 						if(fileExist(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample)){
@@ -665,6 +686,8 @@ public class RemoteImageView extends ImageView {
 				}
 				
 				loaded = true;
+				//Log.w(TAG, "mLocal:"+mLocal+" loaded ok");
+
 			} finally {
 				imageLoaded(loaded);
 			}
@@ -682,98 +705,63 @@ public class RemoteImageView extends ImageView {
 		Bitmap bitmap = null;
 		long lStartTs = System.currentTimeMillis();
 		try {
-			if(uri.startsWith("http")){
-//				URL url = new URL(uri);
-//				URLConnection conn = url.openConnection();
-//				HttpURLConnection httpConn = (HttpURLConnection) conn;
-//				httpConn.setRequestProperty("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
-//				httpConn.setRequestProperty("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
-//				httpConn.setRequestProperty("Bes-User-Agent", BeseyeUtils.getUserAgent());
-//				httpConn.setRequestProperty("User-Agent", BeseyeUtils.getUserAgent());
-//				if(null != strVcamId)
-//					httpConn.setRequestProperty("Bes-VcamPermission-VcamUid", strVcamId);
-//				httpConn.setRequestMethod("GET");
-//				httpConn.connect();
-//				if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//					inputStream = httpConn.getInputStream();
-//					if (inputStream != null) {
-//						BitmapFactory.Options options = new BitmapFactory.Options();
-//						options.inSampleSize = iSample;
-//						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-//					}else{
-//						Log.w(TAG, "inputStream is null");
-//					}
-//				}
-				
-				final AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-				HttpGet getRequest = new HttpGet(convertURL(uri));
-				try{
-					if(null != getRequest){
-						getRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
-						getRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
-						getRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
-						getRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
-						getRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
-						getRequest.addHeader("Bes-Android-Ver", Build.VERSION.RELEASE);
-						if(null != strVcamId){
-							getRequest.addHeader("Bes-VcamPermission-VcamUid", strVcamId);
-					      	HttpResponse response = client.execute(getRequest);
-					      	final int statusCode = response.getStatusLine().getStatusCode();
-					      	if(statusCode == HttpStatus.SC_OK){
-					      		final HttpEntity entity = response.getEntity();
-					      		if(entity != null){
-					      			inputStream = entity.getContent();
-					      			if (inputStream != null) {
-										BitmapFactory.Options options = new BitmapFactory.Options();
-										options.inSampleSize = iSample;
-										bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-									}else{
-										Log.w(TAG, "inputStream is null");
-									}
-					      			entity.consumeContent();
-					      		}
-					      	}
-					    }
-					}
-				}catch(Exception e){
-				      // Could provide a more explicit error message for IOException or
-				      // IllegalStateException
-				    	Log.w(TAG, "Http Get image fail: " + e);
-				    	if(null != getRequest){
-				    		getRequest.abort();
-				    	}
-				 }finally{
-				      if(client != null){
-				    	  client.close();
-				      }
-				 }
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			HttpGet getRequest = new HttpGet(convertURL(uri/*+(((uri.hashCode()%2)==1)?"":"a")*/));
+			try{
+				if(null != getRequest){
+					getRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+					getRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
+					getRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
+					getRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
+					getRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
+					getRequest.addHeader("Bes-Android-Ver", Build.VERSION.RELEASE);
+					getRequest.addHeader("Accept-Encoding", "gzip");
+					
+					if(null != strVcamId){
+						getRequest.addHeader("Bes-VcamPermission-VcamUid", strVcamId);
+						//Log.w(TAG, "begin to download, uri:" + uri);
+				      	HttpResponse response = client.execute(getRequest);
+						//Log.w(TAG, "end to download, uri:" + uri);
+				      	final int statusCode = response.getStatusLine().getStatusCode();
+				      	if(statusCode == HttpStatus.SC_OK){
+				      		final HttpEntity entity = response.getEntity();
+				      		if(entity != null){
+				      			inputStream = AndroidHttpClient.getUngzippedContent(entity);
+				      			
+				      			if (inputStream != null) {
+									BitmapFactory.Options options = new BitmapFactory.Options();
+									options.inSampleSize = iSample;
+									//Log.w(TAG, "begin to decodeStream, uri:" + uri);
+									bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+									//Log.w(TAG, "end to decodeStream, uri:" + uri);
+
+								}else{
+									Log.w(TAG, "inputStream is null");
+								}
+				      			entity.consumeContent();
+				      		}
+				      	}
+				    }
+				}
+			}catch(Exception e){
+			      // Could provide a more explicit error message for IOException or
+			      // IllegalStateException
+				Log.w(TAG, "Http Get image fail: " + e);
+			    if(null != getRequest){
+			    	getRequest.abort();
+			    }
+			}finally{
+			    if(client != null){
+			    	client.close();
+			    }
 			}
-//			else if(uri.startsWith(S3_FILE_PREFIX)){
-//				int iBucketPos = S3_FILE_PREFIX.length();
-//				int iFilePos = uri.indexOf("/", iBucketPos);
-//				if(iFilePos > iBucketPos){
-//					String strBucket = uri.substring(iBucketPos, iFilePos);
-//					String strPath = uri.substring(iFilePos+1);
-//					AmazonS3Client s3Client = new AmazonS3Client(myCredentials);
-//					S3Object object = s3Client.getObject(new GetObjectRequest(strBucket, strPath));
-//					//S3Object object = s3Client.getObject(new GetObjectRequest("2e26ea2bccb34937a65dfa02488e58dc-ap-northeast-1-beseyeuser", "thumbnail/400x225/2014/05-22/09/{sEnd}1400751551309_{dur}10426_{r}1400750317346_{th}1400751550883.jpg"));
-//					inputStream = new BufferedInputStream(object.getObjectContent()); //
-//					if (inputStream != null) {
-//						BitmapFactory.Options options = new BitmapFactory.Options();
-//						options.inSampleSize = iSample;
-//						bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-//						
-//						Log.w(TAG, "image decode "+uri+", bitmap="+(null == bitmap?"null":"not null"));
-//					}
-//				}
-//			}
 		} catch (Exception e) {
 			Log.w(TAG, "Http Get image fail: " + e);
 		} finally {
 			closeStream(inputStream);
 		}
 		if(BeseyeConfig.DEBUG)
-			Log.w(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs));
+			Log.w(TAG, "imageHTTPTask(), take "+(System.currentTimeMillis()- lStartTs)+", uri:"+uri);
 		return bitmap;
 	}
 

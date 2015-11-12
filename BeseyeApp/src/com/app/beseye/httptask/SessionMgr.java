@@ -5,6 +5,13 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeSharedPreferenceUtil.*;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 
@@ -15,9 +22,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.app.beseye.BeseyeApplication;
+import com.app.beseye.BeseyeComputexModeActivity;
 import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 
 //SessionMgr is responsible for storing back-end URL, token, user Userid in storage/memory
 public class SessionMgr {
@@ -72,6 +82,12 @@ public class SessionMgr {
 												"https://oregon-p1-stage-api-%d.beseye.com/mm/",
 												"https://oregon-p2-stage-api-%d.beseye.com/mm/",
 												"https://bj-p2-stage-api-%d.beseye.cn/mm/"}; 
+	
+	static private final String[] IMPMM_BE_URL = {  "https://oregon-p2-dev-api-1.beseye.com/impmm/",
+													"https://mm-dev.beseye.com/",
+													"https://oregon-p1-stage-api-%d.beseye.com/impmm/",
+													"https://oregon-p2-stage-api-%d.beseye.com/impmm/",
+													"https://bj-p2-stage-api-%d.beseye.cn/impmm/"}; 
 
 	static private final String[] CAM_BE_URL = { "https://oregon-p2-dev-api-1.beseye.com/cam/",
 												 "https://ns-dev.beseye.com/",
@@ -112,13 +128,19 @@ public class SessionMgr {
 	
 	
 	static private final String SESSION_PREF 				= "beseye_ses";
+	static private final String SESSION_PREF_SEC 			= "beseye_ses_sec";
+	
+	
+	
 	static private final String SESSION_TOKEN 				= "beseye_token";
 	static private final String SESSION_DOMAIN 				= "beseye_domain";
 	static private final String SESSION_USERID				= "beseye_userid";
 	static private final String SESSION_ACCOUNT				= "beseye_account";
 	static private final String SESSION_ACC_CERTIFICATED	= "beseye_certificated";
+	static private final String SESSION_ACC_TRUSTED			= "beseye_trust_dev";
 	static private final String SESSION_OWNER_INFO			= "beseye_owner_data";
 	static private final String SESSION_OWNER_VPC_NUM		= "beseye_owner_vpc_no";
+	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
 	
 	static private final String SESSION_UPDATE_TS			= "beseye_cam_update_ts";
 	static private final String SESSION_UPDATE_CAMS			= "beseye_cam_update_list";
@@ -126,13 +148,19 @@ public class SessionMgr {
 	
 	static private final String SESSION_SERVER_MODE	    	= "beseye_server_mode";
 	static private final String SESSION_DETACH_HW_ID	    = "beseye_detach_hw_id";//Computex
-	static private final String SESSION_SIGNUP_EMAIL	    = "beseye_signup_email";
-	
-	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
+	static private final String SESSION_SIGNUP_EMAIL	    = "beseye_signup_email";//Computex
 	
 	static private final String SESSION_NEWS_HISTORY	    = "beseye_news_history";
 	static private final String SESSION_NEWS_LAST_MAX	    = "beseye_news_last_max";
 	static private final String SESSION_NEWS_IND_SHOW	    = "beseye_news_show_ind";
+	
+	static private final String SESSION_TRANFER_TO_SEC	    = "beseye_transfer_to_sec";
+	static private final String SESSION_TRANFER_TO_ATT_EVENT= "beseye_transfer_to_att_event_hw_id";
+	//Below items are after security mode
+	
+	static private final String SESSION_DEBUG_SHOW_NOTIFY	= "beseye_debug_show_notify";
+	static private final String SESSION_HD_INTRO_SHOWN		= "beseye_human_detect_intro_shown";
+	static private final String SESSION_SHOW_HD_INTRO_ONCE	= "beseye_show_human_detect_intro_once";
 	
 	//static private final String SESSION_SCREENSHOT_FEATURE	= "beseye_screen_feature";
 	
@@ -156,27 +184,89 @@ public class SessionMgr {
 	
 	private SessionMgr(Context context){
 		if(null != context){
-			mPref = getSharedPreferences(context, SESSION_PREF);
-			mSecuredPref = getSecuredSharedPreferences(context, SESSION_PREF);
+			//mPref = getSharedPreferences(context, SESSION_PREF);
+			mPref = getSecuredSharedPreferences(context, SESSION_PREF_SEC);
+			//setPrefBooleanValue(mPref, SESSION_TRANFER_TO_SEC, false);
+			if(false == getPrefBooleanValue(mPref, SESSION_TRANFER_TO_SEC, false) && BeseyeApplication.isInMainProcess()){
+				transferToSecuMode(context);
+			}
 			mSessionData = new SessionData();
 			if(null != mSessionData){
 				mSessionData.setUserid(getPrefStringValue(mPref, SESSION_USERID));
 				mSessionData.setAccount(getPrefStringValue(mPref, SESSION_ACCOUNT));
 				mSessionData.setDomain(getPrefStringValue(mPref, SESSION_DOMAIN));
 				mSessionData.setAuthToken(getPrefStringValue(mPref, SESSION_TOKEN));
-				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
-				mSessionData.setIsCamSWUpdateSuspended(getPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, false));
-				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal())));
-				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
+				mSessionData.setVPCNumber(getPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, 1));
 				mSessionData.setPairToken(getPrefStringValue(mPref, SESSION_PAIR_TOKEN));
+				mSessionData.setIsCertificated(0 <getPrefIntValue(mPref, SESSION_ACC_CERTIFICATED));
+				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
+				mSessionData.setIsTrustDev(getPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, true));
+				
 				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
 				mSessionData.setCamUpdateList(getPrefStringValue(mPref, SESSION_UPDATE_CAMS));
+				mSessionData.setIsCamSWUpdateSuspended(getPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, false));
+				
+				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal())));
 				mSessionData.setDetachHWID(getPrefStringValue(mPref, SESSION_DETACH_HW_ID));
 				mSessionData.setSignupEmail(getPrefStringValue(mPref, SESSION_SIGNUP_EMAIL));
 				
-				mSessionData.setVPCNumber(getPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, 1));
+				mSessionData.setIsShowNotificationFromToast(getPrefBooleanValue(mPref, SESSION_DEBUG_SHOW_NOTIFY, false));
+			}
+			
+			if(false == getPrefBooleanValue(mPref, SESSION_TRANFER_TO_ATT_EVENT, false) && BeseyeApplication.isInMainProcess()){
+				String strHWIds = "";
+				if(null != BeseyeComputexModeActivity.hwids_prod){
+					for(int idx = 0; idx <  BeseyeComputexModeActivity.hwids_prod.length; idx ++){
+						if(strHWIds.equals("")){
+							strHWIds =  BeseyeComputexModeActivity.hwids_prod[idx];
+						}else{
+							strHWIds += (","+BeseyeComputexModeActivity.hwids_prod[idx]);
+						}
+					}
+					Log.e(TAG, "transferToAttEvent() ++");
+					setDetachHWID(strHWIds);
+				}
+				setPrefBooleanValue(mPref, SESSION_TRANFER_TO_ATT_EVENT, true);
 			}
 		}
+	}
+	
+	private void transferToSecuMode(Context context){
+		Log.e(TAG, "transferToSecuMode() ++");
+		SharedPreferences mPrefOld = getSharedPreferences(context, SESSION_PREF);
+		//SharedPreferences mPrefOld = getSecuredSharedPreferences(context, SESSION_PREF_SEC);
+		if(null != mPrefOld){
+			setPrefStringValue(mPref, SESSION_USERID, getPrefStringValue(mPrefOld, SESSION_USERID));
+			setPrefStringValue(mPref, SESSION_ACCOUNT, getPrefStringValue(mPrefOld, SESSION_ACCOUNT));
+			setPrefStringValue(mPref, SESSION_DOMAIN, getPrefStringValue(mPrefOld, SESSION_DOMAIN));
+			setPrefStringValue(mPref, SESSION_TOKEN, getPrefStringValue(mPrefOld, SESSION_TOKEN));
+			setPrefIntValue(mPref, SESSION_OWNER_VPC_NUM, getPrefIntValue(mPrefOld, SESSION_OWNER_VPC_NUM));
+			setPrefIntValue(mPref, SESSION_ACC_CERTIFICATED, getPrefIntValue(mPrefOld, SESSION_ACC_CERTIFICATED));
+			setPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, getPrefBooleanValue(mPrefOld, SESSION_UPDATE_SUSPEND, false));
+			setPrefStringValue(mPref, SESSION_PAIR_TOKEN, getPrefStringValue(mPrefOld, SESSION_PAIR_TOKEN));
+			setPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, getPrefBooleanValue(mPrefOld, SESSION_ACC_TRUSTED, false));
+
+			setPrefStringValue(mPref, SESSION_OWNER_INFO, getPrefStringValue(mPrefOld, SESSION_OWNER_INFO));
+			setPrefLongValue(mPref, SESSION_UPDATE_TS, getPrefLongValue(mPrefOld, SESSION_UPDATE_TS));
+			setPrefStringValue(mPref, SESSION_UPDATE_CAMS, getPrefStringValue(mPrefOld, SESSION_UPDATE_CAMS));
+			
+			setPrefIntValue(mPref, SESSION_SERVER_MODE, getPrefIntValue(mPrefOld, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal()));
+			setPrefStringValue(mPref, SESSION_DETACH_HW_ID, getPrefStringValue(mPrefOld, SESSION_DETACH_HW_ID));
+			setPrefStringValue(mPref, SESSION_SIGNUP_EMAIL, getPrefStringValue(mPrefOld, SESSION_SIGNUP_EMAIL));
+			
+			setPrefStringValue(mPref, SESSION_NEWS_HISTORY, getPrefStringValue(mPrefOld, SESSION_NEWS_HISTORY));
+			setPrefIntValue(mPref, SESSION_NEWS_LAST_MAX, getPrefIntValue(mPrefOld, SESSION_NEWS_LAST_MAX, 0));
+			setPrefIntValue(mPref, SESSION_NEWS_IND_SHOW, getPrefIntValue(mPrefOld, SESSION_NEWS_IND_SHOW));
+			clearSharedPreferences(mPrefOld);
+		}
+		setPrefBooleanValue(mPref, SESSION_TRANFER_TO_SEC, true);
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				notifySessionUpdate();
+			}}, 5000L);
+		
+		Log.e(TAG, "transferToSecuMode() --");
 	}
 	
 	public void cleanSession(){
@@ -189,8 +279,10 @@ public class SessionMgr {
 		setAccount("");
 		setOwnerInfo("");
 		setIsCertificated(false);
+		setIsTrustDev(false);
 		setVPCNumber(1);
 		setNewsHistory("");
+		setHumanDetectIntroShown(false);
 		BeseyeNewsHistoryMgr.deinit();
 		//setOwnerChannelInfo(null);
 		mbShowPirvateCam = false;
@@ -201,6 +293,7 @@ public class SessionMgr {
 		setAccountBEHostUrl("");
 		setVPCAccountBEHostUrl("");
 		setMMBEHostUrl("");
+		setIMPMMBEHostUrl("");
 		setCamBEHostUrl("");
 		setNSBEHostUrl("");
 		setCamWSBEHostUrl("");
@@ -241,10 +334,27 @@ public class SessionMgr {
 		setPrefIntValue(mPref, SESSION_NEWS_IND_SHOW, iValue);
 	}
 	
+	public boolean getHumanDetectIntroShown(){
+		return getPrefBooleanValue(mPref, SESSION_HD_INTRO_SHOWN, false);
+	}
+	
+	public void setHumanDetectIntroShown(boolean bValue){
+		setPrefBooleanValue(mPref, SESSION_HD_INTRO_SHOWN, bValue);
+	}
+	
+	public boolean getHumanDetectIntroShowOnce(){
+		return getPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ONCE, false);
+	}
+	
+	public void setHumanDetectIntroShowOnce(boolean bValue){
+		setPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ONCE, bValue);
+	}
+	
 	public void setBEHostUrl(SERVER_MODE mode){
 		setAccountBEHostUrl(mode);
 		setVPCAccountBEHostUrl(mode);
 		setMMBEHostUrl(mode);
+		setIMPMMBEHostUrl(mode);
 		setCamBEHostUrl(mode);
 		setNSBEHostUrl(mode);
 		setCamWSBEHostUrl(mode);
@@ -315,6 +425,19 @@ public class SessionMgr {
 	
 	synchronized public void setMMBEHostUrl(String strURL){
 		mSessionData.setMMBEHostUrl(strURL);
+		notifySessionUpdate();
+	}
+	
+	public String getIMPMMBEHostUrl(){
+		return mSessionData.getIMPMMBEHostUrl();
+	}
+	
+	public void setIMPMMBEHostUrl(SERVER_MODE mode){
+		setIMPMMBEHostUrl(String.format(IMPMM_BE_URL[mode.ordinal()], getVPCNumber()));
+	}
+	
+	synchronized public void setIMPMMBEHostUrl(String strURL){
+		mSessionData.setIMPMMBEHostUrl(strURL);
 		notifySessionUpdate();
 	}
 	
@@ -479,6 +602,26 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
+	public boolean getIsTrustDev(){
+		return mSessionData.getIsTrustDev();
+	}
+	
+	public void setIsTrustDev(boolean bIsTrustDev){
+		setPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, bIsTrustDev);
+		mSessionData.setIsTrustDev(bIsTrustDev);
+		notifySessionUpdate();
+	}
+	
+	public boolean getIsShowNotificationFromToast(){
+		return mSessionData.getIsShowNotificationFromToast();
+	}
+	
+	public void setIsShowNotificationFromToast(boolean bIsShowNotificationFromToast){
+		setPrefBooleanValue(mPref, SESSION_DEBUG_SHOW_NOTIFY, bIsShowNotificationFromToast);
+		mSessionData.setIsShowNotificationFromToast(bIsShowNotificationFromToast);
+		notifySessionUpdate();
+	}
+
 	public SERVER_MODE getServerMode(){
 		return mSessionData.getServerMode();
 	}
@@ -566,8 +709,8 @@ public class SessionMgr {
 	}
 	
 	public static class SessionData implements Parcelable{
-		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
-		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended;
+		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrIMPMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
+		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended, mbIsTrustDev, mbIsShowNotificationFromToast;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
 		private String mStrCamUpdateList, mStrDetachHWID, mStrSignupEmail;
@@ -577,6 +720,7 @@ public class SessionMgr {
 			mStrHostUrl = "";
 			mStrVPCHostUrl = "";
 			mStrMMHostUrl = "";
+			mStrIMPMMHostUrl = "";
 			mStrCamHostUrl = "";
 			mStrNSHostUrl = "";
 			mStrCamWsHostUrl = "";
@@ -591,6 +735,8 @@ public class SessionMgr {
 			mStrPairToken = "";
 			mbIsCertificated = false;
 			mbIsCamSWUpdateSuspended = false;
+			mbIsTrustDev = false;
+			mbIsShowNotificationFromToast = false;
 			mServerMode = BeseyeConfig.DEFAULT_SERVER_MODE;
 			
 			mlCamUpdateTs = 0;
@@ -623,6 +769,14 @@ public class SessionMgr {
 		
 		synchronized public void setMMBEHostUrl(String strURL){
 			mStrMMHostUrl = strURL;
+		}
+		
+		public String getIMPMMBEHostUrl(){
+			return mStrIMPMMHostUrl;
+		}
+		
+		synchronized public void setIMPMMBEHostUrl(String strURL){
+			mStrIMPMMHostUrl = strURL;
 		}
 		
 		public String getCAMBEHostUrl(){
@@ -739,6 +893,22 @@ public class SessionMgr {
 			mbIsCamSWUpdateSuspended = bIsCamSWUpdateSuspended;
 		}
 		
+		public boolean getIsTrustDev(){
+			return mbIsTrustDev;
+		}
+		
+		public void setIsTrustDev(boolean bIsTrustDev){
+			mbIsTrustDev = bIsTrustDev;
+		}
+		
+		public boolean getIsShowNotificationFromToast(){
+			return mbIsShowNotificationFromToast;
+		}
+		
+		public void setIsShowNotificationFromToast(boolean bIsShowNotificationFromToast){
+			mbIsShowNotificationFromToast = bIsShowNotificationFromToast;
+		}
+		
 		public SERVER_MODE getServerMode(){
 			return mServerMode;
 		}
@@ -809,6 +979,7 @@ public class SessionMgr {
 			dest.writeString(mStrHostUrl);
 			dest.writeString(mStrVPCHostUrl);
 			dest.writeString(mStrMMHostUrl);
+			dest.writeString(mStrIMPMMHostUrl);
 			dest.writeString(mStrCamHostUrl);
 			dest.writeString(mStrNSHostUrl);
 			dest.writeString(mStrCamWsHostUrl);
@@ -825,7 +996,8 @@ public class SessionMgr {
 			
 			dest.writeInt(mbIsCertificated?1:0);
 			dest.writeInt(mbIsCamSWUpdateSuspended?1:0);
-			
+			dest.writeInt(mbIsTrustDev?1:0);
+			dest.writeInt(mbIsShowNotificationFromToast?1:0);
 			dest.writeInt(mServerMode.ordinal());
 			
 			dest.writeLong(mlCamUpdateTs);
@@ -855,6 +1027,7 @@ public class SessionMgr {
 			mStrHostUrl = in.readString();
 			mStrVPCHostUrl = in.readString();
 			mStrMMHostUrl = in.readString();
+			mStrIMPMMHostUrl = in.readString();
 			mStrCamHostUrl = in.readString();
 			mStrNSHostUrl = in.readString();
 			mStrCamWsHostUrl = in.readString();
@@ -871,6 +1044,8 @@ public class SessionMgr {
 			
 			mbIsCertificated = in.readInt()>0?true:false;
 			mbIsCamSWUpdateSuspended = in.readInt()>0?true:false;
+			mbIsTrustDev = in.readInt()>0?true:false;
+			mbIsShowNotificationFromToast = in.readInt()>0?true:false;
 			mServerMode = SERVER_MODE.translateToMode(in.readInt());
 			
 			mlCamUpdateTs = in.readLong();

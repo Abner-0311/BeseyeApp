@@ -116,7 +116,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
-				txtTitle.setText(mStrVCamName);
+				txtTitle.setText(R.string.title_event_list);
 				txtTitle.setOnClickListener(this);
 			}
 			
@@ -1257,8 +1257,8 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
     }
     
 	@Override
-	protected void onServerError(){
-		super.onServerError();
+	protected void onServerError(int iErrCode){
+		super.onServerError(iErrCode);
 		LayoutInflater inflater = getLayoutInflater();
 		if(null != inflater){
 			mVgEmptyView = (ViewGroup)inflater.inflate(R.layout.layout_camera_list_fail, null);

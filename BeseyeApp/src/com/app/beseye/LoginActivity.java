@@ -163,8 +163,16 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 				iErrMsg = R.string.msg_invalid_account_format;
 			}else if(BeseyeError.E_BE_ACC_USER_PASSWORD_INCORRET == iErrType){
 				iErrMsg = R.string.msg_login_wrong_password;
+			}else if(BeseyeError.E_BE_ACC_USER_NOT_FOUND_BY_EMAIL == iErrType){
+				iErrMsg = R.string.msg_account_not_found;
+			}else if(BeseyeError.E_BE_ACC_USER_IS_INACTIVATED_THUS_SIGN_IN_FORBIDDEN == iErrType){
+				iErrMsg = R.string.msg_account_not_activated;
+			}else if(BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iErrType){
+				iErrMsg = -1;//trust device handle
 			}
-			onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(iErrMsg));
+			if(-1 != iErrMsg){
+				onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), BeseyeUtils.appendErrorCode(this, iErrMsg, iErrType));
+			}
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -175,7 +183,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 			Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){
 			if(task instanceof BeseyeAccountTask.LoginHttpTask){
-				if(0 == iRetCode){
+				if(0 == iRetCode || BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == iRetCode){
 					if(BeseyeConfig.DEBUG)
 						Log.i(TAG, "onPostExecute(), "+result.toString());
 					
@@ -191,15 +199,15 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 							SessionMgr.getInstance().setUserid(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_ID));
 							SessionMgr.getInstance().setAccount(BeseyeJSONUtil.getJSONString(objUser, BeseyeJSONUtil.ACC_EMAIL));
 							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
+							SessionMgr.getInstance().setIsTrustDev(0 == iRetCode);
 						}
 						
 						if(false == SessionMgr.getInstance().getIsCertificated()){
-							//Bundle b = new Bundle();
-							//b.putBoolean(OpeningPage.KEY_IGNORE_ACTIVATED_FLAG, true);
-							//launchActivityByClassName(PairingRemindActivity.class.getName(), b);
-							//setResult(RESULT_OK);
 							SessionMgr.getInstance().cleanSession();
 							onShowDialog(null, DIALOG_ID_WARNING, getString(R.string.dialog_title_warning), getString(R.string.msg_account_not_found));
+						}else if(false == SessionMgr.getInstance().getIsTrustDev()){
+							Log.i(TAG, "onPostExecute(), not trust dev");	
+							launchDelegateActivity(BeseyeTrustDevAuthActivity.class.getName());
 						}else{
 							launchDelegateActivity(CameraListActivity.class.getName());
 							setResult(RESULT_OK);
