@@ -9,11 +9,11 @@
 #                      -i                     ==> install apk
 
 #Assign your ANT_HOME & SDK_ROOT here
-#ANT_HOME="/Users/kelly79126/Desktop/apache-ant-1.9.6/bin/"
-#SDK_ROOT="/Users/kelly79126/Desktop/sdk/"
+ANT_HOME="/Users/kelly79126/Desktop/apache-ant-1.9.6/bin/"
+SDK_ROOT="/Users/kelly79126/Desktop/sdk/"
 
-ANT_HOME="../../../apache-ant-1.9.3/bin"
-SDK_ROOT="../../../adt-bundle-mac-x86_64-20140702/sdk"
+#ANT_HOME="../../../apache-ant-1.9.3/bin"
+#SDK_ROOT="../../../adt-bundle-mac-x86_64-20140702/sdk"
 NDK_ROOT="../../android-ndk-r8e"
 NDK_MODULE_ROOT="../RTMP_Streaming"
 

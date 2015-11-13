@@ -29,25 +29,26 @@
 			   		android:layout_height="wrap_content"
 			   		android:src="@drawable/about_logotype"
 			   		android:layout_toRightOf="@+id/img_about_logo"/>
-			
-				<TextView 
-				    android:id="@+id/txt_app_ver"
-				    android:layout_width="wrap_content"
-			   		android:layout_height="wrap_content"
-			   		android:textColor="#00bbb3"
-			   		android:textSize="@dimen/about_ver_font_size"
-			   		android:text="@string/about_ver"
-			   		android:layout_below="@+id/img_about_logo"
-			   		android:layout_marginTop="@dimen/about_ver_margin_top"
-			   		android:layout_alignLeft="@+id/img_about_logo_type"/>
 		    </RelativeLayout>
+		    
+		    <TextView 
+			    android:id="@+id/txt_app_ver"
+			    android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content"
+		   		android:textColor="#00bbb3"
+		   		android:textSize="@dimen/about_ver_font_size"
+		   		android:text="@string/about_ver"
+		   		android:layout_below="@+id/img_about_logo_holder"
+		   		android:layout_marginTop="@dimen/about_ver_margin_top"
+		   		android:layout_alignParentRight="true"/>
+	    
 		    <TextView 
 			    android:id="@+id/txt_about_desc"
 			    android:layout_width="wrap_content"
 		   		android:layout_height="wrap_content"
 		   		android:textSize="@dimen/about_font_size"
 		   		android:text="@string/about_desc"
-		   		android:layout_below="@+id/img_about_logo_holder"
+		   		android:layout_below="@+id/txt_app_ver"
 		   		android:layout_marginTop="@dimen/about_desc_margin_top"
 		   		android:layout_marginLeft="@dimen/about_desc_margin_hor"
 		   		android:layout_marginRight="@dimen/about_desc_margin_hor"/>
