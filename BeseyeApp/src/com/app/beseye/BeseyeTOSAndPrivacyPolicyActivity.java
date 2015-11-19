@@ -1,5 +1,10 @@
 package com.app.beseye;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import com.app.beseye.util.BeseyeUtils;
+
 import android.os.Bundle;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
@@ -17,7 +22,12 @@ public class BeseyeTOSAndPrivacyPolicyActivity extends BeseyeAccountBaseActivity
 
 		mWvContent = new WebView(this);
 		if(null != mWvContent){
-			mWvContent.loadUrl(bIsTOSPage?"https://www.beseye.com/terms_of_use":"https://www.beseye.com/privacy_policy");
+			try {
+				mWvContent.loadUrl((bIsTOSPage?"https://www.beseye.com/terms_of_use":"https://www.beseye.com/privacy_policy")+"?lang="+URLEncoder.encode(BeseyeUtils.getLocaleString(), "utf-8"));
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 //			mWvContent.setWebViewClient(new WebViewClient(){
 //				@Override
 //				   public boolean shouldOverrideUrlLoading(WebView view, String url) {

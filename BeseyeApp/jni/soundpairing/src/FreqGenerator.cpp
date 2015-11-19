@@ -1004,6 +1004,8 @@ unsigned int FreqGenerator::playSSIDPairingCodeWithPurpose(const char* ssid, con
 }
 
 unsigned int FreqGenerator::playSSIDPairingCodeWithPurposeAndRegion(const char* ssid, const char* wifiKey, PAIRING_SEC_TYPE secType, unsigned short tmpUserToken, BEE_PURPOSE cPurpose, unsigned int iRegId, bool bIsChinaReg){
+	LOGI("FreqGenerator::playSSIDPairingCodeWithPurposeAndRegion(), version: 2015/11/19\n");
+
 	unsigned int iRet = R_OK;
 	stringstream sstrSsid;
 	stringstream sstrWifiKey;

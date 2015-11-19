@@ -4,7 +4,7 @@ DIR_OPENSSL=`cd ../openssl-1.0.1h/build_ios;pwd`
 
 DEVELOPER=$(xcode-select --print-path)
 SDK_VERSION=9.1
-SDK_VERSION_MIN=4.3
+SDK_VERSION_MIN=7.0
 
 DEVICE_PLATFORM="${DEVELOPER}/Platforms/iPhoneOS.platform"
 SIMULATOR_PLATFORM="${DEVELOPER}/Platforms/iPhoneSimulator.platform"
@@ -46,7 +46,7 @@ build()
     cd librtmp
 
 	CROSS_COMPILE="${DEVELOPER}/usr/bin/" \
-	XCFLAGS="-O0 -isysroot ${SDK} -I${DIR_OPENSSL}/include -arch $ARCH " \
+	XCFLAGS="-O0 -isysroot ${SDK} -I${DIR_OPENSSL}/include -arch $ARCH -miphoneos-version-min=${SDK_VERSION_MIN} " \
 	XLDFLAGS="-isysroot ${SDK} -L${DIR_OPENSSL}/lib -arch $ARCH -miphoneos-version-min=${SDK_VERSION_MIN} " \
 	make SYS=darwin
 
@@ -58,8 +58,8 @@ build()
 build "armv7" "$DEVICE_PLATFORM" "$DEVICE_SDK" "-miphoneos-version-min=${SDK_VERSION_MIN}"
 build "armv7s" "$DEVICE_PLATFORM" "$DEVICE_SDK" "-miphoneos-version-min=${SDK_VERSION_MIN}"
 build "arm64" "$DEVICE_PLATFORM" "$DEVICE_SDK" "-miphoneos-version-min=${SDK_VERSION_MIN}"
-build "i386" "$SIMULATOR_PLATFORM" "$SIMULATOR_SDK" "-mios-simulator-version-min=5.0"
-#build "x86_64" "$SIMULATOR_PLATFORM" "$SIMULATOR_SDK" "-mios-simulator-version-min=7.0"
+build "i386" "$SIMULATOR_PLATFORM" "$SIMULATOR_SDK" "-miphoneos-version-min=${SDK_VERSION_MIN}"
+build "x86_64" "$SIMULATOR_PLATFORM" "$SIMULATOR_SDK" "-miphoneos-version-min=${SDK_VERSION_MIN}"
 
 # remove temporary dir
 rm -rf rtmpdump-*
@@ -75,6 +75,7 @@ xcrun lipo \
 	/tmp/librtmp-armv7/lib/librtmp.a \
 	/tmp/librtmp-armv7s/lib/librtmp.a \
 	/tmp/librtmp-arm64/lib/librtmp.a \
+    /tmp/librtmp-x86_64/lib/librtmp.a \
     -create -output lib/librtmp.a
 
 #    /tmp/librtmp-x86_64/lib/librtmp.a \

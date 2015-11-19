@@ -81,9 +81,9 @@ mbIgnoreURLDecode(true){
 	pthread_mutex_init(&mDVRVecMux, NULL);
 	pthread_mutex_init(&mDVRRestCountMux, NULL);
 	if(isDebugMode()){
-		av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::CBeseyePlayer(), screen_width:%d, screen_height:%d\n", screen_width, screen_height);
+		av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::CBeseyePlayer(), screen_width:%d, screen_height:%d, version: 2015/11/19\n", screen_width, screen_height);
 	}else{
-		av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::CBeseyePlayer()\n");
+		av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::CBeseyePlayer(), version: 2015/11/19\n");
 	}
 }
 
@@ -1336,9 +1336,12 @@ int CBeseyePlayer::synchronize_audio(VideoState *is, int nb_samples)
                     max_nb_samples = ((nb_samples * (100 + SAMPLE_CORRECTION_PERCENT_MAX) / 100));
                     wanted_nb_samples = FFMIN(FFMAX(wanted_nb_samples, min_nb_samples), max_nb_samples);
                 }
-                av_dlog(NULL, "diff=%f adiff=%f sample_diff=%d apts=%0.3f vpts=%0.3f %f\n",
-                        diff, avg_diff, wanted_nb_samples - nb_samples,
-                        is->audio_clock, is->video_clock, is->audio_diff_threshold);
+
+                if(isDebugMode()){
+					av_dlog(NULL, "diff=%f adiff=%f sample_diff=%d apts=%0.3f vpts=%0.3f %f\n",
+							diff, avg_diff, wanted_nb_samples - nb_samples,
+							is->audio_clock, is->video_clock, is->audio_diff_threshold);
+                }
             }
         } else {
             /* too big difference : may be initial PTS errors, so

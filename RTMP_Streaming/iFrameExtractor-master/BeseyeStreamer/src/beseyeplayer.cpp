@@ -83,7 +83,7 @@ mbIgnoreURLDecode(true){
 	if(isDebugMode()){
 		av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::CBeseyePlayer(), screen_width:%d, screen_height:%d\n", screen_width, screen_height);
 	}else{
-		av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::CBeseyePlayer()\n");
+		av_log(NULL, AV_LOG_INFO, "CBeseyePlayer::CBeseyePlayer(), version: 2015/11/19\n");
 	}
 }
 
@@ -1336,9 +1336,12 @@ int CBeseyePlayer::synchronize_audio(VideoState *is, int nb_samples)
                     max_nb_samples = ((nb_samples * (100 + SAMPLE_CORRECTION_PERCENT_MAX) / 100));
                     wanted_nb_samples = FFMIN(FFMAX(wanted_nb_samples, min_nb_samples), max_nb_samples);
                 }
-                av_dlog(NULL, "diff=%f adiff=%f sample_diff=%d apts=%0.3f vpts=%0.3f %f\n",
-                        diff, avg_diff, wanted_nb_samples - nb_samples,
-                        is->audio_clock, is->video_clock, is->audio_diff_threshold);
+
+                if(isDebugMode()){
+					av_dlog(NULL, "diff=%f adiff=%f sample_diff=%d apts=%0.3f vpts=%0.3f %f\n",
+							diff, avg_diff, wanted_nb_samples - nb_samples,
+							is->audio_clock, is->video_clock, is->audio_diff_threshold);
+                }
             }
         } else {
             /* too big difference : may be initial PTS errors, so
@@ -1536,6 +1539,8 @@ void sdl_audio_callback(void *opaque, Uint8 *stream, int len)
         if (len1 > len)
             len1 = len;
 
+		//av_log(NULL, AV_LOG_INFO, "sdl_audio_callback()++, player->isAudioMute():%d, len1:%d\n", player->isAudioMute(), len1);
+
         if(player->isAudioMute()){
         	memset(stream, 0, len1);
         }else{
@@ -1571,7 +1576,7 @@ int CBeseyePlayer::audio_open(void *opaque, int64_t wanted_channel_layout, int w
     wanted_spec.channels = av_get_channel_layout_nb_channels(wanted_channel_layout);
     wanted_spec.freq = wanted_sample_rate;
     if (wanted_spec.freq <= 0 || wanted_spec.channels <= 0) {
-        fprintf(stderr, "Invalid sample rate or channel count!\n");
+    	av_log(NULL, AV_LOG_ERROR, "Invalid sample rate or channel count!\n");
         return -1;
     }
     wanted_spec.format = AUDIO_S16SYS;
@@ -1583,22 +1588,22 @@ int CBeseyePlayer::audio_open(void *opaque, int64_t wanted_channel_layout, int w
     ci->is = (VideoState *)opaque;
     wanted_spec.userdata = ci;//opaque;
     while (SDL_OpenAudio(&wanted_spec, &spec) < 0) {
-        fprintf(stderr, "SDL_OpenAudio (%d channels): %s\n", wanted_spec.channels, SDL_GetError());
+    	av_log(NULL, AV_LOG_ERROR, "SDL_OpenAudio (%d channels): %s\n", wanted_spec.channels, SDL_GetError());
         wanted_spec.channels = next_nb_channels[FFMIN(7, wanted_spec.channels)];
         if (!wanted_spec.channels) {
-            fprintf(stderr, "No more channel combinations to try, audio open failed\n");
+        	av_log(NULL, AV_LOG_ERROR, "No more channel combinations to try, audio open failed\n");
             return -1;
         }
         wanted_channel_layout = av_get_default_channel_layout(wanted_spec.channels);
     }
     if (spec.format != AUDIO_S16SYS) {
-        fprintf(stderr, "SDL advised audio format %d is not supported!\n", spec.format);
+    	av_log(NULL, AV_LOG_ERROR, "SDL advised audio format %d is not supported!\n", spec.format);
         return -1;
     }
     if (spec.channels != wanted_spec.channels) {
         wanted_channel_layout = av_get_default_channel_layout(spec.channels);
         if (!wanted_channel_layout) {
-            fprintf(stderr, "SDL advised channel count %d is not supported!\n", spec.channels);
+        	av_log(NULL, AV_LOG_ERROR, "SDL advised channel count %d is not supported!\n", spec.channels);
             return -1;
         }
     }
@@ -2171,6 +2176,7 @@ int read_thread(void *arg)
             continue;
         }
 
+        //av_log(NULL, AV_LOG_ERROR, "read_thread(), av_read_frame, in\n");
         ret = av_read_frame(ic, pkt);
         //av_log(NULL, AV_LOG_ERROR, "read_thread(), av_read_frame, ret:%d\n", ret);
         if (ret < 0) {
@@ -2200,6 +2206,7 @@ int read_thread(void *arg)
         if (pkt->stream_index == is->audio_stream && pkt_in_play_range) {
             packet_queue_put(&is->audioq, pkt);
         } else if (pkt->stream_index == is->video_stream && pkt_in_play_range) {
+        	//av_log(NULL, AV_LOG_INFO, "read_thread(), put in videoq\n");
             packet_queue_put(&is->videoq, pkt);
         } else if (pkt->stream_index == is->subtitle_stream && pkt_in_play_range) {
             packet_queue_put(&is->subtitleq, pkt);
@@ -2391,7 +2398,7 @@ void CBeseyePlayer::step_to_next_frame(VideoState *is)
 void CBeseyePlayer::event_loop(CBeseyePlayer *cur_player)
 {
 	if(isDebugMode()){
-		av_log(NULL, AV_LOG_INFO, "event_loop(), cur_player:%d\n", cur_player);
+		av_log(NULL, AV_LOG_INFO, "event_loop(), cur_player:0x%x\n", cur_player);
 	}
     SDL_Event event;
     //double incr, pos, frac;
@@ -2418,12 +2425,12 @@ void CBeseyePlayer::event_loop(CBeseyePlayer *cur_player)
                     //addStreamingPath("dummy");//workaround, trigger read_thread
 					do_exit(cur_player->is/*cur_stream*/);
 					if(isDebugMode()){
-						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_player:%d\n", cur_player);
+						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_player:0x%x\n", cur_player);
 					}
 					cur_player = NULL;
 				}else{
 					if(isDebugMode()){
-						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_player:%d, event.user.data1:%d\n", cur_player, event.user.data1);
+						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_QUIT_EVENT, cur_player:0x%x, event.user.data1:0x%x\n", cur_player, event.user.data1);
 					}
 					//SDL_PushEvent(&event);
 				}
@@ -2461,7 +2468,7 @@ void CBeseyePlayer::event_loop(CBeseyePlayer *cur_player)
 					alloc_picture((BeseyeAllocEventProps*)event.user.data1);
 				}else{
 					if(isDebugMode()){
-						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_ALLOC_EVENT, [%d, %d]\n", cur_player, ((AllocEventProps*)event.user.data1)->is);
+						av_log(NULL, AV_LOG_INFO, "event_loop(), FF_ALLOC_EVENT, [0x%x, 0x%x]\n", cur_player, ((AllocEventProps*)event.user.data1)->is);
 					}
 					SDL_PushEvent(&event);
 				}

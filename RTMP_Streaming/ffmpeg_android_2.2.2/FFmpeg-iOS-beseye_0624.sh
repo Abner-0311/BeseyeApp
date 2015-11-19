@@ -82,13 +82,13 @@ CONFIGURE_FLAGS="--enable-cross-compile \
 # avresample
 #CONFIGURE_FLAGS="$CONFIGURE_FLAGS --enable-avresample"
 
-ARCHS="armv7 arm64 armv7s i386"
+ARCHS="armv7 arm64 armv7s i386 x86_64"
 # x86_64
 
 COMPILE="y"
 LIPO="y"
 
-DEPLOYMENT_TARGET="6.0"
+DEPLOYMENT_TARGET="7.0"
 
 if [ "$*" ]
 then
@@ -150,16 +150,15 @@ then
 		if [ "$ARCH" = "i386" -o "$ARCH" = "x86_64" ]
 		then
 		    PLATFORM="iPhoneSimulator"
-            CFLAGS="$CFLAGS -mios-simulator-version-min=$DEPLOYMENT_TARGET -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include"
+            CFLAGS="$CFLAGS -miphoneos-version-min=$DEPLOYMENT_TARGET -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include"
 		else
 		    PLATFORM="iPhoneOS"
-            CFLAGS="$CFLAGS -mios-version-min=$DEPLOYMENT_TARGET -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include"
+            CFLAGS="$CFLAGS -miphoneos-version-min=$DEPLOYMENT_TARGET -I${IOS_LIBRTMP}/include -I${DIR_OPENSSL}/include"
 		    if [ "$ARCH" = "arm64" ]
 		    then
 		        EXPORT="GASPP_FIX_XCODE5=1"
 		    fi
 		fi
-
 
 	CPU=
 	#if [ $ARCH = "armv7s" ]
