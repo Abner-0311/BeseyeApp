@@ -162,6 +162,7 @@ public class SessionMgr {
 	static private final String SESSION_HD_INTRO_SHOWN		= "beseye_human_detect_intro_shown";
 	static private final String SESSION_SHOW_HD_INTRO_ONCE	= "beseye_show_human_detect_intro_once";
 	
+	static private final String SESSION_DEBUG_STREAM_PATH	= "beseye_debug_stream_path";
 	//static private final String SESSION_SCREENSHOT_FEATURE	= "beseye_screen_feature";
 	
 	static private SessionMgr sSessionMgr;
@@ -211,6 +212,9 @@ public class SessionMgr {
 				mSessionData.setSignupEmail(getPrefStringValue(mPref, SESSION_SIGNUP_EMAIL));
 				
 				mSessionData.setIsShowNotificationFromToast(getPrefBooleanValue(mPref, SESSION_DEBUG_SHOW_NOTIFY, false));
+				
+				mSessionData.setDebugStreamPath(getPrefStringValue(mPref, SESSION_DEBUG_STREAM_PATH));
+				
 			}
 			
 			if(false == getPrefBooleanValue(mPref, SESSION_TRANFER_TO_ATT_EVENT, false) && BeseyeApplication.isInMainProcess()){
@@ -683,6 +687,16 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
+	public String getDebugStreamPath(){
+		return mSessionData.getDebugStreamPath();
+	}
+	
+	synchronized public void setDebugStreamPath(String strDebugStreamPath){
+		setPrefStringValue(mPref, SESSION_DEBUG_STREAM_PATH, strDebugStreamPath);
+		mSessionData.setDebugStreamPath(strDebugStreamPath);
+		notifySessionUpdate();
+	}
+	
 	public SessionData getSessionData(){
 		return mSessionData;
 	}
@@ -713,7 +727,7 @@ public class SessionMgr {
 		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended, mbIsTrustDev, mbIsShowNotificationFromToast;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
-		private String mStrCamUpdateList, mStrDetachHWID, mStrSignupEmail;
+		private String mStrCamUpdateList, mStrDetachHWID, mStrSignupEmail, mStrDebugStreamPath;
 		private int miVPCno;
 		
 		public SessionData() {
@@ -743,6 +757,7 @@ public class SessionMgr {
 			mStrCamUpdateList = "";
 			mStrDetachHWID = "";
 			mStrSignupEmail = "";
+			mStrDebugStreamPath = "";
 			
 			miVPCno = 1;
 		}
@@ -962,6 +977,15 @@ public class SessionMgr {
 			mStrSignupEmail = strSignupEmail;
 		}
 		
+		public String getDebugStreamPath(){
+			return mStrDebugStreamPath;
+		}
+		
+		synchronized public void setDebugStreamPath(String strDebugStreamPath){
+			mStrDebugStreamPath = strDebugStreamPath;
+		}
+		
+		
 		public int getVPCNumber(){
 			return miVPCno;
 		}
@@ -1004,6 +1028,7 @@ public class SessionMgr {
 			dest.writeString(mStrCamUpdateList);
 			dest.writeString(mStrDetachHWID);
 			dest.writeString(mStrSignupEmail);
+			dest.writeString(mStrDebugStreamPath);
 			
 			dest.writeInt(miVPCno);
 		}
@@ -1052,6 +1077,7 @@ public class SessionMgr {
 			mStrCamUpdateList = in.readString();
 			mStrDetachHWID = in.readString();
 			mStrSignupEmail = in.readString();
+			mStrDebugStreamPath = in.readString();
 			
 			miVPCno = in.readInt();
 		}

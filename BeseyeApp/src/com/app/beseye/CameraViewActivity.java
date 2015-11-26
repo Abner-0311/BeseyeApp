@@ -116,6 +116,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private String mstrLiveP2P = null;
 	private String mstrLiveStreamServer = null;
 	private String mstrLiveStreamPath = null;
+	private String mstrTestLiveStreamPath = null;
 	private List<JSONObject> mstrDVRStreamPathList;
 	private List<JSONObject> mstrPendingStreamPathList;
 	private List<JSONObject> mstrDiffStreamPathList;
@@ -603,6 +604,17 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}else{
 					mbIsLiveMode = true; 
 					mlDVRCurrentStartTs = mlDVROriginalStartTs = 0;
+					if(BeseyeConfig.DEBUG){
+						String strPathFile = SessionMgr.getInstance().getDebugStreamPath();
+						if(null != strPathFile && 0 < strPathFile.length()){
+							 File filePath = BeseyeStorageAgent.getFileInDownloadDir(this, strPathFile);
+							 if(null != filePath && filePath.exists()){
+								 mstrTestLiveStreamPath = filePath.getAbsolutePath();
+							 }else{
+								Log.i(TAG, "CameraViewActivity::updateAttrByIntent(), filePath isn't exist:"+strPathFile);
+							 }
+						}
+					}
 				}
 				
 //				if(bTriggerWhenResume && mActivityResume){
@@ -772,6 +784,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		initDateTime();
 	}
 	
+	private boolean isTestStreamPathValid(){
+		return BeseyeConfig.DEBUG && null != mstrTestLiveStreamPath && 0 < mstrTestLiveStreamPath.length();
+	}
 //	private boolean handleReddotNetwork(boolean bForceShow){
 //		boolean bRet = false;
 //		Log.i(TAG, "CameraViewActivity::handleReddotNetwork(), isWifiEnabled:"+NetworkMgr.getInstance().isWifiEnabled()+
@@ -1779,7 +1794,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	   								}
 	   	         				}
 	   	         				Log.i(TAG, "open stream for idx:"+miStreamIdx);
-	   	         				iRetCreateStreaming = openStreaming(miStreamIdx, getNativeSurface(), streamFullPath+BeseyeUtils.getStreamSecInfo(), 0);
+	   	         				//File fakePath = BeseyeStorageAgent.getFileInDownloadDir(CameraViewActivity.this, "videoplayback.mp4");
+	   	         				
+	   	         				iRetCreateStreaming = openStreaming(miStreamIdx, getNativeSurface(), isTestStreamPathValid()?mstrTestLiveStreamPath:streamFullPath+BeseyeUtils.getStreamSecInfo(), 0);//fakePath.getAbsolutePath()
 	   	         			}while(iRetCreateStreaming < 0 && iTrial < 8);
 	   	         			
 	   	         			if(miStreamIdx >= 10){

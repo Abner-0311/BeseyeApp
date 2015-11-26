@@ -38,7 +38,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 	private Button mBtnApply, mBtnSendLog;
 	private Spinner mSpServerType;//, mSpDetachHWID;
 	private CheckBox mCbCamSWUpdateSuspended, mCbCamShowNotificationToast, mCbShowHumanDetectOneTime, mCbDetachHWIDs[];
-	private EditText mEtDefEmail = null;
+	private EditText mEtDefEmail = null, mEtStreamFile = null;
 	private LinearLayout mVgHWIDs;
 	private static String[] hwids_dev = new String[]{"00409O92TX91", "00409T95HZSR"};//new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"}
 	//private static int[] ctrlhwids = new int[]{R.id.ck_hw_id_1, R.id.ck_hw_id_2};
@@ -142,6 +142,11 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		mEtDefEmail = (EditText)findViewById(R.id.et_signup_email);
 		if(null != mEtDefEmail){
 			mEtDefEmail.setText(SessionMgr.getInstance().getSignupEmail());
+		}
+		
+		mEtStreamFile = (EditText)findViewById(R.id.et_fake_path);
+		if(null != mEtStreamFile){
+			mEtStreamFile.setText(SessionMgr.getInstance().getDebugStreamPath());
 		}
 		
 		mBtnSendLog = (Button)findViewById(R.id.btn_send_log);
@@ -288,9 +293,14 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			if(null != mEtDefEmail){
 				SessionMgr.getInstance().setSignupEmail(mEtDefEmail.getText().toString());
 			}
+			
+			if(null != mEtStreamFile){
+				SessionMgr.getInstance().setDebugStreamPath(mEtStreamFile.getText().toString());
+			}
+			
 			//Toast.makeText(this, "Server mode is "+mode, Toast.LENGTH_LONG).show();
 			Toast.makeText(this, "Server mode is "+mode+"\nCam SW update is"+(SessionMgr.getInstance().getIsCamSWUpdateSuspended()?"":" not")+
-					" suspended.\nDetach HW ID:"+strHWIds+"\n Email:"+SessionMgr.getInstance().getSignupEmail(), Toast.LENGTH_LONG).show();
+					" suspended.\nDetach HW ID:"+strHWIds+"\n Email:"+SessionMgr.getInstance().getSignupEmail()+"\n stream path:"+SessionMgr.getInstance().getDebugStreamPath(), Toast.LENGTH_LONG).show();
 		}
 		
 //		if(mRbDemomode.isChecked() && mode.ordinal() <= SERVER_MODE.MODE_COMPUTEX.ordinal()){
