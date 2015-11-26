@@ -115,9 +115,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgPowerSchedule = (ViewGroup)findViewById(R.id.vg_power_schedule);
 		if(null != mVgPowerSchedule){
 			mVgPowerSchedule.setOnClickListener(this);
-			if(BeseyeConfig.PRODUCTION_VER){
-				mVgPowerSchedule.setVisibility(View.GONE);
-			}
+//			if(BeseyeConfig.PRODUCTION_VER){
+//				mVgPowerSchedule.setVisibility(View.GONE);
+//			}
 		}
 		
 		mVgLocationAware = (ViewGroup)findViewById(R.id.vg_location_aware);
