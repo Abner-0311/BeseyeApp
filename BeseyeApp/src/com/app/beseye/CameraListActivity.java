@@ -841,8 +841,14 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						
 						arrCamList.put(i,objCamSetup);
 						
-						if(mActivityResume && mbNeedToCheckCamOnStatus && (mbisCamOnBeforeRefresh && BeseyeJSONUtil.isCamPowerOff(objCamSetup))){
-							Toast.makeText(getApplicationContext(), String.format(getString(R.string.notify_cam_off_detect_cam_list), BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_NAME)), Toast.LENGTH_SHORT).show();
+						if(mActivityResume && mbNeedToCheckCamOnStatus){
+							if(strVcamId.equals(mStrVCamIdCamOnBeforeRefresh)){
+								if(( mbIsCamOnBeforeRefresh && BeseyeJSONUtil.isCamPowerOff(objCamSetup))){
+									Toast.makeText(getApplicationContext(), String.format(getString(R.string.notify_cam_off_detect_cam_list), BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_NAME)), Toast.LENGTH_SHORT).show();
+								}
+								mStrVCamIdCamOnBeforeRefresh = null;
+								mbIsCamOnBeforeRefresh = false;
+							}
 						}
 						
 						refreshList();
@@ -862,9 +868,11 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}
     }
 	
-	boolean mbNeedToCheckCamOnStatus = false;
-	boolean mbisCamOnBeforeRefresh = false;
+	private boolean mbNeedToCheckCamOnStatus = false;
+	private boolean mbIsCamOnBeforeRefresh = false;
+	private String mStrVCamIdCamOnBeforeRefresh = null;
 	
+	//From Notification
 	protected void onCamSettingChangedCallback(JSONObject DataObj){
     	//super.onCamSettingChangedCallback(DataObj);
     	if(null != DataObj){
@@ -891,7 +899,10 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	    				try {
 	    					JSONObject camObj = arrCamList.getJSONObject(i);
 	    					if(strCamUID.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
-	    						mbisCamOnBeforeRefresh = BeseyeJSONUtil.isCamPowerOn(camObj);
+	    						mbIsCamOnBeforeRefresh = BeseyeJSONUtil.isCamPowerOn(camObj);
+	    						mStrVCamIdCamOnBeforeRefresh = strCamUID;
+	    						if(BeseyeConfig.DEBUG)
+	    				    		Log.i(TAG, getClass().getSimpleName()+"::onCamSettingChangedCallback(), strCamUID = "+strCamUID+" is on before refresh");
 	    					}
 	    				}catch (JSONException e) {
 	    					e.printStackTrace();

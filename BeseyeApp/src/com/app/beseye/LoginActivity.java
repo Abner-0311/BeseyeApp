@@ -47,7 +47,7 @@ public class LoginActivity extends BeseyeAccountBaseActivity {
 			mEtUserName.addTextChangedListener(mTextWatcher);
 			if(DEBUG){
 				if(SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-					mEtUserName.setText("beseye_dev@beseye.com");
+					mEtUserName.setText("abner.huang@beseye.com");
 				}else if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_STAGING){
 					mEtUserName.setText("democam@beseye.com");
 				}
