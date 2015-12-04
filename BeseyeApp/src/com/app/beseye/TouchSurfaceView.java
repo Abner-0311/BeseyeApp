@@ -1110,22 +1110,20 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     private boolean copyBitmap(Bitmap bmp){
 	    if(-1 != mlRequestBmpTimestamp){
 	    	if(null != bmp && false == bmp.isRecycled()){
-	    		Bitmap bmpSave = bmp.copy(bmp.getConfig(), true);
+	    		//Bitmap bmpSave = bmp.copy(bmp.getConfig(), true);
+				//bmpSave = BitmapFactory.decodeFile(BeseyeStorageAgent.getFileInDownloadDir(getContext(), "720P.jpg").getAbsolutePath());
+	    		Bitmap bmpSave = Bitmap.createScaledBitmap(bmp, SCREENSHOT_FINAL_WIDTH, SCREENSHOT_FINAL_HEIGHT, false);
 	    		if(null != bmpSave){
 	    			Canvas canvasTarget = new Canvas( bmpSave );
 		    		if(null != canvasTarget){
-		    			canvasTarget.drawBitmap(bmp, 0, 0, null);
+		    			//canvasTarget.drawBitmap(bmp, 0, 0, null);
 		    			Bitmap icon = BitmapFactory.decodeResource(context.getResources(),com.app.beseye.R.drawable.liveview_snapshot_watermark);
 		    			if(null != icon){
 		    				int iPadding = this.context.getResources().getDimensionPixelSize(R.dimen.watermark_padding);
-//		    				Paint paint = new Paint();
-//			    			paint.setARGB(127, 255, 255, 255);
 			    			canvasTarget.drawBitmap(icon, bmpSave.getWidth() - icon.getWidth() - iPadding, bmpSave.getHeight() - icon.getHeight() - iPadding, null);
 		    			}
 		    			
 		    			if(null != mOnBitmapScreenshotCallback){
-		    				//bmpSave = BitmapFactory.decodeFile(BeseyeStorageAgent.getFileInDownloadDir(getContext(), "720P.jpg").getAbsolutePath());
-		    				bmpSave = Bitmap.createScaledBitmap(bmpSave, SCREENSHOT_FINAL_WIDTH, SCREENSHOT_FINAL_HEIGHT, false);
 			    			mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
 			    		}
 			    		mlRequestBmpTimestamp = -1;
