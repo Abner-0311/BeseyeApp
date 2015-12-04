@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Scroller;
 
+import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
 
 public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callback{
@@ -1103,6 +1104,9 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     	return bRet;
     }
     
+    private static final int SCREENSHOT_FINAL_WIDTH = 1920; 
+    private static final int SCREENSHOT_FINAL_HEIGHT = 1080; 
+    
     private boolean copyBitmap(Bitmap bmp){
 	    if(-1 != mlRequestBmpTimestamp){
 	    	if(null != bmp && false == bmp.isRecycled()){
@@ -1120,6 +1124,8 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 		    			}
 		    			
 		    			if(null != mOnBitmapScreenshotCallback){
+		    				//bmpSave = BitmapFactory.decodeFile(BeseyeStorageAgent.getFileInDownloadDir(getContext(), "720P.jpg").getAbsolutePath());
+		    				bmpSave = Bitmap.createScaledBitmap(bmpSave, SCREENSHOT_FINAL_WIDTH, SCREENSHOT_FINAL_HEIGHT, false);
 			    			mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
 			    		}
 			    		mlRequestBmpTimestamp = -1;
