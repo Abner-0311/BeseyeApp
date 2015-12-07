@@ -265,6 +265,9 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 				if(0 == iRetCode){
 					if(DEBUG)
 						Log.e(TAG, "PowerScheduleActivity::onPostExecute(), result.get(0)="+result.get(0).toString());
+					
+					checkConflict(BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.SCHED_CONFLICT), BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.SCHED_CONFLICT_WILL_BE));
+					
 					JSONObject dataObj = BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA);
 					if(null != dataObj){
 						JSONObject schedObj = BeseyeJSONUtil.getJSONObject(dataObj, SCHED_OBJ);
