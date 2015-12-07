@@ -128,7 +128,9 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
+		if(false == BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj)){
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
+		}
 	}
 	
 	@Override
