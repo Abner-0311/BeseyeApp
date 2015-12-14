@@ -185,8 +185,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    		case CV_STATUS_UNINIT:{
 		    			stopUpdateTime();
 		    			if(null != mCameraViewControlAnimator){
-		    				//setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
-			    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
+		    				setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
+			    			//setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getTalkView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getRewindView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getFastForwardView(), false);
@@ -292,7 +292,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			setEnabled(mCameraViewControlAnimator.getRewindView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
 			    			setEnabled(mCameraViewControlAnimator.getFastForwardView(), false);
-			    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
+		    				setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
+			    			//setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
 			    			updatePlayPauseBtnByStatus(status);
 		    			}
 		    			setCursorVisiblity(View.GONE);
@@ -340,7 +341,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			}
 		    			}
 		    			
-		    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
+		    			//setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
+	    				setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
 
 		    			if(!mActivityResume){
 		    				if(DEBUG)
