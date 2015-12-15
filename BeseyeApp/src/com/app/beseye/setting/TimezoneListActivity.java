@@ -162,7 +162,6 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		mlstTimeZone.add(new BeseyeTimeZone("Atlantic/Canary",  getString(R.string.tz_spain_canary_islands)));
 		mlstTimeZone.add(new BeseyeTimeZone("Australia/Brisbane",  getString(R.string.tz_aus_queensland)));
 		mlstTimeZone.add(new BeseyeTimeZone("Australia/Darwin",  getString(R.string.tz_aus_northern_territory)));
-		
 		mlstTimeZone.add(new BeseyeTimeZone("Asia/Jayapura",  getString(R.string.tz_indonesia_eastern_time)));
 		mlstTimeZone.add(new BeseyeTimeZone("Asia/Makassar",  getString(R.string.tz_indonesia_central_time)));
 		mlstTimeZone.add(new BeseyeTimeZone("Asia/Jakarta",  getString(R.string.tz_indonesia_western_time)));
@@ -232,7 +231,7 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		mlstTimeZone.add(new BeseyeTimeZone("Atlantic/Azores",  getString(R.string.tz_portugal_azores)));
 		mlstTimeZone.add(new BeseyeTimeZone("Africa/Tunis",  getString(R.string.tz_tunisia)));
 		mlstTimeZone.add(new BeseyeTimeZone("Africa/Johannesburg",  getString(R.string.tz_south_africa_mainland)));
-		mlstTimeZone.add(new BeseyeTimeZone("Africa/Cairo",  getString(R.string.tz_egypt)));		
+		mlstTimeZone.add(new BeseyeTimeZone("Africa/Cairo",  getString(R.string.tz_egypt)));
 	}
 
 	@Override
