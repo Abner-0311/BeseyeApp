@@ -403,7 +403,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				refreshList();
 			}
 			
-			if(null == arrCamList || 0 == arrCamList.length()){
+			if((!mbIsDemoCamMode && !mbIsPrivateCamMode) && null == arrCamList || 0 == arrCamList.length()){
 				addCamAddingView();
 			}
 			

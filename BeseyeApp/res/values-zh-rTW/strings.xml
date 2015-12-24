@@ -542,4 +542,7 @@
   <string name="error_code_fmt">\n(錯誤代碼 = 0x%08x)</string>
   <string name="title_event_list">錄影事件表</string>
   <string name="msg_account_not_activated">此帳號還未結束正常註冊流程，請再次執行註冊流程</string>
+  
+  <string name="notify_human_detect">%s 偵測到一個人員活動，去看看是誰。</string>
+  
 </resources>

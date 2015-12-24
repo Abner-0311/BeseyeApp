@@ -149,7 +149,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public static final int MSG_CAM_ONLINE 					= 30;
     public static final int MSG_CAM_OFFLINE 				= 31;
     
-    public static final int MSG_CAM_EVENT_PEOPLE 			= 32;
+    public static final int MSG_CAM_EVENT_FACE 				= 32;
     public static final int MSG_CAM_EVENT_MOTION 			= 33;
     public static final int MSG_CAM_EVENT_OFFLINE 			= 34;
     
@@ -165,6 +165,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public static final int MSG_PIN_CODE_NOTIFY_CLICKED 	= 42;
     
     public static final int MSG_CAM_STATUS_CHANGED_FOR_EVT 	= 43;
+    
+    public static final int MSG_CAM_EVENT_HUMAN 			= 44;
     
     /**
      * Handler of incoming messages from clients.
@@ -202,9 +204,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_CAM_DEACTIVATE:
                 case MSG_CAM_ONLINE:
                 case MSG_CAM_OFFLINE:
-                case MSG_CAM_EVENT_PEOPLE:
+                case MSG_CAM_EVENT_FACE:
                 case MSG_CAM_EVENT_MOTION:
                 case MSG_CAM_EVENT_OFFLINE:
+                case MSG_CAM_EVENT_HUMAN:
                 case MSG_CAM_STATUS_CHANGED_FOR_EVT:{
                 	for (int i=mClients.size()-1; i>=0; i--) {
                 		try {
@@ -1588,9 +1591,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 //					}
 					break;
 				}
-				case NCODE_PEOPLE_DETECT:
+				case NCODE_FACE_DETECT:
 				case NCODE_MOTION_DETECT:
-				case NCODE_OFFLINE_DETECT:{
+				case NCODE_OFFLINE_DETECT:
+				case NCODE_HUMAN_DETECT:{
 					String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
 					if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
 						if(false == mListBlackVCamId.contains(strVCamId)){
@@ -1603,16 +1607,21 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						}
 					}else{
 						String strCamName = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME);
-						if(NCODE_PEOPLE_DETECT == iNCode)
-							iMsgType = MSG_CAM_EVENT_PEOPLE;
+						if(NCODE_FACE_DETECT == iNCode)
+							iMsgType = MSG_CAM_EVENT_FACE;
 						else if(NCODE_MOTION_DETECT == iNCode)
 							iMsgType = MSG_CAM_EVENT_MOTION;
+						else if(NCODE_HUMAN_DETECT == iNCode)
+							iMsgType = MSG_CAM_EVENT_HUMAN;
 						else 
 							iMsgType = MSG_CAM_EVENT_OFFLINE;
 						
 						//if(bFromGCM){
-							if(NCODE_PEOPLE_DETECT == iNCode){
+							if(NCODE_FACE_DETECT == iNCode){
 								strNotifyMsg = String.format(getString(R.string.notify_people_detect), strCamName);
+								//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_people_detect);
+							}else if(NCODE_HUMAN_DETECT == iNCode){
+								strNotifyMsg = String.format(getString(R.string.notify_human_detect), strCamName);
 								//strNotifyTitle = getString(R.string.cam_setting_title_notification_event_people_detect);
 							}else if(NCODE_MOTION_DETECT == iNCode){
 								strNotifyMsg = String.format(getString(R.string.notify_motion_detect), strCamName);
@@ -1792,8 +1801,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	
 	private static final int NCODE_MOTION_DETECT 				= 0x0300;
-	private static final int NCODE_PEOPLE_DETECT 				= 0x0301;
+	private static final int NCODE_FACE_DETECT 					= 0x0301;
 	private static final int NCODE_OFFLINE_DETECT 				= 0x0302;
+	private static final int NCODE_HUMAN_DETECT 				= 0x0303;
 	
 	private static final int NCODE_TALK_CHANNEL_USED 			= 0x0400;
 	private static final int NCODE_TALK_CHANNEL_RELE 			= 0x0401;

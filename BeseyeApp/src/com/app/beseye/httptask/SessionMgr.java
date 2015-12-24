@@ -160,13 +160,13 @@ public class SessionMgr {
 	
 	static private final String SESSION_DEBUG_SHOW_NOTIFY	= "beseye_debug_show_notify";
 	static private final String SESSION_HD_INTRO_SHOWN		= "beseye_human_detect_intro_shown";
-	static private final String SESSION_SHOW_HD_INTRO_ONCE	= "beseye_show_human_detect_intro_once";
+	//static private final String SESSION_SHOW_HD_INTRO_ONCE	= "beseye_show_human_detect_intro_once";//deprecated
+	static private final String SESSION_SHOW_HD_INTRO_ALWAYS= "beseye_show_human_detect_intro_always";
 	
 	static private final String SESSION_DEBUG_STREAM_PATH	= "beseye_debug_stream_path";
 	//static private final String SESSION_SCREENSHOT_FEATURE	= "beseye_screen_feature";
 	
 	static private SessionMgr sSessionMgr;
-	
 	
 	static public void createInstance(Context context){
 		if(null == sSessionMgr)
@@ -191,6 +191,7 @@ public class SessionMgr {
 			if(false == getPrefBooleanValue(mPref, SESSION_TRANFER_TO_SEC, false) && BeseyeApplication.isInMainProcess()){
 				transferToSecuMode(context);
 			}
+			
 			mSessionData = new SessionData();
 			if(null != mSessionData){
 				mSessionData.setUserid(getPrefStringValue(mPref, SESSION_USERID));
@@ -346,12 +347,20 @@ public class SessionMgr {
 		setPrefBooleanValue(mPref, SESSION_HD_INTRO_SHOWN, bValue);
 	}
 	
-	public boolean getHumanDetectIntroShowOnce(){
-		return getPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ONCE, false);
+//	public boolean getHumanDetectIntroShowOnce(){
+//		return getPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ONCE, true);
+//	}
+//	
+//	public void setHumanDetectIntroShowOnce(boolean bValue){
+//		setPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ONCE, bValue);
+//	}
+
+	public boolean getHumanDetectIntroShowAlways(){
+		return getPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ALWAYS, false);
 	}
 	
-	public void setHumanDetectIntroShowOnce(boolean bValue){
-		setPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ONCE, bValue);
+	public void setHumanDetectIntroShowAlways(boolean bValue){
+		setPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ALWAYS, bValue);
 	}
 	
 	public void setBEHostUrl(SERVER_MODE mode){

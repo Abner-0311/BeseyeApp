@@ -57,7 +57,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 	//private JSONObject mSched_obj;
 	private boolean mbModified = false;
 	
-	private String[] mStrObjKey = {BeseyeJSONUtil.NOTIFY_PEOPLE, 
+	private String[] mStrObjKey = {BeseyeJSONUtil.NOTIFY_FACE, 
 								   BeseyeJSONUtil.NOTIFY_MOTION,
 								   BeseyeJSONUtil.NOTIFY_FIRE,
 								   BeseyeJSONUtil.NOTIFY_SOUND,

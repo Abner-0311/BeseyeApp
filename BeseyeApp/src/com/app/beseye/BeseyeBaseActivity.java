@@ -1725,7 +1725,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
                 	}
                 	break;	
                 }
-                case BeseyeNotificationService.MSG_CAM_EVENT_PEOPLE:{
+                case BeseyeNotificationService.MSG_CAM_EVENT_FACE:{
                 	BeseyeBaseActivity act = mActivity.get();
                 	if(null != act){
                 		JSONObject dataObj;
@@ -1733,6 +1733,20 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 							Bundle b = msg.getData();
 							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
 							act.onCameraPeopleEvent(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                	break;
+                }
+                case BeseyeNotificationService.MSG_CAM_EVENT_HUMAN:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCameraHumanDetectEvent(dataObj);
 						} catch (JSONException e) {
 							Log.i(TAG, "handleMessage(), e:"+e.toString());
 						}
@@ -2085,6 +2099,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     protected boolean onCameraMotionEvent(JSONObject msgObj){return false;}
     protected boolean onCameraPeopleEvent(JSONObject msgObj){return false;}
+    protected boolean onCameraHumanDetectEvent(JSONObject msgObj){return false;}
     protected boolean onCameraOfflineEvent(JSONObject msgObj){return false;}
     
     public boolean onCamStatusChangedForEvt(JSONObject msgObj){

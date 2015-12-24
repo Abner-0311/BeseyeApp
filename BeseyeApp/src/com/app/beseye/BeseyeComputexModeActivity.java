@@ -37,7 +37,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 //	private EditText mTxtPeriod;
 	private Button mBtnApply, mBtnSendLog;
 	private Spinner mSpServerType;//, mSpDetachHWID;
-	private CheckBox mCbCamSWUpdateSuspended, mCbCamShowNotificationToast, mCbShowHumanDetectOneTime, mCbDetachHWIDs[];
+	private CheckBox mCbCamSWUpdateSuspended, mCbCamShowNotificationToast, mCbShowHumanDetectAlways, mCbDetachHWIDs[];
 	private EditText mEtDefEmail = null, mEtStreamFile = null;
 	private LinearLayout mVgHWIDs;
 	private static String[] hwids_dev = new String[]{"00409O92TX91", "00409T95HZSR"};//new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"}
@@ -74,9 +74,9 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			mCbCamShowNotificationToast.setChecked(SessionMgr.getInstance().getIsShowNotificationFromToast());
 		}
 		
-		mCbShowHumanDetectOneTime = (CheckBox)findViewById(R.id.ck_enable_human_detect_intro_show_once);
-		if(null != mCbShowHumanDetectOneTime){
-			mCbShowHumanDetectOneTime.setChecked(SessionMgr.getInstance().getHumanDetectIntroShowOnce());
+		mCbShowHumanDetectAlways = (CheckBox)findViewById(R.id.ck_enable_human_detect_intro_show_always);
+		if(null != mCbShowHumanDetectAlways){
+			mCbShowHumanDetectAlways.setChecked(SessionMgr.getInstance().getHumanDetectIntroShowAlways());
 		}
 		
 		mSpServerType = (Spinner)findViewById(R.id.sp_server_type);
@@ -268,7 +268,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			SessionMgr.getInstance().setBEHostUrl(mode);
 			SessionMgr.getInstance().setIsCamSWUpdateSuspended(mCbCamSWUpdateSuspended.isChecked());
 			SessionMgr.getInstance().setIsShowNotificationFromToast(mCbCamShowNotificationToast.isChecked());
-			SessionMgr.getInstance().setHumanDetectIntroShowOnce(mCbShowHumanDetectOneTime.isChecked());
+			SessionMgr.getInstance().setHumanDetectIntroShowAlways(mCbShowHumanDetectAlways.isChecked());
 			
 //			if(null != mSpDetachHWID){
 //				SessionMgr.getInstance().setDetachHWID(hwids[mSpDetachHWID.getSelectedItemPosition()]);

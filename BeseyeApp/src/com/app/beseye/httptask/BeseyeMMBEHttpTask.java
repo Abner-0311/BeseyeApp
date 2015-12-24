@@ -43,10 +43,11 @@ public class BeseyeMMBEHttpTask  {
 	static private final String URL_GET_LATEST_THUMB 		= "thumbnail/get_latest?vcamUuid=%s";
 	static private final String URL_GET_THUMB_BY_EVENT 		= "thumbnail/get_by_event_list";
 	
-	static public final int EVENT_FILTER_MOTION = 0x1;
-	static public final int EVENT_FILTER_PEOPLE = 0x2;
-	static public final int EVENT_FILTER_SOUND 	= 0x4;
-	static public final int EVENT_FILTER_FIRE	= 0x8;
+	static public final int EVENT_FILTER_MOTION = BeseyeJSONUtil.MM_TYPE_ID_MOTION;
+	static public final int EVENT_FILTER_FACIAL = BeseyeJSONUtil.MM_TYPE_ID_FACE;
+	static public final int EVENT_FILTER_HUMAN = BeseyeJSONUtil.MM_TYPE_ID_HUMAN;
+	static public final int EVENT_FILTER_SOUND 	= 0x8;
+	static public final int EVENT_FILTER_FIRE	= 0x10;
 	
 	static public final long THIRTY_DAYS_IN_MS = 30*24*60*60*1000;
 	static public final long SEVEN_DAYS_IN_MS = 7*24*60*60*1000;

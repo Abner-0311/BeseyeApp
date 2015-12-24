@@ -51,19 +51,19 @@
 	        	android:text="Show notification from toast"/>
 		    
 		    <CheckBox 
-	            android:id="@+id/ck_enable_human_detect_intro_show_once" 
+	            android:id="@+id/ck_enable_human_detect_intro_show_always" 
 	            android:layout_width="wrap_content"  
 	        	android:layout_height="wrap_content"
 	        	android:layout_below="@+id/ck_enable_notify_show"
 	        	android:layout_centerHorizontal="true"
 	        	android:layout_marginTop="10dp"
-	        	android:text="Show Human Detect Intro One Time"/>
+	        	android:text="Always Show Human Detect Intro"/>
 		    
 		    <Button 
 		        android:id="@+id/btn_send_log" 
 	            android:layout_width="wrap_content"  
 	        	android:layout_height="wrap_content"
-	        	android:layout_below="@+id/ck_enable_human_detect_intro_show_once"
+	        	android:layout_below="@+id/ck_enable_human_detect_intro_show_always"
 	        	android:layout_centerHorizontal="true"
 	        	android:layout_marginTop="10dp"
 	        	android:text="Send log"/>

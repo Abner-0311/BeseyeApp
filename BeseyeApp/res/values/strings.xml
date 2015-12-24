@@ -548,6 +548,7 @@
   
   <string name="enhance_human_detect_train_fail_to_load_pic">Fail to load the pictures. Please try again later.</string>
   <string name="enhance_human_detect_train_fail_to_label">Fail to label the pictures. Please try again later.</string>
+  <string name="enhance_human_detect_train_fail_to_reset">Fail to reset human detection setting. Please try again later.</string>
   
   <string name="att_event_cam_status_on">外出請注意安全，Beseye 已開啟攝影機保護您的空間。</string>
   <string name="att_event_cam_status_off">歡迎回來，Beseye 已將攝影機關閉，但隨時待命。</string>
@@ -557,4 +558,7 @@
   <!-- warning of forget password failure case -->
   <string name="forget_password_request_fail">Fail to send forget password confirmation letter. Please try again later.</string>
   <string name="msg_account_not_activated">This account is not activated. Please go setup and sign up again</string>
+  
+  <string name="notify_human_detect">%s detect a person activity, go take a look.</string>
+  
 </resources>
