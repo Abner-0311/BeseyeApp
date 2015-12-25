@@ -2103,19 +2103,20 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     protected boolean onCameraOfflineEvent(JSONObject msgObj){return false;}
     
     public boolean onCamStatusChangedForEvt(JSONObject msgObj){
-    	Log.i(TAG, getClass().getSimpleName()+"::onCamStatusChangedForEvt(),  msgObj = "+msgObj);
-    	if(mActivityResume){
-    		if(null != msgObj){
-        		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
-        		if(null != objCus){
-        			JSONObject objCamChgData = BeseyeJSONUtil.getJSONObject(objCus, CAM_CHANGE_DATA);
-        			boolean bCamStatusOn = (BeseyeJSONUtil.getJSONInt(objCamChgData, BeseyeJSONUtil.CAM_STATUS) == 1);
-					String strNotifyMsg = getString(bCamStatusOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
-    				Toast.makeText(this, strNotifyMsg, Toast.LENGTH_SHORT).show();
-        			return true;
-        		}
-    		}
-    	}
+//Only for ATT event
+//   	Log.i(TAG, getClass().getSimpleName()+"::onCamStatusChangedForEvt(),  msgObj = "+msgObj);
+//    	if(mActivityResume){
+//    		if(null != msgObj){
+//        		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+//        		if(null != objCus){
+//        			JSONObject objCamChgData = BeseyeJSONUtil.getJSONObject(objCus, CAM_CHANGE_DATA);
+//        			boolean bCamStatusOn = (BeseyeJSONUtil.getJSONInt(objCamChgData, BeseyeJSONUtil.CAM_STATUS) == 1);
+//					String strNotifyMsg = getString(bCamStatusOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
+//    				Toast.makeText(this, strNotifyMsg, Toast.LENGTH_SHORT).show();
+//        			return true;
+//        		}
+//    		}
+//    	}
     	return false;
     }
     

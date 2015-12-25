@@ -176,7 +176,7 @@
   <!-- Warning Message of dialog when failed to change schedule on/off status-->
   <string name="cam_setting_fail_to_update_schdule_status">スケジュールの更新ができませんでした。再試行してください。</string>
   <!-- Message of dialog when adding a new schedule-->
-  <string name="cam_setting_schedule_add">追加</string>
+  <string name="cam_setting_schedule_add">追加...</string>
   <!-- Warning Message of dialog when failed to add schedule-->
   <string name="cam_setting_fail_to_add_schdule">スケジュールの作成ができませんでした。再試行してください。</string>
   <!-- Warning Message of dialog when failed to update schedule-->
@@ -346,7 +346,7 @@
   <string name="notify_cam_off_detect_cam_list">%sカメラをオフにする</string>
   <string name="about_title">Beseye について</string>
   <string name="about_ver">Beseye バージョン%s</string>
-  <string name="about_desc">Beseye について\nBeseye（ベスアイ）は、古代エジプトの家庭の守護女神で、家族のシンボルであるBes（ベス）に由来しています。\nベスは古代エジプトにおいて、家の守護神、特に、母子や出産における神として崇拝され、後に、すべての良き事を護り、そしてすべての悪しきことから護ってくれる神と考えられるように成りました。\nBes Eye Cloud Security Co.（ベスアイ クラウドセキュリティー社）は、「ベスの目を通して」をモットーにご自宅とご家族を献身的に見守ります。 クラウドアップデートと監視テクノロジーを通じ、よりスマートで安全な生活をご提供いたします。\nご家庭でのセキュリティーに関する不安とリスクに対するお悩みから解消されたいですか。日に日に成長するお子さんを一瞬も見逃さずに見守りつづけたいですか。私たちはクラウドを活用し、あなたの愛する家族を見守り、ご自宅を護ります。\nベスアイカメラを活用し、家族との時間をお楽しみください！\nよりスマートに、より自由に!\nご家族とお子さんとの時間を大切に、進化したクラウドセキュリティーサービスの、刷新的なベスアイカメラがまもなくリリース予定！\nその革新的な特許でComputex d&amp;i award を受賞、ベスアイの新製品が世界を魅了！あなたにもきっと、ベスアイの新商品を気に入っていただけるはずです！</string>
+  <string name="about_desc">Beseye について\nBeseye（ベスアイ）は、古代エジプトの家庭の守護女神で、家族のシンボルであるBes（ベス）に由来しています。\nベスは古代エジプトにおいて、家の守護神、特に、母子や出産における神として崇拝され、後に、すべての良き事を護り、そしてすべての悪しきことから護ってくれる神と考えられるように成りました。\nBeseye Cloud Security Co.（ベスアイ クラウドセキュリティー社）は、「ベスの目を通して」をモットーにご自宅とご家族を献身的に見守ります。 クラウドアップデートと監視テクノロジーを通じ、よりスマートで安全な生活をご提供いたします。\nご家庭でのセキュリティーに関する不安とリスクに対するお悩みから解消されたいですか。日に日に成長するお子さんを一瞬も見逃さずに見守りつづけたいですか。私たちはクラウドを活用し、あなたの愛する家族を見守り、ご自宅を護ります。\nベスアイカメラを活用し、家族との時間をお楽しみください！\nよりスマートに、より自由に!\nご家族とお子さんとの時間を大切に、進化したクラウドセキュリティーサービスの、刷新的なベスアイカメラがまもなくリリース予定！\nその革新的な特許でComputex d&amp;i award を受賞、ベスアイの新製品が世界を魅了！あなたにもきっと、ベスアイの新商品を気に入っていただけるはずです！</string>
   <!-- descriptions of pull to refresh listview-->
   <string name="loading_latest_update">最終アップデート時間</string>
   <string name="pull_to_refresh_pull_label">スクロールして、更新できます。</string>
@@ -514,7 +514,144 @@
   <string name="notification_pincode_auth">%2$sから要求された認証コード %1$s</string>
   <!--Pin code request dialog message shown in Beseye App-->
   <string name="dialog_notification_pincode_auth">認証コードは %1$s です。あなたのアカウントへ %2$s から誰かがログインしようとしています。認証コードを入力すると、ログインできます。</string>
-  
+  <!--Title of Human detect training page-->
+  <string name="title_human_detect_train">無人画像をタップします</string>
+  <string name="confirm">完成させる</string>
+  <!--Title of Human detect setting page-->
+  <string name="cam_setting_title_human_detect">人検知（先行版）</string>
+  <!--Desc of Human detect switch-->
+  <string name="cam_setting_title_human_detect_notify">人検知の通知</string>
+  <!--Desc of Human detect training entry-->
+  <string name="enhance_human_detect">検知機能を最適化する</string>
+  <!--Hint of Human detect training entry-->
+  <string name="enhance_human_detect_hint">システムは自動的に人の動きを検知します。次のページに入って画像に人がいなければ、最適な識別効果が得られるように、タップして削除してください。</string>
+  <!--Percentage of training-->
+  <string name="recognition_percentage">最適化の進捗：%s</string>
+  <!--Training Done-->
+  <string name="recognition_percentage_done">完成しました！</string>
+  <!--Desc of Human detect training reset-->
+  <string name="reset_human_detect">検知機能をリセットする</string>
+  <!--Hint of Human detect training reset-->
+  <string name="reset_human_detect_hint">カメラが動いて撮影を行う場合、または最適化を再実行する場合、リセット機能をお選びください。</string>
+  <!--Dialong desc of Human detect training reset-->
+  <string name="dialog_reset_human_detect">過去すべての最適化処理が削除され、最適化を再度行う必要がありますが、よろしいですか。</string>
+  <!--Desc when user selects in training page-->
+  <string name="human_detect_no_human">無人</string>
+  <!--Intro desc of human detect training part 1-->
+  <string name="enhance_human_detect_intro_p1_desc">未来のテクノロジーを迎えましょう。\nBeseyeの先端技術に取り組むラボは世界一高精度、かつプライバシーにも配慮した人の動きを検知する技術を開発いたしました。</string>
+  <!--Intro desc of human detect training part 2-->
+  <string name="enhance_human_detect_intro_p2_desc">この技術では、人の通過を検知するとカメラが自動的にお客様の装置に通知するので、現場にいらっしゃらなくても、人の動きがあるかどうかを簡単に把握できます。　</string>
+  <!--Intro desc of human detect training part 3-->
+  <string name="enhance_human_detect_intro_p3_desc">世界最高の技術。お客様の使いやすいように最適化を行うことも可能です。\n検知機能の最適化によってカメラがより賢くなり、まるでオーダーメイドのようになります。　</string>
+  <!--highlight part in Intro desc of human detect training part 3-->
+  <string name="enhance_human_detect_intro_p3_desc_highlight">無し</string>
+  <!--Next step button -->
+  <string name="enhance_human_detect_intro_next_step">次</string>
+  <!--Reward desc after training result submit-->
+  <string name="enhance_human_detect_reward_desc">、識別率が向上されました!</string>
+  <!--Desc when no training pic is availalbe-->
+  <string name="enhance_human_detect_no_pic_desc">、Beseyeは近いうち疑いのある人の画像を提供し、その中から該当者を見付け出していただきます。</string>
+  <!--Desc when training is no longer needed-->
+  <string name="enhance_human_detect_train_done_desc">Beseye人の動きを識別するシステムはこのカメラに対して最適化を完成しました。</string>
+  <!--Fail to load training pic-->
+  <string name="enhance_human_detect_train_fail_to_load_pic">人の画像を読み込めませんでした。後ほどお試し ください。</string>
+  <!--Fail to submit training results-->
+  <string name="enhance_human_detect_train_fail_to_label">送信できませんでした。後ほどお試し ください。</string>
+  <!--Error code format-->
   <string name="error_code_fmt">\n(エラーコード = 0x%08x)</string>
+  <!--Warning msg when failed to send forget password letter-->
+  <!-- TODO: string name="forget_password_request_fail" -->
+  <!--Title of event list page-->
   <string name="title_event_list">イベント一覧</string>
+  <!--Warning msg when login with inactivated account-->
+  <!-- TODO: string name="msg_account_not_activated" -->
+  <!--Title of page that shows the pairing cam has been attached-->
+  <!-- TODO: string name="title_cam_attached_already" -->
+  <!--Button to show customer service-->
+  <!-- TODO: string name="btn_contact_cs" -->
+  <!--Message that shows the pairing cam has been attached-->
+  <!-- TODO: string name="cam_attach_under_other_account_error" -->
+  <!--more timezone begin-->
+  <string name="tz_us_aleutian_islands">アメリカ － アリューシャン列島</string>
+  <string name="tz_canada_british_columbia">カナダ － ブリティッシュコロンビア州</string>
+  <string name="tz_canada_saskatchewan">カナダ － サスカチュワン州</string>
+  <string name="tz_canada_nunavut">カナダ － ヌナブト準州</string>
+  <string name="tz_canada_quebec">カナダ － ケベック州</string>
+  <string name="tz_spain_canary_islands">スペイン － カナリア諸島</string>
+  <string name="tz_aus_queensland">オーストラリア － クイーンズランド州</string>
+  <string name="tz_aus_northern_territory">オーストラリア － ノーザンテリトリー</string>
+  <string name="tz_indonesia_eastern_time">インドネシア － 東部地区</string>
+  <string name="tz_indonesia_central_time">インドネシア － 中央地区</string>
+  <string name="tz_indonesia_western_time">インドネシア － 西部地区</string>
+  <string name="tz_malaysia">マレーシア</string>
+  <string name="tz_vietnam">ベトナム</string>
+  <string name="tz_saudi_arabia">サウジアラビア</string>
+  <string name="tz_united_arab_emirates">アラブ首長国連邦</string>
+  <string name="tz_thailand">タイ</string>
+  <string name="tz_brazil_brasilia_o_dst">ブラジル － ブラジリア － サマータイム無し</string>
+  <string name="tz_brazil_brasilia">ブラジル － ブラジリア</string>
+  <string name="tz_brazil_amazon_o_dst">ブラジル － アマゾン － サマータイム無し</string>
+  <string name="tz_brazil_amazon">ブラジル － アマゾン</string>
+  <string name="tz_brazil_acre">ブラジル － アクレ州</string>
+  <string name="tz_papua_new_guinea">パプアニューギニア</string>
+  <string name="tz_russia_kaliningrad">ロシア － カリーニングラード</string>
+  <string name="tz_russia_moscow_time">ロシア － モスクワ</string>
+  <string name="tz_russia_samara_time">ロシア － サマーラ</string>
+  <string name="tz_russia_yekaterinburg">ロシア － エカテリンブルク</string>
+  <string name="tz_russia_omsk_time">ロシア － オムスク</string>
+  <string name="tz_russia_krasnoyarsk_time">ロシア － クラスノヤルスク</string>
+  <string name="tz_russia_irkutsk_time">ロシア － イルクーツク</string>
+  <string name="tz_russia_yakutsk_time">ロシア － ヤクーツク</string>
+  <string name="tz_russia_vladivostok_time">ロシア － ウラジオストク</string>
+  <string name="tz_russia_srednekolymsk">ロシア － スレドネコリムスク</string>
+  <string name="tz_russia_kamchatka_time">ロシア － カムチャツカ半島</string>
+  <string name="tz_ukraine">ウクライナ</string>
+  <string name="tz_philippines">フィリピン</string>
+  <string name="tz_myanmar">不</string>
+  <string name="tz_argentina">アルゼンチン</string>
+  <string name="tz_chile">チリ</string>
+  <string name="tz_india">インド</string>
+  <string name="tz_pakistan">パキスタン</string>
+  <string name="tz_colombia">コロンビア</string>
+  <string name="tz_paraguay">パラグアイ</string>
+  <string name="tz_peru">ペルー</string>
+  <string name="tz_venezuela">ベネズエラ</string>
+  <string name="tz_jamaica">ジャマイカ</string>
+  <string name="tz_cuba">キューバ</string>
+  <string name="tz_estonia">エストニア</string>
+  <string name="tz_latvia">ラトビア</string>
+  <string name="tz_lithuania">リトアニア</string>
+  <string name="tz_ireland">アイルランド</string>
+  <string name="tz_belarus">ベラルーシ</string>
+  <string name="tz_romania">ルーマニア</string>
+  <string name="tz_moldova">モルドバ</string>
+  <string name="tz_slovakia">スロバキア</string>
+  <string name="tz_bosnia_and_herzegovina">ボスニア・ヘルツェゴビナ連邦</string>
+  <string name="tz_serbia">セルビア</string>
+  <string name="tz_bulgaria">ブルガリア</string>
+  <string name="tz_macedonia">マケドニア共和国</string>
+  <string name="tz_albania">アルバニア</string>
+  <string name="tz_slovenia">スロベニア</string>
+  <string name="tz_croatia">クロアチア</string>
+  <string name="tz_kazakhstan_western_time">カザフスタン － 西部地区</string>
+  <string name="tz_kazakhstan_eastern_time">カザフスタン － 東部地区</string>
+  <string name="tz_armenia">アルメニア</string>
+  <string name="tz_georgia">ジョージア</string>
+  <string name="tz_azerbaijan">アゼルバイジャン</string>
+  <string name="tz_iran">イラン</string>
+  <string name="tz_oman">オマーン</string>
+  <string name="tz_bahrain">バーレーン</string>
+  <string name="tz_jordan">ヨルダン</string>
+  <string name="tz_lebanon">レバノン</string>
+  <string name="tz_turkey">トルコ</string>
+  <string name="tz_israel">イスラエル</string>
+  <string name="tz_portugal_mainland">ポルトガル － 本土</string>
+  <string name="tz_portugal_azores">ポルトガル － アゾレス諸島</string>
+  <string name="tz_tunisia">チュニジア</string>
+  <string name="tz_south_africa_mainland">南アフリカ共和国</string>
+  <!--more timezone end-->
+  <string name="tz_egypt">エジプト</string>
+  <!--Fail to reset human detection-->
+  <string name="enhance_human_detect_train_fail_to_reset">リセットに失敗しま した。後ほどお試し ください。</string>
+  <string name="notify_human_detect">%s 人の動きを検出しました。確認してください。</string>
 </resources>

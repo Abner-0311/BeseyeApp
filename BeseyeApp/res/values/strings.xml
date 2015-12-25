@@ -32,7 +32,7 @@
   <!-- Camera status: live streaming is off  -->
   <string name="can_power_state_off">This camera is off</string>
   <!-- Camera status: live streaming is off and the connection to camera is down-->
-  <string name="can_power_state_disconnect">This cam is not connected</string>
+  <string name="can_power_state_disconnect">This camera is not connected</string>
   <string name="cam_setting_title_detach_cam">Remove camera</string>
   <!-- Warning message for removing camera -->
   <string name="dialog_dettach_cam">Camera [%s] and its cloud video recordings will also be removed, are you sure?</string>
@@ -77,7 +77,7 @@
   <!-- Title of info dialog-->
   <string name="dialog_title_info">Info</string>
   <!-- Message of dialog when no network connection-->
-  <string name="dialog_no_connectivity">Please check out your network connection.</string>
+  <string name="dialog_no_connectivity">Please check your network connection.</string>
   <!-- Title of loading dialog-->
   <string name="dialog_loading">Loading…</string>
   <string name="dialog_setting">Setting…</string>
@@ -90,9 +90,9 @@
   <!-- Message of dialog when setting up a wifi ap -->
   <string name="dialog_wifi_setting">Setting up Wi-Fi AP…</string>
   <!-- Message of dialog when failing to turn on phone wifi -->
-  <string name="dialog_wifi_fail_on">Cannot turn on wifi, please check wifi status on your device.</string>
+  <string name="dialog_wifi_fail_on">Cannot turn on Wi-Fi, please check Wi-Fi status on your device.</string>
   <!-- Message of dialog when failing to scan wifi ap -->
-  <string name="dialog_wifi_fail_scan">Cannot scan wifi, please check wifi status on your device.</string>
+  <string name="dialog_wifi_fail_scan">Cannot scan Wi-Fi, please check Wi-Fi status on your device.</string>
   <!-- Message of dialog when key(password) of wifi ap is wrong -->
   <string name="dialog_wifi_incorrect_password">The network password is incorrect. Please try again.</string>
   <!-- Message of dialog when key(password) of wifi ap is wrong for WEP secuity type-->
@@ -212,9 +212,9 @@
   <!-- Warning Message of dialog when network or server error in player page -->
   <string name="server_error">Network or server error. Please try again later.</string>
   <!-- Warning Message of dialog when can not get valid DVR path -->
-  <string name="streaming_invalid_dvr">Invalid Cloud Video Recording path. Please try again later.</string>
+  <string name="streaming_invalid_dvr">Invalid Cloud Video Recording path. </string>
   <!-- Warning Message of dialog when out of DVR clip -->
-  <string name="streaming_no_more_dvr">No Cloud Video Recording to play.</string>
+  <string name="streaming_no_more_dvr">No Cloud Video Recording can play.</string>
   <!-- Warning Message of dialog when can not get valid live streaming path -->
   <string name="streaming_playing_error">Invalid Cloud Video Recording path or server error. Please try again later.</string>
   <!-- Warning Message of dialog when network connectivity is not good -->
@@ -222,7 +222,7 @@
   <!-- Warning Message of dialog when error occurred and it cant be identified-->
   <string name="streaming_error_unknown">Unknown error. Please try again later.</string>
   <!-- Warning Message of dialog when app is out of memory and ask user to relaunch it-->
-  <string name="streaming_error_low_mem">App is unstable due to low memory. Please relaunch it again.</string>
+  <string name="streaming_error_low_mem">App is unstable due to lack of memory. Please launch it again.</string>
   <!-- Description of sound pairing page-->
   <string name="signup_paring_title_1">Waking up camera by Let it Bee™</string>
   <string name="signup_paring_title_2">Please hold on</string>
@@ -245,12 +245,12 @@
   <!-- Warning Message of dialog when wrong password to login-->
   <string name="msg_login_wrong_password">Your password does not match. Please try again.</string>
   <!-- Warning Message of dialog when the email to login is not found in server-->
-  <string name="msg_account_not_found">The email account that you tried to reach does not exist.</string>
+  <string name="msg_account_not_found">The email account that you tried to reach does not exist</string>
   <!-- Hint Message of dialog when pairing is processing-->
   <string name="toast_pairing_wait">Processing. Please wait for a while.</string>
-  <string name="toast_pairing_enter_cam_name">Now, give your camera a lovely name!</string>
+  <string name="toast_pairing_enter_cam_name">Now, give your camera a name !</string>
   <string name="dialog_msg_signup">Sign up…</string>
-  <string name="dialog_msg_login">Log in…</string>
+  <string name="dialog_msg_login">Login…</string>
   <string name="dialog_msg_logiout">Log out…</string>
   <string name="signup_title_before_setup">Before setup</string>
   <string name="signup_title_create_account">Create account</string>
@@ -259,11 +259,11 @@
   <string name="signup_title_wifi_list">Wi-Fi List</string>
   <string name="signup_learn_more">Learn more about</string>
   <string name="signup_beseye">Beseye</string>
-  <string name="signup_bottom_login">Log in</string>
+  <string name="signup_bottom_login">Login</string>
   <string name="signup_bottom_signup">Setup camera and Sign up</string>
   <string name="signup_before_setup_start">Start</string>
   <!-- Hint Message in before setup page-->
-  <string name="signup_before_setup_description">Please plug in your camera and wait until the green light is blinking. Also make sure to keep your device near the camera within 10cms.</string>
+  <string name="signup_before_setup_description">Please plug in your camera and wait until the green light is twinkling. Also make sure to keep your device near the camera within 10cms.</string>
   <string name="signup_sound_reminder_description">Attention! Your device is going to make beeping sound in the next step.</string>
   <!-- Hint Message for TOS and privacy policy-->
   <string name="signup_createAccount_description_title">By continuing, I agree to Beseye\'s</string>
@@ -276,9 +276,9 @@
   <string name="signup_try_again_description_3">Setting Guide</string>
   <string name="signup_try_again_btn">Ok, let\'s go</string>
   <!-- Hint Message after pairing is done and ask user to assign cam name-->
-  <string name="signup_name_camera">Camera is almost ready. Now, give your camera a lovely name.</string>
+  <string name="signup_name_camera">Camera is almost ready. Now, give your camera a name.</string>
   <!-- Congratulation Message in live player page after pairing-->
-  <string name="signup_paring_done">Congratulations! Your camera is ready! All you need to do is placing your camera at anywhere you want. Reminder: you can unplug and move your camera for a better vision. Camera settings will stay the same when power on.</string>
+  <string name="signup_paring_done">Congratulations! Your camera is ready! All you need to do is placing your camera at anywhere you want. You can unplug and move your camera , the camera setting will stay the same when power on.</string>
   <string name="datetime_month">Month</string>
   <string name="datetime_day">Day</string>
   <string name="datetime_hour">Hour</string>
@@ -299,7 +299,7 @@
   <!-- Hint message in camera list item when the cam is disconnected-->
   <string name="camera_list_more">Click for more</string>
   <!-- Hint message in camera list item when there is no camera-->
-  <string name="camera_list_add">Click here to add a new camera.Or go and check the featured cameras.</string>
+  <string name="camera_list_add">Click here to add a new camera. Or click upper left icon to check the Demo cameras.</string>
   <!-- Hint message in camera list item when servers are down or network issue-->
   <string name="camera_list_failed_title">Fail to connect to the camera.</string>
   <string name="camera_list_failed_content">Please check the network connection of your device and the camera, and then try again.</string>
@@ -318,7 +318,7 @@
   <string name="cam_update_progress">Updating… %s</string>
   <string name="cam_update_title">Beseye camera firmware %s is available now</string>
   <string name="cam_update_success">Camera is updated successfully.</string>
-  <string name="cam_update_timeout">Timeout. Please try again later.</string>
+  <string name="cam_update_timeout">Update timeout. Please try again later.</string>
   <string name="cam_update_failed">Fail to update cameras. Please try again later.</string>
   <!-- Warning Message when all cameras are disconnected now and can not to update-->
   <string name="cam_update_no_valid_cam">There is no online camera to update.</string>
@@ -346,7 +346,7 @@
   <string name="notify_cam_off_detect_cam_list">Camera %s turns off.</string>
   <string name="about_title">About Beseye</string>
   <string name="about_ver">Beseye Version %s</string>
-  <string name="about_desc">The name Beseye was created with the Ancient Egyptian goddess, Bes, a protector of households and a symbol of family blessing.\n\nBes is an Ancient Egyptian deity worshipped as a protector of households, and in particular, of mothers and children and childbirth. Bes later came to be regarded as the defender of everything good and the enemy of all that is bad.\n\nBes Eye Cloud Security Co., in the name of "via Bes’ eye," is dedicated to home and family care. With th and never miss any precious moments? We propose a cloud solution to protect your loved ones and guard your home.\n\nAll you need to do is picking up your Beseye camera! Enjoy your family time!e up-to-date cloud and monitor hardware manufacturing technology, we are committed to a smarter and safer life for household users.\n\nWant to be free from anxiety and home security risks? Want to stay with your babies as they getting older day by day,</string>
+  <string name="about_desc">About Beseye\n\nThe name Beseye was created with the Ancient Egyptian goddess, Bes, a protector of households and a symbol of family blessing.\n\nBes is an Ancient Egyptian deity worshipped as a protector of households, and in particular, of mothers and children and childbirth. Bes later came to be regarded as the defender of everything good and the enemy of all that is bad.\n\nBeseye Cloud Security Co., in the name of \"via Bes’ eye,\" is dedicated to home and family care. With the up-to-date cloud and monitor hardware manufacturing technology, we are committed to a smarter and safer life for household users.\n\nWant to be free from anxiety and home security risks? Want to stay with your babies as they getting older day by day, and never miss any precious moments? We propose a cloud solution to protect your loved ones and guard your home.\n\nAll you need to do is picking up your Beseye camera! Enjoy your family time!\n\nBe smart, be free!\n\nFocus on families with babies and kids, a brand new Beseye camera with improved cloud security service is about to be released!\n\nComputex d&amp;i award winner, with innovative patents, Beseye’s forthcoming product is ready to impress the world. Hold on, you’re gonna fall in love with it!</string>
   <!-- descriptions of pull to refresh listview-->
   <string name="loading_latest_update">Last update %s</string>
   <string name="pull_to_refresh_pull_label">Pull down to refresh…</string>
@@ -354,9 +354,9 @@
   <string name="pull_to_refresh_refreshing_label">Updating…</string>
   <string name="pull_to_refresh_from_bottom_pull_label">Pull up to refresh…</string>
   <!-- Timezone definition begin -->
-  <string name="tz_us_eastern">US	– Eastern</string>
-  <string name="tz_us_central">US	– Central</string>
-  <string name="tz_us_pacific">US	– Pacific</string>
+  <string name="tz_us_eastern">US – Eastern</string>
+  <string name="tz_us_central">US – Central</string>
+  <string name="tz_us_pacific">US – Pacific</string>
   <string name="tz_us_mountain">US – Mountain</string>
   <string name="tz_us_alaska">US – Alaska</string>
   <string name="tz_us_hawaii">US – Hawaii</string>
@@ -374,9 +374,9 @@
   <string name="tz_asia_korea">Korea</string>
   <string name="tz_asia_singpore">Singapore</string>
   <string name="tz_new_zealand">New Zealand</string>
-  <string name="tz_aus_eastern">Australia – Eastern</string>
-  <string name="tz_aus_western">Australia – Western</string>
-  <string name="tz_aus_central">Australia – Central</string>
+  <string name="tz_aus_eastern">AUS – Eastern</string>
+  <string name="tz_aus_western">AUS – Western</string>
+  <string name="tz_aus_central">AUS – Central</string>
   <string name="tz_euro_denmark">Denmark</string>
   <string name="tz_euro_iceland">Iceland</string>
   <string name="tz_euro_greece">Greece</string>
@@ -397,24 +397,24 @@
   <string name="tz_euro_italy">Italy</string>
   <string name="cam_name_update_success">Camera name is changed successfully.</string>
   <string name="signup_plug_in_description">First, plug in your camera.</string>
-  <string name="signup_plug_in_title">Plug in your camera</string>
-  <string name="signup_plug_in_done">Camera is Plug in, let\'s setup</string>
+  <string name="signup_plug_in_title">Plug in your camera.</string>
+  <string name="signup_plug_in_done">Camera plugged in. Let\'s setup.</string>
   <string name="signup_watch_out_title">Attention!!</string>
   <string name="signup_watch_out_desc">Attention! Your device is going to make %1$s in the next step. Please put the device speaker toward the camera within 10cms (as shown below), and then go to the next step.</string>
   <string name="signup_watch_out_desc_bebebe">"beeping sound"</string>
   <string name="signup_watch_out_desc_speaker">"device speaker"</string>
   <string name="signup_watch_out_done">Phone is ready, next step</string>
   <string name="signup_confirm_led_title">Confirm status light</string>
-  <string name="signup_confirm_led_desc">Is the status light %s? If not, please hold on for a few seconds.</string>
-  <string name="signup_confirm_led_twinkling_green_light">"blinking in green"</string>
-  <string name="signup_confirm_led_done">Green light is blinking, next step</string>
-  <string name="signup_pairing_fail_desc">Please try to plug in your camera once again, and start Let it Bee™ until the green light is blinking. Also make sure to keep your device near the camera within 10cms.</string>
+  <string name="signup_confirm_led_desc">Is the status light %s? If not, please hold on  a few seconds.</string>
+  <string name="signup_confirm_led_twinkling_green_light">"twinkling in green"</string>
+  <string name="signup_confirm_led_done">Green light is twinkling, next step</string>
+  <string name="signup_pairing_fail_desc">Please try to plug in your camera once again, and start Let it Bee™ until the green light is twinkling. Also make sure to keep your device near the camera within 10cms.</string>
   <string name="signup_guideline_try_again_btn">OK. Let\'s try again.</string>
   <!--Toast message for poor quality when talking-->
-  <string name="hint_hold_to_talk_poor_network_quality">Network connection is poor. Please hold to talk once again.</string>
+  <string name="hint_hold_to_talk_poor_network_quality">Network connection is unstable. Please hold to talk once again.</string>
   <string name="msg_wifi_pw_length_error_wpa">Invalid password format. The password should contain 8 to 64 letters.</string>
   <string name="msg_wifi_pw_length_error_wep">Invalid password format. The password should contain 5 or 13 letters.</string>
-  <string name="msg_wifi_setting_info_error">Invalid wifi setting info.</string>
+  <string name="msg_wifi_setting_info_error">Invalid Wi-Fi setting.</string>
   <!--Warning message for detaching cam failed case-->
   <string name="cam_setting_failed_detach_cam">Failed to remove camera. \nPlease try again later.</string>
   <!--Dialog message for player pic capture-->
@@ -446,7 +446,7 @@
   <!--dialog title for get thumbnail error in EditView-->
   <string name="thumbnail_error_title">Connection failed</string>
   <!--dialog body for get thumbnail error in EditView-->
-  <string name="thumbnail_error_body">Please check network on mobile device and camera, then try again.</string>
+  <string name="thumbnail_error_body">Please check network connection of your device and camera, then try again.</string>
   <string name="fullscreen">Full screen</string>
   <!--Show on event list for people detected-->
   <string name="event_list_family_detected_ex">People dectected (%s)</string>
@@ -514,51 +514,144 @@
   <string name="notification_pincode_auth">Authorization code %1$s requested from %2$s</string>
   <!--Pin code request dialog message shown in Beseye App-->
   <string name="dialog_notification_pincode_auth">Authorization code is %1$s. Someone try to log into your account by %2$s. It can log into your account by inputting authorization code.</string>
-
-   
-  <string name="title_cam_attached_already">Already attached camera</string>
-  <string name="btn_detach_cam_now">Remove camera now</string>
-  <string name="btn_contact_cs">Contact Custumer service</string>
-  <string name="cam_attach_under_your_account_error">This camera whose name is (%s) was already awaken by your account.</string>
-  <string name="cam_attach_under_other_account_error">This camera was already awaken by other\'s account.\nPlease contact customer service for help.\n[Camera HW ID is %s]</string>
-  
-  <string name="title_human_detect_train">點擊無人影像</string>
-  <string name="confirm">完成</string>
-  <string name="cam_setting_title_human_detect">移動人員偵測</string>
-  <string name="cam_setting_title_human_detect_notify">人員偵測通知</string>
-  <string name="enhance_human_detect">偵測功能最佳化</string>
-  <string name="enhance_human_detect_hint">系統會自動偵測移動人員。但若下頁影像中無任何人，請點擊去除，以取得最佳辨識結果。</string>
-  <string name="recognition_percentage">最佳化進度：%s</string>
-  <string name="recognition_percentage_done">已完成！</string>
-  <string name="reset_human_detect">重置偵測功能</string>
-  <string name="reset_human_detect_hint">若攝影機移動拍攝場景，或是想重設已選擇的場景，可以選擇重置。</string>
-  <string name="dialog_reset_human_detect">如此會刪除過去所有最佳化的成果，並需要重新執行最佳化流程，您確定嗎</string>
-  <string name="human_detect_no_human">無人</string>
-  
-  <string name="enhance_human_detect_intro_p1_desc">準備迎接未來科技。\nBeseye 先進技術實驗室推出全世界最精準，同時兼顧隱私保護的移動人員偵測技術。</string>
-  <string name="enhance_human_detect_intro_p2_desc">透過此技術，當偵測到人員行經時，系統會自動發出通知到您的裝置。讓你不在現場，也可以簡單知道是否有移動的人員。</string>
-  <string name="enhance_human_detect_intro_p3_desc">世上最好的技術，現在還可針對您做最佳化。\n透過點擊無人員之影像，讓此技術變得更加適合您，就像是為您量身定做。</string>
-  <string name="enhance_human_detect_intro_p3_desc_highlight">無</string>
-  
-  <string name="enhance_human_detect_intro_next_step">下一步</string>
-    
-  <string name="enhance_human_detect_reward_desc">\n辨識率更加提高了！</string>
-  <string name="enhance_human_detect_no_pic_desc">\nBeseye 將會在近期提供疑似人員影像讓您篩選。</string>
-  <string name="enhance_human_detect_train_done_desc">\nBeseye 移動人員辨識系統針對此攝影機的最佳化流程已完成，您無須再次點擊影像。</string>
-  
-  <string name="enhance_human_detect_train_fail_to_load_pic">Fail to load the pictures. Please try again later.</string>
-  <string name="enhance_human_detect_train_fail_to_label">Fail to label the pictures. Please try again later.</string>
-  <string name="enhance_human_detect_train_fail_to_reset">Fail to reset human detection setting. Please try again later.</string>
-  
-  <string name="att_event_cam_status_on">外出請注意安全，Beseye 已開啟攝影機保護您的空間。</string>
-  <string name="att_event_cam_status_off">歡迎回來，Beseye 已將攝影機關閉，但隨時待命。</string>
-  
+  <!--Title of Human detect training page-->
+  <string name="title_human_detect_train">Click Unmaned pictures</string>
+  <string name="confirm">Confirm </string>
+  <!--Title of Human detect setting page-->
+  <string name="cam_setting_title_human_detect">Human detection (Beta)</string>
+  <!--Desc of Human detect switch-->
+  <string name="cam_setting_title_human_detect_notify">Human detection notification</string>
+  <!--Desc of Human detect training entry-->
+  <string name="enhance_human_detect">Human detection feature optimization</string>
+  <!--Hint of Human detect training entry-->
+  <string name="enhance_human_detect_hint">System will automatically detect the moving people. If no person is found in the image on the next page, click on "delete" to obtain the best identification results.</string>
+  <!--Percentage of training-->
+  <string name="recognition_percentage">Optimization progress：%s</string>
+  <!--Training Done-->
+  <string name="recognition_percentage_done">Done!</string>
+  <!--Desc of Human detect training reset-->
+  <string name="reset_human_detect">Reset human detection</string>
+  <!--Hint of Human detect training reset-->
+  <string name="reset_human_detect_hint">If the camera has changed angles, or if you wish to re-run optimization, select "reset."</string>
+  <!--Dialong desc of Human detect training reset-->
+  <string name="dialog_reset_human_detect">This action will delete all the results of previous optimization sessions and will require another optimization session. Continue?</string>
+  <!--Desc when user selects in training page-->
+  <string name="human_detect_no_human">Unmanned</string>
+  <!--Intro desc of human detect training part 1-->
+  <string name="enhance_human_detect_intro_p1_desc">Technology of tomorrow - Beseye\'s Advanced Technology Lab has introduced the world\'s most accurate and privacy-guaranteed moving-person identification technology.</string>
+  <!--Intro desc of human detect training part 2-->
+  <string name="enhance_human_detect_intro_p2_desc">With this technology, the camera will automatically notify you on your mobile device when a moving person is detected, allowing you real-time easy access to on-site information anywhere you go.</string>
+  <!--Intro desc of human detect training part 3-->
+  <string name="enhance_human_detect_intro_p3_desc">The world\'s best technology - now with customized optimization. By selecting images with no persons, your camera will become ever smarter with each use.</string>
+  <!--highlight part in Intro desc of human detect training part 3-->
+  <string name="enhance_human_detect_intro_p3_desc_highlight">Without</string>
+  <!--Next step button -->
+  <string name="enhance_human_detect_intro_next_step">Next step</string>
+  <!--Reward desc after training result submit-->
+  <string name="enhance_human_detect_reward_desc">, Recognition rate are enhanced！</string>
+  <!--Desc when no training pic is availalbe-->
+  <string name="enhance_human_detect_no_pic_desc">, Beseye will provide you with suggested images of persons for you to screen.</string>
+  <!--Desc when training is no longer needed-->
+  <string name="enhance_human_detect_train_done_desc"> Beseye moving-person identification system has completed optimization for this camera.</string>
+  <!--Fail to load training pic-->
+  <string name="enhance_human_detect_train_fail_to_load_pic">Fail to load the images of persons, please try again later.</string>
+  <!--Fail to submit training results-->
+  <string name="enhance_human_detect_train_fail_to_label">Fail to send the result, please try again later.</string>
+  <!--Error code format-->
   <string name="error_code_fmt">\n(Error code = 0x%08x)</string>
-  <string name="title_event_list">Event list</string>
-  <!-- warning of forget password failure case -->
+  <!--Warning msg when failed to send forget password letter-->
   <string name="forget_password_request_fail">Fail to send forget password confirmation letter. Please try again later.</string>
+  <!--Title of event list page-->
+  <string name="title_event_list">Event list</string>
+  <!--Warning msg when login with inactivated account-->
   <string name="msg_account_not_activated">This account is not activated. Please go setup and sign up again</string>
-  
-  <string name="notify_human_detect">%s detect a person activity, go take a look.</string>
-  
+  <!--Title of page that shows the pairing cam has been attached-->
+  <string name="title_cam_attached_already">Already attached camera</string>
+  <!--Button to show customer service-->
+  <string name="btn_contact_cs">Contact Custumer service</string>
+  <!--Message that shows the pairing cam has been attached-->
+  <string name="cam_attach_under_other_account_error">This camera was already awaken by other\'s account.\nPlease contact customer service for help.\n[Camera HW ID is %s]</string>
+  <!--more timezone begin-->
+  <string name="tz_us_aleutian_islands">US – Aleutian Islands</string>
+  <string name="tz_canada_british_columbia">Canada – British Columbia</string>
+  <string name="tz_canada_saskatchewan">Canada – Saskatchewan</string>
+  <string name="tz_canada_nunavut">Canada – Nunavut</string>
+  <string name="tz_canada_quebec">Canada – Quebec</string>
+  <string name="tz_spain_canary_islands">Spain – Canary Islands</string>
+  <string name="tz_aus_queensland">AUS – Queensland</string>
+  <string name="tz_aus_northern_territory">AUS – Northern Territory</string>
+  <string name="tz_indonesia_eastern_time">Indonesia – Eastern</string>
+  <string name="tz_indonesia_central_time">Indonesia – Central</string>
+  <string name="tz_indonesia_western_time">Indonesia – Western</string>
+  <string name="tz_malaysia">Malaysia</string>
+  <string name="tz_vietnam">Vietnam</string>
+  <string name="tz_saudi_arabia">Saudi Arabia</string>
+  <string name="tz_united_arab_emirates">United Arab Emirates</string>
+  <string name="tz_thailand">Thailand</string>
+  <string name="tz_brazil_brasilia_o_dst">Brazil – Brasília W/O DST</string>
+  <string name="tz_brazil_brasilia">Brazil – Brasília</string>
+  <string name="tz_brazil_amazon_o_dst">Brazil – Amazon W/O DST</string>
+  <string name="tz_brazil_amazon">Brazil – Amazon</string>
+  <string name="tz_brazil_acre">Brazil – Acre</string>
+  <string name="tz_papua_new_guinea">Papua New Guinea</string>
+  <string name="tz_russia_kaliningrad">Russia – Kaliningrad</string>
+  <string name="tz_russia_moscow_time">Russia – Moscow</string>
+  <string name="tz_russia_samara_time">Russia – Samara</string>
+  <string name="tz_russia_yekaterinburg">Russia – Yekaterinburg</string>
+  <string name="tz_russia_omsk_time">Russia – Omsk</string>
+  <string name="tz_russia_krasnoyarsk_time">Russia – Krasnoyarsk</string>
+  <string name="tz_russia_irkutsk_time">Russia – Irkutsk</string>
+  <string name="tz_russia_yakutsk_time">Russia – Yakutsk</string>
+  <string name="tz_russia_vladivostok_time">Russia – Vladivostok</string>
+  <string name="tz_russia_srednekolymsk">Russia – Srednekolymsk</string>
+  <string name="tz_russia_kamchatka_time">Russia – Kamchatka</string>
+  <string name="tz_ukraine">Ukraine</string>
+  <string name="tz_philippines">Philippines</string>
+  <string name="tz_myanmar">Myanmar</string>
+  <string name="tz_argentina">Argentina</string>
+  <string name="tz_chile">Chile</string>
+  <string name="tz_india">India</string>
+  <string name="tz_pakistan">Pakistan</string>
+  <string name="tz_colombia">Colombia</string>
+  <string name="tz_paraguay">Paraguay</string>
+  <string name="tz_peru">Peru</string>
+  <string name="tz_venezuela">Venezuela</string>
+  <string name="tz_jamaica">Jamaica</string>
+  <string name="tz_cuba">Cuba</string>
+  <string name="tz_estonia">Estonia</string>
+  <string name="tz_latvia">Latvia</string>
+  <string name="tz_lithuania">Lithuania</string>
+  <string name="tz_ireland">Ireland</string>
+  <string name="tz_belarus">Belarus</string>
+  <string name="tz_romania">Romania</string>
+  <string name="tz_moldova">Moldova</string>
+  <string name="tz_slovakia">Slovakia</string>
+  <string name="tz_bosnia_and_herzegovina">Bosnia and Herzegovina</string>
+  <string name="tz_serbia">Serbia</string>
+  <string name="tz_bulgaria">Bulgaria</string>
+  <string name="tz_macedonia">Macedonia</string>
+  <string name="tz_albania">Albania</string>
+  <string name="tz_slovenia">Slovenia</string>
+  <string name="tz_croatia">Croatia</string>
+  <string name="tz_kazakhstan_western_time">Kazakhstan – Western</string>
+  <string name="tz_kazakhstan_eastern_time">Kazakhstan – Eastern</string>
+  <string name="tz_armenia">Armenia</string>
+  <string name="tz_georgia">Georgia</string>
+  <string name="tz_azerbaijan">Azerbaijan</string>
+  <string name="tz_iran">Iran</string>
+  <string name="tz_oman">Oman</string>
+  <string name="tz_bahrain">Bahrain</string>
+  <string name="tz_jordan">Jordan</string>
+  <string name="tz_lebanon">Lebanon</string>
+  <string name="tz_turkey">Turkey</string>
+  <string name="tz_israel">Israel</string>
+  <string name="tz_portugal_mainland">Portugal – mainland</string>
+  <string name="tz_portugal_azores">Portugal – Azores</string>
+  <string name="tz_tunisia">Tunisia</string>
+  <string name="tz_south_africa_mainland">South Africa – mainland</string>
+  <!--more timezone end-->
+  <string name="tz_egypt">Egypt</string>
+  <!--Fail to reset human detection-->
+  <string name="enhance_human_detect_train_fail_to_reset">Fail to reset human detection setting. Please try again later.</string>
+  <string name="notify_human_detect">%s detect a person activity, let\'s go take a look.</string>
 </resources>

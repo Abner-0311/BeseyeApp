@@ -1485,26 +1485,27 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			Intent intent = new Intent();
 			long lTs = System.currentTimeMillis();
 			switch(iNCode){
-				case NCODE_CAM_STATUS_CHANGED_EVT:{
-					iMsgType = MSG_CAM_STATUS_CHANGED_FOR_EVT;
-					if(bFromGCM){
-						JSONObject objCamChgData = BeseyeJSONUtil.getJSONObject(objCus, CAM_CHANGE_DATA);
-						boolean bCamStatusOn = (BeseyeJSONUtil.getJSONInt(objCamChgData, BeseyeJSONUtil.CAM_STATUS) == 1);
-						strNotifyMsg = getString(bCamStatusOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
-						iNotifyType = NOTIFICATION_TYPE_EVT;
-//						
-//						intent.setClassName(this, OpeningPage.class.getName());
-//						
-//						Intent delegateIntent = new Intent();
-//						delegateIntent.setClassName(this, CameraListActivity.class.getName());
-//						
-//						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//						intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);
-//						
-//						lTs = BeseyeJSONUtil.getJSONLong(objReg, BeseyeJSONUtil.PS_TS);
-					}
-					break;
-				} 
+			    //Only for ATT event
+//				case NCODE_CAM_STATUS_CHANGED_EVT:{
+//					iMsgType = MSG_CAM_STATUS_CHANGED_FOR_EVT;
+//					if(bFromGCM){
+//						JSONObject objCamChgData = BeseyeJSONUtil.getJSONObject(objCus, CAM_CHANGE_DATA);
+//						boolean bCamStatusOn = (BeseyeJSONUtil.getJSONInt(objCamChgData, BeseyeJSONUtil.CAM_STATUS) == 1);
+//						strNotifyMsg = getString(bCamStatusOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
+//						iNotifyType = NOTIFICATION_TYPE_EVT;
+////						
+////						intent.setClassName(this, OpeningPage.class.getName());
+////						
+////						Intent delegateIntent = new Intent();
+////						delegateIntent.setClassName(this, CameraListActivity.class.getName());
+////						
+////						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+////						intent.putExtra(OpeningPage.KEY_DELEGATE_INTENT, delegateIntent);
+////						
+////						lTs = BeseyeJSONUtil.getJSONLong(objReg, BeseyeJSONUtil.PS_TS);
+//					}
+//					break;
+//				} 
 				case NCODE_CAM_ACTIVATE:{
 					iMsgType = MSG_CAM_ACTIVATE;
 					if(bFromGCM){
