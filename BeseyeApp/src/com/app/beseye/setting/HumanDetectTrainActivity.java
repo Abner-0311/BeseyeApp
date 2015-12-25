@@ -173,7 +173,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 	protected void onSessionComplete() {
 		super.onSessionComplete();
 		//if(!mbNeedToShowIntro){
-		if(100 <= miTrainProgress){
+		if(100 <= miTrainProgress && BeseyeConfig.PRODUCTION_VER){
 			onTrainProcessFinished();
 		}else{
 			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
@@ -227,7 +227,9 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 				boolean bNeedToRefresh = false;
 				for(int idx = 0 ;idx < iLenPic;idx++){
 					JSONObject objCheck = mArrTrainPic.optJSONObject(idx);
-					if(false == BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED) && false == BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED)){
+					if(false == BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED) && 
+					   false == BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED)){
+						
 						BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED, true);
 						try {
 							mArrTrainPic.put(idx, objCheck);
@@ -276,6 +278,18 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		BeseyeUtils.setEnabled(mbtnConfirm, !bDisabledBtn);
 	}
 	
+	private void postAndGetTrainProgress(){
+		mShowUIAfterGetProgress = new Runnable(){
+			@Override
+			public void run() {
+				onNoTrainPicAvailable(miTrainProgress);
+				mShowUIAfterGetProgress = null;
+			}
+		};
+		monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask(HumanDetectTrainActivity.this), true, mStrVCamID);
+
+	}
+	
 	private Runnable mShowUIAfterGetProgress = null;
 	
 	@Override
@@ -291,13 +305,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 					mArrTrainPic =  BeseyeJSONUtil.getJSONArray(result.get(0), BeseyeJSONUtil.MM_HD_IMG);
 					if(null == mArrTrainPic || 0 == mArrTrainPic.length()){
 						if(-1 == miTrainProgress){
-							mShowUIAfterGetProgress = new Runnable(){
-								@Override
-								public void run() {
-									onNoTrainPicAvailable(miTrainProgress);
-									mShowUIAfterGetProgress = null;
-								}
-							};
+							postAndGetTrainProgress();
 						}else{
 							onNoTrainPicAvailable(miTrainProgress);
 						}
@@ -320,13 +328,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 					}
 				}else{
 					if(-1 == miTrainProgress){
-						mShowUIAfterGetProgress = new Runnable(){
-							@Override
-							public void run() {
-								onNoTrainPicAvailable(miTrainProgress);
-								mShowUIAfterGetProgress = null;
-							}
-						};
+						postAndGetTrainProgress();
 					}else{
 						onNoTrainPicAvailable(miTrainProgress);
 					}				}
@@ -337,9 +339,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 				
 					mArrTrainPic = null;
 					mArrTrainPicToSend = null;
-					
-					monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask(HumanDetectTrainActivity.this), true, mStrVCamID);
-					
+										
 					mShowUIAfterGetProgress = new Runnable(){
 						@Override
 						public void run() {
@@ -356,6 +356,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 							mShowUIAfterGetProgress = null;
 						}
 					};
+					monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask(HumanDetectTrainActivity.this), true, mStrVCamID);
 				}
 			}else if(task instanceof BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask){
 				if(0 == iRetCode){

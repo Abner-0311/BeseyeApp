@@ -56,7 +56,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerTitle;
 	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam, mVgMotionNotification, mVgHumanDetectNotification;
-	private ImageView mIvTriggerZoneNew, mIvHumanDetectNew;
+	private ImageView mIvTriggerZoneNew, mIvHumanDetectNew, mIvScheduleNew;
 	
 	private int miUnmaskDetachCamHitCount = 0;
 	
@@ -197,6 +197,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		if(null != mIvHumanDetectNew){
 			BeseyeUtils.setVisibility(mIvHumanDetectNew, !BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET)?View.VISIBLE:View.INVISIBLE);
 		}
+		
+		mIvScheduleNew = (ImageView)findViewById(R.id.iv_cam_schedule_news);
+		if(null != mIvScheduleNew){
+			BeseyeUtils.setVisibility(mIvScheduleNew, !BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE)?View.VISIBLE:View.INVISIBLE);
+		}
 	}
 	
 	@Override
@@ -302,6 +307,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(this), true, mStrVCamID);
 				//showMyDialog(DIALOG_ID_CAM_INFO);
 				//showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				
+				if(!BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE)){
+					BeseyeNewFeatureMgr.getInstance().setFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE, true);
+					BeseyeUtils.setVisibility(mIvScheduleNew, View.INVISIBLE);
+				}
 				
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());

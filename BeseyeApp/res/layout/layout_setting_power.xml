@@ -91,11 +91,21 @@
 		   		android:layout_toLeftOf="@+id/iv_power_schedule_inf"
 		   		android:layout_centerVertical="true">
 		        <TextView
+		            android:id="@+id/cam_shcedule_title"
 			    	android:layout_width="wrap_content"
 			   		android:layout_height="wrap_content" 
 			   		android:textSize="@dimen/wifi_list_item_main_font_size"
 			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/cam_setting_title_power_time"/>
+		        <ImageView
+		        	android:id="@+id/iv_cam_schedule_news"
+			    	android:layout_width="wrap_content"
+		    		android:layout_height="wrap_content"
+					android:src="@drawable/setting_list_news_icon"
+					android:layout_toRightOf="@+id/cam_shcedule_title"
+					android:layout_centerVertical="true"
+		        	android:layout_marginLeft="@dimen/cam_list_item_horizontal_padding"
+					android:visibility="invisible"/>
 		    </RelativeLayout>   
 		</RelativeLayout>
 		

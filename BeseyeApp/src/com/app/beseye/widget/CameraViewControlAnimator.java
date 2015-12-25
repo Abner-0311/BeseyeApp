@@ -32,6 +32,7 @@ import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeNewFeatureMgr;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.BeseyeNewFeatureMgr.BESEYE_NEW_FEATURE;
 
 public class CameraViewControlAnimator {
 	
@@ -182,7 +183,11 @@ public class CameraViewControlAnimator {
 	
 	public void checkSettingNewStatus(){
 		if(null != mIvSettingNew){
-			BeseyeUtils.setVisibility(mIvSettingNew, ((null != mIbSetting && mIbSetting.getVisibility() == View.VISIBLE) && !BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked())?View.VISIBLE:View.INVISIBLE);
+			boolean bAllNewFeaturesInSettingPageTrigger = BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE) && 
+														  BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET) && 
+														  BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked();
+			
+			BeseyeUtils.setVisibility(mIvSettingNew, ((null != mIbSetting && mIbSetting.getVisibility() == View.VISIBLE) && !bAllNewFeaturesInSettingPageTrigger)?View.VISIBLE:View.INVISIBLE);
 		}
 	}
 	

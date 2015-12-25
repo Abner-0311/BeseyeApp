@@ -3387,6 +3387,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     	return checkEventById(msgObj);
     }
     
+    protected boolean onCameraHumanDetectEvent(JSONObject msgObj){
+    	return checkEventById(msgObj);
+    }
+    
     @Override
 	protected boolean onCameraOffline(JSONObject msgObj){
     	if(DEBUG)
