@@ -289,7 +289,7 @@ RTMP_Init(RTMP *r)
   r->m_sb.sb_socket = -1;
   r->m_inChunkSize = RTMP_DEFAULT_CHUNKSIZE;
   r->m_outChunkSize = RTMP_DEFAULT_CHUNKSIZE;
-  r->m_nBufferMS = 30000;
+  r->m_nBufferMS = 3000;// Abner: too large buffer make streaming stop; original value is 300000
   r->m_nClientBW = 2500000;
   r->m_nClientBW2 = 2;
   r->m_nServerBW = 2500000;
@@ -339,6 +339,7 @@ RTMP_SetBufferMS(RTMP *r, int size)
 void
 RTMP_UpdateBufferMS(RTMP *r)
 {
+  RTMP_Log(RTMP_LOGERROR, "RTMP_UpdateBufferMS(), BufferMS:%d", r->m_nBufferMS);
   RTMP_SendCtrl(r, 3, r->m_stream_id, r->m_nBufferMS);
 }
 
@@ -2487,7 +2488,8 @@ HandleInvoke(RTMP *r, const char *body, unsigned int nBodySize)
     		  if (r->Link.lFlags & RTMP_LF_PLST)
     			  SendPlaylist(r);
     		  SendPlay(r);
-    		  RTMP_SendCtrl(r, 3, r->m_stream_id, /*r->m_nBufferMS*/100);// Abner: too large buffer make streaming stop
+    		  RTMP_SendCtrl(r, 3, r->m_stream_id, r->m_nBufferMS);// Abner: too large buffer make streaming stop
+    		  RTMP_Log(RTMP_LOGERROR, "init BufferMS:%d", r->m_nBufferMS);
     	  }
       }
       else if (AVMATCH(&methodInvoked, &av_play) ||

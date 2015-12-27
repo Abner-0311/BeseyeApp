@@ -154,3 +154,26 @@ int register_librtmp_CB(URLContext *urlCtx,
     return 0;
 }
 
+int set_play_buffer_length(URLContext *urlCtx, const int iBuuferInMS){
+	int iRet = 0;
+	LibRTMPContext *ctx = urlCtx->priv_data;
+	RTMP *r = &ctx->rtmp;
+	if(r){
+		iRet = set_play_buffer_length_rtmp(r, iBuuferInMS);
+	}
+	return iRet;
+}
+
+int set_play_buffer_length_rtmp(void *rtmpCtx, const int iBuuferInMS){
+	int iRet = -1;
+	RTMP *r = (RTMP *)rtmpCtx;
+	if(r){
+		RTMP_SetBufferMS(r, iBuuferInMS);
+		RTMP_UpdateBufferMS(r);
+		iRet = 0;
+	}else{
+		av_log(NULL, AV_LOG_INFO,"set_play_buffer_length_rtmp(), r is null\n");
+	}
+	return iRet;
+}
+

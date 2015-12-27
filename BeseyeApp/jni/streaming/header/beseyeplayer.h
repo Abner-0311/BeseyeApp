@@ -107,6 +107,8 @@ public:
 	virtual void setRTMPIgoreURLDecode(bool bIgnore);
 	virtual bool getRTMPIgoreURLDecode();
 
+	virtual int set_buffer_length(int iBuuferInMS);
+
 private:
 	inline void fill_rectangle(SDL_Surface *screen, int x, int y, int w, int h, int color){
 	    SDL_Rect rect;
