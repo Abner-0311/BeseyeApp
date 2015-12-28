@@ -394,6 +394,8 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	        }
 	        else{
 	        	 Log.e(TAG, "statusCode:"+statusCode+", url = "+filterPrivacyData(strUrl));
+//	        	 entity = response.getEntity();
+//	        	 checkEntity(entity);
 	        	 if(null != httpRequest){
 	             	httpRequest.abort();
 	             }

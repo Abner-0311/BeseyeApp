@@ -269,6 +269,8 @@ public class BeseyeJSONUtil {
 	public static final String ACC_DEMO_VCAM_LST 		= "DemoVcams";
 	public static final String ACC_PRIVATE_VCAM_CNT 	= "PrivateVcamsCnt";
 	public static final String ACC_PRIVATE_VCAM_LST 	= "PrivateVcams";
+	public static final String ACC_SUBSCRIBE_VCAM_CNT 	= "SubscribedVcamsCnt";
+	public static final String ACC_SUBSCRIBE_VCAM_LST 	= "SubscribedVcams";
 	public static final String ACC_VCAM_PLAN 			= "Plan";
 	public static final String ACC_VCAM_HW_ID 			= "PhyCamHwSn";
 	
@@ -280,6 +282,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_SUBSC_NAME 			= "UserName";
 	public static final String ACC_SUBSC_EMAIL 			= "UserEmail";
 	public static final String ACC_SUBSC_ADMIN 			= "IsAdmin";
+	public static final String ACC_IS_SUBSCRIBED_VCAM 	= "IsSubscribedVCam";
 	
 	//MM BE service
 	public static final String MM_SERVER 				= "server";

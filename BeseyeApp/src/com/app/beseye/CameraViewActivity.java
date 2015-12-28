@@ -223,7 +223,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			mlRetryConnectBeginTs = 0;
 		    			cancelCheckVideoConn();
 		    			if(null != mCameraViewControlAnimator){
-			    			setEnabled(mCameraViewControlAnimator.getTalkView(), mbIsLiveMode && !isInP2PMode() && !mbIsDemoCam);
+			    			setEnabled(mCameraViewControlAnimator.getTalkView(), mbIsLiveMode && !isInP2PMode() && !mbIsDemoCam && !BeseyeJSONUtil.getJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_IS_SUBSCRIBED_VCAM));
 			    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), !mbIsDemoCam);
 			    			//setEnabled(mIbRewind, true);
 			    			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
@@ -686,9 +686,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			
 			BeseyeUtils.setEnabled(mCameraViewControlAnimator.getGoLiveView(), !mbIsLiveMode);
 			BeseyeUtils.setEnabled(mCameraViewControlAnimator.getEventsView(), !isInP2PMode());
-			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), (!isInP2PMode() && mbVCamAdmin && !mbIsDemoCam)?View.VISIBLE:View.INVISIBLE);
+			boolean bIsSettingViewVisible = !isInP2PMode() && mbVCamAdmin && !mbIsDemoCam && !BeseyeJSONUtil.getJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_IS_SUBSCRIBED_VCAM);
+			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), bIsSettingViewVisible?View.VISIBLE:View.INVISIBLE);
 			//[Abner 0709]Need to bundle-check if new icon for setting button needs to show
-			mCameraViewControlAnimator.checkSettingNewStatus();
+			if(null != mCameraViewControlAnimator){
+				mCameraViewControlAnimator.checkSettingNewStatus(bIsSettingViewVisible);
+			}
 		}
 	}
 	
@@ -721,8 +724,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mCameraViewControlAnimator.showControl();
 			Configuration config = getResources().getConfiguration();		
 			setMarginByOrientation(config.orientation);
-			//Check if new icon for setting button needs to show
-			mCameraViewControlAnimator.checkSettingNewStatus();
+			boolean bIsSettingViewVisible = !isInP2PMode() && mbVCamAdmin && !mbIsDemoCam && !BeseyeJSONUtil.getJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_IS_SUBSCRIBED_VCAM);
+			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), bIsSettingViewVisible?View.VISIBLE:View.INVISIBLE);
+			//[Abner 0709]Need to bundle-check if new icon for setting button needs to show
+			if(null != mCameraViewControlAnimator){
+				mCameraViewControlAnimator.checkSettingNewStatus(bIsSettingViewVisible);
+			}
 		}
 		
 		checkAndExtendHideHeader();
@@ -1084,14 +1091,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private void applyCamAttr(){		
 		if(null != mCameraViewControlAnimator){
-			ImageButton ibSetting = mCameraViewControlAnimator.getSettingView();
-			if(null != ibSetting){
-				ibSetting.setVisibility((!isInP2PMode() && mbVCamAdmin && !mbIsDemoCam)?View.VISIBLE:View.INVISIBLE);
-				//[Abner 0709]Need to bundle-check if new icon for setting button needs to show
-				if(null != mCameraViewControlAnimator){
-					mCameraViewControlAnimator.checkSettingNewStatus();
-				}
+			boolean bIsSettingViewVisible = !isInP2PMode() && mbVCamAdmin && !mbIsDemoCam && !BeseyeJSONUtil.getJSONBoolean(mCam_obj, BeseyeJSONUtil.ACC_IS_SUBSCRIBED_VCAM);
+			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), bIsSettingViewVisible?View.VISIBLE:View.INVISIBLE);
+			//[Abner 0709]Need to bundle-check if new icon for setting button needs to show
+			if(null != mCameraViewControlAnimator){
+				mCameraViewControlAnimator.checkSettingNewStatus(bIsSettingViewVisible);
 			}
+			
 			TextView txtCamName = mCameraViewControlAnimator.getCamNameView();
 			if(null != txtCamName){
 				txtCamName.setText(mStrVCamName);

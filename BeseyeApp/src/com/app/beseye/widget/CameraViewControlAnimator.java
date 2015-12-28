@@ -176,18 +176,18 @@ public class CameraViewControlAnimator {
 			if(null != ivSettingNew){
 				syncViewProprety(mIvSettingNew, ivSettingNew);
 				mIvSettingNew = ivSettingNew;
-				checkSettingNewStatus();
+				checkSettingNewStatus(ivSettingNew.getVisibility() == View.VISIBLE);
 			}
 		}
 	}
 	
-	public void checkSettingNewStatus(){
+	public void checkSettingNewStatus(boolean bIsSettingViewVisible){
 		if(null != mIvSettingNew){
 			boolean bAllNewFeaturesInSettingPageTrigger = BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE) && 
 														  BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET) && 
 														  BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked();
-			
-			BeseyeUtils.setVisibility(mIvSettingNew, ((null != mIbSetting && mIbSetting.getVisibility() == View.VISIBLE) && !bAllNewFeaturesInSettingPageTrigger)?View.VISIBLE:View.INVISIBLE);
+						
+			BeseyeUtils.setVisibility(mIvSettingNew, (!bIsSettingViewVisible || bAllNewFeaturesInSettingPageTrigger)?View.INVISIBLE:View.VISIBLE);
 		}
 	}
 	
@@ -335,6 +335,10 @@ public class CameraViewControlAnimator {
 	
 	public ImageButton getSettingView(){
 		return mIbSetting;
+	}
+	
+	public ImageView getSettingNewView(){
+		return mIvSettingNew;
 	}
 	
 	public ImageButton getTalkView(){
