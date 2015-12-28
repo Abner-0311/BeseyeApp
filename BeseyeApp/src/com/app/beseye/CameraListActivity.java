@@ -329,7 +329,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 						try {
 							JSONObject camObj = SubscribeVcamList.getJSONObject(i);
 							if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
-								BeseyeJSONUtil.setJSONBoolean(camObj, BeseyeJSONUtil.ACC_IS_SUBSCRIBED_VCAM, true);
+								//BeseyeJSONUtil.setJSONBoolean(camObj, BeseyeJSONUtil.ACC_IS_SUBSCRIBED_VCAM, true);
 								arrCamList.put(camObj);
 							}
 						} catch (JSONException e) {

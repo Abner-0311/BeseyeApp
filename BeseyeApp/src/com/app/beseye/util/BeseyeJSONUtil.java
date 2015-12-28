@@ -282,7 +282,13 @@ public class BeseyeJSONUtil {
 	public static final String ACC_SUBSC_NAME 			= "UserName";
 	public static final String ACC_SUBSC_EMAIL 			= "UserEmail";
 	public static final String ACC_SUBSC_ADMIN 			= "IsAdmin";
-	public static final String ACC_IS_SUBSCRIBED_VCAM 	= "IsSubscribedVCam";
+	
+	public static final String ACC_VCAM_TYPE			= "VcamType";
+	public static final String ACC_VCAM_TYPE_OWNED		= "Owned";
+	public static final String ACC_VCAM_TYPE_DEMO		= "Demo";
+	public static final String ACC_VCAM_TYPE_PRIVATE	= "Private";
+	public static final String ACC_VCAM_TYPE_SUBSCRIBED = "Subscribed";
+	
 	
 	//MM BE service
 	public static final String MM_SERVER 				= "server";

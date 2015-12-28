@@ -1023,7 +1023,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 						obj.put(PS_TOKEN, regId);
 						obj.put(PS_PLATFORM, PS_GCM);
 
+						//JPush needs to separate for 3 branches
 						//obj.put(PS_PLATFORM, BeseyeConfig.PRODUCTION_VER?PS_GCM:(BeseyeConfig.ALPHA_VER?PS_GCM_ALPHA:PS_GCM_DEV));
+						
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
