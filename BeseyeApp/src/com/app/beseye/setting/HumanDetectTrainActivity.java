@@ -173,8 +173,8 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 	protected void onSessionComplete() {
 		super.onSessionComplete();
 		//if(!mbNeedToShowIntro){
-		if(100 <= miTrainProgress && BeseyeConfig.PRODUCTION_VER){
-			onTrainProcessFinished();
+		if(100 <= miTrainProgress && (BeseyeConfig.PRODUCTION_VER || !SessionMgr.getInstance().getHumanDetectIntroShowAlways())){
+			onTrainProcessFinished(true);
 		}else{
 			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectRefineListTask(this), true, mStrVCamID, NUM_OF_REFINE_IMG+"");
 		}
@@ -194,13 +194,15 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 				if(null != mArrTrainPic){
 //					int iCount = mArrTrainPic.length();
 //					int iRealCntToPreload = iCount - (NUM_OF_REFINE_IMG - iCntToPreload);
+					
 					int iRealCntToPreload = mArrTrainPic.length();
 					if(0 < iRealCntToPreload){
 						mImgPreload = new RemoteImageView[iRealCntToPreload];
 						for(int idx = 0; idx < iRealCntToPreload;idx++){
 							mImgPreload[idx] = new RemoteImageView(HumanDetectTrainActivity.this);
-							final String strPath = BeseyeJSONUtil.getJSONString(mArrTrainPic.optJSONObject(/*iCount - 1 - */idx), BeseyeJSONUtil.MM_HD_IMG_PATH);
-							Log.i(TAG, "preloadImages(), strPath:"+strPath.toString());
+							final String strPath = BeseyeJSONUtil.getJSONString(mArrTrainPic.optJSONObject(idx), BeseyeJSONUtil.MM_HD_IMG_PATH);
+							if(BeseyeConfig.DEBUG)
+								Log.i(TAG, "preloadImages(), strPath:"+strPath.toString());
 
 							if(null != mImgPreload[idx] && null != strPath && 0 < strPath.length()){
 								mImgPreload[idx].setURI(BeseyeIMPMMBEHttpTask.getRefineImgPath(strPath), R.drawable.h_detection_loading_image, mStrVCamID, mRemoteImageCallbackForPreload);
@@ -282,7 +284,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		mShowUIAfterGetProgress = new Runnable(){
 			@Override
 			public void run() {
-				onNoTrainPicAvailable(miTrainProgress);
+				onNoTrainPicAvailable(miTrainProgress, true);
 				mShowUIAfterGetProgress = null;
 			}
 		};
@@ -307,7 +309,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 						if(-1 == miTrainProgress){
 							postAndGetTrainProgress();
 						}else{
-							onNoTrainPicAvailable(miTrainProgress);
+							onNoTrainPicAvailable(miTrainProgress, true);
 						}
 					}else{
 						postheckImageStateRunnable();
@@ -330,7 +332,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 					if(-1 == miTrainProgress){
 						postAndGetTrainProgress();
 					}else{
-						onNoTrainPicAvailable(miTrainProgress);
+						onNoTrainPicAvailable(miTrainProgress, true);
 					}				}
 			}else if(task instanceof BeseyeIMPMMBEHttpTask.SetHumanDetectRefineLabelTask){
 				if(0 == iRetCode){
@@ -351,7 +353,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 							if(100 > miTrainProgress){
 								onTrainRetAndPicAvailable(miTrainProgress, mbHaveNextPage);
 							}else{
-								onTrainProcessFinished();
+								onTrainProcessFinished(false);
 							}
 							mShowUIAfterGetProgress = null;
 						}
@@ -521,7 +523,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		}
 	}
 	
-	private void onNoTrainPicAvailable(int iCompletePercent){
+	private void onNoTrainPicAvailable(int iCompletePercent, boolean bHideExitButton){
 		if(null != mIvTrainRet){
 			mIvTrainRet.setImageResource(R.drawable.h_detection_ya_image);
 		}
@@ -532,6 +534,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			setColorSpanText(mTxtRetDesc, strDesc, strProgress);
 		}
 		
+		BeseyeUtils.setVisibility(mbtnFinish, bHideExitButton?View.GONE:View.VISIBLE);
 		BeseyeUtils.setVisibility(mbtnContinue, View.GONE);
 		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 	}
@@ -547,11 +550,12 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			setColorSpanText(mTxtRetDesc, strDesc, strProgress);
 		}
 		
+		BeseyeUtils.setVisibility(mbtnFinish, View.VISIBLE);
 		BeseyeUtils.setVisibility(mbtnContinue, bHaveMorrePic?View.VISIBLE:View.GONE);
 		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 	}
 	
-	private void onTrainProcessFinished(){
+	private void onTrainProcessFinished(boolean bHideExitButton){
 		if(null != mIvTrainRet){
 			mIvTrainRet.setImageResource(R.drawable.h_detection_phd_image);
 		}
@@ -568,6 +572,9 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			mTxtRetDesc.setText(wordtoSpan);
 		}
 		
+		
+		BeseyeUtils.setVisibility(mbtnFinish, bHideExitButton?View.GONE:View.VISIBLE);
+
 		BeseyeUtils.setVisibility(mbtnContinue, View.GONE);
 		BeseyeUtils.setVisibility(mVgResultPage, View.VISIBLE);
 	}
