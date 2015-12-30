@@ -115,9 +115,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgPowerSchedule = (ViewGroup)findViewById(R.id.vg_power_schedule);
 		if(null != mVgPowerSchedule){
 			mVgPowerSchedule.setOnClickListener(this);
-//			if(BeseyeConfig.PRODUCTION_VER){
-//				mVgPowerSchedule.setVisibility(View.GONE);
-//			}
 		}
 		
 		mVgLocationAware = (ViewGroup)findViewById(R.id.vg_location_aware);
@@ -159,25 +156,16 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgMotionNotification = (ViewGroup)findViewById(R.id.vg_motion_notification_events);
 		if(null != mVgMotionNotification){
 			mVgMotionNotification.setOnClickListener(this);
-			//if(BeseyeConfig.PRODUCTION_VER){
-			//	mVgMotionNotification.setVisibility(View.GONE);
-			//}
 		}
 		
 		mVgHumanDetectNotification = (ViewGroup)findViewById(R.id.vg_human_detect_notification_events);
 		if(null != mVgHumanDetectNotification){
 			mVgHumanDetectNotification.setOnClickListener(this);
-			if(BeseyeConfig.PRODUCTION_VER){
-				mVgHumanDetectNotification.setVisibility(View.GONE);
-			}
 		}
 		
 		mVgDetachCam = (ViewGroup)findViewById(R.id.vg_detach_cam);
 		if(null != mVgDetachCam){
 			mVgDetachCam.setOnClickListener(this);
-//			if(BeseyeUtils.isHiddenFeature()){
-//				mVgDetachCam.setVisibility(View.GONE);
-//			}
 		}
 		
 		mVgRebootCam = (ViewGroup)findViewById(R.id.vg_reboot_cam);
