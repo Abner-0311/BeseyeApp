@@ -542,7 +542,7 @@
   <!--Intro desc of human detect training part 2-->
   <string name="enhance_human_detect_intro_p2_desc">透過此技術，當偵測到人員行經時，攝影機會自動發出通知到您的裝置。讓你不在現場，也可以簡單知道是否有移動的人員。</string>
   <!--Intro desc of human detect training part 3-->
-  <string name="enhance_human_detect_intro_p3_desc">世上最好的技術，現在還可針對您做最佳化。\n透過偵測功能最佳化流程，讓您的攝影機更聰明，就像是量身定做。</string>
+  <string name="enhance_human_detect_intro_p3_desc">世上最好的技術，現在還可針對您做最佳化。透過偵測功能最佳化流程，讓您的攝影機更聰明，就像是量身定做。</string>
   <!--highlight part in Intro desc of human detect training part 3-->
   <string name="enhance_human_detect_intro_p3_desc_highlight">無</string>
   <!--Next step button -->

@@ -542,7 +542,7 @@
   <!--Intro desc of human detect training part 2-->
   <string name="enhance_human_detect_intro_p2_desc">透过此技术，当侦测到人员行经时，摄影机会自动发出通知到您的装置。让你不在现场，也可以简单知道是否有移动的人员。</string>
   <!--Intro desc of human detect training part 3-->
-  <string name="enhance_human_detect_intro_p3_desc">世上最好的技术，现在还可针对您做优化。\n透过侦测功能优化流程，让您的摄影机更聪明，就像是量身定做。</string>
+  <string name="enhance_human_detect_intro_p3_desc">世上最好的技术，现在还可针对您做优化。透过侦测功能优化流程，让您的摄影机更聪明，就像是量身定做。</string>
   <!--highlight part in Intro desc of human detect training part 3-->
   <string name="enhance_human_detect_intro_p3_desc_highlight">无</string>
   <!--Next step button -->

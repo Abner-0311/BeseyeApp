@@ -542,7 +542,7 @@
   <!--Intro desc of human detect training part 2-->
   <string name="enhance_human_detect_intro_p2_desc">この技術では、人の通過を検知するとカメラが自動的にお客様の装置に通知するので、現場にいらっしゃらなくても、人の動きがあるかどうかを簡単に把握できます。　</string>
   <!--Intro desc of human detect training part 3-->
-  <string name="enhance_human_detect_intro_p3_desc">世界最高の技術。お客様の使いやすいように最適化を行うことも可能です。\n検知機能の最適化によってカメラがより賢くなり、まるでオーダーメイドのようになります。　</string>
+  <string name="enhance_human_detect_intro_p3_desc">世界最高の技術。お客様の使いやすいように最適化を行うことも可能です。検知機能の最適化によってカメラがより賢くなり、まるでオーダーメイドのようになります。　</string>
   <!--highlight part in Intro desc of human detect training part 3-->
   <string name="enhance_human_detect_intro_p3_desc_highlight">無し</string>
   <!--Next step button -->

@@ -2,10 +2,6 @@ package com.app.beseye.setting;
 
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
-import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.NOTIFY_OBJ;
-import static com.app.beseye.util.BeseyeJSONUtil.OBJ_TIMESTAMP;
-import static com.app.beseye.util.BeseyeJSONUtil.getJSONObject;
 
 import java.util.List;
 
@@ -13,21 +9,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -37,7 +28,6 @@ import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.adapter.HumanDetectTrainPicAdapter;
 import com.app.beseye.adapter.HumanDetectTrainPicAdapter.HumanDetectTrainItmHolder;
-import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeIMPMMBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
@@ -58,12 +48,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	private JSONArray mArrTrainPic, mArrTrainPicToSend;
 	private boolean mbHaveNextPage = false;
-	
-	//private ViewPager mVpIntro;
-	//private IntroPageAdapter mIntroPageAdapter;
-	//private Button mbtnDone;
 	private ImageView mIvTrainRet;
-	
 	private ViewGroup mVgResultPage = null;
 	private TextView  mTxtRetDesc;
 	private Button mbtnFinish, mbtnContinue, mbtnConfirm;
@@ -134,6 +119,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 		if(null != mbtnConfirm){
 			mbtnConfirm.setOnClickListener(HumanDetectTrainActivity.this);
 			mbtnConfirm.setEnabled(false);
+			mbtnConfirm.setVisibility(View.GONE);
 		}
 		
 		mVgResultPage = (ViewGroup)findViewById(R.id.vg_human_detect_train_ret);
@@ -229,7 +215,8 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 				boolean bNeedToRefresh = false;
 				for(int idx = 0 ;idx < iLenPic;idx++){
 					JSONObject objCheck = mArrTrainPic.optJSONObject(idx);
-					if(false == BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED) && 
+					if(false == BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_PRELOAD_LOADED) && 
+					   false == BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOADED) && 
 					   false == BeseyeJSONUtil.getJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED)){
 						
 						BeseyeJSONUtil.setJSONBoolean(objCheck, BeseyeJSONUtil.MM_HD_IMG_LOAD_FAILED, true);
@@ -251,8 +238,9 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			checkImgState();
 		}};
 		
-	private void postheckImageStateRunnable(){
+	private void postCheckImageStateRunnable(){
 		BeseyeUtils.setEnabled(mbtnConfirm, false);
+		BeseyeUtils.setVisibility(mbtnConfirm, View.VISIBLE);
 		mbHaveCheckImgState = false;
 		BeseyeUtils.removeRunnable(mCheckImageStateRunnable);
 		BeseyeUtils.postRunnable(mCheckImageStateRunnable, TIME_TO_CHECK_IMG_STATE);
@@ -277,6 +265,9 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			}
 		}
 		
+		if(false == bDisabledBtn){
+			BeseyeUtils.removeRunnable(mCheckImageStateRunnable);
+		}
 		BeseyeUtils.setEnabled(mbtnConfirm, !bDisabledBtn);
 	}
 	
@@ -312,7 +303,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 							onNoTrainPicAvailable(miTrainProgress, true);
 						}
 					}else{
-						postheckImageStateRunnable();
+						postCheckImageStateRunnable();
 						
 						mbHaveNextPage = BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.MM_HD_IMG_PAGING);
 						if(null != mHumanDetectTrainPicAdapter){

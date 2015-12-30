@@ -7,7 +7,7 @@
 	<RelativeLayout 
 	    android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_weight="29">
+		android:layout_weight="35">
 	    <TextView
 		    android:id="@+id/tv_enhance_human_detect_intro_p2_desc1"
 		    android:layout_width="fill_parent"
@@ -23,7 +23,7 @@
 	<RelativeLayout 
 	    android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_weight="71">
+		android:layout_weight="65">
 	    <Button
 		    android:id="@+id/button_hidden_2"
 		    android:layout_width="fill_parent"
