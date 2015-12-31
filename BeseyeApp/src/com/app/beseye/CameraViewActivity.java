@@ -2161,6 +2161,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		@Override
 		public void run() {
 			if(-1 != mlRequestBitmapScreenshotTs){
+	    		Log.e(TAG, "run(), mlRequestBitmapScreenshotTs:"+mlRequestBitmapScreenshotTs+", mSaveScreenshotTask:"+(null != mSaveScreenshotTask)+", mSaveScreenshotTask.isCancelled():"+(null != mSaveScreenshotTask && mSaveScreenshotTask.isCancelled()));
+
 				//close dialog
 				removeMyDialog(DIALOG_ID_PLAYER_CAPTURE);
 				
@@ -2237,10 +2239,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			/*if(result){
 				Toast.makeText(CameraViewActivity.this, R.string.player_screenshot_capture_ok, Toast.LENGTH_LONG).show();
 			}else */if(!result && false == isCancelled()){
+	    		Log.e(TAG, "onPostExecute(), result:"+result+", isCancelled():"+isCancelled());
 				Toast.makeText(CameraViewActivity.this, R.string.player_screenshot_capture_failed, Toast.LENGTH_LONG).show();
 			}
 			mlRequestBitmapScreenshotTs = -1;
 			mSaveScreenshotTask = null;
+			BeseyeUtils.removeRunnable(mMonitorScreenshotRunnable);
 		}
 
 		@Override
@@ -2280,8 +2284,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    		    			}} );
 			    		    		d.show();
 								}}, 500);
+	    		        }else{
+	    		    		Log.e(TAG, "failed to compress screenshot");
 	    		        }
 	    		        bmp[0].recycle();
+    		        }else{
+    		    		Log.e(TAG, "failed to have the bitmap");
     		        }
     		    } catch (Exception e) {
     		        e.printStackTrace();
@@ -2290,12 +2298,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						try {
 							out.close();
 						} catch (IOException e) {
-							e.printStackTrace();
+	    		    		Log.e(TAG, "e:"+e.toString());
 						}
     		    }
 			}else{
 	    		Log.i(TAG, "fileToSave is null");
 			}
+			
 			return bRet;
 		} 
     }
