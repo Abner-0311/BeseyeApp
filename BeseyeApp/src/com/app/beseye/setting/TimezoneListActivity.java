@@ -185,7 +185,6 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		mlstTimeZone.add(new BeseyeTimeZone("Asia/Irkutsk",  getString(R.string.tz_russia_irkutsk_time)));
 		mlstTimeZone.add(new BeseyeTimeZone("Asia/Yakutsk",  getString(R.string.tz_russia_yakutsk_time)));
 		mlstTimeZone.add(new BeseyeTimeZone("Asia/Vladivostok",  getString(R.string.tz_russia_vladivostok_time)));
-		mlstTimeZone.add(new BeseyeTimeZone("Asia/Srednekolymsk",  getString(R.string.tz_russia_srednekolymsk)));
 		mlstTimeZone.add(new BeseyeTimeZone("Asia/Kamchatka",  getString(R.string.tz_russia_kamchatka_time)));
 		mlstTimeZone.add(new BeseyeTimeZone("Europe/Kiev",  getString(R.string.tz_ukraine)));
 		mlstTimeZone.add(new BeseyeTimeZone("Asia/Manila",  getString(R.string.tz_philippines)));
