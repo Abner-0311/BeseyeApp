@@ -179,10 +179,8 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 		if(!mbFirstResume){
 			updateScheduleStatus();
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
-			
-			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID)
-				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
-		}
+		}	
+		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 	}
 
 	@Override
@@ -318,6 +316,13 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 						for ( Iterator<String> iter = sortSchedItem.keySet().iterator(); iter.hasNext(); ) {
 							String key = iter.next();
 							addScheduleItm( key, sortSchedItem.get( key ) );
+						}
+					}else {			//if null == schedListObj
+						if(null != mVgPowerScheduleContainer){
+							mVgPowerScheduleContainer.removeAllViews();
+						}
+						if(null != mArrVgSchedules){
+							mArrVgSchedules.clear();
 						}
 					}
 				}
