@@ -31,7 +31,8 @@
 	   		android:layout_alignParentRight="true"
 	   		android:src="@drawable/sl_liveview_settings_btn_portrait"
 	   		android:background="@android:color/transparent"
-	   		android:padding="@dimen/news_icon_padding"/>
+	   		android:padding="@dimen/news_icon_padding"
+	   		android:visibility="invisible"/>
 	    <ImageView
 	        android:id="@+id/iv_settings_news"
 		    android:layout_width="wrap_content"

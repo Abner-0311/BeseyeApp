@@ -56,7 +56,7 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 	private BeseyeSwitchBtn mCamSwitchBtn;
 	private TextView mTxtPowerTitle;
 	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam, mVgMotionNotification, mVgHumanDetectNotification;
-	private ImageView mIvTriggerZoneNew, mIvHumanDetectNew;
+	private ImageView mIvTriggerZoneNew, mIvHumanDetectNew, mIvScheduleNew;
 	
 	private int miUnmaskDetachCamHitCount = 0;
 	
@@ -115,9 +115,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgPowerSchedule = (ViewGroup)findViewById(R.id.vg_power_schedule);
 		if(null != mVgPowerSchedule){
 			mVgPowerSchedule.setOnClickListener(this);
-//			if(BeseyeConfig.PRODUCTION_VER){
-//				mVgPowerSchedule.setVisibility(View.GONE);
-//			}
 		}
 		
 		mVgLocationAware = (ViewGroup)findViewById(R.id.vg_location_aware);
@@ -159,25 +156,16 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mVgMotionNotification = (ViewGroup)findViewById(R.id.vg_motion_notification_events);
 		if(null != mVgMotionNotification){
 			mVgMotionNotification.setOnClickListener(this);
-			//if(BeseyeConfig.PRODUCTION_VER){
-			//	mVgMotionNotification.setVisibility(View.GONE);
-			//}
 		}
 		
 		mVgHumanDetectNotification = (ViewGroup)findViewById(R.id.vg_human_detect_notification_events);
 		if(null != mVgHumanDetectNotification){
 			mVgHumanDetectNotification.setOnClickListener(this);
-			if(BeseyeConfig.PRODUCTION_VER){
-				mVgHumanDetectNotification.setVisibility(View.GONE);
-			}
 		}
 		
 		mVgDetachCam = (ViewGroup)findViewById(R.id.vg_detach_cam);
 		if(null != mVgDetachCam){
 			mVgDetachCam.setOnClickListener(this);
-//			if(BeseyeUtils.isHiddenFeature()){
-//				mVgDetachCam.setVisibility(View.GONE);
-//			}
 		}
 		
 		mVgRebootCam = (ViewGroup)findViewById(R.id.vg_reboot_cam);
@@ -196,6 +184,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		mIvHumanDetectNew = (ImageView)findViewById(R.id.iv_human_detect_notification_news);
 		if(null != mIvHumanDetectNew){
 			BeseyeUtils.setVisibility(mIvHumanDetectNew, !BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET)?View.VISIBLE:View.INVISIBLE);
+		}
+		
+		mIvScheduleNew = (ImageView)findViewById(R.id.iv_cam_schedule_news);
+		if(null != mIvScheduleNew){
+			BeseyeUtils.setVisibility(mIvScheduleNew, !BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE)?View.VISIBLE:View.INVISIBLE);
 		}
 	}
 	
@@ -302,6 +295,11 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				//monitorAsyncTask(new BeseyeCamBEHttpTask.RestartCamTask(this), true, mStrVCamID);
 				//showMyDialog(DIALOG_ID_CAM_INFO);
 				//showMyDialog(DIALOG_ID_CAM_REBOOT_CONFIRM);
+				
+				if(!BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE)){
+					BeseyeNewFeatureMgr.getInstance().setFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE, true);
+					BeseyeUtils.setVisibility(mIvScheduleNew, View.INVISIBLE);
+				}
 				
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());

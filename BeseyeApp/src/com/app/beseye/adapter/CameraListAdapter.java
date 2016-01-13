@@ -130,6 +130,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					holder.mSbCamOnOff.setTag(holder);
 					holder.mSbCamOnOff.setSwitchState(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_ON)?SwitchState.SWITCH_ON:(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_OFF)?SwitchState.SWITCH_OFF:SwitchState.SWITCH_DISABLED));
 					holder.mSbCamOnOff.setEnabled(connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_INIT)||connState.equals(BeseyeJSONUtil.CAM_CONN_STATUS.CAM_DISCONNECTED)?false:true);
+					holder.mSbCamOnOff.setVisibility((!mbIsDemoCamList && BeseyeJSONUtil.getJSONBoolean(obj, BeseyeJSONUtil.ACC_SUBSC_ADMIN))?View.VISIBLE:View.INVISIBLE);
 				}
 				
 				//Log.i(TAG, "setupItem(), holder.mImgThumbnail:"+holder.mImgThumbnail.getWidth());

@@ -366,7 +366,6 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 //	    		}
 //	    		
 	    		httpRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
-	    		httpRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
 	    		httpRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
 	    		httpRequest.addHeader("Bes-Android-Ver", Build.VERSION.RELEASE);
 	    		
@@ -395,6 +394,8 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	        }
 	        else{
 	        	 Log.e(TAG, "statusCode:"+statusCode+", url = "+filterPrivacyData(strUrl));
+//	        	 entity = response.getEntity();
+//	        	 checkEntity(entity);
 	        	 if(null != httpRequest){
 	             	httpRequest.abort();
 	             }

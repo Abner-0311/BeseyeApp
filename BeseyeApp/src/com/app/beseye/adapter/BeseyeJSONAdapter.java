@@ -51,7 +51,7 @@ public abstract class BeseyeJSONAdapter extends BaseAdapter {
 	@Override
 	public Object getItem(int arg0) {
 		try {
-			return (null != mArrList)?mArrList.get(arg0):null;
+			return (null != mArrList && arg0 < mArrList.length())?mArrList.get(arg0):null;
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

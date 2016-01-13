@@ -30,7 +30,7 @@ pFrameRGB(NULL),
 window(w),
 seek_by_bytes(-1),
 show_status(-1),
-av_sync_type(AV_SYNC_VIDEO_MASTER),
+av_sync_type(AV_SYNC_AUDIO_MASTER),
 start_time(AV_NOPTS_VALUE),
 duration(AV_NOPTS_VALUE),
 fast(0),
@@ -684,6 +684,38 @@ void CBeseyePlayer::alloc_picture(BeseyeAllocEventProps *event_props)
 void CBeseyePlayer::setWindowHolder(void* window_holder, void*(* getWindowFunc)(void* window_holder, uint32_t iWidth, uint32_t iHeight)){
 	this->window_holder = window_holder;
 	this->getWindowByHolderFunc = getWindowFunc;
+}
+
+int CBeseyePlayer::set_buffer_length(int iBuuferInMS){
+	int iRet = -1;
+	if(0 < iBuuferInMS){
+		void* rtmp = rtmpRef;
+		if(NULL == rtmp){
+			if(NULL != is){
+				AVFormatContext *pFCtx = is->ic;
+				if(NULL != pFCtx){
+					AVIOContext* ioCtx =  pFCtx->pb;
+					if(NULL != ioCtx){
+						URLContext* urlCtx = (URLContext*)ioCtx->opaque;
+						if(NULL != urlCtx){
+							iRet = set_play_buffer_length(urlCtx, iBuuferInMS);
+						}else{
+							av_log(NULL, AV_LOG_ERROR,"set_buffer_length(), urlCtx is null\n");
+						}
+					}else{
+						av_log(NULL, AV_LOG_ERROR,"set_buffer_length(), ioCtx is null\n");
+					}
+				}else{
+					av_log(NULL, AV_LOG_ERROR,"set_buffer_length(), pFCtx is null\n");
+				}
+			}else{
+				av_log(NULL, AV_LOG_ERROR,"set_buffer_length(), is is null\n");
+			}
+		}else{
+			iRet = set_play_buffer_length_rtmp(rtmp, iBuuferInMS);
+		}
+	}
+	return iRet;
 }
 
 int CBeseyePlayer::addStreamingPath(const char *path){
@@ -1969,6 +2001,8 @@ int read_thread(void *arg)
     }
 
     av_log(NULL, AV_LOG_INFO, "avformat_find_stream_info_ext--\n");
+
+    //player->set_buffer_length(6000);//for test
 
     //player->registerRtmpCallback(ic);
     player->addPendingStreamPaths();

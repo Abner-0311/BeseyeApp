@@ -185,8 +185,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    		case CV_STATUS_UNINIT:{
 		    			stopUpdateTime();
 		    			if(null != mCameraViewControlAnimator){
-		    				//setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
-			    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
+		    				setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
+			    			//setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getTalkView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getRewindView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getFastForwardView(), false);
@@ -223,7 +223,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		    			mlRetryConnectBeginTs = 0;
 		    			cancelCheckVideoConn();
 		    			if(null != mCameraViewControlAnimator){
-			    			setEnabled(mCameraViewControlAnimator.getTalkView(), mbIsLiveMode && !isInP2PMode() && !mbIsDemoCam);
+			    			setEnabled(mCameraViewControlAnimator.getTalkView(), mbIsLiveMode && !isInP2PMode() && !mbIsDemoCam && mbVCamAdmin);
 			    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), !mbIsDemoCam);
 			    			//setEnabled(mIbRewind, true);
 			    			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
@@ -292,7 +292,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			setEnabled(mCameraViewControlAnimator.getRewindView(), false);
 			    			setEnabled(mCameraViewControlAnimator.getPlayPauseView(), true);
 			    			setEnabled(mCameraViewControlAnimator.getFastForwardView(), false);
-			    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
+		    				setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
+			    			//setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
 			    			updatePlayPauseBtnByStatus(status);
 		    			}
 		    			setCursorVisiblity(View.GONE);
@@ -340,7 +341,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    			}
 		    			}
 		    			
-		    			setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
+		    			//setEnabled(mCameraViewControlAnimator.getScreenshotView(), false);
+	    				setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
 
 		    			if(!mActivityResume){
 		    				if(DEBUG)
@@ -684,10 +686,17 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			
 			BeseyeUtils.setEnabled(mCameraViewControlAnimator.getGoLiveView(), !mbIsLiveMode);
 			BeseyeUtils.setEnabled(mCameraViewControlAnimator.getEventsView(), !isInP2PMode());
-			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), (!isInP2PMode() && mbVCamAdmin && !mbIsDemoCam)?View.VISIBLE:View.INVISIBLE);
+			boolean bIsSettingViewVisible = getSettingViewVisibilityCondition();
+			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), bIsSettingViewVisible?View.VISIBLE:View.INVISIBLE);
 			//[Abner 0709]Need to bundle-check if new icon for setting button needs to show
-			mCameraViewControlAnimator.checkSettingNewStatus();
+			if(null != mCameraViewControlAnimator){
+				mCameraViewControlAnimator.checkSettingNewStatus(bIsSettingViewVisible);
+			}
 		}
+	}
+	
+	private boolean getSettingViewVisibilityCondition(){
+		return !isInP2PMode() && mbVCamAdmin && !mbIsDemoCam;
 	}
 	
 	@Override
@@ -719,8 +728,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			mCameraViewControlAnimator.showControl();
 			Configuration config = getResources().getConfiguration();		
 			setMarginByOrientation(config.orientation);
-			//Check if new icon for setting button needs to show
-			mCameraViewControlAnimator.checkSettingNewStatus();
+			boolean bIsSettingViewVisible = getSettingViewVisibilityCondition();
+			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), bIsSettingViewVisible?View.VISIBLE:View.INVISIBLE);
+			//[Abner 0709]Need to bundle-check if new icon for setting button needs to show
+			if(null != mCameraViewControlAnimator){
+				mCameraViewControlAnimator.checkSettingNewStatus(bIsSettingViewVisible);
+			}
 		}
 		
 		checkAndExtendHideHeader();
@@ -1082,14 +1095,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private void applyCamAttr(){		
 		if(null != mCameraViewControlAnimator){
-			ImageButton ibSetting = mCameraViewControlAnimator.getSettingView();
-			if(null != ibSetting){
-				ibSetting.setVisibility((!isInP2PMode() && mbVCamAdmin && !mbIsDemoCam)?View.VISIBLE:View.INVISIBLE);
-				//[Abner 0709]Need to bundle-check if new icon for setting button needs to show
-				if(null != mCameraViewControlAnimator){
-					mCameraViewControlAnimator.checkSettingNewStatus();
-				}
+			boolean bIsSettingViewVisible = getSettingViewVisibilityCondition();
+			BeseyeUtils.setVisibility(mCameraViewControlAnimator.getSettingView(), bIsSettingViewVisible?View.VISIBLE:View.INVISIBLE);
+			//[Abner 0709]Need to bundle-check if new icon for setting button needs to show
+			if(null != mCameraViewControlAnimator){
+				mCameraViewControlAnimator.checkSettingNewStatus(bIsSettingViewVisible);
 			}
+			
 			TextView txtCamName = mCameraViewControlAnimator.getCamNameView();
 			if(null != txtCamName){
 				txtCamName.setText(mStrVCamName);
@@ -2149,6 +2161,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		@Override
 		public void run() {
 			if(-1 != mlRequestBitmapScreenshotTs){
+	    		Log.e(TAG, "run(), mlRequestBitmapScreenshotTs:"+mlRequestBitmapScreenshotTs+", mSaveScreenshotTask:"+(null != mSaveScreenshotTask)+", mSaveScreenshotTask.isCancelled():"+(null != mSaveScreenshotTask && mSaveScreenshotTask.isCancelled()));
+
 				//close dialog
 				removeMyDialog(DIALOG_ID_PLAYER_CAPTURE);
 				
@@ -2225,10 +2239,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			/*if(result){
 				Toast.makeText(CameraViewActivity.this, R.string.player_screenshot_capture_ok, Toast.LENGTH_LONG).show();
 			}else */if(!result && false == isCancelled()){
+	    		Log.e(TAG, "onPostExecute(), result:"+result+", isCancelled():"+isCancelled());
 				Toast.makeText(CameraViewActivity.this, R.string.player_screenshot_capture_failed, Toast.LENGTH_LONG).show();
 			}
 			mlRequestBitmapScreenshotTs = -1;
 			mSaveScreenshotTask = null;
+			BeseyeUtils.removeRunnable(mMonitorScreenshotRunnable);
 		}
 
 		@Override
@@ -2268,8 +2284,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			    		    			}} );
 			    		    		d.show();
 								}}, 500);
+	    		        }else{
+	    		    		Log.e(TAG, "failed to compress screenshot");
 	    		        }
 	    		        bmp[0].recycle();
+    		        }else{
+    		    		Log.e(TAG, "failed to have the bitmap");
     		        }
     		    } catch (Exception e) {
     		        e.printStackTrace();
@@ -2278,12 +2298,13 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						try {
 							out.close();
 						} catch (IOException e) {
-							e.printStackTrace();
+	    		    		Log.e(TAG, "e:"+e.toString());
 						}
     		    }
 			}else{
 	    		Log.i(TAG, "fileToSave is null");
 			}
+			
 			return bRet;
 		} 
     }
@@ -3382,6 +3403,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	}
 	
     protected boolean onCameraPeopleEvent(JSONObject msgObj){
+    	return checkEventById(msgObj);
+    }
+    
+    protected boolean onCameraHumanDetectEvent(JSONObject msgObj){
     	return checkEventById(msgObj);
     }
     

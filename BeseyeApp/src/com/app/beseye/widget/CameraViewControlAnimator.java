@@ -32,6 +32,7 @@ import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeNewFeatureMgr;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.BeseyeNewFeatureMgr.BESEYE_NEW_FEATURE;
 
 public class CameraViewControlAnimator {
 	
@@ -175,14 +176,18 @@ public class CameraViewControlAnimator {
 			if(null != ivSettingNew){
 				syncViewProprety(mIvSettingNew, ivSettingNew);
 				mIvSettingNew = ivSettingNew;
-				checkSettingNewStatus();
+				checkSettingNewStatus(ivSettingNew.getVisibility() == View.VISIBLE);
 			}
 		}
 	}
 	
-	public void checkSettingNewStatus(){
+	public void checkSettingNewStatus(boolean bIsSettingViewVisible){
 		if(null != mIvSettingNew){
-			BeseyeUtils.setVisibility(mIvSettingNew, ((null != mIbSetting && mIbSetting.getVisibility() == View.VISIBLE) && !BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked())?View.VISIBLE:View.INVISIBLE);
+			boolean bAllNewFeaturesInSettingPageTrigger = BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE) && 
+														  BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET) && 
+														  BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked();
+						
+			BeseyeUtils.setVisibility(mIvSettingNew, (!bIsSettingViewVisible || bAllNewFeaturesInSettingPageTrigger)?View.INVISIBLE:View.VISIBLE);
 		}
 	}
 	
@@ -330,6 +335,10 @@ public class CameraViewControlAnimator {
 	
 	public ImageButton getSettingView(){
 		return mIbSetting;
+	}
+	
+	public ImageView getSettingNewView(){
+		return mIvSettingNew;
 	}
 	
 	public ImageButton getTalkView(){

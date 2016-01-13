@@ -56,10 +56,11 @@ public class PairingFailAttachAlreadyActivity extends BeseyeAccountBaseActivity 
 		
 		mTxtDesc = (TextView)findViewById(R.id.tv_attach_already_description);
 		if(null != mTxtDesc){
-			if(null != mObjAttachedCam){
+			//ACC BE was already handle re-pairing issue
+			/*if(null != mObjAttachedCam){
 				String strPairConflictName = BeseyeJSONUtil.getJSONString(mObjAttachedCam, BeseyeJSONUtil.ACC_NAME);
 				mTxtDesc.setText(String.format(getResources().getString(R.string.cam_attach_under_your_account_error), strPairConflictName));
-			}else{
+			}else*/{
 				mTxtDesc.setText(String.format(getResources().getString(R.string.cam_attach_under_other_account_error), mStrAttachedHWID));
 			}
 		}

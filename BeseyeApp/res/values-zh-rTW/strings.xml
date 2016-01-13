@@ -176,7 +176,7 @@
   <!-- Warning Message of dialog when failed to change schedule on/off status-->
   <string name="cam_setting_fail_to_update_schdule_status">無法更新時間排程，請稍後再試。</string>
   <!-- Message of dialog when adding a new schedule-->
-  <string name="cam_setting_schedule_add">建立..</string>
+  <string name="cam_setting_schedule_add">建立...</string>
   <!-- Warning Message of dialog when failed to add schedule-->
   <string name="cam_setting_fail_to_add_schdule">無法建立時間排程，請稍後再試。</string>
   <!-- Warning Message of dialog when failed to update schedule-->
@@ -245,7 +245,7 @@
   <!-- Warning Message of dialog when wrong password to login-->
   <string name="msg_login_wrong_password">錯誤的密碼，請輸入正確密碼。</string>
   <!-- Warning Message of dialog when the email to login is not found in server-->
-  <string name="msg_account_not_found">您嘗試要登入的帳號不存在，請確認輸入是否正確</string>
+  <string name="msg_account_not_found">不正確的電子郵件地址，請輸入正確地址。</string>
   <!-- Hint Message of dialog when pairing is processing-->
   <string name="toast_pairing_wait">攝影機設定中，請稍待。</string>
   <string name="toast_pairing_enter_cam_name">幫您的Beseye 取個名字吧。</string>
@@ -285,7 +285,7 @@
   <string name="datetime_min">分</string>
   <string name="event_list_now">現在</string>
   <string name="event_list_family_detected">家人辨識</string>
-  <string name="event_list_people_detected">偵測到人物</string>
+  <string name="event_list_people_detected">偵測到人員</string>
   <string name="event_list_sound_detected">偵測到聲音</string>
   <string name="event_list_fire_detected">偵測到火苗</string>
   <string name="event_list_motion_detected">偵測到動作</string>
@@ -514,32 +514,144 @@
   <string name="notification_pincode_auth">%1$s (Beseye 授權碼)。 裝置 %2$s 提出了登入需求。</string>
   <!--Pin code request dialog message shown in Beseye App-->
   <string name="dialog_notification_pincode_auth">%1$s (Beseye 授權碼)。 有人在裝置 %2$s 提出了登入需求。該裝置可以藉由輸入授權碼登入您的帳號。</string>
-
+  <!--Title of Human detect training page-->
   <string name="title_human_detect_train">點擊無人影像</string>
   <string name="confirm">完成</string>
-  <string name="cam_setting_title_human_detect">移動人員偵測</string>
+  <!--Title of Human detect setting page-->
+  <string name="cam_setting_title_human_detect">人員偵測 (搶鮮版)</string>
+  <!--Desc of Human detect switch-->
   <string name="cam_setting_title_human_detect_notify">人員偵測通知</string>
+  <!--Desc of Human detect training entry-->
   <string name="enhance_human_detect">偵測功能最佳化</string>
-  <string name="enhance_human_detect_hint">系統會自動偵測移動人員。但若下頁影像中無任何人，請點擊去除，以取得最佳辨識結果。</string>
+  <!--Hint of Human detect training entry-->
+  <string name="enhance_human_detect_hint">系統會自動偵測移動人員。進入下頁若影像中無任何人，請點擊去除，以取得最佳辨識結果。</string>
+  <!--Percentage of training-->
   <string name="recognition_percentage">最佳化進度：%s</string>
+  <!--Training Done-->
   <string name="recognition_percentage_done">已完成！</string>
+  <!--Desc of Human detect training reset-->
   <string name="reset_human_detect">重置偵測功能</string>
-  <string name="reset_human_detect_hint">若攝影機移動拍攝場景，或是想重設已選擇的場景，可以選擇重置。</string>
-  <string name="dialog_reset_human_detect">如此會刪除過去所有最佳化的成果，並需要重新執行最佳化流程，您確定嗎</string>
+  <!--Hint of Human detect training reset-->
+  <string name="reset_human_detect_hint">若攝影機移動拍攝場景，或想重新執行最佳化流程，請選擇重置。</string>
+  <!--Dialong desc of Human detect training reset-->
+  <string name="dialog_reset_human_detect">如此會刪除過去所有最佳化的成果，並需要重新執行最佳化流程，您確定嗎?</string>
+  <!--Desc when user selects in training page-->
   <string name="human_detect_no_human">無人</string>
-  
+  <!--Intro desc of human detect training part 1-->
   <string name="enhance_human_detect_intro_p1_desc">準備迎接未來科技。\nBeseye 先進技術實驗室推出全世界最精準，同時兼顧隱私保護的移動人員偵測技術。</string>
-  <string name="enhance_human_detect_intro_p2_desc">透過此技術，當偵測到人員行經時，系統會自動發出通知到您的裝置。讓你不在現場，也可以簡單知道是否有移動的人員。</string>
-  <string name="enhance_human_detect_intro_p3_desc">世上最好的技術，現在還可針對您做最佳化。\n透過點擊無人員之影像，讓此技術變得更加適合您，就像是為您量身定做。</string>
+  <!--Intro desc of human detect training part 2-->
+  <string name="enhance_human_detect_intro_p2_desc">透過此技術，當偵測到人員行經時，攝影機會自動發出通知到您的裝置。讓你不在現場，也可以簡單知道是否有移動的人員。</string>
+  <!--Intro desc of human detect training part 3-->
+  <string name="enhance_human_detect_intro_p3_desc">世上最好的技術，現在還可針對您做最佳化。透過偵測功能最佳化流程，讓您的攝影機更聰明，就像是量身定做。</string>
+  <!--highlight part in Intro desc of human detect training part 3-->
   <string name="enhance_human_detect_intro_p3_desc_highlight">無</string>
-  
+  <!--Next step button -->
   <string name="enhance_human_detect_intro_next_step">下一步</string>
-    
-  <string name="enhance_human_detect_reward_desc">\n辨識率更加提高了！</string>
-  <string name="enhance_human_detect_no_pic_desc">\nBeseye 將會在近期提供疑似人員影像讓您篩選。</string>
-  <string name="enhance_human_detect_train_done_desc">\nBeseye 移動人員辨識系統針對此攝影機的最佳化流程已完成，您無須再次點擊影像。</string>
-  	
+  <!--Reward desc after training result submit-->
+  <string name="enhance_human_detect_reward_desc">，辨識率更加提高了！</string>
+  <!--Desc when no training pic is availalbe-->
+  <string name="enhance_human_detect_no_pic_desc">，Beseye 將會在近期提供疑似人員影像讓您篩選。</string>
+  <!--Desc when training is no longer needed-->
+  <string name="enhance_human_detect_train_done_desc">Beseye 移動人員辨識系統針對此攝影機的最佳化流程已完成。</string>
+  <!--Fail to load training pic-->
+  <string name="enhance_human_detect_train_fail_to_load_pic">讀取人員影像失敗，請稍候再試。</string>
+  <!--Fail to submit training results-->
+  <string name="enhance_human_detect_train_fail_to_label">送出結果失敗，請稍候再試。</string>
+  <!--Error code format-->
   <string name="error_code_fmt">\n(錯誤代碼 = 0x%08x)</string>
+  <!--Warning msg when failed to send forget password letter-->
+  <!-- TODO: string name="forget_password_request_fail" -->
+  <!--Title of event list page-->
   <string name="title_event_list">錄影事件表</string>
+  <!--Warning msg when login with inactivated account-->
   <string name="msg_account_not_activated">此帳號還未結束正常註冊流程，請再次執行註冊流程</string>
+  <!--Title of page that shows the pairing cam has been attached-->
+  <!-- TODO: string name="title_cam_attached_already" -->
+  <!--Button to show customer service-->
+  <!-- TODO: string name="btn_contact_cs" -->
+  <!--Message that shows the pairing cam has been attached-->
+  <!-- TODO: string name="cam_attach_under_other_account_error" -->
+  <!--more timezone begin-->
+  <string name="tz_us_aleutian_islands">美國 - 阿留申</string>
+  <string name="tz_canada_british_columbia">加拿大 - 不列顛哥倫比亞省</string>
+  <string name="tz_canada_saskatchewan">加拿大 - 薩斯喀徹省</string>
+  <string name="tz_canada_nunavut">加拿大 - 努納武特地區 </string>
+  <string name="tz_canada_quebec">加拿大 - 魁北克省</string>
+  <string name="tz_spain_canary_islands">西班牙 - 加那利群島</string>
+  <string name="tz_aus_queensland">澳洲 - 昆士蘭省</string>
+  <string name="tz_aus_northern_territory">澳洲 - 北領地</string>
+  <string name="tz_indonesia_eastern_time">印尼 - 東部地區</string>
+  <string name="tz_indonesia_central_time">印尼 - 中部地區</string>
+  <string name="tz_indonesia_western_time">印尼 - 西部地區</string>
+  <string name="tz_malaysia">馬來西亞</string>
+  <string name="tz_vietnam">越南</string>
+  <string name="tz_saudi_arabia">沙烏地阿拉伯</string>
+  <string name="tz_united_arab_emirates">阿拉伯聯合大公國</string>
+  <string name="tz_thailand">泰國</string>
+  <string name="tz_brazil_brasilia_o_dst">巴西 - 巴西利亞 - 無夏令時間</string>
+  <string name="tz_brazil_brasilia">巴西 - 巴西利亞</string>
+  <string name="tz_brazil_amazon_o_dst">巴西 - 亞馬孫 - 無夏令時間</string>
+  <string name="tz_brazil_amazon">巴西 - 亞馬孫</string>
+  <string name="tz_brazil_acre">巴西 - 阿克里</string>
+  <string name="tz_papua_new_guinea">巴布亞紐幾內亞</string>
+  <string name="tz_russia_kaliningrad">俄羅斯 - 加里寧格勒</string>
+  <string name="tz_russia_moscow_time">俄羅斯 - 莫斯科</string>
+  <string name="tz_russia_samara_time">俄羅斯 - 薩馬拉</string>
+  <string name="tz_russia_yekaterinburg">俄羅斯 - 葉卡捷琳堡</string>
+  <string name="tz_russia_omsk_time">俄羅斯 - 鄂木斯克</string>
+  <string name="tz_russia_krasnoyarsk_time">俄羅斯 - 克拉斯諾亞爾斯克</string>
+  <string name="tz_russia_irkutsk_time">俄羅斯 - 伊爾庫茨克</string>
+  <string name="tz_russia_yakutsk_time">俄羅斯 - 雅庫茨克</string>
+  <string name="tz_russia_vladivostok_time">俄羅斯 - 海參崴</string>
+  <string name="tz_russia_srednekolymsk">俄羅斯 - 中科雷姆斯克</string>
+  <string name="tz_russia_kamchatka_time">俄羅斯 - 堪察加</string>
+  <string name="tz_ukraine">烏克蘭</string>
+  <string name="tz_philippines">菲律賓</string>
+  <string name="tz_myanmar">緬甸</string>
+  <string name="tz_argentina">阿根廷</string>
+  <string name="tz_chile">智利</string>
+  <string name="tz_india">印度</string>
+  <string name="tz_pakistan">巴基斯坦</string>
+  <string name="tz_colombia">哥倫比亞</string>
+  <string name="tz_paraguay">巴拉圭</string>
+  <string name="tz_peru">祕魯</string>
+  <string name="tz_venezuela">委內瑞拉</string>
+  <string name="tz_jamaica">牙買加</string>
+  <string name="tz_cuba">古巴</string>
+  <string name="tz_estonia">愛沙尼亞 </string>
+  <string name="tz_latvia">拉脫維亞</string>
+  <string name="tz_lithuania">立陶宛 </string>
+  <string name="tz_ireland">愛爾蘭</string>
+  <string name="tz_belarus">白俄羅斯</string>
+  <string name="tz_romania">羅馬尼亞</string>
+  <string name="tz_moldova">摩爾多瓦</string>
+  <string name="tz_slovakia">斯洛伐克</string>
+  <string name="tz_bosnia_and_herzegovina">波士尼亞與赫塞哥維納聯邦</string>
+  <string name="tz_serbia">塞爾維亞</string>
+  <string name="tz_bulgaria">保加利亞</string>
+  <string name="tz_macedonia">馬其頓</string>
+  <string name="tz_albania">阿爾巴尼亞</string>
+  <string name="tz_slovenia">斯洛維尼亞</string>
+  <string name="tz_croatia">克羅埃西亞</string>
+  <string name="tz_kazakhstan_western_time">哈薩克 - 西部地區</string>
+  <string name="tz_kazakhstan_eastern_time">哈薩克 - 東部地區</string>
+  <string name="tz_armenia">亞美尼亞</string>
+  <string name="tz_georgia">喬治亞</string>
+  <string name="tz_azerbaijan">亞塞拜然</string>
+  <string name="tz_iran">伊朗</string>
+  <string name="tz_oman">阿曼</string>
+  <string name="tz_bahrain">巴林</string>
+  <string name="tz_jordan">約旦</string>
+  <string name="tz_lebanon">黎巴嫩</string>
+  <string name="tz_turkey">土耳其</string>
+  <string name="tz_israel">以色列</string>
+  <string name="tz_portugal_mainland">葡萄牙 - 本土</string>
+  <string name="tz_portugal_azores">葡萄牙 - 亞速群島</string>
+  <string name="tz_tunisia">突尼西亞</string>
+  <string name="tz_south_africa_mainland">南非</string>
+  <!--more timezone end-->
+  <string name="tz_egypt">埃及</string>
+  <!--Fail to reset human detection-->
+  <string name="enhance_human_detect_train_fail_to_reset">重置失敗，請稍候再試。</string>
+  <string name="notify_human_detect">%s 偵測到一個人員活動，去看看是誰。</string>
 </resources>

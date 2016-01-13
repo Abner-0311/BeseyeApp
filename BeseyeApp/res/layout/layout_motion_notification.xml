@@ -75,7 +75,6 @@
 		     	android:id="@+id/vg_motion_zone_text"
 			    android:layout_width="match_parent"
 			    android:layout_height="@dimen/wifi_list_item_height"
-			    android:background="@drawable/dsl_setting_item_bg"		    
     			android:layout_below="@id/vg_motion_zone_image"
 			    tools:context=".MainActivity"
 			    android:duplicateParentState="true">    
@@ -99,7 +98,7 @@
 			   		android:textColor="@color/csl_wifi_list_main_font_color"
 			   		android:text="@string/motion_zone_title"
 			   		android:duplicateParentState="true"/>
-			</RelativeLayout>		
+			</RelativeLayout>
 		</RelativeLayout>
     </LinearLayout>
 </ScrollView>

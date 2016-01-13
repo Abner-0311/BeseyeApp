@@ -62,7 +62,7 @@ if [ "$1" = "-b" ]; then
   echo "#################### Build $2 Version Failed ####################"
 
 elif [ "$1" = "-c" ]; then
-  "$ANT_HOME"/ant clean && echo "#################### Clean Done ####################" && chmod 777 AndroidManifest.xml && exit 0
+  "$ANT_HOME"/ant clean && echo "#################### Clean Done ####################" && chmod 664 AndroidManifest.xml && exit 0
 elif [ "$1" = "-i" ]; then
   "$ANT_HOME"/ant installr && echo "#################### Install beseye apk Done... ####################" && exit 0
 elif [ "$1" = "-h" ]; then

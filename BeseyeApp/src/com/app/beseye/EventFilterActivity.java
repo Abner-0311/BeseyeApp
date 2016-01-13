@@ -23,9 +23,10 @@ import com.app.beseye.widget.BeseyeSwitchBtn;
 
 public class EventFilterActivity extends BeseyeBaseActivity{
 	static public final String KEY_EVENT_FILTER_VALUE = "KEY_EVENT_FILTER_VALUE";
-	static public final int DEF_EVENT_FILTER_VALUE = BeseyeMMBEHttpTask.EVENT_FILTER_PEOPLE | BeseyeMMBEHttpTask.EVENT_FILTER_MOTION | BeseyeMMBEHttpTask.EVENT_FILTER_SOUND;
+	static public final int DEF_EVENT_FILTER_VALUE = BeseyeMMBEHttpTask.EVENT_FILTER_FACIAL | BeseyeMMBEHttpTask.EVENT_FILTER_HUMAN | BeseyeMMBEHttpTask.EVENT_FILTER_MOTION;
 	
 	static private enum EVENT_TYPE{
+		EVENT_FACE,
 		EVENT_PEOPLE,
 		EVENT_MOTION,
 		EVENT_FIRE,
@@ -40,18 +41,20 @@ public class EventFilterActivity extends BeseyeBaseActivity{
 	private ImageView mIvEventTypeCheck[], mIvEventTypeCheckBg[];
 	private TextView mTxtSchedDays[];
 	
-	private String[] mStrObjKey = {BeseyeJSONUtil.NOTIFY_PEOPLE, 
+	private String[] mStrObjKey = {BeseyeJSONUtil.NOTIFY_FACE, 
+								   BeseyeJSONUtil.NOTIFY_HUMAN, 
 								   BeseyeJSONUtil.NOTIFY_MOTION,
 								   BeseyeJSONUtil.NOTIFY_FIRE,
 								   BeseyeJSONUtil.NOTIFY_SOUND};
 	
-	private int[] mEventFilterNum = {BeseyeMMBEHttpTask.EVENT_FILTER_PEOPLE, 
+	private int[] mEventFilterNum = {BeseyeMMBEHttpTask.EVENT_FILTER_FACIAL, 
+									 BeseyeMMBEHttpTask.EVENT_FILTER_HUMAN, 
 									 BeseyeMMBEHttpTask.EVENT_FILTER_MOTION,
 									 BeseyeMMBEHttpTask.EVENT_FILTER_FIRE,
 									 BeseyeMMBEHttpTask.EVENT_FILTER_SOUND};
 	
 	
-	private boolean[] mbEnabledLst = {true, true, false, false};
+	private boolean[] mbEnabledLst = {false, true, true, false, false};
 	
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
@@ -89,8 +92,9 @@ public class EventFilterActivity extends BeseyeBaseActivity{
 		mIvEventTypeCheckBg = new ImageView[s_NotifyTypeNum];
 		mTxtSchedDays = new TextView[s_NotifyTypeNum];
 		
-		int iVgIds[] = {R.id.vg_people_event, R.id.vg_motion_event, R.id.vg_fire_event, R.id.vg_sound_event};
+		int iVgIds[] = {R.id.vg_face_event, R.id.vg_people_event, R.id.vg_motion_event, R.id.vg_fire_event, R.id.vg_sound_event};
 		int iStrIds[] = {R.string.notification_event_people,
+						 R.string.notification_event_people,
 						 R.string.notification_event_motion, 
 						 R.string.notification_event_fire, 
 						 R.string.notification_event_sound};

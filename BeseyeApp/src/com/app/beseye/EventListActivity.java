@@ -253,7 +253,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		cancelRunningTasks();
 		
 		mlTaskTs = System.currentTimeMillis();
-		monitorAsyncTask((mGetEventListCountTask = new BeseyeMMBEHttpTask.GetEventListCountTask(EventListActivity.this)), true, mStrVCamID, (mlTaskTs-mlEventQueryPeriod )+"", mlEventQueryPeriod +"", miFilterValue+"");
+		monitorAsyncTask((mGetEventListCountTask = new BeseyeMMBEHttpTask.GetEventListCountTask(EventListActivity.this)), true, mStrVCamID, (mlTaskTs-mlEventQueryPeriod )+"", mlEventQueryPeriod +"", getEventFilter()+"");
 	}
 	
 	private void loadNewEventList(){
@@ -278,7 +278,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				mGetNewEventListTask.cancel(true);
 				mGetNewEventListTask = null;
 			}
-			monitorAsyncTask(mGetNewEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, true), true, mStrVCamID, (lLatestEventTs)+"", (System.currentTimeMillis()-lLatestEventTs)+"", "100", miFilterValue+"");
+			monitorAsyncTask(mGetNewEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, true), true, mStrVCamID, (lLatestEventTs)+"", (System.currentTimeMillis()-lLatestEventTs)+"", "100", getEventFilter()+"");
 		}else{
 			if(null != mGetNewEventListTask){
 				if(DEBUG)
@@ -441,6 +441,15 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 					
 					BeseyeUtils.setVisibility(mIvCalendar, View.VISIBLE);
 					BeseyeUtils.setVisibility(mVgIndicator, View.VISIBLE);
+					
+					//Workaound to avoid no dialog between GetEventListTask and GetEventListCountTask
+					if(0 < miTotalEventCount){
+						BeseyeUtils.postRunnable(new Runnable(){
+							@Override
+							public void run() {
+								showMyDialog(DIALOG_ID_LOADING);
+							}}, 0);
+					}
 					
 					mEventListAdapter.updateResultList(EntList);
 					
@@ -645,6 +654,8 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				postToLvRreshComplete();
 				checkClockByTime();
 				
+				//Workaound to avoid no dialog between GetEventListTask and GetEventListCountTask
+				removeMyDialog(DIALOG_ID_LOADING);
 			}else if(task instanceof BeseyeMMBEHttpTask.GetThumbnailByEventListTask){
 				if(0 == iRetCode){
 					//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
@@ -830,7 +841,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				mGetEventListTask.cancel(true);
 				mGetEventListTask = null;
 			}
-			monitorAsyncTask((mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, iSeed)).setDialogId( (null != mTimeWantToReach)?DIALOG_ID_LOADING:-1), true, mStrVCamID, (mlTaskTs-mlEventQueryPeriod )+"", lDuration+"", (0 == getCurEventCount())?"15":(null != mTimeWantToReach)?"10000":"100", miFilterValue+"");
+			monitorAsyncTask((mGetEventListTask = new BeseyeMMBEHttpTask.GetEventListTask(EventListActivity.this, iSeed)).setDialogId( (null != mTimeWantToReach)?DIALOG_ID_LOADING:-1), true, mStrVCamID, (mlTaskTs-mlEventQueryPeriod )+"", lDuration+"", (0 == getCurEventCount())?"15":(null != mTimeWantToReach)?"10000":"100", getEventFilter()+"");
 		}
 	}
 	
@@ -1108,7 +1119,11 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 					boolean bFaceRegOn = BeseyeNewFeatureMgr.getInstance().isFaceRecognitionOn();
 					BeseyeNewFeatureMgr.getInstance().setFaceRecognitionOn(!bFaceRegOn);
 					mEventListAdapter.setPeopleDetectEnabled(!bFaceRegOn);
-					refreshList();
+					//refreshList();
+					
+					mbNeedToCalcu = false;
+    				loadEventList();
+    				
 					Toast.makeText(this, "Face Recognition is "+(bFaceRegOn?"off":"on"), Toast.LENGTH_LONG).show();
 				}
 			}
@@ -1125,7 +1140,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 		
 		if(REQUEST_EVENT_FILTER == requestCode && resultCode == RESULT_OK){
 			int iNewValue = intent.getIntExtra(EventFilterActivity.KEY_EVENT_FILTER_VALUE, EventFilterActivity.DEF_EVENT_FILTER_VALUE);
-			if(iNewValue != miFilterValue){
+			if(iNewValue != getEventFilter()){
 				mMainListView.dettachFooterLoadMoreView();
 				
 				miFilterValue = iNewValue;
@@ -1248,12 +1263,26 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
     	return false;
 	}
 	
+	private int getEventFilter(){
+		int iRet = miFilterValue;
+		if(BeseyeNewFeatureMgr.getInstance().isFaceRecognitionOn()){
+			iRet |= BeseyeMMBEHttpTask.EVENT_FILTER_FACIAL;
+		}else{
+			iRet ^= BeseyeMMBEHttpTask.EVENT_FILTER_FACIAL;
+		}
+		return iRet;
+	}
+	
 	protected boolean onCameraMotionEvent(JSONObject msgObj){
-		return (miFilterValue&(BeseyeMMBEHttpTask.EVENT_FILTER_MOTION)) > 0 ?checkEventById(msgObj):false;
+		return (getEventFilter()&(BeseyeMMBEHttpTask.EVENT_FILTER_MOTION)) > 0 ?checkEventById(msgObj):false;
 	}
 	
     protected boolean onCameraPeopleEvent(JSONObject msgObj){
-    	return (miFilterValue&(BeseyeMMBEHttpTask.EVENT_FILTER_MOTION|BeseyeMMBEHttpTask.EVENT_FILTER_PEOPLE)) > 0 ?checkEventById(msgObj):false;
+    	return (getEventFilter()&(BeseyeMMBEHttpTask.EVENT_FILTER_MOTION|BeseyeMMBEHttpTask.EVENT_FILTER_FACIAL)) > 0 ?checkEventById(msgObj):false;
+    }
+    
+    protected boolean onCameraHumanDetectEvent(JSONObject msgObj){
+    	return (getEventFilter()&(BeseyeMMBEHttpTask.EVENT_FILTER_MOTION|BeseyeMMBEHttpTask.EVENT_FILTER_HUMAN)) > 0 ?checkEventById(msgObj):false;
     }
     
 	@Override

@@ -30,7 +30,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 	}
 	
 	private int miSelectedImt = 0;
-	private String mStrFamilyDetectFormat, mStrPeopleDetect, mStrSoundDetect, mStrFireDetect, mStrMotionDetect, mStrEventDetect, mStrStranger;
+	private String mStrFamilyDetectFormat, mStrPeopleDetect, mStrSoundDetect, mStrFireDetect, mStrMotionDetect, mStrHumanDetect, mStrEventDetect, mStrStranger;
 	private IListViewScrollListenser mIListViewScrollListenser;
 	private int miThumbnailWidth = 0;
 	
@@ -49,6 +49,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		mStrFireDetect = context.getResources().getString(R.string.event_list_fire_detected);
 		mStrMotionDetect = context.getResources().getString(R.string.event_list_motion_detected);
 		mStrEventDetect = context.getResources().getString(R.string.event_list_unknown_detected);
+		mStrHumanDetect = context.getResources().getString(R.string.event_list_people_detected);
 		mStrStranger = context.getResources().getString(R.string.event_list_people_detected_stranger);
 		
 		miThumbnailWidth = (int) (BeseyeUtils.getDeviceWidth((Activity)context) - (context.getResources().getDimension(R.dimen.eventlist_thumbnail_right)*2+
@@ -71,6 +72,7 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		public ImageView mImgFire;
 		public ImageView mImgSound;
 		public ImageView mImgMotion;
+		public ImageView mImgHuman;
 		public View mVGoLiveHolder;
 		public TextView mBtnGoLive;
 		public JSONObject mObjEvent;
@@ -104,11 +106,12 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 				
 				holder.mImgDot = (ImageView)convertView.findViewById(R.id.iv_timeline_dot_greenblue);
 				holder.mImgFace = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_face);
-				holder.mImgFire = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_fire);
-				holder.mImgSound = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_sound);
+				//holder.mImgFire = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_fire);
+				//holder.mImgSound = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_sound);
 				holder.mImgMotion = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_motion);
-				holder.mBtnGoLive = (TextView)convertView.findViewById(R.id.btn_go_live);
+				holder.mImgHuman = (ImageView)convertView.findViewById(R.id.iv_timeline_icon_human);
 				
+				holder.mBtnGoLive = (TextView)convertView.findViewById(R.id.btn_go_live);
 				
 				convertView.setOnClickListener(mItemOnClickListener);
 				convertView.setTag(holder);
@@ -219,11 +222,13 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 		//Log.e(TAG, "genDetectionType(), typeArr:"+typeArr);	
 		String strRet = "";
 		
-		BeseyeUtils.setVisibility(holder.mImgFire, View.INVISIBLE);
-		BeseyeUtils.setVisibility(holder.mImgSound, View.INVISIBLE);
+//		BeseyeUtils.setVisibility(holder.mImgFire, View.INVISIBLE);
+//		BeseyeUtils.setVisibility(holder.mImgSound, View.INVISIBLE);
+		BeseyeUtils.setVisibility(holder.mImgFace, View.INVISIBLE);
+		BeseyeUtils.setVisibility(holder.mImgMotion, View.INVISIBLE);
+		BeseyeUtils.setVisibility(holder.mImgHuman, View.INVISIBLE);
 		
-		
-		String strType = null;
+		String strType =null;
 		if(0 < (BeseyeJSONUtil.MM_TYPE_ID_FACE & typeArr)){
 			if(mbShowPeoeple){
 				JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
@@ -251,18 +256,18 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 				}else{
 					strType = mStrPeopleDetect;
 				}
+				BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
 			}
-			//strType = mStrPeopleDetect;
-			BeseyeUtils.setVisibility(holder.mImgFace, View.VISIBLE);
-		}else{
-			BeseyeUtils.setVisibility(holder.mImgFace, View.INVISIBLE);
+		}
+		
+		if(0 < (BeseyeJSONUtil.MM_TYPE_ID_HUMAN & typeArr)){
+			strType = ((null != strType)?(strType):mStrHumanDetect );
+			BeseyeUtils.setVisibility(holder.mImgHuman, View.VISIBLE);
 		}
 		
 		if(0 < (BeseyeJSONUtil.MM_TYPE_ID_MOTION & typeArr)){
 			strType = ((null != strType)?(strType):mStrMotionDetect );
 			BeseyeUtils.setVisibility(holder.mImgMotion, View.VISIBLE);
-		}else{
-			BeseyeUtils.setVisibility(holder.mImgMotion, View.INVISIBLE);
 		}
 		
 		if(null == strType){

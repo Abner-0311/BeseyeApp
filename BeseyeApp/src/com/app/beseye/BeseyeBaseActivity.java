@@ -1725,7 +1725,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
                 	}
                 	break;	
                 }
-                case BeseyeNotificationService.MSG_CAM_EVENT_PEOPLE:{
+                case BeseyeNotificationService.MSG_CAM_EVENT_FACE:{
                 	BeseyeBaseActivity act = mActivity.get();
                 	if(null != act){
                 		JSONObject dataObj;
@@ -1733,6 +1733,20 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 							Bundle b = msg.getData();
 							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
 							act.onCameraPeopleEvent(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                	break;
+                }
+                case BeseyeNotificationService.MSG_CAM_EVENT_HUMAN:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCameraHumanDetectEvent(dataObj);
 						} catch (JSONException e) {
 							Log.i(TAG, "handleMessage(), e:"+e.toString());
 						}
@@ -2085,22 +2099,24 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     protected boolean onCameraMotionEvent(JSONObject msgObj){return false;}
     protected boolean onCameraPeopleEvent(JSONObject msgObj){return false;}
+    protected boolean onCameraHumanDetectEvent(JSONObject msgObj){return false;}
     protected boolean onCameraOfflineEvent(JSONObject msgObj){return false;}
     
     public boolean onCamStatusChangedForEvt(JSONObject msgObj){
-    	Log.i(TAG, getClass().getSimpleName()+"::onCamStatusChangedForEvt(),  msgObj = "+msgObj);
-    	if(mActivityResume){
-    		if(null != msgObj){
-        		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
-        		if(null != objCus){
-        			JSONObject objCamChgData = BeseyeJSONUtil.getJSONObject(objCus, CAM_CHANGE_DATA);
-        			boolean bCamStatusOn = (BeseyeJSONUtil.getJSONInt(objCamChgData, BeseyeJSONUtil.CAM_STATUS) == 1);
-					String strNotifyMsg = getString(bCamStatusOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
-    				Toast.makeText(this, strNotifyMsg, Toast.LENGTH_SHORT).show();
-        			return true;
-        		}
-    		}
-    	}
+//Only for ATT event
+//   	Log.i(TAG, getClass().getSimpleName()+"::onCamStatusChangedForEvt(),  msgObj = "+msgObj);
+//    	if(mActivityResume){
+//    		if(null != msgObj){
+//        		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+//        		if(null != objCus){
+//        			JSONObject objCamChgData = BeseyeJSONUtil.getJSONObject(objCus, CAM_CHANGE_DATA);
+//        			boolean bCamStatusOn = (BeseyeJSONUtil.getJSONInt(objCamChgData, BeseyeJSONUtil.CAM_STATUS) == 1);
+//					String strNotifyMsg = getString(bCamStatusOn?R.string.att_event_cam_status_on:R.string.att_event_cam_status_off);
+//    				Toast.makeText(this, strNotifyMsg, Toast.LENGTH_SHORT).show();
+//        			return true;
+//        		}
+//    		}
+//    	}
     	return false;
     }
     

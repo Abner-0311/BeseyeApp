@@ -3,7 +3,7 @@ DIR_OPENSSL=`cd ../openssl-1.0.1h/build_ios;pwd`
 #echo $DIR_OPENSSL
 
 DEVELOPER=$(xcode-select --print-path)
-SDK_VERSION=9.1
+SDK_VERSION=9.2
 SDK_VERSION_MIN=7.0
 
 DEVICE_PLATFORM="${DEVELOPER}/Platforms/iPhoneOS.platform"

@@ -76,11 +76,12 @@ public class BeseyeJSONUtil {
 	
 	
 	public static final String NOTIFY_OBJ 				= "Notify";
-	public static final String NOTIFY_PEOPLE 			= "People";
+	public static final String NOTIFY_FACE 				= "Facial";
 	public static final String NOTIFY_MOTION 			= "Motion";
 	public static final String NOTIFY_FIRE 				= "Fire";
 	public static final String NOTIFY_SOUND 			= "Sound";
 	public static final String NOTIFY_OFFLINE 			= "Offline";
+	public static final String NOTIFY_HUMAN 			= "Human";
 	
 	public static final String MOTION_ZONE				= "MotionZone";
 	public static final String MOTION_ZONE_TOP			= "MZ_Top";
@@ -268,6 +269,8 @@ public class BeseyeJSONUtil {
 	public static final String ACC_DEMO_VCAM_LST 		= "DemoVcams";
 	public static final String ACC_PRIVATE_VCAM_CNT 	= "PrivateVcamsCnt";
 	public static final String ACC_PRIVATE_VCAM_LST 	= "PrivateVcams";
+	public static final String ACC_SUBSCRIBE_VCAM_CNT 	= "SubscribedVcamsCnt";
+	public static final String ACC_SUBSCRIBE_VCAM_LST 	= "SubscribedVcams";
 	public static final String ACC_VCAM_PLAN 			= "Plan";
 	public static final String ACC_VCAM_HW_ID 			= "PhyCamHwSn";
 	
@@ -279,6 +282,13 @@ public class BeseyeJSONUtil {
 	public static final String ACC_SUBSC_NAME 			= "UserName";
 	public static final String ACC_SUBSC_EMAIL 			= "UserEmail";
 	public static final String ACC_SUBSC_ADMIN 			= "IsAdmin";
+	
+	public static final String ACC_VCAM_TYPE			= "VcamType";
+	public static final String ACC_VCAM_TYPE_OWNED		= "Owned";
+	public static final String ACC_VCAM_TYPE_DEMO		= "Demo";
+	public static final String ACC_VCAM_TYPE_PRIVATE	= "Private";
+	public static final String ACC_VCAM_TYPE_SUBSCRIBED = "Subscribed";
+	
 	
 	//MM BE service
 	public static final String MM_SERVER 				= "server";
@@ -293,8 +303,9 @@ public class BeseyeJSONUtil {
 	public static final String MM_CNT 					= "count";
 	
 	public static final String MM_TYPE_IDS				= "typeIds";
-	public static final int MM_TYPE_ID_MOTION			= 1;
-	public static final int MM_TYPE_ID_FACE				= 2;
+	public static final int MM_TYPE_ID_MOTION			= 0x01;
+	public static final int MM_TYPE_ID_FACE				= 0x02;
+	public static final int MM_TYPE_ID_HUMAN			= 0x04;
 	
 	public static final String MM_FACE_IDS 				= "faceIds";
 	
@@ -309,6 +320,8 @@ public class BeseyeJSONUtil {
 	public static final String MM_HD_IMG_LOADED 		= "imgLoaded";
 	public static final String MM_HD_IMG_PRELOAD_LOADED = "preloadImgLoaded";
 	public static final String MM_HD_IMG_LOAD_FAILED 	= "imgLoadFailed";
+	public static final String MM_HD_TRAIN_PROGRESS 	= "Progress";
+	
 	
 	
 	static public class FACE_LIST{

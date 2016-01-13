@@ -44,6 +44,7 @@ import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.BeseyeIMPMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
@@ -61,6 +62,7 @@ import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity 
 												implements OnSwitchBtnStateChangedListener{
 
+	final public static String HD_TRAIN_PROGRESS = "HD_TRAIN_PROGRESS";
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;	
 	private ViewGroup mVgHumanDetectTraining, mVgHumanDetectReset;
@@ -70,6 +72,8 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 	private ViewPager mVpIntro;
 	private Button mbtnNextStep;
 	private boolean mbNeedToShowIntro = true;
+	private int miTrainProgress = -1;
+	private TextView mTxtTrainingHint;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +106,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 			mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 			if(null != mCam_obj){
 				mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+				miTrainProgress = BeseyeJSONUtil.getJSONInt(mCam_obj, HumanDetectNotificationSettingActivity.HD_TRAIN_PROGRESS, -1);
 			}
 		} catch (JSONException e1) {
 			Log.e(TAG, "MotionNotificationSettingActivity::onCreate(), failed to parse, e1:"+e1.toString());
@@ -123,9 +128,11 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 			mVgHumanDetectReset.setOnClickListener(this);
 		}
 		
-		mbNeedToShowIntro = !SessionMgr.getInstance().getHumanDetectIntroShowOnce() || !SessionMgr.getInstance().getHumanDetectIntroShown();
-
+		mTxtTrainingHint = (TextView)findViewById(R.id.human_detect_notification_title_hint);
+		setTrainHintText();
 		
+		mbNeedToShowIntro = SessionMgr.getInstance().getHumanDetectIntroShowAlways() || !SessionMgr.getInstance().getHumanDetectIntroShown();
+
 		mVpIntro = (ViewPager)findViewById(R.id.intro_gallery);
 		if(null != mVpIntro){
 			mVpIntro.setAdapter(new IntroPageAdapter(this));
@@ -198,6 +205,20 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 			}
 		}
 	}
+	
+	private void setTrainHintText(){
+		String strHint = getString(R.string.enhance_human_detect_hint);
+		String strProgress = (-1 == miTrainProgress ? "--":miTrainProgress)+"%";
+		String strDesc = strHint+"\n"+String.format(getString(R.string.recognition_percentage), strProgress);
+		Spannable wordtoSpan = new SpannableString(strDesc);          
+		if(null != mTxtTrainingHint){
+			int i = strDesc.indexOf(strProgress);
+		    if(i >=0){
+			    wordtoSpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.csl_link_font_color)), i, i+strProgress.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    }
+		    mTxtTrainingHint.setText(wordtoSpan);
+		}
+	}
 
 	@Override
 	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
@@ -215,6 +236,26 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 				}
 				updateNotificationTypeState();
+			}else if(task instanceof BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask){
+				if(0 == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+				
+					miTrainProgress = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_HD_TRAIN_PROGRESS);
+					BeseyeJSONUtil.setJSONInt(mCam_obj, HD_TRAIN_PROGRESS, miTrainProgress);
+					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
+				}
+				
+				setTrainHintText();
+			}else if(task instanceof BeseyeIMPMMBEHttpTask.SetHumanDetectResetTask){
+				if(0 == iRetCode){
+					if(DEBUG)
+						Log.i(TAG, "onPostExecute(), "+result.toString());
+				
+					miTrainProgress = 0;
+					BeseyeJSONUtil.setJSONInt(mCam_obj, HD_TRAIN_PROGRESS, miTrainProgress);
+					setTrainHintText();
+				}
 			}else{
 				super.onPostExecute(task, result, iRetCode);
 			}
@@ -227,6 +268,8 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 		// GetLatestThumbnailTask don't need to have onErrorReport because it has default image
 		if(task instanceof BeseyeCamBEHttpTask.SetNotifySettingTask){
 			showErrorDialog(R.string.cam_setting_fail_to_update_notify_setting, true, iErrType);
+		}else if (task instanceof BeseyeIMPMMBEHttpTask.SetHumanDetectResetTask){
+			showErrorDialog(R.string.enhance_human_detect_train_fail_to_reset, true, iErrType);
 		}else{
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 		}
@@ -235,7 +278,8 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 	@Override
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);
+		//monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);
+		monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask(this).setDialogId(-1), true, mStrVCamID);
 		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID){
 			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}else{
@@ -268,6 +312,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 			case R.id.button_done:{
 				SessionMgr.getInstance().setHumanDetectIntroShown(true);
 				BeseyeUtils.setVisibility(mVpIntro, View.GONE);
+				monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask(this).setDialogId(-1), true, mStrVCamID);
 				break;
 			}
 			default:
@@ -287,6 +332,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 		super.onResume();
 		
 		if(!mbFirstResume){
+			monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask(this).setDialogId(-1), true, mStrVCamID);
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this).setDialogId(-1), true, mStrVCamID);
 			if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID)
 				monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
@@ -311,7 +357,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 			
 			JSONObject type_obj =  new JSONObject();
 			if(null != type_obj){
-				BeseyeJSONUtil.setJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_PEOPLE, bTurnOn);	
+				BeseyeJSONUtil.setJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_HUMAN, bTurnOn);	
 				BeseyeJSONUtil.setJSONObject(obj, BeseyeJSONUtil.TYPE, type_obj);
 			}
 			
@@ -328,14 +374,22 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 		
 		if(bNotifyMe){
 			JSONObject type_obj = BeseyeJSONUtil.getJSONObject(notify_obj, BeseyeJSONUtil.TYPE);
-			bNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_PEOPLE);
+			bNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_HUMAN);
 		}
 		
 		if(null != mNotifyMeSwitchBtn){
 			mNotifyMeSwitchBtn.setSwitchState((bNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
 		}
 	}
-	
+		
+	@Override
+	public void onCamSetupChanged(String strVcamId, long lTs,
+			JSONObject objCamSetup) {
+		super.onCamSetupChanged(strVcamId, lTs, objCamSetup);
+		miTrainProgress = BeseyeJSONUtil.getJSONInt(mCam_obj, HumanDetectNotificationSettingActivity.HD_TRAIN_PROGRESS, -1);
+		setTrainHintText();
+	}
+
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
 		Dialog dialog;
@@ -347,16 +401,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 				d.setOnTwoBtnClickListener(new OnTwoBtnClickListener(){
 					@Override
 					public void onBtnYesClick() {
-//						try {
-//							JSONObject obj = new JSONObject();
-//							obj.put(ACC_TRUST_DEV_ID_LST, mArrTrustDevIdsForDelete);
-//							//String strID =/* (null != mArrTrustDevIdsForDelete && mArrTrustDevIdsForDelete.length()==1)?mArrTrustDevIdsForDelete.getString(0):*/mArrTrustDevIdsForDelete.toString();
-//							monitorAsyncTask(new BeseyeAccountTask.DeleteTrustDevTask(BeseyeTrustDevMgtActivity.this), true,obj.toString());
-//						} catch (JSONException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-					
+						monitorAsyncTask(new BeseyeIMPMMBEHttpTask.SetHumanDetectResetTask(HumanDetectNotificationSettingActivity.this), true, mStrVCamID);
 					}
 					@Override
 					public void onBtnNoClick() {

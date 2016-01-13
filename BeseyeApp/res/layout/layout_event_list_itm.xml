@@ -42,7 +42,7 @@
 		        android:layout_alignRight="@+id/vg_video_thumbnail_holder"
 		        android:visibility="invisible"/>
 		    
-	        <LinearLayout 
+	       	<LinearLayout 
 	            android:id="@+id/vg_icon_holder"
 	            android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
@@ -63,24 +63,15 @@
 			        android:layout_width="1dp"
 			        android:layout_height="0dp"
 			        android:layout_weight="1"/>
-			    <ImageView
-			        android:id="@+id/iv_timeline_icon_fire"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
-			        android:src="@drawable/eventlist_filter_icon_fire" 
-			        android:visibility="invisible" />
-			    <View 
-			        android:layout_width="1dp"
-			        android:layout_height="0dp"
-			        android:layout_weight="1"/>
-			    <ImageView
-			        android:id="@+id/iv_timeline_icon_sound"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
-			        android:src="@drawable/eventlist_filter_icon_sound" 
-			        android:visibility="invisible" />
+
+		        <ImageView
+		            android:id="@+id/iv_timeline_icon_human"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_marginBottom="@dimen/eventlist_icon_bottom"
+		            android:src="@drawable/eventlist_filter_icon_people"
+		            android:visibility="invisible" />
+
 			    <View 
 			        android:layout_width="1dp"
 			        android:layout_height="0dp"
@@ -92,6 +83,7 @@
 			        android:layout_marginBottom="@dimen/eventlist_icon_bottom"
 			        android:src="@drawable/eventlist_filter_icon_motion" 
 			        android:visibility="invisible" />
+
 		    </LinearLayout>
 
 	         <RelativeLayout 
