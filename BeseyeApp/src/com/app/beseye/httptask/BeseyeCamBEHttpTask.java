@@ -30,7 +30,7 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_WIFI_CONFIG 	= "cam/%s/wifi/config";
 	static private final String URL_CAM_WIFI_SSIDLST 	= "cam/%s/wifi/ssidlist";
 	
-	static private final String URL_CAM_SYS_INFO 		= "cam/%s/sysinfo";
+	static private final String URL_CAM_SW_VER			= "cam/%s/software/version";
 	static private final String URL_CAM_DATETIME 		= "cam/%s/datetime";
 	static private final String URL_CAM_TIMEZONE 		= "cam/%s/time_zone";
 	static private final String URL_CAM_UPSIDE_DOWN_SET = "cam/%s/image/set_upside_down";
@@ -489,16 +489,16 @@ public class BeseyeCamBEHttpTask  {
 			return super.doInBackground(SessionMgr.getInstance().getCamBEHostUrl()+String.format(URL_CAM_DATETIME, strParams[0]));
 		}
 	}
-	
-	public static class GetSystemInfoTask extends BeseyeHttpTask{
-		public GetSystemInfoTask(OnHttpTaskCallback cb) {
+
+	public static class GetSWVersionTask extends BeseyeHttpTask{
+		public GetSWVersionTask(OnHttpTaskCallback cb) {
 			super(cb);
 		}
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
 			setVCamIdForPerm(strParams[0]);
-			return super.doInBackground(SessionMgr.getInstance().getCamBEHostUrl()+String.format(URL_CAM_SYS_INFO, strParams[0]));
+			return super.doInBackground(SessionMgr.getInstance().getCamBEHostUrl()+String.format(URL_CAM_SW_VER, strParams[0]));
 		}
 	}
 	

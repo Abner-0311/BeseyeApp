@@ -129,7 +129,7 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	protected void onSessionComplete(){
 		super.onSessionComplete();
 		if(false == BeseyeJSONUtil.isCamPowerDisconnected(mCam_obj)){
-			monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this), true, mStrVCamID);
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetSWVersionTask(this), true, mStrVCamID);
 		}
 	}
 	
@@ -179,7 +179,7 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle,
 			String strMsg) {
-		if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask && null != mVgSWVer && View.VISIBLE == mVgSWVer.getVisibility()){
+		if(task instanceof BeseyeCamBEHttpTask.GetSWVersionTask && null != mVgSWVer && View.VISIBLE == mVgSWVer.getVisibility()){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
@@ -196,29 +196,17 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 	@Override
 	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
 		if(!task.isCancelled()){
-			if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask){
+			if(task instanceof BeseyeCamBEHttpTask.GetSWVersionTask){
 				if(0 == iRetCode){
 					JSONObject obj = result.get(0);
 					if(null != obj){
 						if(DEBUG)
 							Log.i(TAG, "onPostExecute(), "+obj.toString());
 						
-						JSONObject dataObj = BeseyeJSONUtil.getJSONObject(obj, ACC_DATA);
-						if(null != dataObj){
-							mStrVCamSN = BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.CAM_SN);
-							mStrVCamMacAddr = BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.CAM_MAC_ADDR);
-							mStrSwVer = BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.CAM_SOFTWARE);
-							
-							if(null != mTxtSwVersion)
-								mTxtSwVersion.setText(mStrSwVer);
-							
-							if(null != mTxtSerialNum)
-								mTxtSerialNum.setText(mStrVCamSN);
-							
-							if(null != mTxtMacAddr)
-								mTxtMacAddr.setText(mStrVCamMacAddr);
-	
-						}
+						Log.i(TAG, "onPostExecute(), Kelly "+obj.toString());
+						mStrSwVer = BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.CAM_SW_VERSION);
+						if(null != mTxtSwVersion)
+							mTxtSwVersion.setText(mStrSwVer);
 					}
 				}
 			}else if(task instanceof BeseyeAccountTask.SetCamAttrTask){

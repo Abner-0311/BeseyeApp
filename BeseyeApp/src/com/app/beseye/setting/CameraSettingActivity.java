@@ -473,16 +473,17 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 		/*if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 			onToastShow(task, "Notify SW Update Failed.");
 		}else */
-		if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask){
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraSettingActivity.this, R.string.cam_setting_fail_to_get_cam_info, iErrType));
-					showMyDialog(DIALOG_ID_WARNING, b);
-				}}, 0);
-			
-		}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+//		if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask){
+//			BeseyeUtils.postRunnable(new Runnable(){
+//				@Override
+//				public void run() {
+//					Bundle b = new Bundle();
+//					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraSettingActivity.this, R.string.cam_setting_fail_to_get_cam_info, iErrType));
+//					showMyDialog(DIALOG_ID_WARNING, b);
+//				}}, 0);
+//			
+//		}else 
+		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
