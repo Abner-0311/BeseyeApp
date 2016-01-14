@@ -245,7 +245,7 @@
   <!-- Warning Message of dialog when wrong password to login-->
   <string name="msg_login_wrong_password">错误的密码，请输入正确密码。</string>
   <!-- Warning Message of dialog when the email to login is not found in server-->
-  <string name="msg_account_not_found">不正确的电子邮件地址，请输入正确地址。</string>
+  <string name="msg_account_not_found">此账户不存在</string>
   <!-- Hint Message of dialog when pairing is processing-->
   <string name="toast_pairing_wait">摄像头设置中，请稍待。</string>
   <string name="toast_pairing_enter_cam_name">帮您的Beseye 取个名字吧。</string>
@@ -538,7 +538,7 @@
   <!--Desc when user selects in training page-->
   <string name="human_detect_no_human">无人</string>
   <!--Intro desc of human detect training part 1-->
-  <string name="enhance_human_detect_intro_p1_desc">准备迎接未来科技。\nBeseye 先进技术实验室推出全世界最精准，同时兼顾隐私保护的移动人员侦测技术。</string>
+  <string name="enhance_human_detect_intro_p1_desc">准备迎接未来科技。\nBeseye 先进技术实验室推出最精准，同时兼顾隐私保护的移动人员侦测技术。</string>
   <!--Intro desc of human detect training part 2-->
   <string name="enhance_human_detect_intro_p2_desc">透过此技术，当侦测到人员行经时，摄影机会自动发出通知到您的装置。让你不在现场，也可以简单知道是否有移动的人员。</string>
   <!--Intro desc of human detect training part 3-->

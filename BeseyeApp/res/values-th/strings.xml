@@ -245,7 +245,7 @@
   <!-- Warning Message of dialog when wrong password to login-->
   <string name="msg_login_wrong_password">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</string>
   <!-- Warning Message of dialog when the email to login is not found in server-->
-  <string name="msg_account_not_found">อีเมลล์ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</string>
+  <string name="msg_account_not_found">บัญชีผู้ใช้ไม่ถูกต้อง</string>
   <!-- Hint Message of dialog when pairing is processing-->
   <string name="toast_pairing_wait">กำลังดำเนินการ กรุณารอสักครู่</string>
   <string name="toast_pairing_enter_cam_name">กรุณาตั้งค่าชื่อของกล้อง</string>

@@ -464,7 +464,6 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 				}
 			}else if(task instanceof BeseyeMMBEHttpTask.GetEventListTask){
 				//Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
-				
 				boolean bHaveFooter = false;
 				
 				if(null != mMainListView){

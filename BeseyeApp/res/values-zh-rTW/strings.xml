@@ -245,7 +245,7 @@
   <!-- Warning Message of dialog when wrong password to login-->
   <string name="msg_login_wrong_password">錯誤的密碼，請輸入正確密碼。</string>
   <!-- Warning Message of dialog when the email to login is not found in server-->
-  <string name="msg_account_not_found">不正確的電子郵件地址，請輸入正確地址。</string>
+  <string name="msg_account_not_found">此帳戶不存在</string>
   <!-- Hint Message of dialog when pairing is processing-->
   <string name="toast_pairing_wait">攝影機設定中，請稍待。</string>
   <string name="toast_pairing_enter_cam_name">幫您的Beseye 取個名字吧。</string>
@@ -538,9 +538,9 @@
   <!--Desc when user selects in training page-->
   <string name="human_detect_no_human">無人</string>
   <!--Intro desc of human detect training part 1-->
-  <string name="enhance_human_detect_intro_p1_desc">準備迎接未來科技。\nBeseye 先進技術實驗室推出全世界最精準，同時兼顧隱私保護的移動人員偵測技術。</string>
+  <string name="enhance_human_detect_intro_p1_desc">準備迎接未來科技。\nBeseye 先進技術研發實驗室推出最精準，同時兼顧隱私保護的移動人員偵測技術。</string>
   <!--Intro desc of human detect training part 2-->
-  <string name="enhance_human_detect_intro_p2_desc">透過此技術，當偵測到人員行經時，攝影機會自動發出通知到您的裝置。讓你不在現場，也可以簡單知道是否有移動的人員。</string>
+  <string name="enhance_human_detect_intro_p2_desc">透過此技術，當偵測到人員行經時，攝影機會自動發出通知到您的裝置。讓你不在現場，也可以簡單知道是否有的移動的人員。</string>
   <!--Intro desc of human detect training part 3-->
   <string name="enhance_human_detect_intro_p3_desc">世上最好的技術，現在還可針對您做最佳化。透過偵測功能最佳化流程，讓您的攝影機更聰明，就像是量身定做。</string>
   <!--highlight part in Intro desc of human detect training part 3-->
