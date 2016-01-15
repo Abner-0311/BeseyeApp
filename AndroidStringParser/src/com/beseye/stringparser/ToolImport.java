@@ -141,6 +141,7 @@ public class ToolImport {
 					addEmptyKeyValue(dom, root, key);
 				}else {
 					value = value.replace("'", "\\'");
+					value = value.replace("\"", "\\\"");
 					Element node = dom.createElement("string");
 					node.setAttribute("name", key);
 					node.setTextContent(value);
@@ -152,6 +153,7 @@ public class ToolImport {
 				if(valueCell != null){
 					value = valueCell.toString();// value
 					value = value.replace("'", "\\'");
+					value = value.replace("\"", "\\\"");
 				}
 				String plurarNameNew = key.substring(0, plurarIndex);
 				String quantity = key.substring(plurarIndex + 1);

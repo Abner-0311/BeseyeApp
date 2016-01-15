@@ -209,7 +209,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 	private void setTrainHintText(){
 		String strHint = getString(R.string.enhance_human_detect_hint);
 		String strProgress = (-1 == miTrainProgress ? "--":miTrainProgress)+"%";
-		String strDesc = strHint+"\n"+String.format(getString(R.string.recognition_percentage), strProgress);
+		String strDesc = strHint+"\n\n"+String.format(getString(R.string.recognition_percentage), strProgress);
 		Spannable wordtoSpan = new SpannableString(strDesc);          
 		if(null != mTxtTrainingHint){
 			int i = strDesc.indexOf(strProgress);
