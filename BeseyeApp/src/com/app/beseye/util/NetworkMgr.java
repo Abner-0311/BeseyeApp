@@ -80,7 +80,7 @@ public class NetworkMgr {
 	private WeakReference<OnWifiScanResultAvailableCallback> mOnWifiScanResultAvailableCallbackListener;
 	
 	static private NetworkMgr sNetworkMgr;
-	static private Handler sHandler = new Handler();
+	//static private Handler sHandler = new Handler();
 	
 	static public NetworkMgr createInstance(Context context){
 		if(null == sNetworkMgr){
@@ -469,25 +469,23 @@ public class NetworkMgr {
 	}
 	
 	public void notifyNetworkStatusChanged(){
-		if(null != sHandler){
-			sHandler.post(new Runnable(){
-				@Override
-				public void run() {
-					boolean bLatestConnectedState = isNetworkConnected();
-					//Mark below condition because some network handover is too soon 
-					//if(mbIsNetworkConnected != bLatestConnectedState){
-						if(DEBUG)
-							Log.i(TAG, "notifyNetworkStatusChanged(), connectivity change to "+bLatestConnectedState);
-						for(WeakReference<OnNetworkChangeCallback> wrListener : mOnNetworkChangeCallbackListeners){
-							OnNetworkChangeCallback checkListener = wrListener.get();
-							if(null != checkListener){
-								checkListener.onConnectivityChanged(bLatestConnectedState);
-							}
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				boolean bLatestConnectedState = isNetworkConnected();
+				//Mark below condition because some network handover is too soon 
+				//if(mbIsNetworkConnected != bLatestConnectedState){
+					if(DEBUG)
+						Log.i(TAG, "notifyNetworkStatusChanged(), connectivity change to "+bLatestConnectedState);
+					for(WeakReference<OnNetworkChangeCallback> wrListener : mOnNetworkChangeCallbackListeners){
+						OnNetworkChangeCallback checkListener = wrListener.get();
+						if(null != checkListener){
+							checkListener.onConnectivityChanged(bLatestConnectedState);
 						}
-					//}
-					mbIsNetworkConnected = bLatestConnectedState;
-				}});
-		}
+					}
+				//}
+				mbIsNetworkConnected = bLatestConnectedState;
+			}},0);
 	}
 	
 	public void registerWifiStatusChangeCallback(OnWifiStatusChangeCallback listerner){
@@ -534,38 +532,36 @@ public class NetworkMgr {
 	}
 	
 	public void notifyWifiStatusChanged(final int iLatestWifiStatus){
-		if(null != sHandler){
-			sHandler.post(new Runnable(){
-				@Override
-				public void run() {
-					if(DEBUG)
-						Log.i(TAG, "notifyWifiStatusChanged(), wifi status change from "+miWifiState+" to "+iLatestWifiStatus);
-					if(miWifiState != iLatestWifiStatus){
-						synchronized(mOnWifiStatusChangeCallbackListeners){
-							for(WeakReference<OnWifiStatusChangeCallback> wrListener : mOnWifiStatusChangeCallbackListeners){
-								OnWifiStatusChangeCallback checkListener = wrListener.get();
-								if(null != checkListener){
-									checkListener.onWifiStateChanged(iLatestWifiStatus, miWifiState);
-								}
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(DEBUG)
+					Log.i(TAG, "notifyWifiStatusChanged(), wifi status change from "+miWifiState+" to "+iLatestWifiStatus);
+				if(miWifiState != iLatestWifiStatus){
+					synchronized(mOnWifiStatusChangeCallbackListeners){
+						for(WeakReference<OnWifiStatusChangeCallback> wrListener : mOnWifiStatusChangeCallbackListeners){
+							OnWifiStatusChangeCallback checkListener = wrListener.get();
+							if(null != checkListener){
+								checkListener.onWifiStateChanged(iLatestWifiStatus, miWifiState);
 							}
 						}
 					}
-					miWifiState = iLatestWifiStatus;
-				}});
-		}
+				}
+				miWifiState = iLatestWifiStatus;
+			}}, 0);
 	}
 	
 	public void notifyWifiNetworkStatusChanged(final DetailedState iLatestWifiStatus){
-		if(null != sHandler){
-			sHandler.post(new Runnable(){
-				@Override
-				public void run() {
-					if(DEBUG)
-						Log.i(TAG, "notifyWifiNetworkStatusChanged(), wifi ("+getActiveWifiBSSID()+")status change from "+miWifiNetworkState+" to "+iLatestWifiStatus);
-					
-					//if(miWifiNetworkState != iLatestWifiStatus){
-					synchronized(mOnWifiStatusChangeCallbackListeners){
-						//for(WeakReference<OnWifiStatusChangeCallback> wrListener : mOnWifiStatusChangeCallbackListeners){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(DEBUG)
+					Log.i(TAG, "notifyWifiNetworkStatusChanged(), wifi ("+getActiveWifiBSSID()+")status change from "+miWifiNetworkState+" to "+iLatestWifiStatus);
+				
+				//if(miWifiNetworkState != iLatestWifiStatus){
+				synchronized(mOnWifiStatusChangeCallbackListeners){
+					//for(WeakReference<OnWifiStatusChangeCallback> wrListener : mOnWifiStatusChangeCallbackListeners){
+					if(miWifiNetworkState != iLatestWifiStatus){
 						for(int i = 0; i < mOnWifiStatusChangeCallbackListeners.size();i++){
 							OnWifiStatusChangeCallback checkListener = mOnWifiStatusChangeCallbackListeners.get(i).get();
 							if(null != checkListener){
@@ -575,10 +571,10 @@ public class NetworkMgr {
 							}
 						}
 					}
-					//}
-					miWifiNetworkState = iLatestWifiStatus;
-				}});
-		}
+				}
+				//}
+				miWifiNetworkState = iLatestWifiStatus;
+			}}, 0);
 	}
 	
 	public void registerOnSupplicantStatusChangeCallback(OnSupplicantStatusChangeCallback listerner){
@@ -599,44 +595,40 @@ public class NetworkMgr {
 	}
 	
 	public void notifyOnSupplicantStatusChangeCallback(final SupplicantState iLatestSupplicantState){
-		if(null != sHandler){
-			sHandler.post(new Runnable(){
-				@Override
-				public void run() {
-					String curSSID = getActiveWifiBSSID();
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				String curSSID = getActiveWifiBSSID();
+				if(DEBUG)
+					Log.i(TAG, "notifyOnSupplicantStatusChangeCallback(), supplicant ("+curSSID+")state change from <"+mSupplicantState+"> to <"+iLatestSupplicantState+">");
+				if(mSupplicantState != iLatestSupplicantState){
+					OnSupplicantStatusChangeCallback checkListener = (null != mOnSupplicantStatusChangeCallbackListeners)?mOnSupplicantStatusChangeCallbackListeners.get():null;
+					if(null != checkListener){
+						checkListener.onSupplicantStateChanged(iLatestSupplicantState, mSupplicantState);
+					}
+				}
+				mSupplicantState = iLatestSupplicantState;
+				
+				if(null != curSSID && !curSSID.equals(mPreviousActiveSSID)){
 					if(DEBUG)
-						Log.i(TAG, "notifyOnSupplicantStatusChangeCallback(), supplicant ("+curSSID+")state change from <"+mSupplicantState+"> to <"+iLatestSupplicantState+">");
-					if(mSupplicantState != iLatestSupplicantState){
-						OnSupplicantStatusChangeCallback checkListener = (null != mOnSupplicantStatusChangeCallbackListeners)?mOnSupplicantStatusChangeCallbackListeners.get():null;
-						if(null != checkListener){
-							checkListener.onSupplicantStateChanged(iLatestSupplicantState, mSupplicantState);
-						}
-					}
-					mSupplicantState = iLatestSupplicantState;
-					
-					if(null != curSSID && !curSSID.equals(mPreviousActiveSSID)){
-						if(DEBUG)
-							Log.i(TAG, "notifyOnSupplicantStatusChangeCallback(), SSID change from <"+mPreviousActiveSSID+"> to <"+curSSID+">");
-						mPreviousActiveSSID = curSSID;
-					}
-				}});
-		}
+						Log.i(TAG, "notifyOnSupplicantStatusChangeCallback(), SSID change from <"+mPreviousActiveSSID+"> to <"+curSSID+">");
+					mPreviousActiveSSID = curSSID;
+				}
+			}}, 0);
 	}
 	
 	public void notifyOnSuppicantAuthenticationError(){
-		if(null != sHandler){
-			sHandler.post(new Runnable(){
-				@Override
-				public void run() {
-					//String SSID = NetworkMgr.getInstance().getActiveWifiSSID();
-					if(DEBUG)
-						Log.w(TAG, "notifyOnSuppicantAuthenticationError()!!!!!!!!!!!!!, ssid:"+mPreviousActiveSSID);
-					OnSupplicantStatusChangeCallback checkListener = (null != mOnSupplicantStatusChangeCallbackListeners)?mOnSupplicantStatusChangeCallbackListeners.get():null;
-					if(null != checkListener){
-						checkListener.onAuthenticationError(mPreviousActiveSSID);
-					}
-				}});
-		}
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				//String SSID = NetworkMgr.getInstance().getActiveWifiSSID();
+				if(DEBUG)
+					Log.w(TAG, "notifyOnSuppicantAuthenticationError()!!!!!!!!!!!!!, ssid:"+mPreviousActiveSSID);
+				OnSupplicantStatusChangeCallback checkListener = (null != mOnSupplicantStatusChangeCallbackListeners)?mOnSupplicantStatusChangeCallbackListeners.get():null;
+				if(null != checkListener){
+					checkListener.onAuthenticationError(mPreviousActiveSSID);
+				}
+			}}, 0);
 	}
 	
 	private String getSSIDfromBSSID(String BSSID){
@@ -705,32 +697,30 @@ public class NetworkMgr {
 	}
 	
 	public void notifyWifiScanResultAvailable(){
-		if(null != sHandler){
-			sHandler.post(new Runnable(){
-				@Override
-				public void run() {
-					if(DEBUG)
-						Log.i(TAG, "notifyWifiScanResultAvailable()");
-					if(null != mOnWifiScanResultAvailableCallbackListener ){
-						OnWifiScanResultAvailableCallback checkListener = mOnWifiScanResultAvailableCallbackListener.get();
-						if(null != checkListener){
-							checkListener.onWifiScanResultAvailable();
-							unregisterOnWifiScanResultAvailableCallbackListener(checkListener);
-							Context context = mWrContext.get();
-							if(null != context){
-								if(null != mWifiReceiver){
-									context.unregisterReceiver(mWifiReceiver);
-									IntentFilter intentFilter = new IntentFilter();
-									intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-									intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-									intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-									context.registerReceiver(mWifiReceiver, intentFilter);
-								}
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(DEBUG)
+					Log.i(TAG, "notifyWifiScanResultAvailable()");
+				if(null != mOnWifiScanResultAvailableCallbackListener ){
+					OnWifiScanResultAvailableCallback checkListener = mOnWifiScanResultAvailableCallbackListener.get();
+					if(null != checkListener){
+						checkListener.onWifiScanResultAvailable();
+						unregisterOnWifiScanResultAvailableCallbackListener(checkListener);
+						Context context = mWrContext.get();
+						if(null != context){
+							if(null != mWifiReceiver){
+								context.unregisterReceiver(mWifiReceiver);
+								IntentFilter intentFilter = new IntentFilter();
+								intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+								intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+								intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+								context.registerReceiver(mWifiReceiver, intentFilter);
 							}
 						}
 					}
-				}});
-		}
+				}
+			}}, 0);
 	}
 	
 	static public class WifiAPInfo implements Parcelable{
@@ -1024,9 +1014,9 @@ public class NetworkMgr {
 			if(null != wifiConfig){
 				retInfo.bIsHiddenSSID = wifiConfig.hiddenSSID;
 			}else{
-				if(DEBUG){
-					Log.e(TAG, "transformFromScanResult(), can not find config for ret.SSID "+retInfo.SSID);
-				}
+//				if(DEBUG){
+//					Log.e(TAG, "transformFromScanResult(), can not find config for ret.SSID "+retInfo.SSID);
+//				}
 			}
 			retInfo.signalLevel = WifiManager.calculateSignalLevel(ret.level, WifiAPInfo.MAX_SIGNAL_LEVEL);
 			

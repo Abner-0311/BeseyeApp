@@ -333,8 +333,11 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		boolean bRet = false;
 		if(bRet = NetworkMgr.getInstance().scanWifiList(this)){
 			setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_SCANNING);
-			if(bForceShowDialog || (null != mlstScanResult && 0 == mlstScanResult.size()))
+			if(bForceShowDialog || (null != mlstScanResult && 0 == mlstScanResult.size())){
 				showMyDialog(DIALOG_ID_WIFI_SCANNING);
+			}else{
+				removeMyDialog(DIALOG_ID_WIFI_SCANNING);
+			}
 		}else{
 			showMyDialog(DIALOG_ID_WIFI_SCAN_FAILED);
 		}
