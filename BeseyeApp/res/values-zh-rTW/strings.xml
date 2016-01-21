@@ -590,8 +590,8 @@
   <string name="tz_thailand">泰國</string>
   <string name="tz_brazil_brasilia_o_dst">巴西 - 巴西利亞 - 無夏令時間</string>
   <string name="tz_brazil_brasilia">巴西 - 巴西利亞</string>
-  <string name="tz_brazil_amazon_o_dst">巴西 - 亞馬孫 - 無夏令時間</string>
-  <string name="tz_brazil_amazon">巴西 - 亞馬孫</string>
+  <string name="tz_brazil_amazon_o_dst">巴西 - 亞馬遜 - 無夏令時間</string>
+  <string name="tz_brazil_amazon">巴西 - 亞馬遜</string>
   <string name="tz_brazil_acre">巴西 - 阿克里</string>
   <string name="tz_papua_new_guinea">巴布亞紐幾內亞</string>
   <string name="tz_russia_kaliningrad">俄羅斯 - 加里寧格勒</string>
