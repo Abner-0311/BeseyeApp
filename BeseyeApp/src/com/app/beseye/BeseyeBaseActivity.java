@@ -2,13 +2,10 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.*;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
-import static com.app.beseye.util.BeseyeJSONUtil.CAM_CHANGE_DATA;
 import static com.app.beseye.websockets.BeseyeWebsocketsUtil.WS_ATTR_CAM_UID;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -16,8 +13,6 @@ import java.util.concurrent.Executors;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.CrashManagerListener;
-import net.hockeyapp.android.UpdateManager;
-import net.hockeyapp.android.UpdateManagerListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +58,7 @@ import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
+import com.app.beseye.httptask.BeseyeUpdateBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.ISessionUpdateCallback;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
@@ -83,12 +79,6 @@ import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.widget.BaseOneBtnDialog;
 import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
-import com.facebook.share.model.ShareContent;
-import com.facebook.share.widget.MessageDialog;
-import com.xiaomi.market.sdk.UpdateResponse;
-import com.xiaomi.market.sdk.UpdateStatus;
-import com.xiaomi.market.sdk.XiaomiUpdateAgent;
-import com.xiaomi.market.sdk.XiaomiUpdateListener;
 
 
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, 
@@ -295,135 +285,139 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	    });
 	}
 	
-	private boolean mbGetUpdateRetFromHockeyApp = false;
-	private boolean mbGetUpdateRetFromMiSDK = false;
-	
-	static final private long TIME_TO_CHECK_UPDATE_VIA_MI = 6000L;//Avoid no update from HockeyApp SDK
-	static final private long TIME_TO_CHECK_FINAL_UPDATE_RET    = 10000L;//Avoid no update from both SDK
-	
-	private Runnable mCheckUpdateRetFromMiSDKRunnable = new Runnable(){
-		@Override
-		public void run() {
-			if(false == mbGetUpdateRetFromHockeyApp){
-				Log.i(TAG, "run(), try to get update status from mi");
-				XiaomiUpdateAgent.setUpdateAutoPopup(false);
-				XiaomiUpdateAgent.setUpdateListener(new XiaomiUpdateListener() {
-					@Override
-					public void onUpdateReturned(int updateStatus, UpdateResponse reponse) {
-				        switch (updateStatus) {
-				            case UpdateStatus.STATUS_UPDATE:
-				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_UPDATE, reponse:"+reponse.toString());
-				    			 launchUpdateApp();
-				                 break;
-				            case UpdateStatus.STATUS_NO_UPDATE:
-				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_NO_UPDATE");
-				    			 onAppUpdateNotAvailable();
-				                 break;
-				            case UpdateStatus.STATUS_NO_WIFI:
-				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_NO_WIFI");
-				                 break;
-				            case UpdateStatus.STATUS_NO_NET:
-				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_NO_NET");
-				                break;
-				            case UpdateStatus.STATUS_FAILED:
-				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_FAILED");
-				    			 onAppUpdateNotAvailable();
-				                 break;
-				            case UpdateStatus.STATUS_LOCAL_APP_FAILED:
-				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_LOCAL_APP_FAILED");
-				    			 onAppUpdateNotAvailable();
-				                 break;
-				            default:{
-				    			 Log.i(TAG, "onUpdateReturned(), unknown updateStatus:"+updateStatus);
-				    			 onAppUpdateNotAvailable();
-				            }   
-				            mbGetUpdateRetFromMiSDK = true;
-				        }
-					}
-				});
-				BeseyeUtils.postRunnable(mCheckFinalAppUpdateRet, TIME_TO_CHECK_FINAL_UPDATE_RET);
-				mbGetUpdateRetFromMiSDK = false;
-				XiaomiUpdateAgent.update(BeseyeBaseActivity.this);
-			}else{
-				Log.i(TAG, "run(), already get update status from hockeyApp");
-			}
-		}};
-	
-		
-	private Runnable mCheckFinalAppUpdateRet = new Runnable(){
-		@Override
-		public void run() {
-			Log.i(TAG, "mCheckFinalAppUpdateRet::run(), "+mbGetUpdateRetFromMiSDK+", "+mbGetUpdateRetFromHockeyApp);
-
-			if(false == mbGetUpdateRetFromMiSDK && false ==mbGetUpdateRetFromHockeyApp){
-				onAppUpdateNotAvailable();
-			}
-		}};	
+//	private boolean mbGetUpdateRetFromHockeyApp = false;
+//	private boolean mbGetUpdateRetFromMiSDK = false;
+//	
+//	static final private long TIME_TO_CHECK_UPDATE_VIA_MI = 6000L;//Avoid no update from HockeyApp SDK
+//	static final private long TIME_TO_CHECK_FINAL_UPDATE_RET    = 10000L;//Avoid no update from both SDK
+//	
+//	private Runnable mCheckUpdateRetFromMiSDKRunnable = new Runnable(){
+//		@Override
+//		public void run() {
+//			if(false == mbGetUpdateRetFromHockeyApp){
+//				Log.i(TAG, "run(), try to get update status from mi");
+//				XiaomiUpdateAgent.setUpdateAutoPopup(false);
+//				XiaomiUpdateAgent.setUpdateListener(new XiaomiUpdateListener() {
+//					@Override
+//					public void onUpdateReturned(int updateStatus, UpdateResponse reponse) {
+//				        switch (updateStatus) {
+//				            case UpdateStatus.STATUS_UPDATE:
+//				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_UPDATE, reponse:"+reponse.toString());
+//				    			 launchUpdateApp();
+//				                 break;
+//				            case UpdateStatus.STATUS_NO_UPDATE:
+//				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_NO_UPDATE");
+//				    			 onAppUpdateNotAvailable();
+//				                 break;
+//				            case UpdateStatus.STATUS_NO_WIFI:
+//				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_NO_WIFI");
+//				                 break;
+//				            case UpdateStatus.STATUS_NO_NET:
+//				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_NO_NET");
+//				                break;
+//				            case UpdateStatus.STATUS_FAILED:
+//				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_FAILED");
+//				    			 onAppUpdateNotAvailable();
+//				                 break;
+//				            case UpdateStatus.STATUS_LOCAL_APP_FAILED:
+//				    			 Log.i(TAG, "onUpdateReturned(), for UpdateStatus.STATUS_LOCAL_APP_FAILED");
+//				    			 onAppUpdateNotAvailable();
+//				                 break;
+//				            default:{
+//				    			 Log.i(TAG, "onUpdateReturned(), unknown updateStatus:"+updateStatus);
+//				    			 onAppUpdateNotAvailable();
+//				            }   
+//				            mbGetUpdateRetFromMiSDK = true;
+//				        }
+//					}
+//				});
+//				BeseyeUtils.postRunnable(mCheckFinalAppUpdateRet, TIME_TO_CHECK_FINAL_UPDATE_RET);
+//				mbGetUpdateRetFromMiSDK = false;
+//				XiaomiUpdateAgent.update(BeseyeBaseActivity.this);
+//			}else{
+//				Log.i(TAG, "run(), already get update status from hockeyApp");
+//			}
+//		}};
+//	
+//		
+//	private Runnable mCheckFinalAppUpdateRet = new Runnable(){
+//		@Override
+//		public void run() {
+//			Log.i(TAG, "mCheckFinalAppUpdateRet::run(), "+mbGetUpdateRetFromMiSDK+", "+mbGetUpdateRetFromHockeyApp);
+//
+//			if(false == mbGetUpdateRetFromMiSDK && false ==mbGetUpdateRetFromHockeyApp){
+//				onAppUpdateNotAvailable();
+//			}
+//		}};	
 	
 	private void checkForUpdates() {
 		if(false == mbIgnoreCamVerCheck){
-			BeseyeCamInfoSyncMgr.getInstance().registerOnCamUpdateVersionCheckListener(this);
+			monitorAsyncTask(new BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask(this).setDialogId(-1), true, getPackageName());
 		}
 		
-		mbHaveCheckAppVer = false;
-		mbGetUpdateRetFromHockeyApp = false;
-		mbGetUpdateRetFromMiSDK = false;
-		BeseyeUtils.removeRunnable(mCheckFinalAppUpdateRet);
-		BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
-		
-		if(BeseyeUtils.canUpdateFromHockeyApp()){
-			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
-		}else if(BeseyeUtils.isProductionVersion()){
-			Log.i(TAG, "checkForUpdates(), for production:"+((HOCKEY_APP_ID.length() > 7)?HOCKEY_APP_ID.substring(0, 6):""));
-			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListenerForProduction, false);
-		}
-
-		BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, TIME_TO_CHECK_UPDATE_VIA_MI);
+//		if(false == mbIgnoreCamVerCheck){
+//			BeseyeCamInfoSyncMgr.getInstance().registerOnCamUpdateVersionCheckListener(this);
+//		}
+//		
+//		mbHaveCheckAppVer = false;
+//		mbGetUpdateRetFromHockeyApp = false;
+//		mbGetUpdateRetFromMiSDK = false;
+//		BeseyeUtils.removeRunnable(mCheckFinalAppUpdateRet);
+//		BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
+//		
+//		if(BeseyeUtils.canUpdateFromHockeyApp()){
+//			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
+//		}else if(BeseyeUtils.isProductionVersion()){
+//			Log.i(TAG, "checkForUpdates(), for production:"+((HOCKEY_APP_ID.length() > 7)?HOCKEY_APP_ID.substring(0, 6):""));
+//			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListenerForProduction, false);
+//		}
+//
+//		BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, TIME_TO_CHECK_UPDATE_VIA_MI);
 	}
 	
-	//For Alpha update
-	private UpdateManagerListener mUpdateManagerListener = new UpdateManagerListener(){
-		@Override
-		public void onNoUpdateAvailable() {
-			super.onNoUpdateAvailable();
-			mbGetUpdateRetFromHockeyApp = true;
-			if(false == mbGetUpdateRetFromMiSDK){
-				onAppUpdateNotAvailable();
-			}else{
-				Log.i(TAG, "onNoUpdateAvailable(), have get update ret from mi");
-			}
-		}
-	}; 
-	
-	//For production version app update
-	private UpdateManagerListener mUpdateManagerListenerForProduction = new UpdateManagerListener(){
-		@Override
-		public void onUpdateAvailable() {
-			super.onUpdateAvailable();
-			mbGetUpdateRetFromHockeyApp = true;
-			BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
-			UpdateManager.unregister();
-			
-			if(false == mbGetUpdateRetFromMiSDK){
-				launchUpdateApp();
-			}else{
-				Log.i(TAG, "onUpdateAvailable(), have get update ret from mi");
-			}
-		}
-
-		@Override
-		public void onNoUpdateAvailable() {
-			super.onNoUpdateAvailable();
-			mbGetUpdateRetFromHockeyApp = true;
-			BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
-			
-			if(false == mbGetUpdateRetFromMiSDK){
-				onAppUpdateNotAvailable();
-			}else{
-				Log.i(TAG, "onNoUpdateAvailable(), have get update ret from mi");
-			}
-		}
-	}; 
+//	//For Alpha update
+//	private UpdateManagerListener mUpdateManagerListener = new UpdateManagerListener(){
+//		@Override
+//		public void onNoUpdateAvailable() {
+//			super.onNoUpdateAvailable();
+//			mbGetUpdateRetFromHockeyApp = true;
+//			if(false == mbGetUpdateRetFromMiSDK){
+//				onAppUpdateNotAvailable();
+//			}else{
+//				Log.i(TAG, "onNoUpdateAvailable(), have get update ret from mi");
+//			}
+//		}
+//	}; 
+//	
+//	//For production version app update
+//	private UpdateManagerListener mUpdateManagerListenerForProduction = new UpdateManagerListener(){
+//		@Override
+//		public void onUpdateAvailable() {
+//			super.onUpdateAvailable();
+//			mbGetUpdateRetFromHockeyApp = true;
+//			BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
+//			UpdateManager.unregister();
+//			
+//			if(false == mbGetUpdateRetFromMiSDK){
+//				launchUpdateApp();
+//			}else{
+//				Log.i(TAG, "onUpdateAvailable(), have get update ret from mi");
+//			}
+//		}
+//
+//		@Override
+//		public void onNoUpdateAvailable() {
+//			super.onNoUpdateAvailable();
+//			mbGetUpdateRetFromHockeyApp = true;
+//			BeseyeUtils.removeRunnable(mCheckUpdateRetFromMiSDKRunnable);
+//			
+//			if(false == mbGetUpdateRetFromMiSDK){
+//				onAppUpdateNotAvailable();
+//			}else{
+//				Log.i(TAG, "onNoUpdateAvailable(), have get update ret from mi");
+//			}
+//		}
+//	}; 
 	
 	private void launchUpdateApp(){
 		final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
@@ -449,34 +443,36 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		    	intent.setClassName(riGooglePlay.activityInfo.packageName, riGooglePlay.activityInfo.name);
 		    	startActivity(intent);
 		    	
-		    	dismissMarketAppList();
-		    	dismissMarketWebList();
+//		    	dismissMarketAppList();
+//		    	dismissMarketWebList();
 		    }else{
-		    	List<ResolveInfo> lstOtherMarket = new ArrayList<ResolveInfo>();
-		    	for (final ResolveInfo info : matches){
-					if (info.activityInfo.packageName.toLowerCase().equals("com.qihoo.appstore") || 
-						info.activityInfo.packageName.toLowerCase().equals("com.xiaomi.market")	) {
-						lstOtherMarket.add(info);
-					}
-			    }
-		    	
-		    	if(false == lstOtherMarket.isEmpty()){
-		    		if(1 == lstOtherMarket.size()){
-		    			intent.setClassName(lstOtherMarket.get(0).activityInfo.packageName, lstOtherMarket.get(0).activityInfo.name);
-				    	startActivity(intent);
-				    	dismissMarketAppList();
-				    	dismissMarketWebList();
-		    		}else{
-	    				mMarketAppAdapter = new MarketAppAdapter(this, lstOtherMarket);
-		    			dismissMarketWebList();
-		    			showMarketAppList();
-		    		}
-		    	}else{
-		    		onNoMarketApp();
-		    	}
+		    	//[Abner 20160127] Disable 360 & mi update because we don't support China from now
+//		    	List<ResolveInfo> lstOtherMarket = new ArrayList<ResolveInfo>();
+//		    	for (final ResolveInfo info : matches){
+//					if (info.activityInfo.packageName.toLowerCase().equals("com.qihoo.appstore") || 
+//						info.activityInfo.packageName.toLowerCase().equals("com.xiaomi.market")	) {
+//						lstOtherMarket.add(info);
+//					}
+//			    }
+//		    	
+//		    	if(false == lstOtherMarket.isEmpty()){
+//		    		if(1 == lstOtherMarket.size()){
+//		    			intent.setClassName(lstOtherMarket.get(0).activityInfo.packageName, lstOtherMarket.get(0).activityInfo.name);
+//				    	startActivity(intent);
+//				    	dismissMarketAppList();
+//				    	dismissMarketWebList();
+//		    		}else{
+//	    				mMarketAppAdapter = new MarketAppAdapter(this, lstOtherMarket);
+//		    			dismissMarketWebList();
+//		    			showMarketAppList();
+//		    		}
+//		    	}else{
+//		    		onNoMarketApp();
+//		    	}
 		    }
 	    }else{
-	    	onNoMarketApp();
+	    	//[Abner 20160127] Disable 360 & mi update because we don't support China from now
+	    	//onNoMarketApp();
 	    }
 //	    
 //		try {
@@ -496,116 +492,116 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 //		}
 	}
 	
-	private MarketAppAdapter mMarketAppAdapter = null;
-	private MarketWebAdapter mMarketWebAdapter = null;
-	private Dialog mMarketAppListDialog = null;
-	private Dialog mMarketWebListDialog = null;
-	
-	private void onNoMarketApp(){
-		List<MarketWebInfo> lstMarket = new ArrayList<MarketWebInfo>();
-		lstMarket.add(new MarketWebInfo(getString(R.string.download_app_web_360), Uri.parse("http://m.app.haosou.com/detail/index?&id=2972261")));
-		lstMarket.add(new MarketWebInfo(getString(R.string.download_app_web_mi), Uri.parse("http://m.app.mi.com/detail/index?id=95502")));
-		mMarketWebAdapter = new MarketWebAdapter(this, lstMarket);
-		
-		dismissMarketAppList();
-		showMarketWebList();
-	}
-	
-	private void showMarketAppList(){
-		if(null == mMarketAppListDialog){
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	        builder.setAdapter(mMarketAppAdapter, new DialogInterface.OnClickListener() {
-	            @Override
-	            public void onClick(DialogInterface dialog, int which) {
-	                Object objInfo = mMarketAppAdapter.getItem(which);
-	            	if(objInfo instanceof ResolveInfo){
-	            		ResolveInfo info = (ResolveInfo)objInfo;
-	            		Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName()));
-	  	               	marketIntent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
-	  	               	startActivity(marketIntent);
-	            	}else{
-	            		Log.e(TAG, "not ResolveInfo object");
-	            	}
-	            }
-	        }).setCancelable(true); 
-	        mMarketAppListDialog = setMarketDialog(builder, getResources().getString(R.string.dialog_title_download_app_via));
-	        mMarketAppListDialog.setCancelable(false);
-	        mMarketAppListDialog.setOnDismissListener(new OnDismissListener(){
-
-				@Override
-				public void onDismiss(DialogInterface dialog) {
-					mMarketAppListDialog = null;
-				}});
-		}
-	}
-	
-	private void showMarketWebList(){
-		if(null == mMarketWebListDialog){
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	        builder.setAdapter(mMarketWebAdapter, new DialogInterface.OnClickListener() {
-	            @Override
-	            public void onClick(DialogInterface dialog, int which) {
-	            	Object objInfo = mMarketWebAdapter.getItem(which);
-	            	if(objInfo instanceof MarketWebInfo){
-	            		MarketWebInfo info = (MarketWebInfo) objInfo;
-	            		Intent marketIntent = new Intent(Intent.ACTION_VIEW, info.mMarketURL);
-	                    startActivity(marketIntent);
-	            	}else{
-	            		Log.e(TAG, "not MarketWebInfo object");
-	            	}
-	            }
-	        }).setCancelable(true); 
-	        mMarketWebListDialog = setMarketDialog(builder, this.getResources().getString(R.string.dialog_title_download_app_via_web));
-	        mMarketWebListDialog.setCancelable(false);
-	        mMarketWebListDialog.setOnDismissListener(new OnDismissListener(){
-
-				@Override
-				public void onDismiss(DialogInterface dialog) {
-					mMarketWebListDialog = null;
-				}});
-		}
-	}
-	
-	private void dismissMarketAppList(){
-		if(null != mMarketAppListDialog){
-			mMarketAppListDialog.dismiss();
-			mMarketAppListDialog = null;
-		}
-	}
-	
-	private void dismissMarketWebList(){
-		if(null != mMarketWebListDialog){
-			mMarketWebListDialog.dismiss();
-			mMarketWebListDialog = null;
-		}
-	}
-	
-	private Dialog setMarketDialog(AlertDialog.Builder builder, String strTitle){
-		TextView title = new TextView(this);
-        title.setText(strTitle);
-        title.setPadding(this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_left),
-        		this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top),
-        		this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top),
-        		this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top));
-        
-        title.setTextColor(this.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
-        float scaledDensity = this.getResources().getDisplayMetrics().scaledDensity;
-        title.setTextSize(this.getResources().getDimension(R.dimen.wifi_ap_info_dialog_title_font_size)/scaledDensity);        
-        builder.setCustomTitle(title);
-        
-        //It is a hack!
-        //http://stackoverflow.com/questions/14439538/how-can-i-change-the-color-of-alertdialog-title-and-the-color-of-the-line-under
-        Dialog d = builder.show();
-        int dividerId = d.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
-        View divider = d.findViewById(dividerId);
-        divider.setBackgroundColor(this.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
-        
-        d.getWindow().setFlags(
-        	    WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-        	    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
-        return d;
-	}
+//	private MarketAppAdapter mMarketAppAdapter = null;
+//	private MarketWebAdapter mMarketWebAdapter = null;
+//	private Dialog mMarketAppListDialog = null;
+//	private Dialog mMarketWebListDialog = null;
+//	
+//	private void onNoMarketApp(){
+//		List<MarketWebInfo> lstMarket = new ArrayList<MarketWebInfo>();
+//		lstMarket.add(new MarketWebInfo(getString(R.string.download_app_web_360), Uri.parse("http://m.app.haosou.com/detail/index?&id=2972261")));
+//		lstMarket.add(new MarketWebInfo(getString(R.string.download_app_web_mi), Uri.parse("http://m.app.mi.com/detail/index?id=95502")));
+//		mMarketWebAdapter = new MarketWebAdapter(this, lstMarket);
+//		
+//		dismissMarketAppList();
+//		showMarketWebList();
+//	}
+//	
+//	private void showMarketAppList(){
+//		if(null == mMarketAppListDialog){
+//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//	        builder.setAdapter(mMarketAppAdapter, new DialogInterface.OnClickListener() {
+//	            @Override
+//	            public void onClick(DialogInterface dialog, int which) {
+//	                Object objInfo = mMarketAppAdapter.getItem(which);
+//	            	if(objInfo instanceof ResolveInfo){
+//	            		ResolveInfo info = (ResolveInfo)objInfo;
+//	            		Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName()));
+//	  	               	marketIntent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
+//	  	               	startActivity(marketIntent);
+//	            	}else{
+//	            		Log.e(TAG, "not ResolveInfo object");
+//	            	}
+//	            }
+//	        }).setCancelable(true); 
+//	        mMarketAppListDialog = setMarketDialog(builder, getResources().getString(R.string.dialog_title_download_app_via));
+//	        mMarketAppListDialog.setCancelable(false);
+//	        mMarketAppListDialog.setOnDismissListener(new OnDismissListener(){
+//
+//				@Override
+//				public void onDismiss(DialogInterface dialog) {
+//					mMarketAppListDialog = null;
+//				}});
+//		}
+//	}
+//	
+//	private void showMarketWebList(){
+//		if(null == mMarketWebListDialog){
+//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//	        builder.setAdapter(mMarketWebAdapter, new DialogInterface.OnClickListener() {
+//	            @Override
+//	            public void onClick(DialogInterface dialog, int which) {
+//	            	Object objInfo = mMarketWebAdapter.getItem(which);
+//	            	if(objInfo instanceof MarketWebInfo){
+//	            		MarketWebInfo info = (MarketWebInfo) objInfo;
+//	            		Intent marketIntent = new Intent(Intent.ACTION_VIEW, info.mMarketURL);
+//	                    startActivity(marketIntent);
+//	            	}else{
+//	            		Log.e(TAG, "not MarketWebInfo object");
+//	            	}
+//	            }
+//	        }).setCancelable(true); 
+//	        mMarketWebListDialog = setMarketDialog(builder, this.getResources().getString(R.string.dialog_title_download_app_via_web));
+//	        mMarketWebListDialog.setCancelable(false);
+//	        mMarketWebListDialog.setOnDismissListener(new OnDismissListener(){
+//
+//				@Override
+//				public void onDismiss(DialogInterface dialog) {
+//					mMarketWebListDialog = null;
+//				}});
+//		}
+//	}
+//	
+//	private void dismissMarketAppList(){
+//		if(null != mMarketAppListDialog){
+//			mMarketAppListDialog.dismiss();
+//			mMarketAppListDialog = null;
+//		}
+//	}
+//	
+//	private void dismissMarketWebList(){
+//		if(null != mMarketWebListDialog){
+//			mMarketWebListDialog.dismiss();
+//			mMarketWebListDialog = null;
+//		}
+//	}
+//	
+//	private Dialog setMarketDialog(AlertDialog.Builder builder, String strTitle){
+//		TextView title = new TextView(this);
+//        title.setText(strTitle);
+//        title.setPadding(this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_left),
+//        		this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top),
+//        		this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top),
+//        		this.getResources().getDimensionPixelSize(R.dimen.alertdialog_padding_top));
+//        
+//        title.setTextColor(this.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
+//        float scaledDensity = this.getResources().getDisplayMetrics().scaledDensity;
+//        title.setTextSize(this.getResources().getDimension(R.dimen.wifi_ap_info_dialog_title_font_size)/scaledDensity);        
+//        builder.setCustomTitle(title);
+//        
+//        //It is a hack!
+//        //http://stackoverflow.com/questions/14439538/how-can-i-change-the-color-of-alertdialog-title-and-the-color-of-the-line-under
+//        Dialog d = builder.show();
+//        int dividerId = d.getContext().getResources().getIdentifier("android:id/titleDivider", null, null);
+//        View divider = d.findViewById(dividerId);
+//        divider.setBackgroundColor(this.getResources().getColor(R.color.wifi_info_dialog_title_font_color));
+//        
+//        d.getWindow().setFlags(
+//        	    WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+//        	    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        
+//        return d;
+//	}
 	
 	private void onAppUpdateNotAvailable(){
 		if(this instanceof CameraListActivity /*&& !checkWithinCamUpdatePeriod()*/ && !isCamUpdatingInCurrentPage() && null != mObjVCamList){
@@ -1151,8 +1147,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}*/
 		
 		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-			if(null != strMsg && 0 < strMsg.length())
-				onToastShow(task, strMsg);
+//			if(null != strMsg && 0 < strMsg.length())
+//				onToastShow(task, strMsg);
 			Log.e(TAG, "onErrorReport(), task:["+task.getClass().getSimpleName()+"], iErrType:"+iErrType+", strTitle:"+strTitle+", strMsg:"+strMsg);
 		}
 	}
@@ -1364,6 +1360,28 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(BeseyeBaseActivity.this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++%miUpdateCamNum));
 					}
 				} 
+			}else if(task instanceof BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask){
+				if(0 == iRetCode){		
+					String strPkg = BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.UPDATE_PKG_NAME);
+					//String strName = BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.UPDATE_VER_NAME);
+					
+					int strVerCode = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.UPDATE_VER_CODE);
+					
+					if(getPackageName().equals(strPkg) && BeseyeUtils.getPackageVersionCode() < strVerCode){
+						Log.i(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask has new version: "+strVerCode);
+						launchUpdateApp();
+						//Toast.makeText(BeseyeBaseActivity.this, "Update for "+strPkg+" to version "+strVerCode, Toast.LENGTH_LONG).show();
+					}else{
+						Log.i(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask latest version: "+strVerCode);
+						//Log.i(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask error: "+iRetCode);
+						onAppUpdateNotAvailable();
+						//Toast.makeText(BeseyeBaseActivity.this, "Not Update for "+strPkg+" to version "+strVerCode, Toast.LENGTH_LONG).show();
+					}
+				}else{
+					onAppUpdateNotAvailable();
+					Log.e(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask error: "+iRetCode);
+					//Toast.makeText(BeseyeBaseActivity.this, "Update app error "+Integer.toHexString(iRetCode), Toast.LENGTH_LONG).show();
+				}
 			}
 		}
 		

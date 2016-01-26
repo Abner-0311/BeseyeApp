@@ -125,6 +125,12 @@ public class SessionMgr {
 												  "https://oregon-p2-stage-api-%d.beseye.com/news/",
 												  "https://bj-p2-stage-api-%d.beseye.cn/news/"}; 
 	
+	static private final String[] UPDATE_BE_URL = { "http://54.200.101.48/",//"https://oregon-p2-dev-api-1.beseye.com/ub/",
+												  "https://news-dev.beseye.com/", 
+												  "https://oregon-p1-stage-api-%d.beseye.com/ub/",
+												  "https://oregon-p2-stage-api-%d.beseye.com/ub/",
+												  "https://bj-p2-stage-api-%d.beseye.cn/ub/"}; 
+	
 	
 	
 	static private final String SESSION_PREF 				= "beseye_ses";
@@ -374,6 +380,7 @@ public class SessionMgr {
 		setWSBEHostUrl(mode);
 		setWSABEHostUrl(mode);
 		setNewsBEHostUrl(mode);
+		setUpdateBEHostUrl(mode);
 	}
 	
 	public int getVPCNumber(){
@@ -532,6 +539,19 @@ public class SessionMgr {
 		setNewsHostUrl(String.format(NEWS_BE_URL[mode.ordinal()], getVPCNumber()));
 	}
 	
+	public String getUpdateHostUrl(){
+		return mSessionData.getUpdateHostUrl();
+	}
+	
+	synchronized public void setUpdateHostUrl(String strURL){
+		mSessionData.setUpdateHostUrl(strURL);
+		notifySessionUpdate();
+	}
+	
+	public void setUpdateBEHostUrl(SERVER_MODE mode){
+		setUpdateHostUrl(String.format(UPDATE_BE_URL[mode.ordinal()], getVPCNumber()));
+	}
+		
 	public String getUserid(){
 		return mSessionData.getUserid();
 	}
@@ -732,7 +752,8 @@ public class SessionMgr {
 	}
 	
 	public static class SessionData implements Parcelable{
-		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrIMPMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
+		private String mStrHostUrl, mStrVPCHostUrl, mStrMMHostUrl, mStrIMPMMHostUrl, mStrCamHostUrl, mStrNSHostUrl, mStrCamWsHostUrl, mStrWSHostUrl, mStrWSAHostUrl, mStrNewsHostUrl, mStrUpdateHostUrl;
+		private String mStrUserid, mStrAccount, mStrDomain, mStrToken, mStrOwnerInfo, mStrPairToken;
 		private boolean mbIsCertificated, mbIsCamSWUpdateSuspended, mbIsTrustDev, mbIsShowNotificationFromToast;
 		private SERVER_MODE mServerMode;
 		private long mlCamUpdateTs;
@@ -750,6 +771,8 @@ public class SessionMgr {
 			mStrWSHostUrl = "";
 			mStrWSAHostUrl = "";
 			mStrNewsHostUrl = "";
+			mStrUpdateHostUrl = "";
+			
 			mStrUserid = "";
 			mStrAccount = "";
 			mStrDomain = "";
@@ -850,7 +873,15 @@ public class SessionMgr {
 		synchronized public void setNewsHostUrl(String strURL){
 			mStrNewsHostUrl = strURL;
 		}
-
+		
+		public String getUpdateHostUrl(){
+			return mStrUpdateHostUrl;
+		}
+		
+		synchronized public void setUpdateHostUrl(String strURL){
+			mStrUpdateHostUrl = strURL;
+		}
+		
 		public String getUserid(){
 			return mStrUserid;
 		}
@@ -1019,6 +1050,7 @@ public class SessionMgr {
 			dest.writeString(mStrWSHostUrl);
 			dest.writeString(mStrWSAHostUrl);
 			dest.writeString(mStrNewsHostUrl);
+			dest.writeString(mStrUpdateHostUrl);
 			
 			dest.writeString(mStrUserid);
 			dest.writeString(mStrAccount);
@@ -1068,6 +1100,7 @@ public class SessionMgr {
 			mStrWSHostUrl = in.readString();
 			mStrWSAHostUrl = in.readString();
 			mStrNewsHostUrl = in.readString();
+			mStrUpdateHostUrl = in.readString();
 			
 			mStrUserid = in.readString();
 			mStrAccount = in.readString();

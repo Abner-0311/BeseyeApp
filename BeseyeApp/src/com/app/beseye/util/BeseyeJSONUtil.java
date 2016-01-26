@@ -322,7 +322,11 @@ public class BeseyeJSONUtil {
 	public static final String MM_HD_IMG_LOAD_FAILED 	= "imgLoadFailed";
 	public static final String MM_HD_TRAIN_PROGRESS 	= "Progress";
 	
+	//For Android App version check
 	
+	public static final String UPDATE_PKG_NAME 			= "pkgName";
+	public static final String UPDATE_VER_CODE 			= "appVerCode";
+	public static final String UPDATE_VER_NAME 			= "appVerName";
 	
 	static public class FACE_LIST{
 		public int miId;
