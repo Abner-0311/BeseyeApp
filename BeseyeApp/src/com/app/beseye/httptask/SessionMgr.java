@@ -125,7 +125,7 @@ public class SessionMgr {
 												  "https://oregon-p2-stage-api-%d.beseye.com/news/",
 												  "https://bj-p2-stage-api-%d.beseye.cn/news/"}; 
 	
-	static private final String[] UPDATE_BE_URL = { "http://54.200.101.48/",//"https://oregon-p2-dev-api-1.beseye.com/ub/",
+	static private final String[] UPDATE_BE_URL = { "https://oregon-p2-dev-api-1.beseye.com/ub/",
 												  "https://news-dev.beseye.com/", 
 												  "https://oregon-p1-stage-api-%d.beseye.com/ub/",
 												  "https://oregon-p2-stage-api-%d.beseye.com/ub/",

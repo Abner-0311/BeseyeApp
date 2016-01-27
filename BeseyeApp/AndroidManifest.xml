@@ -26,8 +26,8 @@
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
     
-    <permission android:name="com.app.beseye.alpha.googlemap.MAPS_RECEIVE"></permission>
-	<uses-permission android:name="com.app.beseye.alpha.googlemap.permission.MAPS_RECEIVE"/>
+    <permission android:name="com.app.beseye.googlemap.MAPS_RECEIVE"></permission>
+	<uses-permission android:name="com.app.beseye.googlemap.permission.MAPS_RECEIVE"/>
 	
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> 
@@ -45,8 +45,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
 	
     <!-- For Push server GCM -->
-    <permission android:name="com.app.beseye.alpha.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-	<uses-permission android:name="com.app.beseye.alpha.permission.C2D_MESSAGE" />
+    <permission android:name="com.app.beseye.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+	<uses-permission android:name="com.app.beseye.permission.C2D_MESSAGE" />
 	
 	<!-- App receives GCM messages. -->
 	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -61,14 +61,14 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/common_app_icon"
-        android:label="@string/app_name_alpha"
+        android:label="@string/app_name_dev"
         android:theme="@style/AppTheme" 
-        android:name="com.app.beseye.BeseyeApplication">
-        <!--change the android:name="com.app.beseye.test.TestActivity" below for UI test-->
+        android:name=".BeseyeApplication">
+        <!--change the android:name=".test.TestActivity" below for UI test-->
         <!-- TestActivity  -->
         <!-- 
         <activity
-            android:name="com.app.beseye.test.TestActivity" 
+            android:name=".test.TestActivity" 
         	android:screenOrientation="portrait"
             android:configChanges="locale|orientation"
             android:launchMode="singleTop" 
@@ -81,7 +81,7 @@
         -->
          
         <activity
-            android:name="com.app.beseye.OpeningPage"
+            android:name=".OpeningPage"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" 
         	android:screenOrientation="portrait"
             android:configChanges="locale|orientation"
@@ -93,7 +93,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.CameraViewActivity"
+            android:name=".CameraViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="unspecified"
             android:exported="false"
@@ -101,29 +101,21 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.CameraListActivity"
+            android:name=".CameraListActivity"
             android:configChanges="locale|orientation" 
             android:screenOrientation="portrait"
             android:exported="false">
         </activity>
         
         <activity
-            android:name="com.app.beseye.BeseyeNewsActivity"
+            android:name=".BeseyeNewsActivity"
             android:configChanges="locale|orientation" 
             android:screenOrientation="portrait"
             android:exported="false">
         </activity>
         
         <activity
-            android:name="com.app.beseye.EventListActivity"
-            android:configChanges="locale|orientation" 
-            android:screenOrientation="portrait" 
-            android:launchMode="singleTop"
-            android:exported="false">
-        </activity>
-        
-        <activity
-            android:name="com.app.beseye.EventFilterActivity"
+            android:name=".EventListActivity"
             android:configChanges="locale|orientation" 
             android:screenOrientation="portrait" 
             android:launchMode="singleTop"
@@ -131,7 +123,15 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.CameraSettingActivity"
+            android:name=".EventFilterActivity"
+            android:configChanges="locale|orientation" 
+            android:screenOrientation="portrait" 
+            android:launchMode="singleTop"
+            android:exported="false">
+        </activity>
+        
+        <activity
+            android:name=".setting.CameraSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -139,7 +139,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.HumanDetectNotificationSettingActivity"
+            android:name=".setting.HumanDetectNotificationSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -147,7 +147,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.HumanDetectTrainActivity"
+            android:name=".setting.HumanDetectTrainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -155,7 +155,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.HWSettingsActivity"
+            android:name=".setting.HWSettingsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -163,7 +163,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.PowerScheduleActivity"
+            android:name=".setting.PowerScheduleActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -171,7 +171,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.PowerScheduleEditActivity"
+            android:name=".setting.PowerScheduleEditActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -179,7 +179,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.PowerScheduleDayPickerActivity"
+            android:name=".setting.PowerScheduleDayPickerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -188,7 +188,7 @@
     
         
         <activity
-            android:name="com.app.beseye.setting.CameraInfoActivity"
+            android:name=".setting.CameraInfoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -196,14 +196,14 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.NotificationEventsSettingActivity"
+            android:name=".setting.NotificationEventsSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop">
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.MotionNotificationSettingActivity"
+            android:name=".setting.MotionNotificationSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -211,7 +211,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.MotionZoneEditActivity"
+            android:name=".setting.MotionZoneEditActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape"
             android:launchMode="singleTop"
@@ -219,7 +219,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.LocationAwareSettingActivity"
+            android:name=".setting.LocationAwareSettingActivity"
             android:label="@string/app_name" 
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
@@ -228,7 +228,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.NightVisionActivity"
+            android:name=".setting.NightVisionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -236,7 +236,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.googlemap.LocateOnGoogleMap"
+            android:name=".googlemap.LocateOnGoogleMap"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -244,7 +244,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.WifiListActivity"
+            android:name=".WifiListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.WifiList"
@@ -252,7 +252,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.setting.TimezoneListActivity"
+            android:name=".setting.TimezoneListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TimeZoneList"
@@ -260,97 +260,97 @@
         </activity>
 
         <activity
-            android:name="com.app.beseye.BeseyeEntryActivity"
+            android:name=".BeseyeEntryActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
         </activity>
         
         <activity
-            android:name="com.app.beseye.CameraUpdateActivity"
+            android:name=".CameraUpdateActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" >
         </activity>
         
         <activity
-            android:name="com.app.beseye.BeseyeTrustDevMgtActivity"
+            android:name=".BeseyeTrustDevMgtActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" >
         </activity>
         
         <activity
-            android:name="com.app.beseye.BeseyeTrustDevAuthActivity"
+            android:name=".BeseyeTrustDevAuthActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" >
         </activity>
         
         <activity
-            android:name="com.app.beseye.BeseyeAboutActivity"
+            android:name=".BeseyeAboutActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" >
         </activity>
         
         <activity
-            android:name="com.app.beseye.BeseyeComputexModeActivity"
+            android:name=".BeseyeComputexModeActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
         </activity>
         
         <activity
-            android:name="com.app.beseye.pairing.PairingRemindActivity"
+            android:name=".pairing.PairingRemindActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
         </activity>
         
         <activity
-            android:name="com.app.beseye.pairing.PairingWatchOutActivity"
+            android:name=".pairing.PairingWatchOutActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
         </activity>
         
         <activity
-    		android:name="com.app.beseye.pairing.PairingPlugPowerActivity"
+    		android:name=".pairing.PairingPlugPowerActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
         </activity>
         <activity
-            android:name="com.app.beseye.pairing.PairingGuidelineActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
-            android:exported="false">
-        </activity>
-        
-        <activity
-            android:name="com.app.beseye.BeseyeTOSAndPrivacyPolicyActivity"
+            android:name=".pairing.PairingGuidelineActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
         </activity>
         
         <activity
-    		android:name="com.app.beseye.pairing.PairingFailActivity"
+            android:name=".BeseyeTOSAndPrivacyPolicyActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
         </activity>
         
         <activity
-    		android:name="com.app.beseye.pairing.PairingFailAttachAlreadyActivity"
+    		android:name=".pairing.PairingFailActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
         </activity>
         
         <activity
-            android:name="com.app.beseye.SignupActivity"
+    		android:name=".pairing.PairingFailAttachAlreadyActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:exported="false">
+        </activity>
+        
+        <activity
+            android:name=".SignupActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:launchMode="singleTop"
@@ -358,7 +358,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.ForgetPasswordActivity"
+            android:name=".ForgetPasswordActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:launchMode="singleTop"
@@ -366,7 +366,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.ForgetPWConfirmActivity"
+            android:name=".ForgetPWConfirmActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:launchMode="singleTop"
@@ -374,14 +374,14 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.WifiSetupGuideActivity" 
+            android:name=".WifiSetupGuideActivity" 
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
         </activity>
         
         <activity
-            android:name="com.app.beseye.LoginActivity"
+            android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:launchMode="singleTop"
@@ -389,14 +389,14 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.pairing.SoundPairingActivity"
+            android:name=".pairing.SoundPairingActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
         </activity>
         
         <activity
-            android:name="com.app.beseye.pairing.SoundPairingNamingActivity" 
+            android:name=".pairing.SoundPairingNamingActivity" 
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
@@ -411,7 +411,7 @@
         
         <!--  
         <receiver
-		    android:name="com.app.beseye.alpha.receiver.WifiStateChangeReceiver"
+		    android:name="com.app.beseye.receiver.WifiStateChangeReceiver"
 		    android:process=":remote" >
 		</receiver>
 		-->
@@ -419,30 +419,30 @@
 		<activity android:name="net.hockeyapp.android.UpdateActivity" />
 		
 		<service 
-            android:name="com.app.beseye.service.BeseyeNotificationService" 
+            android:name=".service.BeseyeNotificationService" 
             android:process=":remote">
         </service>
         
 		<receiver 
-           android:name="com.app.beseye.receiver.UBTEventBroadcastReciever"
+           android:name=".receiver.UBTEventBroadcastReciever"
            android:exported="false">  
 		   <intent-filter>  
-		    	<action android:name="com.app.beseye.alpha.ubt.EVENT_BROADCAST" />  
+		    	<action android:name="com.app.beseye.ubt.EVENT_BROADCAST" />  
 		   </intent-filter>  
 		</receiver>
         
 		<receiver 
-            android:name="com.app.beseye.receiver.BeseyeGCMBroadcastReceiver" 
+            android:name=".receiver.BeseyeGCMBroadcastReceiver" 
             android:permission="com.google.android.c2dm.permission.SEND" >
 			  <intent-filter>
 			    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 			    <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-			    <category android:name="com.app.beseye.alpha" />
+			    <category android:name="com.app.beseye" />
 			  </intent-filter>
 		</receiver>
 		
 		<receiver 
-            android:name="com.app.beseye.receiver.BootBroadcastReceiver" >
+            android:name=".receiver.BootBroadcastReceiver" >
 			  <intent-filter>
 			    <action android:name="android.intent.action.BOOT_COMPLETED"/>
 			  </intent-filter>
@@ -476,7 +476,7 @@
 		        <data android:scheme="package" />
 		    </intent-filter>                   
 		</receiver>
-		<receiver android:name="com.app.beseye.receiver.BaiduPushReceiver" >
+		<receiver android:name=".receiver.BaiduPushReceiver" >
             <intent-filter>
 
                 <!-- 接收push消息 -->
@@ -501,7 +501,7 @@
 		<!-- push结束 -->
 	
         <service 
-            android:name="com.app.beseye.GCMIntentService" 
+            android:name=".GCMIntentService" 
             android:process=":remote"/>
         
         <meta-data
@@ -515,11 +515,11 @@
 		<!-- facebook -->
     	<meta-data 
     	    android:name="com.facebook.sdk.ApplicationId" 
-    	    android:value="@string/facebook_app_id_alpha"/>
+    	    android:value="@string/facebook_app_id"/>
     	
     	<!-- 913128435388925 is APP ID -->
     	<provider 
-    	    android:authorities="@string/facebook_provider_authority_alpha"
+    	    android:authorities="@string/facebook_provider_authority"
           	android:name="com.facebook.FacebookContentProvider"
           	android:exported="true" />        
 
