@@ -547,7 +547,7 @@
   <!--highlight part in Intro desc of human detect training part 3-->
   <!-- TODO: string name="enhance_human_detect_intro_p3_desc_highlight" -->
   <!--Next step button -->
-  <!-- TODO: string name="enhance_human_detect_intro_next_step" -->
+  <!-- TODO: string name="next_step" -->
   <!--Reward desc after training result submit-->
   <!-- TODO: string name="enhance_human_detect_reward_desc" -->
   <!--Desc when no training pic is availalbe-->

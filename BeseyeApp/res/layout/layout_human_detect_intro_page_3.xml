@@ -34,7 +34,7 @@
 		    android:paddingBottom="@dimen/login_marginMedium"
 		    android:layout_marginTop="@dimen/login_marginMedium"
 		    android:paddingTop="@dimen/login_marginMedium"
-		    android:text="@string/enhance_human_detect_intro_next_step"
+		    android:text="@string/next_step"
 		    android:textColor="@color/word_white"
 		    android:textColorLink="@color/word_white"
 		    android:textSize="@dimen/login_fontMedium" />

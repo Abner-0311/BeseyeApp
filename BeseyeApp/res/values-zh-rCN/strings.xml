@@ -546,7 +546,7 @@
   <!--highlight part in Intro desc of human detect training part 3-->
   <string name="enhance_human_detect_intro_p3_desc_highlight">无</string>
   <!--Next step button -->
-  <string name="enhance_human_detect_intro_next_step">下一步</string>
+  <string name="next_step">下一步</string>
   <!--Reward desc after training result submit-->
   <string name="enhance_human_detect_reward_desc">，辨识率更加提高了！</string>
   <!--Desc when no training pic is availalbe-->
