@@ -597,12 +597,14 @@ public class BeseyeUtils {
 	}
 	
 	static private String sPkgVersion = null;
+	static private int sPkgVersionCode = 0;
 	
 	static public void setPackageVersion(Context context){
 		if(null == sPkgVersion){
 			try {
 				PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 				sPkgVersion = packageInfo.versionName;
+				sPkgVersionCode = packageInfo.versionCode;
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -611,6 +613,10 @@ public class BeseyeUtils {
 	
 	static public String getPackageVersion(){		
 		return sPkgVersion;
+	}
+	
+	static public int getPackageVersionCode(){		
+		return sPkgVersionCode;
 	}
 	
 	static public final String DEF_NEWS_LANG = "en";

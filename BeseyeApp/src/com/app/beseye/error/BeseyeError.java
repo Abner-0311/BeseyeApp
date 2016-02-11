@@ -80,4 +80,10 @@ public class BeseyeError {
 	static public final int	  E_FE_AND_HTTP_NO_CONN				   		   = 0x0040000A;
 	static public final int	  E_FE_AND_HTTP_CONN_TIMEOUT				   = 0x0040000B;
 	
+	//UPDATE BE Error
+	static public final int	  E_BE_UPDATE_SW_NOT_EXIST				   	   		= 0x00C00301;
+	static public final int	  E_BE_UPDATE_OTHER_EXCEPTION				   	   	= 0x00C00500;
+	static public final int	  E_BE_UPDATE_PARAM_INVALID				   	   		= 0x00C00501;
+	static public final int	  E_BE_UPDATE_PARAM_BLANK				   	   		= 0x00C00502;
+
 }
