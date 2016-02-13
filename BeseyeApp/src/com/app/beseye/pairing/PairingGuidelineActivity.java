@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Locale;
 
-import com.app.beseye.BeseyeAccountBaseActivity;
+import com.app.beseye.BeseyeNavBarBaseActivity;
 import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
 import com.app.beseye.WifiListActivity;
@@ -25,7 +25,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
-public class PairingGuidelineActivity extends BeseyeAccountBaseActivity {
+public class PairingGuidelineActivity extends BeseyeNavBarBaseActivity {
 	private Button mBtnTryAgain;
 	private WebView mWvGuideline;
 	

@@ -25,7 +25,7 @@ import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 
-public class ForgetPasswordActivity extends BeseyeAccountBaseActivity {
+public class ForgetPasswordActivity extends BeseyeNavBarBaseActivity {
 	private Button mBtnSubmit;
 	private EditText mEtUserEmail;
 	

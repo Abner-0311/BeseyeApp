@@ -83,4 +83,8 @@
     <color name="human_detect_no_human_mask">#b3ffffff</color>
     <color name="human_detect_no_human_text">#4c4c4c</color>
     
+    <color name="ota_faq_hint_text_color">#c8c8c8</color>
+    
+    <color name="ota_mask_background">#c8000000</color>
+    <color name="ota_failed_font_color">#575757</color>
 </resources>

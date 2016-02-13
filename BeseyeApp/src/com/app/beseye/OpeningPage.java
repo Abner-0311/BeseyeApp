@@ -208,6 +208,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 //		BeseyeApplication.checkPairingMode();
 		
 		Intent intentLanuch = null;
+		//Normal launch case
 		if(null == (intentLanuch = intent.getParcelableExtra(KEY_DELEGATE_INTENT))){
 			intentLanuch = new Intent();
 			String strCls = null;
@@ -219,9 +220,9 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 				strCls = FIRST_PAGE;
 			}
 			
-			if(!SessionMgr.getInstance().isTokenValid()){
+			if(!SessionMgr.getInstance().isTokenValid()){//If Dev token exists? 
 				strCls = BeseyeEntryActivity.class.getName();
-			}else if(!SessionMgr.getInstance().getIsCertificated() && !intent.getBooleanExtra(KEY_IGNORE_ACTIVATED_FLAG, false)){
+			}else if(!SessionMgr.getInstance().getIsCertificated() && !intent.getBooleanExtra(KEY_IGNORE_ACTIVATED_FLAG, false)){//User has login but not pairing successfully
 				mGetUserInfoTask = new BeseyeAccountTask.GetUserInfoTask(this);
 				if(null != mGetUserInfoTask){
 					mGetUserInfoTask.execute();
@@ -264,8 +265,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		        		return;
 			        }
 	        	}
-				
 			}else{
+				//Check cam SW here  
 				intentLanuch.setClassName(this, strCls);
 			}
 		}else{

@@ -1,6 +1,6 @@
 package com.app.beseye.pairing;
 
-import com.app.beseye.BeseyeAccountBaseActivity;
+import com.app.beseye.BeseyeNavBarBaseActivity;
 import com.app.beseye.R;
 import com.app.beseye.util.BeseyeUtils;
 
@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PairingRemindActivity extends BeseyeAccountBaseActivity {
+public class PairingRemindActivity extends BeseyeNavBarBaseActivity {
 	static public final String KEY_ADD_CAM_FROM_LIST = "KEY_ADD_CAM_FROM_LIST";
 	private Button mBtnStart;
 	private ImageView mIvSetupHint;

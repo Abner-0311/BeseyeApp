@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import com.app.beseye.util.BeseyeJSONUtil;
 
-public class ForgetPWConfirmActivity extends BeseyeAccountBaseActivity {
+public class ForgetPWConfirmActivity extends BeseyeNavBarBaseActivity {
 	private TextView mEtUserEmail;
 	
 	@Override

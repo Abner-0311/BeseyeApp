@@ -1,6 +1,6 @@
 package com.app.beseye.pairing;
 
-import com.app.beseye.BeseyeAccountBaseActivity;
+import com.app.beseye.BeseyeNavBarBaseActivity;
 import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
 import com.app.beseye.WifiListActivity;
@@ -11,7 +11,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 
-public class PairingFailActivity extends BeseyeAccountBaseActivity {
+public class PairingFailActivity extends BeseyeNavBarBaseActivity {
 	private Button mBtnTryAgain;
 	//private TextView mTxtSetupGuide;
 	

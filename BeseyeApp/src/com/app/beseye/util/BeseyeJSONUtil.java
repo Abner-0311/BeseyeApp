@@ -328,6 +328,13 @@ public class BeseyeJSONUtil {
 	public static final String UPDATE_VER_CODE 			= "appVerCode";
 	public static final String UPDATE_VER_NAME 			= "appVerName";
 	
+	public static final String UPDATE_OTA_USER_ACC 		= "account";
+	public static final String UPDATE_OTA_CAM_SN 		= "hwId";
+	public static final String UPDATE_OTA_USER_NAME 	= "name";
+	public static final String UPDATE_OTA_USER_EMAIL 	= "email";
+	public static final String UPDATE_OTA_USER_PHONE 	= "phone";
+	public static final String UPDATE_OTA_USER_DESC 	= "description";
+	
 	static public class FACE_LIST{
 		public int miId;
 		public String mstrName;

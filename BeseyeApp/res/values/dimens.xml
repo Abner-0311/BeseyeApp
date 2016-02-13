@@ -199,9 +199,14 @@
     <dimen name="firmware_update_margin_medium">4dp</dimen>
     <dimen name="firmware_update_btn_inner">10dp</dimen>
     <dimen name="firmware_update_btn_margin">10dp</dimen>
-    <dimen name="firmware_update_desc_margin_bottom">4dp</dimen>
+    <dimen name="firmware_update_desc_margin_bottom">10dp</dimen>
+    <dimen name="firmware_update_desc_dist_percentage">3dp</dimen>
+    
     <dimen name="firmware_update_font_size">13sp</dimen>
-
+    <dimen name="firmware_update_progress_font_size">12sp</dimen>
+    <dimen name="firmware_update_btn_font_size">15sp</dimen>
+    <dimen name="firmware_update_btn_hoz_padding">26sp</dimen>
+    
     
     <dimen name="forget_pw_instruction_ill_bottom">52dp</dimen>
     <dimen name="forget_pw_instruction_txt_marginTop">32dp</dimen>
@@ -225,12 +230,19 @@
     <dimen name="about_ver_font_size">16sp</dimen>
     <dimen name="about_font_size">18sp</dimen>
     
-    <dimen name="update_logo_margin_top">26dp</dimen>
+    <dimen name="update_logo_margin_top">17dp</dimen>
+    <dimen name="update_instruction_margin_top">14dp</dimen>
     <dimen name="update_logo_margin_right">8dp</dimen>
-    <dimen name="update_margin_hor">28dp</dimen>
+    <dimen name="update_margin_hor">35dp</dimen>
     
-    <dimen name="update_title_font_size">20sp</dimen>
-    <dimen name="update_desc_font_size">17sp</dimen>
+    <dimen name="update_title_font_size">18sp</dimen>
+    <dimen name="update_desc_font_size">16sp</dimen>
+    
+    <dimen name="update_faq_margin_hor">42dp</dimen>
+    <dimen name="update_faq_margin_vert">16dp</dimen>
+    <dimen name="update_faq_padding_hor">30dp</dimen>
+    <dimen name="update_faq_desc_font_size">14sp</dimen>
+    
     
     <!-- for motion zone -->
     <dimen name="motion_zone_padding">25dp</dimen>

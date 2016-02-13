@@ -37,7 +37,7 @@
   <!-- Warning message for removing camera -->
   <string name="dialog_dettach_cam">Camera [%s] and its cloud video recordings will also be removed, are you sure?</string>
   <string name="network_ssid">Network SSID</string>
-  <string name="network_other">Other...</string>
+  <string name="network_other">Other…</string>
   <!-- action to scan wifi ap -->
   <string name="menu_scan">Scan</string>
   <!-- scanning wifi ap -->
@@ -456,7 +456,7 @@
   <string name="dialog_title_download_app_via">Update Beseye APP via</string>
   <!--Dialog Title for listing Market App Web version to update beseye -->
   <string name="dialog_title_download_app_via_web">Update Beseye APP via web</string>
-  <!--Turn off on every <Mon> ... etc.-->
+  <!--Turn off on every <Mon> … etc.-->
   <string name="cam_setting_schedule_turnoff_every">Turn off power on every</string>
   <!--From: <time>-->
   <string name="cam_setting_schedule_turnoff_from">From:</string>
@@ -654,4 +654,31 @@
   <!--Fail to reset human detection-->
   <string name="enhance_human_detect_train_fail_to_reset">Fail to reset human detection, please try again later.</string>
   <string name="notify_human_detect">%s detect a human activity, let\'s take a look.</string>
+  
+  <string name="title_cam_update_hint">Camera Update</string>
+  <string name="desc_cam_new_ver_avaiable">A new version of camera software is now available, please update now!</string>
+  <string name="desc_cam_update_instruction">You can click the button in the next page to start the update process.\nThe update process is free and will be finished in a short time interval.</string>
+  <string name="desc_cam_update_warning">Do not remove the power supply and keep the network connected during the update process.</string>
+  <string name="action_cam_update_all">Update all</string>
+  <string name="desc_cam_update_short_intro">The update process is free and will be finished in a short time interval.</string>
+  <string name="action_contact_us">Contact us</string>
+  <string name="desc_faq_intro">If the update process did not complete successfully, please contact us for further assistance.</string>
+  <string name="desc_user_name">Name</string>
+  <string name="desc_user_email">E-mail</string>
+  <string name="desc_user_phone">Phone</string>
+  <string name="desc_user_question">Question…</string>
+  <string name="title_faq_page">FAQ</string>
+  <string name="action_submit">Submit</string>
+  
+  <string name="desc_cam_ota_available_update_by_other">A new version of camera software is now available! Updating…</string>
+  <string name="desc_cam_update_keep_cam_on_during_ota">Updating… please keep power and network </string>
+  <string name="desc_cam_update_complete">Update Completed!</string>
+  <string name="desc_dialog_cam_force_update">For new features and richer user experience, please update your camera.</string>
+  <string name="desc_cam_update_by_other">Your camera"%s" is updating now, please hold on a second. After you click the Confirm button, you can check your update progress.</string>
+  <string name="desc_cam_update_failed">Update Failed!</string>
+  <string name="action_customer_support">Support</string>
+  <string name="desc_cam_update_keep_cam_on_before_ota">Update available, please keep power and network connected.</string>
+  <string name="action_cam_update">Update</string>
+  <string name="desc_dialog_cam_offline_during_ota">Your camera is offline, reconnect to the network to continue the update process.</string>
+  <string name="desc_cam_update_finish">Software update of camera "%s" has finished.</string>  
 </resources>

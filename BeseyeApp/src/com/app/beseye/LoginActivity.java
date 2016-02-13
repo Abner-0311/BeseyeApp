@@ -28,7 +28,7 @@ import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 
-public class LoginActivity extends BeseyeAccountBaseActivity {
+public class LoginActivity extends BeseyeNavBarBaseActivity {
 	private EditText mEtUserName, mEtPassword;
 	private TextView mTvForgetPassword, mTvCreateAcc, mTvLogin;
 	

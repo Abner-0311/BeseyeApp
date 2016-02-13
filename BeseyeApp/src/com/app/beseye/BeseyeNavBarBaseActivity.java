@@ -2,6 +2,12 @@ package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.app.beseye.util.BeseyeJSONUtil;
+
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -10,7 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public abstract class BeseyeAccountBaseActivity extends BeseyeBaseActivity {
+public abstract class BeseyeNavBarBaseActivity extends BeseyeBaseActivity {
 	protected View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	protected ImageView mIvBack;
@@ -19,11 +25,21 @@ public abstract class BeseyeAccountBaseActivity extends BeseyeBaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		if(DEBUG)
-			Log.d(TAG, "BeseyeAccountBaseActivity::onCreate()");
+			Log.d(TAG, "BeseyeNavBarBaseActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
+		
+		try {
+			if(DEBUG)
+				Log.i(TAG, getClass().getSimpleName()+"::updateAttrByIntent(),  mCam_obj is replaced");
+			
+			mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+			mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+		} catch (JSONException e1) {
+			Log.e(TAG, "BeseyeNavBarBaseActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
+		}
 		
 		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_signup_nav, null);
 		if(null != mVwNavBar){

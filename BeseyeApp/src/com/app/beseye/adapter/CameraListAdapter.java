@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.app.beseye.R;
@@ -47,10 +48,14 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 		public ViewGroup mVgCamOff;
 		public ViewGroup mVgCamDisconnected;
 		public ViewGroup mVgCamDisconnectedContent;
+		public ViewGroup mVgCamOTAState;
+		public ViewGroup mVgCamOTAFailed;
 		public TextView mTxtCamName;
 		public TextView mTxtMore;
 		public RemoteImageView mImgThumbnail;
 		public BeseyeSwitchBtn mSbCamOnOff;
+		public Button mBtnOTAUpdate;
+		public Button mBtnOTASupport;
 		public JSONObject mObjCam;
 	}
 	
@@ -97,6 +102,19 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				
 				holder.mVgCamDisconnectedContent= (ViewGroup)convertView.findViewById(R.id.rl_camera_disconnected_content);
 				
+				holder.mVgCamOTAState = (ViewGroup)convertView.findViewById(R.id.rl_cameralist_cam_ota);
+				if(null != holder.mVgCamOTAState){
+					BeseyeUtils.setThumbnailRatio(holder.mVgCamOTAState, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
+				}
+				
+				holder.mBtnOTAUpdate = (Button)convertView.findViewById(R.id.btn_ota_update);
+				holder.mBtnOTASupport = (Button)convertView.findViewById(R.id.btn_ota_support);
+				
+				holder.mVgCamOTAFailed = (ViewGroup)convertView.findViewById(R.id.rl_cameralist_cam_ota_failed);
+				if(null != holder.mVgCamOTAFailed){
+					BeseyeUtils.setThumbnailRatio(holder.mVgCamOTAFailed, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
+				}
+				
 				convertView.setOnClickListener(mItemOnClickListener);
 				convertView.setTag(holder);
 			}
@@ -117,6 +135,16 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					holder.mTxtMore.setVisibility(mbShowMore?View.VISIBLE:View.GONE);
 					holder.mTxtMore.setOnClickListener(mItemOnClickListener);
 					holder.mTxtMore.setTag(holder);
+				}
+				
+				if(null != holder.mBtnOTAUpdate){
+					holder.mBtnOTAUpdate.setOnClickListener(mItemOnClickListener);
+					holder.mBtnOTAUpdate.setTag(holder);
+				}
+				
+				if(null != holder.mBtnOTASupport){
+					holder.mBtnOTASupport.setOnClickListener(mItemOnClickListener);
+					holder.mBtnOTASupport.setTag(holder);
 				}
 				
 				BeseyeJSONUtil.CAM_CONN_STATUS connState = BeseyeJSONUtil.getVCamConnStatus(obj);//CAM_CONN_STATUS.toCamConnStatus(BeseyeJSONUtil.getJSONInt(obj, BeseyeJSONUtil.ACC_VCAM_CONN_STATE, -1));

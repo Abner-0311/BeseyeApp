@@ -35,6 +35,7 @@ import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.ota.CamOTAFAQActivity;
 import com.app.beseye.pairing.PairingPlugPowerActivity;
 import com.app.beseye.pairing.PairingRemindActivity;
 import com.app.beseye.pairing.SoundPairingActivity;
@@ -43,6 +44,7 @@ import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.ShareMgr;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.CameraListMenuAnimator;
@@ -688,6 +690,12 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			if(null != cam_obj){
 				if(R.id.tv_camera_more == view.getId()){
 					startSoundPairingProcess(BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID), false);
+				}else if(R.id.btn_ota_support == view.getId()){
+					Bundle b = new Bundle();
+					b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
+					launchActivityForResultByClassName(CamOTAFAQActivity.class.getName(), b, REQUEST_OTA_SUPPORT);
+				}else if(R.id.btn_ota_update == view.getId()){
+					//trigger update
 				}else{
 					Bundle b = new Bundle();
 					b.putString(CameraListActivity.KEY_VCAM_OBJ, cam_obj.toString());
@@ -1167,6 +1175,20 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			if(null != mVgEmptyView){
 				mMainListView.setEmptyView(mVgEmptyView);
 			}
+		}
+	}
+	
+	static public final int REQUEST_OTA_SUPPORT = 1001;
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		if(DEBUG)
+			Log.w(TAG, "CameraListActivity::onActivityResult(), requestCode:"+requestCode+", resultCode:"+resultCode);
+		
+		if(REQUEST_OTA_SUPPORT == requestCode && resultCode == RESULT_OK){
+			//Refresh it
+		}else {
+			super.onActivityResult(requestCode, resultCode, intent);
 		}
 	}
 }

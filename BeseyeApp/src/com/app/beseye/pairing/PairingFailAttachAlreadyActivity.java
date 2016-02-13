@@ -5,7 +5,7 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.app.beseye.BeseyeAccountBaseActivity;
+import com.app.beseye.BeseyeNavBarBaseActivity;
 import com.app.beseye.OpeningPage;
 import com.app.beseye.R;
 import com.app.beseye.WifiListActivity;
@@ -20,7 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class PairingFailAttachAlreadyActivity extends BeseyeAccountBaseActivity {
+public class PairingFailAttachAlreadyActivity extends BeseyeNavBarBaseActivity {
 	final public static String KEY_ATTACHED_CAM = "KEY_ATTACHED_CAM";
 	final public static String KEY_ATTACHED_CAM_HW_ID = "KEY_ATTACHED_CAM_HW_ID";
 	

@@ -143,7 +143,13 @@ public class BeseyeUtils {
 	}
 	
 	static public boolean haveText(EditText et){
-		return null != et && (0 < et.length() || View.GONE==et.getVisibility());
+		String strContent = (null != et)?et.getText().toString():null;
+		return null != et && ((null != strContent && 0 < strContent.trim().length()) || View.GONE == et.getVisibility());
+	}
+	
+	static public String getTrimText(EditText et){
+		String strContent = (null != et)?et.getText().toString():null;
+		return null != strContent?strContent.trim():"";
 	}
 	
 	static public void setImageRes(final ImageView view, final int iResId){
@@ -182,17 +188,17 @@ public class BeseyeUtils {
 	
 	//Format validation
 	static public boolean validEmail(String email) {
-		if(null == email || 0 == email.length())
+		if(null == email || 0 == email.length() || 0 == email.trim().length())
 			return false;
 	    Pattern pattern = Patterns.EMAIL_ADDRESS;
 	    return pattern.matcher(email).matches();
 	}
 	
 	static public boolean validPhone(String phone) {
-		if(null == phone || 0 == phone.length())
+		if(null == phone || 0 == phone.length() || 0 == phone.trim().length())
 			return false;
 	    Pattern pattern = Patterns.PHONE;
-	    return pattern.matcher(phone).matches() && 10 <= phone.length() && phone.startsWith("09");
+	    return pattern.matcher(phone).matches();// && 10 <= phone.length() && phone.startsWith("09");
 	}
 	
 	static private Pattern patternPw = null;

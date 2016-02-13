@@ -1,6 +1,6 @@
 package com.app.beseye.pairing;
 
-import com.app.beseye.BeseyeAccountBaseActivity;
+import com.app.beseye.BeseyeNavBarBaseActivity;
 import com.app.beseye.BeseyeEntryActivity;
 import com.app.beseye.R;
 import com.app.beseye.SignupActivity;
@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class PairingPlugPowerActivity extends BeseyeAccountBaseActivity {
+public class PairingPlugPowerActivity extends BeseyeNavBarBaseActivity {
 	private Button mBtnStart;
 	
 	@Override

@@ -351,9 +351,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 //		}};	
 	
 	private void checkForUpdates() {
-		if(false == mbIgnoreCamVerCheck){
-			monitorAsyncTask(new BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask(this).setDialogId(-1), true, getPackageName());
-		}
+		monitorAsyncTask(new BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask(this).setDialogId(-1), true, getPackageName());
 		
 //		if(false == mbIgnoreCamVerCheck){
 //			BeseyeCamInfoSyncMgr.getInstance().registerOnCamUpdateVersionCheckListener(this);
@@ -604,6 +602,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 //	}
 	
 	private void onAppUpdateNotAvailable(){
+		if(true == mbIgnoreCamVerCheck){
+			return;
+		}
+		
 		if(this instanceof CameraListActivity /*&& !checkWithinCamUpdatePeriod()*/ && !isCamUpdatingInCurrentPage() && null != mObjVCamList){
 			getCamUpdateCandidateList(mObjVCamList);
 		}
@@ -662,6 +664,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_PIN_VERIFY_FAIL_EXPIRED	= DIALOG_ID_WIFI_BASE+26; 
 	static public final int DIALOG_ID_PIN_AUTH_REQUEST		= DIALOG_ID_WIFI_BASE+27; 
 	static public final int DIALOG_ID_RESET_HUMAN_DETECT	= DIALOG_ID_WIFI_BASE+28; 
+	static public final int DIALOG_ID_OTA_FORCE_UPDATE		= DIALOG_ID_WIFI_BASE+29; 
 	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
@@ -725,82 +728,19 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			
 			break;
 		}
-//			case DIALOG_ID_WARNING:{
-//				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//            	builder.setTitle(bundle.getString(KEY_WARNING_TITLE, getString(R.string.dialog_title_warning)));
-//            	builder.setMessage(bundle.getString(KEY_WARNING_TEXT));
-//				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-//				    public void onClick(DialogInterface dialog, int item) {
-//				    	removeMyDialog(DIALOG_ID_WARNING);
-//				    }
-//				});
-//				builder.setOnCancelListener(new OnCancelListener(){
-//					@Override
-//					public void onCancel(DialogInterface dialog) {
-//						removeMyDialog(DIALOG_ID_WARNING);
-//						if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
-//							finish();
-//						}
-//					}});
-//				
-//				dialog = builder.create();
-//				if(null != dialog){
-//					dialog.setCanceledOnTouchOutside(true);
-//					if(bundle.getBoolean(KEY_WARNING_CLOSE, false)){
-//						((android.app.AlertDialog)dialog).setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
-//						    public void onClick(DialogInterface dialog, int item) {
-//						    	removeMyDialog(DIALOG_ID_WARNING);
-//						    	finish();
-//						    }
-//						});
-//					}
-//				}
-//				break;
-//			}
-//			case DIALOG_ID_NO_NETWORK:{
-//				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//            	builder.setTitle(getString(R.string.dialog_title_warning));
-//            	builder.setMessage(R.string.streaming_error_no_network);
-//				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-//				    public void onClick(DialogInterface dialog, int item) {
-//				    	removeMyDialog(DIALOG_ID_NO_NETWORK);
-//				    }
-//				});
-//				
-//				builder.setOnCancelListener(new OnCancelListener(){
-//					@Override
-//					public void onCancel(DialogInterface dialog) {
-//						removeMyDialog(DIALOG_ID_NO_NETWORK);
-//					}});
-//				
-//				dialog = builder.create();
-//				if(null != dialog){
-//					dialog.setCanceledOnTouchOutside(true);
-//				}
-//				break;
-//			}
-//			case DIALOG_ID_INFO:{
-//				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//            	builder.setTitle(bundle.getString(KEY_INFO_TITLE, getString(R.string.dialog_title_info)));
-//            	builder.setMessage(bundle.getString(KEY_INFO_TEXT));
-//				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-//				    public void onClick(DialogInterface dialog, int item) {
-//				    	removeMyDialog(DIALOG_ID_INFO);
-//				    }
-//				});
-//				builder.setOnCancelListener(new OnCancelListener(){
-//					@Override
-//					public void onCancel(DialogInterface dialog) {
-//						removeMyDialog(DIALOG_ID_INFO);
-//					}});
-//				
-//				dialog = builder.create();
-//				if(null != dialog){
-//					dialog.setCanceledOnTouchOutside(true);
-//				}
-//				break;
-//			}
-			default:
+		case DIALOG_ID_OTA_FORCE_UPDATE:{
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			d.setBodyText(getString(R.string.desc_dialog_cam_force_update));
+			d.setTitleText(getString(R.string.dialog_title_warning));
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+				@Override
+				public void onBtnClick() {
+					removeMyDialog(DIALOG_ID_OTA_FORCE_UPDATE);	
+				}});
+			dialog = d;
+			break;
+		}
+		default:
 				dialog = super.onCreateDialog(id, bundle);
 		}
 		return dialog;

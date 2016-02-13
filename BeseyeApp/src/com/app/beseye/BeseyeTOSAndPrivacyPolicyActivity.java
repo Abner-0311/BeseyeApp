@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 
-public class BeseyeTOSAndPrivacyPolicyActivity extends BeseyeAccountBaseActivity {
+public class BeseyeTOSAndPrivacyPolicyActivity extends BeseyeNavBarBaseActivity {
 	private WebView mWvContent;
 	static public final String TOS_PAGE = "TOS_PAGE";
 	

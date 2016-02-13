@@ -40,7 +40,7 @@ import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.DeviceUuidFactory;
 
-public class SignupActivity extends BeseyeAccountBaseActivity {
+public class SignupActivity extends BeseyeNavBarBaseActivity {
 	private EditText mEtUserName, mEtPassword;
 	private TextView mTvTermOfService, mTvPrivacyPolicy;
 	private Button mBtnSignUp;
