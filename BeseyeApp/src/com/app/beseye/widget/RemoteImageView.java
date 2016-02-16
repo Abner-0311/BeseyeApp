@@ -44,6 +44,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.app.beseye.R;
+import com.app.beseye.exception.BeseyeHttpRequestException;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeStorageAgent;
@@ -596,9 +597,15 @@ public class RemoteImageView extends ImageView {
 									// HTTP get image
 									int retryCount = 0;
 									while (true) {
-										if ((downloadBitmap = imageHTTPTask(mRemote, 1, mStrVCamId/*mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:2)*/)) != null) {
-											break;
-										}
+										long lSleepTime = 500L;
+										try{
+											if ((downloadBitmap = imageHTTPTask(mRemote, 1, mStrVCamId/*mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?4:2)*/)) != null) {
+												break;
+											}
+										}catch(BeseyeHttpRequestException ex){
+											lSleepTime = BeseyeUtils.getRetrySleepTime(retryCount);
+										} 
+										
 										if (++retryCount >= 3
 												|| Thread.currentThread()
 														.isInterrupted()) {
@@ -608,7 +615,7 @@ public class RemoteImageView extends ImageView {
 											return;
 										}
 										try {
-											Thread.sleep(500);
+											Thread.sleep(lSleepTime);
 										} catch (InterruptedException e) {
 										}
 									}
@@ -694,7 +701,7 @@ public class RemoteImageView extends ImageView {
 		}
 	}
 
-	static public Bitmap imageHTTPTask(String uri, int iSample, String strVcamId) {
+	static public Bitmap imageHTTPTask(String uri, int iSample, String strVcamId) throws BeseyeHttpRequestException {
 //		if(DEBUG)
 //			Log.i(TAG, "imageHTTPTask(), iSample: " + iSample);
 		
@@ -740,6 +747,8 @@ public class RemoteImageView extends ImageView {
 								}
 				      			entity.consumeContent();
 				      		}
+				      	}else if(BeseyeUtils.isServerUnavailableError(statusCode)){
+				      		throw new BeseyeHttpRequestException(statusCode);
 				      	}
 				    }
 				}
@@ -750,6 +759,10 @@ public class RemoteImageView extends ImageView {
 			    if(null != getRequest){
 			    	getRequest.abort();
 			    }
+			    
+			    if(e instanceof BeseyeHttpRequestException){
+			    	throw e;
+			    }
 			}finally{
 			    if(client != null){
 			    	client.close();
@@ -757,6 +770,9 @@ public class RemoteImageView extends ImageView {
 			}
 		} catch (Exception e) {
 			Log.w(TAG, "Http Get image fail: " + e);
+			 if(e instanceof BeseyeHttpRequestException){
+			    throw (BeseyeHttpRequestException)e;
+			 }
 		} finally {
 			closeStream(inputStream);
 		}

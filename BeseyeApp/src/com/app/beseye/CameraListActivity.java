@@ -476,6 +476,13 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 							if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
 								//camObj.put(BeseyeJSONUtil.ACC_VCAM_CONN_STATE, BeseyeJSONUtil.getJSONInt(dataObj, BeseyeJSONUtil.CAM_STATUS));
 								camObj.put(BeseyeJSONUtil.OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
+								
+								//temp workaround for Beseye Pro S test
+								if("01d0f4f7b68e48a583e28449eacf99b2".equals(strVcamId)){
+									JSONObject statusLstObj = new JSONObject();
+									statusLstObj.put(BeseyeJSONUtil.CAM_WS_STATUS, 1);
+									dataObj.put(BeseyeJSONUtil.CAM_STATUS_LST, statusLstObj);
+								}
 								camObj.put(BeseyeJSONUtil.ACC_DATA, dataObj);
 								//Need broadcast????
 								if(0 > iSeedNum)

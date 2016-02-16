@@ -1448,11 +1448,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					if(NetworkMgr.getInstance().isNetworkConnected()){
 						WebsocketsMgr.getInstance().constructWSChannel();
 					}else{
-						long lTimeToWait = (miWSDisconnectRetry++)*1000;
-						if(lTimeToWait > 10000){
-							lTimeToWait = 10000;
-						}
-						BeseyeUtils.postRunnable(this, lTimeToWait);
+//						long lTimeToWait = (miWSDisconnectRetry++)*1000;
+//						if(lTimeToWait > 10000){
+//							lTimeToWait = 10000;
+//						}
+						BeseyeUtils.postRunnable(this, BeseyeUtils.getRetrySleepTime(miWSDisconnectRetry++));
 					}
 				}}, lTimeToWait);
     	}

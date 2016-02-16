@@ -25,9 +25,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -657,6 +659,7 @@ public class BeseyeUtils {
 		return strLocale;
 	}
 	
+	//Begin of Gentle warning message
 	static List<Integer> sLstSeriousWarningMsgIds = new ArrayList<Integer>();
 	static{
 		if(BeseyeFeatureConfig.TRANS_SERIOUS_WARNING){
@@ -678,5 +681,41 @@ public class BeseyeUtils {
 	
 	static public String appendErrorCodeByString(Context context, String strOrigin, int iErrCode){
 		return strOrigin+(BeseyeFeatureConfig.APPEND_ERR_CODE?String.format(context.getString(R.string.error_code_fmt), iErrCode):"");
+	}
+	
+	//End of Gentle warning message
+	
+	//Begin of exponential backoff
+	final static int NUM_RETRY_INTERVAL = 5;
+	final static float VAL_RETRY_INTERVAL[] = {1.0f, 2.0f, 4.0f, 8.0f, 16.0f};
+	final static float RANDOM_FACTOR = 0.5f;
+	
+	static public long getRetrySleepTime(int iRetryTime){
+		long lRet = 1000;
+		if(iRetryTime < 0 )
+			iRetryTime = 0;
+		Random random = new Random(new Date().getTime());
+
+		float fRetryIntervalBase = VAL_RETRY_INTERVAL[iRetryTime%NUM_RETRY_INTERVAL];
+		float fRandomRatio = ((1.0f) + ((random.nextFloat()*2.0f - 1.0f)*RANDOM_FACTOR));
+		float fRetryIntervalInSec = fRetryIntervalBase * fRandomRatio;
+		
+		lRet = (long) (fRetryIntervalInSec*1000);
+		
+		if(BeseyeConfig.DEBUG)
+			Log.d(TAG, "getRetrySleepTime(), fRetryIntervalBase:"+fRetryIntervalBase+",fRandomRatio:"+fRandomRatio+", lRet:"+lRet);
+
+		return lRet;
+	}
+	//End of exponential backoff
+	
+	static public boolean isServerUnavailableError(int iHttpStatusCode){
+		return  HttpStatus.SC_BAD_GATEWAY == iHttpStatusCode ||
+				HttpStatus.SC_NOT_FOUND == iHttpStatusCode ||
+				HttpStatus.SC_REQUEST_TIMEOUT == iHttpStatusCode ||
+				HttpStatus.SC_INTERNAL_SERVER_ERROR == iHttpStatusCode ||
+				HttpStatus.SC_SERVICE_UNAVAILABLE == iHttpStatusCode ||
+				HttpStatus.SC_GATEWAY_TIMEOUT == iHttpStatusCode ||
+				429 ==  iHttpStatusCode; //HTTP_429_TOO_MANY_REQUESTS;
 	}
 }

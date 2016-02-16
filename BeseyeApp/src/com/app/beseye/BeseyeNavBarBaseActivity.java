@@ -34,9 +34,13 @@ public abstract class BeseyeNavBarBaseActivity extends BeseyeBaseActivity {
 		try {
 			if(DEBUG)
 				Log.i(TAG, getClass().getSimpleName()+"::updateAttrByIntent(),  mCam_obj is replaced");
-			
-			mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
-			mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+			String strCamObj = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ);
+			if(null != strCamObj && 0 < strCamObj.length()){
+				mCam_obj = new JSONObject(strCamObj);
+				if(null != mCam_obj){
+					mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+				}
+			}
 		} catch (JSONException e1) {
 			Log.e(TAG, "BeseyeNavBarBaseActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
 		}

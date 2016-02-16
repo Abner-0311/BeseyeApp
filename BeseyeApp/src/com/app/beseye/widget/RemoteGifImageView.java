@@ -30,6 +30,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import com.app.beseye.adapter.EventListAdapter.IListViewScrollListenser;
+import com.app.beseye.exception.BeseyeHttpRequestException;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeUtils;
@@ -419,10 +420,17 @@ public class RemoteGifImageView extends RemoteImageView {
 							} else {
 								// HTTP get image
 								int retryCount = 0;
+								
 								while (true) {
-									if ((downloadBitmap = imageHTTPTask(mRemote, mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?2:2), mStrVCamId)) != null) {
-										break;
-									}
+									long lSleepTime = 500L;
+									try{
+										if ((downloadBitmap = imageHTTPTask(mRemote, mbIsPhotoViewMode?1:(mbIsPhoto && (PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD >= BeseyeMemCache.getMemClass())?2:2), mStrVCamId)) != null) {
+											break;
+										}
+									}catch(BeseyeHttpRequestException ex){
+										lSleepTime = BeseyeUtils.getRetrySleepTime(retryCount);
+									} 
+									
 									if (++retryCount >= 3
 											|| Thread.currentThread()
 													.isInterrupted()) {
@@ -432,7 +440,7 @@ public class RemoteGifImageView extends RemoteImageView {
 										return;
 									}
 									try {
-										Thread.sleep(500);
+										Thread.sleep(lSleepTime);
 									} catch (InterruptedException e) {
 									}
 								}

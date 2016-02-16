@@ -80,10 +80,41 @@ public class BeseyeError {
 	static public final int	  E_FE_AND_HTTP_NO_CONN				   		   = 0x0040000A;
 	static public final int	  E_FE_AND_HTTP_CONN_TIMEOUT				   = 0x0040000B;
 	
+	
 	//UPDATE BE Error
 	static public final int	  E_BE_UPDATE_SW_NOT_EXIST				   	   		= 0x00C00301;
 	static public final int	  E_BE_UPDATE_OTHER_EXCEPTION				   	   	= 0x00C00500;
 	static public final int	  E_BE_UPDATE_PARAM_INVALID				   	   		= 0x00C00501;
 	static public final int	  E_BE_UPDATE_PARAM_BLANK				   	   		= 0x00C00502;
+	
+	
+	// Service temporarily unavailable connection error (0x0000_0F00~0x0000_0FFF)
+	static public final int E_CONN_SOCKET_ERR                                  = 0x00000F00;
+	static public final int E_CONN_SOCKET_ERR_DNS_RESOLVE_FAILED               = 0x00000F01;
+	static public final int E_CONN_ERRNO_ECONNREFUSED                          = 0x00000F02;
+	static public final int E_CONN_ERRNO_ETIMEDOUT                             = 0x00000F03;
+	static public final int E_CONN_REST_CLIENT_TIMEOUT                         = 0x00000F04;
+	static public final int E_CONN_HTTP_404_RESOURCE_NOT_FOUND                 = 0x00000F05;
+	static public final int E_CONN_HTTP_408_REQUEST_TIMEOUT                    = 0x00000F06;
+	static public final int E_CONN_HTTP_429_TOO_MANY_REQUESTS                  = 0x00000F07;
+	static public final int E_CONN_HTTP_500_INTERNAL_SERVER_ERROR              = 0x00000F08;
+	static public final int E_CONN_HTTP_502_BAD_GATEWAY                        = 0x00000F09;
+	static public final int E_CONN_HTTP_503_SERVICE_UNAVAILABLE                = 0x00000F0a;
+	static public final int E_CONN_HTTP_504_GATEWAY_TIMEOUT                    = 0x00000F0b;
+	static public final int E_CONN_SOCKET_ERR_END                              = 0x00000FFF;
+
+	//Connection error (0x0000_0E00~0x0000_0EFF)
+	static public final int E_CONN_EXCEPTION                                   = 0x00000E00;
+	static public final int E_CONN_HTTP_1XX                                    = 0x00000E01;
+	static public final int E_CONN_HTTP_INVALID_STATUS                         = 0x00000E02;
+	static public final int E_CONN_HTTP_3XX                                    = 0x00000E03;
+	static public final int E_CONN_HTTP_4XX                                    = 0x00000E04;
+	static public final int E_CONN_HTTP_5XX                                    = 0x00000E05;
+	static public final int E_CONN_REST_CLIENT_EXCEPTION                       = 0x00000E06;
+	static public final int E_CONN_REST_CLIENT_SERVER_BROKE_CONNECTION         = 0x00000E07;
+	static public final int E_CONN_HTTP_301_MOVED_PERMANENTLY                  = 0x00000E08;
+	static public final int E_CONN_HTTP_304_NOT_MODIFIED                       = 0x00000E09;
+	static public final int E_CONN_HTTP_403_FORBIDDEN                          = 0x00000E0a;
+	static public final int E_CONN_EXCEPTION_END                               = 0x00000EFF;
 
 }

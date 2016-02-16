@@ -4,6 +4,7 @@ import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.NetworkInterface;
@@ -32,6 +33,7 @@ import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
 import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
@@ -68,6 +70,7 @@ import android.util.Log;
 
 import com.app.beseye.BeseyeBaseActivity;
 import com.app.beseye.error.BeseyeError;
+import com.app.beseye.exception.BeseyeHttpRequestException;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -110,8 +113,9 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	public static final int ERR_TYPE_REQUEST_RET_ERR  	    = 5;//when ret code is not equal to 0
 	public static final int ERR_TYPE_SESSION_INVALID  	    = 6;//when seesion is invalid
 	public static final int ERR_TYPE_SESSION_NOT_TRUST  	= 7;//when client isn't in trust list
+	public static final int ERR_TYPE_SERVER_NOT_AVAILABLE  	= 8;//if http_code in (404,408,429,500,502,503,504) or return_code in (0xF00~0xFFF)
 	
-	public static final int ERR_TYPE_COUNT				  	= 7;
+	public static final int ERR_TYPE_COUNT				  	= 9;
 	//
 	
 	protected WeakReference<OnHttpTaskCallback> mOnHttpTaskCallback;
@@ -386,6 +390,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	        HttpResponse response = httpclient.execute(httpRequest);
 	        StatusLine statusLine = response.getStatusLine();
 	        int statusCode = statusLine.getStatusCode();
+	        
 	        if (statusCode == 200) {
 	        	 entity = response.getEntity();
 	        	 if(DEBUG)
@@ -394,11 +399,11 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	        }
 	        else{
 	        	 Log.e(TAG, "statusCode:"+statusCode+", url = "+filterPrivacyData(strUrl));
-//	        	 entity = response.getEntity();
-//	        	 checkEntity(entity);
 	        	 if(null != httpRequest){
 	             	httpRequest.abort();
 	             }
+	        	 
+	        	 throw new BeseyeHttpRequestException(statusCode);
 	        }     
         }catch(Exception e){
         	if(null != httpRequest){
@@ -413,10 +418,25 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		HttpEntity entity = null;
         // HTTP get JSON
 		int retryCount = 0;
+		JSONObject objRet = null;
 		while (true) {
 			try{
 				if ((entity = doHttpRequest(strParams)) != null) {
-					break;
+					miErrType = ERR_TYPE_NO_ERR;
+					objRet = checkEntity(entity, strParams);
+					if(Integer.MIN_VALUE != miRetCode && BeseyeError.E_CONN_SOCKET_ERR <= miRetCode && miRetCode <= BeseyeError.E_CONN_SOCKET_ERR_END){
+						Log.e(TAG, "Found BE conn socket Error"+miRetCode);
+						miErrType = ERR_TYPE_SERVER_NOT_AVAILABLE;
+					}else{
+						break;
+					}
+				}
+			}catch(BeseyeHttpRequestException ex){
+				int iHttpStatusCode = ex.getHttpStatusCode();
+				if(BeseyeUtils.isServerUnavailableError(iHttpStatusCode)){
+					miErrType = ERR_TYPE_SERVER_NOT_AVAILABLE;
+				}else{
+					miErrType = ERR_TYPE_GENERAL_ERR;
 				}
 			}catch (UnknownHostException e){
 				miErrType = ERR_TYPE_NO_CONNECTION;
@@ -432,10 +452,10 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 			    e.printStackTrace();
 			}catch (Exception e){
 				miErrType = ERR_TYPE_GENERAL_ERR;
-				/* ZH: for debug */
-//				miErrType = ERR_TYPE_CONNECTION_TIMEOUT;
 				Log.e(TAG, "Error in http connection "+e.toString());
 			}
+			
+			long lSleepTime = (ERR_TYPE_GENERAL_ERR == miErrType)?500L:BeseyeUtils.getRetrySleepTime(retryCount);
 			
 			if (++retryCount >= mRetryCount
 					|| Thread.currentThread()
@@ -444,10 +464,10 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 			}
 			
 			try {
-				Thread.sleep(500);
+				Thread.sleep(lSleepTime);
 			} catch (InterruptedException e) {}
 		}
-        return checkEntity(entity, strParams);
+        return objRet;
     }
 	
 	public boolean isNetworkTimeoutErr(){
