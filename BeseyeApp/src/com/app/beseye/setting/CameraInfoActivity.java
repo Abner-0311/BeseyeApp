@@ -42,13 +42,13 @@ import com.app.beseye.util.BeseyeUtils;
 
 public class CameraInfoActivity extends BeseyeBaseActivity{
 
-	private TextView mTxtCamName, mTxtSwVersion, mTxtSerialNum, mTxtMacAddr, mTxtVcamId;
+	private TextView mTxtCamName, mTxtSwVersion, mTxtSerialNum, mTxtMacAddr, mTxtVcamId, mTxtIpAddr;
 	private String mStrNameCandidate, mStrVCamSN = null;
 	private String mStrVCamMacAddr = null;
 	private String mStrSwVer = null;
 	
 	private View mVwNavBar;
-	private ViewGroup mVgSWVer, mVgVCamId;
+	private ViewGroup mVgSWVer, mVgVCamId, mVgIpAddr;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
 	
 	@Override
@@ -124,11 +124,22 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 				mTxtVcamId.setText(BeseyeConfig.PRODUCTION_VER?(mStrVCamID.substring(0, 6)+"..."):mStrVCamID);
 			}
 		}
+		
+		mVgIpAddr = (ViewGroup)findViewById(R.id.vg_ip_addr_holder);
+		if(null != mVgIpAddr){
+			if(BeseyeConfig.PRODUCTION_VER){
+				mVgIpAddr.setVisibility(View.GONE);
+			}
+			mTxtIpAddr = (TextView)findViewById(R.id.txt_ip_addr);
+		}
 	}
 	
 	protected void onSessionComplete(){
 		super.onSessionComplete();
 		monitorAsyncTask(new BeseyeCamBEHttpTask.GetSWVersionTask(this), true, mStrVCamID);
+		if(BeseyeConfig.DEBUG)
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetSystemInfoTask(this).setDialogId(-1), true, mStrVCamID);
+
 	}
 	
 	@Override
@@ -187,6 +198,8 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
 			
+		}else if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask){
+			//do nothing due to debug usage
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -205,6 +218,18 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 						mStrSwVer = BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.CAM_SW_VERSION);
 						if(null != mTxtSwVersion)
 							mTxtSwVersion.setText(mStrSwVer);
+					}
+				}
+			}else if(task instanceof BeseyeCamBEHttpTask.GetSystemInfoTask){
+				if(0 == iRetCode){
+					JSONObject obj = result.get(0);
+					if(null != obj){
+						if(DEBUG)
+							Log.i(TAG, "onPostExecute(), "+obj.toString());
+						JSONObject objData = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_DATA);
+						if(null != objData && null != mTxtIpAddr){
+							mTxtIpAddr.setText(BeseyeJSONUtil.getJSONString(objData, BeseyeJSONUtil.CAM_IP_ADDR));
+						}
 					}
 				}
 			}else if(task instanceof BeseyeAccountTask.SetCamAttrTask){

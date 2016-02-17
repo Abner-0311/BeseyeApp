@@ -39,13 +39,26 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 		mLstOnCamUpdateVersionCheckListener = new ArrayList<WeakReference<OnCamUpdateVersionCheckListener>>();
 	}
 	
+	private Map<String, CamSwUpdateRecord> mMapCamSwUpdateRecord = new HashMap<String, CamSwUpdateRecord>();
+	
 	public class CamSwUpdateRecord{
 		public String strVCamId;
 		public CAM_UPDATE_STATUS eUpdateStatus;
 		public CAM_UPDATE_ERROR eUpdateErrType;
 		public int iErrCode;
 		public int iUpdatePercentage;
+		public long lBeginUpdateTs;
 		public long lLastUpdateTs;
+		public long lLastUserFeedbackTs;
+		
+		public CamSwUpdateRecord(){
+			strVCamId = null;
+			eUpdateStatus = CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_INIT;
+			eUpdateErrType = CAM_UPDATE_ERROR.CAM_UPDATE_ERROR_NONE;
+			iErrCode = 0;
+			iUpdatePercentage = -1;
+			lBeginUpdateTs = lLastUpdateTs = lLastUserFeedbackTs;
+		}
 	}
 	
 	public enum CAM_UPDATE_STATUS{

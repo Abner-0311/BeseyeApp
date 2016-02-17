@@ -116,6 +116,7 @@ public class BeseyeJSONUtil {
 	
 	public static final String CAM_SN 					= "SerialNumber";
 	public static final String CAM_MAC_ADDR 			= "MACAddr";
+	public static final String CAM_IP_ADDR 				= "IPAddr";
 	public static final String CAM_SW_VERSION			= "version";
 	public static final String CAM_TZ 					= "TimeZone";
 	public static final String CAM_UPSIDE_DOWN 			= "UpsideDown";

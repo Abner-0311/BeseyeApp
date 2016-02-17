@@ -153,6 +153,43 @@
 		</RelativeLayout>
 		
 		<LinearLayout 
+		    android:id="@+id/vg_ip_addr_holder" 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical">
+		    <RelativeLayout 
+			    android:layout_width="match_parent"
+			    android:layout_height="@dimen/wifi_list_item_height"
+			    android:background="@drawable/setting_wifi_title_bg"> 
+			    <TextView 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:layout_alignParentLeft="true"
+			   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+			   		android:layout_centerVertical="true"
+			   		android:textSize="@dimen/setting_list_item_main_title_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="IP Address"/>
+			</RelativeLayout>
+			
+		    <RelativeLayout
+			    android:id="@+id/vg_ip_addr" 
+			    android:layout_width="match_parent"
+			    android:layout_height="@dimen/wifi_list_item_height"
+			    android:background="@drawable/dsl_setting_item_bg">
+				<TextView
+				    android:id="@+id/txt_ip_addr" 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:layout_alignParentLeft="true"
+		   			android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   			android:layout_centerVertical="true"
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"/>
+			</RelativeLayout>
+		</LinearLayout>
+		
+		<LinearLayout 
 		    android:id="@+id/vg_vcam_id_holder" 
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
