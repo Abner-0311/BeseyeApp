@@ -13,6 +13,8 @@ import java.util.concurrent.Executors;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.CrashManagerListener;
+import net.hockeyapp.android.UpdateManager;
+import net.hockeyapp.android.UpdateManagerListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,6 +72,7 @@ import com.app.beseye.setting.HWSettingsActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamUpdateVersionCheckListener;
+import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeNewFeatureMgr;
@@ -351,7 +354,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 //		}};	
 	
 	private void checkForUpdates() {
-		monitorAsyncTask(new BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask(this).setDialogId(-1), true, getPackageName());
+		if(BeseyeUtils.canUpdateFromHockeyApp()){
+			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
+		}else if(BeseyeUtils.isProductionVersion()){
+			monitorAsyncTask(new BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask(this).setDialogId(-1), true, getPackageName());
+		}else if(BeseyeConfig.DEBUG){
+			onAppUpdateNotAvailable();
+		}
 		
 //		if(false == mbIgnoreCamVerCheck){
 //			BeseyeCamInfoSyncMgr.getInstance().registerOnCamUpdateVersionCheckListener(this);
@@ -373,19 +382,19 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 //		BeseyeUtils.postRunnable(mCheckUpdateRetFromMiSDKRunnable, TIME_TO_CHECK_UPDATE_VIA_MI);
 	}
 	
-//	//For Alpha update
-//	private UpdateManagerListener mUpdateManagerListener = new UpdateManagerListener(){
-//		@Override
-//		public void onNoUpdateAvailable() {
-//			super.onNoUpdateAvailable();
+	//For Alpha update
+	private UpdateManagerListener mUpdateManagerListener = new UpdateManagerListener(){
+		@Override
+		public void onNoUpdateAvailable() {
+			super.onNoUpdateAvailable();
 //			mbGetUpdateRetFromHockeyApp = true;
 //			if(false == mbGetUpdateRetFromMiSDK){
-//				onAppUpdateNotAvailable();
+				onAppUpdateNotAvailable();
 //			}else{
 //				Log.i(TAG, "onNoUpdateAvailable(), have get update ret from mi");
 //			}
-//		}
-//	}; 
+		}
+	}; 
 //	
 //	//For production version app update
 //	private UpdateManagerListener mUpdateManagerListenerForProduction = new UpdateManagerListener(){

@@ -748,6 +748,7 @@ public class RemoteImageView extends ImageView {
 				      			entity.consumeContent();
 				      		}
 				      	}else if(BeseyeUtils.isServerUnavailableError(statusCode)){
+							Log.w(TAG, "Found ServerUnavailableError, statusCode:"+statusCode);
 				      		throw new BeseyeHttpRequestException(statusCode);
 				      	}
 				    }
