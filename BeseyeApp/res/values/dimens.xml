@@ -242,8 +242,17 @@
     <dimen name="update_faq_margin_vert">16dp</dimen>
     <dimen name="update_faq_padding_hor">30dp</dimen>
     <dimen name="update_faq_desc_font_size">14sp</dimen>
+    <dimen name="update_feedback_info_magin_top">6dp</dimen>
     
+    <dimen name="update_faq_subject_1_margin_top">40dp</dimen>
+    <dimen name="update_faq_subject_2_margin_top">32dp</dimen>
+    <dimen name="update_faq_answer_margin_top">10dp</dimen>
     
+    <dimen name="update_faq_subject_margin_vert">23dp</dimen>
+    <dimen name="update_faq_subject_font_size">15sp</dimen>
+    <dimen name="update_faq_answer_font_size">13sp</dimen>
+    
+        
     <!-- for motion zone -->
     <dimen name="motion_zone_padding">25dp</dimen>
     <dimen name="motion_zone_strokewidth">4dp</dimen>

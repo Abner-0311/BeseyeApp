@@ -423,6 +423,13 @@
             android:exported="false">
         </activity>
         
+         <activity
+            android:name=".ota.CamOTAFeedbackActivity" 
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:exported="false">
+        </activity>
+        
         
         <!-- facebook -->
         <!-- due to FB login, use style/Theme.NoDisplay instead of style/Theme.Translucent.NoTitleBar -->

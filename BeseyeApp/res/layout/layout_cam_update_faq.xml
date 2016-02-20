@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/signup_bg_color" >
     <Button
-        android:id="@+id/button_send"
+        android:id="@+id/button_contact_us"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -12,110 +12,69 @@
         android:background="@drawable/sl_account_bottom_btn"
         android:paddingBottom="@dimen/login_marginMedium"
         android:paddingTop="@dimen/login_marginMedium"
-        android:text="@string/action_submit"
+        android:text="@string/action_contact_us"
         android:textColor="@color/word_white"
         android:textColorLink="@color/word_white"
-        android:textSize="@dimen/login_fontMedium" 
-        android:enabled="false"/>
+        android:textSize="@dimen/login_fontMedium" />
     <ScrollView 
         android:layout_alignParentTop="true"
-       	android:layout_above="@+id/button_send"
+       	android:layout_above="@+id/button_contact_us"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content">
         	<RelativeLayout
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content">
-		    <TextView 
-			    android:id="@+id/txt_update_faq_desc"
-			    android:layout_width="wrap_content"
-		  		android:layout_height="wrap_content"
-		  		android:textSize="@dimen/update_desc_font_size"
-		  		android:textColor="@color/word_gray"
-		  		android:text="@string/desc_faq_intro"
-		  		android:layout_marginTop="@dimen/update_instruction_margin_top"
-		  		android:layout_marginLeft="@dimen/update_faq_margin_hor"
-		  		android:layout_marginRight="@dimen/update_faq_margin_hor"/>
-		    
-		    <TextView
-		        android:id="@+id/tv_faq_cam_id"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/txt_update_faq_desc"
-		        android:layout_marginLeft="@dimen/update_faq_margin_hor"
-			    android:layout_marginRight="@dimen/update_faq_margin_hor"
-		        android:layout_centerHorizontal="true"
-		        android:layout_marginTop="@dimen/update_faq_margin_vert"
-		        android:textSize="@dimen/update_faq_desc_font_size"
-		        android:text="@string/cam_info_sn"
-		        android:textColor="@color/word_gray"
-		         />
-		    <EditText
-		        android:id="@+id/et_faq_username"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/tv_faq_cam_id"
-		        android:layout_marginLeft="@dimen/update_faq_margin_hor"
-			    android:layout_marginRight="@dimen/update_faq_margin_hor"
-		        android:layout_centerHorizontal="true"
-		        android:layout_marginTop="@dimen/update_faq_margin_vert"
-		        android:background="@drawable/sl_signup_create_account_input"	        
-		        android:hint="@string/desc_user_name"
-		        android:paddingLeft="@dimen/update_faq_padding_hor"
-		        android:paddingRight="@dimen/update_faq_padding_hor"
-		        android:textSize="@dimen/update_faq_desc_font_size"
-		        android:textColorHint="@color/ota_faq_hint_text_color" />
-		    <EditText
-		        android:id="@+id/et_faq_useremail"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/et_faq_username"
-		        android:layout_marginLeft="@dimen/update_faq_margin_hor"
-			    android:layout_marginRight="@dimen/update_faq_margin_hor"
-		        android:layout_centerHorizontal="true"
-		        android:layout_marginTop="@dimen/update_faq_margin_vert"
-		        android:background="@drawable/sl_signup_create_account_input"	        
-		        android:hint="@string/desc_user_email"
-		        android:inputType="textEmailAddress"
-		        android:paddingLeft="@dimen/update_faq_padding_hor"
-		        android:paddingRight="@dimen/update_faq_padding_hor"
-		        android:textSize="@dimen/update_faq_desc_font_size"
-		        android:textColorHint="@color/ota_faq_hint_text_color" />
-	
-		    <EditText
-		        android:id="@+id/et_faq_userphone"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/et_faq_useremail"
-		        android:layout_centerHorizontal="true"
-		        android:layout_marginLeft="@dimen/update_faq_margin_hor"
-		        android:layout_marginRight="@dimen/update_faq_margin_hor"
-		        android:layout_marginTop="@dimen/update_faq_margin_vert"
-		        android:background="@drawable/sl_signup_create_account_input"
-		        android:hint="@string/desc_user_phone"
-		        android:inputType="phone"
-		        android:paddingLeft="@dimen/update_faq_padding_hor"
-		        android:paddingRight="@dimen/update_faq_padding_hor"
-		        android:textColorHint="@color/ota_faq_hint_text_color"
-		        android:textSize="@dimen/update_faq_desc_font_size" />
-			<EditText
-		        android:id="@+id/et_faq_userquestion"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/et_faq_userphone"
-		        android:layout_centerHorizontal="true"
-		        android:layout_marginLeft="@dimen/update_faq_margin_hor"
-		        android:layout_marginRight="@dimen/update_faq_margin_hor"
-		        android:layout_marginTop="@dimen/update_faq_margin_vert"
-		        android:background="@drawable/sl_signup_create_account_input"
-		        android:hint="@string/desc_user_question"
-		        android:lines="7"
-		        android:gravity="top"
-		        android:paddingTop="@dimen/update_faq_margin_vert"
-		        android:paddingBottom="@dimen/update_faq_margin_vert"		        
-		        android:paddingLeft="@dimen/update_faq_padding_hor"
-		        android:paddingRight="@dimen/update_faq_padding_hor"
-		        android:textColorHint="@color/ota_faq_hint_text_color"
-		        android:textSize="@dimen/update_faq_desc_font_size" />
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content">
+			    <TextView 
+				    android:id="@+id/txt_update_faq_subject_1"
+				    android:layout_width="wrap_content"
+			  		android:layout_height="wrap_content"
+			  		android:textSize="@dimen/update_faq_subject_font_size"
+			  		android:textColor="@color/word_gray"
+			  		android:text="@string/ota_faq_1_subject"
+			  		android:textStyle="bold"
+			  		android:layout_marginTop="@dimen/update_faq_subject_1_margin_top"
+			  		android:layout_marginLeft="@dimen/update_faq_subject_margin_vert"
+			  		android:layout_marginRight="@dimen/update_faq_subject_margin_vert"/>
+			    
+			    <TextView
+			        android:id="@+id/txt_update_faq_answer_1"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@+id/txt_update_faq_subject_1"
+			        android:layout_marginLeft="@dimen/update_faq_subject_margin_vert"
+				    android:layout_marginRight="@dimen/update_faq_subject_margin_vert"
+			        android:layout_centerHorizontal="true"
+			        android:layout_marginTop="@dimen/update_faq_answer_margin_top"
+			        android:textSize="@dimen/update_faq_answer_font_size"
+			        android:text="@string/ota_faq_1_answer"
+			        android:textColor="@color/word_gray"
+			         />
+			    <TextView 
+				    android:id="@+id/txt_update_faq_subject_2"
+				    android:layout_width="wrap_content"
+			  		android:layout_height="wrap_content"
+			  		android:layout_below="@+id/txt_update_faq_answer_1"
+			  		android:textSize="@dimen/update_faq_subject_font_size"
+			  		android:textColor="@color/word_gray"
+			  		android:text="@string/ota_faq_2_subject"
+			  		android:textStyle="bold"
+			  		android:layout_marginTop="@dimen/update_faq_subject_2_margin_top"
+			  		android:layout_marginLeft="@dimen/update_faq_subject_margin_vert"
+			  		android:layout_marginRight="@dimen/update_faq_subject_margin_vert"/>
+			    
+			    <TextView
+			        android:id="@+id/txt_update_faq_answer_2"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@+id/txt_update_faq_subject_2"
+			        android:layout_marginLeft="@dimen/update_faq_subject_margin_vert"
+				    android:layout_marginRight="@dimen/update_faq_subject_margin_vert"
+			        android:layout_centerHorizontal="true"
+			        android:layout_marginTop="@dimen/update_faq_answer_margin_top"
+			        android:textSize="@dimen/update_faq_answer_font_size"
+			        android:text="@string/ota_faq_2_answer"
+			        android:textColor="@color/word_gray"
+			         />
 	    </RelativeLayout>    
     </ScrollView>
 </RelativeLayout>

@@ -663,6 +663,7 @@
   <string name="desc_cam_update_short_intro">The update process is free and will be finished in a short time interval.</string>
   <string name="action_contact_us">Contact us</string>
   <string name="desc_faq_intro">If the update process did not complete successfully, please contact us for further assistance.</string>
+  <string name="user_account">Account</string>
   <string name="desc_user_name">Name</string>
   <string name="desc_user_email">E-mail</string>
   <string name="desc_user_phone">Phone</string>
@@ -681,4 +682,11 @@
   <string name="action_cam_update">Update</string>
   <string name="desc_dialog_cam_offline_during_ota">Your camera is offline, reconnect to the network to continue the update process.</string>
   <string name="desc_cam_update_finish">Software update of camera "%s" has finished.</string>  
+  
+  <string name="ota_faq_1_subject">Why my Beseye Pro camera can not be updated?</string>  
+  <string name="ota_faq_1_answer">1. Wait for PM feedback\n2. Wait for PM feedback.</string>  
+  <string name="ota_faq_2_subject">Here are common reasons why updates fail and how to fix them:</string>  
+  <string name="ota_faq_2_answer">1. Wait for PM feedback\n2. Wait for PM feedback.</string>  
+  
+  
 </resources>
