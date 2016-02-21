@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.BeseyeNavBarBaseActivity;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_GROUP;
 import com.app.beseye.ota.CamOTAInstructionActivity.CAM_OTA_INSTR_TYPE;
 import com.app.beseye.util.BeseyeUtils;
 
@@ -29,7 +30,7 @@ public class CamOTARemindActivity extends BeseyeNavBarBaseActivity {
 		}
 		
 		mIvBackground = (ImageView)findViewById(R.id.iv_ota_image);
-		BeseyeUtils.setVisibility(mIvBack, View.INVISIBLE);
+		BeseyeUtils.setText(mTxtNavTitle, getString(R.string.signup_watch_out_title));		
 	}
 
 	@Override
@@ -42,9 +43,9 @@ public class CamOTARemindActivity extends BeseyeNavBarBaseActivity {
 		switch(view.getId()){
 			case R.id.button_update:{
 				if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ALL.equals(mCamOTAType)){
-					
+					BeseyeCamSWVersionMgr.getInstance().performCamGroupUpdate(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
 				}else if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ONE.equals(mCamOTAType)){
-					
+					//BeseyeCamSWVersionMgr.getInstance().performCamUpdate(camRec);
 				}
 				launchDelegateActivity(CameraListActivity.class.getName());
 

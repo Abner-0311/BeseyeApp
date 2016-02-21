@@ -517,8 +517,18 @@ public class BeseyeCamBEHttpTask  {
 	
 	public static class UpdateCamSWTask extends BeseyeHttpTask{
 		private String strVcamId = null;
+		private Object cusObj = null;
+
 		public UpdateCamSWTask(OnHttpTaskCallback cb) {
 			super(cb);
+		}
+		
+		public void setCusObj(Object obj){
+			cusObj = obj;
+		}
+		
+		public Object getCusObj(){
+			return cusObj ;
 		}
 		
 		public String getVcamId(){
@@ -535,8 +545,18 @@ public class BeseyeCamBEHttpTask  {
 	
 	public static class GetCamUpdateStatusTask extends BeseyeHttpTask{
 		private String strVcamId = null;
+		private Object cusObj = null;
+
 		public GetCamUpdateStatusTask(OnHttpTaskCallback cb) {
 			super(cb);
+		}
+		
+		public void setCusObj(Object obj){
+			cusObj = obj;
+		}
+		
+		public Object getCusObj(){
+			return cusObj ;
 		}
 		
 		public String getVcamId(){
@@ -554,6 +574,7 @@ public class BeseyeCamBEHttpTask  {
 	public static class CheckCamUpdateStatusTask extends BeseyeHttpTask{
 		private String strVcamId = null;
 		private JSONObject mObjCam = null;
+		private Object cusObj = null;
 		
 		public CheckCamUpdateStatusTask(OnHttpTaskCallback cb) {
 			super(cb);
@@ -561,6 +582,14 @@ public class BeseyeCamBEHttpTask  {
 		
 		public void setCamObj(JSONObject obj){
 			mObjCam = obj;
+		}
+		
+		public void setCusObj(Object obj){
+			cusObj = obj;
+		}
+		
+		public Object getCusObj(){
+			return cusObj ;
 		}
 		
 		public JSONObject getCamObj(){

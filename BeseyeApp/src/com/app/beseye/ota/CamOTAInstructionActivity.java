@@ -1,19 +1,15 @@
 package com.app.beseye.ota;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.BeseyeNavBarBaseActivity;
-import com.app.beseye.pairing.PairingWatchOutActivity;
-import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.util.BeseyeUtils;
 
 public class CamOTAInstructionActivity extends BeseyeNavBarBaseActivity {
@@ -107,16 +103,15 @@ public class CamOTAInstructionActivity extends BeseyeNavBarBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_action:{
-				
 				if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_BY_OTHER.equals(mCamOTAType)){
 					launchDelegateActivity(CameraListActivity.class.getName());
 				}else{
-					Intent intent = new Intent();
-					intent.putExtra(CAM_OTA_TYPE, mCamOTAType.ordinal());
-					if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ONE.equals(mCamOTAType)){
-						intent.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+					Bundle bundle = new Bundle();
+					bundle.putInt(CAM_OTA_TYPE, mCamOTAType.ordinal());
+					if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ONE.equals(mCamOTAType) && null != mCam_obj){
+						bundle.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
 					}
-					
+					launchActivityByClassName(CamOTARemindActivity.class.getName(), bundle);
 				}
 				break;
 			}

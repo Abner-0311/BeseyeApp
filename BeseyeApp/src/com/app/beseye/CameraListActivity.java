@@ -35,6 +35,11 @@ import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_GROUP;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_STATUS;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CamSwUpdateRecord;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.OnCamUpdateStatusChangedListener;
 import com.app.beseye.ota.CamOTAFAQActivity;
 import com.app.beseye.pairing.PairingPlugPowerActivity;
 import com.app.beseye.pairing.PairingRemindActivity;
@@ -53,7 +58,8 @@ import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
 import com.facebook.appevents.AppEventsLogger;
 
-public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBtnStateChangedListener{
+public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBtnStateChangedListener,
+																	  OnCamUpdateStatusChangedListener{
 	static public final String KEY_VCAM_OBJ 	= "KEY_VCAM_OBJ";
 	static public final String KEY_VCAM_ID 		= "KEY_VCAM_ID";
 	static public final String KEY_VCAM_NAME 	= "KEY_VCAM_NAME";
@@ -247,6 +253,28 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			BeseyeUtils.postRunnable(mPendingRunnableOnCreate, 100);
 			mPendingRunnableOnCreate = null;
 		}
+		
+		BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
+		if(mbIsDemoCamMode){
+			BeseyeCamSWVersionMgr.getInstance().setNeedPeriodCheckUpdateStatus(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_DEMO, true);
+		}else if(mbIsPrivateCamMode){
+			BeseyeCamSWVersionMgr.getInstance().setNeedPeriodCheckUpdateStatus(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PRIVATE, true);
+		}else{
+			BeseyeCamSWVersionMgr.getInstance().setNeedPeriodCheckUpdateStatus(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, true);
+		}
+	}
+	
+	@Override
+	protected void onPause() {
+		if(mbIsDemoCamMode){
+			BeseyeCamSWVersionMgr.getInstance().setNeedPeriodCheckUpdateStatus(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_DEMO, false);
+		}else if(mbIsPrivateCamMode){
+			BeseyeCamSWVersionMgr.getInstance().setNeedPeriodCheckUpdateStatus(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PRIVATE, false);
+		}else{
+			BeseyeCamSWVersionMgr.getInstance().setNeedPeriodCheckUpdateStatus(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, false);
+		}
+		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamUpdateStatusChangedListener(this);
+		super.onPause();
 	}
 
 	@Override
@@ -1197,5 +1225,19 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		}else {
 			super.onActivityResult(requestCode, resultCode, intent);
 		}
+	}
+	
+	@Override
+	public void onCamUpdateStatusChanged(String strVcamId,
+			CAM_UPDATE_STATUS curStatus, CAM_UPDATE_STATUS prevStatus,
+			CamSwUpdateRecord objUpdateRec) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCamUpdateProgress(String strVcamId, int iPercetage) {
+		// TODO Auto-generated method stub
+		
 	}
 }

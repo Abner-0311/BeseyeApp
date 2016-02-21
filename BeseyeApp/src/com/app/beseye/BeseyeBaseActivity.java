@@ -611,17 +611,17 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 //	}
 	
 	private void onAppUpdateNotAvailable(){
-		if(true == mbIgnoreCamVerCheck){
-			return;
-		}
-		
-		if(this instanceof CameraListActivity /*&& !checkWithinCamUpdatePeriod()*/ && !isCamUpdatingInCurrentPage() && null != mObjVCamList){
-			getCamUpdateCandidateList(mObjVCamList);
-		}
-		
-		mbHaveCheckAppVer = true;
-		if((false == this instanceof CameraListActivity && false == mbIgnoreCamVerCheck /*&& !checkWithinCamUpdatePeriod()*/ && !isCamUpdatingInCurrentPage()) || mbIsNetworkDisconnectedWhenCamUpdating)
-			getCamListAndCheckCamUpdateVersions();
+//		if(true == mbIgnoreCamVerCheck){
+//			return;
+//		}
+//		
+//		if(this instanceof CameraListActivity /*&& !checkWithinCamUpdatePeriod()*/ && !isCamUpdatingInCurrentPage() && null != mObjVCamList){
+//			getCamUpdateCandidateList(mObjVCamList);
+//		}
+//		
+//		mbHaveCheckAppVer = true;
+//		if((false == this instanceof CameraListActivity && false == mbIgnoreCamVerCheck /*&& !checkWithinCamUpdatePeriod()*/ && !isCamUpdatingInCurrentPage()) || mbIsNetworkDisconnectedWhenCamUpdating)
+//			getCamListAndCheckCamUpdateVersions();
 	}
 	
 	protected boolean isAppVersionChecked(){

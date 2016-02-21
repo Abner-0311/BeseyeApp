@@ -19,6 +19,12 @@ import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_GROUP_VER_CHK_RET;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_ERROR;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_GROUP;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.OnCamGroupUpdateVersionCheckListener;
+import com.app.beseye.ota.CamOTAInstructionActivity;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -27,7 +33,8 @@ import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 
-public class OpeningPage extends Activity implements OnHttpTaskCallback{
+public class OpeningPage extends Activity implements OnHttpTaskCallback, 
+													 OnCamGroupUpdateVersionCheckListener{
 	public static final String ACTION_BRING_FRONT 		= "ACTION_BRING_FRONT";
 	public static final String KEY_HAVE_HANDLED 		= "KEY_HAVE_HANDLED";
 	public static final String KEY_DELEGATE_INTENT 		= "KEY_DELEGATE_INTENT";
@@ -79,6 +86,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		}
 		
 		launchActivityByIntent(getIntent());
+		
+		BeseyeCamSWVersionMgr.getInstance().registerOnCamGroupUpdateVersionCheckListener(this);
 	}
 
 	@Override
@@ -139,9 +148,6 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			mGetUserInfoTask.cancel(true);
 		}
 		
-		if(null != mGetVCamListTask){
-			mGetVCamListTask.cancel(true);
-		}
 		super.onPause();
 		
 		//Facebook
@@ -156,6 +162,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	protected void onDestroy() {
 		if(DEBUG)
 			Log.i(TAG, "OpeningPage::onDestroy()");
+		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamGroupUpdateVersionCheckListener(this);
+
 		super.onDestroy();
 		if(intentRelaunch != null){
 			if(DEBUG)
@@ -165,7 +173,6 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 	}
 
 	private BeseyeAccountTask.GetUserInfoTask mGetUserInfoTask;
-	private BeseyeHttpTask mGetVCamListTask;
 	
 	private void launchActivityByIntent(Intent intent){
 //		if(SessionMgr.getInstance().isTokenValid()){
@@ -314,16 +321,20 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 		//intentLanuch.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		if(sbFirstLaunch || (!SessionMgr.getInstance().getIsCertificated() && !intent.getBooleanExtra(KEY_IGNORE_ACTIVATED_FLAG, false))){
 			final Intent intentLanuchRunnable =intentLanuch;
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					if(SessionMgr.getInstance().isTokenValid() && !SessionMgr.getInstance().getIsCertificated()){
-						intentLanuchRunnable.setClassName(OpeningPage.this, BeseyeEntryActivity.class.getName());
+			if(sbFirstLaunch && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
+				BeseyeCamSWVersionMgr.getInstance().performCamGroupUpdateCheck(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
+			}else{
+				BeseyeUtils.postRunnable(new Runnable(){
+					@Override
+					public void run() {
+						if(SessionMgr.getInstance().isTokenValid() && !SessionMgr.getInstance().getIsCertificated()){
+							intentLanuchRunnable.setClassName(OpeningPage.this, BeseyeEntryActivity.class.getName());
+							startActivity(intentLanuchRunnable);
+							finish();
+						}
 					}
-					startActivity(intentLanuchRunnable);
-					finish();
-				}
-			}, sbFirstLaunch?TIME_TO_CLOSE_OPENING_PAGE:0);
+				}, sbFirstLaunch?TIME_TO_CLOSE_OPENING_PAGE:0);
+			}
 		}else{
 			startActivity(intentLanuch);
 		}
@@ -362,7 +373,9 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 						if(null != objUser){
 							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
 							if(SessionMgr.getInstance().getIsCertificated()){
-								intentLanuch.setClassName(this, FIRST_PAGE);
+								//intentLanuch.setClassName(this, FIRST_PAGE);
+								BeseyeCamSWVersionMgr.getInstance().performCamGroupUpdateCheck(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
+
 							}else{
 								SessionMgr.getInstance().cleanSession();
 							}
@@ -371,26 +384,15 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 				}else{
 					SessionMgr.getInstance().cleanSession();
 				}
-				startActivity(intentLanuch);
-				if(DEBUG)
-					Log.i(TAG, "OpeningPage::onPostExecute(), call finish");
-				finish();
-			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
-				if(0 == iRetCode){
-					if(DEBUG)
-						Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", result.get(0)="+result.get(0).toString());
-					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
-					if(0 == iVcamCnt){
-						SessionMgr.getInstance().setIsCertificated(false);
-					}
-				}
+//				startActivity(intentLanuch);
+//				if(DEBUG)
+//					Log.i(TAG, "OpeningPage::onPostExecute(), call finish");
+//				finish();
 			}
 		}
 		
 		if(task == mGetUserInfoTask){
 			mGetUserInfoTask = null;
-		}else if(task == mGetVCamListTask){
-			mGetVCamListTask = null; 
 		}
 	}
 
@@ -402,8 +404,14 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 
 	@Override
 	public void onSessionInvalid(AsyncTask<String, Double, List<JSONObject>> task, int iInvalidReason) {
-		// TODO Auto-generated method stub
+		SessionMgr.getInstance().cleanSession();
 		
+		Intent intentLanuch = new Intent();
+		intentLanuch.setClassName(this, BeseyeEntryActivity.class.getName());
+		startActivity(intentLanuch);
+		if(DEBUG)
+			Log.i(TAG, "OpeningPage::onSessionInvalid(), call finish");
+		finish();
 	}
 
 	@Override
@@ -411,5 +419,21 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback{
 			int iMsgRes) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void onCamUpdateVersionCheckAllCallback(
+			CAM_GROUP_VER_CHK_RET chkRet, CAM_UPDATE_GROUP chkGroup,
+			CAM_UPDATE_ERROR chkErr, List<String> lstVcamIds) {
+		Intent intentLanuch = new Intent();
+		if(chkRet.equals(CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_OUT_OF_UPDATE)){
+			intentLanuch.setClassName(this, CamOTAInstructionActivity.class.getName());
+			intentLanuch.putExtra(CamOTAInstructionActivity.CAM_OTA_TYPE, CamOTAInstructionActivity.CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ALL.ordinal());
+		}else{
+			intentLanuch.setClassName(this, FIRST_PAGE);
+		}
+		
+		startActivity(intentLanuch);
+		finish();
 	}
 }
