@@ -1692,6 +1692,34 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
                 	}
                 	break;	
                 }
+                case BeseyeNotificationService.MSG_CAM_OTA_START:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCameraOTAStart(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                	break;	
+                }
+                case BeseyeNotificationService.MSG_CAM_OTA_END:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+                		JSONObject dataObj;
+						try {
+							Bundle b = msg.getData();
+							dataObj = new JSONObject(b.getString(BeseyeNotificationService.MSG_REF_JSON_OBJ));
+							act.onCameraOTAEnd(dataObj);
+						} catch (JSONException e) {
+							Log.i(TAG, "handleMessage(), e:"+e.toString());
+						}
+                	}
+                	break;	
+                }
                 case BeseyeNotificationService.MSG_CAM_EVENT_FACE:{
                 	BeseyeBaseActivity act = mActivity.get();
                 	if(null != act){
@@ -2058,6 +2086,27 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     		    		}
     		    	}
     			}
+    			return true;
+    		}
+		}
+    	return false;
+    }
+    
+    protected boolean onCameraOTAStart(JSONObject msgObj){
+    	Log.i(TAG, getClass().getSimpleName()+"::onCameraOTAStart(),  msgObj = "+msgObj);
+    	return false;
+    }
+    
+    protected boolean onCameraOTAEnd(JSONObject msgObj){
+    	Log.i(TAG, getClass().getSimpleName()+"::onCameraOTAEnd(),  msgObj = "+msgObj);
+		if(mActivityResume && null != msgObj){
+    		final JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+    		if(null != objCus){
+    			BeseyeUtils.postRunnable(new Runnable(){
+    				@Override
+    				public void run() {
+    					Toast.makeText(BeseyeBaseActivity.this, String.format(getString(R.string.desc_cam_update_finish), BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME)), Toast.LENGTH_SHORT).show();
+    				}}, 0);
     			return true;
     		}
 		}

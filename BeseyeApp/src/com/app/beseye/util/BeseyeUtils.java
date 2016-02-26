@@ -718,4 +718,8 @@ public class BeseyeUtils {
 				HttpStatus.SC_GATEWAY_TIMEOUT == iHttpStatusCode ||
 				429 ==  iHttpStatusCode; //HTTP_429_TOO_MANY_REQUESTS;
 	}
+	
+	static public String getStringByResId(int iResId){
+		return BeseyeApplication.getApplication().getString(iResId);
+	}
 }

@@ -141,7 +141,8 @@
 					    android:text="@string/desc_cam_update_keep_cam_on_during_ota"
 					    android:textColor="@color/word_white"
 					    android:textSize="@dimen/firmware_update_font_size" 
-					    android:layout_marginBottom="@dimen/firmware_update_desc_margin_bottom"/>
+					    android:layout_marginBottom="@dimen/firmware_update_desc_margin_bottom"
+					    android:gravity="center"/>
 			        
 			        <RelativeLayout 
 			           	android:id="@+id/lv_update_progress_holder"
@@ -209,6 +210,19 @@
 					    android:textSize="@dimen/firmware_update_font_size" 
 					    android:layout_marginBottom="@dimen/firmware_update_desc_margin_bottom"
 					    android:gravity="center"/>
+			        
+			        <Button 	
+			            android:id="@+id/btn_ota_update_again"
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+			            android:layout_centerHorizontal="true" 
+			            android:layout_below="@+id/txt_update_failed_desc"
+			            android:text="@string/action_update_again"
+			            android:textColor="@color/word_white"
+			            android:textSize="@dimen/firmware_update_btn_font_size"
+			            android:background="@drawable/sl_cam_update_btn_bg"
+			            android:paddingLeft="@dimen/firmware_update_btn_hoz_padding"
+			            android:paddingRight="@dimen/firmware_update_btn_hoz_padding"/>
 			        
 			        <Button 	
 			            android:id="@+id/btn_ota_support"

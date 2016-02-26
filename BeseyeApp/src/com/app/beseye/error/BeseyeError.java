@@ -116,5 +116,21 @@ public class BeseyeError {
 	static public final int E_CONN_HTTP_304_NOT_MODIFIED                       = 0x00000E09;
 	static public final int E_CONN_HTTP_403_FORBIDDEN                          = 0x00000E0a;
 	static public final int E_CONN_EXCEPTION_END                               = 0x00000EFF;
+	
+	//OTA error 
+	
+	static public final int E_OTA_PREPARE_FAILED                               = 0x00D00011;//Found error before 20% in finalStatus
+	static public final int E_REBOOT_DURING_PREPARING_STAGE                    = 0x00D00015;//Power off before 20% in finalStatus
+	static public final int E_MISSING_V1_FILE                                  = 0x00D00024;//CAM SW mismatch
+	static public final int E_V1_MISMATCH_HASH                                 = 0x00D00025;//..
+	static public final int E_V1_MISMATCH_SIZE                                 = 0x00D00027;//..
+	static public final int E_NOT_ENOUGH_SPACE                                 = 0x00D00037;//Out of space
+	static public final int E_NOT_ENOUGH_SPACE_FOR_DL                          = 0x00D0004b;//..
+	static public final int E_INVALID_SIGNATURE_LEN                            = 0x00D0002a;//No available OTA package
+	static public final int E_SIGNATURE_VERIFICATION_FAILED                    = 0x00D0002b;//..
+	static public final int E_CURL_NETWORK_ERROR                               = 0x00D000b0;//Trial down failed
+	static public final int E_CURL_NETWORK_DEAD                                = 0x00D000b1;//..
+	static public final int E_NETWORK_ERROR_WHEN_DOWNLOADING_FILE              = 0x00D00050;//..
+	
 
 }

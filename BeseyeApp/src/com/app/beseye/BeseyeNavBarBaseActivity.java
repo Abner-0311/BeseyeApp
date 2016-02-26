@@ -32,8 +32,6 @@ public abstract class BeseyeNavBarBaseActivity extends BeseyeBaseActivity {
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
 		
 		try {
-			if(DEBUG)
-				Log.i(TAG, getClass().getSimpleName()+"::updateAttrByIntent(),  mCam_obj is replaced");
 			String strCamObj = getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ);
 			if(null != strCamObj && 0 < strCamObj.length()){
 				mCam_obj = new JSONObject(strCamObj);

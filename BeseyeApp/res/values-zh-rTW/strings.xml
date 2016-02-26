@@ -654,4 +654,7 @@
   <!--Fail to reset human detection-->
   <string name="enhance_human_detect_train_fail_to_reset">重置失敗，請稍候再試。</string>
   <string name="notify_human_detect">%s 偵測到一個人員活動，去看看是誰。</string>
+  
+  <string name="ota_faq_subject">若無法順利更新，請嘗試以下解決方法：</string>  
+  <string name="ota_faq_answer">1. 請拔掉電源插頭，再重新插電。\n2. 請選擇強度強、速度快的Wi-Fi，以確保Beseye攝影機使用的網路連線品質流暢。</string> 
 </resources>

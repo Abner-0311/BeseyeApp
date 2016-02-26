@@ -27,6 +27,11 @@ public class CamOTARemindActivity extends BeseyeNavBarBaseActivity {
 		mBtnUpdate = (Button)findViewById(R.id.button_update);
 		if(null != mBtnUpdate){
 			mBtnUpdate.setOnClickListener(this);
+			if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ALL.equals(mCamOTAType)){
+				BeseyeUtils.setText(mBtnUpdate, getString(R.string.action_cam_update_all));
+			}else{		
+				BeseyeUtils.setText(mBtnUpdate, getString(R.string.update_now));
+			}
 		}
 		
 		mIvBackground = (ImageView)findViewById(R.id.iv_ota_image);
@@ -45,7 +50,7 @@ public class CamOTARemindActivity extends BeseyeNavBarBaseActivity {
 				if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ALL.equals(mCamOTAType)){
 					BeseyeCamSWVersionMgr.getInstance().performCamGroupUpdate(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
 				}else if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ONE.equals(mCamOTAType)){
-					//BeseyeCamSWVersionMgr.getInstance().performCamUpdate(camRec);
+					BeseyeCamSWVersionMgr.getInstance().performCamUpdate(BeseyeCamSWVersionMgr.getInstance().findCamSwUpdateRecord(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID));
 				}
 				launchDelegateActivity(CameraListActivity.class.getName());
 

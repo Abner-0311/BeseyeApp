@@ -21,7 +21,7 @@
        	android:layout_above="@+id/button_contact_us"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content">
-        	<RelativeLayout
+      	<RelativeLayout
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content">
 			    <TextView 
@@ -30,7 +30,7 @@
 			  		android:layout_height="wrap_content"
 			  		android:textSize="@dimen/update_faq_subject_font_size"
 			  		android:textColor="@color/word_gray"
-			  		android:text="@string/ota_faq_1_subject"
+			  		android:text="@string/ota_faq_subject"
 			  		android:textStyle="bold"
 			  		android:layout_marginTop="@dimen/update_faq_subject_1_margin_top"
 			  		android:layout_marginLeft="@dimen/update_faq_subject_margin_vert"
@@ -46,35 +46,10 @@
 			        android:layout_centerHorizontal="true"
 			        android:layout_marginTop="@dimen/update_faq_answer_margin_top"
 			        android:textSize="@dimen/update_faq_answer_font_size"
-			        android:text="@string/ota_faq_1_answer"
+			        android:text="@string/ota_faq_answer"
 			        android:textColor="@color/word_gray"
 			         />
-			    <TextView 
-				    android:id="@+id/txt_update_faq_subject_2"
-				    android:layout_width="wrap_content"
-			  		android:layout_height="wrap_content"
-			  		android:layout_below="@+id/txt_update_faq_answer_1"
-			  		android:textSize="@dimen/update_faq_subject_font_size"
-			  		android:textColor="@color/word_gray"
-			  		android:text="@string/ota_faq_2_subject"
-			  		android:textStyle="bold"
-			  		android:layout_marginTop="@dimen/update_faq_subject_2_margin_top"
-			  		android:layout_marginLeft="@dimen/update_faq_subject_margin_vert"
-			  		android:layout_marginRight="@dimen/update_faq_subject_margin_vert"/>
-			    
-			    <TextView
-			        android:id="@+id/txt_update_faq_answer_2"
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:layout_below="@+id/txt_update_faq_subject_2"
-			        android:layout_marginLeft="@dimen/update_faq_subject_margin_vert"
-				    android:layout_marginRight="@dimen/update_faq_subject_margin_vert"
-			        android:layout_centerHorizontal="true"
-			        android:layout_marginTop="@dimen/update_faq_answer_margin_top"
-			        android:textSize="@dimen/update_faq_answer_font_size"
-			        android:text="@string/ota_faq_2_answer"
-			        android:textColor="@color/word_gray"
-			         />
+			   
 	    </RelativeLayout>    
     </ScrollView>
 </RelativeLayout>

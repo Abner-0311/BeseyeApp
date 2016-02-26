@@ -28,9 +28,6 @@ import com.app.beseye.ota.CamOTAInstructionActivity;
 import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.widget.BaseOneBtnDialog;
-import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
-import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 
 public class OpeningPage extends Activity implements OnHttpTaskCallback, 
@@ -87,7 +84,6 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 		
 		launchActivityByIntent(getIntent());
 		
-		BeseyeCamSWVersionMgr.getInstance().registerOnCamGroupUpdateVersionCheckListener(this);
 	}
 
 	@Override
@@ -162,7 +158,6 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 	protected void onDestroy() {
 		if(DEBUG)
 			Log.i(TAG, "OpeningPage::onDestroy()");
-		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamGroupUpdateVersionCheckListener(this);
 
 		super.onDestroy();
 		if(intentRelaunch != null){
@@ -322,7 +317,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 		if(sbFirstLaunch || (!SessionMgr.getInstance().getIsCertificated() && !intent.getBooleanExtra(KEY_IGNORE_ACTIVATED_FLAG, false))){
 			final Intent intentLanuchRunnable =intentLanuch;
 			if(sbFirstLaunch && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
-				BeseyeCamSWVersionMgr.getInstance().performCamGroupUpdateCheck(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
+				BeseyeCamSWVersionMgr.getInstance().registerOnCamGroupUpdateVersionCheckListener(this);
+				BeseyeCamSWVersionMgr.getInstance().performCamGroupOTAVerCheck(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
 			}else{
 				BeseyeUtils.postRunnable(new Runnable(){
 					@Override
@@ -374,7 +370,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
 							if(SessionMgr.getInstance().getIsCertificated()){
 								//intentLanuch.setClassName(this, FIRST_PAGE);
-								BeseyeCamSWVersionMgr.getInstance().performCamGroupUpdateCheck(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
+								BeseyeCamSWVersionMgr.getInstance().performCamGroupOTAVerCheck(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
 
 							}else{
 								SessionMgr.getInstance().cleanSession();
@@ -435,5 +431,6 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 		
 		startActivity(intentLanuch);
 		finish();
+		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamGroupUpdateVersionCheckListener(this);
 	}
 }

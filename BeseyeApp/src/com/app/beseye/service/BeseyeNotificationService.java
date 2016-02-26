@@ -88,6 +88,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private static final int NOTIFICATION_TYPE_CAM  = NOTIFICATION_TYPE_BASE+2;
 	private static final int NOTIFICATION_TYPE_PIN  = NOTIFICATION_TYPE_BASE+3;
 	private static final int NOTIFICATION_TYPE_EVT  = NOTIFICATION_TYPE_BASE+4;
+	private static final int NOTIFICATION_TYPE_OTA  = NOTIFICATION_TYPE_BASE+5;
 
 	
 	
@@ -167,6 +168,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     public static final int MSG_CAM_STATUS_CHANGED_FOR_EVT 	= 43;
     
     public static final int MSG_CAM_EVENT_HUMAN 			= 44;
+    public static final int MSG_CAM_OTA_START 				= 45;
+    public static final int MSG_CAM_OTA_END 				= 46;
     
     /**
      * Handler of incoming messages from clients.
@@ -208,7 +211,9 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 case MSG_CAM_EVENT_MOTION:
                 case MSG_CAM_EVENT_OFFLINE:
                 case MSG_CAM_EVENT_HUMAN:
-                case MSG_CAM_STATUS_CHANGED_FOR_EVT:{
+                case MSG_CAM_STATUS_CHANGED_FOR_EVT:
+                case MSG_CAM_OTA_START:
+                case MSG_CAM_OTA_END:{
                 	for (int i=mClients.size()-1; i>=0; i--) {
                 		try {
                 			Bundle b = new Bundle();
@@ -1191,6 +1196,16 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				mMapNotificationIdByDevName.clear();
 			}
 			
+			mNotificationManager.cancel(NOTIFICATION_TYPE_OTA);
+			if(0 < mMapOTANotificationId.size()){
+				for(String strVCamId : mMapOTANotificationId.keySet()){
+					if(null != mNotificationManager){
+						mNotificationManager.cancel(mMapOTANotificationId.get(strVCamId));
+					}
+				}
+				mMapOTANotificationId.clear();
+			}
+			
 			if(0 < mMapNCode.size()){
 				mMapNCode.clear();
 			}
@@ -1363,6 +1378,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	//Handle multiple beseye apps in same device and login via different accounts
 	private Map<String, Integer> mMapNotificationId = new HashMap<String, Integer>();
 	private Map<String, Integer> mMapNotificationIdByDevName = new HashMap<String, Integer>();
+	private Map<String, Integer> mMapOTANotificationId = new HashMap<String, Integer>();
+
 	private Map<String, Integer> mMapNCode = new HashMap<String, Integer>();
 	private List<String> mListBlackVCamId = new ArrayList<String>();//vcamid list that doesn't belong to current account
 	private BeseyeHttpTask mGetVCamListTask = null;
@@ -1565,6 +1582,41 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				}
 				case NCODE_CAM_OFFLINE:{
 					iMsgType = MSG_CAM_OFFLINE;
+					break;
+				}
+				case NCODE_CAM_OTA_START:{
+					iMsgType = MSG_CAM_OTA_START;
+					
+					break;
+				}
+				case NCODE_CAM_OTA_FINISH:{
+					iMsgType = MSG_CAM_OTA_END;
+					if(bFromGCM){												
+						
+						String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+						if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
+							if(false == mListBlackVCamId.contains(strVCamId)){
+								if(null != mGetVCamListTask && false == mGetVCamListTask.isCancelled()){
+									mGetVCamListTask.cancel(true);
+	                			}
+								if(DEBUG)
+									Log.i(TAG, "handleNotificationEvent(),strVCamId="+strVCamId+" not in mListBlackVCamId nor mMapNotificationId");	
+								(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this, strVCamId, msgObj, bFromGCM)).execute();
+							}
+						}else{
+							String strCamName = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME);
+							strNotifyMsg = String.format(getString(R.string.desc_cam_update_finish), strCamName);
+
+							iNotifyType = NOTIFICATION_TYPE_OTA+((null != strVCamId)?strVCamId.hashCode():0);
+
+							mMapOTANotificationId.put(strVCamId, iNotifyType);
+							
+							intent.setClassName(this, OpeningPage.class.getName());
+							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+							intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+						}
+					}
 					break;
 				}
 				case NCODE_PIN_CODE_REQUEST:{
@@ -1811,6 +1863,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	private static final int NCODE_TALK_CHANNEL_USED 			= 0x0400;
 	private static final int NCODE_TALK_CHANNEL_RELE 			= 0x0401;
 	private static final int NCODE_CAM_NEW_VER 					= 0x0402;
+	private static final int NCODE_CAM_OTA_START 				= 0x0403;
+	private static final int NCODE_CAM_OTA_FINISH 				= 0x0404;
 	
 	private static final int NCODE_CAM_ACTIVATE 				= 0X0500;
 	
