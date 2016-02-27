@@ -21,7 +21,6 @@
 
 #include <signal.h>
 #include <pthread.h>
-#include <sys/types.h>
 #include <sys/wait.h>
 
 #define MONITOR_PROCESS_FLAG "/tmp/beseye_sp_monitor_process"
@@ -58,6 +57,7 @@ typedef enum{
 	PAIRING_ERR_SSL_ERROR,
 	PAIRING_ERR_ATTACH_ALREADY,
 	PAIRING_ERR_INVALID_HW_ID,
+	PAIRING_ERR_POOR_NETWORK,
 	PAIRING_ERR_COUNT
 }Pairing_Err_Type;
 
@@ -147,11 +147,15 @@ bool isSystemProcessExist(){
 
 void killSystemProcess(){
 	if(0 < intermediate_pid){
+		LOGI( "try to kill intermediate_pid:%d\n", intermediate_pid);
+		//kill(intermediate_pid, SIGTERM);
 		if(0 > kill(intermediate_pid, SIGKILL)){
-			LOGE( "failed tp kill intermediate_pid\n");
+			LOGE( "failed to kill intermediate_pid\n");
 		}
 		intermediate_pid = -1;
 		lTimeInvodeSystem = 0;
+	}else{
+		LOGI( "invalid intermediate_pid:%d\n", intermediate_pid);
 	}
 }
 
@@ -1431,6 +1435,7 @@ void changePairingMode(Pairing_Mode mode){
 				setLEDMode(LED_MODE_BLINK_B);
 			}else if(PAIRING_ERROR == mode){
 				LOGW("---sPairingErrType:%d\n", sPairingErrType);
+
 				if(sPairingErrType == PAIRING_ERR_MAC_NOT_FOUND){
 					setLEDMode(LED_MODE_CYCLE_R_B);
 				}else if(sPairingErrType == PAIRING_ERR_SSL_ERROR){
@@ -1439,6 +1444,8 @@ void changePairingMode(Pairing_Mode mode){
 					setLEDMode(LED_MODE_BLINK_RGB);
 				}else if(sPairingErrType == PAIRING_ERR_INVALID_HW_ID){
 					setLEDMode(LED_MODE_CYCLE_R_G_B);
+				}else if(sPairingErrType == PAIRING_ERR_POOR_NETWORK){
+					setLEDMode(LED_MODE_CYCLE_RGB_R);
 				}else{
 					setLEDMode(LED_MODE_SOLID_R);
 				}
@@ -2380,11 +2387,23 @@ static int onSPFailed(){
 static int onSPSuccess(){
 	int iRet = 0;
 	int iTrials = 0;
-//	do{
-//		iRet = invokeSystem("/beseye/cam_main/beseye_token_check");
-//	}while(0 != iRet && 3 > ++iTrials);
-	iRet = invokeSystemWithTimeout("/beseye/cam_main/cam-util -camRegister", 30);
 
+	//[Abner]Do token check here to make cam attach complete
+	do{
+		iRet = invokeSystemWithTimeout("/beseye/cam_main/beseye_token_check", 40);
+		if(0 == iRet){
+			break;
+		}else{
+			LOGE("error (%d) when beseye_token_check!!!!\n", iRet);
+			setLEDMode(LED_MODE_CYCLE_RGB_B);
+		}
+	}while(true);
+
+	//Pre-register to make notify faster
+	iRet = invokeSystemWithTimeout("/beseye/cam_main/cam-util -camRegister", 40);
+
+	//Pre-setup to make video config apply
+	iRet = invokeSystem("/beseye/cam_main/cam-util -applyCamSetup");
 	slLastTimeCheckToken = time_ms();
 
 	deleteOldWiFiFile();
@@ -2399,6 +2418,8 @@ static int onSPSuccess(){
 			LOGE("Failed to invoke RESTORE_REGION_INFO_PROGRAM :[%d]\n", iRet);
 		}
 	}while(0 != iRet && 3 > ++iTrials);
+
+
 	AudioTest::getInstance()->setPairingReturnCode(0);
 	return iRet;
 }
@@ -2861,65 +2882,63 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 				iRet = invokeSystem("/beseye/cam_main/cam-util -checkTime");
 				LOGE("Check time ret:%d , time_ms:%lld .............-------------------\n", iRet, time_ms());
 
-				iRet = invokeSystem("/beseye/cam_main/beseye_token_check") >> 8;
+				//iRet = invokeSystem("/beseye/cam_main/beseye_token_check") >> 8;
 
 				slLastTimeCheckToken = time_ms();
 
-				if(0 == iRet){
-					sbTokenExisted = true;
-					LOGE("Token is already existed, check tmp token\n");
-					if(1 == cPurpose){
-						iRet = applyRegionId(cVPCId, cRegId);
-						if(0 == iRet){
-							sprintf(cmd, "/beseye/cam_main/cam-util -verToken '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
-							LOGE("verToken cmd:[%s]\n", cmd);
-							iRet = invokeSystem(cmd) >> 8;
-							//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
-							if(0 == iRet){
-								LOGE("Tmp User Token verification OK\n");
-								onSPSuccess();
-							}else{
-								LOGE("Tmp User Token verification failed\n");
-								//roll back wifi settings
-								onSPFailed();
-							}
-						}else{
-							LOGE("Failed to apply cVPCId : [%d]\n", cVPCId);
-							onSPFailed();
-						}
-					}else{
-						LOGE("Wrong cPurpose for verify, try re-attach...\n");
-
-						//Do addtional attach for notify client about attach errors
-						sprintf(cmd, "/beseye/cam_main/cam-util -attach '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
-						iRet = invokeSystemWithTimeout(cmd, 30) >> 8;
-						if(0 == iRet){
-							LOGE("Cam re-attach OK\n");
-							onSPSuccess();
-						}else{
-							LOGE("Cam re-attach failed, iRet:%d\n", iRet);
-							if(CMD_RET_CODE_SSL_ERROR == iRet){
-								sPairingErrType = PAIRING_ERR_SSL_ERROR;
-							}else if(CMD_RET_CODE_CAM_ATTACH_ALREADY == iRet){
-								sPairingErrType = PAIRING_ERR_ATTACH_ALREADY;
-							}else if(CMD_RET_CODE_CAM_INVALID_HW_ID == iRet){
-								sPairingErrType = PAIRING_ERR_INVALID_HW_ID;
-							}
-							onSPFailed();
-						}
-					}
-				}else{
+				//if(0 == iRet){
+					//sbTokenExisted = true;
+					//LOGE("Token is already existed, check tmp token\n");
+//					if(1 == cPurpose){
+//						iRet = applyRegionId(cVPCId, cRegId);
+//						if(0 == iRet){
+//							sprintf(cmd, "/beseye/cam_main/cam-util -verToken '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
+//							LOGE("verToken cmd:[%s]\n", cmd);
+//							iRet = invokeSystem(cmd) >> 8;
+//							//iRet = verifyUserToken(strMAC.c_str(), strUserNum.c_str());
+//							if(0 == iRet){
+//								LOGE("Tmp User Token verification OK\n");
+//								onSPSuccess();
+//							}else{
+//								LOGE("Tmp User Token verification failed\n");
+//								//roll back wifi settings
+//								onSPFailed();
+//							}
+//						}else{
+//							LOGE("Failed to apply cVPCId : [%d]\n", cVPCId);
+//							onSPFailed();
+//						}
+//					}else{
+//						LOGE("Wrong cPurpose for verify, try re-attach...\n");
+//
+//						//Do addtional attach for notify client about attach errors
+//						sprintf(cmd, "/beseye/cam_main/cam-util -attach '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
+//						iRet = invokeSystemWithTimeout(cmd, 40) >> 8;
+//						if(0 == iRet){
+//							LOGE("Cam re-attach OK\n");
+//							onSPSuccess();
+//						}else{
+//							LOGE("Cam re-attach failed, iRet:%d\n", iRet);
+//							if(CMD_RET_CODE_SSL_ERROR == iRet){
+//								sPairingErrType = PAIRING_ERR_SSL_ERROR;
+//							}else if(CMD_RET_CODE_CAM_ATTACH_ALREADY == iRet){
+//								sPairingErrType = PAIRING_ERR_ATTACH_ALREADY;
+//							}else if(CMD_RET_CODE_CAM_INVALID_HW_ID == iRet){
+//								sPairingErrType = PAIRING_ERR_INVALID_HW_ID;
+//							}
+//							onSPFailed();
+//						}
+//					}
+				//}else{
 					if(0 == cPurpose){
 						iRet = applyRegionId(cVPCId, cRegId);
 						if(0 == iRet){
-							LOGE("Token is invalid, try to attach\n");
+							//LOGE("Token is invalid, try to attach\n");
 							sprintf(cmd, "/beseye/cam_main/cam-util -attach '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
 							if(DEBUG_MODE){
 								LOGE("attach cmd:[%s]\n", cmd);
 							}
-							iRet = invokeSystemWithTimeout(cmd, 30) >> 8;
-
-							//iRet = attachCam(strMAC.c_str(), strUserNum.c_str());
+							iRet = invokeSystemWithTimeout(cmd, 40) >> 8;
 							if(0 == iRet){
 								LOGE("Cam attach OK\n");
 								onSPSuccess();
@@ -2938,13 +2957,43 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 							LOGE("Failed to apply cVPCId : [%d]\n", cVPCId);
 							onSPFailed();
 						}
+					}else if(1 == cPurpose){
+						iRet = applyRegionId(cVPCId, cRegId);
+						if(0 == iRet){
+							sprintf(cmd, "/beseye/cam_main/cam-util -verToken '%s' %s", replaceQuote(strAPIChk).c_str(), strUserNum.c_str());
+							if(DEBUG_MODE){
+								LOGE("verToken cmd:[%s]\n", cmd);
+							}
+							iRet = invokeSystemWithTimeout(cmd, 40) >> 8;
+							if(0 == iRet){
+								LOGE("Tmp User Token verification OK\n");
+								onSPSuccess();
+							}else{
+								LOGE("Tmp User Token verification failed, iRet:%d\n", iRet);
+								//roll back wifi settings
+								if(CMD_RET_CODE_SSL_ERROR == iRet){
+									sPairingErrType = PAIRING_ERR_SSL_ERROR;
+								}else if(CMD_RET_CODE_CAM_ATTACH_ALREADY == iRet){
+									sPairingErrType = PAIRING_ERR_ATTACH_ALREADY;
+								}else if(CMD_RET_CODE_CAM_INVALID_HW_ID == iRet){
+									sPairingErrType = PAIRING_ERR_INVALID_HW_ID;
+								}
+								onSPFailed();
+							}
+						}else{
+							LOGE("Failed to apply cVPCId : [%d]\n", cVPCId);
+							onSPFailed();
+						}
 					}else{
 						LOGE("Wrong cPurpose for attach\n");
 						onSPFailed();
 					}
-				}
+				//}
 			}else{
 				LOGE("network disconnected\n");
+				if(FALSE == bGuess){
+					sPairingErrType = PAIRING_ERR_POOR_NETWORK;
+				}
 				onSPFailed();
 			}
 		}else{
