@@ -1,6 +1,6 @@
 package com.app.beseye.widget;
 
-import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.SHOW_THUMBNAIL_LOG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.io.File;
@@ -254,7 +254,7 @@ public class RemoteImageView extends ImageView {
 //			int iFrom = (strEncode.length() > 32)?(strEncode.length()-32):0;
 //			strEncode = strEncode.substring(iFrom);
 //		}
-		if(DEBUG)
+		if(SHOW_THUMBNAIL_LOG)
 			Log.d(TAG, "buildCachePath(), takes "+(System.currentTimeMillis() - lStartTime)+" ms");
 
 		return String.format("%s%s", picDir.getAbsolutePath()+ "/", strEncode);
@@ -338,11 +338,11 @@ public class RemoteImageView extends ImageView {
 		if(null != mCachePath){
 			if(null != mStrVCamId){
 				String cacheFileName = mCachePath.substring(mCachePath.lastIndexOf("/")+1);
-				if(DEBUG)
+				if(SHOW_THUMBNAIL_LOG)
 					Log.i(TAG, "cacheFileName:["+cacheFileName+"]:"+mStrVCamId);
 				File vcamidDir = getDirByVCamid(mStrVCamId);
 				String fileToCache = vcamidDir.getAbsoluteFile()+"/"+cacheFileName;
-				if(DEBUG)
+				if(SHOW_THUMBNAIL_LOG)
 					Log.i(TAG, "fileToCache:["+fileToCache+"]:"+mStrVCamId);
 				cBmp = BeseyeMemCache.getBitmapFromMemCache(fileToCache);
 			}else{
@@ -351,7 +351,7 @@ public class RemoteImageView extends ImageView {
 		}
 		
 		if (cBmp != null) {
-			if(DEBUG)
+			if(SHOW_THUMBNAIL_LOG)
 				Log.d(TAG, "loadImage(), use mem cache , mCachePath:["+mCachePath+"]");
 			
 			setImageBitmap(cBmp);
@@ -370,11 +370,11 @@ public class RemoteImageView extends ImageView {
 			}
 			
 			if(fileExist(fileCache)){
-				if(DEBUG)
+				if(SHOW_THUMBNAIL_LOG)
 					Log.d(TAG, "loadImage(), have file cache , fileCache:["+fileCache+"]");
 				Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(fileCache);
 				if (cBmpFile != null) {
-					if(DEBUG)
+					if(SHOW_THUMBNAIL_LOG)
 						Log.i(TAG, "loadImage(), have file cache in mem");
 					setImageBitmap(cBmpFile);
 					imageLoaded(true);
@@ -382,7 +382,7 @@ public class RemoteImageView extends ImageView {
 					loadDefaultImage();
 				}
 			}else{
-				if(DEBUG)
+				if(SHOW_THUMBNAIL_LOG)
 					Log.d(TAG, "loadImage(), load default , no fileCache:["+fileCache+"]");
 				loadDefaultImage();
 			}
@@ -392,7 +392,7 @@ public class RemoteImageView extends ImageView {
 	
 	public void setImageBitmap(Bitmap bm, String strVcamId) {
 		mStrVCamIdLoad = strVcamId;
-		if(DEBUG)
+		if(SHOW_THUMBNAIL_LOG)
 			Log.d(TAG, "setImageBitmap(), mStrVCamIdLoad:["+mStrVCamIdLoad+"], id:"+this.getId());
 		
 		if(mbBmpTransitionEffect){
@@ -510,7 +510,7 @@ public class RemoteImageView extends ImageView {
 			Bitmap bitmap = BeseyeMemCache.getBitmapFromMemCache(mLocal);
 			if(mbIsPhotoViewMode){
 				// set low quality image first
-				if(DEBUG){
+				if(SHOW_THUMBNAIL_LOG){
 					Log.i(TAG, "use low quality first");
 				}
 				setImage(bitmap, mStrVCamId);
@@ -534,12 +534,12 @@ public class RemoteImageView extends ImageView {
 					
 					if(null != mStrVCamId){
 						if(mbLoadLastImgByVCamId){
-							if(DEBUG)
+							if(SHOW_THUMBNAIL_LOG)
 								Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
 							
 							vcamidDir = getDirByVCamid(mStrVCamId);
 							String strLastPhoto = findLastPhotoByVCamid(mStrVCamId);
-							if(DEBUG)
+							if(SHOW_THUMBNAIL_LOG)
 								Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");
 							Bitmap cBmpFile = BeseyeMemCache.getBitmapFromMemCache(strLastPhoto);
 							if(null == cBmpFile && fileExist(strLastPhoto)){
@@ -552,7 +552,7 @@ public class RemoteImageView extends ImageView {
 									
 									//bitmap = null;
 									
-									if(DEBUG)
+									if(SHOW_THUMBNAIL_LOG)
 										Log.i(TAG, "use file cache first");
 								}
 							}
@@ -569,7 +569,7 @@ public class RemoteImageView extends ImageView {
 							BeseyeMemCache.addBitmapToMemoryCache(mLocal, bitmap);
 							
 							bitmap = null;
-							if(DEBUG){
+							if(SHOW_THUMBNAIL_LOG){
 								Log.i(TAG, "decode low quality first");
 							}
 						}
@@ -578,7 +578,7 @@ public class RemoteImageView extends ImageView {
 					if(!bSameFileForVCamid){
 						if(fileExist(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample)){
 							bitmap = BitmapFactory.decodeFile(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample);
-							if(mbIsPhotoViewMode && DEBUG){
+							if(mbIsPhotoViewMode && SHOW_THUMBNAIL_LOG){
 								Log.i(TAG, "decode file use high quality");
 							}
 						}else {						
@@ -620,7 +620,7 @@ public class RemoteImageView extends ImageView {
 										}
 									}
 								}
-								if(DEBUG){
+								if(SHOW_THUMBNAIL_LOG){
 									Log.w(TAG, "downloadBitmap width :"+downloadBitmap.getWidth()+", height :"+downloadBitmap.getHeight());
 									Log.w(TAG, "mDestRatio :"+mDestRatio+", miDesireWidth :"+miDesireWidth+", miDesireHeight :"+miDesireHeight);
 									
@@ -641,7 +641,7 @@ public class RemoteImageView extends ImageView {
 									}
 									
 									if(0 > Float.compare(fRatio, 1.0f)){
-										if(DEBUG)
+										if(SHOW_THUMBNAIL_LOG)
 											Log.w(TAG, "scale fRatio:"+fRatio+", mLocal = "+mLocal);
 										// compress image to decrease memory usage
 										bitmap = Bitmap.createScaledBitmap(downloadBitmap,
@@ -679,7 +679,7 @@ public class RemoteImageView extends ImageView {
 				}else if (!fileExist(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample)) {// write image to file cache
 					createParentDir(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample);
 					compressFile(bitmap, mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample, Bitmap.CompressFormat.JPEG, 90);
-					if(mbIsPhotoViewMode && DEBUG){
+					if(mbIsPhotoViewMode && SHOW_THUMBNAIL_LOG){
 						Log.w(TAG, "save file use high quality");
 					}
 				}

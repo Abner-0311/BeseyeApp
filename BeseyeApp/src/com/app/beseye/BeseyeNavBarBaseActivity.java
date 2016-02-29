@@ -37,6 +37,7 @@ public abstract class BeseyeNavBarBaseActivity extends BeseyeBaseActivity {
 				mCam_obj = new JSONObject(strCamObj);
 				if(null != mCam_obj){
 					mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
+					mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
 				}
 			}
 		} catch (JSONException e1) {

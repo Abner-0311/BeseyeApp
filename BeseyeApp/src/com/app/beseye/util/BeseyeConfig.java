@@ -19,6 +19,8 @@ public class BeseyeConfig {
 	static public final String TEST_ACC 	= "privatecam@beseye.com";
 	static public final String RELAY_AP_SSID = "raylios WiFi";
 	static public final String RELAY_AP_PW = "whoisyourdaddy";
+	
+	static public final boolean SHOW_THUMBNAIL_LOG = false;
 
 	static{
 		Log.i(TAG, "BeseyeConfig init, BeseyeConfig.DEBUG:"+ BeseyeConfig.DEBUG);

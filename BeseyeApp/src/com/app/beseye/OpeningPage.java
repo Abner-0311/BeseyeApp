@@ -75,7 +75,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
-		if(getIntent().getBooleanExtra(ACTION_BRING_FRONT, false)){
+		if(getIntent().getBooleanExtra(ACTION_BRING_FRONT, false) && 0 < BeseyeBaseActivity.getActiveActivityCount()){
 			if(DEBUG)
 				Log.i(TAG, "OpeningPage::onCreate(), call finish for ACTION_BRING_FRONT");
 			finish();
@@ -107,7 +107,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 				return;
 			}
 
-			if(intent.getBooleanExtra(ACTION_BRING_FRONT, false)){
+			if(intent.getBooleanExtra(ACTION_BRING_FRONT, false) && 0 < BeseyeBaseActivity.getActiveActivityCount()){
 				if(DEBUG)
 					Log.i(TAG, "OpeningPage::onNewIntent(), ACTION_BRING_FRONT ");
 				finish();
@@ -323,7 +323,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 				BeseyeUtils.postRunnable(new Runnable(){
 					@Override
 					public void run() {
-						if(SessionMgr.getInstance().isTokenValid() && !SessionMgr.getInstance().getIsCertificated()){
+						if(!SessionMgr.getInstance().isTokenValid() && !SessionMgr.getInstance().getIsCertificated()){
 							intentLanuchRunnable.setClassName(OpeningPage.this, BeseyeEntryActivity.class.getName());
 							startActivity(intentLanuchRunnable);
 							finish();

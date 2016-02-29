@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.app.beseye.CameraListActivity;
 import com.app.beseye.R;
 import com.app.beseye.BeseyeNavBarBaseActivity;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_GROUP;
 import com.app.beseye.util.BeseyeUtils;
 
 public class CamOTAInstructionActivity extends BeseyeNavBarBaseActivity {
@@ -86,11 +87,16 @@ public class CamOTAInstructionActivity extends BeseyeNavBarBaseActivity {
 		return R.layout.layout_cam_update_instruction;
 	}
 	
+	private void backToCamLstAndCheckUpdateProgress(){
+		BeseyeCamSWVersionMgr.getInstance().resetOTAStatusByVcamId(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, this.mStrVCamID);
+		launchDelegateActivity(CameraListActivity.class.getName());
+	}
+	
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if(keyCode == KeyEvent.KEYCODE_BACK){
 			if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_BY_OTHER.equals(mCamOTAType)){
-				launchDelegateActivity(CameraListActivity.class.getName());
+				backToCamLstAndCheckUpdateProgress();
 			}else{
 				showMyDialog(DIALOG_ID_OTA_FORCE_UPDATE);
 			}
@@ -104,7 +110,7 @@ public class CamOTAInstructionActivity extends BeseyeNavBarBaseActivity {
 		switch(view.getId()){
 			case R.id.button_action:{
 				if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_BY_OTHER.equals(mCamOTAType)){
-					launchDelegateActivity(CameraListActivity.class.getName());
+					backToCamLstAndCheckUpdateProgress();
 				}else{
 					Bundle bundle = new Bundle();
 					bundle.putInt(CAM_OTA_TYPE, mCamOTAType.ordinal());

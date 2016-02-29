@@ -675,7 +675,7 @@
   <string name="desc_cam_update_keep_cam_on_during_ota">Updating… please keep power and network</string>
   <string name="desc_cam_update_complete">Update Completed! Please wait for camera rebooting</string>
   <string name="desc_dialog_cam_force_update">For new features and richer user experience, please update your camera.</string>
-  <string name="desc_cam_update_by_other">Your camera"%s" is updating now, please hold on a second. After you click the Confirm button, you can check your update progress.</string>
+  <string name="desc_cam_update_by_other">Your camera "%s" is updating now, please hold on a second. After you click the Confirm button, you can check your update progress.</string>
   <string name="desc_cam_update_failed">Update Failed!</string>
   <string name="desc_cam_update_failed_poor_network">Update suspended due to poor network! Please check your network condition.</string>
   

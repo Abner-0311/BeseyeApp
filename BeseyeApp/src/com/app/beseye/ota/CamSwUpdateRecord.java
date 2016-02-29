@@ -225,7 +225,16 @@ public class CamSwUpdateRecord{
 	}
 	
 	public void resetErrorInfo(){
+		Log.i(TAG, "resetErrorInfo(), cur status is: "+this);
+
 		setErrCode(0);
+		setLastOTAErrorTs(-1);
+	}
+	
+	public void resetCamOTAInfo(){
+		Log.i(TAG, "resetCamOTAInfo(), cur status is: "+this);
+
+		init();
 	}
 	
 	public boolean isOTAFeedbackSent(){

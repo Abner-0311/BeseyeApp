@@ -26,13 +26,24 @@ import com.app.beseye.CameraListActivity;
 import com.app.beseye.CameraViewActivity;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_GROUP;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_STATUS;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_VER_CHECK_STATUS;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.OnCamUpdateStatusChangedListener;
+import com.app.beseye.ota.CamSwUpdateRecord;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 
-public class SoundPairingNamingActivity extends BeseyeBaseActivity {	
+public class SoundPairingNamingActivity extends BeseyeBaseActivity implements OnCamUpdateStatusChangedListener{	
 	private EditText mEtCamName;
 	private Button mBtnDone;
 	private String mStrCamNameCandidate = null;
+	private boolean mbGetOTAVerCheckResult = false;
+	private boolean mbIsLatestOTAVersion = true;
+
+	private boolean mbSetCamNameDone = false;
+
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +93,16 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity {
 				}
 			});		
 		}
+		
+		BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
+		BeseyeCamSWVersionMgr.getInstance().AddUpdateVCam(mCam_obj, CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
+		BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, this.mStrVCamID, false);
+	}
+	
+	@Override
+	public void onDestroy() {
+		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamUpdateStatusChangedListener(this);
+		super.onDestroy();
 	}
 	
 	@Override
@@ -161,15 +182,31 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity {
 						BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, mStrCamNameCandidate);
 					}
 				}
-				Bundle b = new Bundle();
-				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-				b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
-				launchDelegateActivity(CameraListActivity.class.getName(), b);
-				finish();
+				
+				mbSetCamNameDone = true;
+				selectNextPage();
 			}else{
 				Log.i(TAG, "onPostExecute(), "+result.toString());
 				super.onPostExecute(task, result, iRetCode);
 			}
+		}
+	}
+	
+	private void selectNextPage(){
+		if(mbSetCamNameDone && mbGetOTAVerCheckResult){
+			Bundle b = new Bundle();
+			b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+			b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
+			b.putBoolean(CameraViewActivity.KEY_PAIRING_OTA_NEED_UPDATE, !mbIsLatestOTAVersion);
+
+			launchDelegateActivity(CameraListActivity.class.getName(), b);
+			finish();
+		}else if(!mbGetOTAVerCheckResult){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID, !mbSetCamNameDone);
+				}}, 1000L);
 		}
 	}
 	
@@ -181,5 +218,28 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity {
 		}else
 			return super.onKeyUp(keyCode, event);
 	}
+
+	@Override
+	public void onCamUpdateStatusChanged(String strVcamId, CAM_UPDATE_STATUS curStatus, CAM_UPDATE_STATUS prevStatus, CamSwUpdateRecord objUpdateRec) {
+	
+	}
+
+	@Override
+	public void onCamUpdateProgress(String strVcamId, int iPercetage) {
+		
+	}
+	
+	@Override
+	public void onCamUpdateVerChkStatusChanged(String strVcamId, CAM_UPDATE_VER_CHECK_STATUS curStatus, CAM_UPDATE_VER_CHECK_STATUS prevStatus, CamSwUpdateRecord objUpdateRec){
+		if(mStrVCamID.equals(strVcamId)){
+			if(objUpdateRec.getVerCheckStatus().equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_UPDATED) ||
+			   objUpdateRec.getVerCheckStatus().equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_OUT_OF_DATE)){
+				mbGetOTAVerCheckResult = true;
+				mbIsLatestOTAVersion = objUpdateRec.getVerCheckStatus().equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_UPDATED);
+			}
+			selectNextPage();
+		}
+	}
+	
 }
 

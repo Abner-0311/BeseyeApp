@@ -1590,9 +1590,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					break;
 				}
 				case NCODE_CAM_OTA_FINISH:{
-					iMsgType = MSG_CAM_OTA_END;
 					if(bFromGCM){												
-						
 						String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
 						if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
 							if(false == mListBlackVCamId.contains(strVCamId)){
@@ -1604,6 +1602,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 								(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this, strVCamId, msgObj, bFromGCM)).execute();
 							}
 						}else{
+							iMsgType = MSG_CAM_OTA_END;
+
 							String strCamName = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_NAME);
 							strNotifyMsg = String.format(getString(R.string.desc_cam_update_finish), strCamName);
 
@@ -1615,7 +1615,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 							intent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+							intent.putExtra(OpeningPage.ACTION_BRING_FRONT, true);
 						}
+					}else{
+						iMsgType = MSG_CAM_OTA_END;
 					}
 					break;
 				}

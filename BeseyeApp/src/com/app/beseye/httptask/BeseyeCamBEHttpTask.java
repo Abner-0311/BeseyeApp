@@ -571,12 +571,12 @@ public class BeseyeCamBEHttpTask  {
 		}
 	}
 	
-	public static class CheckCamUpdateStatusTask extends BeseyeHttpTask{
+	public static class CheckCamOTAVersionTask extends BeseyeHttpTask{
 		private String strVcamId = null;
 		private JSONObject mObjCam = null;
 		private Object cusObj = null;
 		
-		public CheckCamUpdateStatusTask(OnHttpTaskCallback cb) {
+		public CheckCamOTAVersionTask(OnHttpTaskCallback cb) {
 			super(cb);
 		}
 		

@@ -167,10 +167,10 @@ public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
 					listener.onCamUpdateList(mLstUpdateCandidate);
 				}
 			}else{
-				mCheckCamListVersionTask = new BeseyeCamBEHttpTask.CheckCamUpdateStatusTask(this).setDialogId(-1);
+				mCheckCamListVersionTask = new BeseyeCamBEHttpTask.CheckCamOTAVersionTask(this).setDialogId(-1);
 				if(null != mCheckCamListVersionTask){
 					JSONObject camObj = mArrVcamList.optJSONObject(miCurCheckIdx++);
-					((BeseyeCamBEHttpTask.CheckCamUpdateStatusTask)mCheckCamListVersionTask).setCamObj(camObj);
+					((BeseyeCamBEHttpTask.CheckCamOTAVersionTask)mCheckCamListVersionTask).setCamObj(camObj);
 					
 					if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1){
 						mCheckCamListVersionTask.execute(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID));
@@ -190,7 +190,7 @@ public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
 
 	@Override
 	public void onPostExecute(AsyncTask<String, Double, List<JSONObject>> task, List<JSONObject> result, int iRetCode) {
-		if(task instanceof BeseyeCamBEHttpTask.CheckCamUpdateStatusTask){
+		if(task instanceof BeseyeCamBEHttpTask.CheckCamOTAVersionTask){
 			//final String strVcamId = ((BeseyeCamBEHttpTask.CheckCamUpdateStatusTask)task).getVcamId();
 			if(0 == iRetCode){
 				if(DEBUG)
@@ -198,7 +198,7 @@ public class BeseyeCamInfoSyncMgr implements OnHttpTaskCallback{
 				
 				if(BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.UPDATE_CAN_GO)){
 					if(null != mLstUpdateCandidate){
-						mLstUpdateCandidate.put(((BeseyeCamBEHttpTask.CheckCamUpdateStatusTask)task).getCamObj());
+						mLstUpdateCandidate.put(((BeseyeCamBEHttpTask.CheckCamOTAVersionTask)task).getCamObj());
 					}
 				}			
 			}

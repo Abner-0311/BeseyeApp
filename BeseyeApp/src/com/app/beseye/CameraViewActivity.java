@@ -62,6 +62,13 @@ import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask;
 import com.app.beseye.httptask.BeseyeNotificationBEHttpTask.GetAudioWSServerTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_GROUP;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_STATUS;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_VER_CHECK_STATUS;
+import com.app.beseye.ota.BeseyeCamSWVersionMgr.OnCamUpdateStatusChangedListener;
+import com.app.beseye.ota.CamOTAInstructionActivity;
+import com.app.beseye.ota.CamSwUpdateRecord;
 import com.app.beseye.setting.CameraSettingActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeConfig;
@@ -91,8 +98,11 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 																	  OnAudioWSChannelStateChangeListener,
 																	  OnAudioAmplitudeUpdateListener,
 																	  CameraStatusCallback,
-																	  OnBitmapScreenshotCallback{
+																	  OnBitmapScreenshotCallback,
+																	  OnCamUpdateStatusChangedListener{
 	static public final String KEY_PAIRING_DONE 	= "KEY_PAIRING_DONE";
+	static public final String KEY_PAIRING_OTA_NEED_UPDATE 	= "KEY_PAIRING_OTA_NEED_UPDATE";
+
 	static public final String KEY_PAIRING_DONE_HANDLED 	= "KEY_PAIRING_DONE_HANDLED";
 	static public final String KEY_TIMELINE_INFO    = "KEY_TIMELINE_INFO";
 	static public final String KEY_DVR_STREAM_MODE  = "KEY_DVR_STREAM_MODE";
@@ -129,6 +139,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	private TimeZone mTimeZone;
 	
 	private boolean mbIsDemoCam = false;
+	private boolean mbIsPrivateCamMode = false;
 	private boolean mbIsFirstLaunch = true;
 	private boolean mbIsRetryAtNextResume = false;
 	private boolean mbIsPauseWhenPlaying = false;
@@ -579,6 +590,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}
 				
 				mbIsDemoCam = intent.getBooleanExtra(CameraListActivity.KEY_DEMO_CAM_MODE, false);
+				mbIsPrivateCamMode = intent.getBooleanExtra(CameraListActivity.KEY_PRIVATE_CAM_MODE, false);
 				mbIsLiveMode = !intent.getBooleanExtra(KEY_DVR_STREAM_MODE, false);
 				mstrDVRStreamPathList = new ArrayList<JSONObject>();
 				mstrPendingStreamPathList = new ArrayList<JSONObject>();
@@ -894,6 +906,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	protected void onDestroy() {
 		if(DEBUG)
 			Log.d(TAG, "CameraViewActivity::onDestroy()");
+		
+		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamUpdateStatusChangedListener(this);
 		
 		AudioWebSocketsMgr.getInstance().unregisterOnAudioAmplitudeUpdateListener();
 		AudioWebSocketsMgr.getInstance().unregisterOnWSChannelStateChangeListener();
@@ -1386,7 +1400,14 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							
 							if(bIsCamOn && (isCamPowerOff() || isCamPowerDisconnected())){
 								setCursorVisiblity(View.GONE);
-								Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
+								if(isCamPowerOff()){
+									Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
+								}else{
+									if(!mbIsPrivateCamMode && !mbIsDemoCam){
+										BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
+										BeseyeCamSWVersionMgr.getInstance().checkCamUpdateStatus(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID);
+									}
+								}
 							}else if(!bIsCamOn && isCamPowerOn()){
 								mlRetryConnectBeginTs = System.currentTimeMillis();
 							}
@@ -3434,4 +3455,44 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
     	return false;
     }
+    
+    protected boolean onCameraOTAStart(JSONObject msgObj){
+    	if(null != msgObj){
+    		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+    		if(null != objCus){
+        		final String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+        		if(mStrVCamID.equals(strCamUID)){
+        	    	Log.i(TAG, getClass().getSimpleName()+"::onCameraOTAStart(),  mStrVCamID = "+mStrVCamID);
+                	showOTAInstructionActivity();
+        		}
+    			return true;
+    		}
+		}
+    	return super.onCameraOTAStart(msgObj);
+    }
+    
+    private void showOTAInstructionActivity(){
+    	Bundle b = new Bundle();
+		b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+		b.putInt(CamOTAInstructionActivity.CAM_OTA_TYPE, CamOTAInstructionActivity.CAM_OTA_INSTR_TYPE.TYPE_UPDATE_BY_OTHER.ordinal());
+		launchActivityByClassName(CamOTAInstructionActivity.class.getName(), b);
+    }
+
+	@Override
+	public void onCamUpdateStatusChanged(String strVcamId, CAM_UPDATE_STATUS curStatus, CAM_UPDATE_STATUS prevStatus, CamSwUpdateRecord objUpdateRec) {
+		if(strVcamId.equals(this.mStrVCamID) && curStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING) && 0 == objUpdateRec.getErrCode()){
+        	showOTAInstructionActivity();
+			BeseyeCamSWVersionMgr.getInstance().unregisterOnCamUpdateStatusChangedListener(this);
+		}
+	}
+
+	@Override
+	public void onCamUpdateProgress(String strVcamId, int iPercetage) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void onCamUpdateVerChkStatusChanged(String strVcamId, CAM_UPDATE_VER_CHECK_STATUS curStatus, CAM_UPDATE_VER_CHECK_STATUS prevStatus, CamSwUpdateRecord objUpdateRec){}
+	
 }

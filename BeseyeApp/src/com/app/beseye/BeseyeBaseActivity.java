@@ -674,6 +674,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_PIN_AUTH_REQUEST		= DIALOG_ID_WIFI_BASE+27; 
 	static public final int DIALOG_ID_RESET_HUMAN_DETECT	= DIALOG_ID_WIFI_BASE+28; 
 	static public final int DIALOG_ID_OTA_FORCE_UPDATE		= DIALOG_ID_WIFI_BASE+29; 
+	static public final int DIALOG_ID_OTA_WS_DISCONN		= DIALOG_ID_WIFI_BASE+30; 
+
 	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
@@ -745,6 +747,18 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				@Override
 				public void onBtnClick() {
 					removeMyDialog(DIALOG_ID_OTA_FORCE_UPDATE);	
+				}});
+			dialog = d;
+			break;
+		}
+		case DIALOG_ID_OTA_WS_DISCONN:{
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			d.setBodyText(getString(R.string.desc_dialog_cam_offline_during_ota));
+			d.setTitleText(getString(R.string.dialog_title_warning));
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+				@Override
+				public void onBtnClick() {
+					removeMyDialog(DIALOG_ID_OTA_WS_DISCONN);	
 				}});
 			dialog = d;
 			break;
