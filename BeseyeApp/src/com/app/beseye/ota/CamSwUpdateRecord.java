@@ -13,7 +13,7 @@ import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_VER_CHECK_STATUS;
 public class CamSwUpdateRecord{
 	static private final int MAX_RETRY_CNT_FOR_POOR_NETWORK = 1;
 	static final private long TIME_TO_SHOW_OTA_FINISH = 60*1000; // 1 min
-	static final private long TIME_OF_CAM_NO_RESPONSE = 1*60*1000; //25 mins
+	static final private long TIME_OF_CAM_NO_RESPONSE = 25*60*1000; //25 mins
 
 	String mStrVCamId;
 	private String mStrCamName;
@@ -95,7 +95,7 @@ public class CamSwUpdateRecord{
 		return mePrevUpdateStatus;
 	}
 	
-	public boolean changeUpdateStatus(CAM_UPDATE_STATUS newUpdateStatus){
+	public boolean changeUpdateStatus(CAM_UPDATE_STATUS newUpdateStatus, boolean bNotBroadcast){
 		boolean bRet = !newUpdateStatus.equals(meUpdateStatus);
 		if(bRet){
 			mePrevUpdateStatus = meUpdateStatus;

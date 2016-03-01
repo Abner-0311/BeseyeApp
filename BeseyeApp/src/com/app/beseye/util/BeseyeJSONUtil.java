@@ -1006,6 +1006,19 @@ public class BeseyeJSONUtil {
 		}
 	}
 	
+	static public void setVCamWsStatus(JSONObject objCam, boolean bOn){
+		//Log.e(TAG, "setVCamConnStatus(), status:"+status);
+		if(null != objCam){
+			JSONObject dataObj = getJSONObject(objCam, ACC_DATA);
+			if(null != dataObj){
+				JSONObject statusLstObj = getJSONObject(dataObj, CAM_STATUS_LST);
+				setJSONInt((null != statusLstObj)?statusLstObj:dataObj, CAM_WS_STATUS, bOn?1:0);
+			}else{
+				Log.e(TAG, "setVCamWsStatus(), can't find dataObj");
+			}
+		}
+	}
+	
 	static public boolean isCamPowerUnknown(JSONObject objCam){
 		return (BeseyeJSONUtil.getVCamConnStatus(objCam) == BeseyeJSONUtil.CAM_CONN_STATUS.CAM_INIT);
 	}

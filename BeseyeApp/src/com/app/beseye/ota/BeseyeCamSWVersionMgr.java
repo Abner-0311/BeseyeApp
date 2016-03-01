@@ -350,7 +350,7 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
     			if(null != camRec.mGetCamUpdateStatusTask){
     				camRec.mGetCamUpdateStatusTask.cancel(true);
     			}
-				camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_REQUEST);
+				camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_REQUEST, false);
     			camRec.resetErrorInfo();
     			camRec.mUpdateCamSWTask = new BeseyeCamBEHttpTask.UpdateCamSWTask(this);
     			camRec.mUpdateCamSWTask.setCusObj(camRec);
@@ -541,6 +541,7 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
     
     synchronized public void checkCamOTAVer(CamSwUpdateRecord camRec, boolean bForceCheck){		
 		if(null != camRec ){
+			//If update is finished
 			if(camRec.isOTATriggerredByThisDev() && camRec.getUpdateStatus().equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_FINISH) && camRec.getBeginUpdateTs() < camRec.getLastCamReporteTs()){
 				camRec.resetCamOTAInfo();
 			}
@@ -551,7 +552,12 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 					checkCamOTAVersionTask.setDialogId(-1);
 					checkCamOTAVersionTask.setCusObj(camRec);
 					executeAsyncTask(checkCamOTAVersionTask, camRec.getVCamId());
-					camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_VER_CHECKING);
+					
+					//if ota is ongoing, not change the update status
+					if(!(camRec.getUpdateStatus().equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING) && (System.currentTimeMillis() - camRec.getLastCamReporteTs() < 60 *1000))){
+						camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_VER_CHECKING, false);
+					}
+					
 				}
 			}else{
 				Log.e(TAG, "checkCamOTAVer(),isOTATriggerredByThisDev is true");
@@ -574,7 +580,7 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 				}
 				checkCamOTAVersionTask.setCusObj(camRec);
 				executeAsyncTask(checkCamOTAVersionTask, camRec.getVCamId());
-				camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_VER_CHECKING);
+				camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_VER_CHECKING, false);
 			}
 		}
 	}
@@ -676,7 +682,7 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 						camRec.miErrCode = 0;
 						camRec.mbUpdateTriggerred = true;
 						camRec.mlBeginUpdateTs = System.currentTimeMillis();
-						camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING);
+						camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING, false);
 						
 						checkCamUpdateStatus(camRec, false);
 					}
@@ -685,12 +691,13 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 						if(DEBUG)
 							Log.i(TAG, "onPostExecute(), strVcamId["+strVcamId+"] is updating");
 						if(null != camRec){
-							camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING);
+							camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING, false);
+							
 							checkCamUpdateStatus(camRec, false);
 						}
 					}else{
 						camRec.miErrCode = iRetCode;
-						camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_ERR);
+						camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_ERR, false);
 					}
 					
 					if(iRetCode != BeseyeError.E_OTA_SW_ALRADY_LATEST &&
@@ -739,25 +746,34 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 	
 						if(-1 ==  iFinalStatus){//updating
 							//For demo/private cam handling
+							Log.i(TAG, "updateCamUpdateProgress(), camRec:"+camRec);
+
 							if(camRec.meUpdateStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_INIT) || 	
 							  (camRec.meUpdateStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_VER_CHECKING)/* && camRec.mlVerCheckTs < camRec.mlLastCamReporteTs*/)){
 								camRec.setCamOnlineAfterOTATs(-1);
-								camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING);
+								camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING, false);
 							}
+							
 							camRec.miErrCode = 0;
 							camRec.miUpdatePercentage = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_PROGRESS, 0);
+							
 							broadcastOnCamUpdateProgressChanged(strVcamId, camRec.miUpdatePercentage);
-							this.checkCamUpdateStatus(camRec, false);
+							
+							BeseyeUtils.postRunnable(new Runnable(){
+								@Override
+								public void run() {
+									checkCamUpdateStatus(camRec, false);
+								}}, 0);
 						}else{
 							if(0 == iFinalStatus || 1 == iFinalStatus){//Update Done
 								if(camRec.mlVerCheckTs < camRec.mlLastCamReportTs){
 									camRec.miErrCode = 0;
 									camRec.miUpdatePercentage = 100;//BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_PROGRESS, 0);
-									camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_FINISH);
+									camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_FINISH, false);
 								}
 							}else{//Update Failed							
 								camRec.mlLastOTAErrorTs = camRec.mlLastCamReportTs;
-								camRec.miErrCode = BeseyeError.E_NOT_ENOUGH_SPACE;//0 == iDetailStatus?iFinalStatus:iDetailStatus;
+								camRec.miErrCode = (0 == iDetailStatus)?iFinalStatus:iDetailStatus;
 								
 								if(camRec.isRebootErrWhenOTAPrepare()){
 									Log.i(TAG, "updateCamUpdateProgress(), meet E_REBOOT_DURING_PREPARING_STAGE, reset");
@@ -766,10 +782,12 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 										@Override
 										public void run() {
 											camRec.resetErrorInfo();
+											//Do internal change and not broadcast
+											camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_INIT, true);
 											checkCamOTAVer(camRec, true);
 										}}, 0);
 								}else{
-									camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_ERR);							
+									camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_ERR, false);							
 								}
 							}
 						}
@@ -778,7 +796,7 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 					//If task timeout, keep tracking 
 					if(Integer.MIN_VALUE != iRetCode){
 						camRec.miErrCode = iRetCode;
-						camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_ERR);
+						camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_ERR, false);
 					}
 				}
 			}

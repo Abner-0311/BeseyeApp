@@ -491,11 +491,14 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					}
 				}
 			}
+			
+			BeseyeCamSWVersionMgr.getInstance().updateGroupCamList(meUpdateGroup, arrCamList);
+
+			
 			if(meUpdateGroup.equals(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL)){
 				BeseyeCamSWVersionMgr.getInstance().registerOnCamGroupUpdateVersionCheckListener(this);
 				BeseyeCamSWVersionMgr.getInstance().checkGroupOTAVer(meUpdateGroup);
 			}else{
-				BeseyeCamSWVersionMgr.getInstance().updateGroupCamList(meUpdateGroup, arrCamList);
 				BeseyeCamSWVersionMgr.getInstance().checkGroupCamUpdateStatus(meUpdateGroup, true);
 			}
 			
@@ -794,7 +797,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			    	CamSwUpdateRecord camRec = BeseyeCamSWVersionMgr.getInstance().findCamSwUpdateRecord(meUpdateGroup, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
 			    	if(null != camRec){
 						camRec.resetErrorInfo();
-						camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING);
+						camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING, false);
 						BeseyeCamSWVersionMgr.getInstance().performCamUpdate(camRec, false);//.checkCamOTAVer(camRec, true);
 						refreshList();
 			    	}else{
@@ -1069,10 +1072,14 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     	    			}
     	    		}else if(null != strCamUID){
     	    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, strCamUID);
+    	    			JSONObject camObj = BeseyeCamInfoSyncMgr.getInstance().getCamInfoByVCamId(strCamUID);
+    	    			if(null != camObj){
+    	    				BeseyeJSONUtil.setVCamWsStatus(camObj, true);
+    	    			}
     	    			CamSwUpdateRecord camRec = BeseyeCamSWVersionMgr.getInstance().findCamSwUpdateRecord(meUpdateGroup, strCamUID);
     			    	if(null != camRec){
-    						camRec.resetErrorInfo();
-    						BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(camRec, false);
+    						//camRec.resetErrorInfo();
+    						BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(camRec, true);
     			    	}
     	    		}
     	    	}
@@ -1105,6 +1112,10 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
     	    			
     	    		}else if(null != strCamUID){
     	    			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(/*DIALOG_ID_SYNCING*/-1), true, strCamUID);
+    	    			JSONObject camObj = BeseyeCamInfoSyncMgr.getInstance().getCamInfoByVCamId(strCamUID);
+    	    			if(null != camObj){
+    	    				BeseyeJSONUtil.setVCamWsStatus(camObj, false);
+    	    			}
     	    		}
     	    	}
     			return true;
@@ -1124,10 +1135,13 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
         			try {
         				JSONObject camObj = arrCamList.getJSONObject(i);
         				if(strVcamId.equals(BeseyeJSONUtil.getJSONString(camObj, BeseyeJSONUtil.ACC_ID))){
-        					CamSwUpdateRecord camRec = BeseyeCamSWVersionMgr.getInstance().findCamSwUpdateRecord(meUpdateGroup, strVcamId);
-        			    	if(null != camRec){
-        			    		camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING);
-        			    	}
+        					if(mActivityResume){
+        						CamSwUpdateRecord camRec = BeseyeCamSWVersionMgr.getInstance().findCamSwUpdateRecord(meUpdateGroup, strVcamId);
+            			    	if(null != camRec){
+            			    		camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING, false);
+            			    		refreshList();
+            			    	}
+            	    		}
         					break;
         				}
         			}catch (JSONException e) {

@@ -1402,14 +1402,17 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 								setCursorVisiblity(View.GONE);
 								if(isCamPowerOff()){
 									Toast.makeText(getApplicationContext(), getString(R.string.notify_cam_off_detect_player), Toast.LENGTH_SHORT).show();
-								}else{
-									if(!mbIsPrivateCamMode && !mbIsDemoCam){
-										BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
-										BeseyeCamSWVersionMgr.getInstance().checkCamUpdateStatus(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID);
-									}
 								}
 							}else if(!bIsCamOn && isCamPowerOn()){
 								mlRetryConnectBeginTs = System.currentTimeMillis();
+							}
+							
+							//check OTA status if not get OTA start notification 
+							if(!bIsCamDisconnected && isCamPowerDisconnected()){
+								if(!mbIsPrivateCamMode && !mbIsDemoCam){
+									BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
+									BeseyeCamSWVersionMgr.getInstance().checkCamUpdateStatus(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID);
+								}
 							}
 						}
 						
@@ -3480,6 +3483,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 
 	@Override
 	public void onCamUpdateStatusChanged(String strVcamId, CAM_UPDATE_STATUS curStatus, CAM_UPDATE_STATUS prevStatus, CamSwUpdateRecord objUpdateRec) {
+		if(DEBUG)
+    		Log.i(TAG, getClass().getSimpleName()+"::onCamUpdateStatusChanged(),  objUpdateRec = "+objUpdateRec);
 		if(strVcamId.equals(this.mStrVCamID) && curStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING) && 0 == objUpdateRec.getErrCode()){
         	showOTAInstructionActivity();
 			BeseyeCamSWVersionMgr.getInstance().unregisterOnCamUpdateStatusChangedListener(this);
@@ -3488,7 +3493,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 
 	@Override
 	public void onCamUpdateProgress(String strVcamId, int iPercetage) {
-		// TODO Auto-generated method stub
 		
 	}
 	
