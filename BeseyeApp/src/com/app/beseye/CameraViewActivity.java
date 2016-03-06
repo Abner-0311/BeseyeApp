@@ -1409,7 +1409,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 							
 							//check OTA status if not get OTA start notification 
 							if(!bIsCamDisconnected && isCamPowerDisconnected()){
-								if(!mbIsPrivateCamMode && !mbIsDemoCam){
+								if(!mbIsPrivateCamMode && !mbIsDemoCam && !SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
 									BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
 									BeseyeCamSWVersionMgr.getInstance().checkCamUpdateStatus(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID);
 								}

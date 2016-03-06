@@ -267,9 +267,9 @@
   <string name="signup_sound_reminder_description">請注意，設定攝影機的過程中您的行動裝置將會發出聲響。</string>
   <!-- Hint Message for TOS and privacy policy-->
   <string name="signup_createAccount_description_title">繼續下一步，我已同意Beseye的</string>
-  <string name="signup_createAccount_description_terms">服務條款</string>
+  <string name="signup_createAccount_description_terms">使用條款</string>
   <string name="signup_createAccount_description_and">與</string>
-  <string name="signup_createAccount_description_policy">隱私保護政策</string>
+  <string name="signup_createAccount_description_policy">隱私權政策</string>
   <!-- Hint Message in pairing failed page-->
   <string name="signup_try_again_description_1">請將攝影機插上電源，並將行動裝置拿至距離攝影機10 公分左右，並檢查無線網路密碼是正確的。</string>
   <string name="signup_try_again_description_2">還是有問題？請參閱我們的</string>
@@ -392,7 +392,7 @@
   <string name="tz_euro_germany">德國</string>
   <string name="tz_euro_belgium">比利時</string>
   <string name="tz_euro_hungary">匈牙利</string>
-  <string name="tz_euro_spain">西班牙</string>
+  <string name="tz_euro_spain">西班牙 - 本土</string>
   <string name="tz_euro_austria">奧地利</string>
   <string name="tz_euro_italy">義大利</string>
   <string name="cam_name_update_success">成功更新攝影機名稱</string>
@@ -570,7 +570,7 @@
   <!--Button to show customer service-->
   <!-- TODO: string name="btn_contact_cs" -->
   <!--Message that shows the pairing cam has been attached-->
-  <!-- TODO: string name="cam_attach_under_other_account_error" -->
+  <string name="cam_attach_under_other_account_error">此攝影機已被其他帳號配對，請聯絡客服協助處理。</string>
   <!--more timezone begin-->
   <string name="tz_us_aleutian_islands">美國 - 阿留申</string>
   <string name="tz_canada_british_columbia">加拿大 - 不列顛哥倫比亞省</string>
@@ -654,7 +654,35 @@
   <!--Fail to reset human detection-->
   <string name="enhance_human_detect_train_fail_to_reset">重置失敗，請稍候再試。</string>
   <string name="notify_human_detect">%s 偵測到一個人員活動，去看看是誰。</string>
+  <string name="title_cam_update_hint">更新提示</string>
+  <string name="desc_cam_new_ver_avaiable">攝影機軟體新版本釋出，馬上升級更新！</string>
+  <string name="desc_cam_update_instruction">您可以於下頁按下[立即全部更新]將您目前上線的攝影機一次更新完成。也請別擔心離線的攝影機，待上線後您還可以個別更新，更新過程時間短且完全免費。</string>
+  <string name="desc_cam_update_warning">在更新攝影機的過程中，請絕對不要移除電源或中斷網路連線等讓更新動作中斷，以避免攝影機無法正常開啟。</string>
+  <string name="action_cam_update_all">立即全部更新</string>
+  <string name="desc_cam_update_short_intro">更新過程時間很短並且完全免費。</string>
+  <string name="action_contact_us">聯絡我們</string>
+  <string name="desc_faq_intro">如果您的攝影機無法順利更新，請填妥您的資料並送出，Beseye客服團隊會盡快回覆您的訊息。</string>
+  <string name="desc_cam_ota_available_update_by_other">攝影機軟體新版釋出，現在更新中！</string>
+  <string name="desc_user_name">姓名</string>
+  <string name="desc_user_email">E-mail</string>
+  <string name="desc_user_phone">連絡電話</string>
+  <string name="desc_user_question">問題是…</string>
+  <string name="desc_cam_update_keep_cam_on_during_ota">更新中，請勿切斷電源與中斷連線</string>
+  <string name="desc_cam_update_complete">更新完成。攝影機重新開機中，請稍候。</string>
+  <string name="desc_dialog_cam_force_update">為了讓您使用最完整的攝影機功能，請進行攝影機軟體更新</string>
+  <string name="desc_cam_update_by_other">您的相機 \"%s\" 正在更新中，請稍後數分鐘，按下確定後，您可以瀏覽目前更新的進度。</string>
+  <string name="desc_cam_update_failed">更新失敗！</string>
+  <string name="action_customer_support">客服支援</string>
+  <string name="action_submit">送出</string>
+  <string name="desc_cam_update_keep_cam_on_before_ota">需更新，請勿切斷電源與中斷連線</string>
+  <string name="action_cam_update">點擊更新</string>
+  <string name="desc_dialog_cam_offline_during_ota">偵測到您的攝影機為離線狀態，請重新連線以繼續更新流程</string>
+  <string name="desc_cam_update_finish">\"%@\" 已更新完成</string>
+  <string name="title_faq_page">FAQ</string>
+  <string name="user_account">帳戶：</string>
+  <string name="ota_faq_subject">若無法順利更新，請嘗試以下解決方法：</string>
+  <string name="ota_faq_answer">1.請拔掉電源插頭，再重新插電。\n2.請選擇強度強、速度快的Wi-Fi，以確保Beseye攝影機使用的網路連線品質流暢。</string>
+  <string name="action_update_again">繼續更新</string>
+  <string name="desc_cam_update_failed_poor_network">更新中斷。網路速度太慢，請檢查攝影機網路環境。</string>
   
-  <string name="ota_faq_subject">若無法順利更新，請嘗試以下解決方法：</string>  
-  <string name="ota_faq_answer">1. 請拔掉電源插頭，再重新插電。\n2. 請選擇強度強、速度快的Wi-Fi，以確保Beseye攝影機使用的網路連線品質流暢。</string> 
 </resources>

@@ -267,7 +267,7 @@
   <string name="signup_sound_reminder_description">请注意，设置摄像头的过程中您的行动装置将会发出声响。</string>
   <!-- Hint Message for TOS and privacy policy-->
   <string name="signup_createAccount_description_title">继续下一步，我已同意Beseye的</string>
-  <string name="signup_createAccount_description_terms">服务条款</string>
+  <string name="signup_createAccount_description_terms">使用条款</string>
   <string name="signup_createAccount_description_and">与</string>
   <string name="signup_createAccount_description_policy">隐私保护政策</string>
   <!-- Hint Message in pairing failed page-->
@@ -392,7 +392,7 @@
   <string name="tz_euro_germany">德国</string>
   <string name="tz_euro_belgium">比利时</string>
   <string name="tz_euro_hungary">匈牙利</string>
-  <string name="tz_euro_spain">西班牙</string>
+  <string name="tz_euro_spain">西班牙 - 本土</string>
   <string name="tz_euro_austria">奥地利</string>
   <string name="tz_euro_italy">意大利</string>
   <string name="cam_name_update_success">成功更新摄像头名称</string>
@@ -570,7 +570,7 @@
   <!--Button to show customer service-->
   <!-- TODO: string name="btn_contact_cs" -->
   <!--Message that shows the pairing cam has been attached-->
-  <!-- TODO: string name="cam_attach_under_other_account_error" -->
+  <string name="cam_attach_under_other_account_error">此摄像头已被其他帐号配对，请联络客服协助处理。</string>
   <!--more timezone begin-->
   <string name="tz_us_aleutian_islands">美国 - 阿留申</string>
   <string name="tz_canada_british_columbia">加拿大 - 不列颠哥伦比亚省</string>
@@ -654,4 +654,33 @@
   <!--Fail to reset human detection-->
   <string name="enhance_human_detect_train_fail_to_reset">重置失败，请稍候再试。</string>
   <string name="notify_human_detect">%s 侦测到一个人员活动，去看看是谁。</string>
+  <string name="title_cam_update_hint">更新提示</string>
+  <string name="desc_cam_new_ver_avaiable">摄影机软体新版本释出，马上升级更新！</string>
+  <string name="desc_cam_update_instruction">您可以于下页按下[立即全部更新]将您目前上线的摄影机一次更新完成。也请别担心离线的摄影机，待上线后您还是可以个别更新，更新过程时间短且完全免费。</string>
+  <string name="desc_cam_update_warning">在更新摄影机的过程中，请绝对不要移除电源或中断网路连线等让更新动作中断，以避免摄影机无法正常开启。</string>
+  <string name="action_cam_update_all">立即全部更新</string>
+  <string name="desc_cam_update_short_intro">更新过程时间很短并且完全免费</string>
+  <string name="action_contact_us">联络我们</string>
+  <string name="desc_faq_intro">如果您的摄影机无法顺利更新，请填妥您的资料并送出，Beseye客服团队会尽快回覆您的讯息。</string>
+  <string name="desc_cam_ota_available_update_by_other">摄影机软体新版释出，现在更新中！</string>
+  <string name="desc_user_name">姓名</string>
+  <string name="desc_user_email">E-mail</string>
+  <string name="desc_user_phone">连络电话</string>
+  <string name="desc_user_question">问题是…</string>
+  <string name="desc_cam_update_keep_cam_on_during_ota">更新中，请勿切断电源与中断连线。</string>
+  <string name="desc_cam_update_complete">更新完成。摄影机重新开机中，请稍候。</string>
+  <string name="desc_dialog_cam_force_update">为了让您使用最完整的摄影机功能，请进行摄影机​​软体更新</string>
+  <string name="desc_cam_update_by_other">您的相机 \"%s\" 正在更新中，请稍后数分钟，按下确定后，您可以浏览目前更新的进度。</string>
+  <string name="desc_cam_update_failed">更新失败！</string>
+  <string name="action_customer_support">客服支援</string>
+  <string name="action_submit">送出</string>
+  <string name="desc_cam_update_keep_cam_on_before_ota">需更新，请勿切断电源与中断连线。</string>
+  <string name="action_cam_update">点击更新</string>
+  <string name="desc_dialog_cam_offline_during_ota">侦测到您的摄影机为离线状态，请重新连线以继续更新流程</string>
+  <string name="desc_cam_update_finish">\"%@\" 已更新完成</string>
+  <string name="title_faq_page">FAQ</string>
+  <string name="user_account">帐户：</string>
+  <string name="ota_faq_subject">若无法顺利更新，请尝试以下解决方法：</string>
+  <string name="ota_faq_answer">1.请拔掉电源插头，再重新插电。 \n2.请选择强度强、速度快的Wi-Fi，以确保Beseye摄影机使用的网路连线品质流畅。</string>
+  <string name="action_update_again">继续更新</string>
 </resources>

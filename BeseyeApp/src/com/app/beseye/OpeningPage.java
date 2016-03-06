@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.app.beseye.httptask.BeseyeAccountTask;
-import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr;
@@ -75,10 +74,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
-		if(getIntent().getBooleanExtra(ACTION_BRING_FRONT, false) && 0 < BeseyeBaseActivity.getActiveActivityCount()){
-			if(DEBUG)
-				Log.i(TAG, "OpeningPage::onCreate(), call finish for ACTION_BRING_FRONT");
-			finish();
+		if(handleBringFrontAction(getIntent())){
 			return;
 		}
 		
@@ -106,18 +102,35 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 				finish();
 				return;
 			}
-
-			if(intent.getBooleanExtra(ACTION_BRING_FRONT, false) && 0 < BeseyeBaseActivity.getActiveActivityCount()){
-				if(DEBUG)
-					Log.i(TAG, "OpeningPage::onNewIntent(), ACTION_BRING_FRONT ");
-				finish();
+			
+			if(handleBringFrontAction(intent)){
 				return;
 			}
 		}
 		
 		launchActivityByIntent(intent);
 	}
-
+	
+	private boolean handleBringFrontAction(Intent intent){
+		boolean bRet = false;
+		if(intent.getBooleanExtra(ACTION_BRING_FRONT, false)){
+			if(DEBUG)
+				Log.i(TAG, "OpeningPage::handleBringFrontAction(), ACTION_BRING_FRONT call finish");
+			bRet = true;
+			if(0 == BeseyeBaseActivity.getActiveActivityCount()){
+				if(DEBUG)
+					Log.i(TAG, "OpeningPage::handleBringFrontAction(), relaunch");
+				intentRelaunch = new Intent();
+				intentRelaunch.setClassName(this, OpeningPage.class.getName());
+				intentRelaunch.setAction("android.intent.action.MAIN"); 
+				intentRelaunch.addCategory("android.intent.category.LAUNCHER"); 
+				intentRelaunch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP/* | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET*/);
+			}
+			finish();
+		}
+		return bRet;
+	}
+	
 	@Override
 	protected void onResume() {
 		if(DEBUG)
@@ -168,47 +181,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 	}
 
 	private BeseyeAccountTask.GetUserInfoTask mGetUserInfoTask;
-	
-	private void launchActivityByIntent(Intent intent){
-//		if(SessionMgr.getInstance().isTokenValid()){
-//			File p2pFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Download/bes_p2p");
-//			String strP2P = null;
-//			String strName = null;
-//			if(null != p2pFile && p2pFile.exists()){
-//				try {
-//					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(p2pFile)));
-//					try {
-//						strP2P = (null != reader)?reader.readLine():null;
-//						strName = (null != reader)?reader.readLine():null;
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-//				} catch (FileNotFoundException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//			
-//			Log.i(TAG, "OpeningPage::launchActivityByIntent(), strP2P :"+strP2P+", p2pFile:"+p2pFile.getAbsolutePath());
-//			
-//			if(null != strP2P && 0 < strP2P.length()){
-//				COMPUTEX_P2P = true;
-//				Intent intentLanuch = new Intent();
-//				intentLanuch.setClassName(this, CameraViewActivity.class.getName());
-//				JSONObject mCam_obj = new JSONObject();
-//				//BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_ID, mStrVCamID);
-//		        BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, strName);
-//		        intentLanuch.putExtra(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-//				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM, strP2P);
-//				intentLanuch.putExtra(CameraViewActivity.KEY_P2P_STREAM_NAME, strName);
-//				startActivity(intentLanuch);
-//				return;
-//			}else{
-//				COMPUTEX_P2P = false;
-//			}
-//		}
-//		
-//		BeseyeApplication.checkPairingMode();
-		
+	private Intent mintentLanuchRunnable;
+	private void launchActivityByIntent(Intent intent){		
 		Intent intentLanuch = null;
 		//Normal launch case
 		if(null == (intentLanuch = intent.getParcelableExtra(KEY_DELEGATE_INTENT))){
@@ -315,8 +289,8 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 		
 		//intentLanuch.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		if(sbFirstLaunch || (!SessionMgr.getInstance().getIsCertificated() && !intent.getBooleanExtra(KEY_IGNORE_ACTIVATED_FLAG, false))){
-			final Intent intentLanuchRunnable =intentLanuch;
-			if(sbFirstLaunch && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated()){
+			mintentLanuchRunnable =intentLanuch;
+			if(sbFirstLaunch && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsCertificated() && !SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
 				BeseyeCamSWVersionMgr.getInstance().registerOnCamGroupUpdateVersionCheckListener(this);
 				BeseyeCamSWVersionMgr.getInstance().performCamGroupOTAVerCheck(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
 			}else{
@@ -324,10 +298,10 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 					@Override
 					public void run() {
 						if(!SessionMgr.getInstance().isTokenValid() && !SessionMgr.getInstance().getIsCertificated()){
-							intentLanuchRunnable.setClassName(OpeningPage.this, BeseyeEntryActivity.class.getName());
-							startActivity(intentLanuchRunnable);
-							finish();
+							mintentLanuchRunnable.setClassName(OpeningPage.this, BeseyeEntryActivity.class.getName());
 						}
+						startActivity(mintentLanuchRunnable);
+						finish();
 					}
 				}, sbFirstLaunch?TIME_TO_CLOSE_OPENING_PAGE:0);
 			}
@@ -369,9 +343,11 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 						if(null != objUser){
 							SessionMgr.getInstance().setIsCertificated(BeseyeJSONUtil.getJSONBoolean(objUser, BeseyeJSONUtil.ACC_ACTIVATED));
 							if(SessionMgr.getInstance().getIsCertificated()){
-								//intentLanuch.setClassName(this, FIRST_PAGE);
-								BeseyeCamSWVersionMgr.getInstance().performCamGroupOTAVerCheck(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
-
+								if(!SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
+									//intentLanuch.setClassName(this, FIRST_PAGE);
+									BeseyeCamSWVersionMgr.getInstance().performCamGroupOTAVerCheck(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
+									return;
+								}
 							}else{
 								SessionMgr.getInstance().cleanSession();
 							}
@@ -380,10 +356,11 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 				}else{
 					SessionMgr.getInstance().cleanSession();
 				}
-//				startActivity(intentLanuch);
-//				if(DEBUG)
-//					Log.i(TAG, "OpeningPage::onPostExecute(), call finish");
-//				finish();
+				
+				startActivity(intentLanuch);
+				if(DEBUG)
+					Log.i(TAG, "OpeningPage::onPostExecute(), call finish");
+				finish();
 			}
 		}
 		
@@ -405,6 +382,7 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 		Intent intentLanuch = new Intent();
 		intentLanuch.setClassName(this, BeseyeEntryActivity.class.getName());
 		startActivity(intentLanuch);
+		
 		if(DEBUG)
 			Log.i(TAG, "OpeningPage::onSessionInvalid(), call finish");
 		finish();
@@ -421,16 +399,20 @@ public class OpeningPage extends Activity implements OnHttpTaskCallback,
 	public void onCamUpdateVersionCheckAllCallback(
 			CAM_GROUP_VER_CHK_RET chkRet, CAM_UPDATE_GROUP chkGroup,
 			CAM_UPDATE_ERROR chkErr, List<String> lstVcamIds) {
-		Intent intentLanuch = new Intent();
+		Intent intentLanuch = (null != mintentLanuchRunnable)?mintentLanuchRunnable:new Intent();
 		if(chkRet.equals(CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_OUT_OF_UPDATE)){
 			intentLanuch.setClassName(this, CamOTAInstructionActivity.class.getName());
 			intentLanuch.putExtra(CamOTAInstructionActivity.CAM_OTA_TYPE, CamOTAInstructionActivity.CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ALL.ordinal());
 		}else{
-			intentLanuch.setClassName(this, FIRST_PAGE);
+			if((null == mintentLanuchRunnable)){
+				intentLanuch.setClassName(this, FIRST_PAGE);
+			}
 		}
 		
 		startActivity(intentLanuch);
 		finish();
+		if(DEBUG)
+			Log.i(TAG, "OpeningPage::onCamUpdateVersionCheckAllCallback(), call finish");
 		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamGroupUpdateVersionCheckListener(this);
 	}
 }

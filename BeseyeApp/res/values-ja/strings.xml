@@ -392,7 +392,7 @@
   <string name="tz_euro_germany">ドイツ</string>
   <string name="tz_euro_belgium">ベルギー</string>
   <string name="tz_euro_hungary">ハンガリー</string>
-  <string name="tz_euro_spain">スペイン</string>
+  <string name="tz_euro_spain">スペイン － 本土</string>
   <string name="tz_euro_austria">オーストリア</string>
   <string name="tz_euro_italy">イタリア</string>
   <string name="cam_name_update_success">カメラの名前を更新しました</string>
@@ -564,13 +564,13 @@
   <!--Title of event list page-->
   <string name="title_event_list">イベント一覧</string>
   <!--Warning msg when login with inactivated account-->
-  <!-- TODO: string name="msg_account_not_activated" -->
+  <string name="msg_account_not_activated">このアカウントは登録手続きが終わっていないため、再度登録手続きを完了してください</string>
   <!--Title of page that shows the pairing cam has been attached-->
   <!-- TODO: string name="title_cam_attached_already" -->
   <!--Button to show customer service-->
   <!-- TODO: string name="btn_contact_cs" -->
   <!--Message that shows the pairing cam has been attached-->
-  <!-- TODO: string name="cam_attach_under_other_account_error" -->
+  <string name="cam_attach_under_other_account_error">このカメラは他のアカウントとペアリングされているため、カスタマーセンターへお問い合わせください。</string>
   <!--more timezone begin-->
   <string name="tz_us_aleutian_islands">アメリカ － アリューシャン列島</string>
   <string name="tz_canada_british_columbia">カナダ － ブリティッシュコロンビア州</string>
@@ -654,4 +654,34 @@
   <!--Fail to reset human detection-->
   <string name="enhance_human_detect_train_fail_to_reset">リセットに失敗しま した。後ほどお試し ください。</string>
   <string name="notify_human_detect">%s 人の動きを検出しました。確認してください。</string>
+  <string name="title_cam_update_hint">カメラアップデート</string>
+  <string name="desc_cam_new_ver_avaiable">最新版のカメラ・ソフトウェアがあります。今すぐ更新！</string>
+  <string name="desc_cam_update_instruction">次のページで「今すぐすべてを更新」ボタンを押してオンラインのカメラをすべてアップデートできます。オフラインのカメラについても心配しないでください。ネットに繋いだらまた更新が再開されます。更新の速度が速い。しかも完全無料。</string>
+  <string name="desc_cam_update_warning">カメラを更新する間に、電源プラグやネット通信を中断すると、アップデートが中止され、カメラが正しく起動できなくなります。</string>
+  <string name="action_cam_update_all">今すぐすべてを更新</string>
+  <string name="desc_cam_update_short_intro">更新の速度が速い。しかも完全無料。</string>
+  <string name="action_contact_us">お問い合わせ</string>
+  <string name="desc_faq_intro">お使いのカメラが更新できない場合、お客様の情報を入力した上に送信してください。Beseyeの顧客サービススタッフは最も速い時間に対応します。</string>
+  <string name="desc_cam_ota_available_update_by_other">最新版のカメラ・ソフトウェアがあります。ただいまアップデート中。</string>
+  <string name="desc_user_name">お名前</string>
+  <string name="desc_user_email">E-mail</string>
+  <string name="desc_user_phone">電話番号</string>
+  <string name="desc_user_question">問題点は…</string>
+  <string name="desc_cam_update_keep_cam_on_during_ota">アップデート中。電源やネット通信を中断しないでください。</string>
+  <!-- TODO: string name="desc_cam_update_complete" -->
+  <string name="desc_dialog_cam_force_update">ビデオカメラ機能をフル使用するため、アップデートを完了させてください。</string>
+  <string name="desc_cam_update_by_other">カメラ「%@」が更新中のため、数分間お待ち ください。確定を押すと、現在の更新状況を御覧いただけます。</string>
+  <string name="desc_cam_update_failed">アップデート失敗！</string>
+  <string name="action_customer_support">顧客サービス</string>
+  <string name="action_submit">送信</string>
+  <string name="desc_cam_update_keep_cam_on_before_ota">更新する必要があります。電源やネット通信を中断しないでください。</string>
+  <string name="action_cam_update">クリックして更新</string>
+  <string name="desc_dialog_cam_offline_during_ota">カメラはオフラインです、スマホとカメラのネットワーク接続を確認し、再試行してください。</string>
+  <string name="desc_cam_update_finish"> \"%@\" アップデート完了</string>
+  <string name="title_faq_page">FAQ</string>
+  <string name="user_account">アカウント</string>
+  <string name="ota_faq_subject">更新できない場合、下記の解決方法を試してください：</string>
+  <string name="ota_faq_answer">1.電源プラグを抜いてからもう一度挿入してください。
+\n2.保Beseyeカメラが使用するネット回線のクオリティを確保するため、信号強度が強く、通信速度の速いWi-Fiをご使用ください。</string>
+  <string name="action_update_again">更新し続けます</string>
 </resources>

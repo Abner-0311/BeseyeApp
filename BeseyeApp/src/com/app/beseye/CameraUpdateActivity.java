@@ -88,7 +88,7 @@ public class CameraUpdateActivity extends BeseyeBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_update:{
-				triggerCamUpdate(mArrCamList, false);
+				//triggerCamUpdate(mArrCamList, false);
 				//showMyDialog(DIALOG_ID_CAM_UPDATE);
 				//monitorAsyncTask(new BeseyeCamBEHttpTask.UpdateCamSWTask(this), true, "9ee1316073f54242b6c4cfe6aa2a0eda");
 				//showMyDialog(DIALOG_ID_CAM_UPDATE);

@@ -37,7 +37,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 //	private EditText mTxtPeriod;
 	private Button mBtnApply, mBtnSendLog;
 	private Spinner mSpServerType;//, mSpDetachHWID;
-	private CheckBox mCbCamSWUpdateSuspended, mCbCamShowNotificationToast, mCbShowHumanDetectAlways, mCbDetachHWIDs[];
+	private CheckBox mCbCamSWUpdateSuspended, mCbCamShowNotificationToast, mCbShowHumanDetectAlways, mCbEnableBeseyeAppVerChk, mCbDetachHWIDs[];
 	private EditText mEtDefEmail = null, mEtStreamFile = null;
 	private LinearLayout mVgHWIDs;
 	private static String[] hwids_dev = new String[]{"00409O92TX91", "00409T95HZSR"};//new String[]{"0050C101A639", "00409CR26Q1M"};//new String[]{"00409NDO3R15", "00409XONGY7H"}
@@ -77,6 +77,11 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 		mCbShowHumanDetectAlways = (CheckBox)findViewById(R.id.ck_enable_human_detect_intro_show_always);
 		if(null != mCbShowHumanDetectAlways){
 			mCbShowHumanDetectAlways.setChecked(SessionMgr.getInstance().getHumanDetectIntroShowAlways());
+		}
+		
+		mCbEnableBeseyeAppVerChk = (CheckBox)findViewById(R.id.ck_enable_beseye_app_ver_check);
+		if(null != mCbEnableBeseyeAppVerChk){
+			mCbEnableBeseyeAppVerChk.setChecked(SessionMgr.getInstance().getEnableBeseyeAppVerControl());
 		}
 		
 		mSpServerType = (Spinner)findViewById(R.id.sp_server_type);
@@ -269,6 +274,8 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			SessionMgr.getInstance().setIsCamSWUpdateSuspended(mCbCamSWUpdateSuspended.isChecked());
 			SessionMgr.getInstance().setIsShowNotificationFromToast(mCbCamShowNotificationToast.isChecked());
 			SessionMgr.getInstance().setHumanDetectIntroShowAlways(mCbShowHumanDetectAlways.isChecked());
+			SessionMgr.getInstance().setEnableBeseyeAppVerControl(mCbEnableBeseyeAppVerChk.isChecked());
+
 			
 //			if(null != mSpDetachHWID){
 //				SessionMgr.getInstance().setDetachHWID(hwids[mSpDetachHWID.getSelectedItemPosition()]);
@@ -300,7 +307,7 @@ public class BeseyeComputexModeActivity extends BeseyeBaseActivity {
 			
 			//Toast.makeText(this, "Server mode is "+mode, Toast.LENGTH_LONG).show();
 			Toast.makeText(this, "Server mode is "+mode+"\nCam SW update is"+(SessionMgr.getInstance().getIsCamSWUpdateSuspended()?"":" not")+
-					" suspended.\nDetach HW ID:"+strHWIds+"\n Email:"+SessionMgr.getInstance().getSignupEmail()+"\n stream path:"+SessionMgr.getInstance().getDebugStreamPath(), Toast.LENGTH_LONG).show();
+					" suspended.\nDetach HW ID:"+strHWIds+"\n Enable beseye ver control:"+SessionMgr.getInstance().getEnableBeseyeAppVerControl()+"\n Email:"+SessionMgr.getInstance().getSignupEmail()+"\n stream path:"+SessionMgr.getInstance().getDebugStreamPath(), Toast.LENGTH_LONG).show();
 		}
 		
 //		if(mRbDemomode.isChecked() && mode.ordinal() <= SERVER_MODE.MODE_COMPUTEX.ordinal()){

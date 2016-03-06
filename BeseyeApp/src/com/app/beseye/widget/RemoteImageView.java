@@ -521,6 +521,9 @@ public class RemoteImageView extends ImageView {
 			boolean bSameFileForVCamid = false;
 			String cacheFileName = null;
 			try {
+				if(null != mStrVCamId)
+					vcamidDir = getDirByVCamid(mStrVCamId);
+
 				if(null == bitmap){
 //					if (fileExist(mLocal)) {						
 //						if(DEBUG){
@@ -537,7 +540,6 @@ public class RemoteImageView extends ImageView {
 							if(SHOW_THUMBNAIL_LOG)
 								Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
 							
-							vcamidDir = getDirByVCamid(mStrVCamId);
 							String strLastPhoto = findLastPhotoByVCamid(mStrVCamId);
 							if(SHOW_THUMBNAIL_LOG)
 								Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");

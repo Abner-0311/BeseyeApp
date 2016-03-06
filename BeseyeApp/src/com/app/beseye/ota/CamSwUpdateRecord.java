@@ -9,6 +9,7 @@ import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_ERROR;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_GROUP;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_STATUS;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_VER_CHECK_STATUS;
+import com.app.beseye.util.BeseyeConfig;
 
 public class CamSwUpdateRecord{
 	static private final int MAX_RETRY_CNT_FOR_POOR_NETWORK = 1;
@@ -26,6 +27,10 @@ public class CamSwUpdateRecord{
 	boolean mbUpdateTriggerred;
 	
 	int miErrCode;
+	
+	int miFinalErrCode;
+	int miDetailErrCode;
+
 	int miUpdatePercentage;
 	long mlVerCheckTs;
 	long mlBeginUpdateTs;
@@ -52,7 +57,7 @@ public class CamSwUpdateRecord{
 		this.meUpdateErrType = CAM_UPDATE_ERROR.CAM_UPDATE_ERROR_NONE;
 		this.meVerCheckStatus = CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_INIT;
 		this.mbUpdateTriggerred = false;
-		this.miErrCode = 0;
+		this.miErrCode = miFinalErrCode = miDetailErrCode =  0;
 		this.miUpdatePercentage = 0;
 		this.miRetryCntForPoorNetwork= 0;
 		this.mlVerCheckTs = this.mlBeginUpdateTs = this.mlLastCamReportTs = this.mlLastUserFeedbackTs = this.mlLastOTAErrorTs = mlCamOnlineAfterOTATs = -1;
@@ -170,6 +175,22 @@ public class CamSwUpdateRecord{
 		this.miErrCode = miErrCode;
 	}
 
+	public int getFinalErrCode() {
+		return miFinalErrCode;
+	}
+
+	public void setFinalErrCode(int miFinalErrCode) {
+		this.miFinalErrCode = miFinalErrCode;
+	}
+
+	public int getDetailErrCode() {
+		return miDetailErrCode;
+	}
+
+	public void setDetailErrCode(int miDetailErrCode) {
+		this.miDetailErrCode = miDetailErrCode;
+	}
+
 	public int getUpdatePercentage() {
 		return miUpdatePercentage;
 	}
@@ -221,19 +242,23 @@ public class CamSwUpdateRecord{
 	public void setOTAFeedbackSent(){
 		setLastUserFeedbackTs(System.currentTimeMillis());
 		setErrCode(0);
+		setFinalErrCode(0);
+		setDetailErrCode(0);
 		miRetryCntForPoorNetwork = 0;
 	}
 	
 	public void resetErrorInfo(){
-		Log.i(TAG, "resetErrorInfo(), cur status is: "+this);
-
+		if(BeseyeConfig.DEBUG)
+			Log.i(TAG, "resetErrorInfo(), cur status is: "+this);
 		setErrCode(0);
+		setFinalErrCode(0);
+		setDetailErrCode(0);
 		setLastOTAErrorTs(-1);
 	}
 	
 	public void resetCamOTAInfo(){
-		Log.i(TAG, "resetCamOTAInfo(), cur status is: "+this);
-
+		if(BeseyeConfig.DEBUG)
+			Log.i(TAG, "resetCamOTAInfo(), cur status is: "+this);
 		init();
 	}
 	
@@ -261,20 +286,24 @@ public class CamSwUpdateRecord{
 
 	@Override
 	public String toString() {
-		return "CamSwUpdateRecord [mStrVCamId=" + mStrVCamId + ", mStrCamName="
-				+ mStrCamName + ", meUpdateStatus=" + meUpdateStatus
+		return "CamSwUpdateRecord [mStrVCamId=" + mStrVCamId 
+				+ ", mStrCamName="+ mStrCamName 
+				+ ", \nmeUpdateStatus=" + meUpdateStatus
 				+ ", mePrevUpdateStatus=" + mePrevUpdateStatus
-				+ ", meUpdateErrType=" + meUpdateErrType + ", meUpdateGroup="
-				+ meUpdateGroup + ", meVerCheckStatus=" + meVerCheckStatus
-				+ ", mbUpdateTriggerred=" + mbUpdateTriggerred + ", miErrCode="
-				+ miErrCode + ", miUpdatePercentage=" + miUpdatePercentage
-				+ ", mlVerCheckTs=" + mlVerCheckTs + ", mlBeginUpdateTs="
-				+ mlBeginUpdateTs + ", mlLastCamReportTs=" + mlLastCamReportTs
-				+ ", mlLastOTAErrorTs=" + mlLastOTAErrorTs
+				+ ", meUpdateErrType=" + meUpdateErrType 
+				+ ", meUpdateGroup="+ meUpdateGroup 
+				+ ", meVerCheckStatus=" + meVerCheckStatus
+				+ ", \nmbUpdateTriggerred=" + mbUpdateTriggerred 
+				+ ", miErrCode="+ miErrCode 
+				+ ", miUpdatePercentage=" + miUpdatePercentage
 				+ ", miRetryCntForPoorNetwork=" + miRetryCntForPoorNetwork
+				+ ", mlVerCheckTs=" + mlVerCheckTs 
+				+ ", \nmlBeginUpdateTs="+ mlBeginUpdateTs 
+				+ ", mlLastCamReportTs=" + mlLastCamReportTs
+				+ ", mlLastOTAErrorTs=" + mlLastOTAErrorTs
 				+ ", mlLastUserFeedbackTs=" + mlLastUserFeedbackTs
 				+ ", mlCamOnlineAfterOTATs=" + mlCamOnlineAfterOTATs
-				+ ", mUpdateCamSWTask=" + mUpdateCamSWTask
-				+ ", mGetCamUpdateStatusTask=" + mGetCamUpdateStatusTask + "]";
+				+ ", \nmUpdateCamSWTask=" + (null ==mUpdateCamSWTask)
+				+ ", mGetCamUpdateStatusTask=" + (null == mGetCamUpdateStatusTask) + "]";
 	}
 }

@@ -71,7 +71,6 @@ import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.HWSettingsActivity;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
-import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamUpdateVersionCheckListener;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
@@ -89,7 +88,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 																			  ISessionUpdateCallback,
 																			  BeseyeAppStateChangeListener,
 																			  OnCamInfoChangedListener,
-																			  OnCamUpdateVersionCheckListener, 
+																			  //OnCamUpdateVersionCheckListener, 
 																			  OnNetworkChangeCallback{
 	static public final String KEY_FROM_ACTIVITY					= "KEY_FROM_ACTIVITY";
 	
@@ -196,26 +195,26 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		super.onBackPressed();
 	}
 	
-	private AsyncTask<String, Double, List<JSONObject>> mGetCamListTask = null; 
-	
-	private void getCamListAndCheckCamUpdateVersions(){
-		//Set<String> setVcamList = null;
-		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended() || !SessionMgr.getInstance().getIsTrustDev()){
-			return;
-		}
-		
-		if((0 != slLastGetCamListTs && (System.currentTimeMillis() - slLastGetCamListTs) < 300000L) && !mbIsNetworkDisconnectedWhenCamUpdating){//Not check update within 5 mins
-			Log.e(TAG, "getCamListAndCheckCamUpdateVersions(), within checked duration");
-			return;
-		}
-		
-		if(false == this instanceof CameraListActivity /*|| (null == ( setVcamList = BeseyeCamInfoSyncMgr.getInstance().getVCamIdList()) || 0 == setVcamList.size())*/){
-			if(null != mGetCamListTask && false == mGetCamListTask.isCancelled()){
-				mGetCamListTask.cancel(true);
-			}
-			monitorAsyncTask(mGetCamListTask = new BeseyeAccountTask.GetVCamListTask(this, true).setDialogId(-1), true);
-		}
-	}
+//	private AsyncTask<String, Double, List<JSONObject>> mGetCamListTask = null; 
+//	
+//	private void getCamListAndCheckCamUpdateVersions(){
+//		//Set<String> setVcamList = null;
+//		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended() || !SessionMgr.getInstance().getIsTrustDev()){
+//			return;
+//		}
+//		
+//		if((0 != slLastGetCamListTs && (System.currentTimeMillis() - slLastGetCamListTs) < 300000L) && !mbIsNetworkDisconnectedWhenCamUpdating){//Not check update within 5 mins
+//			Log.e(TAG, "getCamListAndCheckCamUpdateVersions(), within checked duration");
+//			return;
+//		}
+//		
+//		if(false == this instanceof CameraListActivity /*|| (null == ( setVcamList = BeseyeCamInfoSyncMgr.getInstance().getVCamIdList()) || 0 == setVcamList.size())*/){
+//			if(null != mGetCamListTask && false == mGetCamListTask.isCancelled()){
+//				mGetCamListTask.cancel(true);
+//			}
+//			monitorAsyncTask(mGetCamListTask = new BeseyeAccountTask.GetVCamListTask(this, true).setDialogId(-1), true);
+//		}
+//	}
 	
 	private boolean checkSession(){
 		if(SessionMgr.getInstance().isTokenValid()){
@@ -354,10 +353,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 //		}};	
 	
 	private void checkForUpdates() {
-		if(BeseyeUtils.canUpdateFromHockeyApp()){
-			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
-		}else if(BeseyeUtils.isProductionVersion()){
+		if(SessionMgr.getInstance().getEnableBeseyeAppVerControl() || BeseyeUtils.isProductionVersion()){
 			monitorAsyncTask(new BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask(this).setDialogId(-1), true, getPackageName());
+		}else  if(BeseyeUtils.canUpdateFromHockeyApp()){
+			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
 		}else if(BeseyeConfig.DEBUG){
 			onAppUpdateNotAvailable();
 		}
@@ -833,16 +832,16 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				//TODO: avoid this dialog infinite showing
 				break;
 			}
-			case DIALOG_ID_CAM_UPDATE:{
-				dialog = new Dialog(this);
-				if(null != dialog){
-					dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
-					dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-					dialog.setContentView(inflateCamUpdateView());
-					dialog.setCancelable(false);
-				}
-				break;
-			}
+//			case DIALOG_ID_CAM_UPDATE:{
+//				dialog = new Dialog(this);
+//				if(null != dialog){
+//					dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
+//					dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+//					dialog.setContentView(inflateCamUpdateView());
+//					dialog.setCancelable(false);
+//				}
+//				break;
+//			}
 			default:
 				dialog = super.onCreateDialog(id);
 		}
@@ -978,9 +977,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     		checkForUpdates();
     	}else{
     		showNoNetworkDialog();
-    		if(isCamUpdatingInCurrentPage()){
-    			mbIsNetworkDisconnectedWhenCamUpdating = true;
-    		}
+//    		if(isCamUpdatingInCurrentPage()){
+//    			mbIsNetworkDisconnectedWhenCamUpdating = true;
+//    		}
     	}
     }
     
@@ -1190,12 +1189,12 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					//Log.i(TAG, "onPostExecute(), "+result.toString());
 					onSessionInvalid(true);
 				}
-			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
+			}/*else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(task == mGetCamListTask){
 					JSONObject objVCamList = result.get(0);
 					getCamUpdateCandidateList(objVCamList);
 				}
-			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+			}*/else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					if(DEBUG)
 						Log.i(TAG, getClass().getSimpleName()+"::onPostExecute(), "+result.toString());
@@ -1212,7 +1211,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					
 					mOnResumeUpdateCamInfoRunnable = null;
 				}
-			}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
+			}/*else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
 				final String strVcamId = ((BeseyeCamBEHttpTask.UpdateCamSWTask)task).getVcamId();
 				if(0 == iRetCode){
 					if(DEBUG)
@@ -1323,7 +1322,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(BeseyeBaseActivity.this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++%miUpdateCamNum));
 					}
 				} 
-			}else if(task instanceof BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask){
+			}*/else if(task instanceof BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask){
 				if(0 == iRetCode){		
 					String strPkg = BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.UPDATE_PKG_NAME);
 					//String strName = BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.UPDATE_VER_NAME);
@@ -1342,59 +1341,59 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 					}
 				}else{
 					onAppUpdateNotAvailable();
-					Log.e(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask error: "+iRetCode);
+					Log.e(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask error: "+Integer.toHexString(iRetCode));
 					//Toast.makeText(BeseyeBaseActivity.this, "Update app error "+Integer.toHexString(iRetCode), Toast.LENGTH_LONG).show();
 				}
 			}
 		}
 		
-		if(task == mGetCamListTask){
-			mGetCamListTask = null;
-		}
+//		if(task == mGetCamListTask){
+//			mGetCamListTask = null;
+//		}
 		
 		if(null != mMapCurAsyncTasks){
 			mMapCurAsyncTasks.remove(task);
 		}
 	}
 	
-	protected void getCamUpdateCandidateList(JSONObject objVCamList){
-		//Log.i(TAG, "mGetCamListTask(), objVCamList="+objVCamList.toString());
-		
-		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
-			return;
-		}
+//	protected void getCamUpdateCandidateList(JSONObject objVCamList){
+//		//Log.i(TAG, "mGetCamListTask(), objVCamList="+objVCamList.toString());
 //		
-//		if(checkCamUpdateValid()){
-//			return ;
+//		if(!BeseyeFeatureConfig.CAM_SW_UPDATE_CHK || SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
+//			return;
 //		}
-		
-		JSONArray arrVcamIdList = new JSONArray();
-		int iVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_VCAM_CNT);
-		if(0 < iVcamCnt){
-			JSONArray VcamList = BeseyeJSONUtil.getJSONArray(objVCamList, BeseyeJSONUtil.ACC_VCAM_LST);
-			for(int i = 0;i< iVcamCnt;i++){
-				try {
-					JSONObject camObj = VcamList.getJSONObject(i);
-					if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
-						arrVcamIdList.put(camObj);
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			
-			if(0 < arrVcamIdList.length()){
-				if(checkWithinCamUpdatePeriod()){
-					resumeCamUpdate(arrVcamIdList);
-				}else{
-					BeseyeCamInfoSyncMgr.getInstance().queryCamUpdateVersions(arrVcamIdList);
-				}
-			}
-		}
-		
-		slLastGetCamListTs = System.currentTimeMillis();
-	}
+////		
+////		if(checkCamUpdateValid()){
+////			return ;
+////		}
+//		
+//		JSONArray arrVcamIdList = new JSONArray();
+//		int iVcamCnt = BeseyeJSONUtil.getJSONInt(objVCamList, BeseyeJSONUtil.ACC_VCAM_CNT);
+//		if(0 < iVcamCnt){
+//			JSONArray VcamList = BeseyeJSONUtil.getJSONArray(objVCamList, BeseyeJSONUtil.ACC_VCAM_LST);
+//			for(int i = 0;i< iVcamCnt;i++){
+//				try {
+//					JSONObject camObj = VcamList.getJSONObject(i);
+//					if(BeseyeJSONUtil.getJSONBoolean(camObj, BeseyeJSONUtil.ACC_VCAM_ATTACHED)){
+//						arrVcamIdList.put(camObj);
+//					}
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			
+//			
+//			if(0 < arrVcamIdList.length()){
+//				if(checkWithinCamUpdatePeriod()){
+//					resumeCamUpdate(arrVcamIdList);
+//				}else{
+//					BeseyeCamInfoSyncMgr.getInstance().queryCamUpdateVersions(arrVcamIdList);
+//				}
+//			}
+//		}
+//		
+//		slLastGetCamListTs = System.currentTimeMillis();
+//	}
 
 	@Override
 	public void onToastShow(AsyncTask task,final String strMsg) {
@@ -2175,7 +2174,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     }
     
     public void onCamUpdateList(JSONArray arrUpdateCandidate){
-    	triggerCamUpdate(arrUpdateCandidate, true);
+//    	triggerCamUpdate(arrUpdateCandidate, true);
     }
     
     protected void updateUICallback(){}
@@ -2217,243 +2216,243 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		return strRet;
 	}
 	
-	private void initUpdateItems(boolean bResumeCase){
-		Log.i(TAG, "initUpdateItems()+++");
-
-		mbSilentUpdate = false;
-		mVcamUpdateList = null;
-		miCheckUpdateCamIdx = 0;
-		mUpdateVcamList = new JSONObject();
-		mLstUpdateCandidate = new ArrayList<String>();
-		miCurUpdateCamStatusIdx = 0;
-		if(false == bResumeCase){
-			SessionMgr.getInstance().setCamUpdateTimestamp(0);
-		}
-	}
-	
-	protected boolean mbSilentUpdate = true;
-	
-	protected void triggerCamUpdate(JSONArray VcamList, boolean bSilent){
-		if(isCamUpdatingInCurrentPage()){
-			if(DEBUG)
-				Log.i(TAG, "triggerCamUpdate(), isCamUpdating... return");
-			return;
-		}
-		
-		if(false == mActivityResume){
-			if(DEBUG)
-				Log.i(TAG, "triggerCamUpdate(), mActivityResume is false... return");
-			return;
-		}
-		
-		int iVcamNum = (null != VcamList)?VcamList.length():0;
-		if(0 < iVcamNum){
-			initUpdateItems(false);
-			mbSilentUpdate = bSilent;
-			mVcamUpdateList = VcamList;
-			//mMapUpdateStatus = new LinkedHashMap<String, JSONObject>();
-			for(int idx = 0; idx < iVcamNum;idx++){
-				try {
-					String strVCamId = BeseyeJSONUtil.getJSONString(VcamList.getJSONObject(idx), BeseyeJSONUtil.ACC_ID);
-					mLstUpdateCandidate.add(strVCamId);
-					if(DEBUG)
-						Log.i(TAG, "triggerCamUpdate(), strVcamId:"+strVCamId);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			monitorAsyncTask(new BeseyeCamBEHttpTask.UpdateCamSWTask(this).setDialogId(bSilent?-1:DIALOG_ID_LOADING), true, mLstUpdateCandidate.get(miCheckUpdateCamIdx++));
-		}else{
-			if(!mbSilentUpdate){
-				BeseyeUtils.postRunnable(new Runnable(){
-					@Override
-					public void run() {
-						Bundle b = new Bundle();
-						b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_update_no_valid_cam));
-						showMyDialog(DIALOG_ID_WARNING, b);
-					}}, 0);
-			}
-			initUpdateItems(false);
-			Log.i(TAG, "triggerCamUpdate(), there is no valid camera to update");
-		}
-		
+//	private void initUpdateItems(boolean bResumeCase){
+//		Log.i(TAG, "initUpdateItems()+++");
+//
+//		mbSilentUpdate = false;
+//		mVcamUpdateList = null;
+//		miCheckUpdateCamIdx = 0;
 //		mUpdateVcamList = new JSONObject();
 //		mLstUpdateCandidate = new ArrayList<String>();
-//		miCurUpdateCamStatusIdx=0;
-//		mLstUpdateCandidate.add("01d0f4f7b68e48a583e28449eacf99b2");
-//		mLstUpdateCandidate.add("9ee1316073f54242b6c4cfe6aa2a0eda");
-//		miUpdateCamNum = 2;
-//		showMyDialog(DIALOG_ID_CAM_UPDATE);
-//		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++));
-	}
-	
-	protected void resumeCamUpdate(JSONArray VcamList){
-		if(isCamUpdatingInCurrentPage() && false == mbIsNetworkDisconnectedWhenCamUpdating){
-			if(DEBUG)
-				Log.i(TAG, "resumeCamUpdate(), isCamUpdating... return");
-			return;
-		}
-		
-		mbIsNetworkDisconnectedWhenCamUpdating = false;
-		
-		String[] strCamUpdate = SessionMgr.getInstance().getCamUpdateList().split(";");
-		if(null != strCamUpdate){
-			int iNum = strCamUpdate.length;
-			int iVcamNum = (null != VcamList)?VcamList.length():0;
-			if(0 < iVcamNum){
-				initUpdateItems(true);
-				for(int idx = 0; idx < iNum; idx++){
-					for(int idx2 = 0; idx2 < iVcamNum;idx2++){
-						try {
-							if(strCamUpdate[idx].equals(BeseyeJSONUtil.getJSONString(VcamList.getJSONObject(idx2), BeseyeJSONUtil.ACC_ID))){
-								mLstUpdateCandidate.add(strCamUpdate[idx]);
-								if(DEBUG)
-									Log.i(TAG, "resumeCamUpdate(), strCamUpdate[idx]:"+strCamUpdate[idx]);
-								break;
-							}
-							
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				
-				miUpdateCamNum = mLstUpdateCandidate.size();
-				if(0 < miUpdateCamNum){
-					showMyDialog(DIALOG_ID_CAM_UPDATE);
-					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++));
-				}else{
-					Log.i(TAG, "resumeCamUpdate(), there is no cam to update");
-					initUpdateItems(false);
-				}
-			}
-		}
-	}
-	
-	protected View inflateCamUpdateView(){
-		View vCamUpdate = getLayoutInflater().inflate(R.layout.layout_camera_update_progress, null);
-		if(null != vCamUpdate){
-			mProgressBarCamUpdate = (ProgressBar)vCamUpdate.findViewById(R.id.sb_update_progress);
-			mTxtCamUpdateStatus = (TextView)vCamUpdate.findViewById(R.id.txt_update_progress);
-		}
-		
-		setCamUpdateProgress(0);
-		return vCamUpdate;
-	}
-	
-	private void setCamUpdateProgress(int iProgress){
-		if(null != mProgressBarCamUpdate)
-			mProgressBarCamUpdate.setProgress(iProgress);
-			
-		if(null != mTxtCamUpdateStatus)
-			mTxtCamUpdateStatus.setText(String.format(getString(R.string.cam_update_progress), iProgress+"%"));
-	}
-	
-	private void updateCamUpdateProgress(){
-		int iProgress = 0;
-		int iCompleteNum = 0;
-		int iNumOfDone = 0;
-		int iNumOfFail = 0;
-		for(int idx = 0; idx < miUpdateCamNum && idx < mLstUpdateCandidate.size(); idx++){
-			String strVCamId = mLstUpdateCandidate.get(idx);
-			JSONObject objCamUpdateStatus = BeseyeJSONUtil.getJSONObject(mUpdateVcamList, strVCamId);
-			if(null != objCamUpdateStatus){
-				int iFinalStatus = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_FINAL_STAUS, -1);
-				
-				if(DEBUG)
-					Log.i(TAG, "updateCamUpdateProgress(), "+objCamUpdateStatus+", strVcamId:"+strVCamId+", iFinalStatus="+iFinalStatus);
-				
-				if(-1 !=  iFinalStatus){
-					iCompleteNum++;
-					iProgress+=(100.0/miUpdateCamNum);
-				}else{
-					if(0 == iFinalStatus || 1 == iFinalStatus){
-						iNumOfDone++;
-					}else{
-						iNumOfFail++;
-					}
-					int iProgressIdv = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_PROGRESS, 0);
-					iProgress+=((100.0/miUpdateCamNum))*(iProgressIdv/100.0);
-				}
-			}
-		}
-		
-		if(iCompleteNum < miUpdateCamNum){
-			setCamUpdateProgress(iProgress);
-		}else{
-			removeMyDialog(DIALOG_ID_CAM_UPDATE);
-			Bundle b = new Bundle();
-			String strRet = "";
-			if(0 == iNumOfFail){
-				strRet = getResources().getString(R.string.cam_update_success);
-			}else if(0 == iNumOfDone){
-				strRet = BeseyeUtils.appendErrorCode(BeseyeBaseActivity.this, R.string.cam_update_failed, BeseyeError.E_FE_AND_OTA_TIMEOUT);
-			}else{
-				strRet = String.format(getResources().getString(R.string.cam_update_result), iNumOfDone, iNumOfFail);
-			}
-			
-			b.putString(KEY_INFO_TEXT, strRet);
-			showMyDialog(DIALOG_ID_INFO, b);
-			initUpdateItems(false);
-			Log.i(TAG, "updateCamUpdateProgress(), Update SW successfully");
-		}	
-	}
-	
-	protected boolean isCamUpdatingInCurrentPage(){
-		return (null != mLstUpdateCandidate && 0 < mLstUpdateCandidate.size());
-	}
-	
-	private boolean isCamUpdatingCompleted(){
-		boolean bRet = true;
-		for(int idx = 0; idx < miUpdateCamNum && idx < mLstUpdateCandidate.size(); idx++){
-			String strVCamId = mLstUpdateCandidate.get(idx);
-			JSONObject objCamUpdateStatus = BeseyeJSONUtil.getJSONObject(mUpdateVcamList, strVCamId);
-			if(null != objCamUpdateStatus){
-				int iFinalStatus = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_FINAL_STAUS, -1);
-				if(DEBUG)
-					Log.i(TAG, "isCamUpdateFinish(), "+objCamUpdateStatus+", strVcamId:"+strVCamId+", iFinalStatus="+iFinalStatus);
-				if(-1 == iFinalStatus){//if final status is -1, means updating is ongoing
-					bRet = false;
-					break;
-				}
-			}
-		}
-		
-		return bRet;
-	}
-	
-	//If timestamp is 0, means update is done
-	protected boolean checkCamUpdateDone(){
-		return SessionMgr.getInstance().getCamUpdateTimestamp() == 0;
-	}
-	
-	//Wait cam for 10 mins at most
-	protected boolean checkWithinCamUpdatePeriod(){
-		boolean  bRet = true;
-		long lDelta = System.currentTimeMillis() - SessionMgr.getInstance().getCamUpdateTimestamp();
-		if(lDelta > 10*60*1000){//timeout after 10 mis
-			SessionMgr.getInstance().setCamUpdateTimestamp(0);
-			bRet = false;
-		}
-		if(DEBUG)
-			Log.i(TAG, "checkCamUpdateValid(), lDelta:"+lDelta+", bRet:"+bRet);
-		return bRet;
-	}
-	
-	//Save update cam list in pref file for future checking
-	protected String arrayToString(List<String> lstUpdateCandidate){
-		String strRet = "";
-		int iNum = (null != lstUpdateCandidate)?lstUpdateCandidate.size():0;
-		for(int idx = 0; idx < iNum; idx++){
-			strRet += ((0 == idx)?"":";")+lstUpdateCandidate.get(idx);
-		}
-		if(DEBUG)
-			Log.i(TAG, "arrayToString(), strRet:"+strRet);
-		return strRet;
-	}
-	
-	//Camera update end
+//		miCurUpdateCamStatusIdx = 0;
+//		if(false == bResumeCase){
+//			SessionMgr.getInstance().setCamUpdateTimestamp(0);
+//		}
+//	}
+//	
+//	protected boolean mbSilentUpdate = true;
+//	
+//	protected void triggerCamUpdate(JSONArray VcamList, boolean bSilent){
+//		if(isCamUpdatingInCurrentPage()){
+//			if(DEBUG)
+//				Log.i(TAG, "triggerCamUpdate(), isCamUpdating... return");
+//			return;
+//		}
+//		
+//		if(false == mActivityResume){
+//			if(DEBUG)
+//				Log.i(TAG, "triggerCamUpdate(), mActivityResume is false... return");
+//			return;
+//		}
+//		
+//		int iVcamNum = (null != VcamList)?VcamList.length():0;
+//		if(0 < iVcamNum){
+//			initUpdateItems(false);
+//			mbSilentUpdate = bSilent;
+//			mVcamUpdateList = VcamList;
+//			//mMapUpdateStatus = new LinkedHashMap<String, JSONObject>();
+//			for(int idx = 0; idx < iVcamNum;idx++){
+//				try {
+//					String strVCamId = BeseyeJSONUtil.getJSONString(VcamList.getJSONObject(idx), BeseyeJSONUtil.ACC_ID);
+//					mLstUpdateCandidate.add(strVCamId);
+//					if(DEBUG)
+//						Log.i(TAG, "triggerCamUpdate(), strVcamId:"+strVCamId);
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			
+//			monitorAsyncTask(new BeseyeCamBEHttpTask.UpdateCamSWTask(this).setDialogId(bSilent?-1:DIALOG_ID_LOADING), true, mLstUpdateCandidate.get(miCheckUpdateCamIdx++));
+//		}else{
+//			if(!mbSilentUpdate){
+//				BeseyeUtils.postRunnable(new Runnable(){
+//					@Override
+//					public void run() {
+//						Bundle b = new Bundle();
+//						b.putString(KEY_WARNING_TEXT, getResources().getString(R.string.cam_update_no_valid_cam));
+//						showMyDialog(DIALOG_ID_WARNING, b);
+//					}}, 0);
+//			}
+//			initUpdateItems(false);
+//			Log.i(TAG, "triggerCamUpdate(), there is no valid camera to update");
+//		}
+//		
+////		mUpdateVcamList = new JSONObject();
+////		mLstUpdateCandidate = new ArrayList<String>();
+////		miCurUpdateCamStatusIdx=0;
+////		mLstUpdateCandidate.add("01d0f4f7b68e48a583e28449eacf99b2");
+////		mLstUpdateCandidate.add("9ee1316073f54242b6c4cfe6aa2a0eda");
+////		miUpdateCamNum = 2;
+////		showMyDialog(DIALOG_ID_CAM_UPDATE);
+////		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++));
+//	}
+//	
+//	protected void resumeCamUpdate(JSONArray VcamList){
+//		if(isCamUpdatingInCurrentPage() && false == mbIsNetworkDisconnectedWhenCamUpdating){
+//			if(DEBUG)
+//				Log.i(TAG, "resumeCamUpdate(), isCamUpdating... return");
+//			return;
+//		}
+//		
+//		mbIsNetworkDisconnectedWhenCamUpdating = false;
+//		
+//		String[] strCamUpdate = SessionMgr.getInstance().getCamUpdateList().split(";");
+//		if(null != strCamUpdate){
+//			int iNum = strCamUpdate.length;
+//			int iVcamNum = (null != VcamList)?VcamList.length():0;
+//			if(0 < iVcamNum){
+//				initUpdateItems(true);
+//				for(int idx = 0; idx < iNum; idx++){
+//					for(int idx2 = 0; idx2 < iVcamNum;idx2++){
+//						try {
+//							if(strCamUpdate[idx].equals(BeseyeJSONUtil.getJSONString(VcamList.getJSONObject(idx2), BeseyeJSONUtil.ACC_ID))){
+//								mLstUpdateCandidate.add(strCamUpdate[idx]);
+//								if(DEBUG)
+//									Log.i(TAG, "resumeCamUpdate(), strCamUpdate[idx]:"+strCamUpdate[idx]);
+//								break;
+//							}
+//							
+//						} catch (JSONException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//				}
+//				
+//				miUpdateCamNum = mLstUpdateCandidate.size();
+//				if(0 < miUpdateCamNum){
+//					showMyDialog(DIALOG_ID_CAM_UPDATE);
+//					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamUpdateStatusTask(this).setDialogId(-1), true, mLstUpdateCandidate.get(miCurUpdateCamStatusIdx++));
+//				}else{
+//					Log.i(TAG, "resumeCamUpdate(), there is no cam to update");
+//					initUpdateItems(false);
+//				}
+//			}
+//		}
+//	}
+//	
+//	protected View inflateCamUpdateView(){
+//		View vCamUpdate = getLayoutInflater().inflate(R.layout.layout_camera_update_progress, null);
+//		if(null != vCamUpdate){
+//			mProgressBarCamUpdate = (ProgressBar)vCamUpdate.findViewById(R.id.sb_update_progress);
+//			mTxtCamUpdateStatus = (TextView)vCamUpdate.findViewById(R.id.txt_update_progress);
+//		}
+//		
+//		setCamUpdateProgress(0);
+//		return vCamUpdate;
+//	}
+//	
+//	private void setCamUpdateProgress(int iProgress){
+//		if(null != mProgressBarCamUpdate)
+//			mProgressBarCamUpdate.setProgress(iProgress);
+//			
+//		if(null != mTxtCamUpdateStatus)
+//			mTxtCamUpdateStatus.setText(String.format(getString(R.string.cam_update_progress), iProgress+"%"));
+//	}
+//	
+//	private void updateCamUpdateProgress(){
+//		int iProgress = 0;
+//		int iCompleteNum = 0;
+//		int iNumOfDone = 0;
+//		int iNumOfFail = 0;
+//		for(int idx = 0; idx < miUpdateCamNum && idx < mLstUpdateCandidate.size(); idx++){
+//			String strVCamId = mLstUpdateCandidate.get(idx);
+//			JSONObject objCamUpdateStatus = BeseyeJSONUtil.getJSONObject(mUpdateVcamList, strVCamId);
+//			if(null != objCamUpdateStatus){
+//				int iFinalStatus = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_FINAL_STAUS, -1);
+//				
+//				if(DEBUG)
+//					Log.i(TAG, "updateCamUpdateProgress(), "+objCamUpdateStatus+", strVcamId:"+strVCamId+", iFinalStatus="+iFinalStatus);
+//				
+//				if(-1 !=  iFinalStatus){
+//					iCompleteNum++;
+//					iProgress+=(100.0/miUpdateCamNum);
+//				}else{
+//					if(0 == iFinalStatus || 1 == iFinalStatus){
+//						iNumOfDone++;
+//					}else{
+//						iNumOfFail++;
+//					}
+//					int iProgressIdv = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_PROGRESS, 0);
+//					iProgress+=((100.0/miUpdateCamNum))*(iProgressIdv/100.0);
+//				}
+//			}
+//		}
+//		
+//		if(iCompleteNum < miUpdateCamNum){
+//			setCamUpdateProgress(iProgress);
+//		}else{
+//			removeMyDialog(DIALOG_ID_CAM_UPDATE);
+//			Bundle b = new Bundle();
+//			String strRet = "";
+//			if(0 == iNumOfFail){
+//				strRet = getResources().getString(R.string.cam_update_success);
+//			}else if(0 == iNumOfDone){
+//				strRet = BeseyeUtils.appendErrorCode(BeseyeBaseActivity.this, R.string.cam_update_failed, BeseyeError.E_FE_AND_OTA_TIMEOUT);
+//			}else{
+//				strRet = String.format(getResources().getString(R.string.cam_update_result), iNumOfDone, iNumOfFail);
+//			}
+//			
+//			b.putString(KEY_INFO_TEXT, strRet);
+//			showMyDialog(DIALOG_ID_INFO, b);
+//			initUpdateItems(false);
+//			Log.i(TAG, "updateCamUpdateProgress(), Update SW successfully");
+//		}	
+//	}
+//	
+//	protected boolean isCamUpdatingInCurrentPage(){
+//		return (null != mLstUpdateCandidate && 0 < mLstUpdateCandidate.size());
+//	}
+//	
+//	private boolean isCamUpdatingCompleted(){
+//		boolean bRet = true;
+//		for(int idx = 0; idx < miUpdateCamNum && idx < mLstUpdateCandidate.size(); idx++){
+//			String strVCamId = mLstUpdateCandidate.get(idx);
+//			JSONObject objCamUpdateStatus = BeseyeJSONUtil.getJSONObject(mUpdateVcamList, strVCamId);
+//			if(null != objCamUpdateStatus){
+//				int iFinalStatus = BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_FINAL_STAUS, -1);
+//				if(DEBUG)
+//					Log.i(TAG, "isCamUpdateFinish(), "+objCamUpdateStatus+", strVcamId:"+strVCamId+", iFinalStatus="+iFinalStatus);
+//				if(-1 == iFinalStatus){//if final status is -1, means updating is ongoing
+//					bRet = false;
+//					break;
+//				}
+//			}
+//		}
+//		
+//		return bRet;
+//	}
+//	
+//	//If timestamp is 0, means update is done
+//	protected boolean checkCamUpdateDone(){
+//		return SessionMgr.getInstance().getCamUpdateTimestamp() == 0;
+//	}
+//	
+//	//Wait cam for 10 mins at most
+//	protected boolean checkWithinCamUpdatePeriod(){
+//		boolean  bRet = true;
+//		long lDelta = System.currentTimeMillis() - SessionMgr.getInstance().getCamUpdateTimestamp();
+//		if(lDelta > 10*60*1000){//timeout after 10 mis
+//			SessionMgr.getInstance().setCamUpdateTimestamp(0);
+//			bRet = false;
+//		}
+//		if(DEBUG)
+//			Log.i(TAG, "checkCamUpdateValid(), lDelta:"+lDelta+", bRet:"+bRet);
+//		return bRet;
+//	}
+//	
+//	//Save update cam list in pref file for future checking
+//	protected String arrayToString(List<String> lstUpdateCandidate){
+//		String strRet = "";
+//		int iNum = (null != lstUpdateCandidate)?lstUpdateCandidate.size():0;
+//		for(int idx = 0; idx < iNum; idx++){
+//			strRet += ((0 == idx)?"":";")+lstUpdateCandidate.get(idx);
+//		}
+//		if(DEBUG)
+//			Log.i(TAG, "arrayToString(), strRet:"+strRet);
+//		return strRet;
+//	}
+//	
+//	//Camera update end
 	
 	protected void showErrorDialog(final int iMsgId, final boolean bCloseSelf, final int iErrCode){
 		BeseyeUtils.postRunnable(new Runnable(){

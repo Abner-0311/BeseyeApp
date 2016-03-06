@@ -2816,13 +2816,20 @@ void checkPairingResult(string strCode, string strDecodeUnmark){
 
 					//check www.beseye.cn in China
 					if(1 == cRegId){
-						iNetworkRet = invokeSystem("/beseye/util/curl -H 'User-Agent: BesProOne0713' --connect-timeout 10 --max-time 10 www.beseye.cn") >> 8;
+						sprintf(cmd, "/beseye/util/curl -H 'User-Agent: BesProOne0713' --connect-timeout 10 --max-time 10 %s", NETWORK_CHECK_HOST_CN);
+						iNetworkRet = invokeSystem(cmd) >> 8;
 					}else{
-						iNetworkRet = invokeSystem("/beseye/util/curl -H 'User-Agent: BesProOne0713' --connect-timeout 10 --max-time 10 www.beseye.com") >> 8;
+						sprintf(cmd, "/beseye/util/curl -H 'User-Agent: BesProOne0713' --connect-timeout 10 --max-time 10 %s", NETWORK_CHECK_HOST);
+						iNetworkRet = invokeSystem(cmd) >> 8;
 					}
 
 					if(iNetworkRet != 0){
-						iNetworkRet = invokeSystem("/beseye/util/curl --connect-timeout 5 --max-time 5 www.alibaba.com.cn") >> 8;
+						sprintf(cmd, "/beseye/util/curl --connect-timeout 5 --max-time 5 %s", NETWORK_CHECK_HOST3);//google
+						iNetworkRet = invokeSystem(cmd) >> 8;
+						if(iNetworkRet != 0){
+							sprintf(cmd, "/beseye/util/curl --connect-timeout 5 --max-time 5 %s", NETWORK_CHECK_HOST2);//alibaba
+							iNetworkRet = invokeSystem(cmd) >> 8;
+						}
 					}
 
 					if(0 == iNetworkRet && sOrginalBSSID && (FALSE == bIsSameWiFiConfig /*|| FALSE == bIsSameSSID*/)){

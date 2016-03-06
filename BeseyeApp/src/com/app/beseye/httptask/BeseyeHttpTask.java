@@ -317,7 +317,12 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 	}
 	
 	static private boolean canIgnoreUserSession(AsyncTask task){
-		return (task instanceof BeseyeAccountTask.GetVPCNoHttpTask) || (task instanceof BeseyeAccountTask.LoginHttpTask) || (task instanceof BeseyeAccountTask.RegisterTask || (task instanceof BeseyeAccountTask.SendForgetPWTask) || (task instanceof BeseyeAccountTask.CamDettachByHWIDTask));
+		return (task instanceof BeseyeAccountTask.GetVPCNoHttpTask) || 
+			   (task instanceof BeseyeAccountTask.LoginHttpTask) || 
+			   (task instanceof BeseyeAccountTask.RegisterTask || 
+			   (task instanceof BeseyeAccountTask.SendForgetPWTask) || 
+			   (task instanceof BeseyeAccountTask.CamDettachByHWIDTask) ||
+			   (task instanceof BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask));
 	}
 	
 	//customize interface of AsycTask End

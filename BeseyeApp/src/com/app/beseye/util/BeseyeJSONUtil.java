@@ -337,6 +337,9 @@ public class BeseyeJSONUtil {
 	public static final String UPDATE_OTA_USER_EMAIL 	= "email";
 	public static final String UPDATE_OTA_USER_PHONE 	= "phone";
 	public static final String UPDATE_OTA_USER_DESC 	= "description";
+	public static final String UPDATE_OTA_ERR_FINAL		= "otaFinalErrCode";
+	public static final String UPDATE_OTA_ERR_DETAIL	= "otaDetailErrCode";
+
 	
 	static public class FACE_LIST{
 		public int miId;

@@ -59,11 +59,20 @@
 	        	android:layout_marginTop="10dp"
 	        	android:text="Always Show Human Detect Intro"/>
 		    
+		    <CheckBox 
+	            android:id="@+id/ck_enable_beseye_app_ver_check" 
+	            android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/ck_enable_human_detect_intro_show_always"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:text="Enable Beseye App version control"/>
+		    
 		    <Button 
 		        android:id="@+id/btn_send_log" 
 	            android:layout_width="wrap_content"  
 	        	android:layout_height="wrap_content"
-	        	android:layout_below="@+id/ck_enable_human_detect_intro_show_always"
+	        	android:layout_below="@+id/ck_enable_beseye_app_ver_check"
 	        	android:layout_centerHorizontal="true"
 	        	android:layout_marginTop="10dp"
 	        	android:text="Send log"/>
@@ -177,7 +186,8 @@
 		        android:paddingLeft="@dimen/login_marginMedium"
 		        android:paddingRight="@dimen/login_marginMedium"
 		        android:textSize="@dimen/login_fontRegular" 
-		        android:singleLine="true"/>
+		        android:singleLine="true"
+		        android:visibility="gone"/>
             
 		    <EditText
 		        android:id="@+id/editText_ip"

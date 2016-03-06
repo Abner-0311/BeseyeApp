@@ -35,8 +35,8 @@ public class CamOTAFAQActivity extends BeseyeNavBarBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_contact_us:{
-				Bundle b = new Bundle();
-				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				Bundle b = getIntent().getExtras();
+				//b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
 				launchActivityForResultByClassName(CamOTAFeedbackActivity.class.getName(), b, REQUEST_OTA_FEEDBACK);
 				break;
 			}

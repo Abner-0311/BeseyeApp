@@ -27,6 +27,10 @@ import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 
 public class CamOTAFeedbackActivity extends BeseyeNavBarBaseActivity {
+	public static final String OTA_ERROR_CODE_FINAL = "OTA_ERROR_CODE_FINAL"; 
+	public static final String OTA_ERROR_CODE_DETAIL = "OTA_ERROR_CODE_DETAIL"; 
+
+	
 	private Button mBtnSubmit;
 	private TextView mTvCamSN, mTvUserAccount;
 	private EditText mEtName, mEtEmail, mEtPhone, mEtQuestion;
@@ -90,6 +94,9 @@ public class CamOTAFeedbackActivity extends BeseyeNavBarBaseActivity {
 				BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.UPDATE_OTA_USER_EMAIL, BeseyeUtils.getTrimText(mEtEmail));
 				BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.UPDATE_OTA_USER_PHONE, BeseyeUtils.getTrimText(mEtPhone));
 				BeseyeJSONUtil.setJSONString(obj, BeseyeJSONUtil.UPDATE_OTA_USER_DESC, BeseyeUtils.getTrimText(mEtQuestion));
+				BeseyeJSONUtil.setJSONInt(obj, BeseyeJSONUtil.UPDATE_OTA_ERR_FINAL, getIntent().getIntExtra(OTA_ERROR_CODE_FINAL, -2));
+				BeseyeJSONUtil.setJSONInt(obj, BeseyeJSONUtil.UPDATE_OTA_ERR_DETAIL, getIntent().getIntExtra(OTA_ERROR_CODE_DETAIL, -2));
+			
 				monitorAsyncTask(new BeseyeUpdateBEHttpTask.UploadUserOTAFeedbackTask(this), false, mStrVCamID, obj.toString());
 				break;
 			}

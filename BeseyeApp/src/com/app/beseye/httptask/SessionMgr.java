@@ -136,8 +136,6 @@ public class SessionMgr {
 	static private final String SESSION_PREF 				= "beseye_ses";
 	static private final String SESSION_PREF_SEC 			= "beseye_ses_sec";
 	
-	
-	
 	static private final String SESSION_TOKEN 				= "beseye_token";
 	static private final String SESSION_DOMAIN 				= "beseye_domain";
 	static private final String SESSION_USERID				= "beseye_userid";
@@ -148,8 +146,8 @@ public class SessionMgr {
 	static private final String SESSION_OWNER_VPC_NUM		= "beseye_owner_vpc_no";
 	static private final String SESSION_PAIR_TOKEN	    	= "beseye_pair_token";
 	
-	static private final String SESSION_UPDATE_TS			= "beseye_cam_update_ts";
-	static private final String SESSION_UPDATE_CAMS			= "beseye_cam_update_list";
+//	static private final String SESSION_UPDATE_TS			= "beseye_cam_update_ts";
+//	static private final String SESSION_UPDATE_CAMS			= "beseye_cam_update_list";
 	static private final String SESSION_UPDATE_SUSPEND		= "beseye_cam_update_suspend";
 	
 	static private final String SESSION_SERVER_MODE	    	= "beseye_server_mode";
@@ -168,7 +166,8 @@ public class SessionMgr {
 	static private final String SESSION_HD_INTRO_SHOWN		= "beseye_human_detect_intro_shown";
 	//static private final String SESSION_SHOW_HD_INTRO_ONCE	= "beseye_show_human_detect_intro_once";//deprecated
 	static private final String SESSION_SHOW_HD_INTRO_ALWAYS= "beseye_show_human_detect_intro_always";
-	
+	static private final String SESSION_ENABLE_BES_APP_CONTROL= "beseye_enable_beseye_app_ver_control";
+
 	static private final String SESSION_DEBUG_STREAM_PATH	= "beseye_debug_stream_path";
 	//static private final String SESSION_SCREENSHOT_FEATURE	= "beseye_screen_feature";
 	
@@ -210,8 +209,8 @@ public class SessionMgr {
 				mSessionData.setOwnerInfo(getPrefStringValue(mPref, SESSION_OWNER_INFO));
 				mSessionData.setIsTrustDev(getPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, true));
 				
-				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
-				mSessionData.setCamUpdateList(getPrefStringValue(mPref, SESSION_UPDATE_CAMS));
+//				mSessionData.setCamUpdateTimestamp(getPrefLongValue(mPref, SESSION_UPDATE_TS));
+//				mSessionData.setCamUpdateList(getPrefStringValue(mPref, SESSION_UPDATE_CAMS));
 				mSessionData.setIsCamSWUpdateSuspended(getPrefBooleanValue(mPref, SESSION_UPDATE_SUSPEND, false));
 				
 				mSessionData.setServerMode(SERVER_MODE.translateToMode(getPrefIntValue(mPref, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal())));
@@ -258,8 +257,8 @@ public class SessionMgr {
 			setPrefBooleanValue(mPref, SESSION_ACC_TRUSTED, getPrefBooleanValue(mPrefOld, SESSION_ACC_TRUSTED, false));
 
 			setPrefStringValue(mPref, SESSION_OWNER_INFO, getPrefStringValue(mPrefOld, SESSION_OWNER_INFO));
-			setPrefLongValue(mPref, SESSION_UPDATE_TS, getPrefLongValue(mPrefOld, SESSION_UPDATE_TS));
-			setPrefStringValue(mPref, SESSION_UPDATE_CAMS, getPrefStringValue(mPrefOld, SESSION_UPDATE_CAMS));
+//			setPrefLongValue(mPref, SESSION_UPDATE_TS, getPrefLongValue(mPrefOld, SESSION_UPDATE_TS));
+//			setPrefStringValue(mPref, SESSION_UPDATE_CAMS, getPrefStringValue(mPrefOld, SESSION_UPDATE_CAMS));
 			
 			setPrefIntValue(mPref, SESSION_SERVER_MODE, getPrefIntValue(mPrefOld, SESSION_SERVER_MODE, BeseyeConfig.DEFAULT_SERVER_MODE.ordinal()));
 			setPrefStringValue(mPref, SESSION_DETACH_HW_ID, getPrefStringValue(mPrefOld, SESSION_DETACH_HW_ID));
@@ -367,6 +366,14 @@ public class SessionMgr {
 	
 	public void setHumanDetectIntroShowAlways(boolean bValue){
 		setPrefBooleanValue(mPref, SESSION_SHOW_HD_INTRO_ALWAYS, bValue);
+	}
+	
+	public boolean getEnableBeseyeAppVerControl(){
+		return getPrefBooleanValue(mPref, SESSION_ENABLE_BES_APP_CONTROL, BeseyeConfig.PRODUCTION_VER?true:false);
+	}
+	
+	public void setEnableBeseyeAppVerControl(boolean bValue){
+		setPrefBooleanValue(mPref, SESSION_ENABLE_BES_APP_CONTROL, bValue);
 	}
 	
 	public void setBEHostUrl(SERVER_MODE mode){
@@ -676,25 +683,25 @@ public class SessionMgr {
 		notifySessionUpdate();
 	}
 	
-	public long getCamUpdateTimestamp(){
-		return mSessionData.getCamUpdateTimestamp();
-	}
-	
-	synchronized public void setCamUpdateTimestamp(long lCamUpdateTs){
-		setPrefLongValue(mPref, SESSION_UPDATE_TS, lCamUpdateTs);
-		mSessionData.setCamUpdateTimestamp(lCamUpdateTs);
-		notifySessionUpdate();
-	}
-	
-	public String getCamUpdateList(){
-		return mSessionData.getCamUpdateList();
-	}
-	
-	synchronized public void setCamUpdateList(String strCamUpdateList){
-		setPrefStringValue(mPref, SESSION_UPDATE_CAMS, strCamUpdateList);
-		mSessionData.setCamUpdateList(strCamUpdateList);
-		notifySessionUpdate();
-	}
+//	public long getCamUpdateTimestamp(){
+//		return mSessionData.getCamUpdateTimestamp();
+//	}
+//	
+//	synchronized public void setCamUpdateTimestamp(long lCamUpdateTs){
+//		setPrefLongValue(mPref, SESSION_UPDATE_TS, lCamUpdateTs);
+//		mSessionData.setCamUpdateTimestamp(lCamUpdateTs);
+//		notifySessionUpdate();
+//	}
+//	
+//	public String getCamUpdateList(){
+//		return mSessionData.getCamUpdateList();
+//	}
+//	
+//	synchronized public void setCamUpdateList(String strCamUpdateList){
+//		setPrefStringValue(mPref, SESSION_UPDATE_CAMS, strCamUpdateList);
+//		mSessionData.setCamUpdateList(strCamUpdateList);
+//		notifySessionUpdate();
+//	}
 	
 	public String getDetachHWID(){
 		return mSessionData.getDetachHWID();

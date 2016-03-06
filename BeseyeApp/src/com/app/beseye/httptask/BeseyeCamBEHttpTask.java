@@ -36,8 +36,8 @@ public class BeseyeCamBEHttpTask  {
 	static private final String URL_CAM_TIMEZONE 		= "cam/%s/time_zone";
 	static private final String URL_CAM_UPSIDE_DOWN_SET = "cam/%s/image/set_upside_down";
 	
-	static private final String URL_CAM_DATETIME_CONFIG = "cam/%s/datetime/config";
-	static private final String URL_CAM_DATETIME_NTP_CONFIG = "cam/%s/datetime/ntpconfig";
+//	static private final String URL_CAM_DATETIME_CONFIG = "cam/%s/datetime/config";
+//	static private final String URL_CAM_DATETIME_NTP_CONFIG = "cam/%s/datetime/ntpconfig";
 	
 	static private final String URL_CAM_SW_UPDATE 		= "cam/%s/software/update";
 	static private final String URL_CAM_SW_UPDATE_STATUS= "cam/%s/software/update_status";

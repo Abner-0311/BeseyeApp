@@ -163,8 +163,8 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				final boolean bShowOTAUpdate = bCanOTAUpdate && !connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED) && !connState.equals(CAM_CONN_STATUS.CAM_INIT);
 				
 				final boolean bOTAError = null != camRec && 
-								    camRec.isOTATriggerredByThisDev() && 
-								    ((0 != camRec.getErrCode()/* && !camRec.isOTAFeedbackSent()*/) ||
+								    //camRec.isOTATriggerredByThisDev() && 
+								    ((0 != camRec.getErrCode() && camRec.getPrevUpdateStatus().equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING)/* && !camRec.isOTAFeedbackSent()*/) ||
 								     (null != camUpdateStatus && camUpdateStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING) && camRec.isReachOTANoResponseTime())) ;
 				
 				final boolean bOTAUpdating = !bOTAError && !bCanOTAUpdate && null != camUpdateStatus && camUpdateStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING);
