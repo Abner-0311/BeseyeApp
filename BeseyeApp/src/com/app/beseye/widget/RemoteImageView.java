@@ -519,10 +519,14 @@ public class RemoteImageView extends ImageView {
 			
 			File vcamidDir = null;
 			boolean bSameFileForVCamid = false;
+			String strCachePath = null;
 			String cacheFileName = null;
 			try {
-				if(null != mStrVCamId)
+				if(null != mStrVCamId){
 					vcamidDir = getDirByVCamid(mStrVCamId);
+					strCachePath = mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample;
+					cacheFileName = strCachePath.substring(strCachePath.lastIndexOf("/")+1);
+				}
 
 				if(null == bitmap){
 //					if (fileExist(mLocal)) {						
@@ -532,8 +536,6 @@ public class RemoteImageView extends ImageView {
 //						//Version control, In order to transfer all cache file to sample 2						
 //						deleteFile(mLocal);
 //					}
-					String strCachePath = mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample;
-					cacheFileName = strCachePath.substring(strCachePath.lastIndexOf("/")+1);
 					
 					if(null != mStrVCamId){
 						if(mbLoadLastImgByVCamId){
@@ -670,7 +672,7 @@ public class RemoteImageView extends ImageView {
 				}
 				
 				if(null != vcamidDir){
-					if(!bSameFileForVCamid){
+					if(!bSameFileForVCamid && null != cacheFileName){
 						String fileToCache = vcamidDir.getAbsoluteFile()+"/"+cacheFileName;
 						if(!fileExist(fileToCache))
 							deleteFilesUnderDir(vcamidDir);

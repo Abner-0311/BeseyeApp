@@ -679,7 +679,7 @@
   <string name="desc_dialog_cam_offline_during_ota">偵測到您的攝影機為離線狀態，請重新連線以繼續更新流程</string>
   <string name="desc_cam_update_finish">\"%s\" 已更新完成</string>
   <string name="title_faq_page">FAQ</string>
-  <string name="user_account">帳戶：</string>
+  <string name="user_account">帳戶</string>
   <string name="ota_faq_subject">若無法順利更新，請嘗試以下解決方法：</string>
   <string name="ota_faq_answer">1.請拔掉電源插頭，再重新插電。\n2.請選擇強度強、速度快的Wi-Fi，以確保Beseye攝影機使用的網路連線品質流暢。</string>
   <string name="action_update_again">繼續更新</string>

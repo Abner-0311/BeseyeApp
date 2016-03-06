@@ -197,8 +197,9 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 		WeakReference<OnCamGroupUpdateVersionCheckListener> ret = null;
 		if(null != listener){
 			for( Iterator<WeakReference<OnCamGroupUpdateVersionCheckListener>> it = mLstOnCamGroupUpdateVersionCheckListener.iterator(); it.hasNext() ; ){
-				ret = it.next();
-				if(null != ret && listener.equals(ret.get())){
+				WeakReference<OnCamGroupUpdateVersionCheckListener> retChk = it.next();
+				if(null != retChk && listener.equals(retChk.get())){
+					ret = retChk;
 					break;
 				}
 		    }
@@ -322,8 +323,9 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 		WeakReference<OnCamUpdateStatusChangedListener> ret = null;
 		if(null != listener){
 			for( Iterator<WeakReference<OnCamUpdateStatusChangedListener>> it = mLstOnCamUpdateStatusChangedListener.iterator(); it.hasNext() ; ){
-				ret = it.next();
-				if(null != ret && listener.equals(ret.get())){
+				WeakReference<OnCamUpdateStatusChangedListener> retChk = it.next();
+				if(null != retChk && listener.equals(retChk.get())){
+					ret = retChk;
 					break;
 				}
 		    }
@@ -817,7 +819,7 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 //								}}, 0);
 						}else{
 							if(0 == iFinalStatus || 1 == iFinalStatus){//Update Done
-								if(camRec.mlVerCheckTs < camRec.mlLastCamReportTs){
+								if((camRec.mlVerCheckTs < camRec.mlLastCamReportTs) || camRec.meUpdateStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING)){
 									camRec.miErrCode = 0;
 									camRec.miUpdatePercentage = 100;//BeseyeJSONUtil.getJSONInt(objCamUpdateStatus, BeseyeJSONUtil.UPDATE_PROGRESS, 0);
 									camRec.changeUpdateStatus( CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_FINISH, false);

@@ -63,7 +63,12 @@ public class BeseyeAboutActivity extends BeseyeBaseActivity {
 			try {
 				PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 
-				txtVer.setText(String.format(getString(R.string.about_ver), packageInfo.versionName)+(BeseyeConfig.ALPHA_VER?getString(R.string.alpha):(BeseyeConfig.BETA_VER?getString(R.string.beta):(BeseyeConfig.DEBUG?" (dev)":""))));
+				String strBranch = BeseyeConfig.ALPHA_VER?getString(R.string.alpha):
+														 (BeseyeConfig.BETA_VER?getString(R.string.beta):
+															 					(BeseyeConfig.DEBUG?"(dev)":
+															 										""));
+				
+				txtVer.setText(String.format(getString(R.string.about_ver), strBranch+" "+packageInfo.versionName)+" ("+packageInfo.versionCode+")");
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
 			}

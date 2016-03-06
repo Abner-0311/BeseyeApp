@@ -37,7 +37,6 @@ import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.BeseyeMMBEHttpTask;
 import com.app.beseye.httptask.BeseyeNewsBEHttpTask;
 import com.app.beseye.httptask.SessionMgr;
-import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_ERROR;
 import com.app.beseye.ota.CamOTAFeedbackActivity;
@@ -58,7 +57,6 @@ import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.util.ShareMgr;
 import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
@@ -67,7 +65,6 @@ import com.app.beseye.widget.CameraListMenuAnimator;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
-import com.facebook.appevents.AppEventsLogger;
 
 public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBtnStateChangedListener,
 																	  OnCamUpdateStatusChangedListener,
@@ -107,7 +104,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		super.onCreate(savedInstanceState);
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
-		
+		BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
+
 		mbIsDemoCamMode = getIntent().getBooleanExtra(KEY_DEMO_CAM_MODE, false);
 		if(mbIsDemoCamMode){
 			if(null == sLastLocale || sLastLocale.equals(Locale.getDefault())){
@@ -276,7 +274,6 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			mPendingRunnableOnCreate = null;
 		}
 		
-		BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
 		BeseyeCamSWVersionMgr.getInstance().setNeedPeriodCheckUpdateStatus(meUpdateGroup, true);
 	}
 	
@@ -284,10 +281,15 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	protected void onPause() {
 		BeseyeCamSWVersionMgr.getInstance().resetPoorNetworkError(meUpdateGroup);
 		BeseyeCamSWVersionMgr.getInstance().setNeedPeriodCheckUpdateStatus(meUpdateGroup, false);
-		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamUpdateStatusChangedListener(this);
 		super.onPause();
 	}
-
+	
+	@Override
+	protected void onDestroy() {
+		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamUpdateStatusChangedListener(this);
+		super.onDestroy();
+	}
+	
 	private void refreshList(){
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
@@ -1348,17 +1350,20 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	@Override
 	public void onCamUpdateStatusChanged(String strVcamId, CAM_UPDATE_STATUS curStatus, CAM_UPDATE_STATUS prevStatus, CamSwUpdateRecord objUpdateRec) {
-		refreshList();
+		if(mActivityResume)
+			refreshList();
 	}
 
 	@Override
 	public void onCamUpdateProgress(String strVcamId, int iPercetage) {
-		refreshList();
+		if(mActivityResume)
+			refreshList();
 	}
 	
 	@Override
 	public void onCamUpdateVerChkStatusChanged(String strVcamId, CAM_UPDATE_VER_CHECK_STATUS curStatus, CAM_UPDATE_VER_CHECK_STATUS prevStatus, CamSwUpdateRecord objUpdateRec){
-		refreshList();
+		if(mActivityResume)
+			refreshList();
 	}
 	
 	@Override
@@ -1367,7 +1372,8 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			CAM_UPDATE_ERROR chkErr, List<String> lstVcamIds) {
 		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamGroupUpdateVersionCheckListener(this);
 		if(chkRet.equals(CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_OUT_OF_UPDATE) || chkRet.equals(CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_PARTIAL_UPDATED) ){
-			refreshList();
+			if(mActivityResume)
+				refreshList();
 		}
 		BeseyeCamSWVersionMgr.getInstance().checkGroupCamUpdateStatus(meUpdateGroup, true);
 	}

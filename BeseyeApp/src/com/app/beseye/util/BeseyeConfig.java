@@ -20,7 +20,7 @@ public class BeseyeConfig {
 	static public final String RELAY_AP_SSID = "raylios WiFi";
 	static public final String RELAY_AP_PW = "whoisyourdaddy";
 	
-	static public final boolean SHOW_THUMBNAIL_LOG = false;
+	static public final boolean SHOW_THUMBNAIL_LOG = true;
 
 	static{
 		Log.i(TAG, "BeseyeConfig init, BeseyeConfig.DEBUG:"+ BeseyeConfig.DEBUG);
