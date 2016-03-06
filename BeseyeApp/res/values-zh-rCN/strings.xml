@@ -677,7 +677,7 @@
   <string name="desc_cam_update_keep_cam_on_before_ota">需更新，请勿切断电源与中断连线。</string>
   <string name="action_cam_update">点击更新</string>
   <string name="desc_dialog_cam_offline_during_ota">侦测到您的摄影机为离线状态，请重新连线以继续更新流程</string>
-  <string name="desc_cam_update_finish">\"%@\" 已更新完成</string>
+  <string name="desc_cam_update_finish">\"%s\" 已更新完成</string>
   <string name="title_faq_page">FAQ</string>
   <string name="user_account">帐户：</string>
   <string name="ota_faq_subject">若无法顺利更新，请尝试以下解决方法：</string>

@@ -26,6 +26,7 @@ import com.app.beseye.CameraListActivity;
 import com.app.beseye.CameraViewActivity;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
+import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_GROUP;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_STATUS;
@@ -39,12 +40,14 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 	private EditText mEtCamName;
 	private Button mBtnDone;
 	private String mStrCamNameCandidate = null;
+	private boolean mbGetCamSetUp = false;
 	private boolean mbGetOTAVerCheckResult = false;
 	private boolean mbIsLatestOTAVersion = true;
-
 	private boolean mbSetCamNameDone = false;
 
-    
+	private long mlTimeToGetOTAVersion = -1;
+    final static private long MAX_TIME_TO_GET_OTA_VER = 60*1000;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -96,7 +99,7 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 		
 		BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
 		BeseyeCamSWVersionMgr.getInstance().AddUpdateVCam(mCam_obj, CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
-		BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, this.mStrVCamID, false);
+		//BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, this.mStrVCamID, false);
 	}
 	
 	@Override
@@ -128,6 +131,8 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 					BeseyeUtils.showSoftKeyboard(SoundPairingNamingActivity.this, mEtCamName);
 				}}, 1000);
 		}
+		
+		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 	}
 
 	@Override
@@ -182,8 +187,17 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 						BeseyeJSONUtil.setJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME, mStrCamNameCandidate);
 					}
 				}
-				
+				mlTimeToGetOTAVersion = System.currentTimeMillis();
 				mbSetCamNameDone = true;
+				selectNextPage();
+			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+				if(0 == iRetCode){
+					mbGetCamSetUp = true;
+				}else{
+					if(DEBUG)
+						Log.i(TAG, "SoundPairingNamingActivity::onPostExecute(), iRetCode"+iRetCode+", retry....");
+					
+				}
 				selectNextPage();
 			}else{
 				Log.i(TAG, "onPostExecute(), "+result.toString());
@@ -193,15 +207,22 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 	}
 	
 	private void selectNextPage(){
-		if(mbSetCamNameDone && mbGetOTAVerCheckResult){
+		if((mbSetCamNameDone && mbGetOTAVerCheckResult) || (mbSetCamNameDone && (System.currentTimeMillis() -mlTimeToGetOTAVersion) > MAX_TIME_TO_GET_OTA_VER)){
 			Bundle b = new Bundle();
 			b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-			b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
+			//b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
+			b.putLong(CameraViewActivity.KEY_PAIRING_DONE_TS, System.currentTimeMillis());
 			b.putBoolean(CameraViewActivity.KEY_PAIRING_OTA_NEED_UPDATE, !mbIsLatestOTAVersion);
 
 			launchDelegateActivity(CameraListActivity.class.getName(), b);
 			finish();
-		}else if(!mbGetOTAVerCheckResult){
+		}else if(!mbGetCamSetUp){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(SoundPairingNamingActivity.this).setDialogId(!mbSetCamNameDone?-1:DIALOG_ID_LOADING), true, mStrVCamID);
+				}}, 1000L);
+		}else if(mbSetCamNameDone && !mbGetOTAVerCheckResult){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {

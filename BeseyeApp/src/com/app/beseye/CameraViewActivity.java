@@ -100,10 +100,12 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 																	  CameraStatusCallback,
 																	  OnBitmapScreenshotCallback,
 																	  OnCamUpdateStatusChangedListener{
-	static public final String KEY_PAIRING_DONE 	= "KEY_PAIRING_DONE";
-	static public final String KEY_PAIRING_OTA_NEED_UPDATE 	= "KEY_PAIRING_OTA_NEED_UPDATE";
+	static public final String KEY_PAIRING_DONE 			= "KEY_PAIRING_DONE";
+	static public final String KEY_PAIRING_DONE_TS 			= "KEY_PAIRING_DONE_TS";
+	static public final long MAX_PAIRING_DONE_TS 			= 5*60*1000;
+	
+	static public final String KEY_PAIRING_OTA_NEED_UPDATE 			= "KEY_PAIRING_OTA_NEED_UPDATE";
 
-	static public final String KEY_PAIRING_DONE_HANDLED 	= "KEY_PAIRING_DONE_HANDLED";
 	static public final String KEY_TIMELINE_INFO    = "KEY_TIMELINE_INFO";
 	static public final String KEY_DVR_STREAM_MODE  = "KEY_DVR_STREAM_MODE";
 	static public final String KEY_DVR_STREAM_TS    = "KEY_DVR_STREAM_TS";
@@ -458,7 +460,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		getWindow().setAttributes(attributes);
 		getSupportActionBar().hide();
 		
-		updateAttrByIntent(getIntent(), false);
+		updateAttrByIntent(getIntent(), false, savedInstanceState);
 		
 		mVgHeader = (RelativeLayout)findViewById(R.id.vg_streaming_view_header);
 		if(null != mVgHeader){
@@ -519,7 +521,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
 		closeStreaming();
 		mbIsSwitchPlayer = true;
-		updateAttrByIntent(getIntent(), true);
+		updateAttrByIntent(getIntent(), true, null);
 		
 		setCursorVisiblity(View.VISIBLE);
 		
@@ -555,7 +557,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 	}
 	
-	private void updateAttrByIntent(Intent intent, boolean bTriggerWhenResume){
+	private void updateAttrByIntent(Intent intent, boolean bTriggerWhenResume, Bundle savedInstanceState){
 		if(null != intent){
 			/*mstrLiveP2P = intent.getStringExtra(KEY_P2P_STREAM);
 			if(null != mstrLiveP2P && 0 < mstrLiveP2P.length()){
@@ -638,8 +640,8 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 //				}
 				
 				updateUIByMode();
-				
-				if(intent.getBooleanExtra(KEY_PAIRING_DONE, false) && false == intent.getBooleanExtra(KEY_PAIRING_DONE_HANDLED, false) ){
+				long lPairingDoneTs = getIntent().getLongExtra(CameraViewActivity.KEY_PAIRING_DONE_TS, -1);
+				if((-1 != lPairingDoneTs && (System.currentTimeMillis() - lPairingDoneTs < CameraViewActivity.MAX_PAIRING_DONE_TS))){
 					mlRetryConnectBeginTs = System.currentTimeMillis();
 					if(DEBUG){
 						Log.d(TAG, "set mbWaitForFirstWSConnected is true");
@@ -753,19 +755,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		if(!mbFirstResume || mbIsRetryAtNextResume || mbIsSwitchPlayer || mbWaitForFirstWSConnected){
 			monitorAsyncTask(new BeseyeAccountTask.GetCamInfoTask(this, true).setDialogId(-1), true, mStrVCamID);
 			triggerPlay();
-		}
-	}
-	
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-	}
-	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false)){
-			outState.putBoolean(CameraViewActivity.KEY_PAIRING_DONE_HANDLED, true);
 		}
 	}
 	

@@ -196,12 +196,19 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 	synchronized private WeakReference<OnCamGroupUpdateVersionCheckListener> findOnCamGroupUpdateVersionCheckListener(OnCamGroupUpdateVersionCheckListener listener){
 		WeakReference<OnCamGroupUpdateVersionCheckListener> ret = null;
 		if(null != listener){
-			for(WeakReference<OnCamGroupUpdateVersionCheckListener> listenerChk : mLstOnCamGroupUpdateVersionCheckListener){
-				if(null != listenerChk && listener.equals(listenerChk.get())){
-					ret = listenerChk;
+			for( Iterator<WeakReference<OnCamGroupUpdateVersionCheckListener>> it = mLstOnCamGroupUpdateVersionCheckListener.iterator(); it.hasNext() ; ){
+				ret = it.next();
+				if(null != ret && listener.equals(ret.get())){
 					break;
 				}
-			}
+		    }
+			
+//			for(WeakReference<OnCamGroupUpdateVersionCheckListener> listenerChk : mLstOnCamGroupUpdateVersionCheckListener){
+//				if(null != listenerChk && listener.equals(listenerChk.get())){
+//					ret = listenerChk;
+//					break;
+//				}
+//			}
 		}	
 		//Log.i(TAG, "findOnCamGroupUpdateVersionCheckListener(), ret : "+((null != ret)?ret.get().toString():""));
 		return ret;
@@ -210,13 +217,22 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 	synchronized private void broadcastOnCamGroupUpdateVersionCheck(CAM_GROUP_VER_CHK_RET chkRet, CAM_UPDATE_GROUP chkGroup, CAM_UPDATE_ERROR chkErr, List<String> lstVcamIds){
 		
 		Log.i(TAG, "broadcastOnCamGroupUpdateVersionCheck(), ["+chkRet+", "+chkGroup+", "+chkErr+"]");
-
+		
 		OnCamGroupUpdateVersionCheckListener listener = null;
-		for(WeakReference<OnCamGroupUpdateVersionCheckListener> listenerChk : mLstOnCamGroupUpdateVersionCheckListener){
-			if(null != listenerChk && null != (listener = listenerChk.get())){
+		WeakReference<OnCamGroupUpdateVersionCheckListener> ret = null;
+		for( Iterator<WeakReference<OnCamGroupUpdateVersionCheckListener>> it = mLstOnCamGroupUpdateVersionCheckListener.iterator(); it.hasNext() ; ){
+			ret = it.next();
+			if(null != ret && null != (listener = ret.get())){
 				listener.onCamUpdateVersionCheckAllCallback(chkRet, chkGroup, chkErr, lstVcamIds);
 			}
-		}
+	    }
+		
+//		OnCamGroupUpdateVersionCheckListener listener = null;
+//		for(WeakReference<OnCamGroupUpdateVersionCheckListener> listenerChk : mLstOnCamGroupUpdateVersionCheckListener){
+//			if(null != listenerChk && null != (listener = listenerChk.get())){
+//				listener.onCamUpdateVersionCheckAllCallback(chkRet, chkGroup, chkErr, lstVcamIds);
+//			}
+//		}
 	} 
 	
 	synchronized protected void broadcastOnCamUpdateStatusChanged(String strVcamId, CAM_UPDATE_STATUS curStatus, CAM_UPDATE_STATUS prevStatus, CamSwUpdateRecord objUpdateRec){
@@ -224,11 +240,20 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 		Log.i(TAG, "broadcastOnCamUpdateStatusChanged(), ["+prevStatus+"->"+curStatus+", "+strVcamId+"]");
 
 		OnCamUpdateStatusChangedListener listener = null;
-		for(WeakReference<OnCamUpdateStatusChangedListener> listenerChk : mLstOnCamUpdateStatusChangedListener){
-			if(null != listenerChk && null != (listener = listenerChk.get())){
+		WeakReference<OnCamUpdateStatusChangedListener> ret = null;
+		for( Iterator<WeakReference<OnCamUpdateStatusChangedListener>> it = mLstOnCamUpdateStatusChangedListener.iterator(); it.hasNext() ; ){
+			ret = it.next();
+			if(null != ret && null != (listener = ret.get())){
 				listener.onCamUpdateStatusChanged(strVcamId, curStatus, prevStatus, objUpdateRec);
 			}
-		}
+	    }
+		
+//		OnCamUpdateStatusChangedListener listener = null;
+//		for(WeakReference<OnCamUpdateStatusChangedListener> listenerChk : mLstOnCamUpdateStatusChangedListener){
+//			if(null != listenerChk && null != (listener = listenerChk.get())){
+//				listener.onCamUpdateStatusChanged(strVcamId, curStatus, prevStatus, objUpdateRec);
+//			}
+//		}
 	} 
 	
 	synchronized private void broadcastOnCamUpdateProgressChanged(String strVcamId, int iPercetage){
@@ -236,22 +261,40 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 		Log.i(TAG, "broadcastOnCamUpdateProgressChanged(), ["+strVcamId+", "+iPercetage+"%]");
 
 		OnCamUpdateStatusChangedListener listener = null;
-		for(WeakReference<OnCamUpdateStatusChangedListener> listenerChk : mLstOnCamUpdateStatusChangedListener){
-			if(null != listenerChk && null != (listener = listenerChk.get())){
+		WeakReference<OnCamUpdateStatusChangedListener> ret = null;
+		for( Iterator<WeakReference<OnCamUpdateStatusChangedListener>> it = mLstOnCamUpdateStatusChangedListener.iterator(); it.hasNext() ; ){
+			ret = it.next();
+			if(null != ret && null != (listener = ret.get())){
 				listener.onCamUpdateProgress(strVcamId, iPercetage);
 			}
-		}
+	    }
+		
+//		OnCamUpdateStatusChangedListener listener = null;
+//		for(WeakReference<OnCamUpdateStatusChangedListener> listenerChk : mLstOnCamUpdateStatusChangedListener){
+//			if(null != listenerChk && null != (listener = listenerChk.get())){
+//				listener.onCamUpdateProgress(strVcamId, iPercetage);
+//			}
+//		}
 	} 
 	
 	synchronized protected void broadcastOnCamUpdateVerChkStatusChanged(String strVcamId, CAM_UPDATE_VER_CHECK_STATUS curStatus, CAM_UPDATE_VER_CHECK_STATUS prevStatus, CamSwUpdateRecord objUpdateRec){
 		Log.i(TAG, "broadcastOnCamUpdateVerChkStatusChanged(), ["+prevStatus+"->"+curStatus+", "+strVcamId+"]");
 
 		OnCamUpdateStatusChangedListener listener = null;
-		for(WeakReference<OnCamUpdateStatusChangedListener> listenerChk : mLstOnCamUpdateStatusChangedListener){
-			if(null != listenerChk && null != (listener = listenerChk.get())){
+		WeakReference<OnCamUpdateStatusChangedListener> ret = null;
+		for( Iterator<WeakReference<OnCamUpdateStatusChangedListener>> it = mLstOnCamUpdateStatusChangedListener.iterator(); it.hasNext() ; ){
+			ret = it.next();
+			if(null != ret && null != (listener = ret.get())){
 				listener.onCamUpdateVerChkStatusChanged(strVcamId, curStatus, prevStatus, objUpdateRec);
 			}
-		}
+	    }
+		
+//		OnCamUpdateStatusChangedListener listener = null;
+//		for(WeakReference<OnCamUpdateStatusChangedListener> listenerChk : mLstOnCamUpdateStatusChangedListener){
+//			if(null != listenerChk && null != (listener = listenerChk.get())){
+//				listener.onCamUpdateVerChkStatusChanged(strVcamId, curStatus, prevStatus, objUpdateRec);
+//			}
+//		}
 	} 
 	
 	synchronized public void registerOnCamUpdateStatusChangedListener(OnCamUpdateStatusChangedListener listener){
@@ -278,12 +321,19 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 	synchronized private WeakReference<OnCamUpdateStatusChangedListener> findOnCamUpdateStatusChangedListener(OnCamUpdateStatusChangedListener listener){
 		WeakReference<OnCamUpdateStatusChangedListener> ret = null;
 		if(null != listener){
-			for(WeakReference<OnCamUpdateStatusChangedListener> listenerChk : mLstOnCamUpdateStatusChangedListener){
-				if(null != listenerChk && listener.equals(listenerChk.get())){
-					ret = listenerChk;
+			for( Iterator<WeakReference<OnCamUpdateStatusChangedListener>> it = mLstOnCamUpdateStatusChangedListener.iterator(); it.hasNext() ; ){
+				ret = it.next();
+				if(null != ret && listener.equals(ret.get())){
 					break;
 				}
-			}
+		    }
+			
+//			for(WeakReference<OnCamUpdateStatusChangedListener> listenerChk : mLstOnCamUpdateStatusChangedListener){
+//				if(null != listenerChk && listener.equals(listenerChk.get())){
+//					ret = listenerChk;
+//					break;
+//				}
+//			}
 		}	
 		//Log.i(TAG, "findOnCamUpdateStatusChangedListener(), ret : "+((null != ret)?ret.get().toString():""));
 		return ret;

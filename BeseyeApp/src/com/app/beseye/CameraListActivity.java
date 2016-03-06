@@ -207,18 +207,21 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				mCameraListMenuAnimator.showPrivateCam();
 		}
 		
-		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false) && !getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_OTA_NEED_UPDATE, false) && 
-		   (null == savedInstanceState || !savedInstanceState.getBoolean(CameraViewActivity.KEY_PAIRING_DONE_HANDLED, false))){
-			mPendingRunnableOnCreate = new Runnable(){
-				@Override
-				public void run() {
-					Bundle b = new Bundle(getIntent().getExtras());
-					launchActivityByClassName(CameraViewActivity.class.getName(), b);
-					getIntent().putExtra(CameraViewActivity.KEY_PAIRING_DONE, false);
-				}};
-			if(BeseyeConfig.DEBUG)
-				Log.i(TAG, "handle pairing done case");	
-			
+		long lPairingDoneTs = getIntent().getLongExtra(CameraViewActivity.KEY_PAIRING_DONE_TS, -1);
+		if((-1 != lPairingDoneTs && (System.currentTimeMillis() - lPairingDoneTs < CameraViewActivity.MAX_PAIRING_DONE_TS))){
+			if(!getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_OTA_NEED_UPDATE, false)){
+				mPendingRunnableOnCreate = new Runnable(){
+					@Override
+					public void run() {
+						Bundle b = new Bundle(getIntent().getExtras());
+						launchActivityByClassName(CameraViewActivity.class.getName(), b);
+						getIntent().putExtra(CameraViewActivity.KEY_PAIRING_DONE, false);
+					}};
+				if(BeseyeConfig.DEBUG)
+					Log.i(TAG, "handle pairing done case");	
+			}else{
+				showMyDialog(DIALOG_ID_OTA_FORCE_UPDATE);
+			}
 		}else if(getIntent().getBooleanExtra(OpeningPage.KEY_EVENT_FLAG, false)){
 			mPendingRunnableOnCreate = new Runnable(){
 				@Override
@@ -285,19 +288,6 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 		super.onPause();
 	}
 
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-	}
-	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_DONE, false)){
-			outState.putBoolean(CameraViewActivity.KEY_PAIRING_DONE_HANDLED, true);
-		}
-	}
-
 	private void refreshList(){
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
@@ -316,10 +306,6 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
 			monitorAsyncTask(new BeseyeNewsBEHttpTask.GetLatestNewsTask(this).setDialogId(-1), true, BeseyeUtils.DEF_NEWS_LANG);
 			monitorAsyncTask(new BeseyeAccountTask.GetUserInfoTask(this), true);
-			
-			if(getIntent().getBooleanExtra(CameraViewActivity.KEY_PAIRING_OTA_NEED_UPDATE, false)){
-				showMyDialog(DIALOG_ID_OTA_FORCE_UPDATE);
-			}
 		}else{
 			fillVCamList(mVCamListInfoObj);
 		}

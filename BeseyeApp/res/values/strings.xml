@@ -677,7 +677,7 @@
   <string name="desc_cam_update_keep_cam_on_before_ota">Update available, please keep power and network connected.</string>
   <string name="action_cam_update">Update</string>
   <string name="desc_dialog_cam_offline_during_ota">Your camera is offline, reconnect to the network to continue the update process.</string>
-  <string name="desc_cam_update_finish">\"%@\" Updated</string>
+  <string name="desc_cam_update_finish">\"%s\" Updated</string>
   <string name="title_faq_page">FAQ</string>
   <string name="user_account">Account</string>
   <string name="ota_faq_subject">If the update process cannot complete successfully, please try the following:</string>

@@ -670,14 +670,14 @@
   <string name="desc_cam_update_keep_cam_on_during_ota">アップデート中。電源やネット通信を中断しないでください。</string>
   <!-- TODO: string name="desc_cam_update_complete" -->
   <string name="desc_dialog_cam_force_update">ビデオカメラ機能をフル使用するため、アップデートを完了させてください。</string>
-  <string name="desc_cam_update_by_other">カメラ「%@」が更新中のため、数分間お待ち ください。確定を押すと、現在の更新状況を御覧いただけます。</string>
+  <string name="desc_cam_update_by_other">カメラ「%s」が更新中のため、数分間お待ち ください。確定を押すと、現在の更新状況を御覧いただけます。</string>
   <string name="desc_cam_update_failed">アップデート失敗！</string>
   <string name="action_customer_support">顧客サービス</string>
   <string name="action_submit">送信</string>
   <string name="desc_cam_update_keep_cam_on_before_ota">更新する必要があります。電源やネット通信を中断しないでください。</string>
   <string name="action_cam_update">クリックして更新</string>
   <string name="desc_dialog_cam_offline_during_ota">カメラはオフラインです、スマホとカメラのネットワーク接続を確認し、再試行してください。</string>
-  <string name="desc_cam_update_finish"> \"%@\" アップデート完了</string>
+  <string name="desc_cam_update_finish"> \"%s\" アップデート完了</string>
   <string name="title_faq_page">FAQ</string>
   <string name="user_account">アカウント</string>
   <string name="ota_faq_subject">更新できない場合、下記の解決方法を試してください：</string>
