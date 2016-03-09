@@ -227,8 +227,13 @@ public class CameraInfoActivity extends BeseyeBaseActivity{
 						if(DEBUG)
 							Log.i(TAG, "onPostExecute(), "+obj.toString());
 						JSONObject objData = BeseyeJSONUtil.getJSONObject(obj, BeseyeJSONUtil.ACC_DATA);
-						if(null != objData && null != mTxtIpAddr){
-							mTxtIpAddr.setText(BeseyeJSONUtil.getJSONString(objData, BeseyeJSONUtil.CAM_IP_ADDR));
+						if(null != objData){
+							if(null != mTxtIpAddr){
+								mTxtIpAddr.setText(BeseyeJSONUtil.getJSONString(objData, BeseyeJSONUtil.CAM_IP_ADDR));
+							}
+							if(null != mTxtSerialNum){
+								mTxtSerialNum.setText(BeseyeJSONUtil.getJSONString(objData, BeseyeJSONUtil.CAM_SN));
+							}
 						}
 					}
 				}

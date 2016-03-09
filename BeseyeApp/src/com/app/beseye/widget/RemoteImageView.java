@@ -522,7 +522,7 @@ public class RemoteImageView extends ImageView {
 			String strCachePath = null;
 			String cacheFileName = null;
 			try {
-				if(null != mStrVCamId){
+				if(null != mStrVCamId && mbLoadLastImgByVCamId){
 					vcamidDir = getDirByVCamid(mStrVCamId);
 					strCachePath = mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample;
 					cacheFileName = strCachePath.substring(strCachePath.lastIndexOf("/")+1);

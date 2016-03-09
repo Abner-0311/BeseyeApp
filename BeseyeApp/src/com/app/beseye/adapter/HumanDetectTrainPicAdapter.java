@@ -101,12 +101,14 @@ public class HumanDetectTrainPicAdapter extends BeseyeJSONAdapter{
 				
 				holder.mImgTrainPic = (RemoteImageView)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.iv_training_pic);
 				if(null != holder.mImgTrainPic){
-					BeseyeUtils.setThumbnailRatio(holder.mImgTrainPic, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
+					//BeseyeUtils.setThumbnailRatio(holder.mImgTrainPic, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
+					BeseyeUtils.setWidthAndHeight(holder.mImgTrainPic, miThumbnailWidth, iThumbnailHeight);
 				}
 				
 				holder.mImgPicBorder = (ImageView)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.iv_human_pic_border);
 				if(null != holder.mImgPicBorder){
-					BeseyeUtils.setThumbnailRatio(holder.mImgPicBorder, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
+					//BeseyeUtils.setThumbnailRatio(holder.mImgPicBorder, miThumbnailWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_2_1);
+					BeseyeUtils.setWidthAndHeight(holder.mImgPicBorder, miThumbnailWidth, iThumbnailHeight);
 				}
 				
 				holder.mTxtNoHuman = (TextView)holder.mVgHumanDetectTrainSubItm.findViewById(R.id.txt_human_pic_no_human);
