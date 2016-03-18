@@ -181,7 +181,8 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 												bOTAUpdating || 
 												(bOTAFinished && !camRec.isCamOnlineAfterOTA() && camRec.isInOTAFinishPeriod() && connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED));
 				
-				Log.i(TAG, "CameraListAdapter::setupItem(), camRec:["+camRec+"], bCanOTAUpdate:"+bCanOTAUpdate+", bShowOTAUpdate:"+bShowOTAUpdate+", bOTAError:"+bOTAError+", bIsOTAPoorNetworkErr"+bIsOTAPoorNetworkErr+", bOTAUpdating:"+bOTAUpdating+", bOTAFinished:"+bOTAFinished+", connState:"+connState);
+				if(BeseyeConfig.DEBUG)
+					Log.i(TAG, "CameraListAdapter::setupItem(), camRec:["+camRec+"], bCanOTAUpdate:"+bCanOTAUpdate+", bShowOTAUpdate:"+bShowOTAUpdate+", bOTAError:"+bOTAError+", bIsOTAPoorNetworkErr"+bIsOTAPoorNetworkErr+", bOTAUpdating:"+bOTAUpdating+", bOTAFinished:"+bOTAFinished+", connState:"+connState);
 
 				
 				if(null != holder.mTxtCamName){

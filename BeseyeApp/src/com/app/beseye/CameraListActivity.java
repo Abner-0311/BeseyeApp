@@ -320,7 +320,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			case DIALOG_ID_OTA_FORCE_UPDATE:{
 				BaseOneBtnDialog d = new BaseOneBtnDialog(this);
 				d.setBodyText(getString(R.string.desc_dialog_cam_force_update));
-				d.setTitleText(getString(R.string.dialog_title_warning));
+				d.setTitleText(getString(R.string.dialog_title_attention));
 				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
 					@Override
 					public void onBtnClick() {
@@ -1362,20 +1362,25 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	
 	@Override
 	public void onCamUpdateVerChkStatusChanged(String strVcamId, CAM_UPDATE_VER_CHECK_STATUS curStatus, CAM_UPDATE_VER_CHECK_STATUS prevStatus, CamSwUpdateRecord objUpdateRec){
-		if(mActivityResume)
+		if(mActivityResume){
 			refreshList();
+		}
+		
+		if(curStatus.equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_UPDATED)){
+			BeseyeCamSWVersionMgr.getInstance().checkCamUpdateStatus(objUpdateRec, true);
+		}
 	}
 	
 	@Override
 	public void onCamUpdateVersionCheckAllCallback(
 			CAM_GROUP_VER_CHK_RET chkRet, CAM_UPDATE_GROUP chkGroup,
 			CAM_UPDATE_ERROR chkErr, List<String> lstVcamIds) {
-		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamGroupUpdateVersionCheckListener(this);
-		if(chkRet.equals(CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_OUT_OF_UPDATE) || chkRet.equals(CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_PARTIAL_UPDATED) ){
-			if(mActivityResume)
-				refreshList();
-		}
-		BeseyeCamSWVersionMgr.getInstance().checkGroupCamUpdateStatus(meUpdateGroup, true);
+//		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamGroupUpdateVersionCheckListener(this);
+//		if(chkRet.equals(CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_OUT_OF_UPDATE) || chkRet.equals(CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_PARTIAL_UPDATED) ){
+//			if(mActivityResume)
+//				refreshList();
+//		}
+//		BeseyeCamSWVersionMgr.getInstance().checkGroupCamUpdateStatus(meUpdateGroup, true);
 	}
 
 }

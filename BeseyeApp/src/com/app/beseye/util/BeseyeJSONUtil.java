@@ -482,7 +482,18 @@ public class BeseyeJSONUtil {
 		    
 		    new FACE_LIST(107, "Shaq", "Shaq.jpg"),
 		    
-		    new FACE_LIST(108, "Shaq", "Shaq.jpg")
+		    new FACE_LIST(108, "Shaq", "Shaq.jpg"),
+		    
+		    new FACE_LIST(200, "Shaq", "Shaq.jpg"),
+		    
+		    new FACE_LIST(201, "Kevin", "Kevin.jpg"),
+		    
+		    new FACE_LIST(202, "Alice", "Alice.jpg"),
+		    
+		    new FACE_LIST(203, "Olya", "Olya.jpg"),
+		    
+		    new FACE_LIST(204, "Kelly", "Kelly.jpg")
+		    
 		};
 	
 	public static final String MM_IS_LIVE 				= "isLive";

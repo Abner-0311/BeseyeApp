@@ -55,6 +55,7 @@ public class BeseyeCamBEHttpTask  {
 	public static class GetCamSetupTask extends BeseyeHttpTask{
 		private String strVcamId = null;
 		private int iTaskSeed = 0;
+		private Object cusObj = null;
 		
 		public GetCamSetupTask(OnHttpTaskCallback cb) {
 			this(cb,-1);
@@ -71,6 +72,14 @@ public class BeseyeCamBEHttpTask  {
 		
 		public int getTaskSeed(){
 			return iTaskSeed;
+		}
+		
+		public void setCusObj(Object obj){
+			cusObj = obj;
+		}
+		
+		public Object getCusObj(){
+			return cusObj ;
 		}
 		
 		@Override

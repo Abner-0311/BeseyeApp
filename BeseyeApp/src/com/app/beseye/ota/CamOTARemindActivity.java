@@ -27,6 +27,7 @@ import com.app.beseye.ota.BeseyeCamSWVersionMgr.OnCamUpdateStatusChangedListener
 import com.app.beseye.ota.CamOTAInstructionActivity.CAM_OTA_INSTR_TYPE;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
+import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.widget.BaseOneBtnDialog;
 import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
 
@@ -66,14 +67,17 @@ public class CamOTARemindActivity extends BeseyeNavBarBaseActivity implements On
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_update:{
-				if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ALL.equals(mCamOTAType)){
-					BeseyeCamSWVersionMgr.getInstance().performCamGroupUpdate(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
-					launchDelegateActivity(CameraListActivity.class.getName());
-				}else if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ONE.equals(mCamOTAType)){
-					BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
-					BeseyeCamSWVersionMgr.getInstance().performCamUpdate(BeseyeCamSWVersionMgr.getInstance().findCamSwUpdateRecord(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID), true);
+				if(NetworkMgr.getInstance().isNetworkConnected()){
+					if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ALL.equals(mCamOTAType)){
+						BeseyeCamSWVersionMgr.getInstance().performCamGroupUpdate(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
+						launchDelegateActivity(CameraListActivity.class.getName());
+					}else if(CAM_OTA_INSTR_TYPE.TYPE_UPDATE_ONE.equals(mCamOTAType)){
+						BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
+						BeseyeCamSWVersionMgr.getInstance().performCamUpdate(BeseyeCamSWVersionMgr.getInstance().findCamSwUpdateRecord(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID), true);
+					}
+				}else{
+					showNoNetworkDialog();
 				}
-
 				break;
 			}
 			default:

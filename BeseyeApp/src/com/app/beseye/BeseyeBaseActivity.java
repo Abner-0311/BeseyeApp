@@ -741,7 +741,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		case DIALOG_ID_OTA_FORCE_UPDATE:{
 			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
 			d.setBodyText(getString(R.string.desc_dialog_cam_force_update));
-			d.setTitleText(getString(R.string.dialog_title_warning));
+			d.setTitleText(getString(R.string.dialog_title_attention));
 			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
 				@Override
 				public void onBtnClick() {

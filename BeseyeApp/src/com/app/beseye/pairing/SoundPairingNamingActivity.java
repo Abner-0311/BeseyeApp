@@ -27,6 +27,7 @@ import com.app.beseye.CameraViewActivity;
 import com.app.beseye.R;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
+import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_GROUP;
 import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_STATUS;
@@ -97,14 +98,18 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 			});		
 		}
 		
-		BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
-		BeseyeCamSWVersionMgr.getInstance().AddUpdateVCam(mCam_obj, CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
-		//BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, this.mStrVCamID, false);
+		if(!SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
+			BeseyeCamSWVersionMgr.getInstance().registerOnCamUpdateStatusChangedListener(this);
+			BeseyeCamSWVersionMgr.getInstance().AddUpdateVCam(mCam_obj, CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL);
+			//BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, this.mStrVCamID, false);
+		}
 	}
 	
 	@Override
 	public void onDestroy() {
-		BeseyeCamSWVersionMgr.getInstance().unregisterOnCamUpdateStatusChangedListener(this);
+		if(!SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
+			BeseyeCamSWVersionMgr.getInstance().unregisterOnCamUpdateStatusChangedListener(this);
+		}
 		super.onDestroy();
 	}
 	
@@ -131,8 +136,9 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 					BeseyeUtils.showSoftKeyboard(SoundPairingNamingActivity.this, mEtCamName);
 				}}, 1000);
 		}
-		
-		monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+		if(!SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
+			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
+		}
 	}
 
 	@Override
@@ -161,7 +167,6 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 			return false;
 		}
 	};
-	
 	
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,String strMsg) {	
@@ -192,7 +197,14 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 				selectNextPage();
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
-					mbGetCamSetUp = true;
+					JSONObject obj = result.get(0);
+					if(null != obj){
+						if(!BeseyeJSONUtil.isCamPowerDisconnected(obj)){
+							mbGetCamSetUp = true;
+						}else{
+							Log.i(TAG, "SoundPairingNamingActivity::onPostExecute(), not online, retry....");
+						}
+					}
 				}else{
 					if(DEBUG)
 						Log.i(TAG, "SoundPairingNamingActivity::onPostExecute(), iRetCode"+iRetCode+", retry....");
@@ -207,7 +219,9 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 	}
 	
 	private void selectNextPage(){
-		if((mbSetCamNameDone && mbGetOTAVerCheckResult) || (mbSetCamNameDone && (System.currentTimeMillis() -mlTimeToGetOTAVersion) > MAX_TIME_TO_GET_OTA_VER)){
+		if((SessionMgr.getInstance().getIsCamSWUpdateSuspended()) || 
+		   ((mbSetCamNameDone && mbGetOTAVerCheckResult) || 
+		   (mbSetCamNameDone && (System.currentTimeMillis() -mlTimeToGetOTAVersion) > MAX_TIME_TO_GET_OTA_VER))){
 			Bundle b = new Bundle();
 			b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
 			//b.putBoolean(CameraViewActivity.KEY_PAIRING_DONE, true);
@@ -221,12 +235,12 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 				@Override
 				public void run() {
 					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(SoundPairingNamingActivity.this).setDialogId(!mbSetCamNameDone?-1:DIALOG_ID_LOADING), true, mStrVCamID);
-				}}, 1000L);
+				}}, 2000L);
 		}else if(mbSetCamNameDone && !mbGetOTAVerCheckResult){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID, !mbSetCamNameDone);
+					BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID, mbSetCamNameDone);
 				}}, 1000L);
 		}
 	}
@@ -261,6 +275,5 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 			selectNextPage();
 		}
 	}
-	
 }
 

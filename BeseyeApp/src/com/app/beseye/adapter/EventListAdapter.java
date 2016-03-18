@@ -233,22 +233,25 @@ public class EventListAdapter extends BeseyeJSONAdapter {
 			if(mbShowPeoeple){
 				JSONArray faceList = BeseyeJSONUtil.getJSONArray(obj, BeseyeJSONUtil.MM_FACE_IDS);
 				if(null != faceList && 0 < faceList.length()){
-					BeseyeJSONUtil.FACE_LIST face;
+					BeseyeJSONUtil.FACE_LIST face = null;
 					try {
 						int iFaceId = -1;
 						for(int i = faceList.length()-1;i >=0;i--){
 							if(0 < faceList.getInt(i)){
 								iFaceId = faceList.getInt(i);
-								break;
+								face = BeseyeJSONUtil.findFacebyId(iFaceId);
+								if(null != face){
+									Log.i(TAG, "genDetectionType(), find match "+iFaceId+" to "+face.mstrName);	
+									strType = String.format(mStrFamilyDetectFormat, face.mstrName);
+									break;
+								}
 							}
 						}
-						face = BeseyeJSONUtil.findFacebyId(iFaceId);
-						if(null != face){
-							Log.i(TAG, "genDetectionType(), find match "+iFaceId+" to "+face.mstrName);	
-							strType = String.format(mStrFamilyDetectFormat, face.mstrName);
-						}else{
+						
+						if(null == face){
 							strType = String.format(mStrFamilyDetectFormat, this.mStrStranger);
 						}
+						
 					} catch (JSONException e) {
 						Log.e(TAG, "genDetectionType(), e:"+e.toString());	
 					}

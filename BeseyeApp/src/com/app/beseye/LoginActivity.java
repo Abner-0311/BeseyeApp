@@ -46,11 +46,12 @@ public class LoginActivity extends BeseyeNavBarBaseActivity {
 		if(null != mEtUserName){
 			mEtUserName.addTextChangedListener(mTextWatcher);
 			if(DEBUG){
-				if(SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
-					mEtUserName.setText("abner.huang@beseye.com");
-				}else if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_STAGING){
-					mEtUserName.setText("democam@beseye.com");
-				}
+//				if(SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
+//					mEtUserName.setText("abner.huang@beseye.com");
+//				}else if(SessionMgr.getInstance().getServerMode() == SERVER_MODE.MODE_STAGING){
+//					mEtUserName.setText("democam@beseye.com");
+//				}
+				mEtUserName.setText(SessionMgr.getInstance().getAccount());
 			}
 		}
 		

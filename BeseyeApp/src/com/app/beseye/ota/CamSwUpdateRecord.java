@@ -12,6 +12,14 @@ import com.app.beseye.ota.BeseyeCamSWVersionMgr.CAM_UPDATE_VER_CHECK_STATUS;
 import com.app.beseye.util.BeseyeConfig;
 
 public class CamSwUpdateRecord{
+	static public enum CAM_CONNECTION_STATUS{
+		CAM_CONNECTION_INIT,
+		CAM_CONNECTION_OFF,
+		CAM_CONNECTION_ON,
+		CAM_CONNECTION_UNKNOWN,
+		CAM_CONNECTION_STATUS_COUNT
+	}
+	
 	static private final int MAX_RETRY_CNT_FOR_POOR_NETWORK = 1;
 	static final private long TIME_TO_SHOW_OTA_FINISH = 60*1000; // 1 min
 	static final private long TIME_OF_CAM_NO_RESPONSE = 25*60*1000; //25 mins
@@ -23,6 +31,7 @@ public class CamSwUpdateRecord{
 	private CAM_UPDATE_ERROR meUpdateErrType;
 	CAM_UPDATE_GROUP meUpdateGroup;
 	CAM_UPDATE_VER_CHECK_STATUS meVerCheckStatus;
+	CAM_CONNECTION_STATUS meCamConnectionStatus;
 	
 	boolean mbUpdateTriggerred;
 	
@@ -56,6 +65,7 @@ public class CamSwUpdateRecord{
 		this.meUpdateStatus = mePrevUpdateStatus = CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_INIT;
 		this.meUpdateErrType = CAM_UPDATE_ERROR.CAM_UPDATE_ERROR_NONE;
 		this.meVerCheckStatus = CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_INIT;
+		this.meCamConnectionStatus = CAM_CONNECTION_STATUS.CAM_CONNECTION_INIT;
 		this.mbUpdateTriggerred = false;
 		this.miErrCode = miFinalErrCode = miDetailErrCode =  0;
 		this.miUpdatePercentage = 0;

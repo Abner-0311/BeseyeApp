@@ -286,7 +286,7 @@ public class SessionMgr {
 		//clearSharedPreferences(mSecuredPref);
 		setAuthToken("");
 		setUserid("");
-		setAccount("");
+		//setAccount("");
 		setOwnerInfo("");
 		setIsCertificated(false);
 		setIsTrustDev(false);

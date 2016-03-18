@@ -2,6 +2,7 @@ package com.app.beseye.ota;
 
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.TAG;
+import static com.app.beseye.ota.CamSwUpdateRecord.CAM_CONNECTION_STATUS.*;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -19,24 +20,16 @@ import org.json.JSONObject;
 
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Log;
 
-import com.app.beseye.BeseyeBaseActivity;
-import com.app.beseye.R;
 import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.BeseyeHttpTask.OnHttpTaskCallback;
-import com.app.beseye.util.BeseyeCamInfoSyncMgr;
-import com.app.beseye.util.BeseyeConfig;
-import com.app.beseye.util.BeseyeFeatureConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
-import com.app.beseye.util.BeseyeStorageAgent;
 import com.app.beseye.util.BeseyeUtils;
-import com.app.beseye.util.BeseyeCamInfoSyncMgr.OnCamInfoChangedListener;
 
 public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 	
@@ -568,6 +561,25 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 		}
 		
 		checkGroupOTAVer(updateGroup, false);
+		checkGroupCamConnectionStatus(updateGroup);
+	}
+    
+    synchronized public void checkGroupCamConnectionStatus(CAM_UPDATE_GROUP updateGroup){		
+		Map<String, CamSwUpdateRecord> mapVcamList =  mLstMapCamSwUpdateRecord.get(updateGroup.ordinal());
+		int iVcamCnt = mapVcamList.keySet().size();
+		if(0 < iVcamCnt){
+			Set<String> setVcamIdToCheck = mapVcamList.keySet();
+			for(String vcamId : setVcamIdToCheck){
+				BeseyeCamBEHttpTask.GetCamSetupTask getCamSetupTask = new BeseyeCamBEHttpTask.GetCamSetupTask(this);
+				if(null != getCamSetupTask){
+					getCamSetupTask.setDialogId(-1);
+					CamSwUpdateRecord camRec = mapVcamList.get(vcamId);
+					camRec.meCamConnectionStatus = CAM_CONNECTION_INIT;
+					getCamSetupTask.setCusObj(camRec);
+					executeAsyncTask(getCamSetupTask, vcamId);
+				}
+			}
+		}
 	}
     
     synchronized public void checkGroupOTAVer(CAM_UPDATE_GROUP updateGroup, boolean bForceCheck){		
@@ -641,15 +653,21 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 		Map<String, CamSwUpdateRecord> mapVcamList =  mLstMapCamSwUpdateRecord.get(updateGroup.ordinal());
 		
 		List<String> lstVCamIdToUpdate = new ArrayList<String>();
+		List<String> lstVCamIdCamConnectionOn = new ArrayList<String>();
 		
 		boolean bGroupVerCheckFinish = true;
 		for(CamSwUpdateRecord rec : mapVcamList.values()){
 			if(null != rec ){
-				if(rec.meVerCheckStatus.equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_INIT) || mlLastGroupVerCheckTs[updateGroup.ordinal()] > rec.getVerCheckTs()){
+				if(rec.meVerCheckStatus.equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_INIT) ||
+			       rec.meCamConnectionStatus.equals(CAM_CONNECTION_INIT) || 
+			       mlLastGroupVerCheckTs[updateGroup.ordinal()] > rec.getVerCheckTs()){
 					bGroupVerCheckFinish = false;
 					break;
 				}else if(rec.meVerCheckStatus.equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_OUT_OF_DATE)){
 					lstVCamIdToUpdate.add(rec.mStrVCamId);
+					if( rec.meCamConnectionStatus.equals(CAM_CONNECTION_ON)){
+						lstVCamIdCamConnectionOn.add(rec.mStrVCamId);
+					}
 				}
 			}
 		}
@@ -657,12 +675,13 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 		if(bGroupVerCheckFinish){
 			int iGroupCnt = mapVcamList.keySet().size() ;
 			int iUpdateCnt = lstVCamIdToUpdate.size();
+			int iCamConnectionOnCnt = lstVCamIdCamConnectionOn.size();
 			
 			CAM_GROUP_VER_CHK_RET ret = (0 == iUpdateCnt)?CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_UPDATED:
-													 (iGroupCnt == iUpdateCnt)?CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_OUT_OF_UPDATE:
+													 (iGroupCnt == iUpdateCnt && iUpdateCnt == iCamConnectionOnCnt)?CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_OUT_OF_UPDATE:
 												     CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_PARTIAL_UPDATED;
 			
-			Log.i(TAG, "CheckVCamListVerChkStatus(), gourp version check finish :"+updateGroup);
+			Log.i(TAG, "CheckVCamListVerChkStatus(), gourp version check finish :"+updateGroup+"("+iGroupCnt+", "+iUpdateCnt+", "+iCamConnectionOnCnt+")");
 			
 			broadcastOnCamGroupUpdateVersionCheck(ret, 
 														  updateGroup, 
@@ -702,6 +721,21 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 				
 				broadcastOnCamUpdateVerChkStatusChanged(camRec.mStrVCamId, camRec.meVerCheckStatus , prevStatus, camRec);
 				
+				CheckVCamListVerChkStatus(camRec.meUpdateGroup);
+			}
+		}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+			CamSwUpdateRecord camRec = (CamSwUpdateRecord)((BeseyeCamBEHttpTask.GetCamSetupTask)task).getCusObj();
+			if(null != camRec){
+				if(DEBUG)
+					Log.i(TAG, "BeseyeCamSWVersionMgr::onPostExecute(), "+result.toString());
+				if(0 == iRetCode){
+					JSONObject obj = result.get(0);
+					if(null != obj){
+						camRec.meCamConnectionStatus = BeseyeJSONUtil.isCamPowerDisconnected(obj)?CAM_CONNECTION_OFF:CAM_CONNECTION_ON;
+					}
+				}else{
+					camRec.meCamConnectionStatus = CAM_CONNECTION_UNKNOWN;
+				}
 				CheckVCamListVerChkStatus(camRec.meUpdateGroup);
 			}
 		}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
