@@ -51,8 +51,18 @@ public class ViewShareDialog extends Dialog implements OnClickListener {
 		super(context);
 		init(context, imageContext);
 	}
+	
+	public ViewShareDialog(Context context, Bitmap bmpScreenshot) {
+		super(context);
+		init(context, bmpScreenshot);
+	}
 
 	private void init(Context context, String imageContext) {
+		Bitmap bMap = BitmapFactory.decodeFile(imageContext);
+		init(context, bMap);
+	}
+	
+	private void init(Context context, Bitmap bmpScreenshot) {
 		
 		getWindow().setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);		
@@ -64,8 +74,9 @@ public class ViewShareDialog extends Dialog implements OnClickListener {
 			if(null != m_vgViewShare) {
 				
 				mSnapshot = (ImageView)m_vgViewShare.findViewById(R.id.iv_snapshot);
-				Bitmap bMap = BitmapFactory.decodeFile(imageContext);
-				mSnapshot.setImageBitmap(bMap);
+				if(null != bmpScreenshot){
+					mSnapshot.setImageBitmap(bmpScreenshot);
+				}
 		        
 				mBtnShare = (Button)m_vgViewShare.findViewById(R.id.btn_share);
 				if(null != mBtnShare){

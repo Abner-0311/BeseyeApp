@@ -194,6 +194,15 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 				}
 				mlTimeToGetOTAVersion = System.currentTimeMillis();
 				mbSetCamNameDone = true;
+				
+				if(!SessionMgr.getInstance().getIsCamSWUpdateSuspended()){
+					BeseyeUtils.postRunnable(new Runnable(){
+						@Override
+						public void run() {
+							showMyDialog(DIALOG_ID_LOADING);
+						}}, 500L);
+				}
+				
 				selectNextPage();
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
@@ -218,6 +227,8 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 		}
 	}
 	
+	private BeseyeCamBEHttpTask.GetCamSetupTask mGetCamSetupTask = null;
+	
 	private void selectNextPage(){
 		if((SessionMgr.getInstance().getIsCamSWUpdateSuspended()) || 
 		   ((mbSetCamNameDone && mbGetOTAVerCheckResult) || 
@@ -231,17 +242,24 @@ public class SoundPairingNamingActivity extends BeseyeBaseActivity implements On
 			launchDelegateActivity(CameraListActivity.class.getName(), b);
 			finish();
 		}else if(!mbGetCamSetUp){
+			if(mbSetCamNameDone){
+				showMyDialog(DIALOG_ID_LOADING);
+			}
+			
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(SoundPairingNamingActivity.this).setDialogId(!mbSetCamNameDone?-1:DIALOG_ID_LOADING), true, mStrVCamID);
-				}}, 2000L);
+					if(null != mGetCamSetupTask){
+						mGetCamSetupTask.cancel(true);
+					}
+					monitorAsyncTask((mGetCamSetupTask = new BeseyeCamBEHttpTask.GetCamSetupTask(SoundPairingNamingActivity.this)).setDialogId(-1), true, mStrVCamID);
+				}}, mbSetCamNameDone?1000L:2000L);
 		}else if(mbSetCamNameDone && !mbGetOTAVerCheckResult){
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID, mbSetCamNameDone);
-				}}, 1000L);
+			if(mbSetCamNameDone){
+				showMyDialog(DIALOG_ID_LOADING);
+			}
+			
+			BeseyeCamSWVersionMgr.getInstance().checkCamOTAVer(CAM_UPDATE_GROUP.CAM_UPDATE_GROUP_PERONSAL, mStrVCamID, false);
 		}
 	}
 	

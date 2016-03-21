@@ -16,6 +16,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
+import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -1106,25 +1108,36 @@ public class TouchSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     
     private static final int SCREENSHOT_FINAL_WIDTH = 1920; 
     private static final int SCREENSHOT_FINAL_HEIGHT = 1080; 
+    private Bitmap mbmpSave;
+    private Bitmap mbmpIcon;
     
     private boolean copyBitmap(Bitmap bmp){
 	    if(-1 != mlRequestBmpTimestamp){
 	    	if(null != bmp && false == bmp.isRecycled()){
 	    		//Bitmap bmpSave = bmp.copy(bmp.getConfig(), true);
 				//bmpSave = BitmapFactory.decodeFile(BeseyeStorageAgent.getFileInDownloadDir(getContext(), "720P.jpg").getAbsolutePath());
-	    		Bitmap bmpSave = Bitmap.createScaledBitmap(bmp, SCREENSHOT_FINAL_WIDTH, SCREENSHOT_FINAL_HEIGHT, false);
-	    		if(null != bmpSave){
-	    			Canvas canvasTarget = new Canvas( bmpSave );
+	    		if(null == mbmpSave){
+	    			mbmpSave = Bitmap.createScaledBitmap(bmp, SCREENSHOT_FINAL_WIDTH, SCREENSHOT_FINAL_HEIGHT, false);
+	    		}
+
+	    		if(null != mbmpSave){
+	    			Canvas canvasTarget = new Canvas( mbmpSave );
 		    		if(null != canvasTarget){
-		    			//canvasTarget.drawBitmap(bmp, 0, 0, null);
-		    			Bitmap icon = BitmapFactory.decodeResource(context.getResources(),com.app.beseye.R.drawable.liveview_snapshot_watermark);
-		    			if(null != icon){
-		    				int iPadding = this.context.getResources().getDimensionPixelSize(R.dimen.watermark_padding);
-			    			canvasTarget.drawBitmap(icon, bmpSave.getWidth() - icon.getWidth() - iPadding, bmpSave.getHeight() - icon.getHeight() - iPadding, null);
+		    			if(null != bmp){
+		    				canvasTarget.drawBitmap(bmp, new Rect(0, 0, bmp.getWidth(), bmp.getHeight()), new Rect(0, 0, SCREENSHOT_FINAL_WIDTH, SCREENSHOT_FINAL_HEIGHT) , null);
 		    			}
 		    			
+		    			if(null == mbmpIcon)
+		    				mbmpIcon = BitmapFactory.decodeResource(context.getResources(),com.app.beseye.R.drawable.liveview_snapshot_watermark);
+		    			
+		    			if(null != mbmpIcon){
+		    				int iPadding = this.context.getResources().getDimensionPixelSize(R.dimen.watermark_padding);
+			    			canvasTarget.drawBitmap(mbmpIcon, mbmpSave.getWidth() - mbmpIcon.getWidth() - iPadding, mbmpSave.getHeight() - mbmpIcon.getHeight() - iPadding, null);
+		    			}
+		    			
+		    			
 		    			if(null != mOnBitmapScreenshotCallback){
-			    			mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, bmpSave);
+			    			mOnBitmapScreenshotCallback.onBitmapScreenshotUpdate(mlRequestBmpTimestamp, mbmpSave);
 			    		}
 			    		mlRequestBmpTimestamp = -1;
 			    		mOnBitmapScreenshotCallback = null;

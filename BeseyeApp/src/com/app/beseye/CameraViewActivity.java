@@ -2237,9 +2237,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     		}
     	}else{
     		Log.i(TAG, "onBitmapScreenshotUpdate(), invalid match mlRequestBitmapScreenshotTs:"+mlRequestBitmapScreenshotTs+", lTs:"+lTs);
-    		if(null != bmp && false == bmp.isRecycled()){
-    			bmp.recycle();
-    		}
+//    		if(null != bmp && false == bmp.isRecycled()){
+//    			bmp.recycle();
+//    		}
     		mlRequestBitmapScreenshotTs = -1;
     	}
     }
@@ -2261,7 +2261,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 		}
 
 		@Override
-		protected Boolean doInBackground(Bitmap... bmp) {
+		protected Boolean doInBackground(final Bitmap... bmp) {
 			boolean bRet = false;
 			final File fileToSave = BeseyeStorageAgent.getFileInPicDir(CameraViewActivity.this,"Beseye_Pro_"+BeseyeUtils.getDateString(mUpdateDateTimeRunnable.getLastDateUpdate(), "MM_dd_yyyy_hh_mm_ss_a.jpg"));
 			if(null != fileToSave){
@@ -2284,7 +2284,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 								@Override
 								public void run() {									
 									//by Kelly, call ViewShareDialog 
-			    		        	ViewShareDialog d = new ViewShareDialog(CameraViewActivity.this, fileToSave.getAbsolutePath()); 
+			    		        	ViewShareDialog d = new ViewShareDialog(CameraViewActivity.this, bmp[0]); 
 			    		    		d.setOnShareClickListener(new OnShareClickListener(){
 			    		    			@Override
 			    		    			public void onBtnShareClick() {
@@ -2300,7 +2300,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	    		        }else{
 	    		    		Log.e(TAG, "failed to compress screenshot");
 	    		        }
-	    		        bmp[0].recycle();
+	    		        //bmp[0].recycle();
     		        }else{
     		    		Log.e(TAG, "failed to have the bitmap");
     		        }
