@@ -346,7 +346,7 @@
   <string name="notify_cam_off_detect_cam_list">Camera %s turns off.</string>
   <string name="about_title">About Beseye</string>
   <string name="about_ver">Beseye Version %s</string>
-  <string name="about_desc">About Beseye\n\nThe name Beseye was created with the Ancient Egyptian goddess, Bes, a protector of households and a symbol of family blessing.\n\nBes is an Ancient Egyptian deity worshipped as a protector of households, and in particular, of mothers and children and childbirth. Bes later came to be regarded as the defender of everything good and the enemy of all that is bad.\n\nBeseye Cloud Security Co., in the name of "via Bes’ eye," is dedicated to home and family care. With the up-to-date cloud and monitor hardware manufacturing technology, we are committed to a smarter and safer life for household users.\n\nWant to be free from anxiety and home security risks? Want to stay with your babies as they getting older day by day, and never miss any precious moments? We propose a cloud solution to protect your loved ones and guard your home.\n\nAll you need to do is picking up your Beseye camera! Enjoy your family time!\n\nBe smart, be free!\n\nFocus on families with babies and kids, a brand new Beseye camera with improved cloud security service is about to be released!\n\nComputex d&amp;i award winner, with innovative patents, Beseye’s forthcoming product is ready to impress the world. Hold on, you’re gonna fall in love with it!</string>
+  <string name="about_desc">About Beseye\n\nThe name Beseye was created with the Ancient Egyptian goddess, Bes, a protector of households and a symbol of family blessing.\n\nBes is an Ancient Egyptian deity worshipped as a protector of households, and in particular, of mothers and children and childbirth. Bes later came to be regarded as the defender of everything good and the enemy of all that is bad.\n\nBeseye Cloud Security Co., in the name of \"via Bes’ eye,\" is dedicated to home and family care. With the up-to-date cloud and monitor hardware manufacturing technology, we are committed to a smarter and safer life for household users.\n\nWant to be free from anxiety and home security risks? Want to stay with your babies as they getting older day by day, and never miss any precious moments? We propose a cloud solution to protect your loved ones and guard your home.\n\nAll you need to do is picking up your Beseye camera! Enjoy your family time!\n\nBe smart, be free!\n\nFocus on families with babies and kids, a brand new Beseye camera with improved cloud security service is about to be released!\n\nComputex d&amp;i award winner, with innovative patents, Beseye’s forthcoming product is ready to impress the world. Hold on, you’re gonna fall in love with it!</string>
   <!-- descriptions of pull to refresh listview-->
   <string name="loading_latest_update">Last update %s</string>
   <string name="pull_to_refresh_pull_label">Pull down to refresh…</string>
@@ -401,12 +401,12 @@
   <string name="signup_plug_in_done">Camera plugged in. Let\'s setup.</string>
   <string name="signup_watch_out_title">Attention!!</string>
   <string name="signup_watch_out_desc">Attention! Your device is going to make %1$s in the next step. Please put the device speaker toward the camera within 10cms (as shown below), and then go to the next step.</string>
-  <string name="signup_watch_out_desc_bebebe">"beeping sound"</string>
-  <string name="signup_watch_out_desc_speaker">"device speaker"</string>
+  <string name="signup_watch_out_desc_bebebe">\"beeping sound\"</string>
+  <string name="signup_watch_out_desc_speaker">\"device speaker\"</string>
   <string name="signup_watch_out_done">Phone is ready, next step</string>
   <string name="signup_confirm_led_title">Confirm status light</string>
   <string name="signup_confirm_led_desc">Is the status light %s? If not, please hold on  a few seconds.</string>
-  <string name="signup_confirm_led_twinkling_green_light">"twinkling in green"</string>
+  <string name="signup_confirm_led_twinkling_green_light">\"twinkling in green\"</string>
   <string name="signup_confirm_led_done">Green light is twinkling, next step</string>
   <string name="signup_pairing_fail_desc">Please try to plug in your camera once again, and start Let it Bee™ until the green light is twinkling. Also make sure to keep your device near the camera within 10cms.</string>
   <string name="signup_guideline_try_again_btn">OK. Let\'s try again.</string>
@@ -524,7 +524,7 @@
   <!--Desc of Human detect training entry-->
   <string name="enhance_human_detect">Human detection optimization</string>
   <!--Hint of Human detect training entry-->
-  <string name="enhance_human_detect_hint">System will automatically detect the human movement. If no person is found on the next page, click on "delete" to obtain the best recognition results.</string>
+  <string name="enhance_human_detect_hint">System will automatically detect the human movement. If no person is found on the next page, click on \"delete\" to obtain the best recognition results.</string>
   <!--Percentage of training-->
   <string name="recognition_percentage">Optimization progress：%s</string>
   <!--Training Done-->
@@ -532,7 +532,7 @@
   <!--Desc of Human detect training reset-->
   <string name="reset_human_detect">Reset human detection</string>
   <!--Hint of Human detect training reset-->
-  <string name="reset_human_detect_hint">If the camera has moved, or if you wish to run optimization again, please select "reset."</string>
+  <string name="reset_human_detect_hint">If the camera has moved, or if you wish to run optimization again, please select \"reset.\"</string>
   <!--Dialong desc of Human detect training reset-->
   <string name="dialog_reset_human_detect">This action will delete all the results of previous optimization sessions and will require another optimization session. Continue?</string>
   <!--Desc when user selects in training page-->
@@ -670,16 +670,16 @@
   <string name="desc_cam_update_keep_cam_on_during_ota">Updating… please keep power and network connected. </string>
   <string name="desc_cam_update_complete">Update Completed! Please wait for camera rebooting.</string>
   <string name="desc_dialog_cam_force_update">To access the full functions of the camera, please go back to [my camera] list and complete the update process.</string>
-  <string name="desc_cam_update_by_other">Your camera "%s" is updating now, please hold on a second. After you click the Confirm button, you can check your update progress.</string>
+  <string name="desc_cam_update_by_other">Your camera \"%s\" is updating now, please hold on a second. After you click the Confirm button, you can check your update progress.</string>
   <string name="desc_cam_update_failed">Update Failed!</string>
   <string name="action_customer_support">Support</string>
   <string name="action_submit">Submit</string>
   <string name="desc_cam_update_keep_cam_on_before_ota">Update available, please keep power and network connected.</string>
   <string name="action_cam_update">Update</string>
   <string name="desc_dialog_cam_offline_during_ota">Your camera is offline, reconnect to the network to continue the update process.</string>
-  <string name="desc_cam_update_finish">"%s" Updated</string>
+  <string name="desc_cam_update_finish">\"%s\" Updated</string>
   <string name="title_faq_page">FAQ</string>
-  <string name="user_account">Account:</string>
+  <string name="user_account">Account</string>
   <string name="ota_faq_subject">If the update process cannot complete successfully, please try the following:</string>
   <string name="ota_faq_answer">1. Please try to plug in your camera once again.\n2. To ensure a smooth connection for using the camera, connect to a speedy Wi-Fi with strong signals.</string>
   <string name="action_update_again">Retry update</string>

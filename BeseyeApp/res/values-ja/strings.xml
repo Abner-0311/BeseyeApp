@@ -670,16 +670,16 @@
   <string name="desc_cam_update_keep_cam_on_during_ota">アップデート中。電源やネット通信を中断しないでください。</string>
   <string name="desc_cam_update_complete">アップデート完了。カメラの再起動、お待ちください。</string>
   <string name="desc_dialog_cam_force_update">カメラ機能をフル使用するため、[マイカメラ一覧] に戻ってカメラアプリを更新してください。</string>
-  <string name="desc_cam_update_by_other">カメラ"%s"が更新中のため、数分間お待ち ください。確定を押すと、現在の更新状況を御覧いただけます。</string>
+  <string name="desc_cam_update_by_other">カメラ\"%s\"が更新中のため、数分間お待ち ください。確定を押すと、現在の更新状況を御覧いただけます。</string>
   <string name="desc_cam_update_failed">アップデート失敗！</string>
   <string name="action_customer_support">顧客サービス</string>
   <string name="action_submit">送信</string>
   <string name="desc_cam_update_keep_cam_on_before_ota">更新する必要があります。電源やネット通信を中断しないでください。</string>
   <string name="action_cam_update">クリックして更新</string>
   <string name="desc_dialog_cam_offline_during_ota">カメラはオフラインです、カメラのネットワーク接続を確認し、再試行してください。</string>
-  <string name="desc_cam_update_finish"> "%s" アップデート完了</string>
+  <string name="desc_cam_update_finish"> \"%s\" アップデート完了</string>
   <string name="title_faq_page">FAQ</string>
-  <string name="user_account">アカウント：</string>
+  <string name="user_account">アカウント</string>
   <string name="ota_faq_subject">更新できない場合、下記の解決方法を試してください：</string>
   <string name="ota_faq_answer">1.電源プラグを抜いてからもう一度挿入してください。
 \n2.保Beseyeカメラが使用するネット回線のクオリティを確保するため、信号強度が強く、通信速度の速いWi-Fiをご使用ください。</string>

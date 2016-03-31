@@ -330,17 +330,17 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				d.setOnDismissListener(new OnDismissListener(){
 					@Override
 					public void onDismiss(DialogInterface dialog) {
-						try {
-							JSONObject cam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
-							if(null != cam_obj){
-								CamSwUpdateRecord camRec = BeseyeCamSWVersionMgr.getInstance().findCamSwUpdateRecord(meUpdateGroup, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
-						    	if(null != camRec){
-									BeseyeCamSWVersionMgr.getInstance().performCamUpdate(camRec, false);
-						    	}
-							}
-						} catch (JSONException e1) {
-							Log.e(TAG, "SoundPairingNamingActivity, failed to parse, e1:"+e1.toString());
-						}
+//						try {
+//							JSONObject cam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
+//							if(null != cam_obj){
+//								CamSwUpdateRecord camRec = BeseyeCamSWVersionMgr.getInstance().findCamSwUpdateRecord(meUpdateGroup, BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));
+//						    	if(null != camRec){
+//									BeseyeCamSWVersionMgr.getInstance().performCamUpdate(camRec, false);
+//						    	}
+//							}
+//						} catch (JSONException e1) {
+//							Log.e(TAG, "SoundPairingNamingActivity, failed to parse, e1:"+e1.toString());
+//						}
 					}});
 				break;
 			}
