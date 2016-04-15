@@ -663,11 +663,14 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 			       mlLastGroupVerCheckTs[updateGroup.ordinal()] > rec.getVerCheckTs()){
 					bGroupVerCheckFinish = false;
 					break;
-				}else if(rec.meVerCheckStatus.equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_OUT_OF_DATE)){
+				}
+				
+				if(rec.meVerCheckStatus.equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_OUT_OF_DATE)){
 					lstVCamIdToUpdate.add(rec.mStrVCamId);
-					if( rec.meCamConnectionStatus.equals(CAM_CONNECTION_ON)){
-						lstVCamIdCamConnectionOn.add(rec.mStrVCamId);
-					}
+				}
+				
+				if( rec.meCamConnectionStatus.equals(CAM_CONNECTION_ON)){
+					lstVCamIdCamConnectionOn.add(rec.mStrVCamId);
 				}
 			}
 		}
@@ -702,19 +705,21 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 			CamSwUpdateRecord camRec = (CamSwUpdateRecord)((BeseyeCamBEHttpTask.CheckCamOTAVersionTask)task).getCusObj();
 			
 			if(null != camRec){
+				camRec.mlVerCheckTs = System.currentTimeMillis();
+				
 				CAM_UPDATE_VER_CHECK_STATUS prevStatus = camRec.getVerCheckStatus();
 				if(0 == iRetCode){
 					if(DEBUG)
 						Log.i(TAG, "onPostExecute(), "+result.toString());
 					
 					boolean bCanBeUpdate = BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.UPDATE_CAN_GO);
-					camRec.mlVerCheckTs = System.currentTimeMillis();
 					camRec.meVerCheckStatus = bCanBeUpdate?CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_OUT_OF_DATE
 														  :CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_UPDATED;
 					
 				}else if(Integer.MIN_VALUE == iRetCode){
 					camRec.meVerCheckStatus = CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_TIMEOUT;
-				}else{
+				}else
+				{
 					camRec.meVerCheckStatus = CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_ERR;
 					camRec.miErrCode = iRetCode;
 				}	
