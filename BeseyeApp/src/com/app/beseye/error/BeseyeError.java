@@ -128,9 +128,8 @@ public class BeseyeError {
 	static public final int E_NOT_ENOUGH_SPACE_FOR_DL                          = 0x00D0004b;//..
 	static public final int E_INVALID_SIGNATURE_LEN                            = 0x00D0002a;//No available OTA package
 	static public final int E_SIGNATURE_VERIFICATION_FAILED                    = 0x00D0002b;//..
+	
 	static public final int E_CURL_NETWORK_ERROR                               = 0x00D000b0;//Trial down failed
 	static public final int E_CURL_NETWORK_DEAD                                = 0x00D000b1;//..
 	static public final int E_NETWORK_ERROR_WHEN_DOWNLOADING_FILE              = 0x00D00050;//..
-	
-
 }

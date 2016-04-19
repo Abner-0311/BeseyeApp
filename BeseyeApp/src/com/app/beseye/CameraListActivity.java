@@ -794,7 +794,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 			    	if(null != camRec){
 						camRec.resetErrorInfo();
 						camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING, false);
-						BeseyeCamSWVersionMgr.getInstance().performCamUpdate(camRec, false);//.checkCamOTAVer(camRec, true);
+						BeseyeCamSWVersionMgr.getInstance().performCamUpdate(camRec, true);//.checkCamOTAVer(camRec, true);
 						refreshList();
 			    	}else{
 						Log.e(TAG, "onClick(), find null camRec for strCamUID="+BeseyeJSONUtil.getJSONString(cam_obj, BeseyeJSONUtil.ACC_ID));

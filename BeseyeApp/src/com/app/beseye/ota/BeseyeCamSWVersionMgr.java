@@ -394,6 +394,7 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
     		if(null == camRec.mUpdateCamSWTask){
     			if(null != camRec.mGetCamUpdateStatusTask){
     				camRec.mGetCamUpdateStatusTask.cancel(true);
+    				camRec.mGetCamUpdateStatusTask = null;
     			}
 				camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_REQUEST, false);
     			camRec.resetErrorInfo();
@@ -638,6 +639,7 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 			if(null != checkCamOTAVersionTask){
 				if(null != camRec.mGetCamUpdateStatusTask){
     				camRec.mGetCamUpdateStatusTask.cancel(true);
+    				camRec.mGetCamUpdateStatusTask = null;
     			}
 				if(!bShowDialog){
 					checkCamOTAVersionTask.setDialogId(-1);
@@ -866,6 +868,13 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 							}else{//Update Failed							
 								camRec.mlLastOTAErrorTs = camRec.mlLastCamReportTs;
 								camRec.miErrCode = (0 == iDetailStatus)?iFinalStatus:iDetailStatus;
+								
+								//Test download slow error
+//								if(camRec.isRebootErrWhenOTAPrepare()){
+//									Log.i(TAG, "updateCamUpdateProgress(), meet E_NETWORK_ERROR_WHEN_DOWNLOADING_FILE, fake");
+//
+//									camRec.miErrCode = BeseyeError.E_NETWORK_ERROR_WHEN_DOWNLOADING_FILE;
+//								}
 								
 								if(camRec.isRebootErrWhenOTAPrepare()){
 									Log.i(TAG, "updateCamUpdateProgress(), meet E_REBOOT_DURING_PREPARING_STAGE, reset");

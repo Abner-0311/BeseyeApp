@@ -685,4 +685,5 @@
   <string name="action_update_again">繼續更新</string>
   <string name="desc_cam_update_failed_poor_network">更新中斷。網路速度太慢，請檢查攝影機網路環境。</string>
   <string name="dialog_title_attention">注意</string>
+  
 </resources>
