@@ -183,9 +183,7 @@ public class CameraViewControlAnimator {
 	
 	public void checkSettingNewStatus(boolean bIsSettingViewVisible){
 		if(null != mIvSettingNew){
-			boolean bAllNewFeaturesInSettingPageTrigger = BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE) && 
-														  BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET) && 
-														  BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked();
+			boolean bAllNewFeaturesInSettingPageTrigger = BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_SCHEDULE);
 						
 			BeseyeUtils.setVisibility(mIvSettingNew, (!bIsSettingViewVisible || bAllNewFeaturesInSettingPageTrigger)?View.INVISIBLE:View.VISIBLE);
 		}

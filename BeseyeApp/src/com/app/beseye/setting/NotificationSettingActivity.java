@@ -53,28 +53,19 @@ import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 
 
 
-public class MotionNotificationSettingActivity extends BeseyeBaseActivity 
+public class NotificationSettingActivity extends BeseyeBaseActivity 
 												implements OnSwitchBtnStateChangedListener{
 
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;	
-	private ViewGroup mVgMotionZoneEdit;
-	private ImageView mIvDrawingImageView;
-	private ImageView mIvImageMask;
-	private double[] mdRatios = {-1.0, -1.0, -1.0, -1.0};
-	private BeseyeSwitchBtn mNotifyMeSwitchBtn;
-	private boolean mbModified = false;
-	private RemoteImageView mImgThumbnail;
-	private int miImageWidth, miImageHeight;
-	
-	private Canvas mCanvas;
-	private Paint mLinePaint;
-	private int miStrokeWidth;
+	private BeseyeSwitchBtn mNotifyMeMotionSwitchBtn, mNotifyMeHumanSwitchBtn, mNotifyMeAllSwitchBtn;
+	//private boolean mbModified = false;
+	private ViewGroup mVgMotionNotify, mVgHumanDetectNotify; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		if(DEBUG)
-			Log.i(TAG, "MotionNotificationSettingActivity::onCreate()");
+			Log.i(TAG, "NotificationSettingActivity::onCreate()");
 		
 		super.onCreate(savedInstanceState);
 		
@@ -90,7 +81,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 						
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
-				txtTitle.setText(R.string.cam_setting_title_motion_zone);
+				txtTitle.setText(R.string.cam_setting_title_notification_setting);
 			}
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
@@ -103,52 +94,29 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 				mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
 			}
 		} catch (JSONException e1) {
-			Log.e(TAG, "MotionNotificationSettingActivity::onCreate(), failed to parse, e1:"+e1.toString());
+			Log.e(TAG, "NotificationSettingActivity::onCreate(), failed to parse, e1:"+e1.toString());
+		}
+	
+		mNotifyMeAllSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_all_notify_switch);
+		if(null != mNotifyMeAllSwitchBtn){
+			mNotifyMeAllSwitchBtn.setSwitchState(SwitchState.SWITCH_ON);
+			mNotifyMeAllSwitchBtn.setOnSwitchBtnStateChangedListener(this);
 		}
 		
-		mNotifyMeSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_motion_notify_switch);
-		if(null != mNotifyMeSwitchBtn){
-			mNotifyMeSwitchBtn.setSwitchState(SwitchState.SWITCH_ON);
-			mNotifyMeSwitchBtn.setOnSwitchBtnStateChangedListener(this);
+		mNotifyMeMotionSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_motion_notify_switch);
+		if(null != mNotifyMeMotionSwitchBtn){
+			mNotifyMeMotionSwitchBtn.setSwitchState(SwitchState.SWITCH_ON);
+			mNotifyMeMotionSwitchBtn.setOnSwitchBtnStateChangedListener(this);
 		}
 		
-		mVgMotionZoneEdit = (ViewGroup)findViewById(R.id.vg_motion_zone);
-		if(null != mVgMotionZoneEdit){
-			mVgMotionZoneEdit.setOnClickListener(this);
-		}
-				
-    	miImageWidth = BeseyeUtils.getDeviceWidth(this);
-		miImageHeight = (int) ((double)miImageWidth*BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
-		
-		
-		mImgThumbnail = (RemoteImageView)findViewById(R.id.iv_motion_zone_thumbnail);
-		if(null != mImgThumbnail) {
-			Bitmap defaultImage = BitmapFactory.decodeResource(getResources(), R.drawable.cameralist_s_view_noview_bg);
-			mImgThumbnail.setImageBitmap(Bitmap.createScaledBitmap(defaultImage, miImageWidth, miImageHeight, false));
+		mNotifyMeHumanSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_human_detect_notify_switch);
+		if(null != mNotifyMeHumanSwitchBtn){
+			mNotifyMeHumanSwitchBtn.setSwitchState(SwitchState.SWITCH_ON);
+			mNotifyMeHumanSwitchBtn.setOnSwitchBtnStateChangedListener(this);
 		}
 		
-	    mIvImageMask = (ImageView) this.findViewById(R.id.iv_motion_zone_mask);
-	    if(null != mIvImageMask){
-		    Bitmap bitmapMask = Bitmap.createBitmap(miImageWidth, miImageHeight, Bitmap.Config.ARGB_8888);
-		    mIvImageMask.setImageBitmap(bitmapMask);
-		    mIvImageMask.setBackgroundColor(this.getResources().getColor(R.color.camera_list_video_mask));
-		}
-	    
-	    Bitmap bitmap = Bitmap.createBitmap(miImageWidth, miImageHeight, Bitmap.Config.ARGB_8888);
-		mIvDrawingImageView = (ImageView) this.findViewById(R.id.iv_motion_zone_setting);
-		if(null != mIvDrawingImageView) {
-			mIvDrawingImageView.setImageBitmap(bitmap);
-		}
-		mCanvas = new Canvas(bitmap);
-		miStrokeWidth = getResources().getDimensionPixelSize(R.dimen.motion_zone_strokewidth);
-		
-	    mLinePaint = new Paint();	    
-        mLinePaint.setAntiAlias(true);
-        mLinePaint.setDither(true);			
-        mLinePaint.setStrokeJoin(Paint.Join.MITER);
-        mLinePaint.setStyle(Paint.Style.STROKE);
-        mLinePaint.setColor(getResources().getColor(R.color.beseye_color_normal));
-        mLinePaint.setStrokeWidth(miStrokeWidth);
+		mVgMotionNotify = (ViewGroup)findViewById(R.id.vg_motion_notify);
+		mVgHumanDetectNotify = (ViewGroup)findViewById(R.id.vg_human_detect_notify);	
 	}
 
 	@Override
@@ -160,7 +128,6 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 				if(0 == iRetCode){				
 					try {
 						mCam_obj.put(BeseyeJSONUtil.ACC_VCAM_THUMB, BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.MM_THUMBNAIL), "url"));
-						setThumbnail();
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -168,10 +135,7 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					super.onPostExecute(task, result, iRetCode);
-					
 					updateNotificationTypeState();
-					mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
-					drawLineRect();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetNotifySettingTask){
 				if(0 == iRetCode){
@@ -211,34 +175,9 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}else{
 			updateNotificationTypeState();
-	        mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
-	        drawLineRect();
-		}
+	    }
 	}
 	
-	private void setThumbnail(){
-		if(null != mImgThumbnail){
-			BeseyeUtils.setThumbnailRatio(mImgThumbnail, miImageWidth, BeseyeUtils.BESEYE_THUMBNAIL_RATIO_9_16);
-			mImgThumbnail.setURI(BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_VCAM_THUMB), R.drawable.cameralist_s_view_noview_bg, BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID));
-			mImgThumbnail.loadImage();
-		}
-	}
-	
-	@Override
-	public void onClick(View view){
-		switch(view.getId()){
-			case R.id.vg_motion_zone:{
-				Bundle b = new Bundle();
-				b.putDoubleArray(BeseyeMotionZoneUtil.MOTION_ZONE_RATIO, mdRatios);
-				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-				launchActivityForResultByClassName(MotionZoneEditActivity.class.getName(), b, BeseyeMotionZoneUtil.REQUEST_MOTION_ZONE_EDIT);
-				break;
-			} 
-			default:
-				super.onClick(view);	
-		}
-	}
-
 //	private void setNotifySetting(){
 //		if(checkDiff()){
 //			JSONObject obj =  new JSONObject();
@@ -266,52 +205,17 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	@Override
 	protected void updateUICallback(){
 		updateNotificationTypeState();
-		mdRatios = BeseyeMotionZoneUtil.getMotionZoneFromServer(mCam_obj, BeseyeMotionZoneUtil.ssStrObjKey);
-		drawLineRect();
+		
 	}
 	
-	private void drawLineRect(){
-		if(!BeseyeMotionZoneUtil.isMotionZoneRangeValiate(mdRatios, BeseyeMotionZoneUtil.siRatioMinV, 
-				BeseyeMotionZoneUtil.siRatioMaxV, BeseyeMotionZoneUtil.sdMinZoneRatio, BeseyeMotionZoneUtil.sdConfidenceV)){
-			BeseyeMotionZoneUtil.setDefaultRatio(mdRatios);
-		}     
-		Paint p = new Paint();
-        p.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
-        mCanvas.drawPaint(p);
-        p.setXfermode(new PorterDuffXfermode(Mode.SRC));   
-        
-		float left = (float) (mdRatios[0]*miImageWidth);
-	    float top = (float) (mdRatios[1]*miImageHeight);
-	    float right = (float) (mdRatios[2]*miImageWidth);
-	    float bottom = (float) (mdRatios[3]*miImageHeight);
-
-	    mCanvas.drawRect(left+miStrokeWidth/2, top+miStrokeWidth/2, right-miStrokeWidth/2, bottom-miStrokeWidth/2, mLinePaint);
-     
-	    Rect rHole = new Rect((int)left, (int)top, (int)right, (int)bottom);
-	    mCanvas.clipRect(rHole,  Region.Op.DIFFERENCE);
-	    mCanvas.drawARGB(BeseyeMotionZoneUtil.siMaskAlpha, 0, 0, 0);
-	    mCanvas.clipRect(new Rect(0, 0, miImageWidth, miImageHeight), Region.Op.REPLACE);
-	    
-        mIvDrawingImageView.invalidate();
-	}
-	
-	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if(BeseyeMotionZoneUtil.REQUEST_MOTION_ZONE_EDIT == requestCode && resultCode == RESULT_OK){
-			try {
-				mCam_obj = new JSONObject(intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		    setThumbnail();	     
-		 }
 		super.onActivityResult(requestCode, resultCode, intent);
 	}
 	
 	@Override
 	protected void onResume() {
 		if(DEBUG)
-			Log.i(TAG, "MotionNotificationSettingActivity::onResume()");	
+			Log.i(TAG, "NotificationSettingActivity::onResume()");	
 		super.onResume();
 		
 		if(!mbFirstResume){
@@ -324,61 +228,105 @@ public class MotionNotificationSettingActivity extends BeseyeBaseActivity
 	@Override
 	protected void onPause() {
 		if(DEBUG)
-			Log.d(TAG, "MotionNotificationSettingActivity::onPause()");
+			Log.d(TAG, "NotificationSettingActivity::onPause()");
 		super.onPause();
 	}
 
 	@Override
 	protected int getLayoutId() {
-		return R.layout.layout_motion_notification;
+		return R.layout.layout_notification_setting;
 	}
 
 	@Override
 	public void onSwitchBtnStateChanged(SwitchState state, View view) {
-		mbModified = true;
+		boolean bMotionNotifyMe = false, bHumanNotifyMe = false;
+		
+		JSONObject notify_obj_now =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
+		JSONObject type_obj_now = BeseyeJSONUtil.getJSONObject(notify_obj_now, BeseyeJSONUtil.TYPE);
+		bMotionNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj_now, BeseyeJSONUtil.NOTIFY_MOTION);
+		bHumanNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj_now, BeseyeJSONUtil.NOTIFY_HUMAN);
+		
 		JSONObject obj =  new JSONObject();
 		if(null != obj){
-			boolean bTurnOn = (null != mNotifyMeSwitchBtn && mNotifyMeSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON);
-			
-			if(bTurnOn){
-				BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, bTurnOn);
+			switch(view.getId()){
+			case R.id.sb_all_notify_switch:{
+				boolean bAllTurnOn = (null != mNotifyMeAllSwitchBtn && mNotifyMeAllSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON);
+				
+				BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, bAllTurnOn);
+				BeseyeUtils.setEnabled(mVgMotionNotify, bAllTurnOn);
+				BeseyeUtils.setEnabled(mVgHumanDetectNotify, bAllTurnOn);
+				mNotifyMeMotionSwitchBtn.setEnabled(bAllTurnOn);
+				mNotifyMeHumanSwitchBtn.setEnabled(bAllTurnOn);
+				
+				if(true == bAllTurnOn){						
+					if(null != mNotifyMeMotionSwitchBtn){
+						mNotifyMeMotionSwitchBtn.setSwitchState((bMotionNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+					}
+					if(null != mNotifyMeHumanSwitchBtn){
+						mNotifyMeHumanSwitchBtn.setSwitchState((bHumanNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+					}
+				}else{
+					if(null != mNotifyMeMotionSwitchBtn){
+						mNotifyMeMotionSwitchBtn.setSwitchState((bAllTurnOn)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+					}
+					if(null != mNotifyMeHumanSwitchBtn){
+						mNotifyMeHumanSwitchBtn.setSwitchState((bAllTurnOn)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+					}
+				}
+				break;
 			}
-			
+			case R.id.sb_motion_notify_switch:{
+				bMotionNotifyMe = (null != mNotifyMeMotionSwitchBtn && mNotifyMeMotionSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON);
+				BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, true);
+				break;
+			}
+			case R.id.sb_human_detect_notify_switch:{
+				bHumanNotifyMe = (null != mNotifyMeHumanSwitchBtn && mNotifyMeHumanSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON);
+				BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, true);
+				break;
+			}
+			}
 			JSONObject type_obj =  new JSONObject();
 			if(null != type_obj){
-				BeseyeJSONUtil.setJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_MOTION, bTurnOn);	
+				BeseyeJSONUtil.setJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_MOTION, bMotionNotifyMe);	
+				BeseyeJSONUtil.setJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_HUMAN, bHumanNotifyMe);	
 				BeseyeJSONUtil.setJSONObject(obj, BeseyeJSONUtil.TYPE, type_obj);
 			}
 			
 			monitorAsyncTask(new BeseyeCamBEHttpTask.SetNotifySettingTask(this), true, mStrVCamID, obj.toString());
 		}
 	}
-
+	
 	private void updateNotificationTypeState(){
 		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
-		if(false == mbModified){
-			boolean bNotifyMe = false;
-			if(null != notify_obj){
-				bNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
-			}
-			
-			if(bNotifyMe){
-				JSONObject type_obj = BeseyeJSONUtil.getJSONObject(notify_obj, BeseyeJSONUtil.TYPE);
-				bNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_MOTION);
-			}
-			
-			if(null != mNotifyMeSwitchBtn){
-				mNotifyMeSwitchBtn.setSwitchState((bNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-			}
-			BeseyeUtils.setEnabled(mVgMotionZoneEdit, bNotifyMe);
-			BeseyeUtils.setVisibility(mIvImageMask, bNotifyMe?View.GONE:View.VISIBLE);
-		}else{
-			boolean bNotifyMe = false;
-			if(null != mNotifyMeSwitchBtn){
-				bNotifyMe = mNotifyMeSwitchBtn.getSwitchState().equals(SwitchState.SWITCH_ON);
-			}
-			BeseyeUtils.setEnabled(mVgMotionZoneEdit, bNotifyMe);
-			BeseyeUtils.setVisibility(mIvImageMask, bNotifyMe?View.GONE:View.VISIBLE);
+		boolean bAllNotifyMe = false;
+		if(null != notify_obj){
+			bAllNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
 		}
+		BeseyeUtils.setEnabled(mVgMotionNotify, bAllNotifyMe);
+		BeseyeUtils.setEnabled(mVgHumanDetectNotify, bAllNotifyMe);
+		mNotifyMeMotionSwitchBtn.setEnabled(bAllNotifyMe);
+		mNotifyMeHumanSwitchBtn.setEnabled(bAllNotifyMe);
+		
+		if(true == bAllNotifyMe){					
+			JSONObject type_obj = BeseyeJSONUtil.getJSONObject(notify_obj, BeseyeJSONUtil.TYPE);
+			boolean bMotionNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_MOTION);
+			boolean bHumanNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_HUMAN);
+			
+			if(null != mNotifyMeMotionSwitchBtn && (bMotionNotifyMe != mNotifyMeMotionSwitchBtn.getSwitchState().equals(SwitchState.SWITCH_ON)) ){
+				mNotifyMeMotionSwitchBtn.setSwitchState((bMotionNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+			}
+			if(null != mNotifyMeHumanSwitchBtn && (bHumanNotifyMe != mNotifyMeHumanSwitchBtn.getSwitchState().equals(SwitchState.SWITCH_ON))){
+				mNotifyMeHumanSwitchBtn.setSwitchState((bHumanNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+			}
+		}else{
+			if(null != mNotifyMeMotionSwitchBtn){
+				mNotifyMeMotionSwitchBtn.setSwitchState((bAllNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+			}
+			if(null != mNotifyMeHumanSwitchBtn){
+				mNotifyMeHumanSwitchBtn.setSwitchState((bAllNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+			}
+		}
+		
 	}
 }

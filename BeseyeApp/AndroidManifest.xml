@@ -139,7 +139,7 @@
         </activity>
         
         <activity
-            android:name=".setting.HumanDetectNotificationSettingActivity"
+            android:name=".setting.HumanDetectOptimizationActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -203,7 +203,7 @@
         </activity>
         
         <activity
-            android:name=".setting.MotionNotificationSettingActivity"
+            android:name=".setting.NotificationSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
@@ -211,7 +211,7 @@
         </activity>
         
         <activity
-            android:name=".setting.MotionZoneEditActivity"
+            android:name=".setting.TriggerZoneEditActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape"
             android:launchMode="singleTop"

@@ -43,7 +43,7 @@ import com.app.beseye.widget.BaseTwoBtnDialog.OnTwoBtnClickListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.RemoteImageView;
 
-public class MotionZoneEditActivity extends BeseyeBaseActivity 
+public class TriggerZoneEditActivity extends BeseyeBaseActivity 
 									implements OnClickListener{
 	
 	private Button mBtnOk, mBtnFull, mBtnCancel;
@@ -95,8 +95,6 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		if(null != mMotionZoneEditView){
 			BeseyeUtils.setVisibility(mMotionZoneEditView, View.GONE);
 		}
-		
-		mdRatios = getIntent().getDoubleArrayExtra(BeseyeMotionZoneUtil.MOTION_ZONE_RATIO);
 	}
 
 	@Override
@@ -272,7 +270,7 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
-				BaseOneBtnDialog d = new BaseOneBtnDialog(MotionZoneEditActivity.this);
+				BaseOneBtnDialog d = new BaseOneBtnDialog(TriggerZoneEditActivity.this);
 				d.setBodyText(R.string.thumbnail_error_body);
 				d.setTitleText(R.string.thumbnail_error_title);
 				d.setCancelable(false);
@@ -290,7 +288,7 @@ public class MotionZoneEditActivity extends BeseyeBaseActivity
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
 			public void run() {
-				BaseOneBtnDialog d = new BaseOneBtnDialog(MotionZoneEditActivity.this);
+				BaseOneBtnDialog d = new BaseOneBtnDialog(TriggerZoneEditActivity.this);
 				d.setBodyText(R.string.thumbnail_error_body);
 				d.setTitleText(R.string.thumbnail_error_title);
 				d.setCancelable(false);
