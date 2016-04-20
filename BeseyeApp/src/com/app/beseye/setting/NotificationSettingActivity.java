@@ -124,15 +124,7 @@ public class NotificationSettingActivity extends BeseyeBaseActivity
 		if(BeseyeConfig.DEBUG)
 			Log.d(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", iRetCode="+iRetCode);	
 		if(!task.isCancelled()){
-			if(task instanceof BeseyeMMBEHttpTask.GetLatestThumbnailTask){
-				if(0 == iRetCode){				
-					try {
-						mCam_obj.put(BeseyeJSONUtil.ACC_VCAM_THUMB, BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(result.get(0), BeseyeJSONUtil.MM_THUMBNAIL), "url"));
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-				}
-			}else if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
+			if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 				if(0 == iRetCode){
 					super.onPostExecute(task, result, iRetCode);
 					updateNotificationTypeState();
@@ -157,7 +149,6 @@ public class NotificationSettingActivity extends BeseyeBaseActivity
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle,
 			String strMsg) {
-		// GetLatestThumbnailTask don't need to have onErrorReport because it has default image
 		if(task instanceof BeseyeCamBEHttpTask.GetCamSetupTask){
 			showErrorDialog(R.string.cam_setting_fail_to_get_cam_info, true, iErrType);
 		}else if(task instanceof BeseyeCamBEHttpTask.SetNotifySettingTask){
@@ -170,7 +161,6 @@ public class NotificationSettingActivity extends BeseyeBaseActivity
 	@Override
 	protected void onSessionComplete(){
 		super.onSessionComplete();
-		monitorAsyncTask(new BeseyeMMBEHttpTask.GetLatestThumbnailTask(this).setDialogId(-1), true, mStrVCamID);
 		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID){
 			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
 		}else{
@@ -242,9 +232,13 @@ public class NotificationSettingActivity extends BeseyeBaseActivity
 		boolean bMotionNotifyMe = false, bHumanNotifyMe = false;
 		
 		JSONObject notify_obj_now =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
-		JSONObject type_obj_now = BeseyeJSONUtil.getJSONObject(notify_obj_now, BeseyeJSONUtil.TYPE);
-		bMotionNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj_now, BeseyeJSONUtil.NOTIFY_MOTION);
-		bHumanNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj_now, BeseyeJSONUtil.NOTIFY_HUMAN);
+		if(null != notify_obj_now){
+			JSONObject type_obj_now = BeseyeJSONUtil.getJSONObject(notify_obj_now, BeseyeJSONUtil.TYPE);
+			if(null != type_obj_now){
+				bMotionNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj_now, BeseyeJSONUtil.NOTIFY_MOTION);
+				bHumanNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj_now, BeseyeJSONUtil.NOTIFY_HUMAN);
+			}
+		}
 		
 		JSONObject obj =  new JSONObject();
 		if(null != obj){
@@ -253,10 +247,18 @@ public class NotificationSettingActivity extends BeseyeBaseActivity
 				boolean bAllTurnOn = (null != mNotifyMeAllSwitchBtn && mNotifyMeAllSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON);
 				
 				BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, bAllTurnOn);
-				BeseyeUtils.setEnabled(mVgMotionNotify, bAllTurnOn);
-				BeseyeUtils.setEnabled(mVgHumanDetectNotify, bAllTurnOn);
-				mNotifyMeMotionSwitchBtn.setEnabled(bAllTurnOn);
-				mNotifyMeHumanSwitchBtn.setEnabled(bAllTurnOn);
+				if(null != mVgMotionNotify){
+					BeseyeUtils.setEnabled(mVgMotionNotify, bAllTurnOn);
+				}
+				if(null != mVgHumanDetectNotify){
+					BeseyeUtils.setEnabled(mVgHumanDetectNotify, bAllTurnOn);
+				}
+				if(null != mNotifyMeMotionSwitchBtn){
+					mNotifyMeMotionSwitchBtn.setEnabled(bAllTurnOn);
+				}
+				if(null != mNotifyMeHumanSwitchBtn){
+					mNotifyMeHumanSwitchBtn.setEnabled(bAllTurnOn);
+				}
 				
 				if(true == bAllTurnOn){						
 					if(null != mNotifyMeMotionSwitchBtn){
@@ -299,24 +301,41 @@ public class NotificationSettingActivity extends BeseyeBaseActivity
 	
 	private void updateNotificationTypeState(){
 		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
+		
 		boolean bAllNotifyMe = false;
 		if(null != notify_obj){
 			bAllNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
 		}
-		BeseyeUtils.setEnabled(mVgMotionNotify, bAllNotifyMe);
-		BeseyeUtils.setEnabled(mVgHumanDetectNotify, bAllNotifyMe);
-		mNotifyMeMotionSwitchBtn.setEnabled(bAllNotifyMe);
-		mNotifyMeHumanSwitchBtn.setEnabled(bAllNotifyMe);
 		
-		if(true == bAllNotifyMe){					
-			JSONObject type_obj = BeseyeJSONUtil.getJSONObject(notify_obj, BeseyeJSONUtil.TYPE);
-			boolean bMotionNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_MOTION);
-			boolean bHumanNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_HUMAN);
+		if(null != mVgMotionNotify){
+			BeseyeUtils.setEnabled(mVgMotionNotify, bAllNotifyMe);
+		}
+		if(null != mVgHumanDetectNotify){
+			BeseyeUtils.setEnabled(mVgHumanDetectNotify, bAllNotifyMe);
+		}
+		if(null != mNotifyMeAllSwitchBtn){
+			mNotifyMeAllSwitchBtn.setSwitchState((bAllNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
+		}
+		if(null != mNotifyMeMotionSwitchBtn){
+			mNotifyMeMotionSwitchBtn.setEnabled(bAllNotifyMe);
+		}
+		if(null != mNotifyMeHumanSwitchBtn){
+			mNotifyMeHumanSwitchBtn.setEnabled(bAllNotifyMe);
+		}
+		
+		if(true == bAllNotifyMe){		
+			boolean bMotionNotifyMe = false, bHumanNotifyMe = false;
 			
-			if(null != mNotifyMeMotionSwitchBtn && (bMotionNotifyMe != mNotifyMeMotionSwitchBtn.getSwitchState().equals(SwitchState.SWITCH_ON)) ){
+			JSONObject type_obj = BeseyeJSONUtil.getJSONObject(notify_obj, BeseyeJSONUtil.TYPE);	
+			if(null != type_obj){
+				bMotionNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_MOTION);
+				bHumanNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_HUMAN);
+			}
+			
+			if(null != mNotifyMeMotionSwitchBtn){
 				mNotifyMeMotionSwitchBtn.setSwitchState((bMotionNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
 			}
-			if(null != mNotifyMeHumanSwitchBtn && (bHumanNotifyMe != mNotifyMeHumanSwitchBtn.getSwitchState().equals(SwitchState.SWITCH_ON))){
+			if(null != mNotifyMeHumanSwitchBtn){
 				mNotifyMeHumanSwitchBtn.setSwitchState((bHumanNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
 			}
 		}else{
