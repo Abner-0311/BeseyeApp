@@ -16,6 +16,7 @@ import com.app.beseye.pairing.PairingRemindActivity;
 import com.app.beseye.pairing.SoundPairingActivity;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
+import com.app.beseye.util.NetworkMgr.ApManager;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.util.NetworkMgr.OnWifiScanResultAvailableCallback;
 import com.app.beseye.util.NetworkMgr.OnWifiStatusChangeCallback;
@@ -381,6 +382,10 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 					if(DEBUG)
 						Log.d(TAG, "WifiControlBaseActivity::setWifiSettingState(), wifi is not enabled");
 					
+					if(ApManager.isApOn(this)){
+						ApManager.changeApState(this, false);
+					}
+					
 					if(NetworkMgr.getInstance().turnOnWifi()){
 						//mLoadWifiListRunnable = new LoadWifiListRunnable(this);
 						setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_TURNING_ON);
@@ -456,6 +461,10 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	}
 	
 	protected void turnOnWifi(){
+		if(ApManager.isApOn(this)){
+			ApManager.changeApState(this, false);
+		}
+		
 		if(NetworkMgr.getInstance().turnOnWifi()){
 			//mLoadWifiListRunnable = new LoadWifiListRunnable(this);
 			setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_TURNING_ON);

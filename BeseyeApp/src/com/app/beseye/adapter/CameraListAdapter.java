@@ -159,42 +159,35 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 				
 				CAM_UPDATE_STATUS camUpdateStatus = null != camRec?camRec.getUpdateStatus():null;
 				
+				//final boolean bIsOTARebootErrWhenOTAPrepareErr = null != camRec && camRec.isRebootErrWhenOTAPrepare();
+				final boolean bIsOTAPoorNetworkErr = null != camRec && camRec.isPoorNetworkErrWhenOTA();
+
 				final boolean bCanOTAUpdate = null != camUpdateStatus && camUpdateStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_VER_CHECKING) && camRec.getVerCheckStatus().equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_OUT_OF_DATE);
 				final boolean bShowOTAUpdate = bCanOTAUpdate && !connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED) && !connState.equals(CAM_CONN_STATUS.CAM_INIT);
 				
 				final boolean bOTAError = null != camRec && 
 								    //camRec.isOTATriggerredByThisDev() && 
 								    ((0 != camRec.getErrCode() && camRec.getPrevUpdateStatus().equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING)/* && !camRec.isOTAFeedbackSent()*/) ||
-								     (null != camUpdateStatus && camUpdateStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING) && camRec.isReachOTANoResponseTime())) ;
+								     (null != camUpdateStatus && camUpdateStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING) && camRec.isReachOTANoResponseTime())) ||
+								     bIsOTAPoorNetworkErr;
 				
 				final boolean bOTAUpdating = !bOTAError && !bCanOTAUpdate && null != camUpdateStatus && camUpdateStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATING);
 				final boolean bOTAFinished = !bOTAError && !bOTAUpdating && null != camUpdateStatus && camUpdateStatus.equals(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_FINISH);
 				
-				final boolean bIsOTAPoorNetworkErr = null != camRec && camRec.isPoorNetworkErrWhenOTA();
 				
 				if(bOTAFinished && camRec.isInOTAFinishPeriod() && !connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED)){
 					camRec.setCamOnlineAfterOTATs(System.currentTimeMillis());
 				}
 
-				boolean bItemFreezedDueToOTA =  bShowOTAUpdate || 
-												bOTAError || 
-												bOTAUpdating || 
-												(bOTAFinished && !camRec.isCamOnlineAfterOTA() && camRec.isInOTAFinishPeriod() && connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED));
+				final boolean bItemFreezedDueToOTA =  bShowOTAUpdate || 
+													  bOTAError || 
+													  bOTAUpdating || 
+													  (bOTAFinished && !camRec.isCamOnlineAfterOTA() && camRec.isInOTAFinishPeriod() && connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED));
 				
 				if(BeseyeConfig.DEBUG)
-					Log.i(TAG, "CameraListAdapter::setupItem(), camRec:["+camRec+"], bCanOTAUpdate:"+bCanOTAUpdate+", bShowOTAUpdate:"+bShowOTAUpdate+", bOTAError:"+bOTAError+", bIsOTAPoorNetworkErr"+bIsOTAPoorNetworkErr+", bOTAUpdating:"+bOTAUpdating+", bOTAFinished:"+bOTAFinished+", connState:"+connState);
-
+					Log.i(TAG, "CameraListAdapter::setupItem(), camRec:["+camRec+"], bCanOTAUpdate:"+bCanOTAUpdate+", bShowOTAUpdate:"+bShowOTAUpdate+", bOTAError:"+bOTAError+", bIsOTAPoorNetworkErr:"+bIsOTAPoorNetworkErr+"\n, bOTAUpdating:"+bOTAUpdating+", bOTAFinished:"+bOTAFinished+", connState:"+connState);
 				
-				if(null != holder.mTxtCamName){
-					holder.mTxtCamName.setText(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_NAME));
-				}
-				
-				if(null != holder.mTxtMore){
-					holder.mTxtMore.setVisibility(mbShowMore?View.VISIBLE:View.GONE);
-					holder.mTxtMore.setOnClickListener(mItemOnClickListener);
-					holder.mTxtMore.setTag(holder);
-				}
-				
+				// OTA normal section
 				if(null != holder.mVgCamOTAState){
 					BeseyeUtils.setVisibility(holder.mVgCamOTAState, (!bOTAError && (bShowOTAUpdate || bOTAUpdating || (bOTAFinished && camRec.isInOTAFinishPeriod() && connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED))))?View.VISIBLE:View.GONE);
 				}
@@ -219,6 +212,8 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					}
 				}
 				
+				// OTA failed section
+				
 				if(null != holder.mVgCamOTAFailed){
 					BeseyeUtils.setVisibility(holder.mVgCamOTAFailed, bOTAError?View.VISIBLE:View.GONE);
 				}
@@ -228,7 +223,7 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 																					  R.string.desc_cam_update_failed));
 				
 				if(null != holder.mBtnOTAUpdateAgain){
-					BeseyeUtils.setVisibility(holder.mBtnOTAUpdateAgain, bOTAError && bIsOTAPoorNetworkErr?View.VISIBLE:View.GONE);
+					BeseyeUtils.setVisibility(holder.mBtnOTAUpdateAgain, (bOTAError && bIsOTAPoorNetworkErr) ?View.VISIBLE:View.GONE);
 					holder.mBtnOTAUpdateAgain.setOnClickListener(mItemOnClickListener);
 					holder.mBtnOTAUpdateAgain.setTag(holder);
 				}
@@ -237,6 +232,19 @@ public class CameraListAdapter extends BeseyeJSONAdapter {
 					BeseyeUtils.setVisibility(holder.mBtnOTASupport, bOTAError&& !bIsOTAPoorNetworkErr?View.VISIBLE:View.GONE);
 					holder.mBtnOTASupport.setOnClickListener(mItemOnClickListener);
 					holder.mBtnOTASupport.setTag(holder);
+				}
+				
+				//Camera list general UI control
+				
+				
+				if(null != holder.mTxtCamName){
+					holder.mTxtCamName.setText(BeseyeJSONUtil.getJSONString(obj, BeseyeJSONUtil.ACC_NAME));
+				}
+				
+				if(null != holder.mTxtMore){
+					holder.mTxtMore.setVisibility(mbShowMore?View.VISIBLE:View.GONE);
+					holder.mTxtMore.setOnClickListener(mItemOnClickListener);
+					holder.mTxtMore.setTag(holder);
 				}
 				
 				//BeseyeUtils.setVisibility(holder.mImgThumbnail, connState.equals(CAM_CONN_STATUS.CAM_DISCONNECTED)?View.INVISIBLE:View.VISIBLE);

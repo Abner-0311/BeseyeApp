@@ -394,6 +394,7 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
     		if(null == camRec.mUpdateCamSWTask){
     			if(null != camRec.mGetCamUpdateStatusTask){
     				camRec.mGetCamUpdateStatusTask.cancel(true);
+    				camRec.mGetCamUpdateStatusTask = null;
     			}
 				camRec.changeUpdateStatus(CAM_UPDATE_STATUS.CAM_UPDATE_STATUS_UPDATE_REQUEST, false);
     			camRec.resetErrorInfo();
@@ -638,6 +639,7 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 			if(null != checkCamOTAVersionTask){
 				if(null != camRec.mGetCamUpdateStatusTask){
     				camRec.mGetCamUpdateStatusTask.cancel(true);
+    				camRec.mGetCamUpdateStatusTask = null;
     			}
 				if(!bShowDialog){
 					checkCamOTAVersionTask.setDialogId(-1);
@@ -663,11 +665,14 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 			       mlLastGroupVerCheckTs[updateGroup.ordinal()] > rec.getVerCheckTs()){
 					bGroupVerCheckFinish = false;
 					break;
-				}else if(rec.meVerCheckStatus.equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_OUT_OF_DATE)){
+				}
+				
+				if(rec.meVerCheckStatus.equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_OUT_OF_DATE)){
 					lstVCamIdToUpdate.add(rec.mStrVCamId);
-					if( rec.meCamConnectionStatus.equals(CAM_CONNECTION_ON)){
-						lstVCamIdCamConnectionOn.add(rec.mStrVCamId);
-					}
+				}
+				
+				if( rec.meCamConnectionStatus.equals(CAM_CONNECTION_ON)){
+					lstVCamIdCamConnectionOn.add(rec.mStrVCamId);
 				}
 			}
 		}
@@ -702,19 +707,21 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 			CamSwUpdateRecord camRec = (CamSwUpdateRecord)((BeseyeCamBEHttpTask.CheckCamOTAVersionTask)task).getCusObj();
 			
 			if(null != camRec){
+				camRec.mlVerCheckTs = System.currentTimeMillis();
+				
 				CAM_UPDATE_VER_CHECK_STATUS prevStatus = camRec.getVerCheckStatus();
 				if(0 == iRetCode){
 					if(DEBUG)
 						Log.i(TAG, "onPostExecute(), "+result.toString());
 					
 					boolean bCanBeUpdate = BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.UPDATE_CAN_GO);
-					camRec.mlVerCheckTs = System.currentTimeMillis();
 					camRec.meVerCheckStatus = bCanBeUpdate?CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_OUT_OF_DATE
 														  :CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_UPDATED;
 					
 				}else if(Integer.MIN_VALUE == iRetCode){
 					camRec.meVerCheckStatus = CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_TIMEOUT;
-				}else{
+				}else
+				{
 					camRec.meVerCheckStatus = CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_ERR;
 					camRec.miErrCode = iRetCode;
 				}	
@@ -861,6 +868,13 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 							}else{//Update Failed							
 								camRec.mlLastOTAErrorTs = camRec.mlLastCamReportTs;
 								camRec.miErrCode = (0 == iDetailStatus)?iFinalStatus:iDetailStatus;
+								
+								//Test download slow error
+//								if(camRec.isRebootErrWhenOTAPrepare()){
+//									Log.i(TAG, "updateCamUpdateProgress(), meet E_NETWORK_ERROR_WHEN_DOWNLOADING_FILE, fake");
+//
+//									camRec.miErrCode = BeseyeError.E_NETWORK_ERROR_WHEN_DOWNLOADING_FILE;
+//								}
 								
 								if(camRec.isRebootErrWhenOTAPrepare()){
 									Log.i(TAG, "updateCamUpdateProgress(), meet E_REBOOT_DURING_PREPARING_STAGE, reset");

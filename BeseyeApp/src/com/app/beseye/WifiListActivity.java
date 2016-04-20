@@ -23,6 +23,7 @@ import com.app.beseye.setting.PowerScheduleActivity;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
+import com.app.beseye.util.NetworkMgr.ApManager;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
