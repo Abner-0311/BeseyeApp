@@ -685,4 +685,7 @@
   <string name="action_update_again">Retry update</string>
   <string name="desc_cam_update_failed_poor_network">Update suspended! Your network is too slow. Please check the network environment for the camera.</string>
   <string name="dialog_title_attention">Attention</string>  
+  
+  <string name="desc_dialog_cam_force_update_remind">To access the full functions of the camera, please complete the update process.</string>  
+  
 </resources>
