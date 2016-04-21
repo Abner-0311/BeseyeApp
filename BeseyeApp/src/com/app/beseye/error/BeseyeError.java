@@ -1,6 +1,10 @@
 package com.app.beseye.error;
 
 public class BeseyeError {
+	static public final int   E_BE_OK 						   			   = 0x00000000;
+	
+	static public final int   E_BE_ERR 						   			   = 0x000000FF;
+	
 	static public final int   E_BE_ACC_GENERAL_ERR 						   = 0x00010000;	
 	//user
 	static public final int   E_BE_ACC_USER_CLIENT_IP_BLANK                = 0x00101000;//freeze,

@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+import com.app.beseye.error.BeseyeError;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.koushikdutta.async.ByteBufferList;
@@ -324,11 +325,17 @@ public class WebsocketsMgr {
 								if(null != dataObj){
 									String strJobID = BeseyeJSONUtil.getJSONString(dataObj, WS_ATTR_JOB_ID);
 									int iRetCode = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_CODE, -1);
-									if(null != mStrAuthJobId && mStrAuthJobId.equals(strJobID) && 0 == iRetCode){
-										Log.i(TAG, "onStringAvailable(), Auth OK -----------------------");
-										mStrAuthJobId = null;
-										mbAuthComplete = true;
-										mlTimeToRequestWSChannelAuth = 0;
+									if(null != mStrAuthJobId && mStrAuthJobId.equals(strJobID)){
+										if(BeseyeError.E_BE_OK <= iRetCode && iRetCode < BeseyeError.E_BE_ERR){
+											Log.i(TAG, "onStringAvailable(), Auth OK -----------------------");
+											mStrAuthJobId = null;
+											mbAuthComplete = true;
+											mlTimeToRequestWSChannelAuth = 0;
+										}else if(BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode ||
+												 BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode){
+											Log.i(TAG, "onStringAvailable(), Token invalid -----------------------"+iRetCode);
+										}
+										
 									}
 								}
 							}else if(WS_CB_EVT.equals(strCmd)){
