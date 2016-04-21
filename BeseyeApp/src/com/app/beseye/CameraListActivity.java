@@ -218,7 +218,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 				if(BeseyeConfig.DEBUG)
 					Log.i(TAG, "handle pairing done case");	
 			}else{
-				showMyDialog(DIALOG_ID_OTA_FORCE_UPDATE);
+				showMyDialog(DIALOG_ID_OTA_FORCE_CAM_LST);
 			}
 		}else if(getIntent().getBooleanExtra(OpeningPage.KEY_EVENT_FLAG, false)){
 			mPendingRunnableOnCreate = new Runnable(){
@@ -317,14 +317,14 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
 		Dialog dialog;
 		switch(id){
-			case DIALOG_ID_OTA_FORCE_UPDATE:{
+			case DIALOG_ID_OTA_FORCE_CAM_LST:{
 				BaseOneBtnDialog d = new BaseOneBtnDialog(this);
 				d.setBodyText(getString(R.string.desc_dialog_cam_force_update));
 				d.setTitleText(getString(R.string.dialog_title_attention));
 				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
 					@Override
 					public void onBtnClick() {
-						removeMyDialog(DIALOG_ID_OTA_FORCE_UPDATE);	
+						removeMyDialog(DIALOG_ID_OTA_FORCE_CAM_LST);	
 					}});
 				dialog = d;
 				d.setOnDismissListener(new OnDismissListener(){
