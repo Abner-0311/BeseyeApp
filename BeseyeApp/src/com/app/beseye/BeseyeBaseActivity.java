@@ -741,7 +741,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		}
 		case DIALOG_ID_OTA_FORCE_UPDATE:{
 			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
-			d.setBodyText(getString(R.string.desc_dialog_cam_force_update));
+			d.setBodyText(getString(R.string.desc_dialog_cam_force_update_remind));
 			d.setTitleText(getString(R.string.dialog_title_attention));
 			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
 				@Override
@@ -1200,6 +1200,9 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 				if(0 == iRetCode){
 					//Log.i(TAG, "onPostExecute(), "+result.toString());
+					if(BeseyeConfig.PRODUCTION_VER)
+						SessionMgr.getInstance().setAccount("");
+					
 					onSessionInvalid(true);
 				}
 			}/*else if(task instanceof BeseyeAccountTask.GetVCamListTask){
@@ -1432,8 +1435,8 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				mLogoutRunnable = null;
 			}};
 			
+		//Wait for unregister push service in background process
 		BeseyeUtils.postRunnable(mLogoutRunnable, TIME_TO_WAIT_DEL_PUSH);
-		
 		if(null != mNotifyService){
 			try {
 				if(DEBUG)
