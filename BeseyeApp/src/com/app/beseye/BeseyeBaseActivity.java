@@ -1471,19 +1471,23 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		launchDelegateActivity(BeseyeEntryActivity.class.getName());
 	}
 	
-	protected void onSessionInvalid(boolean bIsLogoutCase){
-		if(SessionMgr.getInstance().isTokenValid()){
-			if(false == bIsLogoutCase){
-				BeseyeUtils.postRunnable(new Runnable(){
-					@Override
-					public void run() {
-						Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
-					}}, 0L);
-			}
-			invalidDevSession();
-		}else{
-			Log.i(TAG, "onSessionInvalid(), token is invalid");
-		}
+	protected void onSessionInvalid(final boolean bIsLogoutCase){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(SessionMgr.getInstance().isTokenValid()){
+					if(false == bIsLogoutCase){
+						BeseyeUtils.postRunnable(new Runnable(){
+							@Override
+							public void run() {
+								Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
+							}}, 0L);
+					}
+					invalidDevSession();
+				}else{
+					Log.i(TAG, "onSessionInvalid(), token is invalid");
+				}
+			}}, 0);
 	}
 	
 	public void launchActivityByIntent(Intent intent){
@@ -1840,6 +1844,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						} catch (JSONException e) {
 							Log.i(TAG, "handleMessage(), e:"+e.toString());
 						}
+                	}
+                	break;
+                }
+                case BeseyeNotificationService.MSG_ACCOUNT_TOKEN_EXPIRED:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+	                	act.onSessionInvalid(false);
                 	}
                 	break;
                 }

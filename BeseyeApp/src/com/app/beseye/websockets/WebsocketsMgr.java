@@ -54,6 +54,8 @@ public class WebsocketsMgr {
 	protected Future<WebSocket> mFNotifyWSChannel = null;
 	protected String mStrAuthJobId = null;
 	protected String mStrAudioConnJobId = null;
+	protected boolean mbIsLastErrServerUnavailable = false;
+	protected int miErrServerUnavailableCnt = 0;
 	protected boolean mbAuthComplete = false;
 	protected boolean mBConstructingNotifyWSChannel = false;
 	protected boolean mbNotifyWSChannelConstructed = false;
@@ -102,6 +104,14 @@ public class WebsocketsMgr {
 		if(DEBUG)
 			Log.i(TAG, "setWSServerIP(), ip="+ip);
 		NOTIFY_WS_ADDR = String.format("%s/websocket", ip);//"54.238.255.56");
+	}
+	
+	public boolean isLastErrServerUnavailable(){
+		return mbIsLastErrServerUnavailable;
+	}
+	
+	public int getErrServerUnavailableCnt(){
+		return miErrServerUnavailableCnt;
 	}
 	
 	public boolean constructWSChannel(){
@@ -327,17 +337,28 @@ public class WebsocketsMgr {
 									String strJobID = BeseyeJSONUtil.getJSONString(dataObj, WS_ATTR_JOB_ID);
 									int iRetCode = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_CODE, -1);
 									if(null != mStrAuthJobId && mStrAuthJobId.equals(strJobID)){
+										mbIsLastErrServerUnavailable = false;
 										if(BeseyeError.isNoError(iRetCode)){
 											Log.i(TAG, "onStringAvailable(), Auth OK -----------------------");
 											mStrAuthJobId = null;
 											mbAuthComplete = true;
 											mlTimeToRequestWSChannelAuth = 0;
+											miErrServerUnavailableCnt = 0;
 										}else if(BeseyeError.isUserSessionInvalidError(iRetCode)){
 											Log.i(TAG, "onStringAvailable(), Token invalid -----------------------"+iRetCode);
+											OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
+											if(null != listener){
+												listener.onUserSessionInvalid();
+											}
+											destroyWSChannel();
 										}else if(BeseyeError.isWSServerUnavailableError(iRetCode)){
 											Log.i(TAG, "onStringAvailable(), Server temp unavailable -----------------------"+iRetCode);
+											mbIsLastErrServerUnavailable = true;
+											miErrServerUnavailableCnt++;
+											destroyWSChannel();
 										}else{
 											Log.i(TAG, "onStringAvailable(), other error -----------------------"+iRetCode);
+											destroyWSChannel();
 										}
 									}
 								}

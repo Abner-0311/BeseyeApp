@@ -68,6 +68,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		public void onAudioChannelRequestFailed();
 		public void onAudioChannelOccupied();
 		public void onAudioThreadExit();
+		public void onUserSessionInvalid();
 	}
 	
 	protected WeakReference<OnAudioWSChannelStateChangeListener> mOnAudioWSChannelStateChangeListener = null;
@@ -262,10 +263,12 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 									String strJobID = BeseyeJSONUtil.getJSONString(dataObj, WS_ATTR_JOB_ID);
 									int iRetCode = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_CODE, -1);
 									if(null != mStrAuthJobId && mStrAuthJobId.equals(strJobID)){
+										mbIsLastErrServerUnavailable = false;
 										if(BeseyeError.isNoError(iRetCode)){
 											Log.i(TAG, "Audio onStringAvailable(), Audio Auth OK -----------------------");
 											mStrAuthJobId = null;
 											mbAuthComplete = true;
+											miErrServerUnavailableCnt = 0;
 											//
 											if(FAKE_AUDIO_RECEIVER){
 												String strWsId = mSWID;//BeseyeJSONUtil.getJSONString(dataObj, WSA_WS_ID);
@@ -288,10 +291,19 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 											}
 										}else if(BeseyeError.isUserSessionInvalidError(iRetCode)){
 											Log.i(TAG, "Audio onStringAvailable(), Token invalid -----------------------"+iRetCode);
+											OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
+											if(null != listener){
+												listener.onUserSessionInvalid();
+											}
+											destroyWSChannel();
 										}else if(BeseyeError.isWSServerUnavailableError(iRetCode)){
 											Log.i(TAG, "Audio onStringAvailable(), Server temp unavailable -----------------------"+iRetCode);
+											mbIsLastErrServerUnavailable = true;
+											miErrServerUnavailableCnt++;
+											destroyWSChannel();
 										}else{
 											Log.i(TAG, "Audio onStringAvailable(), other error -----------------------"+iRetCode);
+											destroyWSChannel();
 										}
 									}else if(null != mStrAudioConnJobId && mStrAudioConnJobId.equals(strJobID) && 0 == iRetCode){
 										Log.i(TAG, "Audio onStringAvailable(), Audio Conn OK -----------------------");
