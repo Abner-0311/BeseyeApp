@@ -73,6 +73,7 @@ public class WebsocketsMgr {
 		public void onAuthComplete();
 		public void onMessageReceived(String msg);
 		public void onChannelClosed();
+		public void onUserSessionInvalid();
 	}
 	
 	public void registerOnWSChannelStateChangeListener(OnWSChannelStateChangeListener listener){
@@ -326,16 +327,18 @@ public class WebsocketsMgr {
 									String strJobID = BeseyeJSONUtil.getJSONString(dataObj, WS_ATTR_JOB_ID);
 									int iRetCode = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_CODE, -1);
 									if(null != mStrAuthJobId && mStrAuthJobId.equals(strJobID)){
-										if(BeseyeError.E_BE_OK <= iRetCode && iRetCode < BeseyeError.E_BE_ERR){
+										if(BeseyeError.isNoError(iRetCode)){
 											Log.i(TAG, "onStringAvailable(), Auth OK -----------------------");
 											mStrAuthJobId = null;
 											mbAuthComplete = true;
 											mlTimeToRequestWSChannelAuth = 0;
-										}else if(BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode ||
-												 BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == iRetCode){
+										}else if(BeseyeError.isUserSessionInvalidError(iRetCode)){
 											Log.i(TAG, "onStringAvailable(), Token invalid -----------------------"+iRetCode);
+										}else if(BeseyeError.isWSServerUnavailableError(iRetCode)){
+											Log.i(TAG, "onStringAvailable(), Server temp unavailable -----------------------"+iRetCode);
+										}else{
+											Log.i(TAG, "onStringAvailable(), other error -----------------------"+iRetCode);
 										}
-										
 									}
 								}
 							}else if(WS_CB_EVT.equals(strCmd)){
