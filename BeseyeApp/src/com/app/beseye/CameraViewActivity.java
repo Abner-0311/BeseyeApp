@@ -3208,7 +3208,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	public void onChannelClosed() {
 		long lTimeToWait = (false == AudioWebSocketsMgr.getInstance().isLastErrServerUnavailable())?1000:BeseyeUtils.getRetrySleepTime(AudioWebSocketsMgr.getInstance().getErrServerUnavailableCnt());
 		if(DEBUG)
-			Log.i(TAG, "onChannelClosed()---"+lTimeToWait);
+			Log.i(TAG, "onChannelClosed()---lTimeToWait:"+lTimeToWait);
 		reconstructAudioChannel(lTimeToWait);
 	}
 	

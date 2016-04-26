@@ -692,10 +692,11 @@ public class BeseyeUtils {
 	
 	static public long getRetrySleepTime(final int iRetryTime){
 		long lRet = 1000;
-		int iRealRetryTime = 0;
-		if(iRetryTime < 0 ){
+		int iRealRetryTime = iRetryTime;
+		
+		if(iRealRetryTime < 0 ){
 			iRealRetryTime = 0;
-		}else if(iRetryTime >= NUM_RETRY_INTERVAL){
+		}else if(iRealRetryTime >= NUM_RETRY_INTERVAL){
 			iRealRetryTime = NUM_RETRY_INTERVAL - 1;
 		}
 		

@@ -647,7 +647,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         }
      }
     
-    private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
+    //for Computex 2014
+    //private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
     
     private void checkUserLoginState(){
     	if(DEBUG)
@@ -665,10 +666,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
             				WebsocketsMgr.getInstance().constructWSChannel();
         				}
         			}else if(true ==  WebsocketsMgr.getInstance().checkLastTimeToGetKeepAlive()){
-        				Log.e(TAG, "Too long to receive keepalive");
-        		
+        				Log.e(TAG, "Too long to receive keepalive !!!!!!");
         				WebsocketsMgr.getInstance().destroyWSChannel();
         			}
+        		}else{
+        			//Need to handle???
         		}
     		}else{
         		Log.i(TAG, "checkUserLoginState(), not a trusted devices");
@@ -705,8 +707,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
     
     private void beginToCheckWebSocketState(){
+    	postToCheckWebSocketState(mbAppInBackground?60*1000:10*1000);
+    }
+    
+    private void postToCheckWebSocketState(long lTimeToTrigger){
     	BeseyeUtils.removeRunnable(mCheckWebsocketAliveRunnable);
-		BeseyeUtils.postRunnable(mCheckWebsocketAliveRunnable, mbAppInBackground?60*1000:10*1000);
+		BeseyeUtils.postRunnable(mCheckWebsocketAliveRunnable, lTimeToTrigger);
     }
     
     private void finishToCheckWebSocketState(){
@@ -1487,22 +1493,25 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			SessionMgr.getInstance().getIsTrustDev()
 			/*&& NetworkMgr.getInstance().isNetworkConnected()*/){
 			
-			Log.e(TAG, "ws onChannelClosed(), abnormal close, retry-----");
-			long lTimeToWait = (false == WebsocketsMgr.getInstance().isLastErrServerUnavailable())?1000:BeseyeUtils.getRetrySleepTime(WebsocketsMgr.getInstance().getErrServerUnavailableCnt());// (miWSDisconnectRetry++)*1000;
-
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					if(NetworkMgr.getInstance().isNetworkConnected()){
-						WebsocketsMgr.getInstance().constructWSChannel();
-					}else{
-						long lTimeToWait = (miWSDisconnectRetry++)*1000;
-						if(lTimeToWait > 10000){
-							lTimeToWait = 10000;
-						}
-						//BeseyeUtils.postRunnable(this, BeseyeUtils.getRetrySleepTime(miWSDisconnectRetry++));
-					}
-				}}, lTimeToWait);
+			final long lTimeToWait = (false == WebsocketsMgr.getInstance().isLastErrServerUnavailable())?Math.min((++miWSDisconnectRetry)*1000, 5000L):BeseyeUtils.getRetrySleepTime(WebsocketsMgr.getInstance().getErrServerUnavailableCnt());// (miWSDisconnectRetry++)*1000;
+			
+			Log.e(TAG, "ws onChannelClosed(), abnormal close, retry-----, lTimeToWait:"+lTimeToWait);
+			
+			postToCheckWebSocketState(lTimeToWait);
+			
+//			BeseyeUtils.postRunnable(new Runnable(){
+//				@Override
+//				public void run() {
+//					if(NetworkMgr.getInstance().isNetworkConnected()){
+//						WebsocketsMgr.getInstance().constructWSChannel();
+//					}else{
+//						long lTimeToWaitInternal = (miWSDisconnectRetry++)*1000;
+//						if(lTimeToWaitInternal > 10000){
+//							lTimeToWaitInternal = 10000;
+//						}
+//						BeseyeUtils.postRunnable(this, lTimeToWaitInternal);
+//					}
+//				}}, lTimeToWait);
     	}
 	}
 
