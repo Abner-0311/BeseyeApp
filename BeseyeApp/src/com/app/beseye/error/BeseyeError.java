@@ -146,7 +146,7 @@ public class BeseyeError {
 	
 	static public boolean isUserSessionInvalidError(final int iRetCode){
 		return (E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode) ||
-			   (E_BE_ACC_USER_SESSION_EXPIRED == iRetCode) ;
+			   (E_BE_ACC_USER_SESSION_EXPIRED == iRetCode);
 	}
 	
 	static public boolean isWSServerUnavailableError(final int iRetCode){

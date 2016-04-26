@@ -460,7 +460,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 				Log.e(TAG, "Error in http connection "+e.toString());
 			}
 			
-			long lSleepTime = (ERR_TYPE_GENERAL_ERR == miErrType)?500L:BeseyeUtils.getRetrySleepTime(retryCount);
+			long lSleepTime = (ERR_TYPE_GENERAL_ERR == miErrType)?1000L:BeseyeUtils.getRetrySleepTime(retryCount);
 			
 			if (++retryCount >= mRetryCount
 					|| Thread.currentThread()
@@ -550,8 +550,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 		if(0 != miRetCode || miErrType != ERR_TYPE_NO_ERR){
 	       	if(miErrType == ERR_TYPE_NO_ERR){
 	       		if(/*SessionMgr.getInstance().isMdidValid() && */-1 == miRetCode || 
-	       			BeseyeError.E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == miRetCode ||
-	       			BeseyeError.E_BE_ACC_USER_SESSION_EXPIRED == miRetCode ||
+	       			BeseyeError.isUserSessionInvalidError(miRetCode) ||
 	       			BeseyeError.E_BE_ACC_USER_SESSION_CLIENT_IS_NOT_TRUSTED == miRetCode){//invalid seesion from login BE
 	       			Log.e(TAG, "getJSONfromURL(), invalid seesion from login BE");
 	       			//if(this instanceof iKalaAccountTask.LogoutHttpTask){
