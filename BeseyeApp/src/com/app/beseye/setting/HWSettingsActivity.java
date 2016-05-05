@@ -570,6 +570,10 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 				
 				if(null != mVgTimezone){
 					mVgTimezone.setEnabled(!bIsCamDisconnected);
+					mTimeZone = TimeZone.getTimeZone(BeseyeJSONUtil.getJSONString(dataObj, BeseyeJSONUtil.CAM_TZ, TimeZone.getDefault().getID()));
+					if(null != mTxtTimezoneDesc){
+						mTxtTimezoneDesc.setText(BeseyeUtils.getGMTString(mTimeZone));
+					}
 				}
 			}
 		}
