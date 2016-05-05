@@ -465,6 +465,7 @@ public static final boolean LINK_PRODUCTION_SERVER = true;
 			if (++retryCount >= mRetryCount
 					|| Thread.currentThread()
 							.isInterrupted()) {
+				checkError(null, strParams);
 				break;
 			}
 			

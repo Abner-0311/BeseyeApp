@@ -1102,24 +1102,19 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
-		if(task instanceof BeseyeAccountTask.CheckAccountTask){
-			//onSessionInvalid();
-		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle, String strMsg) {
+		if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 			//SessionMgr.getInstance().cleanSession();
 			onSessionInvalid(true);
-		}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
-			//onToastShow(task, "failed to update sw");
-		}else if(task instanceof BeseyeCamBEHttpTask.GetCamUpdateStatusTask){
-			//removeMyDialog(DIALOG_ID_CAM_UPDATE);
-			//onToastShow(task, "failed to update status");
-		}/*else{
+		}else if(task instanceof BeseyeAccountTask.CheckAccountTask){
+			//Do nothing because handling in onPostExecute
+		}else{
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					onServerError();
+					onServerError(iErrType);
 				}}, 0);	
-		}*/
+		}
 		
 		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 //			if(null != strMsg && 0 < strMsg.length())
