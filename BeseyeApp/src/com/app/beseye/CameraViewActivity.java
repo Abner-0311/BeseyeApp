@@ -82,6 +82,7 @@ import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.websockets.AudioWebSocketsMgr;
+import com.app.beseye.websockets.WebsocketsMgr;
 import com.app.beseye.websockets.AudioWebSocketsMgr.AudioConnStatus;
 import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioAmplitudeUpdateListener;
 import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioWSChannelStateChangeListener;
@@ -3188,9 +3189,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private void reconstructAudioChannel(final long lDelay){
 		setNeedToRequestCamAudioConnected(true);
-		BeseyeUtils.postRunnable(new Runnable(){
-			@Override
-			public void run() {
+//		BeseyeUtils.postRunnable(new Runnable(){
+//			@Override
+//			public void run() {
 				BeseyeUtils.postRunnable(new Runnable(){
 					@Override
 					public void run() {
@@ -3200,15 +3201,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						}
 					}}, lDelay);
 				//Toast.makeText(CameraViewActivity.this, "Talk terminated", Toast.LENGTH_SHORT).show();
-			}}, 0);
+//			}}, 0);
 	}
 
 	@Override
 	public void onChannelClosed() {
+		long lTimeToWait = (false == AudioWebSocketsMgr.getInstance().isLastErrServerUnavailable())?1000:BeseyeUtils.getRetrySleepTime(AudioWebSocketsMgr.getInstance().getErrServerUnavailableCnt());
 		if(DEBUG)
-			Log.i(TAG, "onChannelClosed()---");
-		
-		reconstructAudioChannel(1000);
+			Log.i(TAG, "onChannelClosed()---lTimeToWait:"+lTimeToWait);
+		reconstructAudioChannel(lTimeToWait);
 	}
 	
 	@Override
@@ -3276,6 +3277,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}}, 100);
 	}
 	
+	@Override
+	public void onUserSessionInvalid(){
+		onSessionInvalid(false);
+	}
 	
 	private void checkHoldToTalkMode(){
 		if(null != mCameraViewControlAnimator && false == mCameraViewControlAnimator.isInHoldToTalkMode()){

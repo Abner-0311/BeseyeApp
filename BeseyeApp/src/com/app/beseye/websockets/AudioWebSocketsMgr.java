@@ -68,6 +68,7 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 		public void onAudioChannelRequestFailed();
 		public void onAudioChannelOccupied();
 		public void onAudioThreadExit();
+		public void onUserSessionInvalid();
 	}
 	
 	protected WeakReference<OnAudioWSChannelStateChangeListener> mOnAudioWSChannelStateChangeListener = null;
@@ -261,31 +262,49 @@ public class AudioWebSocketsMgr extends WebsocketsMgr implements OnHttpTaskCallb
 								if(null != dataObj){
 									String strJobID = BeseyeJSONUtil.getJSONString(dataObj, WS_ATTR_JOB_ID);
 									int iRetCode = BeseyeJSONUtil.getJSONInt(dataObj, WS_ATTR_CODE, -1);
-									if(null != mStrAuthJobId && mStrAuthJobId.equals(strJobID) && 0 == iRetCode){
-										Log.i(TAG, "Audio onStringAvailable(), Audio Auth OK -----------------------");
-										mStrAuthJobId = null;
-										mbAuthComplete = true;
-										//
-										if(FAKE_AUDIO_RECEIVER){
-											String strWsId = mSWID;//BeseyeJSONUtil.getJSONString(dataObj, WSA_WS_ID);
-											//Log.i(TAG, "onStringAvailable(), binConnObj="+dataObj.toString()+", strWsId:"+strWsId);
-											JSONObject binConnObj = BeseyeWebsocketsUtil.genBinaryConnMsg(strWsId);
-											if(null != binConnObj){
-												webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_BIN_CONN, binConnObj.toString()));
-												if(DEBUG)
-													Log.i(TAG, "Audio onStringAvailable(), binConnObj="+binConnObj.toString());
-												mStrAudioConnJobId = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(binConnObj, WS_ATTR_DATA),WS_ATTR_JOB_ID); 
-												if(DEBUG)
-													Log.i(TAG, "Audio onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
+									if(null != mStrAuthJobId && mStrAuthJobId.equals(strJobID)){
+										mbIsLastErrServerUnavailable = false;
+										if(BeseyeError.isNoError(iRetCode)){
+											Log.i(TAG, "Audio onStringAvailable(), Audio Auth OK -----------------------");
+											mStrAuthJobId = null;
+											mbAuthComplete = true;
+											miErrServerUnavailableCnt = 0;
+											//
+											if(FAKE_AUDIO_RECEIVER){
+												String strWsId = mSWID;//BeseyeJSONUtil.getJSONString(dataObj, WSA_WS_ID);
+												//Log.i(TAG, "onStringAvailable(), binConnObj="+dataObj.toString()+", strWsId:"+strWsId);
+												JSONObject binConnObj = BeseyeWebsocketsUtil.genBinaryConnMsg(strWsId);
+												if(null != binConnObj){
+													webSocket.send(String.format(WS_CMD_FORMAT, WS_FUNC_BIN_CONN, binConnObj.toString()));
+													if(DEBUG)
+														Log.i(TAG, "Audio onStringAvailable(), binConnObj="+binConnObj.toString());
+													mStrAudioConnJobId = BeseyeJSONUtil.getJSONString(BeseyeJSONUtil.getJSONObject(binConnObj, WS_ATTR_DATA),WS_ATTR_JOB_ID); 
+													if(DEBUG)
+														Log.i(TAG, "Audio onStringAvailable(), mStrAudioConnJobId="+mStrAudioConnJobId);
+												}
+											}else{
+												OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
+												if(null != listener){
+													listener.onAuthComplete();
+												}
+												//sendRequestCamConnected();
 											}
-										}else{
+										}else if(BeseyeError.isUserSessionInvalidError(iRetCode)){
+											Log.i(TAG, "Audio onStringAvailable(), Token invalid -----------------------"+iRetCode);
 											OnWSChannelStateChangeListener listener = (null != mOnWSChannelStateChangeListener)?mOnWSChannelStateChangeListener.get():null;
 											if(null != listener){
-												listener.onAuthComplete();
+												listener.onUserSessionInvalid();
 											}
-											//sendRequestCamConnected();
+											destroyWSChannel();
+										}else if(BeseyeError.isWSServerUnavailableError(iRetCode)){
+											Log.i(TAG, "Audio onStringAvailable(), Server temp unavailable -----------------------"+iRetCode);
+											mbIsLastErrServerUnavailable = true;
+											miErrServerUnavailableCnt++;
+											destroyWSChannel();
+										}else{
+											Log.i(TAG, "Audio onStringAvailable(), other error -----------------------"+iRetCode);
+											destroyWSChannel();
 										}
-										
 									}else if(null != mStrAudioConnJobId && mStrAudioConnJobId.equals(strJobID) && 0 == iRetCode){
 										Log.i(TAG, "Audio onStringAvailable(), Audio Conn OK -----------------------");
 										synchronized(AudioWebSocketsMgr.this){

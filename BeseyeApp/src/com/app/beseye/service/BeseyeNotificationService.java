@@ -230,6 +230,22 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 	}
                 	break;
                 }
+                case MSG_ACCOUNT_TOKEN_EXPIRED:{
+                	for (int i=mClients.size()-1; i>=0; i--) {
+                		try {
+                			Message msgToSend = Message.obtain(null, msg.what);
+                			mClients.get(i).send(msgToSend);
+                			break;
+                		} catch (RemoteException e) {
+                			// The client is dead.  Remove it from the list;
+                			// we are going through the list from back to front
+                			// so this is safe to do inside the loop.
+                			mClients.remove(i);
+                			continue;
+                		}
+                	}
+                	break;
+                }
                 case MSG_PIN_CODE_NOTIFY_CLICKED:{
                 	if(null != mDialogPincodeInfo){
                 		mDialogPincodeInfo.dismiss();
@@ -631,7 +647,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         }
      }
     
-    private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
+    //for Computex 2014
+    //private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
     
     private void checkUserLoginState(){
     	if(DEBUG)
@@ -649,10 +666,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
             				WebsocketsMgr.getInstance().constructWSChannel();
         				}
         			}else if(true ==  WebsocketsMgr.getInstance().checkLastTimeToGetKeepAlive()){
-        				Log.e(TAG, "Too long to receive keepalive");
-        		
+        				Log.e(TAG, "Too long to receive keepalive !!!!!!");
         				WebsocketsMgr.getInstance().destroyWSChannel();
         			}
+        		}else{
+        			//Need to handle???
         		}
     		}else{
         		Log.i(TAG, "checkUserLoginState(), not a trusted devices");
@@ -689,8 +707,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
     
     private void beginToCheckWebSocketState(){
+    	postToCheckWebSocketState(mbAppInBackground?60*1000:10*1000);
+    }
+    
+    private void postToCheckWebSocketState(long lTimeToTrigger){
     	BeseyeUtils.removeRunnable(mCheckWebsocketAliveRunnable);
-		BeseyeUtils.postRunnable(mCheckWebsocketAliveRunnable, mbAppInBackground?60*1000:10*1000);
+		BeseyeUtils.postRunnable(mCheckWebsocketAliveRunnable, lTimeToTrigger);
     }
     
     private void finishToCheckWebSocketState(){
@@ -1238,8 +1260,21 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	@Override
 	public void onSessionInvalid(AsyncTask<String, Double, List<JSONObject>> task, int iInvalidReason){
+		clearSessionAndNotify();
+	}
+	
+	private void clearSessionAndNotify(){
 		SessionMgr.getInstance().cleanSession();
 		BeseyeNewFeatureMgr.getInstance().reset();
+		
+		try {
+			if(null != mMessenger){
+				Message msg = Message.obtain(null, MSG_ACCOUNT_TOKEN_EXPIRED, null);
+				mMessenger.send(msg);
+			}
+		} catch (RemoteException e) {
+			Log.e(TAG, "clearSessionAndNotify(), RemoteException, e="+e.toString());	
+		}
 	}
 
 	@Override
@@ -1453,31 +1488,40 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		if(DEBUG)
 			Log.i(TAG, "ws onChannelClosed()---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
-		if(/*miWSDisconnectRetry < MAX_WS_RETRY_TIME && */false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()/*&& NetworkMgr.getInstance().isNetworkConnected()*/){
-			Log.e(TAG, "ws onChannelClosed(), abnormal close, retry-----");
-			long lTimeToWait = (miWSDisconnectRetry++)*1000;
-			if(lTimeToWait > 10000){
-				lTimeToWait = 10000;
-			}
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					if(NetworkMgr.getInstance().isNetworkConnected()){
-						WebsocketsMgr.getInstance().constructWSChannel();
-					}else{
-//						long lTimeToWait = (miWSDisconnectRetry++)*1000;
-//						if(lTimeToWait > 10000){
-//							lTimeToWait = 10000;
+		if(/*miWSDisconnectRetry < MAX_WS_RETRY_TIME && */
+			false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && 
+			SessionMgr.getInstance().getIsTrustDev()
+			/*&& NetworkMgr.getInstance().isNetworkConnected()*/){
+			
+			final long lTimeToWait = (false == WebsocketsMgr.getInstance().isLastErrServerUnavailable())?Math.min((++miWSDisconnectRetry)*1000, 5000L):BeseyeUtils.getRetrySleepTime(WebsocketsMgr.getInstance().getErrServerUnavailableCnt());// (miWSDisconnectRetry++)*1000;
+			
+			Log.e(TAG, "ws onChannelClosed(), abnormal close, retry-----, lTimeToWait:"+lTimeToWait);
+			
+			postToCheckWebSocketState(lTimeToWait);
+			
+//			BeseyeUtils.postRunnable(new Runnable(){
+//				@Override
+//				public void run() {
+//					if(NetworkMgr.getInstance().isNetworkConnected()){
+//						WebsocketsMgr.getInstance().constructWSChannel();
+//					}else{
+//						long lTimeToWaitInternal = (miWSDisconnectRetry++)*1000;
+//						if(lTimeToWaitInternal > 10000){
+//							lTimeToWaitInternal = 10000;
 //						}
-						BeseyeUtils.postRunnable(this, BeseyeUtils.getRetrySleepTime(miWSDisconnectRetry++));
-					}
-				}}, lTimeToWait);
+//						BeseyeUtils.postRunnable(this, lTimeToWaitInternal);
+//					}
+//				}}, lTimeToWait);
     	}
 	}
 
 	@Override
 	public void onConnectivityChanged(boolean bNetworkConnected) {
 		checkUserLoginState();
+	}
+	
+	public void onUserSessionInvalid(){
+		clearSessionAndNotify();
 	}
 	
 	private boolean handleNotificationEvent(JSONObject msgObj, boolean bFromGCM){

@@ -751,6 +751,18 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			dialog = d;
 			break;
 		}
+		case DIALOG_ID_OTA_FORCE_CAM_LST:{
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			d.setBodyText(getString(R.string.desc_dialog_cam_force_update_remind));
+			d.setTitleText(getString(R.string.dialog_title_attention));
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+				@Override
+				public void onBtnClick() {
+					removeMyDialog(DIALOG_ID_OTA_FORCE_UPDATE);	
+				}});
+			dialog = d;
+			break;
+		}
 		case DIALOG_ID_OTA_WS_DISCONN:{
 			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
 			d.setBodyText(getString(R.string.desc_dialog_cam_offline_during_ota));
@@ -1090,24 +1102,19 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
-		if(task instanceof BeseyeAccountTask.CheckAccountTask){
-			//onSessionInvalid();
-		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle, String strMsg) {
+		if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 			//SessionMgr.getInstance().cleanSession();
 			onSessionInvalid(true);
-		}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
-			//onToastShow(task, "failed to update sw");
-		}else if(task instanceof BeseyeCamBEHttpTask.GetCamUpdateStatusTask){
-			//removeMyDialog(DIALOG_ID_CAM_UPDATE);
-			//onToastShow(task, "failed to update status");
-		}/*else{
+		}else if(task instanceof BeseyeAccountTask.CheckAccountTask){
+			//Do nothing because handling in onPostExecute
+		}else{
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					onServerError();
+					onServerError(iErrType);
 				}}, 0);	
-		}*/
+		}
 		
 		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 //			if(null != strMsg && 0 < strMsg.length())
@@ -1459,19 +1466,23 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		launchDelegateActivity(BeseyeEntryActivity.class.getName());
 	}
 	
-	protected void onSessionInvalid(boolean bIsLogoutCase){
-		if(SessionMgr.getInstance().isTokenValid()){
-			if(false == bIsLogoutCase){
-				BeseyeUtils.postRunnable(new Runnable(){
-					@Override
-					public void run() {
-						Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
-					}}, 0L);
-			}
-			invalidDevSession();
-		}else{
-			Log.i(TAG, "onSessionInvalid(), token is invalid");
-		}
+	protected void onSessionInvalid(final boolean bIsLogoutCase){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(SessionMgr.getInstance().isTokenValid()){
+					if(false == bIsLogoutCase){
+						BeseyeUtils.postRunnable(new Runnable(){
+							@Override
+							public void run() {
+								Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
+							}}, 0L);
+					}
+					invalidDevSession();
+				}else{
+					Log.i(TAG, "onSessionInvalid(), token is invalid");
+				}
+			}}, 0);
 	}
 	
 	public void launchActivityByIntent(Intent intent){
@@ -1828,6 +1839,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						} catch (JSONException e) {
 							Log.i(TAG, "handleMessage(), e:"+e.toString());
 						}
+                	}
+                	break;
+                }
+                case BeseyeNotificationService.MSG_ACCOUNT_TOKEN_EXPIRED:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+	                	act.onSessionInvalid(false);
                 	}
                 	break;
                 }
