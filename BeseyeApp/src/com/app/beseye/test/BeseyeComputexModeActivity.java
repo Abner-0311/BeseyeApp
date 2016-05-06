@@ -1,4 +1,4 @@
-package com.app.beseye;
+package com.app.beseye.test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,6 +22,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.app.beseye.BeseyeBaseActivity;
+import com.app.beseye.BeseyeEntryActivity;
+import com.app.beseye.R;
+import com.app.beseye.R.id;
+import com.app.beseye.R.layout;
 import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeConfig;
