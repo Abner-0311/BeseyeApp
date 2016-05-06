@@ -47,7 +47,9 @@ import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
+import com.app.beseye.widget.BaseOneBtnDialog;
 import com.app.beseye.widget.BeseyeSwitchBtn;
+import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 
@@ -654,6 +656,8 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 					BeseyeJSONUtil.setJSONString(getJSONObject(mCam_obj, ACC_DATA), CAM_TZ, mTimeZone.getID());
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
+					
+					checkConflict(BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.SCHED_CONFLICT), BeseyeJSONUtil.getJSONBoolean(result.get(0), BeseyeJSONUtil.SCHED_CONFLICT_WILL_BE));
 					setActivityResultWithCamObj();
 				}
 			}else if(task instanceof BeseyeCamBEHttpTask.SetVideoUpsideDownTask){
@@ -707,6 +711,23 @@ public class HWSettingsActivity extends BeseyeBaseActivity implements OnSwitchBt
 			}else{
 				super.onPostExecute(task, result, iRetCode);
 			}
+		}
+	}
+	
+	private void checkConflict(boolean schedConflict, boolean schedConflictWillBe){
+		if(true == schedConflict){
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			if(true == schedConflictWillBe){
+				d.setBodyText(getString(R.string.cam_setting_schedule_conflict_be_on));
+			}else{
+				d.setBodyText(getString(R.string.cam_setting_schedule_conflict_be_off));
+			}
+			d.setTitleText(getString(R.string.signup_watch_out_title));
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+				@Override
+				public void onBtnClick() {
+				}});
+			d.show();
 		}
 	}
 }
