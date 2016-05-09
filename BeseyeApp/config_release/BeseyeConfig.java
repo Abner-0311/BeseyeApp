@@ -23,6 +23,8 @@ public class BeseyeConfig {
 	static public final String RELAY_AP_PW = "whoisyourdaddy";
 
 	static public final boolean SHOW_THUMBNAIL_LOG = false;
+	static public final boolean PRODUCTION_FAKE_APP_CHECK = false;
+
 
 	static{
 		Log.i(TAG, "BeseyeConfig init, BeseyeConfig.DEBUG:"+ BeseyeConfig.DEBUG);

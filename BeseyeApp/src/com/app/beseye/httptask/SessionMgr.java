@@ -23,8 +23,8 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.app.beseye.BeseyeApplication;
-import com.app.beseye.BeseyeComputexModeActivity;
 import com.app.beseye.BeseyeNewsActivity.BeseyeNewsHistoryMgr;
+import com.app.beseye.test.BeseyeComputexModeActivity;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeJSONUtil;
 import com.app.beseye.util.BeseyeUtils;
@@ -171,6 +171,8 @@ public class SessionMgr {
 	static private final String SESSION_DEBUG_STREAM_PATH	= "beseye_debug_stream_path";
 	//static private final String SESSION_SCREENSHOT_FEATURE	= "beseye_screen_feature";
 	
+	static private final String SESSION_DEBUG_FAKE_APP_VER	= "beseye_fake_app_ver";
+	
 	static private SessionMgr sSessionMgr;
 	
 	static public void createInstance(Context context){
@@ -310,6 +312,18 @@ public class SessionMgr {
 		setWSHostUrl("");
 		setWSAHostUrl("");
 		setNewsHostUrl("");
+	}
+	
+	public int getFakeAppVer(){
+		return getPrefIntValue(mPref, SESSION_DEBUG_FAKE_APP_VER, 0);
+	}
+	
+	public void setFakeAppVer(int iFakeAppVer){
+		setPrefIntValue(mPref, SESSION_DEBUG_FAKE_APP_VER, iFakeAppVer);
+	}
+	
+	public boolean isFakeAppVerEnabled(){
+		return 0 < getFakeAppVer();
 	}
 	
 	public void setShowPirvateCam(boolean bFlag){
