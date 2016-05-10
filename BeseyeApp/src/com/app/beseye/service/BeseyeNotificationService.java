@@ -83,14 +83,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	/** For showing and hiding our notification. */
 	private NotificationManager mNotificationManager;
 	private static final int NOTIFICATION_TYPE_BASE = 0x0;
-	private static final int NOTIFICATION_TYPE_INFO = NOTIFICATION_TYPE_BASE+1;
+	private static final int NOTIFICATION_TYPE_INFO = (NOTIFICATION_TYPE_BASE+1) << 8;
 	private static final int NOTIFICATION_TYPE_MSG  = NOTIFICATION_TYPE_INFO;//NOTIFICATION_TYPE_BASE+2;
-	private static final int NOTIFICATION_TYPE_CAM  = NOTIFICATION_TYPE_BASE+2;
-	private static final int NOTIFICATION_TYPE_PIN  = NOTIFICATION_TYPE_BASE+3;
-	private static final int NOTIFICATION_TYPE_EVT  = NOTIFICATION_TYPE_BASE+4;
-	private static final int NOTIFICATION_TYPE_OTA  = NOTIFICATION_TYPE_BASE+5;
-
-	
+	private static final int NOTIFICATION_TYPE_CAM  = (NOTIFICATION_TYPE_BASE+2) << 8;
+	private static final int NOTIFICATION_TYPE_PIN  = (NOTIFICATION_TYPE_BASE+3) << 8;
+	private static final int NOTIFICATION_TYPE_EVT  = (NOTIFICATION_TYPE_BASE+4) << 8;
+	private static final int NOTIFICATION_TYPE_OTA  = (NOTIFICATION_TYPE_BASE+5) << 8;
 	
 	public static final String MSG_REF_JSON_OBJ 	= "MSG_REF_JSON_OBJ";
 	public static final String MSG_DEL_PUSH_RET 	= "MSG_DEL_PUSH_RET";
@@ -1194,11 +1192,31 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	        mNotificationManager.notify(iNotifyId, notification);
 		}
 	}
+	
+	private void cancelNotificationByVcamId(String strVCamId){
+		if(null != strVCamId){
+			if(null != mNotificationManager){
+				if(true == mMapNotificationId.containsKey(strVCamId)){
+					mNotificationManager.cancel(mMapNotificationId.get(strVCamId));
+					mMapNotificationId.remove(strVCamId);
+					mMapNCode.remove(strVCamId);
+				}
+				if(mMapOTANotificationId.containsKey(strVCamId)){
+					mNotificationManager.cancel(mMapOTANotificationId.get(strVCamId));
+					mMapOTANotificationId.remove(strVCamId);
+				}
+			}
+		}
+	}
+	
 	private void cancelNotification(){
 		if(null != mNotificationManager){
 			mNotificationManager.cancel(NOTIFICATION_TYPE_INFO);
 			mNotificationManager.cancel(NOTIFICATION_TYPE_MSG);
 			mNotificationManager.cancel(NOTIFICATION_TYPE_CAM);
+			mNotificationManager.cancel(NOTIFICATION_TYPE_PIN);
+			mNotificationManager.cancel(NOTIFICATION_TYPE_OTA);
+			
 			if(0 < mMapNotificationId.size()){
 				for(String strVCamId : mMapNotificationId.keySet()){
 					if(null != mNotificationManager){
@@ -1208,7 +1226,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				mMapNotificationId.clear();
 			}
 			
-			mNotificationManager.cancel(NOTIFICATION_TYPE_PIN);
 			if(0 < mMapNotificationIdByDevName.size()){
 				for(String strDevName : mMapNotificationIdByDevName.keySet()){
 					if(null != mNotificationManager){
@@ -1218,7 +1235,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				mMapNotificationIdByDevName.clear();
 			}
 			
-			mNotificationManager.cancel(NOTIFICATION_TYPE_OTA);
 			if(0 < mMapOTANotificationId.size()){
 				for(String strVCamId : mMapOTANotificationId.keySet()){
 					if(null != mNotificationManager){
@@ -1230,6 +1246,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			
 			if(0 < mMapNCode.size()){
 				mMapNCode.clear();
+			}
+			
+			if(null != mNotificationManager){
+				mNotificationManager.cancelAll();
 			}
 		}
 	}
@@ -1605,13 +1625,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					}
 					
 					String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
-					if(null != strVCamId && true == mMapNotificationId.containsKey(strVCamId)){
-						if(null != mNotificationManager){
-							mNotificationManager.cancel(mMapNotificationId.get(strVCamId));
-						}
-						mMapNotificationId.remove(strVCamId);
-						mMapNCode.remove(strVCamId);
-					}
+					cancelNotificationByVcamId(strVCamId);
 					
 					BeseyeStorageAgent.doDeleteCacheByFolder(BeseyeNotificationService.this.getApplicationContext(), strVCamId);
 					break;
@@ -1636,13 +1650,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				case NCODE_CAM_OTA_FINISH:{
 					if(bFromGCM){												
 						String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
-						if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
+						if(null != strVCamId && false == mMapOTANotificationId.containsKey(strVCamId)){
 							if(false == mListBlackVCamId.contains(strVCamId)){
 								if(null != mGetVCamListTask && false == mGetVCamListTask.isCancelled()){
 									mGetVCamListTask.cancel(true);
 	                			}
 								if(DEBUG)
-									Log.i(TAG, "handleNotificationEvent(),strVCamId="+strVCamId+" not in mListBlackVCamId nor mMapNotificationId");	
+									Log.i(TAG, "handleNotificationEvent(),strVCamId="+strVCamId+" not in mListBlackVCamId nor mMapOTANotificationId");	
 								(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this, strVCamId, msgObj, bFromGCM)).execute();
 							}
 						}else{
