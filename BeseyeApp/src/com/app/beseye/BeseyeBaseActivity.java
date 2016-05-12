@@ -1009,6 +1009,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     protected void showNoNetworkDialog(){
 		showMyDialog(DIALOG_ID_NO_NETWORK);
+		removeMyDialog(DIALOG_ID_WARNING);
 	}
     
     protected void hideNoNetworkDialog(){
