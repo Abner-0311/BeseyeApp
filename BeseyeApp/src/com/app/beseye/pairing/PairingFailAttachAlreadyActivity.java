@@ -82,6 +82,7 @@ public class PairingFailAttachAlreadyActivity extends BeseyeNavBarBaseActivity {
 	public void onClick(View view) {
 		switch(view.getId()){
 			case R.id.button_detach:{
+				backToWifiSetupGuidePage();
 				break;
 			}
 			case R.id.iv_nav_left_btn:{
