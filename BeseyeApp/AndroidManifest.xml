@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
-    android:versionCode="191"
-    android:versionName="0.2.11" 
+    android:versionCode="192"
+    android:versionName="0.2.12" 
     android:installLocation="auto">
     
     <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="14" />
@@ -302,7 +302,7 @@
         </activity>
         
         <activity
-            android:name="com.app.beseye.test.BeseyeComputexModeActivity"
+            android:name=".test.BeseyeComputexModeActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize" 
             android:exported="false">
