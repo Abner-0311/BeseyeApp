@@ -54,9 +54,9 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 								   implements OnSwitchBtnStateChangedListener{
 	
 	private BeseyeSwitchBtn mCamSwitchBtn;
-	private TextView mTxtPowerTitle;
-	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam, mVgMotionNotification, mVgHumanDetectNotification;
-	private ImageView mIvTriggerZoneNew, mIvHumanDetectNew, mIvScheduleNew;
+	private TextView mTxtPowerTitle, mTxtTriggerZoneEditTitle;
+	private ViewGroup mVgNotificationType, mVgFamilyRecognition, mVgCamInfo, mVgPowerSchedule, mVgLocationAware, mVgHWSettings, mVgSiren, mVgDetachCam, mVgRebootCam, mVgTriggerZoneEdit, mVgHumanDetectOptimization, mVgNotificationSetting;
+	private ImageView mIvScheduleNew;
 	
 	private int miUnmaskDetachCamHitCount = 0;
 	
@@ -153,14 +153,21 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			mVgFamilyRecognition.setVisibility(View.GONE);
 		}
 		
-		mVgMotionNotification = (ViewGroup)findViewById(R.id.vg_motion_notification_events);
-		if(null != mVgMotionNotification){
-			mVgMotionNotification.setOnClickListener(this);
+		mVgNotificationSetting = (ViewGroup)findViewById(R.id.vg_notification_setting_events);
+		if(null != mVgNotificationSetting){
+			mVgNotificationSetting.setOnClickListener(this);
 		}
 		
-		mVgHumanDetectNotification = (ViewGroup)findViewById(R.id.vg_human_detect_notification_events);
-		if(null != mVgHumanDetectNotification){
-			mVgHumanDetectNotification.setOnClickListener(this);
+		mTxtTriggerZoneEditTitle = (TextView)findViewById(R.id.trigger_zone_edit_title);
+		
+		mVgTriggerZoneEdit = (ViewGroup)findViewById(R.id.vg_trigger_zone_edit_events);
+		if(null != mVgTriggerZoneEdit){
+			mVgTriggerZoneEdit.setOnClickListener(this);
+		}
+		
+		mVgHumanDetectOptimization = (ViewGroup)findViewById(R.id.vg_human_detect_optimization_events);
+		if(null != mVgHumanDetectOptimization){
+			mVgHumanDetectOptimization.setOnClickListener(this);
 		}
 		
 		mVgDetachCam = (ViewGroup)findViewById(R.id.vg_detach_cam);
@@ -174,16 +181,6 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			if(BeseyeUtils.isHiddenFeature()){
 				mVgRebootCam.setVisibility(View.GONE);
 			}
-		}
-		
-		mIvTriggerZoneNew = (ImageView)findViewById(R.id.iv_motion_notification_news);
-		if(null != mIvTriggerZoneNew){
-			BeseyeUtils.setVisibility(mIvTriggerZoneNew, !BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked()?View.VISIBLE:View.INVISIBLE);
-		}
-		
-		mIvHumanDetectNew = (ImageView)findViewById(R.id.iv_human_detect_notification_news);
-		if(null != mIvHumanDetectNew){
-			BeseyeUtils.setVisibility(mIvHumanDetectNew, !BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET)?View.VISIBLE:View.INVISIBLE);
 		}
 		
 		mIvScheduleNew = (ImageView)findViewById(R.id.iv_cam_schedule_news);
@@ -247,6 +244,10 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 			BeseyeUtils.setEnabled(mTxtPowerTitle, !bIsCamDisconnected);
 		}
 		
+		if(null != mVgTriggerZoneEdit){
+			BeseyeUtils.setEnabled(mVgTriggerZoneEdit, !bIsCamDisconnected);
+			BeseyeUtils.setEnabled(mTxtTriggerZoneEditTitle, !bIsCamDisconnected); 
+		}	
 		updatePowerDesc(mCamSwitchBtn.getSwitchState());
 	}
 
@@ -342,26 +343,20 @@ public class CameraSettingActivity extends BeseyeBaseActivity
 				launchActivityByClassName(NotificationEventsSettingActivity.class.getName(),b);
 				break;
 			}
-			case R.id.vg_motion_notification_events:{
-				if(!BeseyeNewFeatureMgr.getInstance().isTriggerZoneClicked()){
-					BeseyeNewFeatureMgr.getInstance().setTriggerZoneClicked(true);
-					BeseyeUtils.setVisibility(mIvTriggerZoneNew, View.INVISIBLE);
-				}
-				
+			case R.id.vg_notification_setting_events:{
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-				launchActivityByClassName(MotionNotificationSettingActivity.class.getName(),b);
+				launchActivityByClassName(NotificationSettingActivity.class.getName(),b);
 				break;
-			}
-			case R.id.vg_human_detect_notification_events:{
-				if(!BeseyeNewFeatureMgr.getInstance().isFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET)){
-					BeseyeNewFeatureMgr.getInstance().setFeatureClicked(BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET, true);
-					BeseyeUtils.setVisibility(mIvHumanDetectNew, View.INVISIBLE);
-				}
-				
+			}case R.id.vg_trigger_zone_edit_events:{
 				Bundle b = new Bundle();
 				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
-				launchActivityByClassName(HumanDetectNotificationSettingActivity.class.getName(),b);
+				launchActivityByClassName(TriggerZoneEditActivity.class.getName(),b);
+				break;
+			}case R.id.vg_human_detect_optimization_events:{
+				Bundle b = new Bundle();
+				b.putString(CameraListActivity.KEY_VCAM_OBJ, mCam_obj.toString());
+				launchActivityByClassName(HumanDetectOptimizationActivity.class.getName(),b);
 				break;
 			}
 			case R.id.txt_nav_title:{

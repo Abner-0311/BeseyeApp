@@ -1,5 +1,8 @@
 package com.app.beseye;
 
+import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.TAG;
+
 import java.util.List;
 
 import org.json.JSONObject;
@@ -8,6 +11,7 @@ import com.app.beseye.error.BeseyeError;
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeHttpTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.widget.BaseOneBtnDialog;
@@ -20,6 +24,7 @@ import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -180,10 +185,6 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 				if(0 == iRetCode){
 					Toast.makeText(getApplication(), getString(R.string.msg_pincode_verify_resend_done), Toast.LENGTH_SHORT).show();
 					clearPincode();
-				}else{
-					Bundle b = new Bundle();
-					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(BeseyeTrustDevAuthActivity.this, R.string.msg_pincode_verify_resend_fail, iRetCode));
-					showMyDialog(DIALOG_ID_WARNING, b);
 				}
 			}else if(task instanceof BeseyeAccountTask.PinCodeVerifyTask){
 				if(0 == iRetCode){
@@ -206,6 +207,24 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 	}
 	
 	@Override
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle, String strMsg) {
+		if(task instanceof BeseyeAccountTask.PinCodeRenewTask){
+			BeseyeUtils.postRunnable(new Runnable(){
+				@Override
+				public void run() {
+					Bundle b = new Bundle();
+					b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(BeseyeTrustDevAuthActivity.this, R.string.msg_pincode_verify_resend_fail, iErrType));
+					showMyDialog(DIALOG_ID_WARNING, b);
+				}}, 0);	
+			
+		}else if(task instanceof BeseyeAccountTask.PinCodeVerifyTask){
+			//Do nothing because handling in onPostExecute
+		}else{
+			super.onErrorReport(task, iErrType, strTitle, strMsg);
+		}
+	}
+	
+	@Override
 	public void onSessionInvalid(AsyncTask task, int iInvalidReason) {
 		if(task instanceof BeseyeAccountTask.CheckAccountTask && iInvalidReason != BeseyeHttpTask.ERR_TYPE_SESSION_NOT_TRUST){
 			onSessionInvalid(false);
@@ -222,6 +241,10 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 		}
 		
 		updatePincodeUIState();
+		
+		if(NUM_OF_PINCODE == mStrPincode.length()){
+			checkPincode();
+		}
 	}
 	
 	private void onPincodeVerifyFailed(){

@@ -522,7 +522,7 @@
   <!--Desc of Human detect switch-->
   <string name="cam_setting_title_human_detect_notify">Human detection notification</string>
   <!--Desc of Human detect training entry-->
-  <string name="enhance_human_detect">Human detection optimization</string>
+  <string name="enhance_human_detect">Human detection optimization (Beta)</string>
   <!--Hint of Human detect training entry-->
   <string name="enhance_human_detect_hint">System will automatically detect the human movement. If no person is found on the next page, click on \"delete\" to obtain the best recognition results.</string>
   <!--Percentage of training-->
@@ -686,4 +686,10 @@
   <string name="desc_cam_update_failed_poor_network">Update suspended! Your network is too slow. Please check the network environment for the camera.</string>
   <string name="dialog_title_attention">Attention</string>
   <string name="desc_dialog_cam_force_update_remind">To access the full functions of the camera, please complete the update process.</string>
+  <!--in setting page-->
+  <string name="cam_setting_title_ai_setting">AI settings</string>
+  <!--in notification page-->
+  <string name="all_notifications">Allow notifications</string>
+  <!--in notification page-->
+  <string name="detections">Detections</string>
 </resources>

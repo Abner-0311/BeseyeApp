@@ -83,14 +83,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	/** For showing and hiding our notification. */
 	private NotificationManager mNotificationManager;
 	private static final int NOTIFICATION_TYPE_BASE = 0x0;
-	private static final int NOTIFICATION_TYPE_INFO = NOTIFICATION_TYPE_BASE+1;
+	private static final int NOTIFICATION_TYPE_INFO = (NOTIFICATION_TYPE_BASE+1) << 8;
 	private static final int NOTIFICATION_TYPE_MSG  = NOTIFICATION_TYPE_INFO;//NOTIFICATION_TYPE_BASE+2;
-	private static final int NOTIFICATION_TYPE_CAM  = NOTIFICATION_TYPE_BASE+2;
-	private static final int NOTIFICATION_TYPE_PIN  = NOTIFICATION_TYPE_BASE+3;
-	private static final int NOTIFICATION_TYPE_EVT  = NOTIFICATION_TYPE_BASE+4;
-	private static final int NOTIFICATION_TYPE_OTA  = NOTIFICATION_TYPE_BASE+5;
-
-	
+	private static final int NOTIFICATION_TYPE_CAM  = (NOTIFICATION_TYPE_BASE+2) << 8;
+	private static final int NOTIFICATION_TYPE_PIN  = (NOTIFICATION_TYPE_BASE+3) << 8;
+	private static final int NOTIFICATION_TYPE_EVT  = (NOTIFICATION_TYPE_BASE+4) << 8;
+	private static final int NOTIFICATION_TYPE_OTA  = (NOTIFICATION_TYPE_BASE+5) << 8;
 	
 	public static final String MSG_REF_JSON_OBJ 	= "MSG_REF_JSON_OBJ";
 	public static final String MSG_DEL_PUSH_RET 	= "MSG_DEL_PUSH_RET";
@@ -226,6 +224,22 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
                 			// we are going through the list from back to front
                 			// so this is safe to do inside the loop.
                 			mClients.remove(i);
+                		}
+                	}
+                	break;
+                }
+                case MSG_ACCOUNT_TOKEN_EXPIRED:{
+                	for (int i=mClients.size()-1; i>=0; i--) {
+                		try {
+                			Message msgToSend = Message.obtain(null, msg.what);
+                			mClients.get(i).send(msgToSend);
+                			break;
+                		} catch (RemoteException e) {
+                			// The client is dead.  Remove it from the list;
+                			// we are going through the list from back to front
+                			// so this is safe to do inside the loop.
+                			mClients.remove(i);
+                			continue;
                 		}
                 	}
                 	break;
@@ -631,7 +645,8 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
         }
      }
     
-    private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
+    //for Computex 2014
+    //private BeseyeMMBEHttpTask.GetIMPEventListTask mGetIMPEventListTask;
     
     private void checkUserLoginState(){
     	if(DEBUG)
@@ -649,10 +664,11 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
             				WebsocketsMgr.getInstance().constructWSChannel();
         				}
         			}else if(true ==  WebsocketsMgr.getInstance().checkLastTimeToGetKeepAlive()){
-        				Log.e(TAG, "Too long to receive keepalive");
-        		
+        				Log.e(TAG, "Too long to receive keepalive !!!!!!");
         				WebsocketsMgr.getInstance().destroyWSChannel();
         			}
+        		}else{
+        			//Need to handle???
         		}
     		}else{
         		Log.i(TAG, "checkUserLoginState(), not a trusted devices");
@@ -689,8 +705,12 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     }
     
     private void beginToCheckWebSocketState(){
+    	postToCheckWebSocketState(mbAppInBackground?60*1000:10*1000);
+    }
+    
+    private void postToCheckWebSocketState(long lTimeToTrigger){
     	BeseyeUtils.removeRunnable(mCheckWebsocketAliveRunnable);
-		BeseyeUtils.postRunnable(mCheckWebsocketAliveRunnable, mbAppInBackground?60*1000:10*1000);
+		BeseyeUtils.postRunnable(mCheckWebsocketAliveRunnable, lTimeToTrigger);
     }
     
     private void finishToCheckWebSocketState(){
@@ -1172,11 +1192,31 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	        mNotificationManager.notify(iNotifyId, notification);
 		}
 	}
+	
+	private void cancelNotificationByVcamId(String strVCamId){
+		if(null != strVCamId){
+			if(null != mNotificationManager){
+				if(true == mMapNotificationId.containsKey(strVCamId)){
+					mNotificationManager.cancel(mMapNotificationId.get(strVCamId));
+					mMapNotificationId.remove(strVCamId);
+					mMapNCode.remove(strVCamId);
+				}
+				if(mMapOTANotificationId.containsKey(strVCamId)){
+					mNotificationManager.cancel(mMapOTANotificationId.get(strVCamId));
+					mMapOTANotificationId.remove(strVCamId);
+				}
+			}
+		}
+	}
+	
 	private void cancelNotification(){
 		if(null != mNotificationManager){
 			mNotificationManager.cancel(NOTIFICATION_TYPE_INFO);
 			mNotificationManager.cancel(NOTIFICATION_TYPE_MSG);
 			mNotificationManager.cancel(NOTIFICATION_TYPE_CAM);
+			mNotificationManager.cancel(NOTIFICATION_TYPE_PIN);
+			mNotificationManager.cancel(NOTIFICATION_TYPE_OTA);
+			
 			if(0 < mMapNotificationId.size()){
 				for(String strVCamId : mMapNotificationId.keySet()){
 					if(null != mNotificationManager){
@@ -1186,7 +1226,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				mMapNotificationId.clear();
 			}
 			
-			mNotificationManager.cancel(NOTIFICATION_TYPE_PIN);
 			if(0 < mMapNotificationIdByDevName.size()){
 				for(String strDevName : mMapNotificationIdByDevName.keySet()){
 					if(null != mNotificationManager){
@@ -1196,7 +1235,6 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				mMapNotificationIdByDevName.clear();
 			}
 			
-			mNotificationManager.cancel(NOTIFICATION_TYPE_OTA);
 			if(0 < mMapOTANotificationId.size()){
 				for(String strVCamId : mMapOTANotificationId.keySet()){
 					if(null != mNotificationManager){
@@ -1208,6 +1246,10 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 			
 			if(0 < mMapNCode.size()){
 				mMapNCode.clear();
+			}
+			
+			if(null != mNotificationManager){
+				mNotificationManager.cancelAll();
 			}
 		}
 	}
@@ -1238,8 +1280,21 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 	
 	@Override
 	public void onSessionInvalid(AsyncTask<String, Double, List<JSONObject>> task, int iInvalidReason){
+		clearSessionAndNotify();
+	}
+	
+	private void clearSessionAndNotify(){
 		SessionMgr.getInstance().cleanSession();
 		BeseyeNewFeatureMgr.getInstance().reset();
+		
+		try {
+			if(null != mMessenger){
+				Message msg = Message.obtain(null, MSG_ACCOUNT_TOKEN_EXPIRED, null);
+				mMessenger.send(msg);
+			}
+		} catch (RemoteException e) {
+			Log.e(TAG, "clearSessionAndNotify(), RemoteException, e="+e.toString());	
+		}
 	}
 
 	@Override
@@ -1453,31 +1508,40 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 		if(DEBUG)
 			Log.i(TAG, "ws onChannelClosed()---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
-		if(/*miWSDisconnectRetry < MAX_WS_RETRY_TIME && */false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && SessionMgr.getInstance().getIsTrustDev()/*&& NetworkMgr.getInstance().isNetworkConnected()*/){
-			Log.e(TAG, "ws onChannelClosed(), abnormal close, retry-----");
-			long lTimeToWait = (miWSDisconnectRetry++)*1000;
-			if(lTimeToWait > 10000){
-				lTimeToWait = 10000;
-			}
-			BeseyeUtils.postRunnable(new Runnable(){
-				@Override
-				public void run() {
-					if(NetworkMgr.getInstance().isNetworkConnected()){
-						WebsocketsMgr.getInstance().constructWSChannel();
-					}else{
-//						long lTimeToWait = (miWSDisconnectRetry++)*1000;
-//						if(lTimeToWait > 10000){
-//							lTimeToWait = 10000;
+		if(/*miWSDisconnectRetry < MAX_WS_RETRY_TIME && */
+			false == mbAppInBackground && SessionMgr.getInstance().isTokenValid() && 
+			SessionMgr.getInstance().getIsTrustDev()
+			/*&& NetworkMgr.getInstance().isNetworkConnected()*/){
+			
+			final long lTimeToWait = (false == WebsocketsMgr.getInstance().isLastErrServerUnavailable())?Math.min((++miWSDisconnectRetry)*1000, 5000L):BeseyeUtils.getRetrySleepTime(WebsocketsMgr.getInstance().getErrServerUnavailableCnt());// (miWSDisconnectRetry++)*1000;
+			
+			Log.e(TAG, "ws onChannelClosed(), abnormal close, retry-----, lTimeToWait:"+lTimeToWait);
+			
+			postToCheckWebSocketState(lTimeToWait);
+			
+//			BeseyeUtils.postRunnable(new Runnable(){
+//				@Override
+//				public void run() {
+//					if(NetworkMgr.getInstance().isNetworkConnected()){
+//						WebsocketsMgr.getInstance().constructWSChannel();
+//					}else{
+//						long lTimeToWaitInternal = (miWSDisconnectRetry++)*1000;
+//						if(lTimeToWaitInternal > 10000){
+//							lTimeToWaitInternal = 10000;
 //						}
-						BeseyeUtils.postRunnable(this, BeseyeUtils.getRetrySleepTime(miWSDisconnectRetry++));
-					}
-				}}, lTimeToWait);
+//						BeseyeUtils.postRunnable(this, lTimeToWaitInternal);
+//					}
+//				}}, lTimeToWait);
     	}
 	}
 
 	@Override
 	public void onConnectivityChanged(boolean bNetworkConnected) {
 		checkUserLoginState();
+	}
+	
+	public void onUserSessionInvalid(){
+		clearSessionAndNotify();
 	}
 	
 	private boolean handleNotificationEvent(JSONObject msgObj, boolean bFromGCM){
@@ -1561,13 +1625,7 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 					}
 					
 					String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
-					if(null != strVCamId && true == mMapNotificationId.containsKey(strVCamId)){
-						if(null != mNotificationManager){
-							mNotificationManager.cancel(mMapNotificationId.get(strVCamId));
-						}
-						mMapNotificationId.remove(strVCamId);
-						mMapNCode.remove(strVCamId);
-					}
+					cancelNotificationByVcamId(strVCamId);
 					
 					BeseyeStorageAgent.doDeleteCacheByFolder(BeseyeNotificationService.this.getApplicationContext(), strVCamId);
 					break;
@@ -1592,13 +1650,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
 				case NCODE_CAM_OTA_FINISH:{
 					if(bFromGCM){												
 						String strVCamId = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
-						if(null != strVCamId && false == mMapNotificationId.containsKey(strVCamId)){
+						if(null != strVCamId && false == mMapOTANotificationId.containsKey(strVCamId)){
 							if(false == mListBlackVCamId.contains(strVCamId)){
 								if(null != mGetVCamListTask && false == mGetVCamListTask.isCancelled()){
 									mGetVCamListTask.cancel(true);
 	                			}
 								if(DEBUG)
-									Log.i(TAG, "handleNotificationEvent(),strVCamId="+strVCamId+" not in mListBlackVCamId nor mMapNotificationId");	
+									Log.i(TAG, "handleNotificationEvent(),strVCamId="+strVCamId+" not in mListBlackVCamId nor mMapOTANotificationId");	
 								(mGetVCamListTask = new BeseyeAccountTask.GetVCamListTask(BeseyeNotificationService.this, strVCamId, msgObj, bFromGCM)).execute();
 							}
 						}else{

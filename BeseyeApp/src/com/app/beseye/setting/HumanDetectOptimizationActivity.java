@@ -59,15 +59,13 @@ import com.app.beseye.widget.BaseTwoBtnDialog.OnTwoBtnClickListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 
-public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity 
-												implements OnSwitchBtnStateChangedListener{
+public class HumanDetectOptimizationActivity extends BeseyeBaseActivity{
 
 	final public static String HD_TRAIN_PROGRESS = "HD_TRAIN_PROGRESS";
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;	
 	private ViewGroup mVgHumanDetectTraining, mVgHumanDetectReset;
 
-	private BeseyeSwitchBtn mNotifyMeSwitchBtn;
 	//private boolean mbModified = false;
 	private ViewPager mVpIntro;
 	private Button mbtnNextStep;
@@ -78,7 +76,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		if(DEBUG)
-			Log.i(TAG, "MotionNotificationSettingActivity::onCreate()");
+			Log.i(TAG, "HumanDetetOptimizationActivity::onCreate()");
 		
 		super.onCreate(savedInstanceState);
 		
@@ -94,7 +92,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 						
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
 			if(null != txtTitle){
-				txtTitle.setText(R.string.cam_setting_title_human_detect_notify);
+				txtTitle.setText(R.string.enhance_human_detect);
 				txtTitle.setOnClickListener(this);
 			}
 			
@@ -106,16 +104,10 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 			mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 			if(null != mCam_obj){
 				mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
-				miTrainProgress = BeseyeJSONUtil.getJSONInt(mCam_obj, HumanDetectNotificationSettingActivity.HD_TRAIN_PROGRESS, -1);
+				miTrainProgress = BeseyeJSONUtil.getJSONInt(mCam_obj, HumanDetectOptimizationActivity.HD_TRAIN_PROGRESS, -1);
 			}
 		} catch (JSONException e1) {
-			Log.e(TAG, "MotionNotificationSettingActivity::onCreate(), failed to parse, e1:"+e1.toString());
-		}
-		
-		mNotifyMeSwitchBtn = (BeseyeSwitchBtn)findViewById(R.id.sb_human_detect_notify_switch);
-		if(null != mNotifyMeSwitchBtn){
-			mNotifyMeSwitchBtn.setSwitchState(SwitchState.SWITCH_ON);
-			mNotifyMeSwitchBtn.setOnSwitchBtnStateChangedListener(this);
+			Log.e(TAG, "HumanDetetOptimizationActivity::onCreate(), failed to parse, e1:"+e1.toString());
 		}
 		
 		mVgHumanDetectTraining = (ViewGroup)findViewById(R.id.vg_human_detect_zone_text);
@@ -235,7 +227,6 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 					BeseyeJSONUtil.setJSONLong(mCam_obj, OBJ_TIMESTAMP, BeseyeJSONUtil.getJSONLong(result.get(0), BeseyeJSONUtil.OBJ_TIMESTAMP));
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 				}
-				updateNotificationTypeState();
 			}else if(task instanceof BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask){
 				if(0 == iRetCode){
 					if(DEBUG)
@@ -282,8 +273,6 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 		monitorAsyncTask(new BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask(this).setDialogId(-1), true, mStrVCamID);
 		if(null == BeseyeJSONUtil.getJSONObject(mCam_obj, BeseyeJSONUtil.ACC_DATA) && null != mStrVCamID){
 			monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(this).setDialogId(-1), true, mStrVCamID);
-		}else{
-			updateNotificationTypeState();
 		}
 	}
 	
@@ -319,16 +308,11 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 				super.onClick(view);	
 		}
 	}
-
-	@Override
-	protected void updateUICallback(){
-		updateNotificationTypeState();
-	}
 	
 	@Override
 	protected void onResume() {
 		if(DEBUG)
-			Log.i(TAG, "MotionNotificationSettingActivity::onResume()");	
+			Log.i(TAG, "HumanDetetOptimizationActivity::onResume()");	
 		super.onResume();
 		
 		if(!mbFirstResume){
@@ -341,52 +325,14 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 	
 	@Override
 	protected int getLayoutId() {
-		return R.layout.layout_human_detect_notification;
-	}
-
-	@Override
-	public void onSwitchBtnStateChanged(SwitchState state, View view) {
-		//mbModified = true;
-		JSONObject obj =  new JSONObject();
-		if(null != obj){
-			boolean bTurnOn = (null != mNotifyMeSwitchBtn && mNotifyMeSwitchBtn.getSwitchState() == SwitchState.SWITCH_ON);
-			
-			if(bTurnOn){
-				BeseyeJSONUtil.setJSONBoolean(obj, BeseyeJSONUtil.STATUS, bTurnOn);
-			}
-			
-			JSONObject type_obj =  new JSONObject();
-			if(null != type_obj){
-				BeseyeJSONUtil.setJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_HUMAN, bTurnOn);	
-				BeseyeJSONUtil.setJSONObject(obj, BeseyeJSONUtil.TYPE, type_obj);
-			}
-			
-			monitorAsyncTask(new BeseyeCamBEHttpTask.SetNotifySettingTask(this), true, mStrVCamID, obj.toString());
-		}
-	}
-
-	private void updateNotificationTypeState(){
-		JSONObject notify_obj =  BeseyeJSONUtil.getJSONObject(BeseyeJSONUtil.getJSONObject(mCam_obj, ACC_DATA), NOTIFY_OBJ);
-		boolean bNotifyMe = false;
-		if(null != notify_obj){
-			bNotifyMe = BeseyeJSONUtil.getJSONBoolean(notify_obj, STATUS);
-		}
-		
-		if(bNotifyMe){
-			JSONObject type_obj = BeseyeJSONUtil.getJSONObject(notify_obj, BeseyeJSONUtil.TYPE);
-			bNotifyMe = BeseyeJSONUtil.getJSONBoolean(type_obj, BeseyeJSONUtil.NOTIFY_HUMAN);
-		}
-		
-		if(null != mNotifyMeSwitchBtn){
-			mNotifyMeSwitchBtn.setSwitchState((bNotifyMe)?SwitchState.SWITCH_ON:SwitchState.SWITCH_OFF);
-		}
+		return R.layout.layout_human_detect_optimization;
 	}
 		
 	@Override
 	public void onCamSetupChanged(String strVcamId, long lTs,
 			JSONObject objCamSetup) {
 		super.onCamSetupChanged(strVcamId, lTs, objCamSetup);
-		miTrainProgress = BeseyeJSONUtil.getJSONInt(mCam_obj, HumanDetectNotificationSettingActivity.HD_TRAIN_PROGRESS, -1);
+		miTrainProgress = BeseyeJSONUtil.getJSONInt(mCam_obj, HumanDetectOptimizationActivity.HD_TRAIN_PROGRESS, -1);
 		setTrainHintText();
 	}
 
@@ -401,7 +347,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 				d.setOnTwoBtnClickListener(new OnTwoBtnClickListener(){
 					@Override
 					public void onBtnYesClick() {
-						monitorAsyncTask(new BeseyeIMPMMBEHttpTask.SetHumanDetectResetTask(HumanDetectNotificationSettingActivity.this), true, mStrVCamID);
+						monitorAsyncTask(new BeseyeIMPMMBEHttpTask.SetHumanDetectResetTask(HumanDetectOptimizationActivity.this), true, mStrVCamID);
 					}
 					@Override
 					public void onBtnNoClick() {
@@ -458,7 +404,7 @@ public class HumanDetectNotificationSettingActivity extends BeseyeBaseActivity
 				if(2 == position){
 					mbtnNextStep = (Button)vGroup.findViewById(R.id.button_done);
 					if(null != mbtnNextStep){
-						mbtnNextStep.setOnClickListener(HumanDetectNotificationSettingActivity.this);
+						mbtnNextStep.setOnClickListener(HumanDetectOptimizationActivity.this);
 						mbtnNextStep.setVisibility(View.INVISIBLE);
 					}
 					

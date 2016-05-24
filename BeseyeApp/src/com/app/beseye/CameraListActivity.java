@@ -524,6 +524,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 					JSONObject objVCamList = result.get(0);
 					fillVCamList(objVCamList);
 				}
+				postToLvRreshComplete();
 			}else if (task instanceof BeseyeAccountTask.GetUserInfoTask){
 				if(0 == iRetCode){
 					JSONObject obj = result.get(0);
@@ -658,9 +659,7 @@ public class CameraListActivity extends BeseyeBaseActivity implements OnSwitchBt
 
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle, String strMsg) {
-		if(task instanceof BeseyeAccountTask.GetVCamListTask){
-			postToLvRreshComplete();
-		}else if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
+		if(task instanceof BeseyeCamBEHttpTask.SetCamStatusTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {

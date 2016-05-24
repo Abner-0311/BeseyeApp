@@ -85,7 +85,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			if(null != mCam_obj){
 				mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
 				mStrVCamName = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_NAME);
-				miTrainProgress = BeseyeJSONUtil.getJSONInt(mCam_obj, HumanDetectNotificationSettingActivity.HD_TRAIN_PROGRESS, -1);
+				miTrainProgress = BeseyeJSONUtil.getJSONInt(mCam_obj, HumanDetectOptimizationActivity.HD_TRAIN_PROGRESS, -1);
 			}
 		} catch (JSONException e1) {
 			Log.e(TAG, "CameraViewActivity::updateAttrByIntent(), failed to parse, e1:"+e1.toString());
@@ -354,7 +354,7 @@ public class HumanDetectTrainActivity extends BeseyeBaseActivity implements Remo
 			}else if(task instanceof BeseyeIMPMMBEHttpTask.GetHumanDetectProgressTask){
 				if(0 == iRetCode){
 					miTrainProgress = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.MM_HD_TRAIN_PROGRESS);
-					BeseyeJSONUtil.setJSONInt(mCam_obj, HumanDetectNotificationSettingActivity.HD_TRAIN_PROGRESS, miTrainProgress);
+					BeseyeJSONUtil.setJSONInt(mCam_obj, HumanDetectOptimizationActivity.HD_TRAIN_PROGRESS, miTrainProgress);
 					BeseyeCamInfoSyncMgr.getInstance().updateCamInfo(mStrVCamID, mCam_obj);
 					if(null != mShowUIAfterGetProgress){
 						mShowUIAfterGetProgress.run();

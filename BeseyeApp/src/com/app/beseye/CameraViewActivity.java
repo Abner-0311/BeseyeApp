@@ -82,6 +82,7 @@ import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.websockets.AudioWebSocketsMgr;
+import com.app.beseye.websockets.WebsocketsMgr;
 import com.app.beseye.websockets.AudioWebSocketsMgr.AudioConnStatus;
 import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioAmplitudeUpdateListener;
 import com.app.beseye.websockets.AudioWebSocketsMgr.OnAudioWSChannelStateChangeListener;
@@ -1054,6 +1055,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					setCursorVisiblity(View.VISIBLE);
 				}else if(null != mVgCamInvalidState && isCamPowerDisconnected()){
 					mVgCamInvalidState.setVisibility(View.VISIBLE);
+					//For issue #3868
+					if(null != mStreamingView){
+						mStreamingView.drawDefaultBackground();
+					}
 				}
 			}}, 0);
 	}
@@ -2723,11 +2728,7 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						iErrStrId = R.string.streaming_error_no_network;
 					}
 					
-					if(!NetworkMgr.getInstance().isNetworkConnected()){
-						showNoNetworkDialog();
-						closeStreaming();
-						return;
-					}
+
 					if(null != mStrVCamID){
 						monitorAsyncTask(new BeseyeCamBEHttpTask.GetCamSetupTask(CameraViewActivity.this), true, mStrVCamID);
 					}
@@ -2735,13 +2736,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 				}else if(Player_Major_Error.NO_NETWORK_ERR.ordinal() == iMajorType){
 					Log.w(TAG, "updateRTMPErrorCallback(), NO_NETWORK_ERR");
 					iErrStrId = R.string.streaming_error_no_network;
-					//showInvalidStateMask();
-					
-					if(!NetworkMgr.getInstance().isNetworkConnected()){
-						showNoNetworkDialog();
-						closeStreaming();
-						return;
-					}
 				}else if(Player_Major_Error.NOMEM_CB.ordinal() == iMajorType){
 					iErrStrId = R.string.streaming_error_low_mem;
 					iErrCode = BeseyeError.E_FE_AND_PLAYER_LOW_MEM;
@@ -2749,16 +2743,21 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 					iErrStrId = R.string.streaming_error_unknown;
 				}
 				
+				if(!NetworkMgr.getInstance().isNetworkConnected()){
+					showNoNetworkDialog();
+					closeStreaming();
+					return;
+				}
+				
 				if(iMinorType == Stream_Error.SERVER_REQUEST_CLOSE_ERROR.ordinal() && !isCamPowerOn()){
 					Log.w(TAG, "updateRTMPErrorCallback(), unPublish case");
 					return;
 				}
+				
 				//workaround
 				if(/*!ASSIGN_ST_PATH && */!isInP2PMode()){
-					if(iErrStrId == R.string.streaming_error_unknown){
+					if(iErrCode == BeseyeError.E_FE_AND_PLAYER_UNKNOWN_ERR){
 						tryToReconnect();
-//							if(mActivityResume)
-//								Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
 					}else{
 						Bundle b = new Bundle();
 						b.putString(KEY_WARNING_TEXT, BeseyeUtils.appendErrorCode(CameraViewActivity.this, iErrStrId, iErrCode));
@@ -2771,8 +2770,6 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						public void run() {
 							tryToReconnect();
 						}}, 1000);
-//						if(mActivityResume)
-//							Toast.makeText(getApplicationContext(), getString(R.string.streaming_error_unknown), Toast.LENGTH_SHORT).show();
 				}
 				
 			}},0);
@@ -3097,10 +3094,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
     }
     
     public void releaseTalkMode(){
-		setEnabled(mCameraViewControlAnimator.getScreenshotView(), true);
+		setEnabled(mCameraViewControlAnimator.getScreenshotView(), mbHaveBitmapContent && !mbIsDemoCam);
     	if(AudioWebSocketsMgr.getInstance().isWSChannelAlive()){
     		setStreamingAudioMute(false);
-
     		postTerminateAudioChannelRunnable(false);
     	}
     }
@@ -3188,9 +3184,9 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 	
 	private void reconstructAudioChannel(final long lDelay){
 		setNeedToRequestCamAudioConnected(true);
-		BeseyeUtils.postRunnable(new Runnable(){
-			@Override
-			public void run() {
+//		BeseyeUtils.postRunnable(new Runnable(){
+//			@Override
+//			public void run() {
 				BeseyeUtils.postRunnable(new Runnable(){
 					@Override
 					public void run() {
@@ -3200,15 +3196,15 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 						}
 					}}, lDelay);
 				//Toast.makeText(CameraViewActivity.this, "Talk terminated", Toast.LENGTH_SHORT).show();
-			}}, 0);
+//			}}, 0);
 	}
 
 	@Override
 	public void onChannelClosed() {
+		long lTimeToWait = (false == AudioWebSocketsMgr.getInstance().isLastErrServerUnavailable())?1000:BeseyeUtils.getRetrySleepTime(AudioWebSocketsMgr.getInstance().getErrServerUnavailableCnt());
 		if(DEBUG)
-			Log.i(TAG, "onChannelClosed()---");
-		
-		reconstructAudioChannel(1000);
+			Log.i(TAG, "onChannelClosed()---lTimeToWait:"+lTimeToWait);
+		reconstructAudioChannel(lTimeToWait);
 	}
 	
 	@Override
@@ -3276,6 +3272,10 @@ public class CameraViewActivity extends BeseyeBaseActivity implements OnTouchSur
 			}}, 100);
 	}
 	
+	@Override
+	public void onUserSessionInvalid(){
+		onSessionInvalid(false);
+	}
 	
 	private void checkHoldToTalkMode(){
 		if(null != mCameraViewControlAnimator && false == mCameraViewControlAnimator.isInHoldToTalkMode()){

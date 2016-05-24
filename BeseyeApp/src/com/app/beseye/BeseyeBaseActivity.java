@@ -81,6 +81,8 @@ import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.OnNetworkChangeCallback;
 import com.app.beseye.widget.BaseOneBtnDialog;
 import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
+import com.app.beseye.widget.BaseTwoBtnDialog;
+import com.app.beseye.widget.BaseTwoBtnDialog.OnTwoBtnClickListener;
 
 
 public abstract class BeseyeBaseActivity extends ActionBarActivity implements OnClickListener, 
@@ -97,6 +99,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	protected boolean mActivityResume = false;
 	protected boolean mbIgnoreSessionCheck = false;
 	protected boolean mbIgnoreCamVerCheck = false;
+	protected boolean mbIgnoreAppVerCheck = false;
 	private boolean mbHaveCheckAppVer = false;
 	
 	protected String mStrVCamID = null;
@@ -353,13 +356,18 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 //		}};	
 	
 	private void checkForUpdates() {
-		if(SessionMgr.getInstance().getEnableBeseyeAppVerControl() || BeseyeUtils.isProductionVersion()){
-			monitorAsyncTask(new BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask(this).setDialogId(-1), true, getPackageName());
-		}else  if(BeseyeUtils.canUpdateFromHockeyApp()){
-			UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
-		}else if(BeseyeConfig.DEBUG){
+		if(!mbIgnoreAppVerCheck){
+			if(SessionMgr.getInstance().getEnableBeseyeAppVerControl() || BeseyeUtils.isProductionVersion()){
+				monitorAsyncTask(new BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask(this).setDialogId(-1), true, getPackageName());
+			}else  if(BeseyeUtils.canUpdateFromHockeyApp()){
+				UpdateManager.register(this, HOCKEY_APP_ID, mUpdateManagerListener, true);
+			}else if(BeseyeConfig.DEBUG){
+				onAppUpdateNotAvailable();
+			}
+		}else{
 			onAppUpdateNotAvailable();
 		}
+		
 		
 //		if(false == mbIgnoreCamVerCheck){
 //			BeseyeCamInfoSyncMgr.getInstance().registerOnCamUpdateVersionCheckListener(this);
@@ -675,6 +683,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_OTA_FORCE_UPDATE		= DIALOG_ID_WIFI_BASE+29; 
 	static public final int DIALOG_ID_OTA_WS_DISCONN		= DIALOG_ID_WIFI_BASE+30; 
 	static public final int DIALOG_ID_OTA_FORCE_CAM_LST		= DIALOG_ID_WIFI_BASE+31; 
+	static public final int DIALOG_ID_FAKE_APP_VER_CHK		= DIALOG_ID_WIFI_BASE+32; 
 
 	
 	@Override
@@ -751,6 +760,18 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 			dialog = d;
 			break;
 		}
+		case DIALOG_ID_OTA_FORCE_CAM_LST:{
+			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
+			d.setBodyText(getString(R.string.desc_dialog_cam_force_update_remind));
+			d.setTitleText(getString(R.string.dialog_title_attention));
+			d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+				@Override
+				public void onBtnClick() {
+					removeMyDialog(DIALOG_ID_OTA_FORCE_UPDATE);	
+				}});
+			dialog = d;
+			break;
+		}
 		case DIALOG_ID_OTA_WS_DISCONN:{
 			BaseOneBtnDialog d = new BaseOneBtnDialog(this);
 			d.setBodyText(getString(R.string.desc_dialog_cam_offline_during_ota));
@@ -760,6 +781,30 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				public void onBtnClick() {
 					removeMyDialog(DIALOG_ID_OTA_WS_DISCONN);	
 				}});
+			dialog = d;
+			break;
+		}
+		case DIALOG_ID_FAKE_APP_VER_CHK:{
+			BaseTwoBtnDialog d = new BaseTwoBtnDialog(this);
+			d.setBodyText(bundle.getString(KEY_INFO_TEXT));
+			d.setTitleText(bundle.getString(KEY_INFO_TITLE, getString(R.string.dialog_title_warning)));
+			d.setPositiveBtnText(R.string.show_google_play);
+			d.setNegativeBtnText(R.string.reset_fake_app);
+
+			d.setOnTwoBtnClickListener(new OnTwoBtnClickListener(){
+					@Override
+					public void onBtnYesClick() {
+						removeMyDialog(DIALOG_ID_FAKE_APP_VER_CHK);	
+						launchUpdateApp();
+					}
+	
+					@Override
+					public void onBtnNoClick() {
+						removeMyDialog(DIALOG_ID_FAKE_APP_VER_CHK);	
+						SessionMgr.getInstance().setFakeAppVer(0);
+					}
+				});
+			
 			dialog = d;
 			break;
 		}
@@ -964,6 +1009,7 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
     
     protected void showNoNetworkDialog(){
 		showMyDialog(DIALOG_ID_NO_NETWORK);
+		removeMyDialog(DIALOG_ID_WARNING);
 	}
     
     protected void hideNoNetworkDialog(){
@@ -1090,24 +1136,19 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	}
 
 	@Override
-	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, int iErrType, String strTitle, String strMsg) {
-		if(task instanceof BeseyeAccountTask.CheckAccountTask){
-			//onSessionInvalid();
-		}else if(task instanceof BeseyeAccountTask.LogoutHttpTask){
+	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle, String strMsg) {
+		if(task instanceof BeseyeAccountTask.LogoutHttpTask){
 			//SessionMgr.getInstance().cleanSession();
 			onSessionInvalid(true);
-		}else if(task instanceof BeseyeCamBEHttpTask.UpdateCamSWTask){
-			//onToastShow(task, "failed to update sw");
-		}else if(task instanceof BeseyeCamBEHttpTask.GetCamUpdateStatusTask){
-			//removeMyDialog(DIALOG_ID_CAM_UPDATE);
-			//onToastShow(task, "failed to update status");
-		}/*else{
+		}else if(task instanceof BeseyeAccountTask.CheckAccountTask){
+			//Do nothing because handling in onPostExecute
+		}else{
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
 				public void run() {
-					onServerError();
+					onServerError(iErrType);
 				}}, 0);	
-		}*/
+		}
 		
 		if(DEBUG && SessionMgr.getInstance().getServerMode().ordinal() <= SERVER_MODE.MODE_DEV.ordinal()){
 //			if(null != strMsg && 0 < strMsg.length())
@@ -1330,18 +1371,30 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 				if(0 == iRetCode){		
 					String strPkg = BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.UPDATE_PKG_NAME);
 					//String strName = BeseyeJSONUtil.getJSONString(result.get(0), BeseyeJSONUtil.UPDATE_VER_NAME);
+					boolean bFakeAppVerEnabled = SessionMgr.getInstance().isFakeAppVerEnabled();
 					
-					int strVerCode = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.UPDATE_VER_CODE);
+					int strVerCode = bFakeAppVerEnabled?SessionMgr.getInstance().getFakeAppVer():BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.UPDATE_VER_CODE);
 					
 					if(getPackageName().equals(strPkg) && BeseyeUtils.getPackageVersionCode() < strVerCode){
-						Log.i(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask has new version: "+strVerCode);
-						launchUpdateApp();
-						//Toast.makeText(BeseyeBaseActivity.this, "Update for "+strPkg+" to version "+strVerCode, Toast.LENGTH_LONG).show();
+						Log.i(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask has new version: "+strVerCode +", is testing:"+bFakeAppVerEnabled);
+						if(!bFakeAppVerEnabled){
+							launchUpdateApp();
+						}else{
+							String strInfo = "Update for "+strPkg+" to fake version "+strVerCode;
+							Toast.makeText(BeseyeBaseActivity.this, strInfo, Toast.LENGTH_LONG).show();
+							Bundle bundle = new Bundle();
+							bundle.putString(KEY_INFO_TEXT, strInfo);
+							bundle.putString(KEY_INFO_TITLE, "Fake App ver Check Result");
+							showMyDialog(DIALOG_ID_FAKE_APP_VER_CHK, bundle);
+						}
 					}else{
-						Log.i(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask latest version: "+strVerCode);
+						Log.i(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask latest version: "+strVerCode+", is testing:"+bFakeAppVerEnabled);
 						//Log.i(TAG, "onPostExecute(), BeseyeUpdateBEHttpTask.GetLatestAndroidAppVersionTask error: "+iRetCode);
-						onAppUpdateNotAvailable();
-						//Toast.makeText(BeseyeBaseActivity.this, "Not Update for "+strPkg+" to version "+strVerCode, Toast.LENGTH_LONG).show();
+						if(bFakeAppVerEnabled){
+							Toast.makeText(BeseyeBaseActivity.this, "No Update for "+strPkg+" to fake version "+strVerCode, Toast.LENGTH_LONG).show();
+						}
+							
+						onAppUpdateNotAvailable(); 
 					}
 				}else{
 					onAppUpdateNotAvailable();
@@ -1459,19 +1512,23 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 		launchDelegateActivity(BeseyeEntryActivity.class.getName());
 	}
 	
-	protected void onSessionInvalid(boolean bIsLogoutCase){
-		if(SessionMgr.getInstance().isTokenValid()){
-			if(false == bIsLogoutCase){
-				BeseyeUtils.postRunnable(new Runnable(){
-					@Override
-					public void run() {
-						Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
-					}}, 0L);
-			}
-			invalidDevSession();
-		}else{
-			Log.i(TAG, "onSessionInvalid(), token is invalid");
-		}
+	protected void onSessionInvalid(final boolean bIsLogoutCase){
+		BeseyeUtils.postRunnable(new Runnable(){
+			@Override
+			public void run() {
+				if(SessionMgr.getInstance().isTokenValid()){
+					if(false == bIsLogoutCase){
+						BeseyeUtils.postRunnable(new Runnable(){
+							@Override
+							public void run() {
+								Toast.makeText(BeseyeBaseActivity.this, getString(R.string.toast_session_invalid), Toast.LENGTH_SHORT).show();
+							}}, 0L);
+					}
+					invalidDevSession();
+				}else{
+					Log.i(TAG, "onSessionInvalid(), token is invalid");
+				}
+			}}, 0);
 	}
 	
 	public void launchActivityByIntent(Intent intent){
@@ -1828,6 +1885,13 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 						} catch (JSONException e) {
 							Log.i(TAG, "handleMessage(), e:"+e.toString());
 						}
+                	}
+                	break;
+                }
+                case BeseyeNotificationService.MSG_ACCOUNT_TOKEN_EXPIRED:{
+                	BeseyeBaseActivity act = mActivity.get();
+                	if(null != act){
+	                	act.onSessionInvalid(false);
                 	}
                 	break;
                 }

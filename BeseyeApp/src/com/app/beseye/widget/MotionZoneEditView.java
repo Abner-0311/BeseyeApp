@@ -17,7 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.app.beseye.R;
-import com.app.beseye.setting.MotionZoneEditActivity;
+import com.app.beseye.setting.TriggerZoneEditActivity;
 import com.app.beseye.util.BeseyeMotionZoneUtil;
 
 /*
