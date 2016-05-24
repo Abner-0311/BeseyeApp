@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- DO NOT TRANSLATE BEGIN-->
+    <string name="app_name">@string/app_name_dev</string>
+    <string name ="facebook_app_id">1659909464230473</string>
+    <string name ="facebook_provider_authority">com.facebook.app.FacebookContentProvider1659909464230473</string>
+</resources>

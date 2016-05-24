@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="cameralist_videoblock_inner">5dp</dimen>
+    <dimen name="cameralist_videoblock_padding_bottom">5dp</dimen>
+    <dimen name="cameralist_videoblock_thunmbnail_padding">4.5dp</dimen>
+    <dimen name="eventlist_gray_line_left">66dp</dimen>
+    <dimen name="eventlist_gray_line_right">20dp</dimen>
+    <dimen name="eventlist_timeline_dot_left">52dp</dimen>
+    <dimen name="login_marginMedium">24dp</dimen>
+    <dimen name="news_timeline_dot_left">20dp</dimen>
+    <dimen name="signup_beforeSetup_img_marginTop">120dp</dimen>
+    <dimen name="signup_paring_container">600dp</dimen>
+    <dimen name="signup_paring_margin_label_bottom">58dp</dimen>
+    <dimen name="signup_paring_margin_medium">28dp</dimen>
+</resources>

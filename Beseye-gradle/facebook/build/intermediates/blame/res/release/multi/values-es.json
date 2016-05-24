@@ -1,0 +1,216 @@
+[
+    {
+        "outputFile": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/build/intermediates/res/merged/release/values-es/values-es.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 99,
+                    "endOffset": 150
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/strings.xml",
+                    "position": {
+                        "startLine": 31,
+                        "startColumn": 4,
+                        "startOffset": 1971,
+                        "endColumn": 99,
+                        "endOffset": 2066
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 155,
+                    "endColumn": 125,
+                    "endOffset": 276
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/strings.xml",
+                    "position": {
+                        "startLine": 30,
+                        "startColumn": 4,
+                        "startOffset": 1845,
+                        "endColumn": 125,
+                        "endOffset": 1966
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 4,
+                    "startColumn": 4,
+                    "startOffset": 281,
+                    "endColumn": 97,
+                    "endOffset": 374
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/strings.xml",
+                    "position": {
+                        "startLine": 29,
+                        "startColumn": 4,
+                        "startOffset": 1747,
+                        "endColumn": 97,
+                        "endOffset": 1840
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 5,
+                    "startColumn": 4,
+                    "startOffset": 379,
+                    "endColumn": 57,
+                    "endOffset": 432
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/strings.xml",
+                    "position": {
+                        "startLine": 28,
+                        "startColumn": 4,
+                        "startOffset": 1689,
+                        "endColumn": 57,
+                        "endOffset": 1742
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 6,
+                    "startColumn": 4,
+                    "startOffset": 437,
+                    "endColumn": 73,
+                    "endOffset": 506
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/strings.xml",
+                    "position": {
+                        "startLine": 27,
+                        "startColumn": 4,
+                        "startOffset": 1615,
+                        "endColumn": 73,
+                        "endOffset": 1684
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 7,
+                    "startColumn": 4,
+                    "startOffset": 511,
+                    "endColumn": 92,
+                    "endOffset": 599
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/strings.xml",
+                    "position": {
+                        "startLine": 23,
+                        "startColumn": 4,
+                        "startOffset": 1246,
+                        "endColumn": 92,
+                        "endOffset": 1334
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 8,
+                    "startColumn": 4,
+                    "startOffset": 604,
+                    "endColumn": 79,
+                    "endOffset": 679
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/strings.xml",
+                    "position": {
+                        "startLine": 26,
+                        "startColumn": 4,
+                        "startOffset": 1535,
+                        "endColumn": 79,
+                        "endOffset": 1610
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 9,
+                    "startColumn": 4,
+                    "startOffset": 684,
+                    "endColumn": 79,
+                    "endOffset": 759
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/strings.xml",
+                    "position": {
+                        "startLine": 22,
+                        "startColumn": 4,
+                        "startOffset": 1166,
+                        "endColumn": 79,
+                        "endOffset": 1241
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 764,
+                    "endColumn": 90,
+                    "endOffset": 850
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/strings.xml",
+                    "position": {
+                        "startLine": 24,
+                        "startColumn": 4,
+                        "startOffset": 1339,
+                        "endColumn": 90,
+                        "endOffset": 1425
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 11,
+                    "startColumn": 4,
+                    "startOffset": 855,
+                    "endColumn": 104,
+                    "endOffset": 955
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/strings.xml",
+                    "position": {
+                        "startLine": 25,
+                        "startColumn": 4,
+                        "startOffset": 1430,
+                        "endColumn": 104,
+                        "endOffset": 1530
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 12,
+                    "startColumn": 4,
+                    "startOffset": 960,
+                    "endColumn": 61,
+                    "endOffset": 1017
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-es/messenger_button_strings.xml",
+                    "position": {
+                        "startLine": 22,
+                        "startColumn": 2,
+                        "startOffset": 1164,
+                        "endColumn": 59,
+                        "endOffset": 1221
+                    }
+                }
+            }
+        ]
+    }
+]

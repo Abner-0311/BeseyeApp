@@ -1,0 +1,26 @@
+[
+    {
+        "outputFile": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/build/intermediates/res/merged/release/values-fi/values-fi.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 61,
+                    "endOffset": 112
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/facebook/src/main/res/values-fi/messenger_button_strings.xml",
+                    "position": {
+                        "startLine": 22,
+                        "startColumn": 2,
+                        "startOffset": 1164,
+                        "endColumn": 59,
+                        "endOffset": 1221
+                    }
+                }
+            }
+        ]
+    }
+]

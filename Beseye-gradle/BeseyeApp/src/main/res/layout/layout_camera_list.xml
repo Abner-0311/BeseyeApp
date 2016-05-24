@@ -1,0 +1,26 @@
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+   	android:layout_height="match_parent"
+   	android:background="@color/signup_bg_color" >
+	<com.app.beseye.widget.PullToRefreshListView 
+	    android:id="@+id/lv_camera_lst"
+	    android:layout_width="match_parent"
+   		android:layout_height="match_parent">
+	</com.app.beseye.widget.PullToRefreshListView>	
+	
+	<include 
+	    android:id="@+id/vg_cam_menu"
+	    android:visibility="invisible"
+	    layout="@layout/layout_cam_list_menu"></include>
+</RelativeLayout>
+
+
+
+   
+		
+	
+ 
+
+

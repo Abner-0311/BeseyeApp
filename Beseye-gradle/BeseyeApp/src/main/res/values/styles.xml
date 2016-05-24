@@ -1,0 +1,100 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="numberPickerStyle">@style/NPWidget.Holo.Light.NumberPicker</item>
+        <item name="actionBarStyle">@style/ActionBarTheme</item>
+	</style>
+	
+    <style name="ActionBarTheme" parent="android:Widget.ActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:height">50dp</item>
+    </style>
+    
+    <style name="AppTheme.WifiList">
+        <item name="actionBarStyle">@style/ActionBarThemeWiFiList</item>
+	</style>
+	
+    <style name="AppThemePopupMenu" parent="android:Widget.Holo.Light.ListPopupWindow">
+        <item name="android:popupBackground">@color/signup_nav_bg_color</item>
+    </style>
+	
+    <style name="ActionBarThemeWiFiList" parent="android:Widget.ActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:background">@drawable/wifisetup_wifi_title_bg</item>
+        <item name="android:height">50dp</item>
+    </style>
+    
+    <style name="AppTheme.TimeZoneList">
+        <item name="actionBarStyle">@style/ActionBarThemeTimeZoneList</item>
+        <item name="actionOverflowButtonStyle">@style/ActionBarThemeTimeZoneListOverFlow</item>
+	</style>
+	
+    <style name="ActionBarThemeTimeZoneList" parent="android:Widget.ActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:background">@color/signup_nav_bg_color</item>
+        <item name="android:height">50dp</item>
+        <item name="android:icon">@drawable/sl_nav_back_btn</item>
+    </style>
+    
+    <style name="ActionBarThemeTimeZoneListOverFlow" parent="@android:Widget.Holo.ActionButton.Overflow">
+	    <item name="android:src">@drawable/sl_actionbar_overflow_icon</item>
+	</style>
+	
+    <style name="style1"></style>
+    
+    <style name="Theme.BesEye" parent="@style/Theme.AppCompat.Light">
+	    <item name="actionBarStyle">@style/Theme.BesEye.ActionBar</item>
+	</style>
+	
+	<style name="Theme.BesEye.ActionBar">
+	    <item name="titleTextStyle">@style/Theme.BesEye.ActionBar.TitleTextStyle</item>
+	</style>
+	
+	<style name="Theme.BesEye.ActionBar.TitleTextStyle" parent="@android:style/Widget.TextView">
+	    <item name="android:textSize">100sp</item>
+	    <item name="android:textColor">#18b4ab</item>
+	</style>
+	
+	<style name="Widget.GifMoviewView" parent="@android:style/Widget"></style>
+
+	<style name="StyleTextView_ShadowBlack">
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowRadius">4.0</item>
+    </style>
+
+    <style name="StyleTextView_ShadowBlack_Lite">
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowRadius">1.0</item>
+    </style>
+
+    <style name="StyleTextView_Singleline_Eclipse">
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    
+    <style name="StyleButton_Pincode">
+        <item name="android:textColor">@color/csl_pincode_num_font_color</item>
+        <item name="android:textSize">@dimen/pincode_num_font</item>
+        <item name="android:background">@drawable/sl_pincode_num_bg</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="StyleButton_Pincode.Func">
+        <item name="android:background">@drawable/sl_pincode_func_bg</item>
+    </style>
+</resources>

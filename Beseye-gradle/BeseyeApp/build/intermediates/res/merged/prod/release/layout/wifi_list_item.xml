@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dsl_wifi_list_item_bg"
+    android:paddingTop="@dimen/wifi_list_item_padding_top"
+	android:paddingBottom="@dimen/wifi_list_item_padding_top"
+    tools:context=".MainActivity" >
+
+    <View 
+        android:layout_width="1dp"
+    	android:layout_height="@dimen/wifi_list_item_height"/>
+    <ImageView 
+        android:id="@+id/iv_camerapower_on"
+        android:layout_width="wrap_content"
+   		android:layout_height="wrap_content" 
+   		android:layout_centerVertical="true"
+   		android:layout_alignParentRight="true"
+   		android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding" 
+        android:src="@drawable/wifisetup_wifi_signal_icon_4"/>
+    
+    <ImageView 
+        android:id="@+id/iv_wifi_secure"
+        android:layout_width="wrap_content"
+   		android:layout_height="wrap_content" 
+   		android:layout_centerVertical="true"
+   		android:layout_marginRight="16dp" 
+   		android:layout_toLeftOf="@+id/iv_camerapower_on"
+        android:src="@drawable/sl_wifi_lock_icon"/>
+    
+    <RelativeLayout 
+        android:layout_width="wrap_content"
+   		android:layout_height="wrap_content" 
+   		android:layout_alignParentLeft="true"
+   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+   		android:layout_toLeftOf="@+id/iv_wifi_secure"
+   		android:layout_centerVertical="true">
+        <TextView 
+	       	android:id="@+id/txt_ssid"
+	    	android:layout_width="wrap_content"
+	   		android:layout_height="wrap_content" 
+	   		android:textSize="@dimen/wifi_list_item_main_font_size"
+	   		android:textColor="@color/csl_wifi_list_main_font_color"
+	   		android:text="@string/app_name"/>
+		
+		<TextView 
+	       	android:id="@+id/txt_secure"
+	    	android:layout_width="wrap_content"
+	   		android:layout_height="wrap_content" 
+	   		android:textSize="@dimen/wifi_list_item_sub_font_size"
+	   		android:textColor="@color/csl_wifi_list_sub_font_color"
+	   		android:layout_below="@+id/txt_ssid"
+	   		android:text="@string/network_connected" />
+    </RelativeLayout>
+</RelativeLayout>

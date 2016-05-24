@@ -1,0 +1,125 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "com.app.beseye"
+        minSdkVersion 11
+        targetSdkVersion 14
+
+        ndk {
+            moduleName "bdpush_V2_3"
+        }
+    }
+
+    productFlavors {
+        dev {
+            applicationId "com.app.beseye"
+            buildConfigField 'boolean', 'DEBUG_LVL', 'true'
+            buildConfigField 'boolean', 'ALPHA_VER', 'false'
+            buildConfigField 'boolean', 'BETA_VER', 'false'
+            buildConfigField 'boolean', 'PRODUCTION_VER', 'false'
+            buildConfigField 'String', 'HOCKEY_APP_ID', '""'
+
+            versionName "0.2.11"
+            versionCode 191
+        }
+        alpha {
+            applicationId "com.app.beseye.alpha"
+            buildConfigField 'boolean', 'DEBUG_LVL', 'true'
+            buildConfigField 'boolean', 'ALPHA_VER', 'true'
+            buildConfigField 'boolean', 'BETA_VER', 'false'
+            buildConfigField 'boolean', 'PRODUCTION_VER', 'false'
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"1caf00210eb940171eb56a1904a204e8"'
+
+            versionName "0.2.12"
+            versionCode 192
+        }
+
+        beta {
+            applicationId "com.app.beseye.beta"
+            buildConfigField 'boolean', 'DEBUG_LVL', 'true'
+            buildConfigField 'boolean', 'ALPHA_VER', 'true'
+            buildConfigField 'boolean', 'BETA_VER', 'true'
+            buildConfigField 'boolean', 'PRODUCTION_VER', 'false'
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"f90a325fb2364345a826c493888913b8"'
+            versionName "0.2.11"
+            versionCode 191
+        }
+
+        prod {
+            applicationId "com.app.beseye.production"
+            buildConfigField 'boolean', 'DEBUG_LVL', 'false'
+            buildConfigField 'boolean', 'ALPHA_VER', 'false'
+            buildConfigField 'boolean', 'BETA_VER', 'false'
+            buildConfigField 'boolean', 'PRODUCTION_VER', 'true'
+            buildConfigField 'String', 'HOCKEY_APP_ID', '"3f241ef5b7fb32623b970d296f90fcb4"'
+            versionName "1.1.2"
+            versionCode 20
+        }
+    }
+
+    signingConfigs {
+        dev {
+            storeFile file("beseye.debug.keystore") //Path to the keystore file
+        }
+
+        alpha {
+            storeFile file("beseye.alpha.keystore") //Path to the keystore file
+            keyAlias "androiddebugkey"
+            storePassword "android"
+            keyPassword "android"
+        }
+
+        beta {
+            storeFile file("beseye.beta.keystore") //Path to the keystore file
+            keyAlias "beseye-release-key"
+            storePassword "0630BesEyerelkey"
+            keyPassword "relkey0630BesEye"
+        }
+
+        prod {
+            storeFile file("beseye.release.keystore") //Path to the keystore file
+            keyAlias "beseye-production-key"
+            storePassword "BeseYe0127prOd"
+            keyPassword "0127keYbesEYe"
+        }
+    }
+
+    sourceSets.main {
+        jni.srcDirs = [] // This prevents the auto generation of Android.mk
+        jniLibs.srcDir 'src/main/jni/prebulit/armeabi' // This is not necessary unless you have precompiled libraries in your project.
+    }
+
+    buildTypes {
+        release {
+            productFlavors.alpha.signingConfig signingConfigs.alpha
+            productFlavors.beta.signingConfig signingConfigs.beta
+            productFlavors.prod.signingConfig signingConfigs.prod
+            minifyEnabled true
+            proguardFiles 'proguard.cfg'
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+}
+
+dependencies {
+    //compile project(':androidsupportv7appcompat')
+    compile project(':library')
+    compile project(':googleplayservices_lib')
+    compile project(':facebook')
+    compile files('libs/HockeySDK-3.5.0.jar')
+    compile files('libs/acra-4.4.0.jar')
+    compile files('libs/androidasync.jar')
+    compile files('libs/gcm.jar')
+    compile files('libs/pushservice-4.5.1.8.jar')
+    compile "com.android.support:appcompat-v7:18.0.+"
+}

@@ -1,0 +1,117 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+	<com.app.beseye.TouchSurfaceView 
+	    android:id="@+id/surface_streaming_view"
+	    android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:layout_centerVertical="true"/>
+
+	<ProgressBar
+	    android:id="@+id/pb_loadingCursor"
+	    style="?android:attr/progressBarStyleLarge"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_centerVertical="true" 
+	    android:indeterminate="true"
+    	android:indeterminateDrawable="@drawable/progress"/>
+	
+	<RelativeLayout 
+	    android:id="@+id/vg_cam_power_state"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+		android:gravity="center"
+	    android:visibility="invisible" >
+	    <TextView 
+		    android:id="@+id/txt_cam_power_state"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:textColor="@color/liveview_power_state_font_color"
+		    android:textSize="@dimen/liveview_power_state_font_size"
+		    android:text="@string/can_power_state_off"
+		    android:layout_centerHorizontal="true"/>
+	    
+	    <ImageButton 
+	        android:id="@+id/ib_open_cam"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerHorizontal="true"
+		    android:layout_marginTop="12dp"
+		    android:layout_below="@+id/txt_cam_power_state"
+		    android:src="@drawable/sl_liveview_open_cam_btn"
+		    android:background="@android:color/transparent"/>
+
+	</RelativeLayout>
+	
+	<RelativeLayout 
+	    android:id="@+id/vg_cam_invald_statement"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+		android:gravity="center"
+	    android:visibility="gone" 
+	    android:background="#11ffffff">
+	    <TextView 
+		    android:id="@+id/txt_cam_invalid_state"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:textColor="@color/liveview_power_state_font_color"
+		    android:textSize="@dimen/liveview_power_state_font_size"
+		    android:text="@string/can_power_state_disconnect"
+		    android:layout_centerHorizontal="true"/>
+	</RelativeLayout>
+	<RelativeLayout 
+	    android:id="@+id/vg_streaming_view_header"
+	    android:layout_width="match_parent"
+    	android:layout_height="wrap_content">
+	</RelativeLayout>
+	
+	<RelativeLayout 
+	    android:id="@+id/vg_streaming_view_footer"
+	    android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentBottom="true">
+	</RelativeLayout>
+	
+	<RelativeLayout 
+	    android:id="@+id/vg_hold_to_talk"
+	    android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_centerVertical="true"
+    	android:layout_alignParentRight="true"
+    	android:visibility="invisible">
+	    <ImageView 
+	        android:id="@+id/img_hold_to_talk_bg"
+		    android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:src="@drawable/liveview_xhdpi_h_hold_to_talk_bg"/>
+	    <ImageView 
+	        android:id="@+id/img_hold_to_talk_mic"
+		    android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:src="@drawable/liveview_xhdpi_h_hold_to_talk_mic"
+	    	android:layout_alignRight="@+id/img_hold_to_talk_bg"
+	    	android:layout_alignBottom="@+id/img_hold_to_talk_bg"
+	    	android:layout_marginBottom="@dimen/liveview_hold_to_talk_margin_bottom"
+	    	android:layout_marginRight="@dimen/liveview_hold_to_talk_margin_right"/>
+	    
+	    <com.app.beseye.widget.AmplitudeImageView 
+	        android:id="@+id/img_hold_to_talk_mic_mask"
+		    android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:layout_alignRight="@+id/img_hold_to_talk_bg"
+	    	android:layout_alignBottom="@+id/img_hold_to_talk_bg"
+	    	android:layout_marginBottom="@dimen/liveview_hold_to_talk_margin_bottom"
+	    	android:layout_marginRight="@dimen/liveview_hold_to_talk_margin_right"
+	    	android:src="@drawable/liveview_xhdpi_h_hold_to_talk_mic_bluegreen"/>
+	</RelativeLayout>
+	
+	<include 
+    	layout="@layout/layout_signup_paring_done"
+    	android:id="@+id/vg_pairing_done"
+    	android:visibility="gone">
+	</include>
+	
+</RelativeLayout>

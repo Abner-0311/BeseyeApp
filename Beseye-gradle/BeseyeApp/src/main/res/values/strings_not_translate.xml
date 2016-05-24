@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- DO NOT TRANSLATE BEGIN-->
+    <string name="app_name_dev">Beseye(d)</string>
+    <string name="app_name_alpha">Beseye(α)</string>
+    <string name="app_name_beta">Beseye(β)</string>
+    <string name="alpha">(α)</string>
+    <string name="beta">(β)</string>
+    <string name="crash_toast_text"></string>
+    <string name="camerview_init_date">---.--.----</string>
+    <string name="camerview_init_time">--:--:-- --</string>
+    <string name="dialog_reboot_cam">Are you sure to reboot this cam [%s]?</string>
+    
+    <!-- facebook APP ID. It is Beseye-->
+ 	<string name ="facebook_app_id">1659909464230473</string>
+ 	<string name ="facebook_app_id_alpha">783054278482250</string>
+ 	<string name ="facebook_app_id_beta">783054278482250</string>
+ 	<string name ="facebook_app_id_prod">913128435388925</string>
+ 	
+ 	<string name ="facebook_provider_authority">com.facebook.app.FacebookContentProvider1659909464230473</string>
+ 	<string name ="facebook_provider_authority_alpha">com.facebook.app.FacebookContentProvider783054278482250</string>
+ 	<string name ="facebook_provider_authority_beta">com.facebook.app.FacebookContentProvider783054278482250</string>
+ 	<string name ="facebook_provider_authority_prod">com.facebook.app.FacebookContentProvider913128435388925</string>
+ 	
+    <string name="news_release_date">2014.7.13</string>
+	<string name="news_title">BesEye camera firmware 6.7 update</string>
+	<string name="news_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue augue id...</string>
+	
+	<string name="about_link">www.beseye.com</string>
+	<string name="forget_password_check_mail_address">k******g@beseye.com</string>
+	
+	<string name="cam_setting_title_reboot_cam">Reboot cam !!!(Dev)</string>
+	
+	<string name="hello_world">Hello world!</string>
+	<string name="signup_paring_percentage">0%</string>
+	
+	<string name="dialog_btn_let_it_bee">Let it bee™</string>
+	<string name="dialog_init_cam">Talk initializing&#8230;</string>
+	
+	<string name="locate_aware_output">Location:lat,lng</string>
+    <string name="locate_aware_search">Search!</string>
+    <string name="loacte_aware_address"></string>
+    
+    <string name="cam_setting_title_power_desc">Beseye is %s</string>
+    
+    <string name="cam_setting_hw_hd_quality_title">HD quality</string>
+	<string name="cam_setting_hw_hd_quality_desc">60GB data usage for non-stop 30 days uploading</string>
+	
+	<string name="signup_wifi_setting">During setup a WiFi connection is needed. Would you like to use your current WiFi connection?</string>
+	<string name="signup_choose_network">Choose a network</string>
+	<string name="signup_wifi_yes">Yes</string>
+	
+	<string name="cam_menu_my_cam">@string/cam_list_tilte</string>
+	<string name="no_camera">No camera attached</string>
+	
+	<string name="cam_update_result">Cameras update result: \n %1$s done, \n %2$s failed.</string>
+	
+	<string name="firmware_update_error_title">Update incomplete</string>
+	<string name="firmware_update_error_summary">This might cause by temporary\network problem.</string>
+	<string name="firmware_update_btn_later">Update later</string>
+	<string name="firmware_update_btn_again">Try again</string>
+	
+	<string name="toast_cam_on_by_other">Camera is turned on by other user</string>
+	<string name="toast_cam_off_by_other">Camera is turned off by other user</string>
+	<string name="toast_cam_off_by_schedule">Camera is turned off according to power schedule</string>
+	<string name="toast_cam_off_by_location">Camera is turned off accordIng to location setting</string>
+	
+	<string name="event_list_family_detected_notify">%1$s was recognized by %2$s at %3$s</string>
+	<string name="event_list_people_detected_notify">People were detected by %1$s at %2$s</string>
+	<string name="event_list_sound_detected_notify">Sound was detected by %1$s at %2$s</string>
+	<string name="event_list_fire_detected_notify">Fire was detected by %1$s at %2$s</string>
+	<string name="event_list_motion_detected_notify">Motion was detected by %1$s at %2$s</string>
+	<string name="event_list_unknown_detected_notify">Event was detected by %1$s at %2$s</string>
+	
+	<string name="pull_to_refresh_from_bottom_release_label">@string/pull_to_refresh_release_label</string>
+    <string name="pull_to_refresh_from_bottom_refreshing_label">@string/pull_to_refresh_refreshing_label</string>
+	
+    <string name="cam_setting_Location_aware_setting">Turn off around&#8230;</string>
+    
+	<string name="download_app_web_360">360手机助手</string>
+    <string name="download_app_web_mi">小米应用商店</string>
+    
+    <string name="cam_info_vcam_id">Vcam ID</string>
+    <string name="pincode_num_0">0</string>
+    <string name="pincode_num_1">1</string>
+    <string name="pincode_num_2">2</string>
+    <string name="pincode_num_3">3</string>
+    <string name="pincode_num_4">4</string>
+    <string name="pincode_num_5">5</string>
+    <string name="pincode_num_6">6</string>
+    <string name="pincode_num_7">7</string>
+    <string name="pincode_num_8">8</string>
+    <string name="pincode_num_9">9</string>
+    <!-- DO NOT TRANSLATE END-->    
+</resources>

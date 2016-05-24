@@ -1,0 +1,201 @@
+<LinearLayout 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+	    xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical">
+        <RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/setting_wifi_title_bg"
+		    tools:context=".MainActivity" >
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="@dimen/wifi_list_item_height" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_centerVertical="true">
+		        <TextView 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/setting_list_item_main_title_font_size"
+			   		android:textColor="@color/setting_title_font_color"
+			   		android:text="@string/cam_setting_title_notification_setting"
+			   		android:paddingBottom="@dimen/cam_setting_item_margin_bottom"
+			   		android:layout_alignParentBottom="true"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:id="@+id/vg_notification_type"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <ImageView
+		        android:id="@+id/iv_setting_notification_events_inf"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+		        android:src="@drawable/sl_setting_inside_icon" />
+
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_toLeftOf="@+id/iv_setting_notification_events_inf"
+		   		android:layout_centerVertical="true">
+		        <TextView
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_notification_event"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:id="@+id/vg_family_recognition"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <ImageView
+		        android:id="@+id/iv_setting_family_recognition_inf"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+		        android:src="@drawable/sl_setting_inside_icon" />
+
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_toLeftOf="@+id/iv_setting_family_recognition_inf"
+		   		android:layout_centerVertical="true">
+		        <TextView 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_family_recognition"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:id="@+id/vg_motion_notification_events"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <ImageView
+		        android:id="@+id/iv_motion_notification_events_inf"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+		        android:src="@drawable/sl_setting_inside_icon" />
+		    
+		    <RelativeLayout
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_toLeftOf="@+id/iv_motion_notification_events_inf"
+		   		android:layout_centerVertical="true">
+		        <TextView
+		            android:id="@+id/motion_notification_title" 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_motion_zone"/>
+		        <ImageView
+		        	android:id="@+id/iv_motion_notification_news"
+			    	android:layout_width="wrap_content"
+		    		android:layout_height="wrap_content"
+					android:src="@drawable/setting_list_news_icon"
+					android:layout_toRightOf="@+id/motion_notification_title"
+					android:layout_centerVertical="true"
+		        	android:layout_marginLeft="@dimen/cam_list_item_horizontal_padding"
+					android:visibility="invisible"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+		<RelativeLayout 
+		    android:id="@+id/vg_human_detect_notification_events"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg"
+		    tools:context=".MainActivity" >
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <ImageView
+		        android:id="@+id/iv_human_detect_notification_events_inf"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentRight="true"
+		        android:layout_centerVertical="true"
+		        android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+		        android:src="@drawable/sl_setting_inside_icon" />
+		    
+		    <RelativeLayout
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_toLeftOf="@+id/iv_human_detect_notification_events_inf"
+		   		android:layout_centerVertical="true">
+		        <TextView
+		            android:id="@+id/human_detect_notification_title" 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_human_detect"/>
+		        <ImageView
+		        	android:id="@+id/iv_human_detect_notification_news"
+			    	android:layout_width="wrap_content"
+		    		android:layout_height="wrap_content"
+					android:src="@drawable/setting_list_news_icon"
+					android:layout_toRightOf="@+id/human_detect_notification_title"
+					android:layout_centerVertical="true"
+		        	android:layout_marginLeft="@dimen/cam_list_item_horizontal_padding"
+					android:visibility="invisible"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+</LinearLayout>
+
+
+
+   
+		
+	
+ 
+
+

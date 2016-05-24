@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:background="@color/signup_bg_color">
+	<LinearLayout 
+	    android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="4"
+		android:orientation="vertical">
+		
+	    <View 
+	        android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="6"/>
+	    
+	    <RelativeLayout 
+	        android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="74">
+	        <TextView
+			    android:id="@+id/tv_watch_out_description"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_centerHorizontal="true"
+			    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+			    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+			    android:text="@string/signup_watch_out_desc"
+			    android:textColor="@color/signup_font_description_color"
+			    android:textSize="@dimen/login_fontNormal" />
+		    
+		    <ImageView
+		       android:id="@+id/iv_before_setup_top_img"
+		       android:layout_width="fill_parent"
+		       android:layout_height="fill_parent"
+			   android:layout_below="@+id/tv_watch_out_description"
+			   android:layout_marginTop="25dp"
+		       android:src="@drawable/signup_sound_caution" />
+	    </RelativeLayout>
+	</LinearLayout>
+		
+	<RelativeLayout 
+	    android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1">
+		<Button
+		    android:id="@+id/button_continue"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_centerHorizontal="true"
+		    android:layout_alignParentBottom="true"
+		    android:background="@drawable/sl_account_bottom_btn"
+		    android:paddingBottom="@dimen/login_marginMedium"
+		    android:paddingTop="@dimen/login_marginMedium"
+		    android:text="@string/signup_watch_out_done"
+		    android:textColor="@color/word_white"
+		    android:textColorLink="@color/word_white"
+		    android:textSize="@dimen/login_fontMedium" />
+	</RelativeLayout> 
+</LinearLayout>

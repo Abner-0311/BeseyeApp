@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/pin_code_empty_square" >
+	<ImageView 
+	    android:id="@+id/iv_pincode_fill"
+	    android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:src="@drawable/pin_code_fill_in_square"
+   		android:visibility="visible"/>
+	<ImageView 
+	    android:id="@+id/iv_pincode_red"
+	    android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:src="@drawable/pin_code_red_square"
+   		android:visibility="invisible"/>
+</RelativeLayout>

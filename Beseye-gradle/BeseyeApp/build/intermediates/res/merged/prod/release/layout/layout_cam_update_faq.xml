@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color" >
+    <Button
+        android:id="@+id/button_contact_us"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/sl_account_bottom_btn"
+        android:paddingBottom="@dimen/login_marginMedium"
+        android:paddingTop="@dimen/login_marginMedium"
+        android:text="@string/action_contact_us"
+        android:textColor="@color/word_white"
+        android:textColorLink="@color/word_white"
+        android:textSize="@dimen/login_fontMedium" />
+    <ScrollView 
+        android:layout_alignParentTop="true"
+       	android:layout_above="@+id/button_contact_us"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content">
+      	<RelativeLayout
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content">
+			    <TextView 
+				    android:id="@+id/txt_update_faq_subject_1"
+				    android:layout_width="wrap_content"
+			  		android:layout_height="wrap_content"
+			  		android:textSize="@dimen/update_faq_subject_font_size"
+			  		android:textColor="@color/word_gray"
+			  		android:text="@string/ota_faq_subject"
+			  		android:textStyle="bold"
+			  		android:layout_marginTop="@dimen/update_faq_subject_1_margin_top"
+			  		android:layout_marginLeft="@dimen/update_faq_subject_margin_vert"
+			  		android:layout_marginRight="@dimen/update_faq_subject_margin_vert"/>
+			    
+			    <TextView
+			        android:id="@+id/txt_update_faq_answer_1"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@+id/txt_update_faq_subject_1"
+			        android:layout_marginLeft="@dimen/update_faq_subject_margin_vert"
+				    android:layout_marginRight="@dimen/update_faq_subject_margin_vert"
+			        android:layout_centerHorizontal="true"
+			        android:layout_marginTop="@dimen/update_faq_answer_margin_top"
+			        android:textSize="@dimen/update_faq_answer_font_size"
+			        android:text="@string/ota_faq_answer"
+			        android:textColor="@color/word_gray"
+			         />
+			   
+	    </RelativeLayout>    
+    </ScrollView>
+</RelativeLayout>

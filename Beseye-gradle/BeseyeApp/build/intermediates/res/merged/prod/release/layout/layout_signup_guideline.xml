@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color" >
+	<WebView 
+	    android:id="@+id/wv_guideline"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_above="@+id/button_continue"
+	    android:background="@color/signup_bg_color"/>
+    <Button
+	    android:id="@+id/button_continue"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_alignParentBottom="true"
+	    android:background="@drawable/sl_account_bottom_btn"
+	    android:paddingBottom="@dimen/login_marginMedium"
+	    android:paddingTop="@dimen/login_marginMedium"
+	    android:text="@string/signup_guideline_try_again_btn"
+	    android:textColor="@color/word_white"
+	    android:textColorLink="@color/word_white"
+	    android:textSize="@dimen/login_fontMedium" />
+</RelativeLayout>

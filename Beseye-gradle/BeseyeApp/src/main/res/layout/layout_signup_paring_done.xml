@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <ImageView
+        android:id="@+id/iv_lightbox_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:src="@color/signup_black_mask_color" />
+    
+    <Button
+        android:id="@+id/button_start"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/sl_account_bottom_btn"
+        android:text="@string/ok"
+        android:textColor="@color/word_white"
+        android:textColorLink="@color/word_white"
+        android:textSize="@dimen/login_fontMedium" />
+	
+    <TextView
+	    android:id="@+id/tv_paring_done"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginLeft="@dimen/signup_paring_done_marginSide"
+	    android:layout_marginRight="@dimen/signup_paring_done_marginSide"
+	    android:text="@string/signup_paring_done"
+	    android:textColor="@color/word_white"
+	    android:textSize="@dimen/login_fontMedium" 
+	    android:layout_above="@+id/button_start"
+	    android:gravity="left|center"/>
+</RelativeLayout>

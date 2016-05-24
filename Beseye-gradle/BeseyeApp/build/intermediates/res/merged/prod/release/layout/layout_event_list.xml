@@ -1,0 +1,42 @@
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+   	android:layout_height="match_parent"
+   	android:orientation="vertical"
+   	android:background="@color/signup_bg_color" >
+	<com.app.beseye.widget.PullToRefreshListView 
+	    android:id="@+id/lv_camera_lst"
+	    android:layout_width="match_parent"
+   		android:layout_height="match_parent"
+   		android:scrollbars="none"
+   		android:divider="@null"
+		android:dividerHeight="0dp">
+	</com.app.beseye.widget.PullToRefreshListView>	
+	
+	<ImageView
+	    android:id="@+id/iv_calendar_icon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_alignParentLeft="true"
+	    android:layout_marginBottom="@dimen/eventlist_calendar_bottom"
+	    android:layout_marginLeft="@dimen/eventlist_calendar_left"
+	    android:src="@drawable/sl_eventlist_calendar_btn" />
+	
+	<com.app.beseye.widget.BeseyeClockIndicator
+	    android:id="@+id/vg_event_indicator"
+	    android:layout_width="wrap_content"
+   		android:layout_height="wrap_content"
+   		android:layout_marginLeft="12dp">
+	</com.app.beseye.widget.BeseyeClockIndicator>
+</RelativeLayout>
+
+
+
+   
+		
+	
+ 
+
+

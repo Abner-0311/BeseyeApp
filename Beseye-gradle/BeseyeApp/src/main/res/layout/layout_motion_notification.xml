@@ -1,0 +1,104 @@
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+   	android:layout_width="match_parent"
+   	android:layout_height="wrap_content">
+   	<LinearLayout 
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical">
+    	<RelativeLayout 
+    	    android:id="@+id/vg_motion_notify"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg">
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <com.app.beseye.widget.BeseyeSwitchBtn 
+			    android:id="@+id/sb_motion_notify_switch"
+			    android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:layout_alignParentRight="true"
+		    	android:layout_centerVertical="true"
+		    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding">
+			</com.app.beseye.widget.BeseyeSwitchBtn>
+		    
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_centerVertical="true"
+		   		android:duplicateParentState="true">
+		        <TextView 
+			       	android:id="@+id/txt_motion_notify_title"
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_notification_event_notify_me"
+			   		android:duplicateParentState="true"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+    	<RelativeLayout 
+		    android:id="@+id/vg_motion_zone"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg">
+		    
+	    	<RelativeLayout
+	    	    android:id="@+id/vg_motion_zone_image"
+	            android:layout_width="wrap_content"
+		        android:layout_height="wrap_content">
+			   	<com.app.beseye.widget.RemoteImageView
+			        android:id="@+id/iv_motion_zone_thumbnail"
+			    	android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:visibility="visible" />
+			   	<ImageView
+			        android:id="@+id/iv_motion_zone_setting"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:visibility="visible"/>
+			   	<ImageView 
+			   	    android:id="@+id/iv_motion_zone_mask"
+		        	android:layout_width="match_parent"
+		        	android:layout_height="wrap_content"
+		       	 	android:visibility="gone"/>
+			</RelativeLayout> 
+    	    
+		    <RelativeLayout 
+		     	android:id="@+id/vg_motion_zone_text"
+			    android:layout_width="match_parent"
+			    android:layout_height="@dimen/wifi_list_item_height"
+    			android:layout_below="@id/vg_motion_zone_image"
+			    tools:context=".MainActivity"
+			    android:duplicateParentState="true">    
+			    <ImageView 
+			        android:id="@+id/iv_enter_arrow"
+			        android:layout_width="wrap_content"
+			    	android:layout_height="wrap_content"
+			    	android:layout_alignParentRight="true"
+			    	android:layout_centerVertical="true"
+			    	android:src="@drawable/sl_setting_inside_icon"
+			    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding"
+			    	android:duplicateParentState="true"/>
+			    
+			   <TextView 
+			       	android:id="@+id/txt_motion_zone_text_title"
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding"
+			   		android:layout_centerVertical="true"
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/motion_zone_title"
+			   		android:duplicateParentState="true"/>
+			</RelativeLayout>
+		</RelativeLayout>
+    </LinearLayout>
+</ScrollView>

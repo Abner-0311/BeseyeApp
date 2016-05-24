@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+   	<RelativeLayout 
+   	    android:layout_width="fill_parent"
+   		android:layout_height="@dimen/wifi_ap_info_dialog_title_height" 
+   	    android:background="@drawable/wifisetup_password_inf_bg_up">
+   	    <TextView 
+	   	    android:id="@+id/txt_cam_info_title"
+	   	    android:layout_width="match_parent"
+	   		android:layout_height="wrap_content" 
+	   		android:paddingLeft="@dimen/wifi_list_item_horizontal_padding" 
+	   		android:textColor="@color/wifi_info_dialog_title_font_color"
+	   		android:textSize="@dimen/wifi_ap_info_dialog_title_font_size"
+	   		android:text="@string/cam_info_cam_name"
+	   		android:layout_centerVertical="true"/>
+   	</RelativeLayout>
+	<RelativeLayout 
+   	    android:layout_width="fill_parent"
+  		android:layout_height="@dimen/wifi_list_item_height"
+  		android:background="@drawable/wifisetup_password_inf_bg_mid">
+   	    <ImageView 
+	        android:id="@+id/iv_cam_name_line"
+		    android:layout_width="match_parent"
+	   		android:layout_height="wrap_content" 
+	   		android:layout_centerVertical="true"
+	   		android:layout_alignTop="@+id/et_cam_name"
+	   		android:layout_marginTop="@dimen/caminfo_dialog_attr_value_font_size"
+	   		android:background="@drawable/wifisetup_password_form"
+	   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+   			android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding" />
+	    
+ 		<EditText 
+	       	android:id="@+id/et_cam_name"
+	    	android:layout_width="match_parent"
+	   		android:layout_height="wrap_content" 
+	   		android:layout_centerVertical="true"
+	   		android:layout_alignLeft="@+id/iv_cam_name_line"
+	   		android:layout_alignRight="@+id/iv_cam_name_line"
+	   		android:paddingLeft="@dimen/caminfo_cam_name_padding_hori"
+	   		android:paddingRight="@dimen/caminfo_cam_name_padding_hori"
+	   		android:textSize="@dimen/caminfo_dialog_attr_value_font_size"
+	   		android:textColor="@color/wifi_info_dialog_attr_font_color"
+	   		android:singleLine="true"
+			android:background="@android:color/transparent"/>
+   	</RelativeLayout> 
+    <Button 
+       	android:id="@+id/btn_ok"
+    	android:layout_width="fill_parent"
+   		android:layout_height="wrap_content"
+   		android:background="@drawable/sl_dialog_single_btn_bg"
+   		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
+   		android:textColor="@color/csl_wifi_list_dialog_btn_font_color"
+   		android:text="@string/ok"/>
+
+</LinearLayout>

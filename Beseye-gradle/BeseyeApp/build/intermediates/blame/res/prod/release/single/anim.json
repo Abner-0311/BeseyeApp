@@ -1,0 +1,82 @@
+[
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/abc_slide_in_top.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/anim/abc_slide_in_top.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/header_exit.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/header_exit.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/header_enter.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/header_enter.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/menu_enter_anim.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/menu_enter_anim.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/menu_bg_exit_anim.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/menu_bg_exit_anim.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/abc_slide_out_top.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/anim/abc_slide_out_top.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/hold_to_talk_enter.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/hold_to_talk_enter.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/slide_in_from_bottom.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/slide_in_from_bottom.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/menu_bg_enter_anim.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/menu_bg_enter_anim.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/menu_exit_anim.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/menu_exit_anim.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/footer_enter.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/footer_enter.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/abc_slide_out_bottom.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/anim/abc_slide_out_bottom.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/slide_out_to_bottom.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/slide_out_to_bottom.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/footer_exit.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/footer_exit.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/abc_slide_in_bottom.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/anim/abc_slide_in_bottom.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/slide_out_to_top.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/slide_out_to_top.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/abc_fade_out.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/anim/abc_fade_out.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/slide_in_from_top.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/slide_in_from_top.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/abc_fade_in.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/res/anim/abc_fade_in.xml"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/prod/release/anim/hold_to_talk_exit.xml",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/anim/hold_to_talk_exit.xml"
+    }
+]

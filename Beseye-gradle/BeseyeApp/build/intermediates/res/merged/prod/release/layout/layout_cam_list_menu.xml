@@ -1,0 +1,59 @@
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <View 
+        android:id="@+id/vg_cam_menu_container_bg"
+        android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="@color/cam_menu_background_gray"/>
+    <ScrollView 
+	    android:id="@+id/vg_cam_menu_container"
+	    android:layout_width="match_parent"
+   		android:layout_height="match_parent"
+   		android:background="@drawable/dsl_cam_menu_item_bg"
+   		android:layout_marginRight="@dimen/cam_list_item_margin_right">
+	    <LinearLayout
+	        android:layout_width="match_parent"
+    		android:layout_height="match_parent"
+    		android:orientation="vertical">
+    		<include 
+			    android:id="@+id/vg_my_cam"
+			    layout="@layout/layout_cam_list_menu_itm"></include>
+			<include 
+			    android:id="@+id/vg_demo_cam"
+			    layout="@layout/layout_cam_list_menu_itm"></include>
+			<include 
+			    android:id="@+id/vg_private_cam"
+			    layout="@layout/layout_cam_list_menu_itm"
+			    android:visibility="gone"></include>
+			<include 
+			    android:id="@+id/vg_news"
+			    layout="@layout/layout_cam_list_menu_itm"></include>
+			<include 
+			    android:id="@+id/vg_trust_mgt"
+			    layout="@layout/layout_cam_list_menu_itm"></include>
+			<include 
+			    android:id="@+id/vg_about"
+			    layout="@layout/layout_cam_list_menu_itm"></include>
+			<include 
+			    android:id="@+id/vg_support"
+			    layout="@layout/layout_cam_list_menu_itm"></include>
+			<include 
+			    android:id="@+id/vg_logout"
+			    layout="@layout/layout_cam_list_menu_itm"></include>
+	    </LinearLayout>
+	</ScrollView>
+</RelativeLayout>
+
+
+
+
+   
+		
+	
+ 
+
+

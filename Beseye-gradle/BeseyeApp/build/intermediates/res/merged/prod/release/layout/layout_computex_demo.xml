@@ -1,0 +1,249 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_white"
+    tools:context=".MainActivity" >
+    <Button
+        android:id="@+id/button_confirm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/sl_account_bottom_btn"
+        android:paddingBottom="@dimen/login_marginMedium"
+        android:paddingTop="@dimen/login_marginMedium"
+        android:text="Apply"
+        android:textColor="@color/word_white"
+        android:textColorLink="@color/word_white"
+        android:textSize="@dimen/login_fontMedium" />
+    <ScrollView 
+        android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:layout_alignParentTop="true"
+    	android:layout_above="@+id/button_confirm">
+        <RelativeLayout 
+            android:layout_width="match_parent"
+		    android:layout_height="wrap_content">
+		    <Spinner 
+		        android:id="@+id/sp_server_type" 
+		        android:layout_width="wrap_content"  
+		        android:layout_height="wrap_content"  
+		        android:layout_marginTop="30dp"
+		        android:layout_centerHorizontal="true"/>
+		    
+		    <CheckBox 
+	            android:id="@+id/ck_suspend_cam_sw_update" 
+	            android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/sp_server_type"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:text="Cam SW Update Suspended"/>
+		    
+		    <CheckBox 
+	            android:id="@+id/ck_enable_notify_show" 
+	            android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/ck_suspend_cam_sw_update"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:text="Show notification from toast"/>
+		    
+		    <CheckBox 
+	            android:id="@+id/ck_enable_human_detect_intro_show_always" 
+	            android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/ck_enable_notify_show"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:text="Always Show Human Detect Intro"/>
+		    
+		    <CheckBox 
+	            android:id="@+id/ck_enable_beseye_app_ver_check" 
+	            android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/ck_enable_human_detect_intro_show_always"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:text="Enable Beseye App version control"/>
+		    
+		    <Button 
+		        android:id="@+id/btn_send_log" 
+	            android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/ck_enable_beseye_app_ver_check"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:text="Send log"/>
+		    
+		    <RelativeLayout 
+		        android:id="@+id/vg_detach_hw" 
+		        android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/btn_send_log"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:visibility="visible">
+		        <TextView 
+		            android:id="@+id/txt_detach_hw_id" 
+		            android:layout_width="wrap_content"  
+	        		android:layout_height="wrap_content"
+	        		android:text="Check the Detach Cam HW IDs:"/>
+		        <LinearLayout 
+		            android:id="@+id/vg_detach_hw_ids" 
+		            android:layout_width="wrap_content"  
+	        		android:layout_height="wrap_content"
+	        		android:layout_below="@+id/txt_detach_hw_id"
+		        	android:layout_centerHorizontal="true"
+		        	android:orientation="vertical">
+		            
+		        </LinearLayout>
+		        
+		        <!-- 
+	        	<CheckBox 
+		            android:id="@+id/ck_hw_id_1" 
+		            android:layout_width="wrap_content"  
+		        	android:layout_height="wrap_content"
+		        	android:layout_below="@+id/txt_detach_hw_id"
+		        	android:layout_centerHorizontal="true"
+		        	android:text="HW ID 1"/>
+	        	<CheckBox 
+		            android:id="@+id/ck_hw_id_2" 
+		            android:layout_width="wrap_content"  
+		        	android:layout_height="wrap_content"
+		        	android:layout_below="@+id/ck_hw_id_1"
+		        	android:layout_centerHorizontal="true"
+		        	android:text="HW ID 2"/>
+		        
+		        <Spinner 
+			        android:id="@+id/sp_detach_hw_id" 
+			        android:layout_width="wrap_content"  
+			        android:layout_height="wrap_content"  
+			        android:layout_toRightOf="@+id/txt_detach_hw_id"/> -->
+		    </RelativeLayout>
+		    
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_below="@+id/vg_detach_hw"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="10dp"
+	        	android:visibility="gone">
+		        <TextView 
+		            android:id="@+id/txt_signup_email" 
+		            android:layout_width="wrap_content"  
+	        		android:layout_height="wrap_content"
+	        		android:layout_alignBaseline="@+id/txt_signup_email"
+	        		android:text="Default Email:"/>
+		        
+		        <EditText 
+			        android:id="@+id/et_signup_email" 
+			        android:layout_width="match_parent"  
+			        android:layout_height="wrap_content"  
+			        android:layout_toRightOf="@+id/txt_signup_email"/>
+		    </RelativeLayout>
+		    
+            <RadioGroup  
+		        android:id="@+id/radiogroup1"  
+		        android:layout_width="wrap_content"  
+		        android:layout_height="wrap_content"  
+		        android:orientation="vertical"  
+				android:layout_centerHorizontal="true"
+				android:layout_below="@+id/sp_server_type"
+				android:visibility="gone">  
+		        <RadioButton  
+		            android:id="@+id/rbDemo"  
+		            android:layout_width="wrap_content"  
+		            android:layout_height="wrap_content"  
+		            android:text="Demo mode"  
+		        />  
+		        <RadioButton  
+		            android:id="@+id/rbPairing"  
+		            android:layout_width="wrap_content"  
+		            android:layout_height="wrap_content"  
+		            android:text="Pairing Mode"  
+		        />  
+		        <RadioButton  
+		            android:id="@+id/rbP2P"  
+		            android:layout_width="wrap_content"  
+		            android:layout_height="wrap_content"  
+		            android:text="P2P mode"  
+		        />   
+		    </RadioGroup> 
+		    
+            <EditText
+		        android:id="@+id/et_fake_path"
+		        android:layout_below="@+id/vg_detach_hw"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:layout_marginTop="@dimen/login_marginXLarge"
+		        android:background="@drawable/sl_account_input_bg"
+		        android:ems="10"
+		        android:hint="stream file (test usage)"
+		        android:inputType="textEmailAddress"
+		        android:paddingLeft="@dimen/login_marginMedium"
+		        android:paddingRight="@dimen/login_marginMedium"
+		        android:textSize="@dimen/login_fontRegular" 
+		        android:singleLine="true"
+		        android:visibility="gone"/>
+            
+		    <EditText
+		        android:id="@+id/editText_ip"
+		        android:layout_below="@+id/radiogroup1"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:layout_marginTop="@dimen/login_marginXLarge"
+		        android:background="@drawable/sl_account_input_bg"
+		        android:ems="10"
+		        android:text="192.168.2.180"
+		        android:inputType="textEmailAddress"
+		        android:paddingLeft="@dimen/login_marginMedium"
+		        android:paddingRight="@dimen/login_marginMedium"
+		        android:textSize="@dimen/login_fontRegular" 
+		        android:singleLine="true"
+		        android:visibility="gone"/>
+		    
+		    <EditText
+		        android:id="@+id/editText_cam_name"
+		        android:layout_below="@+id/editText_ip"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/editText_ip"
+		        android:layout_alignRight="@+id/editText_ip"
+		        android:layout_centerHorizontal="true"
+		        android:layout_marginTop="@dimen/login_marginMedium"
+		        android:background="@drawable/sl_account_input_bg"
+		        android:ems="10"
+		        android:text="Live View-1"
+		  		android:singleLine="true"
+		        android:paddingLeft="@dimen/login_marginMedium"
+		        android:paddingRight="@dimen/login_marginMedium"
+		        android:textSize="@dimen/login_fontRegular"
+		        android:visibility="gone"/>
+		    
+		    <EditText
+		        android:id="@+id/editText_notify_period"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignLeft="@+id/editText_ip"
+		        android:layout_alignRight="@+id/editText_ip"
+		        android:layout_below="@+id/editText_cam_name"
+		        android:layout_centerHorizontal="true"
+		        android:layout_marginTop="@dimen/login_marginMedium"
+		        android:background="@drawable/sl_account_input_bg"
+		        android:ems="10"
+		        android:hint="Notify period in sec"
+		        android:textColorHint="#ffaaaaaa"
+		  		android:singleLine="true"
+		  		android:inputType="number"
+		        android:paddingLeft="@dimen/login_marginMedium"
+		        android:paddingRight="@dimen/login_marginMedium"
+		        android:textSize="@dimen/login_fontRegular"
+		        android:visibility="gone"/>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

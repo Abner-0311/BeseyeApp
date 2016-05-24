@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color" >
+
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout 
+            android:layout_width="match_parent"
+       		android:layout_height="0dp"
+       		android:layout_weight="35">
+            <ImageView
+		        android:id="@+id/iv_signup_top_logo"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentTop="true"
+		        android:layout_centerHorizontal="true"
+		        android:layout_marginTop="@dimen/signup_firstPage_marginTop"
+		        android:src="@drawable/signup_logo" />
+            
+            <ImageView
+		        android:id="@+id/iv_signup_sun"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentBottom="true"
+		        android:src="@drawable/signup_firstpage_sun_pic" 
+		        android:layout_marginBottom="6dp"
+		        android:layout_marginLeft="30dp"/>
+        </RelativeLayout>
+        <LinearLayout 
+            android:layout_width="match_parent"
+       		android:layout_height="0dp"
+       		android:layout_weight="65">
+            <ImageView
+		        android:id="@+id/iv_signup_home"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:scaleType="fitXY"
+		        android:src="@drawable/signup_firstpage_home_pic" />
+        </LinearLayout>
+        
+    </LinearLayout>
+    
+
+	<Button
+	    android:id="@+id/button_signup"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/button_signin"
+	    android:layout_centerHorizontal="true"
+	    android:layout_centerInParent="true"
+	    android:layout_marginBottom="@dimen/signup_firstPage_bottom_btn_marginBottom"
+	    android:layout_marginLeft="@dimen/signup_firstPage_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_btn_marginSide"
+	    android:background="@drawable/sl_signup_round_btn"
+	    android:paddingBottom="@dimen/login_marginSmall"
+	    android:paddingTop="@dimen/login_marginSmall"
+	    android:text="@string/signup_bottom_signup"
+	    android:textColor="@color/word_white"
+	    android:textColorLink="@color/word_white"
+	    android:textSize="@dimen/login_fontMedium" />
+    
+	<Button
+	    android:id="@+id/button_signin"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/rl_bottom_link"
+	    android:layout_centerHorizontal="true"
+	    android:layout_centerInParent="true"
+	    android:layout_marginBottom="@dimen/signup_firstPage_bottom_btn_marginBottom"
+	    android:layout_marginLeft="@dimen/signup_firstPage_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_btn_marginSide"
+	    android:background="@drawable/sl_signup_round_btn"
+	    android:paddingBottom="@dimen/login_marginSmall"
+	    android:paddingTop="@dimen/login_marginSmall"
+	    android:text="@string/signup_bottom_login"
+	    android:textColor="@color/word_white"
+	    android:textColorLink="@color/word_white"
+	    android:textSize="@dimen/login_fontMedium" />
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/signup_firstPage_marginBottom" >
+        
+        <TextView
+            android:id="@+id/tv_bottom_learn_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/signup_learn_more"
+            android:textColor="@color/signup_font_description_color"
+            android:textSize="@dimen/login_fontSmall"
+            android:layout_marginRight="@dimen/signup_learnMore_margin" />
+
+        <TextView
+            android:id="@+id/tv_bottom_beseye"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_bottom_learn_more"
+            android:text="@string/signup_beseye"
+            android:textColor="@color/csl_link_font_color"
+            android:textSize="@dimen/login_fontSmall" />
+        
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,4 @@
+include ':facebook'
+include ':googleplayservices_lib'
+include ':library'
+include ':BeseyeApp'

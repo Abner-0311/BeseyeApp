@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color" >
+
+    <ImageView
+        android:id="@+id/iv_forget_passord_ill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_submit"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/forget_pw_instruction_ill_bottom"
+        android:src="@drawable/forget_passord_ill" />
+    
+    <TextView
+        android:id="@+id/tv_reset_pw_instruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/forget_pw_instruction_txt_marginTop"
+        android:layout_marginBottom="@dimen/forget_pw_instruction_txt_marginBottom"
+        android:layout_marginLeft="@dimen/forget_pw_instruction_txt_marginSide"
+	    android:layout_marginRight="@dimen/forget_pw_instruction_txt_marginSide"
+        android:text="@string/forget_password_instruction"
+        android:textColor="@color/signup_font_description_color"
+        android:textSize="@dimen/login_fontRegular" />
+    
+    <EditText
+        android:id="@+id/editText_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tv_reset_pw_instruction"
+        android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+	    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+        android:background="@drawable/sl_signup_create_account_input"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="@dimen/login_marginMedium"
+        android:paddingRight="@dimen/login_marginMedium"
+        android:textSize="@dimen/login_fontRegular" />
+
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/sl_account_bottom_btn"
+        android:paddingBottom="@dimen/login_marginMedium"
+        android:paddingTop="@dimen/login_marginMedium"
+        android:text="@string/forget_password_btn_submit"
+        android:textColor="@color/word_white"
+        android:textColorLink="@color/word_white"
+        android:textSize="@dimen/login_fontMedium" />
+
+</RelativeLayout>

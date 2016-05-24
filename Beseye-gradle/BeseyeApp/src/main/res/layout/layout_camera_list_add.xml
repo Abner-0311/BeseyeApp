@@ -1,0 +1,92 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.app.beseye"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color">
+
+    <ImageView
+        android:id="@+id/iv_cloud_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/cameralist_cloudBottom_bottom"
+        android:layout_marginRight="@dimen/cameralist_cloudBottom_right"
+        android:src="@drawable/cameralist_cloud_bottom" />
+    
+    <ImageView
+        android:id="@+id/iv_cloud_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/iv_cloud_bottom"
+        android:layout_marginBottom="@dimen/cameralist_cloudLeft_bottom"
+        android:layout_marginLeft="@dimen/cameralist_cloudLeft_left"
+        android:src="@drawable/cameralist_cloud_left" />
+    
+    <ImageView
+        android:id="@+id/iv_cloud_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/iv_cloud_left"
+        android:layout_marginBottom="@dimen/cameralist_cloudRight_bottom"
+        android:layout_marginRight="@dimen/cameralist_cloudRight_right"
+        android:src="@drawable/cameralist_cloud_right" />
+    
+    <ImageView
+        android:id="@+id/iv_cloud_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/iv_cloud_right"
+        android:layout_marginBottom="@dimen/cameralist_cloudTop_bottom"
+        android:layout_marginLeft="@dimen/cameralist_cloudTop_left"
+        android:src="@drawable/cameralist_cloud_top" />
+    
+    <RelativeLayout
+        android:id="@+id/vg_msg_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/cameralist_add_camera_marginSide"
+        android:paddingBottom="@dimen/cameralist_add_camera_marginTop"
+        android:paddingRight="@dimen/cameralist_add_camera_marginSide"
+        android:paddingLeft="@dimen/cameralist_add_camera_marginSide"
+        android:background="@drawable/cameralist_add_dialog" >
+        
+        <ImageView
+	        android:id="@+id/iv_beseye_logo"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginTop="@dimen/cameralist_add_camera_marginTop"
+	        android:src="@drawable/cameralist_add_camera_logo" />
+        
+        <TextView
+            android:id="@+id/tv_cameralist_add_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_beseye_logo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/cameralist_add_camera_marginSide"
+            android:gravity="center"
+            android:text="@string/camera_list_add"
+            android:textColor="@color/beseye_color_gray"
+            android:textSize="@dimen/login_fontNormal" />
+
+    </RelativeLayout>
+    
+    
+    
+</RelativeLayout>
+
+
+
+   
+		
+	
+ 
+
+

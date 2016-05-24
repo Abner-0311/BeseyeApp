@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/libs/gcm.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="a6d7bce795a14c7f86111756c4ceb44b79de14aa">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/2/gcm_81a65ecdf911135d6739fe4484e1ea274eaa23e5/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/libs/HockeySDK-3.5.0.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="91ad49da8fb7dd2a61be0e9cdb9a266071bf1337">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/2/HockeySDK-3.5.0_970950a301b1b808222fabc1012088edf900ee84/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/jars/libs/google-play-services.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="a7de171cdbbfa40434579704d088cb6448f9f2d8">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/8/google-play-services_1d30718cef628340b7c64c467aa4362117b1125d/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/incremental-classes/dev/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="f1324ef6e024610673672b4fff84cf09df2fe364">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/10/instant-run-bootstrap_9a9137f590db1a20bb9651c674ea0ce1c1166ed6/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/libs/pushservice-4.5.1.8.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="12e032c029dcede1ee7166e22eb9c458cfc5e545">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/2/pushservice-4.5.1.8_940e416a062cfab3065b30ed136e8fab62de3e9d/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/facebook/unspecified/jars/libs/annotations.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="875d4971e21cf7091f25b53798a99c505080d67a">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/8/annotations_578277199bcd98b3479edccc199902127da24d31/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/jars/classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="8f11f56e350eacabf2273f646d981356eea0ed77">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/10/com.android.support-appcompat-v7-18.0.0_e4a9f0763499543013dd2484fe796e48da05040d/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/facebook/unspecified/jars/libs/bolts-android-1.1.2.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="c4cb7f032a3f920cbd1392140215a26f255a501d">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/8/bolts-android-1.1.2_9dd5e5547c54701bb4ad0692a43a3bc36b0a8ea5/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/libs/androidasync.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="1f8e4f77d5f24179688c32b24dd5f79e889e7110">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/2/androidasync_8790c5e4012057b5b770ab8e231b34080398e6fc/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/libs/acra-4.4.0.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="7864f0ac6c74d84e465aa5449fa14408b0a1418f">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/2/acra-4.4.0_5363396933cd4f3337feab80e9ba82a33838629e/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/facebook/unspecified/jars/libs/android-support-annotations.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="201d846d1890287bd1ed0fc307e1bf64d0e750f4">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/8/android-support-annotations_425427f581d82bf73a9af7d34ab6cd41ae54868c/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/adt-bundle-mac-x86_64-20140702/sdk/extras/android/m2repository/com/android/support/support-v4/18.0.0/support-v4-18.0.0.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="44ec51e9d395a47aab135e5e1b556c0007442156">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/10/support-v4-18.0.0_37ba1a92c84385c63c9e52e735a374f481c9fca4/classes.dex" />
+    </item>
+    <item
+        jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/incremental-runtime-classes/dev/debug/instant-run.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="6232e6c051375542ebbe184bb96504c2fedb69c3">
+        <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/10/instant-run_5feaed869b43533783618991bb4936597aca5fe1/classes.dex" />
+    </item>
+
+</items>

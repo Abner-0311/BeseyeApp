@@ -1,0 +1,252 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+   	android:layout_height="match_parent"
+   	android:orientation="vertical"
+   	android:background="@color/signup_bg_color" >
+	
+	<RelativeLayout
+	    android:id="@+id/rl_cameralist_video_block"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="@dimen/cameralist_videoblock_margin"
+	    android:layout_marginLeft="@dimen/cameralist_videoblock_margin"
+	    android:layout_marginRight="@dimen/cameralist_videoblock_margin"
+	    android:paddingBottom="@dimen/cameralist_videoblock_padding_bottom"		
+	    android:paddingLeft="@dimen/cameralist_videoblock_thunmbnail_padding"		
+	    android:paddingRight="@dimen/cameralist_videoblock_thunmbnail_padding"		    
+	    android:background="@drawable/sl_cam_list_itm_bg" >
+
+	    <RelativeLayout
+	        android:id="@+id/rl_cameralist_title"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/cameralist_videoTitle_marginTop"
+	        android:layout_marginLeft="@dimen/cameralist_videoTitle_marginSide"
+	        android:layout_marginRight="@dimen/cameralist_videoTitle_marginSide"
+	        android:layout_marginBottom="@dimen/cameralist_videoTitle_marginBottom" >
+
+		    <TextView
+		        android:id="@+id/tv_camera_name"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_centerVertical="true"
+		        android:text="Cam name" 
+		        android:singleLine="true"
+		        android:layout_toLeftOf="@+id/sb_camera_switch"/>
+		    
+		    <com.app.beseye.widget.BeseyeSwitchBtn 
+			    android:id="@+id/sb_camera_switch"
+			    android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:layout_alignParentRight="true"
+		    	android:layout_centerVertical="true">
+			</com.app.beseye.widget.BeseyeSwitchBtn>
+	    
+		</RelativeLayout>
+		
+	    <RelativeLayout
+	        android:id="@+id/rl_cameralist_video"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/rl_cameralist_title"
+	        android:layout_centerHorizontal="true"
+	        android:background="@color/camera_list_video_bg" >
+
+		    <com.app.beseye.widget.RemoteImageView
+		        android:id="@+id/iv_cameralist_thumbnail"
+		        android:layout_width="330dp"
+		        android:layout_height="180dp"
+		        android:background="@color/camera_list_video_bg"
+		        android:visibility="visible" />
+		    
+		    <RelativeLayout
+		        android:id="@+id/rl_camera_disconnected_solid"
+		        android:layout_width="330dp"
+		        android:layout_height="180dp"
+		        android:background="@color/camera_list_video_mask">
+				<RelativeLayout
+				    android:id="@+id/rl_camera_disconnected_content"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_centerHorizontal="true"
+			        android:layout_centerVertical="true" 
+			        android:visibility="invisible">
+			        <TextView
+			            android:id="@+id/tv_camera_disconnected"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_centerHorizontal="true"
+			            android:text="@string/camera_list_disconected"
+			            android:textColor="@color/beseye_color_gray"
+	           			android:textSize="@dimen/login_fontNormal" />
+			        
+			        <TextView
+			            android:id="@+id/tv_camera_more"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_below="@+id/tv_camera_disconnected"
+			            android:layout_centerHorizontal="true"
+			            android:text="@string/camera_list_more"
+			            android:textColor="@color/csl_link_font_color"
+	           			android:textSize="@dimen/login_fontSmall" 
+	           			android:visibility="visible"/>
+		        </RelativeLayout>
+			</RelativeLayout>
+			
+		    <RelativeLayout
+		        android:id="@+id/rl_cameralist_no_video"
+		       	android:layout_width="330dp"
+		        android:layout_height="180dp"
+		        android:background="@color/camera_list_video_mask"
+		        android:visibility="invisible" >
+
+			    <RelativeLayout
+			        android:id="@+id/rl_camera_disconnected_mask"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_centerHorizontal="true"
+			        android:layout_centerVertical="true" >
+			
+			        <TextView
+			            android:id="@+id/tv_camera_disconnected_2"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_centerHorizontal="true"
+			            android:text="@string/camera_list_off"
+			            android:textColor="@color/beseye_color_gray"
+           				android:textSize="@dimen/login_fontNormal" />
+			    
+				</RelativeLayout>
+			</RelativeLayout>
+			<RelativeLayout 
+			    android:id="@+id/rl_cameralist_cam_ota"
+		       	android:layout_width="330dp"
+		        android:layout_height="180dp"
+		        android:background="@color/ota_mask_background"
+		        android:paddingLeft="@dimen/cam_update_progress_horin_margin"
+				android:paddingRight="@dimen/cam_update_progress_horin_margin"
+				android:visibility="invisible">
+		        <RelativeLayout 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_centerInParent="true">
+			        <TextView
+					    android:id="@+id/txt_update_state"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					    android:layout_centerHorizontal="true"
+					    android:text="@string/desc_cam_update_keep_cam_on_during_ota"
+					    android:textColor="@color/word_white"
+					    android:textSize="@dimen/firmware_update_font_size" 
+					    android:layout_marginBottom="@dimen/firmware_update_desc_margin_bottom"
+					    android:gravity="center"/>
+			        
+			        <RelativeLayout 
+			           	android:id="@+id/lv_update_progress_holder"
+			            android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+			            android:layout_centerVertical="true" 
+			            android:orientation="horizontal"
+			            android:layout_below="@+id/txt_update_state"
+			            android:visibility="invisible">
+					    <TextView
+						    android:id="@+id/txt_update_progress"
+						    android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+						    android:gravity="center_horizontal"
+						    android:text="100%"
+						    android:textColor="@color/word_white"
+						    android:textSize="@dimen/firmware_update_progress_font_size" 
+						    android:layout_alignParentRight="true"
+						    android:layout_marginLeft="@dimen/firmware_update_desc_dist_percentage"/>
+					    <ProgressBar
+						    android:id="@+id/sb_update_progress"
+						    android:layout_width="match_parent"
+						    android:layout_height="7dp"
+							style="@android:style/Widget.ProgressBar.Horizontal"
+						    android:progressDrawable="@drawable/seekbar_progress"
+						    android:max="100"
+					      	android:progress="20"
+					      	android:secondaryProgress="0"
+					      	android:layout_toLeftOf="@+id/txt_update_progress"
+					      	android:layout_centerVertical="true"/>
+			        </RelativeLayout>
+			        <Button 	
+			            android:id="@+id/btn_ota_update"
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+			            android:layout_centerHorizontal="true" 
+			            android:layout_below="@+id/txt_update_state"
+			            android:text="@string/action_cam_update"
+			            android:textColor="@color/word_white"
+			            android:textSize="@dimen/firmware_update_btn_font_size"
+			            android:background="@drawable/sl_cam_update_btn_bg"
+			            android:paddingLeft="@dimen/firmware_update_btn_hoz_padding"
+			            android:paddingRight="@dimen/firmware_update_btn_hoz_padding"/>
+			    </RelativeLayout>
+		    </RelativeLayout>
+		    <RelativeLayout 
+			    android:id="@+id/rl_cameralist_cam_ota_failed"
+		       	android:layout_width="330dp"
+		        android:layout_height="180dp"
+	        	android:background="@color/camera_list_video_mask"
+		        android:paddingLeft="@dimen/cam_update_progress_horin_margin"
+				android:paddingRight="@dimen/cam_update_progress_horin_margin"
+				android:visibility="invisible">
+		        <RelativeLayout 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_centerInParent="true">
+			        <TextView
+					    android:id="@+id/txt_update_failed_desc"
+					    android:layout_width="fill_parent"
+					    android:layout_height="wrap_content"
+					    android:layout_centerHorizontal="true"
+					    android:text="@string/desc_cam_update_failed"
+					    android:textColor="@color/ota_failed_font_color"
+					    android:textSize="@dimen/firmware_update_font_size" 
+					    android:layout_marginBottom="@dimen/firmware_update_desc_margin_bottom"
+					    android:gravity="center"/>
+			        
+			        <Button 	
+			            android:id="@+id/btn_ota_update_again"
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+			            android:layout_centerHorizontal="true" 
+			            android:layout_below="@+id/txt_update_failed_desc"
+			            android:text="@string/action_update_again"
+			            android:textColor="@color/word_white"
+			            android:textSize="@dimen/firmware_update_btn_font_size"
+			            android:background="@drawable/sl_cam_update_btn_bg"
+			            android:paddingLeft="@dimen/firmware_update_btn_hoz_padding"
+			            android:paddingRight="@dimen/firmware_update_btn_hoz_padding"/>
+			        
+			        <Button 	
+			            android:id="@+id/btn_ota_support"
+			            android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+			            android:layout_centerHorizontal="true" 
+			            android:layout_below="@+id/txt_update_failed_desc"
+			            android:text="@string/action_customer_support"
+			            android:textColor="@color/word_white"
+			            android:textSize="@dimen/firmware_update_btn_font_size"
+			            android:background="@drawable/sl_cam_update_btn_bg"
+			            android:paddingLeft="@dimen/firmware_update_btn_hoz_padding"
+			            android:paddingRight="@dimen/firmware_update_btn_hoz_padding"/>
+			    </RelativeLayout>
+			</RelativeLayout>
+		</RelativeLayout>
+	</RelativeLayout>
+</LinearLayout>
+
+
+
+   
+		
+	
+ 
+
+

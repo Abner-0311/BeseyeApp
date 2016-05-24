@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/liveview_background" >
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height ="0dp"
+	    android:layout_weight="1"
+		android:background="@color/liveview_background" >
+
+		<RelativeLayout
+            android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" 
+	        android:layout_centerInParent="true">
+		   	<com.app.beseye.widget.RemoteImageView
+		        android:id="@+id/iv_motion_zone_thumbnail"
+		       	android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		       	android:paddingLeft="@dimen/motion_zone_padding"
+    			android:paddingRight="@dimen/motion_zone_padding"
+   		 		android:paddingTop="@dimen/motion_zone_padding"
+    			android:paddingBottom="@dimen/motion_zone_padding"
+		        android:layout_centerInParent="true" 
+		        android:visibility="visible" />
+		   	<com.app.beseye.widget.MotionZoneEditView
+		        android:id="@+id/iv_motion_zone_edit"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:layout_centerInParent="true" 
+		        android:visibility="visible"/>
+		   	<ProgressBar
+			    android:id="@+id/pb_loadingCursor"
+			    style="?android:attr/progressBarStyleLarge"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_centerHorizontal="true"
+			    android:layout_centerVertical="true" 
+			    android:indeterminate="true"
+		    	android:indeterminateDrawable="@drawable/progress"/>
+		</RelativeLayout> 
+
+    </RelativeLayout>
+	
+	 <LinearLayout 
+       	android:id="@+id/vg_button_holder"
+       	android:layout_width="match_parent"
+  		android:layout_height="@dimen/wifi_ap_info_dialog_btn_height"
+  		android:background="@drawable/wifisetup_password_inf_bg_diwn"
+  		android:orientation="horizontal">
+       <Button 
+       	android:id="@+id/btn_cancel"
+    	android:layout_width="0dp"
+    	android:layout_weight="1"
+   		android:layout_height="wrap_content"
+   		android:background="@drawable/sl_motionzone_edit_cancel_btn_bg"
+   		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
+   		android:textColor="@color/csl_wifi_list_dialog_btn_font_color"
+   		android:text="@string/cancel"/>
+
+       <Button 
+       	android:id="@+id/btn_full"
+    	android:layout_width="0dp"
+    	android:layout_weight="1"
+   		android:layout_height="wrap_content"
+   		android:background="@drawable/sl_motionzone_edit_fullview_btn_bg"
+   		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
+   		android:textColor="@color/csl_wifi_list_dialog_btn_font_color"
+   		android:text="@string/fullscreen"/>
+       
+       <Button 
+       	android:id="@+id/btn_ok"
+    	android:layout_width="0dp"
+    	android:layout_weight="1"
+   		android:layout_height="wrap_content"
+   		android:background="@drawable/sl_motionzone_edit_enter_btn_bg"
+   		android:textSize="@dimen/wifi_ap_info_dialog_btn_font_size"
+   		android:textColor="@color/csl_wifi_list_dialog_btn_font_color"
+   		android:text="@string/ok"/>
+   </LinearLayout>
+   
+</LinearLayout>

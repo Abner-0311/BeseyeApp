@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.app.beseye"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/signup_bg_color" >
+    <RelativeLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="0dp"
+        android:layout_weight="78">
+	
+		<TextView
+		    android:id="@+id/tv_before_setup_description"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_centerHorizontal="true"
+		    android:layout_marginLeft="@dimen/signup_firstPage_bottom_btn_marginSide"
+		    android:layout_marginRight="@dimen/signup_firstPage_bottom_btn_marginSide"
+		    android:layout_marginTop="@dimen/signup_beforeSetup_img_marginBottom"
+		    android:gravity="center_horizontal"
+		    android:text="@string/signup_before_setup_description"
+		    android:textColor="@color/signup_font_description_color"
+		    android:textSize="@dimen/login_fontNormal" 
+		    android:layout_alignParentBottom="true"/>
+		
+		<com.app.beseye.widget.GifMovieView
+	        android:id="@+id/iv_before_setup_top_img"
+	       	android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:layout_above="@+id/tv_before_setup_description"/>
+	</RelativeLayout>
+    <RelativeLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="0dp"
+        android:layout_weight="22">
+	
+		<Button
+		    android:id="@+id/button_start"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_centerHorizontal="true"
+		    android:layout_alignParentBottom="true"
+		    android:background="@drawable/sl_account_bottom_btn"
+		    android:paddingBottom="@dimen/login_marginMedium"
+	        android:paddingTop="@dimen/login_marginMedium"
+		    android:text="@string/signup_before_setup_start"
+		    android:textColor="@color/word_white"
+		    android:textColorLink="@color/word_white"
+		    android:textSize="@dimen/login_fontMedium" />
+		
+	</RelativeLayout>
+</LinearLayout>
