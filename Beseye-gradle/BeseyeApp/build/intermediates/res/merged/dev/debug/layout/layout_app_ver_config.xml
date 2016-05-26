@@ -1,0 +1,111 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_white"
+    tools:context=".MainActivity" >
+    <LinearLayout 
+        android:id="@+id/vg_buttons"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true">
+        <Button
+	        android:id="@+id/button_apply"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:background="@drawable/sl_account_bottom_btn"
+	        android:paddingBottom="@dimen/login_marginMedium"
+	        android:paddingTop="@dimen/login_marginMedium"
+	        android:text="Apply"
+	        android:textColor="@color/word_white"
+	        android:textColorLink="@color/word_white"
+	        android:textSize="@dimen/login_fontMedium" />
+        <View
+            android:layout_width="1dp"
+	        android:layout_height="0dp" />
+        
+        <Button
+	        android:id="@+id/btn_clear_fake_app_ver"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:background="@drawable/sl_account_bottom_btn"
+	        android:paddingBottom="@dimen/login_marginMedium"
+	        android:paddingTop="@dimen/login_marginMedium"
+	        android:text="Reset"
+	        android:textColor="@color/word_white"
+	        android:textColorLink="@color/word_white"
+	        android:textSize="@dimen/login_fontMedium" />
+        
+        <View
+            android:layout_width="1dp"
+	        android:layout_height="0dp" />
+        
+	    <Button
+	        android:id="@+id/button_apply_logout"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:background="@drawable/sl_account_bottom_btn"
+	        android:paddingBottom="@dimen/login_marginMedium"
+	        android:paddingTop="@dimen/login_marginMedium"
+	        android:text="Logout"
+	        android:textColor="@color/word_white"
+	        android:textColorLink="@color/word_white"
+	        android:textSize="@dimen/login_fontMedium" 
+	        android:layout_marginBottom="1dp"/>
+    </LinearLayout>
+    
+    <ScrollView 
+        android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:layout_alignParentTop="true"
+    	android:layout_above="@+id/vg_buttons">
+        <RelativeLayout 
+            android:layout_width="match_parent"
+		    android:layout_height="wrap_content">
+		    <RelativeLayout 
+		        android:id="@+id/vg_real_app_ver"
+		        android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="45dp">
+		        <TextView 
+		            android:id="@+id/txt_real_app_ver_title" 
+		            android:layout_width="wrap_content"  
+	        		android:layout_height="wrap_content"
+	        		android:text="Beseye App Ver:  "/>
+		        
+		        <TextView 
+			        android:id="@+id/txt_real_app_ver" 
+			        android:layout_width="100dp"  
+			        android:layout_height="wrap_content"  
+			        android:layout_toRightOf="@+id/txt_real_app_ver_title"/>
+		    </RelativeLayout>
+		    <RelativeLayout 
+		        android:id="@+id/vg_fake_app_ver"
+		        android:layout_width="wrap_content"  
+	        	android:layout_height="wrap_content"
+	        	android:layout_centerHorizontal="true"
+	        	android:layout_marginTop="15dp"
+	        	android:layout_below="@+id/vg_real_app_ver">
+		        <TextView 
+		            android:id="@+id/txt_fake_app_ver" 
+		            android:layout_width="wrap_content"  
+	        		android:layout_height="wrap_content"
+	        		android:layout_alignBaseline="@+id/et_fake_app_ver"
+	        		android:text="Fake Cloud App Ver:  "/>
+		        
+		        <EditText 
+			        android:id="@+id/et_fake_app_ver" 
+			        android:layout_width="100dp"  
+			        android:layout_height="wrap_content"  
+			        android:layout_toRightOf="@+id/txt_fake_app_ver"
+			        android:inputType="number"/>
+		    </RelativeLayout>
+		   
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

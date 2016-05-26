@@ -4,6 +4,7 @@
     <string name="app_name_dev">Beseye(d)</string>
     <string name="app_name_alpha">Beseye(α)</string>
     <string name="app_name_beta">Beseye(β)</string>
+	<string name="app_name_prod">Beseye</string>
     <string name="alpha">(α)</string>
     <string name="beta">(β)</string>
     <string name="crash_toast_text"></string>
@@ -91,5 +92,8 @@
     <string name="pincode_num_7">7</string>
     <string name="pincode_num_8">8</string>
     <string name="pincode_num_9">9</string>
+
+	<string name="show_google_play">Google Play</string>
+	<string name="reset_fake_app">Reset</string>
     <!-- DO NOT TRANSLATE END-->    
 </resources>

@@ -125,7 +125,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/BeseyeBaseActivity$OnResumeUpdateCamInfoRunnable.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/BeseyeBaseActivity$RemoveDialogRunnable.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/BeseyeBaseActivity.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/BeseyeComputexModeActivity.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/BeseyeEntryActivity.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/BeseyeNavBarBaseActivity.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/BeseyeNewsActivity$1.class" />
@@ -193,7 +192,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/CameraViewActivity$25$1.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/CameraViewActivity$25.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/CameraViewActivity$26.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/CameraViewActivity$27$1.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/CameraViewActivity$27.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/CameraViewActivity$28.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/CameraViewActivity$29.class" />
@@ -525,7 +523,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/service" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/service/BeseyeNotificationService$1.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/service/BeseyeNotificationService$10.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/service/BeseyeNotificationService$11.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/service/BeseyeNotificationService$2.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/service/BeseyeNotificationService$3.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/service/BeseyeNotificationService$4.class" />
@@ -565,13 +562,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HWSettingsActivity$8.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HWSettingsActivity$9.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HWSettingsActivity.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$1$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$1$2.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$2.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$3.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$IntroPageAdapter.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectTrainActivity$1.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectTrainActivity$2.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectTrainActivity$3.class" />
@@ -579,14 +569,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectTrainActivity$5.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectTrainActivity.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/LocationAwareSettingActivity.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionNotificationSettingActivity.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$2.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$3$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$3.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$4$1.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$4.class" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/NightVisionActivity$1.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/NightVisionActivity.class" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/NotificationEventsSettingActivity$NOTIFY_TYPE.class" />
@@ -10837,7 +10819,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_human_detect_intro_page_1.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_human_detect_intro_page_2.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_human_detect_intro_page_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_human_detect_notification.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_human_detect_train_ret.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_human_detect_training.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_human_detect_training_list_itm.xml" />
@@ -10846,7 +10827,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_location_aware.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_login.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_market_web_item.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_motion_notification.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_motion_zone_edit.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_news.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/alpha/release/layout/layout_news_itm.xml" />
@@ -11011,7 +10991,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/BeseyeAboutActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/BeseyeApplication.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/BeseyeBaseActivity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/BeseyeComputexModeActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/BeseyeEntryActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/BeseyeNavBarBaseActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/BeseyeNewsActivity.java" />
@@ -11085,11 +11064,8 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/CameraInfoActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/CameraSettingActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/HWSettingsActivity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/HumanDetectNotificationSettingActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/HumanDetectTrainActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/LocationAwareSettingActivity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/MotionNotificationSettingActivity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/MotionZoneEditActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/NightVisionActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/NotificationEventsSettingActivity.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/PowerScheduleActivity.java" />
@@ -11627,7 +11603,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_human_detect_intro_page_1.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_human_detect_intro_page_2.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_human_detect_intro_page_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_human_detect_notification.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_human_detect_train_ret.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_human_detect_training.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_human_detect_training_list_itm.xml" />
@@ -11636,7 +11611,6 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_location_aware.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_login.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_market_web_item.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_motion_notification.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_motion_zone_edit.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_news.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BeseyeApp/src/main/res/layout/layout_news_itm.xml" />
@@ -13133,6 +13107,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileSnapshots.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/outputFileStates.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/outputFileStates.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/taskArtifacts.bin" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_BeseyeApp_compileAlphaReleaseJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_BeseyeApp_compileAlphaReleaseJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_BeseyeApp_compileAlphaReleaseJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_BeseyeApp_compileAlphaReleaseJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_BeseyeApp_compileAlphaReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_BeseyeApp_compileAlphaReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.bin" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_BeseyeApp_compileAlphaReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_BeseyeApp_compileAlphaReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
@@ -13151,6 +13126,24 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_library_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_library_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_library_compileReleaseJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_library_compileReleaseJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_library_compileReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_library_compileReleaseJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/BeseyeComputexModeActivity.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/BeseyeComputexModeActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/CameraViewActivity$27$1.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/CameraViewActivity$27$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/service/BeseyeNotificationService$11.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/service/BeseyeNotificationService$11.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$1$1.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$1$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$1$2.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$1$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$1.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$2.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$3.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$3.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$IntroPageAdapter.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity$IntroPageAdapter.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/HumanDetectNotificationSettingActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionNotificationSettingActivity.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionNotificationSettingActivity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$1.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$2.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$2.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$3$1.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$3$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$3.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$3.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$4$1.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$4$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$4.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity$4.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity.class" afterPath="$PROJECT_DIR$/BeseyeApp/build/intermediates/classes/alpha/release/com/app/beseye/setting/MotionZoneEditActivity.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../RTMP_Streaming/openssl-1.0.1h/Makefile" afterPath="$PROJECT_DIR$/../RTMP_Streaming/openssl-1.0.1h/Makefile" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../RTMP_Streaming/openssl-1.0.1h/Makefile.bak" afterPath="$PROJECT_DIR$/../RTMP_Streaming/openssl-1.0.1h/Makefile.bak" />
@@ -13332,109 +13325,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
+      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/BeseyeApp/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="36" column="31" selection-start-line="36" selection-start-column="31" selection-end-line="36" selection-end-column="31" />
+            <state vertical-scroll-proportion="-0.003992016">
+              <caret line="70" column="38" selection-start-line="70" selection-start-column="38" selection-end-line="70" selection-end-column="38" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CameraSettingActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/CameraSettingActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="158" column="9" selection-start-line="158" selection-start-column="9" selection-end-line="158" selection-end-column="9" />
-              <folding>
-                <element signature="e#3187#3213#0" expanded="true" />
-                <element signature="e#8372#8373#0" expanded="true" />
-                <element signature="e#8394#8395#0" expanded="true" />
-                <element signature="e#9882#9883#0" expanded="true" />
-                <element signature="e#9919#9920#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LocateOnGoogleMap.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/googlemap/LocateOnGoogleMap.java">
+      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/googleplayservices_lib/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="508" column="69" selection-start-line="508" selection-start-column="69" selection-end-line="508" selection-end-column="69" />
+              <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BeseyeBaseActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/BeseyeBaseActivity.java">
+      <file leaf-file-name="googleplayservices_lib.iml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/googleplayservices_lib/googleplayservices_lib.iml">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="790" column="32" selection-start-line="790" selection-start-column="32" selection-end-line="790" selection-end-column="32" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/res/values/strings.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.333333">
-              <caret line="694" column="12" selection-start-line="694" selection-start-column="12" selection-end-line="694" selection-end-column="12" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BeseyeError.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/error/BeseyeError.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="34" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strings_not_translate.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BeseyeApp/src/dev/res/values/strings_not_translate.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.125">
-              <caret line="5" column="113" selection-start-line="5" selection-start-column="113" selection-end-line="5" selection-end-column="113" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strings_not_translate.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BeseyeApp/src/prod/res/values/strings_not_translate.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.875">
-              <caret line="3" column="49" selection-start-line="3" selection-start-column="49" selection-end-line="3" selection-end-column="49" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/AndroidManifest.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6437177">
-              <caret line="451" column="70" selection-start-line="451" selection-start-column="70" selection-end-line="451" selection-end-column="70" />
-              <folding>
-                <element signature="e#9330#9348#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strings_not_translate.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/res/values/strings_not_translate.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-30.291666">
-              <caret line="96" column="48" selection-start-line="96" selection-start-column="48" selection-end-line="96" selection-end-column="48" />
+              <caret line="24" column="12" selection-start-line="24" selection-start-column="12" selection-end-line="24" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -20006,7 +19921,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="8773710292000" />
+        <entry key="$PROJECT_DIR$" value="8776412130000" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -20671,18 +20586,20 @@
         <option value="$PROJECT_DIR$/BeseyeApp/src/alpha/res/values/strings_not_translate.xml" />
         <option value="$PROJECT_DIR$/BeseyeApp/src/beta/res/values/strings_not_translate.xml" />
         <option value="$PROJECT_DIR$/BeseyeApp/src/prod/res/values/strings_not_translate.xml" />
-        <option value="$PROJECT_DIR$/BeseyeApp/build.gradle" />
         <option value="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/CameraSettingActivity.java" />
         <option value="$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/googlemap/LocateOnGoogleMap.java" />
         <option value="$PROJECT_DIR$/BeseyeApp/src/main/res/values/strings_not_translate.xml" />
         <option value="$PROJECT_DIR$/BeseyeApp/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/googleplayservices_lib/build/intermediates/bundles/release/res/values-v21/values-v21.xml" />
+        <option value="$PROJECT_DIR$/googleplayservices_lib/build.gradle" />
+        <option value="$PROJECT_DIR$/BeseyeApp/build.gradle" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1920" />
-    <option name="height" value="1057" />
+    <option name="width" value="1680" />
+    <option name="height" value="953" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -20710,28 +20627,7 @@
     </navigator>
     <panes>
       <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BeseyeApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BeseyeApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Beseye-gradle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
+        <subPane />
       </pane>
       <pane id="AndroidView">
         <subPane>
@@ -21287,28 +21183,28 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="1057" extended-state="6" />
+    <frame x="0" y="23" width="1680" height="953" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32735962" sideWeight="0.4932845" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32735962" sideWeight="0.4932845" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32731137" sideWeight="0.48988286" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24920128" sideWeight="0.48885587" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32731137" sideWeight="0.53035146" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21778488" sideWeight="0.51708764" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28315413" sideWeight="0.53663003" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2986185" sideWeight="0.46964857" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21778488" sideWeight="0.56363636" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.282678" sideWeight="0.45047924" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32731137" sideWeight="0.53035146" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21778488" sideWeight="0.51708764" order="6" side_tool="true" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28315413" sideWeight="0.53663003" order="10" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33572283" sideWeight="0.46964857" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21778488" sideWeight="0.5688889" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.282678" sideWeight="0.45047924" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32735962" sideWeight="0.4957265" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24908425" sideWeight="0.48166665" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21778488" sideWeight="0.43636364" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21778488" sideWeight="0.4311111" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33793837" sideWeight="0.492674" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -21322,27 +21218,27 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32731137" sideWeight="0.48988286" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.282678" sideWeight="0.5495208" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32735962" sideWeight="0.4908425" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32731137" sideWeight="0.53035146" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2986185" sideWeight="0.46964857" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28315413" sideWeight="0.53663003" order="10" side_tool="true" content_ui="tabs" />
-      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21778488" sideWeight="0.5377778" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21778488" sideWeight="0.5688889" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32735962" sideWeight="0.4957265" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21778488" sideWeight="0.46222222" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3381123" sideWeight="0.492674" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21778488" sideWeight="0.4311111" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33793837" sideWeight="0.492674" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32735962" sideWeight="0.4932845" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32735962" sideWeight="0.4932845" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32943678" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24920128" sideWeight="0.48885587" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21778488" sideWeight="0.51708764" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.282678" sideWeight="0.45047924" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21778488" sideWeight="0.51708764" order="6" side_tool="true" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.282678" sideWeight="0.45047924" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24908425" sideWeight="0.48166665" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -21367,6 +21263,12 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Merge latest code base" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge latest code base" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -21381,34 +21283,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/gradle.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BeseyeApp/BeseyeApp.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/jni/Application.mk">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/local.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/jni/soundpairing/Android.mk">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3893696">
@@ -21705,60 +21579,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.333333">
-          <caret line="694" column="12" selection-start-line="694" selection-start-column="12" selection-end-line="694" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/error/BeseyeError.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="4" selection-start-line="34" selection-start-column="4" selection-end-line="34" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BeseyeApp/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="31" selection-start-line="36" selection-start-column="31" selection-end-line="36" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/CameraSettingActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="158" column="9" selection-start-line="158" selection-start-column="9" selection-end-line="158" selection-end-column="9" />
-          <folding>
-            <element signature="e#3187#3213#0" expanded="true" />
-            <element signature="e#8372#8373#0" expanded="true" />
-            <element signature="e#8394#8395#0" expanded="true" />
-            <element signature="e#9882#9883#0" expanded="true" />
-            <element signature="e#9919#9920#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/googlemap/LocateOnGoogleMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="508" column="69" selection-start-line="508" selection-start-column="69" selection-end-line="508" selection-end-column="69" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/BeseyeBaseActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="790" column="32" selection-start-line="790" selection-start-column="32" selection-end-line="790" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/BeseyeApp/src/prod/res/values/strings_not_translate.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.875">
@@ -21790,6 +21610,95 @@
           <folding>
             <element signature="e#9330#9348#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8192771">
+          <caret line="694" column="12" selection-start-line="694" selection-start-column="12" selection-end-line="694" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/BeseyeBaseActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.625">
+          <caret line="802" column="68" selection-start-line="802" selection-start-column="68" selection-end-line="802" selection-end-column="68" />
+          <folding>
+            <element signature="e#30608#30633#0" expanded="true" />
+            <element signature="e#30660#30683#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/googlemap/LocateOnGoogleMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.42405063">
+          <caret line="508" column="69" selection-start-line="508" selection-start-column="69" selection-end-line="508" selection-end-column="69" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/setting/CameraSettingActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4113924">
+          <caret line="158" column="9" selection-start-line="158" selection-start-column="9" selection-end-line="158" selection-end-column="9" />
+          <folding>
+            <element signature="e#3187#3213#0" expanded="true" />
+            <element signature="e#8372#8373#0" expanded="true" />
+            <element signature="e#8394#8395#0" expanded="true" />
+            <element signature="e#9882#9883#0" expanded="true" />
+            <element signature="e#9919#9920#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BeseyeApp/src/main/java/com/app/beseye/error/BeseyeError.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.664557">
+          <caret line="28" column="8" selection-start-line="28" selection-start-column="8" selection-end-line="28" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/googleplayservices_lib/googleplayservices_lib.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="12" selection-start-line="24" selection-start-column="12" selection-end-line="24" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/googleplayservices_lib/build/intermediates/bundles/release/res/values-v21/values-v21.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.5882353">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BeseyeApp/build/intermediates/res/merged/dev/debug/values-v21/values-v21.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.048154093">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/googleplayservices_lib/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BeseyeApp/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.003992016">
+          <caret line="70" column="38" selection-start-line="70" selection-start-column="38" selection-end-line="70" selection-end-column="38" />
+          <folding />
         </state>
       </provider>
     </entry>

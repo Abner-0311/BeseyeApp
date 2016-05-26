@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><resources>
-  <!-- TODO: string name="app_name" -->
+<?xml version="1.0" encoding="UTF-8"?><resources>
   <!-- action to connect to a wifi -->
   <string name="connect">接続</string>
   <string name="cancel">キャンセル</string>
@@ -518,11 +517,11 @@
   <string name="title_human_detect_train">無人画像をタップします</string>
   <string name="confirm">完成させる</string>
   <!--Title of Human detect setting page-->
-  <string name="cam_setting_title_human_detect">人検知（先行版）</string>
+  <string name="cam_setting_title_human_detect">人検知 (先行版)</string>
   <!--Desc of Human detect switch-->
   <string name="cam_setting_title_human_detect_notify">人検知の通知</string>
   <!--Desc of Human detect training entry-->
-  <string name="enhance_human_detect">検知機能を最適化する</string>
+  <string name="enhance_human_detect">検知機能を最適化する (先行版)</string>
   <!--Hint of Human detect training entry-->
   <string name="enhance_human_detect_hint">システムは自動的に人の動きを検知します。次のページに入って画像に人がいなければ、最適な識別効果が得られるように、タップして削除してください。</string>
   <!--Percentage of training-->
@@ -687,4 +686,10 @@
   <string name="desc_cam_update_failed_poor_network">アップデート中止。ネット速度が下げています。カメラのネット環境を確認してください。</string>
   <string name="dialog_title_attention">ご注意</string>
   <string name="desc_dialog_cam_force_update_remind">カメラ機能をフル使用するため、カメラアプリを更新してください。</string>
+  <!--in setting page-->
+  <string name="cam_setting_title_ai_setting">インテリジェント設定</string>
+  <!--in notification page-->
+  <string name="all_notifications">通知許可</string>
+  <!--in notification page-->
+  <string name="detections">検出</string>
 </resources>

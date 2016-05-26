@@ -1,0 +1,145 @@
+<ScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+   	android:layout_width="match_parent"
+   	android:layout_height="wrap_content">
+   	<LinearLayout 
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical">
+    	
+   	    <RelativeLayout 
+    	    android:id="@+id/vg_all_notify"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg">
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <com.app.beseye.widget.BeseyeSwitchBtn 
+			    android:id="@+id/sb_all_notify_switch"
+			    android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:layout_alignParentRight="true"
+		    	android:layout_centerVertical="true"
+		    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding">
+			</com.app.beseye.widget.BeseyeSwitchBtn>
+		    
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_centerVertical="true"
+		   		android:duplicateParentState="true">
+		        <TextView 
+			       	android:id="@+id/txt_all_notify_title"
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/all_notifications"
+			   		android:duplicateParentState="true"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+   	    
+   	   <RelativeLayout 
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/setting_wifi_title_bg"
+		    tools:context=".MainActivity" >
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="@dimen/wifi_list_item_height" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_centerVertical="true">
+		        <TextView 
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/setting_list_item_main_title_font_size"
+			   		android:textColor="@color/setting_title_font_color"
+			   		android:text="@string/detections"
+			   		android:paddingBottom="@dimen/cam_setting_item_margin_bottom"
+			   		android:layout_alignParentBottom="true"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+    	<RelativeLayout 
+    	    android:id="@+id/vg_motion_notify"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg">
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <com.app.beseye.widget.BeseyeSwitchBtn 
+			    android:id="@+id/sb_motion_notify_switch"
+			    android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:layout_alignParentRight="true"
+		    	android:layout_centerVertical="true"
+		    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding">
+			</com.app.beseye.widget.BeseyeSwitchBtn>
+		    
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_centerVertical="true"
+		   		android:duplicateParentState="true">
+		        <TextView 
+			       	android:id="@+id/txt_motion_notify_title"
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_motion_zone"
+			   		android:duplicateParentState="true"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+		
+    	<RelativeLayout 
+    	    android:id="@+id/vg_human_detect_notify"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/dsl_setting_item_bg">
+		
+		    <View 
+		        android:layout_width="1dp"
+		    	android:layout_height="@dimen/wifi_list_item_height"/>
+
+		    <com.app.beseye.widget.BeseyeSwitchBtn 
+			    android:id="@+id/sb_human_detect_notify_switch"
+			    android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:layout_alignParentRight="true"
+		    	android:layout_centerVertical="true"
+		    	android:layout_marginRight="@dimen/wifi_list_item_horizontal_padding">
+			</com.app.beseye.widget.BeseyeSwitchBtn>
+		    
+		    <RelativeLayout 
+		        android:layout_width="wrap_content"
+		   		android:layout_height="wrap_content" 
+		   		android:layout_alignParentLeft="true"
+		   		android:layout_marginLeft="@dimen/wifi_list_item_horizontal_padding" 
+		   		android:layout_centerVertical="true"
+		   		android:duplicateParentState="true">
+		        <TextView 
+			       	android:id="@+id/txt_human_detect_notify_title"
+			    	android:layout_width="wrap_content"
+			   		android:layout_height="wrap_content" 
+			   		android:textSize="@dimen/wifi_list_item_main_font_size"
+			   		android:textColor="@color/csl_wifi_list_main_font_color"
+			   		android:text="@string/cam_setting_title_human_detect"
+			   		android:duplicateParentState="true"/>
+		    </RelativeLayout>   
+		</RelativeLayout>
+    		
+    </LinearLayout>
+</ScrollView>

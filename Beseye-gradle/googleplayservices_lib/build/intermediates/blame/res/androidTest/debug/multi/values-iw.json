@@ -7,8 +7,8 @@
                     "startLine": 2,
                     "startColumn": 4,
                     "startOffset": 105,
-                    "endColumn": 127,
-                    "endOffset": 228
+                    "endColumn": 237,
+                    "endOffset": 338
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
@@ -16,8 +16,8 @@
                         "startLine": 2,
                         "startColumn": 4,
                         "startOffset": 105,
-                        "endColumn": 127,
-                        "endOffset": 228
+                        "endColumn": 237,
+                        "endOffset": 338
                     }
                 }
             },
@@ -25,18 +25,18 @@
                 "to": {
                     "startLine": 3,
                     "startColumn": 4,
-                    "startOffset": 233,
-                    "endColumn": 154,
-                    "endOffset": 383
+                    "startOffset": 343,
+                    "endColumn": 127,
+                    "endOffset": 466
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 3,
                         "startColumn": 4,
-                        "startOffset": 233,
-                        "endColumn": 154,
-                        "endOffset": 383
+                        "startOffset": 343,
+                        "endColumn": 127,
+                        "endOffset": 466
                     }
                 }
             },
@@ -44,18 +44,18 @@
                 "to": {
                     "startLine": 4,
                     "startColumn": 4,
-                    "startOffset": 388,
-                    "endColumn": 123,
-                    "endOffset": 507
+                    "startOffset": 471,
+                    "endColumn": 185,
+                    "endOffset": 652
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 4,
                         "startColumn": 4,
-                        "startOffset": 388,
-                        "endColumn": 123,
-                        "endOffset": 507
+                        "startOffset": 471,
+                        "endColumn": 185,
+                        "endOffset": 652
                     }
                 }
             },
@@ -63,18 +63,18 @@
                 "to": {
                     "startLine": 5,
                     "startColumn": 4,
-                    "startOffset": 512,
-                    "endColumn": 169,
-                    "endOffset": 677
+                    "startOffset": 657,
+                    "endColumn": 126,
+                    "endOffset": 779
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 5,
                         "startColumn": 4,
-                        "startOffset": 512,
-                        "endColumn": 169,
-                        "endOffset": 677
+                        "startOffset": 657,
+                        "endColumn": 126,
+                        "endOffset": 779
                     }
                 }
             },
@@ -82,18 +82,18 @@
                 "to": {
                     "startLine": 6,
                     "startColumn": 4,
-                    "startOffset": 682,
+                    "startOffset": 784,
                     "endColumn": 127,
-                    "endOffset": 805
+                    "endOffset": 907
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 6,
                         "startColumn": 4,
-                        "startOffset": 682,
+                        "startOffset": 784,
                         "endColumn": 127,
-                        "endOffset": 805
+                        "endOffset": 907
                     }
                 }
             },
@@ -101,18 +101,18 @@
                 "to": {
                     "startLine": 7,
                     "startColumn": 4,
-                    "startOffset": 810,
-                    "endColumn": 168,
-                    "endOffset": 974
+                    "startOffset": 912,
+                    "endColumn": 207,
+                    "endOffset": 1115
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 7,
                         "startColumn": 4,
-                        "startOffset": 810,
-                        "endColumn": 168,
-                        "endOffset": 974
+                        "startOffset": 912,
+                        "endColumn": 207,
+                        "endOffset": 1115
                     }
                 }
             },
@@ -120,18 +120,18 @@
                 "to": {
                     "startLine": 8,
                     "startColumn": 4,
-                    "startOffset": 979,
-                    "endColumn": 169,
-                    "endOffset": 1144
+                    "startOffset": 1120,
+                    "endColumn": 208,
+                    "endOffset": 1324
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 8,
                         "startColumn": 4,
-                        "startOffset": 979,
-                        "endColumn": 169,
-                        "endOffset": 1144
+                        "startOffset": 1120,
+                        "endColumn": 208,
+                        "endOffset": 1324
                     }
                 }
             },
@@ -139,18 +139,18 @@
                 "to": {
                     "startLine": 9,
                     "startColumn": 4,
-                    "startOffset": 1149,
-                    "endColumn": 124,
-                    "endOffset": 1269
+                    "startOffset": 1329,
+                    "endColumn": 126,
+                    "endOffset": 1451
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 9,
                         "startColumn": 4,
-                        "startOffset": 1149,
-                        "endColumn": 124,
-                        "endOffset": 1269
+                        "startOffset": 1329,
+                        "endColumn": 126,
+                        "endOffset": 1451
                     }
                 }
             },
@@ -158,18 +158,18 @@
                 "to": {
                     "startLine": 10,
                     "startColumn": 4,
-                    "startOffset": 1274,
+                    "startOffset": 1456,
                     "endColumn": 153,
-                    "endOffset": 1423
+                    "endOffset": 1605
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 10,
                         "startColumn": 4,
-                        "startOffset": 1274,
+                        "startOffset": 1456,
                         "endColumn": 153,
-                        "endOffset": 1423
+                        "endOffset": 1605
                     }
                 }
             },
@@ -177,18 +177,18 @@
                 "to": {
                     "startLine": 11,
                     "startColumn": 4,
-                    "startOffset": 1428,
-                    "endColumn": 121,
-                    "endOffset": 1545
+                    "startOffset": 1610,
+                    "endColumn": 118,
+                    "endOffset": 1724
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 11,
                         "startColumn": 4,
-                        "startOffset": 1428,
-                        "endColumn": 121,
-                        "endOffset": 1545
+                        "startOffset": 1610,
+                        "endColumn": 118,
+                        "endOffset": 1724
                     }
                 }
             },
@@ -196,18 +196,18 @@
                 "to": {
                     "startLine": 12,
                     "startColumn": 4,
-                    "startOffset": 1550,
-                    "endColumn": 159,
-                    "endOffset": 1705
+                    "startOffset": 1729,
+                    "endColumn": 155,
+                    "endOffset": 1880
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 12,
                         "startColumn": 4,
-                        "startOffset": 1550,
-                        "endColumn": 159,
-                        "endOffset": 1705
+                        "startOffset": 1729,
+                        "endColumn": 155,
+                        "endOffset": 1880
                     }
                 }
             },
@@ -215,18 +215,18 @@
                 "to": {
                     "startLine": 13,
                     "startColumn": 4,
-                    "startOffset": 1710,
-                    "endColumn": 155,
-                    "endOffset": 1861
+                    "startOffset": 1885,
+                    "endColumn": 115,
+                    "endOffset": 1996
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 13,
                         "startColumn": 4,
-                        "startOffset": 1710,
-                        "endColumn": 155,
-                        "endOffset": 1861
+                        "startOffset": 1885,
+                        "endColumn": 115,
+                        "endOffset": 1996
                     }
                 }
             },
@@ -234,18 +234,18 @@
                 "to": {
                     "startLine": 14,
                     "startColumn": 4,
-                    "startOffset": 1866,
-                    "endColumn": 116,
-                    "endOffset": 1978
+                    "startOffset": 2001,
+                    "endColumn": 132,
+                    "endOffset": 2129
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 14,
                         "startColumn": 4,
-                        "startOffset": 1866,
-                        "endColumn": 116,
-                        "endOffset": 1978
+                        "startOffset": 2001,
+                        "endColumn": 132,
+                        "endOffset": 2129
                     }
                 }
             },
@@ -253,18 +253,18 @@
                 "to": {
                     "startLine": 15,
                     "startColumn": 4,
-                    "startOffset": 1983,
-                    "endColumn": 176,
-                    "endOffset": 2155
+                    "startOffset": 2134,
+                    "endColumn": 150,
+                    "endOffset": 2280
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 15,
                         "startColumn": 4,
-                        "startOffset": 1983,
-                        "endColumn": 176,
-                        "endOffset": 2155
+                        "startOffset": 2134,
+                        "endColumn": 150,
+                        "endOffset": 2280
                     }
                 }
             },
@@ -272,18 +272,18 @@
                 "to": {
                     "startLine": 16,
                     "startColumn": 4,
-                    "startOffset": 2160,
-                    "endColumn": 172,
-                    "endOffset": 2328
+                    "startOffset": 2285,
+                    "endColumn": 123,
+                    "endOffset": 2404
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 16,
                         "startColumn": 4,
-                        "startOffset": 2160,
-                        "endColumn": 172,
-                        "endOffset": 2328
+                        "startOffset": 2285,
+                        "endColumn": 123,
+                        "endOffset": 2404
                     }
                 }
             },
@@ -291,18 +291,18 @@
                 "to": {
                     "startLine": 17,
                     "startColumn": 4,
-                    "startOffset": 2333,
-                    "endColumn": 132,
-                    "endOffset": 2461
+                    "startOffset": 2409,
+                    "endColumn": 158,
+                    "endOffset": 2563
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 17,
                         "startColumn": 4,
-                        "startOffset": 2333,
-                        "endColumn": 132,
-                        "endOffset": 2461
+                        "startOffset": 2409,
+                        "endColumn": 158,
+                        "endOffset": 2563
                     }
                 }
             },
@@ -310,18 +310,18 @@
                 "to": {
                     "startLine": 18,
                     "startColumn": 4,
-                    "startOffset": 2466,
-                    "endColumn": 135,
-                    "endOffset": 2597
+                    "startOffset": 2568,
+                    "endColumn": 119,
+                    "endOffset": 2683
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 18,
                         "startColumn": 4,
-                        "startOffset": 2466,
-                        "endColumn": 135,
-                        "endOffset": 2597
+                        "startOffset": 2568,
+                        "endColumn": 119,
+                        "endOffset": 2683
                     }
                 }
             },
@@ -329,18 +329,18 @@
                 "to": {
                     "startLine": 19,
                     "startColumn": 4,
-                    "startOffset": 2602,
-                    "endColumn": 156,
-                    "endOffset": 2754
+                    "startOffset": 2688,
+                    "endColumn": 216,
+                    "endOffset": 2900
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 19,
                         "startColumn": 4,
-                        "startOffset": 2602,
-                        "endColumn": 156,
-                        "endOffset": 2754
+                        "startOffset": 2688,
+                        "endColumn": 216,
+                        "endOffset": 2900
                     }
                 }
             },
@@ -348,18 +348,18 @@
                 "to": {
                     "startLine": 20,
                     "startColumn": 4,
-                    "startOffset": 2759,
-                    "endColumn": 223,
-                    "endOffset": 2978
+                    "startOffset": 2905,
+                    "endColumn": 228,
+                    "endOffset": 3129
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 20,
                         "startColumn": 4,
-                        "startOffset": 2759,
-                        "endColumn": 223,
-                        "endOffset": 2978
+                        "startOffset": 2905,
+                        "endColumn": 228,
+                        "endOffset": 3129
                     }
                 }
             },
@@ -367,18 +367,18 @@
                 "to": {
                     "startLine": 21,
                     "startColumn": 4,
-                    "startOffset": 2983,
-                    "endColumn": 123,
-                    "endOffset": 3102
+                    "startOffset": 3134,
+                    "endColumn": 122,
+                    "endOffset": 3252
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 21,
                         "startColumn": 4,
-                        "startOffset": 2983,
-                        "endColumn": 123,
-                        "endOffset": 3102
+                        "startOffset": 3134,
+                        "endColumn": 122,
+                        "endOffset": 3252
                     }
                 }
             },
@@ -386,18 +386,18 @@
                 "to": {
                     "startLine": 22,
                     "startColumn": 4,
-                    "startOffset": 3107,
+                    "startOffset": 3257,
                     "endColumn": 104,
-                    "endOffset": 3207
+                    "endOffset": 3357
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 22,
                         "startColumn": 4,
-                        "startOffset": 3107,
+                        "startOffset": 3257,
                         "endColumn": 104,
-                        "endOffset": 3207
+                        "endOffset": 3357
                     }
                 }
             },
@@ -405,18 +405,18 @@
                 "to": {
                     "startLine": 23,
                     "startColumn": 4,
-                    "startOffset": 3212,
-                    "endColumn": 152,
-                    "endOffset": 3360
+                    "startOffset": 3362,
+                    "endColumn": 185,
+                    "endOffset": 3543
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 23,
                         "startColumn": 4,
-                        "startOffset": 3212,
-                        "endColumn": 152,
-                        "endOffset": 3360
+                        "startOffset": 3362,
+                        "endColumn": 185,
+                        "endOffset": 3543
                     }
                 }
             },
@@ -424,18 +424,18 @@
                 "to": {
                     "startLine": 24,
                     "startColumn": 4,
-                    "startOffset": 3365,
+                    "startOffset": 3548,
                     "endColumn": 124,
-                    "endOffset": 3485
+                    "endOffset": 3668
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 24,
                         "startColumn": 4,
-                        "startOffset": 3365,
+                        "startOffset": 3548,
                         "endColumn": 124,
-                        "endOffset": 3485
+                        "endOffset": 3668
                     }
                 }
             },
@@ -443,18 +443,18 @@
                 "to": {
                     "startLine": 25,
                     "startColumn": 4,
-                    "startOffset": 3490,
-                    "endColumn": 89,
-                    "endOffset": 3575
+                    "startOffset": 3673,
+                    "endColumn": 192,
+                    "endOffset": 3861
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 25,
                         "startColumn": 4,
-                        "startOffset": 3490,
-                        "endColumn": 89,
-                        "endOffset": 3575
+                        "startOffset": 3673,
+                        "endColumn": 192,
+                        "endOffset": 3861
                     }
                 }
             },
@@ -462,18 +462,151 @@
                 "to": {
                     "startLine": 26,
                     "startColumn": 4,
-                    "startOffset": 3580,
-                    "endColumn": 110,
-                    "endOffset": 3686
+                    "startOffset": 3866,
+                    "endColumn": 129,
+                    "endOffset": 3991
                 },
                 "from": {
                     "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
                     "position": {
                         "startLine": 26,
                         "startColumn": 4,
-                        "startOffset": 3580,
+                        "startOffset": 3866,
+                        "endColumn": 129,
+                        "endOffset": 3991
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 27,
+                    "startColumn": 4,
+                    "startOffset": 3996,
+                    "endColumn": 174,
+                    "endOffset": 4166
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
+                    "position": {
+                        "startLine": 27,
+                        "startColumn": 4,
+                        "startOffset": 3996,
+                        "endColumn": 174,
+                        "endOffset": 4166
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 28,
+                    "startColumn": 4,
+                    "startOffset": 4171,
+                    "endColumn": 88,
+                    "endOffset": 4255
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
+                    "position": {
+                        "startLine": 28,
+                        "startColumn": 4,
+                        "startOffset": 4171,
+                        "endColumn": 88,
+                        "endOffset": 4255
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 29,
+                    "startColumn": 4,
+                    "startOffset": 4260,
+                    "endColumn": 89,
+                    "endOffset": 4345
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
+                    "position": {
+                        "startLine": 29,
+                        "startColumn": 4,
+                        "startOffset": 4260,
+                        "endColumn": 89,
+                        "endOffset": 4345
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 30,
+                    "startColumn": 4,
+                    "startOffset": 4350,
+                    "endColumn": 110,
+                    "endOffset": 4456
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
+                    "position": {
+                        "startLine": 30,
+                        "startColumn": 4,
+                        "startOffset": 4350,
                         "endColumn": 110,
-                        "endOffset": 3686
+                        "endOffset": 4456
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 31,
+                    "startColumn": 4,
+                    "startOffset": 4461,
+                    "endColumn": 103,
+                    "endOffset": 4560
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
+                    "position": {
+                        "startLine": 31,
+                        "startColumn": 4,
+                        "startOffset": 4461,
+                        "endColumn": 103,
+                        "endOffset": 4560
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 32,
+                    "startColumn": 4,
+                    "startOffset": 4565,
+                    "endColumn": 94,
+                    "endOffset": 4655
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
+                    "position": {
+                        "startLine": 32,
+                        "startColumn": 4,
+                        "startOffset": 4565,
+                        "endColumn": 94,
+                        "endOffset": 4655
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 33,
+                    "startColumn": 4,
+                    "startOffset": 4660,
+                    "endColumn": 105,
+                    "endOffset": 4761
+                },
+                "from": {
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/googleplayservices_lib/build/intermediates/bundles/debug/res/values-iw/values-iw.xml",
+                    "position": {
+                        "startLine": 33,
+                        "startColumn": 4,
+                        "startOffset": 4660,
+                        "endColumn": 105,
+                        "endOffset": 4761
                     }
                 }
             }

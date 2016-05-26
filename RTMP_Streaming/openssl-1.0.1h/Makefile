@@ -59,7 +59,8 @@ OPENSSLDIR=/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Andr
 # equal 4.
 # PKCS1_CHECK - pkcs1 tests.
 
-CC= arm-linux-androideabi-gcc
+CC= ../../../android-ndk-r11c/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang
+export CXX=../../../android-ndk-r11c/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++
 CFLAG= -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -march=armv7-a -mandroid -I$(ANDROID_DEV)/include -B$(ANDROID_DEV)/lib -O3 -fomit-frame-pointer -Wall
 DEPFLAG= -DOPENSSL_NO_EC_NISTP_64_GCC_128 -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SCTP -DOPENSSL_NO_STORE
 PEX_LIBS= 

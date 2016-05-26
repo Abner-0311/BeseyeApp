@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/dev/debug/drawable-ja-xhdpi-v4/liveview_xhdpi_h_hold_to_talk_mic_bluegreen.png",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/drawable-ja-xhdpi/liveview_xhdpi_h_hold_to_talk_mic_bluegreen.png"
+    },
+    {
+        "merged": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/res/merged/dev/debug/drawable-ja-xhdpi-v4/liveview_xhdpi_h_hold_to_talk_mic.png",
+        "source": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/res/drawable-ja-xhdpi/liveview_xhdpi_h_hold_to_talk_mic.png"
+    }
+]

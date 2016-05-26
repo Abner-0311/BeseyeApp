@@ -86,11 +86,11 @@
             </intent-filter>
         </activity>
         -->
-         
+
         <activity
             android:name=".OpeningPage"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" 
-        	android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait"
             android:configChanges="locale|orientation"
             android:allowTaskReparenting="false">
             <intent-filter>
@@ -98,7 +98,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        
+
         <activity
             android:name=".CameraViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -106,37 +106,37 @@
             android:exported="false"
             android:launchMode="singleTask">
         </activity>
-        
+
         <activity
             android:name=".CameraListActivity"
-            android:configChanges="locale|orientation" 
+            android:configChanges="locale|orientation"
             android:screenOrientation="portrait"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".BeseyeNewsActivity"
-            android:configChanges="locale|orientation" 
+            android:configChanges="locale|orientation"
             android:screenOrientation="portrait"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".EventListActivity"
-            android:configChanges="locale|orientation" 
-            android:screenOrientation="portrait" 
+            android:configChanges="locale|orientation"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".EventFilterActivity"
-            android:configChanges="locale|orientation" 
-            android:screenOrientation="portrait" 
+            android:configChanges="locale|orientation"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".setting.CameraSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -144,15 +144,15 @@
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
-            android:name=".setting.HumanDetectNotificationSettingActivity"
+            android:name=".setting.HumanDetectOptimizationActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".setting.HumanDetectTrainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -160,7 +160,7 @@
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".setting.HWSettingsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -168,7 +168,7 @@
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".setting.PowerScheduleActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -176,7 +176,7 @@
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".setting.PowerScheduleEditActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -184,7 +184,7 @@
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".setting.PowerScheduleDayPickerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -192,8 +192,8 @@
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-    
-        
+
+
         <activity
             android:name=".setting.CameraInfoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -201,39 +201,39 @@
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".setting.NotificationEventsSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop">
         </activity>
-        
+
         <activity
-            android:name=".setting.MotionNotificationSettingActivity"
+            android:name=".setting.NotificationSettingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
-            android:name=".setting.MotionZoneEditActivity"
+            android:name=".setting.TriggerZoneEditActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".setting.LocationAwareSettingActivity"
-            android:label="@string/app_name" 
+            android:label="@string/app_name"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".setting.NightVisionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -241,7 +241,7 @@
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".googlemap.LocateOnGoogleMap"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -249,18 +249,18 @@
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".WifiListActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.WifiList"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".setting.TimezoneListActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TimeZoneList"
             android:exported="false">
@@ -269,190 +269,197 @@
         <activity
             android:name=".BeseyeEntryActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".CameraUpdateActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" >
         </activity>
-        
+
         <activity
             android:name=".BeseyeTrustDevMgtActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" >
         </activity>
-        
+
         <activity
             android:name=".BeseyeTrustDevAuthActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" >
         </activity>
-        
+
         <activity
             android:name=".BeseyeAboutActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" >
         </activity>
-        
+
         <activity
-            android:name=".BeseyeComputexModeActivity"
+            android:name=".test.BeseyeComputexModeActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".pairing.PairingRemindActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".pairing.PairingWatchOutActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
-    		android:name=".pairing.PairingPlugPowerActivity"
+            android:name=".pairing.PairingPlugPowerActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
         <activity
             android:name=".pairing.PairingGuidelineActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".BeseyeTOSAndPrivacyPolicyActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
-    		android:name=".pairing.PairingFailActivity"
+            android:name=".pairing.PairingFailActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
-    		android:name=".pairing.PairingFailAttachAlreadyActivity"
+            android:name=".pairing.PairingFailAttachAlreadyActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".SignupActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".ForgetPasswordActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".ForgetPWConfirmActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
-            android:name=".WifiSetupGuideActivity" 
+            android:name=".WifiSetupGuideActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:exported="false">
         </activity>
-        
+
         <activity
             android:name=".pairing.SoundPairingActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
-            android:name=".pairing.SoundPairingNamingActivity" 
+            android:name=".pairing.SoundPairingNamingActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
-            android:name=".ota.CamOTAInstructionActivity" 
+            android:name=".ota.CamOTAInstructionActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
-            android:name=".ota.CamOTARemindActivity" 
+            android:name=".ota.CamOTARemindActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
+
         <activity
-            android:name=".ota.CamOTAFAQActivity" 
+            android:name=".ota.CamOTAFAQActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
-         <activity
-            android:name=".ota.CamOTAFeedbackActivity" 
+
+        <activity
+            android:name=".ota.CamOTAFeedbackActivity"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" 
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false">
         </activity>
-        
-        
+
+        <activity
+            android:name=".test.BeseyeAppVerConfigActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false">
+        </activity>
+
+
         <!-- facebook -->
         <!-- due to FB login, use style/Theme.NoDisplay instead of style/Theme.Translucent.NoTitleBar -->
         <activity android:name="com.facebook.FacebookActivity"
-          android:configChanges=
-                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"  
-          android:theme="@android:style/Theme.NoDisplay"/>
-        
-        <!--  
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.NoDisplay"/>
+
+        <!--
         <receiver
 		    android:name="com.app.beseye.receiver.WifiStateChangeReceiver"
 		    android:process=":remote" >
 		</receiver>
 		-->
-		
-		<activity android:name="net.hockeyapp.android.UpdateActivity" />
+
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
 		
 		<service 
             android:name=".service.BeseyeNotificationService" 

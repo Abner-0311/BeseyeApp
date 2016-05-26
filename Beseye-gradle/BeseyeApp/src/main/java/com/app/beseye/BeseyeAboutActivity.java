@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.SessionMgr;
+import com.app.beseye.test.BeseyeAppVerConfigActivity;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeUtils;
 
@@ -91,7 +92,8 @@ public class BeseyeAboutActivity extends BeseyeBaseActivity {
 	}
 
 	private int miSendLog = 0;
-	private int miDetachCount = 0;
+	//private int miDetachCount = 0;
+	private int miAppVerCount = 0;
 	
 	@Override
 	public void onClick(View view) {
@@ -111,12 +113,20 @@ public class BeseyeAboutActivity extends BeseyeBaseActivity {
 				break;
 			}
 			case R.id.img_about_logo:{
-				if(BeseyeConfig.DEBUG){
-					miDetachCount++;
-					if(miDetachCount >=2){
-						//Toast.makeText(this, "Detach by HW ID", Toast.LENGTH_SHORT).show();
-						miDetachCount =0;
-						monitorAsyncTask(new BeseyeAccountTask.CamDettachByHWIDTask(this).setDialogId(DIALOG_ID_DETACH_CAM), false, SessionMgr.getInstance().getDetachHWID());
+//				if(BeseyeConfig.DEBUG){
+//					miDetachCount++;
+//					if(miDetachCount >=2){
+//						//Toast.makeText(this, "Detach by HW ID", Toast.LENGTH_SHORT).show();
+//						miDetachCount =0;
+//						monitorAsyncTask(new BeseyeAccountTask.CamDettachByHWIDTask(this).setDialogId(DIALOG_ID_DETACH_CAM), false, SessionMgr.getInstance().getDetachHWID());
+//					}
+//				}
+				
+				if((BeseyeUtils.isProductionVersion() || BeseyeConfig.PRODUCTION_FAKE_APP_CHECK) && BeseyeAppVerConfigActivity.isInAppVerTestAllowList()){
+					miAppVerCount++;
+					if(miAppVerCount >= 2){
+						miAppVerCount = 0;
+						launchActivityByClassName(BeseyeAppVerConfigActivity.class.getName());
 					}
 				}
 				break;

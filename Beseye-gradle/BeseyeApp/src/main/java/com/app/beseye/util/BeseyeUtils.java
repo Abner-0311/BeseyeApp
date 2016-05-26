@@ -686,17 +686,23 @@ public class BeseyeUtils {
 	//End of Gentle warning message
 	
 	//Begin of exponential backoff
-	final static int NUM_RETRY_INTERVAL = 5;
-	final static float VAL_RETRY_INTERVAL[] = {1.0f, 2.0f, 4.0f, 8.0f, 16.0f};
+	final static int NUM_RETRY_INTERVAL = 7;
+	final static float VAL_RETRY_INTERVAL[] = {1.0f, 2.0f, 4.0f, 8.0f, 16.0f, 32.0f, 64.0f};
 	final static float RANDOM_FACTOR = 0.5f;
 	
-	static public long getRetrySleepTime(int iRetryTime){
+	static public long getRetrySleepTime(final int iRetryTime){
 		long lRet = 1000;
-		if(iRetryTime < 0 )
-			iRetryTime = 0;
+		int iRealRetryTime = iRetryTime;
+		
+		if(iRealRetryTime < 0 ){
+			iRealRetryTime = 0;
+		}else if(iRealRetryTime >= NUM_RETRY_INTERVAL){
+			iRealRetryTime = NUM_RETRY_INTERVAL - 1;
+		}
+		
 		Random random = new Random(new Date().getTime());
 
-		float fRetryIntervalBase = VAL_RETRY_INTERVAL[iRetryTime%NUM_RETRY_INTERVAL];
+		float fRetryIntervalBase = VAL_RETRY_INTERVAL[iRealRetryTime];
 		float fRandomRatio = ((1.0f) + ((random.nextFloat()*2.0f - 1.0f)*RANDOM_FACTOR));
 		float fRetryIntervalInSec = fRetryIntervalBase * fRandomRatio;
 		

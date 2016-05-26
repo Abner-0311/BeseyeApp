@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><resources>
-  <!-- TODO: string name="app_name" -->
+<?xml version="1.0" encoding="UTF-8"?><resources>
   <!-- action to connect to a wifi -->
   <string name="connect">連線</string>
   <string name="cancel">取消</string>
@@ -522,7 +521,7 @@
   <!--Desc of Human detect switch-->
   <string name="cam_setting_title_human_detect_notify">人員偵測通知</string>
   <!--Desc of Human detect training entry-->
-  <string name="enhance_human_detect">偵測功能最佳化</string>
+  <string name="enhance_human_detect">偵測功能最佳化 (搶鮮版)</string>
   <!--Hint of Human detect training entry-->
   <string name="enhance_human_detect_hint">系統會自動偵測移動人員。進入下頁若影像中無任何人，請點擊去除，以取得最佳辨識結果。</string>
   <!--Percentage of training-->
@@ -686,4 +685,10 @@
   <string name="desc_cam_update_failed_poor_network">更新中斷。網路速度太慢，請檢查攝影機網路環境。</string>
   <string name="dialog_title_attention">注意</string>
   <string name="desc_dialog_cam_force_update_remind">為了讓您使用最完整的攝影機功能，請進行攝影機軟體更新。</string>
+  <!--in setting page-->
+  <string name="cam_setting_title_ai_setting">智慧設定</string>
+  <!--in notification page-->
+  <string name="all_notifications">允許通知</string>
+  <!--in notification page-->
+  <string name="detections">偵測</string>
 </resources>

@@ -28,8 +28,6 @@ public class BeseyeNewFeatureMgr {
 	public enum BESEYE_NEW_FEATURE{
 		FEATURE_SCN_SHOT,
 		FEATURE_FACE_RECG,
-		FEATURE_TRG_ZONE,
-		FEATURE_HUMAN_DET,
 		FEATURE_SCHEDULE,
 		FEATURE_COUNT
 	}
@@ -52,8 +50,6 @@ public class BeseyeNewFeatureMgr {
 		mNewFeatures = new NewFeatureConfig[BESEYE_NEW_FEATURE.FEATURE_COUNT.ordinal()];
 		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_SCN_SHOT.ordinal()] = new NewFeatureConfig(mPref, "beseye_screen_feature", BeseyeUtils.stringToDate("2015-05-13-23-59-59","yyyy-MM-dd-HH-mm-ss"));
 		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_FACE_RECG.ordinal()] = new NewFeatureConfig(mPref, "beseye_feature_face_recog", BeseyeUtils.stringToDate("2029-12-32-23-59-59","yyyy-MM-dd-HH-mm-ss"));
-		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_TRG_ZONE.ordinal()] = new NewFeatureConfig(mPref, "beseye_feature_trigger_zone", BeseyeUtils.stringToDate("2015-08-02-23-59-59","yyyy-MM-dd-HH-mm-ss"));
-		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_HUMAN_DET.ordinal()] = new NewFeatureConfig(mPref, "beseye_feature_human_detect", BeseyeUtils.stringToDate("2016-01-31-23-59-59","yyyy-MM-dd-HH-mm-ss"));
 		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_SCHEDULE.ordinal()] = new NewFeatureConfig(mPref, "beseye_feature_cam_schedule", BeseyeUtils.stringToDate("2015-11-30-23-59-59","yyyy-MM-dd-HH-mm-ss"));
 	}
 	
@@ -84,15 +80,7 @@ public class BeseyeNewFeatureMgr {
 	public void setFaceRecognitionOn(boolean bIsOn){
 		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_FACE_RECG.ordinal()].setIsUsed(bIsOn);
 	}
-	
-	public boolean isTriggerZoneClicked(){
-		return mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_TRG_ZONE.ordinal()].isUsed();
-	}
-	
-	public void setTriggerZoneClicked(boolean bClicked){
-		mNewFeatures[BESEYE_NEW_FEATURE.FEATURE_TRG_ZONE.ordinal()].setIsUsed(bClicked);
-	}
-	
+		
 	public boolean isFeatureClicked(BESEYE_NEW_FEATURE feature){
 		return mNewFeatures[feature.ordinal()].isUsed();
 	}

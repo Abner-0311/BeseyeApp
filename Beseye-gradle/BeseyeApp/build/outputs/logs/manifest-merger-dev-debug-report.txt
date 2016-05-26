@@ -1,0 +1,913 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:2:1-570:12
+	xmlns:android
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:2:11-69
+	package
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:3:5-29
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+	android:versionName
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:5:5-33
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+	android:versionCode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:4:5-30
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+	android:installLocation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:6:5-35
+uses-sdk
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:8:5-74
+MERGED from [Beseye-gradle:library:unspecified] /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/library/unspecified/AndroidManifest.xml:7:5-9:41
+MERGED from [Beseye-gradle:googleplayservices_lib:unspecified] /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/AndroidManifest.xml:20:5-22:40
+MERGED from [Beseye-gradle:facebook:unspecified] /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/facebook/unspecified/AndroidManifest.xml:24:5-26:40
+MERGED from [com.android.support:appcompat-v7:18.0.0] /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:appcompat-v7:18.0.0] /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/AndroidManifest.xml:18:5-42
+	android:targetSdkVersion
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:8:42-71
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:8:15-41
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+supports-screens
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:10:5-15:40
+	android:largeScreens
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:13:13-40
+	android:anyDensity
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:15:13-38
+	android:normalScreens
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:12:13-41
+	android:xlargeScreens
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:14:13-41
+	android:smallScreens
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:11:13-40
+uses-feature#0x00020000
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:18:5-78
+	android:required
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:18:52-75
+	android:glEsVersion
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:18:19-51
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:21:5-81
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:21:22-78
+uses-permission#android.permission.CAMERA
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:22:5-65
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:22:22-62
+uses-permission#android.permission.RECORD_AUDIO
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:23:5-71
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:23:22-68
+uses-permission#com.google.android.providers.gsf.permission.READ_GSERVICES
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:25:2-94
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:25:19-92
+uses-permission#android.permission.INTERNET
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:27:5-67
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:27:22-64
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:28:5-79
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:28:22-76
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:29:5-75
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:29:22-73
+uses-permission#android.permission.CHANGE_WIFI_STATE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:30:5-75
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:30:22-73
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:32:5-80
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:32:22-78
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:33:2-75
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:33:19-73
+uses-permission#android.permission.ACCESS_MOCK_LOCATION
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:34:2-92
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:34:19-73
+permission#${applicationId}.googlemap.MAPS_RECEIVE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:36:5-85
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:36:17-71
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+uses-permission#${applicationId}.googlemap.permission.MAPS_RECEIVE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:37:2-86
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:37:19-84
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+uses-permission#android.permission.VIBRATE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:39:5-65
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:39:22-63
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:40:5-80
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:40:22-78
+uses-permission#android.permission.READ_LOGS
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:41:5-84
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:41:22-65
+uses-permission#android.permission.READ_PHONE_STATE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:42:5-74
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:42:22-72
+uses-permission#android.permission.WRITE_SETTINGS
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:45:2-70
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:45:19-67
+uses-permission#android.permission.ACCESS_DOWNLOAD_MANAGER
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:46:2-78
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:46:19-76
+uses-permission#android.permission.DOWNLOAD_WITHOUT_NOTIFICATION
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:47:2-85
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:47:19-82
+uses-permission#android.permission.DISABLE_KEYGUARD
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:48:2-72
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:48:19-69
+uses-permission#android.permission.EXPAND_STATUS_BAR
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:49:5-76
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:49:22-73
+uses-permission#android.permission.BLUETOOTH
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:52:5-67
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:52:22-65
+permission#${applicationId}.permission.C2D_MESSAGE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:55:5-110
+	android:protectionLevel
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:55:72-107
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:55:17-71
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+uses-permission#${applicationId}.permission.C2D_MESSAGE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:56:2-76
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:56:19-73
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+uses-permission#com.google.android.c2dm.permission.RECEIVE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:59:2-79
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:59:19-76
+uses-permission#android.permission.GET_ACCOUNTS
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:61:2-68
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:61:19-65
+uses-permission#android.permission.WAKE_LOCK
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:64:2-65
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:64:19-62
+uses-permission#android.permission.SYSTEM_ALERT_WINDOW
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:66:5-78
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:66:22-75
+application
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:68:5-569:19
+MERGED from [Beseye-gradle:googleplayservices_lib:unspecified] /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/AndroidManifest.xml:24:5-28:19
+MERGED from [Beseye-gradle:facebook:unspecified] /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/facebook/unspecified/AndroidManifest.xml:28:5-20
+MERGED from [com.android.support:appcompat-v7:18.0.0] /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/AndroidManifest.xml:19:5-20
+MERGED from [com.android.support:appcompat-v7:18.0.0] /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/18.0.0/AndroidManifest.xml:19:5-20
+	android:label
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:71:9-41
+	android:allowBackup
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:69:9-35
+	android:icon
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:70:9-49
+	android:theme
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:72:9-40
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:73:9-42
+activity#com.app.beseye.OpeningPage
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:90:9-100:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:93:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:94:13-55
+	android:theme
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:92:13-83
+	android:allowTaskReparenting
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:95:13-49
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:91:13-40
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:96:13-99:29
+action#android.intent.action.MAIN
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:97:17-69
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:97:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:98:17-76
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:98:27-74
+activity#com.app.beseye.CameraViewActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:102:9-108:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:105:13-52
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:104:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:106:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:103:13-47
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:107:13-44
+activity#com.app.beseye.CameraListActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:110:9-115:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:113:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:112:13-55
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:114:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:111:13-47
+activity#com.app.beseye.BeseyeNewsActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:117:9-122:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:120:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:119:13-55
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:121:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:118:13-47
+activity#com.app.beseye.EventListActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:124:9-130:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:127:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:126:13-55
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:129:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:125:13-46
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:128:13-43
+activity#com.app.beseye.EventFilterActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:132:9-138:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:135:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:134:13-55
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:137:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:133:13-48
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:136:13-43
+activity#com.app.beseye.setting.CameraSettingActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:140:9-146:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:143:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:142:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:145:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:141:13-58
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:144:13-43
+activity#com.app.beseye.setting.HumanDetectOptimizationActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:148:9-154:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:151:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:150:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:153:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:149:13-68
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:152:13-43
+activity#com.app.beseye.setting.HumanDetectTrainActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:156:9-162:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:159:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:158:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:161:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:157:13-61
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:160:13-43
+activity#com.app.beseye.setting.HWSettingsActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:164:9-170:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:167:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:166:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:169:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:165:13-55
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:168:13-43
+activity#com.app.beseye.setting.PowerScheduleActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:172:9-178:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:175:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:174:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:177:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:173:13-58
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:176:13-43
+activity#com.app.beseye.setting.PowerScheduleEditActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:180:9-186:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:183:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:182:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:185:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:181:13-62
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:184:13-43
+activity#com.app.beseye.setting.PowerScheduleDayPickerActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:188:9-194:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:191:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:190:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:193:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:189:13-67
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:192:13-43
+activity#com.app.beseye.setting.CameraInfoActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:197:9-203:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:200:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:199:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:202:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:198:13-55
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:201:13-43
+activity#com.app.beseye.setting.NotificationEventsSettingActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:205:9-210:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:208:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:207:13-74
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:206:13-70
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:209:13-43
+activity#com.app.beseye.setting.NotificationSettingActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:212:9-218:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:215:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:214:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:217:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:213:13-64
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:216:13-43
+activity#com.app.beseye.setting.TriggerZoneEditActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:220:9-226:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:223:13-50
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:222:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:225:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:221:13-60
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:224:13-43
+activity#com.app.beseye.setting.LocationAwareSettingActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:228:9-235:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:232:13-49
+	android:label
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:230:13-45
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:231:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:234:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:229:13-65
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:233:13-43
+activity#com.app.beseye.setting.NightVisionActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:237:9-243:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:240:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:239:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:242:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:238:13-56
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:241:13-43
+activity#com.app.beseye.googlemap.LocateOnGoogleMap
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:245:9-251:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:248:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:247:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:250:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:246:13-56
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:249:13-43
+activity#com.app.beseye.WifiListActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:253:9-259:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:256:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:255:13-74
+	android:theme
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:257:13-53
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:258:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:254:13-45
+activity#com.app.beseye.setting.TimezoneListActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:261:9-267:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:264:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:263:13-74
+	android:theme
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:265:13-57
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:266:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:262:13-57
+activity#com.app.beseye.BeseyeEntryActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:269:9-274:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:271:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:272:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:273:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:270:13-48
+activity#com.app.beseye.CameraUpdateActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:276:9-281:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:278:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:279:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:280:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:277:13-49
+activity#com.app.beseye.BeseyeTrustDevMgtActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:283:9-288:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:285:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:286:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:287:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:284:13-54
+activity#com.app.beseye.BeseyeTrustDevAuthActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:290:9-295:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:292:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:293:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:294:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:291:13-55
+activity#com.app.beseye.BeseyeAboutActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:297:9-302:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:299:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:300:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:301:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:298:13-48
+activity#com.app.beseye.test.BeseyeComputexModeActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:304:9-309:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:306:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:307:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:308:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:305:13-60
+activity#com.app.beseye.pairing.PairingRemindActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:311:9-316:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:313:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:314:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:315:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:312:13-58
+activity#com.app.beseye.pairing.PairingWatchOutActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:318:9-323:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:320:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:321:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:322:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:319:13-60
+activity#com.app.beseye.pairing.PairingPlugPowerActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:325:9-330:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:327:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:328:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:329:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:326:13-61
+activity#com.app.beseye.pairing.PairingGuidelineActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:331:9-336:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:333:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:334:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:335:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:332:13-61
+activity#com.app.beseye.BeseyeTOSAndPrivacyPolicyActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:338:9-343:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:340:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:341:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:342:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:339:13-62
+activity#com.app.beseye.pairing.PairingFailActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:345:9-350:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:347:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:348:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:349:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:346:13-56
+activity#com.app.beseye.pairing.PairingFailAttachAlreadyActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:352:9-357:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:354:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:355:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:356:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:353:13-69
+activity#com.app.beseye.SignupActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:359:9-365:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:361:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:362:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:364:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:360:13-43
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:363:13-43
+activity#com.app.beseye.ForgetPasswordActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:367:9-373:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:369:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:370:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:372:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:368:13-51
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:371:13-43
+activity#com.app.beseye.ForgetPWConfirmActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:375:9-381:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:377:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:378:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:380:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:376:13-52
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:379:13-43
+activity#com.app.beseye.WifiSetupGuideActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:383:9-388:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:385:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:386:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:387:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:384:13-51
+activity#com.app.beseye.LoginActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:390:9-396:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:392:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:393:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:395:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:391:13-42
+	android:launchMode
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:394:13-43
+activity#com.app.beseye.pairing.SoundPairingActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:398:9-403:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:400:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:401:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:402:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:399:13-57
+activity#com.app.beseye.pairing.SoundPairingNamingActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:405:9-410:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:407:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:408:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:409:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:406:13-63
+activity#com.app.beseye.ota.CamOTAInstructionActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:412:9-417:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:414:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:415:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:416:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:413:13-58
+activity#com.app.beseye.ota.CamOTARemindActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:419:9-424:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:421:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:422:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:423:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:420:13-53
+activity#com.app.beseye.ota.CamOTAFAQActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:426:9-431:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:428:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:429:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:430:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:427:13-50
+activity#com.app.beseye.ota.CamOTAFeedbackActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:433:9-438:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:435:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:436:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:437:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:434:13-55
+activity#com.app.beseye.test.BeseyeAppVerConfigActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:440:9-445:20
+	android:screenOrientation
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:442:13-49
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:443:13-74
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:444:13-37
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:441:13-60
+activity#com.facebook.FacebookActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:450:9-453:61
+	android:configChanges
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:451:13-113
+	android:theme
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:453:13-59
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:450:19-63
+activity#net.hockeyapp.android.UpdateActivity
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:462:9-73
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:462:19-70
+service#com.app.beseye.service.BeseyeNotificationService
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:464:3-467:19
+	android:process
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:466:13-38
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:465:13-62
+receiver#com.app.beseye.receiver.UBTEventBroadcastReciever
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:469:3-475:14
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:471:12-36
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:470:12-62
+intent-filter#${applicationId}.ubt.EVENT_BROADCAST
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:472:6-474:22
+action#${applicationId}.ubt.EVENT_BROADCAST
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:473:8-70
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:473:16-67
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+receiver#com.app.beseye.receiver.BeseyeGCMBroadcastReceiver
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:477:3-485:14
+	android:permission
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:479:13-73
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:478:13-64
+intent-filter#${applicationId}+com.google.android.c2dm.intent.RECEIVE+com.google.android.c2dm.intent.REGISTRATION
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:480:6-484:22
+action#com.google.android.c2dm.intent.RECEIVE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:481:8-72
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:481:16-69
+action#com.google.android.c2dm.intent.REGISTRATION
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:482:8-77
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:482:16-74
+category#${applicationId}
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:483:8-52
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:483:18-49
+		INJECTED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml
+receiver#com.app.beseye.receiver.BootBroadcastReceiver
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:487:3-492:14
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:488:13-59
+intent-filter#android.intent.action.BOOT_COMPLETED
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:489:6-491:22
+action#android.intent.action.BOOT_COMPLETED
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:490:8-69
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:490:16-67
+receiver#com.baidu.android.pushservice.PushServiceReceiver
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:496:3-509:14
+	android:process
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:497:7-38
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:496:13-77
+intent-filter#android.intent.action.ACTION_POWER_CONNECTED+android.intent.action.ACTION_POWER_DISCONNECTED+android.intent.action.BOOT_COMPLETED+android.intent.action.MEDIA_MOUNTED+android.intent.action.USER_PRESENT+android.net.conn.CONNECTIVITY_CHANGE+com.baidu.android.pushservice.action.media.CLICK+com.baidu.android.pushservice.action.notification.SHOW
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:498:7-508:23
+action#android.net.conn.CONNECTIVITY_CHANGE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:500:11-73
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:500:19-70
+action#com.baidu.android.pushservice.action.notification.SHOW
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:501:11-91
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:501:19-88
+action#com.baidu.android.pushservice.action.media.CLICK
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:502:11-85
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:502:19-82
+action#android.intent.action.MEDIA_MOUNTED
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:504:11-72
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:504:19-69
+action#android.intent.action.USER_PRESENT
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:505:11-71
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:505:19-68
+action#android.intent.action.ACTION_POWER_CONNECTED
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:506:11-81
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:506:19-78
+action#android.intent.action.ACTION_POWER_DISCONNECTED
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:507:11-84
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:507:19-81
+receiver#com.baidu.android.pushservice.RegistrationReceiver
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:511:3-521:14
+	android:process
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:512:7-38
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:511:13-78
+intent-filter#com.baidu.android.pushservice.action.BIND_SYNC+com.baidu.android.pushservice.action.METHOD
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:513:7-516:23
+action#com.baidu.android.pushservice.action.METHOD
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:514:11-80
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:514:19-77
+action#com.baidu.android.pushservice.action.BIND_SYNC
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:515:11-83
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:515:19-80
+intent-filter#android.intent.action.PACKAGE_REMOVED
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:517:7-520:23
+action#android.intent.action.PACKAGE_REMOVED
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:518:11-74
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:518:19-71
+data
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:519:11-44
+	android:scheme
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:519:17-41
+receiver#com.app.beseye.receiver.BaiduPushReceiver
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:522:3-531:20
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:522:13-55
+intent-filter#com.baidu.android.pushservice.action.MESSAGE+com.baidu.android.pushservice.action.RECEIVE+com.baidu.android.pushservice.action.notification.CLICK
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:523:13-530:29
+action#com.baidu.android.pushservice.action.MESSAGE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:526:17-87
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:526:25-84
+action#com.baidu.android.pushservice.action.RECEIVE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:528:17-87
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:528:25-84
+action#com.baidu.android.pushservice.action.notification.CLICK
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:529:17-98
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:529:25-95
+service#com.baidu.android.pushservice.PushService
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:533:3-540:19
+	android:process
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:536:13-44
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:535:13-36
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:534:13-69
+intent-filter#com.baidu.android.pushservice.action.PUSH_SERVICE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:537:13-539:29
+action#com.baidu.android.pushservice.action.PUSH_SERVICE
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:538:17-92
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:538:25-89
+service#com.baidu.android.pushservice.CommandService
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:541:9-543:39
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:543:13-36
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:542:13-72
+service#com.app.beseye.GCMIntentService
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:546:9-548:40
+	android:process
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:548:13-38
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:547:13-45
+meta-data#com.google.android.maps.v2.API_KEY
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:550:9-552:71
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:551:13-62
+	android:value
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:552:13-68
+meta-data#com.google.android.gms.version
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:554:3-556:60
+MERGED from [Beseye-gradle:googleplayservices_lib:unspecified] /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/AndroidManifest.xml:25:9-27:69
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:555:4-49
+	android:value
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:556:4-57
+meta-data#com.facebook.sdk.ApplicationId
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:559:6-561:51
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:560:10-55
+	android:value
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:561:10-49
+provider#com.facebook.FacebookContentProvider
+ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:564:6-567:38
+	android:exported
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:567:12-35
+	android:authorities
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:565:10-67
+	android:name
+		ADDED from /Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/src/main/AndroidManifest.xml:566:12-63

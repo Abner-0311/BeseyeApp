@@ -122,4 +122,5 @@ dependencies {
     compile files('libs/gcm.jar')
     compile files('libs/pushservice-4.5.1.8.jar')
     compile "com.android.support:appcompat-v7:18.0.+"
+
 }

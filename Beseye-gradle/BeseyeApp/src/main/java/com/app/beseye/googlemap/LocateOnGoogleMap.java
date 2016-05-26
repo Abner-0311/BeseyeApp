@@ -507,6 +507,7 @@ public class LocateOnGoogleMap extends BeseyeBaseActivity implements OnMarkerCli
 		// TODO Auto-generated method stub
 		
 		Geocoder gc = new Geocoder(this, Locale.TRADITIONAL_CHINESE);
+		
 		double lat,lng;
 		
 		lat = marker.getPosition().latitude;

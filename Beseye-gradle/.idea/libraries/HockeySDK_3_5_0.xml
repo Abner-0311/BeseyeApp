@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="HockeySDK-3.5.0">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/BeseyeApp/libs/HockeySDK-3.5.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

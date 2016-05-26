@@ -1,6 +1,10 @@
 package com.app.beseye.error;
 
 public class BeseyeError {
+	static public final int   E_BE_OK 						   			   = 0x00000000;
+	
+	static public final int   E_BE_ERR 						   			   = 0x000000FF;
+	
 	static public final int   E_BE_ACC_GENERAL_ERR 						   = 0x00010000;	
 	//user
 	static public final int   E_BE_ACC_USER_CLIENT_IP_BLANK                = 0x00101000;//freeze,
@@ -118,7 +122,6 @@ public class BeseyeError {
 	static public final int E_CONN_EXCEPTION_END                               = 0x00000EFF;
 	
 	//OTA error 
-	
 	static public final int E_OTA_PREPARE_FAILED                               = 0x00D00011;//Found error before 20% in finalStatus
 	static public final int E_REBOOT_DURING_PREPARING_STAGE                    = 0x00D00015;//Power off before 20% in finalStatus
 	static public final int E_MISSING_V1_FILE                                  = 0x00D00024;//CAM SW mismatch
@@ -132,4 +135,23 @@ public class BeseyeError {
 	static public final int E_CURL_NETWORK_ERROR                               = 0x00D000b0;//Trial down failed
 	static public final int E_CURL_NETWORK_DEAD                                = 0x00D000b1;//..
 	static public final int E_NETWORK_ERROR_WHEN_DOWNLOADING_FILE              = 0x00D00050;//..
+	
+	//WS/WSA errors 
+	static public final int E_BE_WS_CAN_NOT_GET_SERVER_WS_ID 				   = 0x01100200;//Can't get server side id
+	static public final int E_BE_WS_CAN_NOT_REGISTER_SERVER_WS_ID 			   = 0x01100202;//Can't register server side id
+	
+	static public boolean isNoError(final int iRetCode){
+		return BeseyeError.E_BE_OK <= iRetCode && iRetCode < BeseyeError.E_BE_ERR ;
+	}
+	
+	static public boolean isUserSessionInvalidError(final int iRetCode){
+		return (E_BE_ACC_USER_SESSION_NOT_FOUND_BY_TOKEN == iRetCode) ||
+			   (E_BE_ACC_USER_SESSION_EXPIRED == iRetCode);
+	}
+	
+	static public boolean isWSServerUnavailableError(final int iRetCode){
+		return (E_BE_WS_CAN_NOT_GET_SERVER_WS_ID == iRetCode) ||
+			   (E_BE_WS_CAN_NOT_REGISTER_SERVER_WS_ID == iRetCode) ||
+			   (E_CONN_SOCKET_ERR <= iRetCode && iRetCode <= E_CONN_SOCKET_ERR_END);
+	}
 }
