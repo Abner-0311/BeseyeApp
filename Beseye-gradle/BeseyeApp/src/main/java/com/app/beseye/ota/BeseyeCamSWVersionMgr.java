@@ -656,6 +656,8 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 		
 		List<String> lstVCamIdToUpdate = new ArrayList<String>();
 		List<String> lstVCamIdCamConnectionOn = new ArrayList<String>();
+
+		boolean bAllConntectedCamsNeedToUpdate = true;
 		
 		boolean bGroupVerCheckFinish = true;
 		for(CamSwUpdateRecord rec : mapVcamList.values()){
@@ -673,6 +675,10 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 				
 				if( rec.meCamConnectionStatus.equals(CAM_CONNECTION_ON)){
 					lstVCamIdCamConnectionOn.add(rec.mStrVCamId);
+					if(!rec.meVerCheckStatus.equals(CAM_UPDATE_VER_CHECK_STATUS.CAM_UPDATE_VER_CHECK_OUT_OF_DATE)){
+						bAllConntectedCamsNeedToUpdate = false;
+						Log.i(TAG, "CheckVCamListVerChkStatus(), "+rec.mStrVCamId+" is connected but no need update "+rec.meVerCheckStatus);
+					}
 				}
 			}
 		}
@@ -683,10 +689,10 @@ public class BeseyeCamSWVersionMgr implements OnHttpTaskCallback{
 			int iCamConnectionOnCnt = lstVCamIdCamConnectionOn.size();
 			
 			CAM_GROUP_VER_CHK_RET ret = (0 == iUpdateCnt)?CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_UPDATED:
-													 (iGroupCnt == iUpdateCnt && iUpdateCnt == iCamConnectionOnCnt)?CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_OUT_OF_UPDATE:
+													 (/*iGroupCnt == iUpdateCnt && iUpdateCnt == iCamConnectionOnCnt*/0 < iUpdateCnt && bAllConntectedCamsNeedToUpdate)?CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_ALL_OUT_OF_UPDATE:
 												     CAM_GROUP_VER_CHK_RET.CAM_GROUP_VER_CHK_PARTIAL_UPDATED;
 			
-			Log.i(TAG, "CheckVCamListVerChkStatus(), gourp version check finish :"+updateGroup+"("+iGroupCnt+", "+iUpdateCnt+", "+iCamConnectionOnCnt+")");
+			Log.i(TAG, "CheckVCamListVerChkStatus(), gourp version check finish :"+updateGroup+"("+iGroupCnt+", "+iUpdateCnt+", "+iCamConnectionOnCnt+","+bAllConntectedCamsNeedToUpdate+")");
 			
 			broadcastOnCamGroupUpdateVersionCheck(ret, 
 														  updateGroup, 

@@ -1,5 +1,6 @@
 package com.app.beseye.util;
 
+import com.app.beseye.BuildConfig;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 
 import android.util.Log;
@@ -8,10 +9,10 @@ public class BeseyeConfig {
 	static public final String TAG = "BesEye";
 	public static final String HOCKEY_APP_ID = ""; //"3f241ef5b7fb32623b970d296f90fcb4"; 
 	
-	static public final boolean DEBUG = true;
-	static public final boolean ALPHA_VER = false;
-	static public final boolean BETA_VER = false;
-	static public final boolean PRODUCTION_VER = false;
+	static public final boolean DEBUG = BuildConfig.DEBUG_LVL;
+	static public final boolean ALPHA_VER = BuildConfig.ALPHA_VER;
+	static public final boolean BETA_VER = BuildConfig.BETA_VER;
+	static public final boolean PRODUCTION_VER = BuildConfig.PRODUCTION_VER;
 	static public final SERVER_MODE DEFAULT_SERVER_MODE = SERVER_MODE.MODE_PRODUCTION;
 	
 	static public final long TIME_TO_CHECK_WIFI_SETUP = 10000L;

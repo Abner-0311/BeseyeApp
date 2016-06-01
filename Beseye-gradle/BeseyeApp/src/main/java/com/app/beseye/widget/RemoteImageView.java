@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -36,7 +38,6 @@ import android.graphics.Xfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.net.http.AndroidHttpClient;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -53,7 +54,7 @@ import com.app.beseye.util.BeseyeUtils;
 public class RemoteImageView extends ImageView {
 	final protected static int EMPTY_DEFAULT_IMAGE = -1;
 	final protected static int PHOTO_THUMB_SAMPLE_MEM_THRESHHOLD = 48;//if mem class is greater than 48 MB, use sample rate 2, or use smaple rate 4
-	
+
 	protected String mCachePath;
 	protected String mURI;
 	protected Float mRatio = (float) 1.0; // default image's ratio
@@ -66,29 +67,29 @@ public class RemoteImageView extends ImageView {
 	protected Future<?> mFuture;
 	protected boolean mIsPreload;
 	protected boolean mbMatchWidth = false;
-	
+
 	protected boolean mbIsPhoto = false;
 	protected boolean mbIsPhotoViewMode = false;
 	protected boolean mbIsLoaded = false;
-	
+
 	protected String mStrVCamId = null;
 	private String mStrVCamIdLoad = null;
 	private boolean mbLoadLastImgByVCamId = true;
 	private boolean mbBmpTransitionEffect = true;
-	
+
 	static public final String CACHE_POSTFIX_SAMPLE_1 = "_s1";//set sample as 1
 	static public final String CACHE_POSTFIX_SAMPLE_2 = "_s2";//set sample as 2
 	static public final String CACHE_POSTFIX_HIGH_RES = "_hs";//set as high resolution
-	
+
 	//For Shadow feature
 	protected static final float SHADOW_WIDTH = 3.0f;
 	protected boolean mbEnableShadow = false;
 	protected float mShadowWidth = SHADOW_WIDTH;
-		
+
 	public interface RemoteImageCallback {
 		public void imageLoaded(boolean success, String StrUri);
 	}
-	
+
 	public RemoteImageView(Context context) {
 		this(context, null, 0);
 		setShadowWidth(context);
@@ -103,30 +104,30 @@ public class RemoteImageView extends ImageView {
 		super(context, attrs, defStyle);
 		setShadowWidth(context);
 	}
-	
+
 	private void setShadowWidth(Context context){
 		mShadowWidth = 0;//context.getResources().getDimension(com.ikala.app.R.dimen.iChannelConvPicShadowWidth);
 	}
-	
+
 	public void setShadowWidth(float fWidth){
 		mShadowWidth = (0 < fWidth)?fWidth:0.0f;
 	}
-	
+
 	public void enableShadow(boolean bEnable){
 		if(mbEnableShadow != bEnable){
 			mbEnableShadow = bEnable;
 			invalidate();
 		}
 	}
-	
+
 	public void disableLoadLastImgByVCamId(){
 		mbLoadLastImgByVCamId = false;
 	}
-	
+
 	public void disablebBmpTransitionEffect(){
 		mbBmpTransitionEffect = false;
 	}
-	
+
 	public void setMatchWidth(boolean bMatch){
 		mbMatchWidth = bMatch;
 	}
@@ -149,21 +150,21 @@ public class RemoteImageView extends ImageView {
 		mStrVCamId = null;
 		mbIsLoaded = false;
 		mCallback = null;
-		
+
 //		if(DEBUG)
-//			Log.i(iKalaUtil.IKALA_APP_TAG, "setURI(), uri:"+uri); 
+//			Log.i(iKalaUtil.IKALA_APP_TAG, "setURI(), uri:"+uri);
 	}
-	
+
 	public void setURI(String uri, int defaultImage, RemoteImageCallback cb) {
 		setURI(uri, defaultImage);
 		mCallback = cb;
 	}
-	
+
 	public void setURI(String uri, int defaultImage, String strVCamId) {
 		setURI(uri, defaultImage);
 		mStrVCamId = strVCamId;
 	}
-	
+
 	public void setURI(String uri, int defaultImage, String strVCamId, RemoteImageCallback cb) {
 		setURI(uri, defaultImage, strVCamId);
 		mCallback = cb;
@@ -174,7 +175,7 @@ public class RemoteImageView extends ImageView {
 		mRatio = ratio;
 		mDestRatio = fDestRatio;
 	}
-	
+
 	public void setURI(String uri, int defaultImage, int iDesireWidth, int iDesireHeight) {
 		setURI(uri, defaultImage);
 		miDesireWidth = iDesireWidth;
@@ -200,7 +201,7 @@ public class RemoteImageView extends ImageView {
 	public String getURI() {
 		return mURI;
 	}
-	
+
 	public boolean isLoaded(){
 		return mbIsLoaded;
 	}
@@ -208,11 +209,11 @@ public class RemoteImageView extends ImageView {
 	public void setIsPhoto(boolean bIsPhoto){
 		mbIsPhoto = bIsPhoto;
 	}
-	
+
 	public void setIsPhotoViewMode(boolean bIsPhotoViewMode){
 		mbIsPhoto = mbIsPhotoViewMode = bIsPhotoViewMode;
 	}
-	
+
 	static public boolean cacheExists(Context context, String cacheName) {
 		String cachePath = buildCachePath(context, cacheName);
 		if (cachePath != null && new File(cachePath).exists()) {
@@ -220,11 +221,11 @@ public class RemoteImageView extends ImageView {
 		}
 		return false;
 	}
-	
+
 	private static Map<String, String> sMapCachePath = new HashMap<String, String>();
 
 	static public String buildCachePath(Context context, String cacheName) {
-		
+
 		long lStartTime = System.currentTimeMillis();
 		if (cacheName == null || cacheName.length() == 0) {
 			return null;
@@ -234,9 +235,9 @@ public class RemoteImageView extends ImageView {
 		if(null != picDir){
 			picDir.mkdir();
 		}
-		
+
 		String strEncode = null;
-		
+
 		if(sMapCachePath.containsKey(cacheName)){
 			strEncode = sMapCachePath.get(cacheName);
 		}else{
@@ -245,7 +246,7 @@ public class RemoteImageView extends ImageView {
 			strEncode = strEncode.substring(iFrom);
 			sMapCachePath.put(cacheName, strEncode);
 		}
-		
+
 //		int iIdx = strEncode.indexOf(".jpg");
 //		if(-1 < iIdx){
 //			int iFrom = (strEncode.length() > 32)?(strEncode.length()-32):0;
@@ -259,7 +260,7 @@ public class RemoteImageView extends ImageView {
 
 		return String.format("%s%s", picDir.getAbsolutePath()+ "/", strEncode);
 	}
-	
+
 	static public String[] getCachePaths(Context context, String[] cacheNames){
 		String[] strRet = null;
 		if(null != context && null != cacheNames && 0 < cacheNames.length){
@@ -269,7 +270,7 @@ public class RemoteImageView extends ImageView {
 			}
 		}
 		return strRet;
-	} 
+	}
 
 	static Hashtable<Integer, SoftReference<Bitmap>> mDefaultImageHolder = new Hashtable<Integer, SoftReference<Bitmap>>();
 
@@ -296,10 +297,10 @@ public class RemoteImageView extends ImageView {
 		if (mDefaultImage == EMPTY_DEFAULT_IMAGE) {
 			return null;
 		}
-		
+
 		return BeseyeMemCache.getBmpByResId(getContext(), mDefaultImage, 0, 0);
 	}
-	
+
 	private File getDirByVCamid(String strVcamid){
 		File vcamidDir = null;
 		if(null != strVcamid){
@@ -316,10 +317,10 @@ public class RemoteImageView extends ImageView {
 				}
 			}
 		}
-		
+
 		return vcamidDir;
 	}
-	
+
 	private String findLastPhotoByVCamid(String strVcamid){
 		String strRet = null;
 		File vcamidDir = getDirByVCamid(strVcamid);
@@ -334,7 +335,7 @@ public class RemoteImageView extends ImageView {
 
 	public void loadImage() {
 		// load image from cache
-		Bitmap cBmp = null;	
+		Bitmap cBmp = null;
 		if(null != mCachePath){
 			if(null != mStrVCamId){
 				String cacheFileName = mCachePath.substring(mCachePath.lastIndexOf("/")+1);
@@ -349,11 +350,11 @@ public class RemoteImageView extends ImageView {
 				cBmp = BeseyeMemCache.getBitmapFromMemCache(mCachePath);
 			}
 		}
-		
+
 		if (cBmp != null) {
 			if(SHOW_THUMBNAIL_LOG)
 				Log.d(TAG, "loadImage(), use mem cache , mCachePath:["+mCachePath+"]");
-			
+
 			setImageBitmap(cBmp);
 			//We don't cache high quality pic in memory
 			if(mbIsPhotoViewMode){
@@ -368,7 +369,7 @@ public class RemoteImageView extends ImageView {
 			}else{
 				fileCache = mCachePath+(mbIsPhoto?CACHE_POSTFIX_SAMPLE_1:CACHE_POSTFIX_SAMPLE_2);
 			}
-			
+
 			if(fileExist(fileCache)){
 				if(SHOW_THUMBNAIL_LOG)
 					Log.d(TAG, "loadImage(), have file cache , fileCache:["+fileCache+"]");
@@ -389,12 +390,12 @@ public class RemoteImageView extends ImageView {
 		}
 		loadRemoteImage();
 	}
-	
+
 	public void setImageBitmap(Bitmap bm, String strVcamId) {
 		mStrVCamIdLoad = strVcamId;
 		if(SHOW_THUMBNAIL_LOG)
 			Log.d(TAG, "setImageBitmap(), mStrVCamIdLoad:["+mStrVCamIdLoad+"], id:"+this.getId());
-		
+
 		if(mbBmpTransitionEffect){
 			Drawable[] layers = new Drawable[2];
 			layers[0] = this.getDrawable();
@@ -411,15 +412,15 @@ public class RemoteImageView extends ImageView {
 //	@Override
 //	public void setImageBitmap(Bitmap bm) {
 ////		if(mbMatchWidth){
-////			
+////
 ////		}
-//		
+//
 //		super.setImageBitmap(bm);
 //	}
 
 	public void loadRemoteImage() {
 		cancelRemoteImageLoad();
-		
+
 		if(null != mURI && 0 < mURI.length()){
 			mFuture = sExecutor.submit(new LoadImageRunnable(mCachePath, mURI, mIsPreload, mbIsPhoto, mbIsPhotoViewMode, mStrVCamId, mbLoadLastImgByVCamId));
 		}
@@ -431,7 +432,7 @@ public class RemoteImageView extends ImageView {
 			mFuture = null;
 		}
 	}
-	
+
 	private void imageLoaded(final boolean success) {
 		BeseyeUtils.postRunnable(new Runnable(){
 			@Override
@@ -443,7 +444,7 @@ public class RemoteImageView extends ImageView {
 			}}, 0);
 	}
 
-	class LoadImageRunnable implements Runnable {		
+	class LoadImageRunnable implements Runnable {
 		private String mLocal;
 		private String mLocalSample, mLocalSampleHQ;
 		private String mRemote;
@@ -459,7 +460,7 @@ public class RemoteImageView extends ImageView {
 			mbIsPhotoViewMode = bIsPhotoViewMode;
 			mStrVCamId = strVCamId;
 			mbLoadLastImgByVCamId = bLoadLastImgByVCamId;
-			
+
 			mLocalSample = mLocal+(mbIsPhoto?CACHE_POSTFIX_SAMPLE_1:CACHE_POSTFIX_SAMPLE_2);
 			mLocalSampleHQ = mbIsPhotoViewMode?(mLocalSample+CACHE_POSTFIX_HIGH_RES):null;
 		}
@@ -471,7 +472,7 @@ public class RemoteImageView extends ImageView {
 			public SetImageRunnable(Bitmap b) {
 				mBitmap = b;
 			}
-			
+
 			public SetImageRunnable(Bitmap b, String strVcamId) {
 				mBitmap = b;
 				mStrVcamId = strVcamId;
@@ -491,7 +492,7 @@ public class RemoteImageView extends ImageView {
 				mHandler.post(new SetImageRunnable(b));
 			}
 		}
-		
+
 		private void setImage(Bitmap b, String strVcamId) {
 			if (mHandler != null && b != null) {
 				mHandler.post(new SetImageRunnable(b, strVcamId));
@@ -516,7 +517,7 @@ public class RemoteImageView extends ImageView {
 				setImage(bitmap, mStrVCamId);
 				bitmap = null;
 			}
-			
+
 			File vcamidDir = null;
 			boolean bSameFileForVCamid = false;
 			String strCachePath = null;
@@ -529,19 +530,19 @@ public class RemoteImageView extends ImageView {
 				}
 
 				if(null == bitmap){
-//					if (fileExist(mLocal)) {						
+//					if (fileExist(mLocal)) {
 //						if(DEBUG){
 //							Log.w(TAG, "transfer cache file to sample 2, mLocal : " +mLocal);
 //						}
-//						//Version control, In order to transfer all cache file to sample 2						
+//						//Version control, In order to transfer all cache file to sample 2
 //						deleteFile(mLocal);
 //					}
-					
+
 					if(null != mStrVCamId){
 						if(mbLoadLastImgByVCamId){
 							if(SHOW_THUMBNAIL_LOG)
 								Log.i(TAG, "cacheFileName:["+cacheFileName+"]");
-							
+
 							String strLastPhoto = findLastPhotoByVCamid(mStrVCamId);
 							if(SHOW_THUMBNAIL_LOG)
 								Log.i(TAG, "strLastPhoto:["+strLastPhoto+"]");
@@ -550,12 +551,12 @@ public class RemoteImageView extends ImageView {
 								bitmap = BitmapFactory.decodeFile(strLastPhoto);
 								if(null != bitmap){
 									setImage(bitmap, mStrVCamId);
-									
+
 									// write low quality image to memory cache
 									BeseyeMemCache.addBitmapToMemoryCache(strLastPhoto, bitmap);
-									
+
 									//bitmap = null;
-									
+
 									if(SHOW_THUMBNAIL_LOG)
 										Log.i(TAG, "use file cache first");
 								}
@@ -563,36 +564,36 @@ public class RemoteImageView extends ImageView {
 							bSameFileForVCamid = (null != strLastPhoto)?strLastPhoto.endsWith(cacheFileName):false;
 						}
 					}
-					
+
 					if(mbIsPhotoViewMode && !fileExist(mLocalSampleHQ) && fileExist(mLocalSample)){
 						bitmap = BitmapFactory.decodeFile(mLocalSample);
 						if(null != bitmap){
 							setImage(bitmap, mStrVCamId);
-							
+
 							// write low quality image to memory cache
 							BeseyeMemCache.addBitmapToMemoryCache(mLocal, bitmap);
-							
+
 							bitmap = null;
 							if(SHOW_THUMBNAIL_LOG){
 								Log.i(TAG, "decode low quality first");
 							}
 						}
 					}
-					
+
 					if(!bSameFileForVCamid){
 						if(fileExist(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample)){
 							bitmap = BitmapFactory.decodeFile(mbIsPhotoViewMode?(mLocalSampleHQ):mLocalSample);
 							if(mbIsPhotoViewMode && SHOW_THUMBNAIL_LOG){
 								Log.i(TAG, "decode file use high quality");
 							}
-						}else {						
+						}else {
 							if (mRemote == null) {
 								Log.w(TAG, "mRemote is null");
 
 								imageLoaded(false);
 								return;
 							}
-							
+
 							Bitmap downloadBitmap = null;
 							try {
 								if (mIsPreload) {
@@ -608,11 +609,11 @@ public class RemoteImageView extends ImageView {
 											}
 										}catch(BeseyeHttpRequestException ex){
 											lSleepTime = BeseyeUtils.getRetrySleepTime(retryCount);
-										} 
-										
+										}
+
 										if (++retryCount >= 3
 												|| Thread.currentThread()
-														.isInterrupted()) {
+												.isInterrupted()) {
 											Log.w(TAG, "download image fail");
 
 											imageLoaded(false);
@@ -627,12 +628,12 @@ public class RemoteImageView extends ImageView {
 								if(SHOW_THUMBNAIL_LOG){
 									Log.w(TAG, "downloadBitmap width :"+downloadBitmap.getWidth()+", height :"+downloadBitmap.getHeight());
 									Log.w(TAG, "mDestRatio :"+mDestRatio+", miDesireWidth :"+miDesireWidth+", miDesireHeight :"+miDesireHeight);
-									
+
 									if(mbIsPhotoViewMode){
 										Log.w(TAG, "download file use high quality");
 									}
 								}
-								
+
 								if ((0 > Float.compare(mDestRatio, 1.0f) || (0 < miDesireWidth || 0 < miDesireHeight)) && downloadBitmap != null) {
 									float fRatio = 1.0f;
 									if(0 > Float.compare(mDestRatio, 1.0f)){
@@ -641,9 +642,9 @@ public class RemoteImageView extends ImageView {
 										float fWidthRatio = Math.abs(miDesireWidth/(float)downloadBitmap.getWidth());
 										float fHeightRatio = Math.abs(miDesireHeight/(float)downloadBitmap.getHeight());
 										fRatio = (fWidthRatio > fHeightRatio)?((fHeightRatio)>1.0f?1.0f:Math.abs(fHeightRatio))
-												                             :((fWidthRatio)>1.0f?1.0f:Math.abs(fWidthRatio));
+												:((fWidthRatio)>1.0f?1.0f:Math.abs(fWidthRatio));
 									}
-									
+
 									if(0 > Float.compare(fRatio, 1.0f)){
 										if(SHOW_THUMBNAIL_LOG)
 											Log.w(TAG, "scale fRatio:"+fRatio+", mLocal = "+mLocal);
@@ -653,7 +654,7 @@ public class RemoteImageView extends ImageView {
 									}else{
 										bitmap = downloadBitmap;
 									}
-									
+
 								}else{
 									bitmap = downloadBitmap;
 								}
@@ -664,19 +665,19 @@ public class RemoteImageView extends ImageView {
 						}
 					}
 				}
-				
+
 				if (bitmap == null) {
 					Log.w(TAG, "Get image fail");
 					imageLoaded(false);
 					return;
 				}
-				
+
 				if(null != vcamidDir){
 					if(!bSameFileForVCamid && null != cacheFileName){
 						String fileToCache = vcamidDir.getAbsoluteFile()+"/"+cacheFileName;
 						if(!fileExist(fileToCache))
 							deleteFilesUnderDir(vcamidDir);
-						
+
 						compressFile(bitmap, fileToCache, Bitmap.CompressFormat.JPEG, 90);
 						BeseyeMemCache.addBitmapToMemoryCache(fileToCache, bitmap);
 					}
@@ -687,7 +688,7 @@ public class RemoteImageView extends ImageView {
 						Log.w(TAG, "save file use high quality");
 					}
 				}
-				
+
 				// set image
 				setImage(bitmap, mStrVCamId);
 
@@ -695,7 +696,7 @@ public class RemoteImageView extends ImageView {
 					// write image to memory cache
 					BeseyeMemCache.addBitmapToMemoryCache(mLocal, bitmap);
 				}
-				
+
 				loaded = true;
 				//Log.w(TAG, "mLocal:"+mLocal+" loaded ok");
 
@@ -708,7 +709,7 @@ public class RemoteImageView extends ImageView {
 	static public Bitmap imageHTTPTask(String uri, int iSample, String strVcamId) throws BeseyeHttpRequestException {
 //		if(DEBUG)
 //			Log.i(TAG, "imageHTTPTask(), iSample: " + iSample);
-		
+
 		if (uri == null) {
 			return null;
 		}
@@ -716,68 +717,87 @@ public class RemoteImageView extends ImageView {
 		Bitmap bitmap = null;
 		long lStartTs = System.currentTimeMillis();
 		try {
-			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-			HttpGet getRequest = new HttpGet(convertURL(uri/*+(((uri.hashCode()%2)==1)?"":"a")*/));
-			try{
-				if(null != getRequest){
-					getRequest.addHeader("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
-					getRequest.addHeader("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
-					getRequest.addHeader("Bes-User-Agent", BeseyeUtils.getUserAgent());
-					getRequest.addHeader("User-Agent", BeseyeUtils.getUserAgent());
-					getRequest.addHeader("Bes-App-Ver", BeseyeUtils.getPackageVersion());
-					getRequest.addHeader("Bes-Android-Ver", Build.VERSION.RELEASE);
-					getRequest.addHeader("Accept-Encoding", "gzip");
-					
-					if(null != strVcamId){
-						getRequest.addHeader("Bes-VcamPermission-VcamUid", strVcamId);
-						//Log.w(TAG, "begin to download, uri:" + uri);
-				      	HttpResponse response = client.execute(getRequest);
-						//Log.w(TAG, "end to download, uri:" + uri);
-				      	final int statusCode = response.getStatusLine().getStatusCode();
-				      	if(statusCode == HttpStatus.SC_OK){
-				      		final HttpEntity entity = response.getEntity();
-				      		if(entity != null){
-				      			inputStream = AndroidHttpClient.getUngzippedContent(entity);
-				      			
-				      			if (inputStream != null) {
-									BitmapFactory.Options options = new BitmapFactory.Options();
-									options.inSampleSize = iSample;
-									//Log.w(TAG, "begin to decodeStream, uri:" + uri);
-									bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-									//Log.w(TAG, "end to decodeStream, uri:" + uri);
+			//AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			//HttpGet getRequest = new HttpGet(convertURL(uri/*+(((uri.hashCode()%2)==1)?"":"a")*/));
 
-								}else{
-									Log.w(TAG, "inputStream is null");
-								}
-				      			entity.consumeContent();
-				      		}
-				      	}else if(BeseyeUtils.isServerUnavailableError(statusCode)){
+			URL url = new URL(convertURL(uri/*+(((uri.hashCode()%2)==1)?"":"a")*/));
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			try{
+				if(null != connection){
+					connection.setRequestProperty("Bes-User-Session", SessionMgr.getInstance().getAuthToken());
+					connection.setRequestProperty("Bes-Client-Devudid", BeseyeUtils.getAndroidUUid());
+					connection.setRequestProperty("Bes-User-Agent", BeseyeUtils.getUserAgent());
+					connection.setRequestProperty("User-Agent", BeseyeUtils.getUserAgent());
+					connection.setRequestProperty("Bes-App-Ver", BeseyeUtils.getPackageVersion());
+					connection.setRequestProperty("Bes-Android-Ver", Build.VERSION.RELEASE);
+					connection.setRequestProperty("Accept-Encoding", "gzip");
+
+					if(null != strVcamId){
+						connection.setRequestProperty("Bes-VcamPermission-VcamUid", strVcamId);
+						//Log.w(TAG, "begin to download, uri:" + uri);
+						//HttpResponse response = client.execute(getRequest);
+						connection.connect();
+						//Log.w(TAG, "end to download, uri:" + uri);
+						final int statusCode = connection.getResponseCode();//response.getStatusLine().getStatusCode();
+						if(statusCode == HttpStatus.SC_OK){
+							if ("gzip".equals(connection.getContentEncoding())) {
+								inputStream = new GZIPInputStream(connection.getInputStream());
+							}else {
+								inputStream = connection.getInputStream();
+							}
+							if (inputStream != null) {
+								BitmapFactory.Options options = new BitmapFactory.Options();
+								options.inSampleSize = iSample;
+								//Log.w(TAG, "begin to decodeStream, uri:" + uri);
+								bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+								//Log.w(TAG, "end to decodeStream, uri:" + uri);
+
+							}else{
+								Log.w(TAG, "inputStream is null");
+							}
+							//final HttpEntity entity = response.getEntity();
+//				      		if(entity != null){
+//				      			inputStream = AndroidHttpClient.getUngzippedContent(entity);
+//
+//				      			if (inputStream != null) {
+//									BitmapFactory.Options options = new BitmapFactory.Options();
+//									options.inSampleSize = iSample;
+//									//Log.w(TAG, "begin to decodeStream, uri:" + uri);
+//									bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+//									//Log.w(TAG, "end to decodeStream, uri:" + uri);
+//
+//								}else{
+//									Log.w(TAG, "inputStream is null");
+//								}
+//				      			entity.consumeContent();
+//				      		}
+						}else if(BeseyeUtils.isServerUnavailableError(statusCode)){
 							Log.w(TAG, "Found ServerUnavailableError, statusCode:"+statusCode);
-				      		throw new BeseyeHttpRequestException(statusCode);
-				      	}
-				    }
+							throw new BeseyeHttpRequestException(statusCode);
+						}
+					}
 				}
 			}catch(Exception e){
-			      // Could provide a more explicit error message for IOException or
-			      // IllegalStateException
+				// Could provide a more explicit error message for IOException or
+				// IllegalStateException
 				Log.w(TAG, "Http Get image fail: " + e);
-			    if(null != getRequest){
-			    	getRequest.abort();
-			    }
-			    
-			    if(e instanceof BeseyeHttpRequestException){
-			    	throw e;
-			    }
+//			    if(null != getRequest){
+//			    	getRequest.abort();
+//			    }
+//
+				if(e instanceof BeseyeHttpRequestException){
+					throw e;
+				}
 			}finally{
-			    if(client != null){
-			    	client.close();
-			    }
+				if(connection != null){
+					connection.disconnect();
+				}
 			}
 		} catch (Exception e) {
 			Log.w(TAG, "Http Get image fail: " + e);
-			 if(e instanceof BeseyeHttpRequestException){
-			    throw (BeseyeHttpRequestException)e;
-			 }
+			if(e instanceof BeseyeHttpRequestException){
+				throw (BeseyeHttpRequestException)e;
+			}
 		} finally {
 			closeStream(inputStream);
 		}
@@ -798,7 +818,7 @@ public class RemoteImageView extends ImageView {
 			parent.mkdirs();
 		}
 	}
-	
+
 	static public void deleteFilesUnderDir(File vcamidDir){
 		if(null != vcamidDir && vcamidDir.isDirectory()){
 			File[] files = vcamidDir.listFiles();
@@ -814,14 +834,14 @@ public class RemoteImageView extends ImageView {
 		File f;
 		return (path != null && (f = new File(path)).exists() && f.length() > 0);
 	}
-	
+
 //	static private boolean deleteFile(String path) {
 //		File f;
 //		return (path != null && (f = new File(path)).exists() && f.delete());
 //	}
 
 	static public void compressFile(Bitmap bitmap, String target,
-			Bitmap.CompressFormat format, int quality) {
+									Bitmap.CompressFormat format, int quality) {
 		if (bitmap == null || target == null) {
 			return;
 		}
@@ -866,10 +886,10 @@ public class RemoteImageView extends ImageView {
 		} catch (Exception e) {
 		}
 	}
-	
+
 	private RectF rectF = new RectF();
 	private Paint paintShadow = new Paint();
-	
+
 	@Override
 	protected void onDraw(Canvas canvas) {
 		if(mbEnableShadow){
@@ -877,65 +897,65 @@ public class RemoteImageView extends ImageView {
 			Drawable maiDrawable = getDrawable();
 			if (maiDrawable instanceof BitmapDrawable ) {
 				Paint paint = ((BitmapDrawable) maiDrawable).getPaint();
-		        final int color = 0xff000000;
-		        //Rect bitmapBounds = maiDrawable.getBounds();
-		        //final RectF rectF = new RectF(bitmapBounds);
-				
+				final int color = 0xff000000;
+				//Rect bitmapBounds = maiDrawable.getBounds();
+				//final RectF rectF = new RectF(bitmapBounds);
+
 				int iWidth = getWidth();
 				int iHeight = getHeight();
 				//final Rect rect = new Rect(0, 0, iWidth, iHeight);
 				rectF.set(0, 0, iWidth, iHeight);
-				
-				 // Create an off-screen bitmap to the PorterDuff alpha blending to work right
+
+				// Create an off-screen bitmap to the PorterDuff alpha blending to work right
 				int saveCount = canvas.saveLayer(rectF, null,
-	                    Canvas.MATRIX_SAVE_FLAG |
-	                    Canvas.CLIP_SAVE_FLAG |
-	                    Canvas.HAS_ALPHA_LAYER_SAVE_FLAG |
-	                    Canvas.FULL_COLOR_LAYER_SAVE_FLAG |
-	                    Canvas.CLIP_TO_LAYER_SAVE_FLAG);
+						Canvas.MATRIX_SAVE_FLAG |
+								Canvas.CLIP_SAVE_FLAG |
+								Canvas.HAS_ALPHA_LAYER_SAVE_FLAG |
+								Canvas.FULL_COLOR_LAYER_SAVE_FLAG |
+								Canvas.CLIP_TO_LAYER_SAVE_FLAG);
 				// Resize the rounded rect we'll clip by this view's current bounds
 				// (super.onDraw() will do something similar with the drawable to draw)
 				//getImageMatrix().mapRect(rectF);
 
-		        paint.setAntiAlias(true);
-		        canvas.drawARGB(0, 0, 0, 0);
-		        paint.setColor(color);
-		        if(mbEnableShadow){
-		        	rectF.top+=mShadowWidth;
-			        rectF.left+=mShadowWidth;
-			        rectF.bottom-=mShadowWidth;
-			        rectF.right-=mShadowWidth;
-		        }
-		        canvas.drawRect(rectF,paint);
+				paint.setAntiAlias(true);
+				canvas.drawARGB(0, 0, 0, 0);
+				paint.setColor(color);
+				if(mbEnableShadow){
+					rectF.top+=mShadowWidth;
+					rectF.left+=mShadowWidth;
+					rectF.bottom-=mShadowWidth;
+					rectF.right-=mShadowWidth;
+				}
+				canvas.drawRect(rectF,paint);
 
 				Xfermode oldMode = paint.getXfermode();
 				// This is the paint already associated with the BitmapDrawable that super draws
-		        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-		        
-		        super.onDraw(canvas);
-		        paint.setXfermode(oldMode);
-		        canvas.restoreToCount(saveCount);
-		        
-		        //Draw shadow
-		        if(mbEnableShadow){
-		        	canvas.save();
-			        rectF.top-=mShadowWidth;
-			        rectF.left-=mShadowWidth;
-			        rectF.bottom+=mShadowWidth;
-			        rectF.right+=mShadowWidth;
-			        canvas.clipRect(rectF);
-			        
-			        rectF.top+=mShadowWidth;
-			        rectF.left+=mShadowWidth;
-			        rectF.bottom-=mShadowWidth;
-			        rectF.right-=mShadowWidth;
-			        canvas.clipRect(rectF, Op.DIFFERENCE);
+				paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
 
-			        paintShadow.setColor(Color.TRANSPARENT);
-			        paintShadow.setShadowLayer(5.0f, 0, 0, 0x66000000); 
-			        canvas.drawRect(rectF, paintShadow);
-			        canvas.restore();
-		        }
+				super.onDraw(canvas);
+				paint.setXfermode(oldMode);
+				canvas.restoreToCount(saveCount);
+
+				//Draw shadow
+				if(mbEnableShadow){
+					canvas.save();
+					rectF.top-=mShadowWidth;
+					rectF.left-=mShadowWidth;
+					rectF.bottom+=mShadowWidth;
+					rectF.right+=mShadowWidth;
+					canvas.clipRect(rectF);
+
+					rectF.top+=mShadowWidth;
+					rectF.left+=mShadowWidth;
+					rectF.bottom-=mShadowWidth;
+					rectF.right-=mShadowWidth;
+					canvas.clipRect(rectF, Op.DIFFERENCE);
+
+					paintShadow.setColor(Color.TRANSPARENT);
+					paintShadow.setShadowLayer(5.0f, 0, 0, 0x66000000);
+					canvas.drawRect(rectF, paintShadow);
+					canvas.restore();
+				}
 			} else {
 				super.onDraw(canvas);
 			}
@@ -951,26 +971,26 @@ public class RemoteImageView extends ImageView {
 				super.onDraw(canvas);
 		}
 	}
-	
+
 	private static String convertURL(String str) {
-        String url = null;
-        try{
-        url = new String(str.trim()
-        	//.replace(" ", "%20").replace("&", "%26")
-            //.replace(",", "%2c").replace("(", "%28").replace(")", "%29")
-            //.replace("!", "%21").replace("=", "%3D").replace("<", "%3C")
-            //.replace(">", "%3E").replace("#", "%23").replace("$", "%24")
-            //.replace("'", "%27").replace("*", "%2A").replace("-", "%2D")
-            //.replace(".", "%2E").replace("/", "%2F").replace(":", "%3A")
-            //.replace(";", "%3B").replace("?", "%3F").replace("@", "%40")
-            //.replace("[", "%5B").replace("\\", "%5C").replace("]", "%5D")
-            //.replace("_", "%5F").replace("`", "%60")
-        	.replace("{", "%7B")
-            //.replace("|", "%7C")
-        	.replace("}", "%7D"));
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return url;
-    } 
+		String url = null;
+		try{
+			url = new String(str.trim()
+					//.replace(" ", "%20").replace("&", "%26")
+					//.replace(",", "%2c").replace("(", "%28").replace(")", "%29")
+					//.replace("!", "%21").replace("=", "%3D").replace("<", "%3C")
+					//.replace(">", "%3E").replace("#", "%23").replace("$", "%24")
+					//.replace("'", "%27").replace("*", "%2A").replace("-", "%2D")
+					//.replace(".", "%2E").replace("/", "%2F").replace(":", "%3A")
+					//.replace(";", "%3B").replace("?", "%3F").replace("@", "%40")
+					//.replace("[", "%5B").replace("\\", "%5C").replace("]", "%5D")
+					//.replace("_", "%5F").replace("`", "%60")
+					.replace("{", "%7B")
+					//.replace("|", "%7C")
+					.replace("}", "%7D"));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return url;
+	}
 }

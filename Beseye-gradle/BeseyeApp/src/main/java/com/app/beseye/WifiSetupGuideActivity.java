@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -60,6 +61,9 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
+			Toolbar parent =(Toolbar) mVwNavBar.getParent();
+			parent.setContentInsetsAbsolute(0,0);
+			parent.setPadding(0,0,0,0);
 		}
 		
 		mBtnChooseWifiAP = (Button)this.findViewById(R.id.button_choose_network);
@@ -111,7 +115,7 @@ public class WifiSetupGuideActivity extends WifiControlBaseActivity {
 	static public final int REQ_CODE_PICK_WIFI = 0x1001;
 	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(REQ_CODE_PICK_WIFI == requestCode){
 			if(RESULT_OK == resultCode){
 				finish();

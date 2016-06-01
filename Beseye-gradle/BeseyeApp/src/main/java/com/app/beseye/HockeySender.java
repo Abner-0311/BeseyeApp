@@ -1,12 +1,14 @@
 package com.app.beseye;
 
 import static com.app.beseye.util.BeseyeConfig.DEBUG;
+import static com.app.beseye.util.BeseyeConfig.HOCKEY_APP_ID;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android.content.Context;
 import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.collector.CrashReportData;
@@ -26,9 +28,9 @@ public class HockeySender implements ReportSender {
 	  private static String CRASHES_PATH = "/crashes";
 
 	  @Override
-	  public void send(CrashReportData report) throws ReportSenderException {
+	  public void send(Context context, CrashReportData report) throws ReportSenderException {
 	    String log = createCrashLog(report);
-	    String url = BASE_URL + ACRA.getConfig().formKey() + CRASHES_PATH;
+	    String url = BASE_URL + HOCKEY_APP_ID + CRASHES_PATH;
 	    //String url = BASE_URL + Configuration.HOCKEY_APP_ID + CRASHES_PATH;
 	    if(DEBUG)
 	    	Log.e(TAG, "***STACK_TRACE***\n"+report.get(ReportField.STACK_TRACE));

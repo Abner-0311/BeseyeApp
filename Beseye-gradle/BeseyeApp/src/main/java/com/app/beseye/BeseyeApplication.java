@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.acra.ACRA;
+import org.acra.sender.ReportSender;
+import org.acra.sender.ReportSenderFactory;
+import org.acra.config.ACRAConfiguration;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
@@ -30,6 +33,7 @@ import com.app.beseye.service.BeseyeNotificationService;
 import com.app.beseye.setting.CamSettingMgr;
 import com.app.beseye.util.BeseyeConfig;
 import com.app.beseye.util.BeseyeFeatureConfig;
+import com.app.beseye.util.BeseyeLocationMgr;
 import com.app.beseye.util.BeseyeNewFeatureMgr;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.DeviceUuidFactory;
@@ -37,11 +41,11 @@ import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.widget.BeseyeMemCache;
 import com.facebook.FacebookSdk;
 
-@ReportsCrashes(formKey= HOCKEY_APP_ID,
-				logcatArguments = { "-t", "2500", "-v", "long", "BesEye:W", "*:S" },
+@ReportsCrashes(logcatArguments = { "-t", "2500", "-v", "long", "BesEye:W", "*:S" },
 				mode = ReportingInteractionMode.TOAST,
-				forceCloseDialogAfterToast = false,
+				alsoReportToAndroidFramework = false,
 				resToastText = R.string.crash_toast_text,
+				reportSenderFactoryClasses ={com.app.beseye.BeseyeApplication.HockeySenderFactory.class},
 				customReportContent = { ReportField.PACKAGE_NAME, ReportField.APP_VERSION_CODE, ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.BUILD, ReportField.TOTAL_MEM_SIZE,
 										ReportField.AVAILABLE_MEM_SIZE, ReportField.STACK_TRACE, ReportField.THREAD_DETAILS, ReportField.LOGCAT, ReportField.EVENTSLOG, ReportField.DUMPSYS_MEMINFO})
 
@@ -76,11 +80,12 @@ public class BeseyeApplication extends Application {
 		}
 
 
-		ACRA.init(this);
-		ACRA.getErrorReporter().setReportSender(new HockeySender());
+		//ACRA.init(this);
+		//ACRA.getErrorReporter().setReportSender(new HockeySender());
 		
 		NetworkMgr.createInstance(getApplicationContext());
 		CamSettingMgr.createInstance(getApplicationContext());
+		BeseyeLocationMgr.createInstance(getApplicationContext());
 		
 		//Log.i(TAG, "*****************BeseyeApplication::onCreate(), Hotspot name:"+NetworkMgr.getInstance().getHotspotName());
 
@@ -97,6 +102,21 @@ public class BeseyeApplication extends Application {
 		}    
 		
 		sStrAppMark = (BeseyeConfig.ALPHA_VER?" (alpha)":(BeseyeConfig.BETA_VER?" (beta)":(BeseyeConfig.DEBUG?" (dev)":"")));
+	}
+
+	@Override
+	protected void attachBaseContext(Context base) {
+		super.attachBaseContext(base);
+
+		// The following line triggers the initialization of ACRA
+		ACRA.init(this);
+	}
+
+	static public class HockeySenderFactory implements ReportSenderFactory {
+		@Override
+		public ReportSender create(Context context, ACRAConfiguration config) {
+			return new HockeySender();
+		}
 	}
 	
 	static synchronized public Application getApplication(){

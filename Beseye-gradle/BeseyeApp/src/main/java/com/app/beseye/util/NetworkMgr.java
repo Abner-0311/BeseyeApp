@@ -932,7 +932,7 @@ public class NetworkMgr {
 			String strAciveBSSID = NetworkMgr.getInstance().getActiveWifiBSSID();
 			if(DEBUG)
 				Log.i(TAG, "filterWifiAPInfo(), strAciveBSSID = "+strAciveBSSID);
-			if(null != src){
+			if(null != src && 0 < src.size()){
 				for(ScanResult ret : src){
 					if(null != ret){
 						if(ret.frequency < WifiAPInfo.MAX_FREQUENCY && 0 < ret.SSID.length()){
@@ -948,6 +948,9 @@ public class NetworkMgr {
 					WifiAPInfo infoOther = new WifiAPInfo(true);
 					dest.add(infoOther);
 				}
+			}else{
+				WifiAPInfo infoOther = new WifiAPInfo(true);
+				dest.add(infoOther);
 			}
 		}
 	}

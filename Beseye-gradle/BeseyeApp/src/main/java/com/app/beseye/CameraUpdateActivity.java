@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -59,6 +60,9 @@ public class CameraUpdateActivity extends BeseyeBaseActivity {
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
+			Toolbar parent =(Toolbar) mVwNavBar.getParent();
+			parent.setContentInsetsAbsolute(0,0);
+			parent.setPadding(0,0,0,0);
 		}
 		
 		mTxtUpdateTitle = (TextView)findViewById(R.id.txt_update_title);

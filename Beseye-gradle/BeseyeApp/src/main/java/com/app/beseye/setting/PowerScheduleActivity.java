@@ -25,6 +25,7 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -80,6 +81,9 @@ public class PowerScheduleActivity extends BeseyeBaseActivity
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
+			Toolbar parent =(Toolbar) mVwNavBar.getParent();
+			parent.setContentInsetsAbsolute(0,0);
+			parent.setPadding(0,0,0,0);
 		}
 		
 		try {

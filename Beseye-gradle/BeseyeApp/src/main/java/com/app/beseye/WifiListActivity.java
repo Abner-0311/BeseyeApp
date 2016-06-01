@@ -4,6 +4,7 @@ import static com.app.beseye.util.BeseyeConfig.DEBUG;
 import static com.app.beseye.util.BeseyeConfig.RELAY_AP_SSID;
 import static com.app.beseye.util.BeseyeConfig.TAG;
 import static com.app.beseye.util.BeseyeJSONUtil.ACC_DATA;
+import android.support.v4.content.PermissionChecker;
 
 import java.util.List;
 
@@ -16,14 +17,12 @@ import com.app.beseye.adapter.WifiInfoAdapter;
 import com.app.beseye.adapter.WifiInfoAdapter.WifoInfoHolder;
 import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_ERROR;
 import com.app.beseye.delegator.WifiAPSetupDelegator.WIFI_AP_SETUP_STATE;
-import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.pairing.SoundPairingActivity;
-import com.app.beseye.setting.PowerScheduleActivity;
 import com.app.beseye.util.BeseyeJSONUtil;
+//import com.app.beseye.util.BeseyeLocationMgr;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
-import com.app.beseye.util.NetworkMgr.ApManager;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
@@ -31,19 +30,31 @@ import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
 import com.app.beseye.widget.PullToRefreshBase.LvExtendedMode;
 import com.app.beseye.widget.PullToRefreshBase.OnRefreshListener;
 import com.app.beseye.widget.PullToRefreshListView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
-
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
 import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -53,11 +64,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-public class WifiListActivity extends WifiControlBaseActivity 
-							  implements OnSwitchBtnStateChangedListener{
-	
+public class WifiListActivity extends WifiControlBaseActivity
+								implements OnSwitchBtnStateChangedListener{
+
 	private PullToRefreshListView mlvWifiList;
 	private WifiInfoAdapter mWifiInfoAdapter;
 	//private View mSwWifi;
@@ -65,115 +77,125 @@ public class WifiListActivity extends WifiControlBaseActivity
 	private BeseyeSwitchBtn mWifiSwitchBtn;
 	private View mVwNavBar;
 	private ActionBar.LayoutParams mNavBarLayoutParams;
-	
+
 	static private final String KEY_MAYBE_WRONG_PW = "KEY_MAYBE_WRONG_PW";
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		if(DEBUG)
+		if (DEBUG)
 			Log.d(TAG, "WifiListActivity::onCreate()");
 		super.onCreate(savedInstanceState);
 		mbIgnoreSessionCheck = true;
 		mbIgnoreCamVerCheck = true;
-		
-		if(mbChangeWifi){
+
+		if (mbChangeWifi) {
 			try {
 				mCam_obj = new JSONObject(getIntent().getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
-				if(null != mCam_obj){
+				if (null != mCam_obj) {
 					mStrVCamID = BeseyeJSONUtil.getJSONString(mCam_obj, BeseyeJSONUtil.ACC_ID);
 				}
 			} catch (JSONException e1) {
-				Log.e(TAG, "WifiListActivity::onCreate(), failed to parse, e1:"+e1.toString());
+				Log.e(TAG, "WifiListActivity::onCreate(), failed to parse, e1:" + e1.toString());
 			}
 		}
-		
+
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
-		
+
 		mVwNavBar = getLayoutInflater().inflate(R.layout.layout_wifilist_nav, null);
-		if(null != mVwNavBar){
-			ImageView mIvBack = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_left_btn);
-			if(null != mIvBack){
+		if (null != mVwNavBar) {
+			ImageView mIvBack = (ImageView) mVwNavBar.findViewById(R.id.iv_nav_left_btn);
+			if (null != mIvBack) {
 				mIvBack.setOnClickListener(this);
 			}
-			
-			mWifiSwitchBtn = (BeseyeSwitchBtn)mVwNavBar.findViewById(R.id.sb_wifi_btn);
-			if(null != mWifiSwitchBtn){
+
+			mWifiSwitchBtn = (BeseyeSwitchBtn) mVwNavBar.findViewById(R.id.sb_wifi_btn);
+			if (null != mWifiSwitchBtn) {
 				mWifiSwitchBtn.setOnSwitchBtnStateChangedListener(this);
 				//if(mbChangeWifi){
-					mWifiSwitchBtn.setVisibility(View.GONE);
+				mWifiSwitchBtn.setVisibility(View.GONE);
 				//}
 			}
-			
+
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
-	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
+			getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
+			Toolbar parent = (Toolbar) mVwNavBar.getParent();
+			parent.setContentInsetsAbsolute(0, 0);
+			parent.setPadding(0, 0, 0, 0);
 		}
-		
+
 		mlvWifiList = (PullToRefreshListView) findViewById(R.id.lst_wifi_list);
-		
-		if(null != mlvWifiList){
+
+		if (null != mlvWifiList) {
 			mlvWifiList.setOnRefreshListener(new OnRefreshListener() {
-    			@Override
-    			public void onRefresh() {
-    				if(mbChangeWifi){
-    					loadWifiSSIDListFromCam();
-    				}else{
-    					scanWifi(true);
-    				}
-    			}
+				@Override
+				public void onRefresh() {
+					if (mbChangeWifi) {
+						loadWifiSSIDListFromCam();
+					} else {
+						scanWifi(true);
+						mlBeginScanWiFiTimestamp = System.currentTimeMillis();
+					}
+				}
 
 				@Override
 				public void onRefreshCancel() {
 
 				}
-    		});
-			
+			});
+
 			mlvWifiList.setMode(LvExtendedMode.PULL_DOWN_TO_REFRESH);
-        	
+
 			mWifiInfoAdapter = new WifiInfoAdapter(this, mlstScanResult, R.layout.wifi_list_item, this);
-			if(null != mlvWifiList){
+			if (null != mlvWifiList) {
 				mlvWifiList.setAdapter(mWifiInfoAdapter);
-				if(mbChangeWifi){
+				if (mbChangeWifi) {
 					mWifiInfoAdapter.setIsCamWifiList(true);
 				}
 			}
 		}
-
 	}
-	
+
 	@Override
 	protected boolean onCameraOffline(JSONObject msgObj){
 		if(DEBUG)
 			Log.i(TAG, getClass().getSimpleName()+"::onCameraOffline(),  msgObj = "+msgObj);
 		if(mbChangeWifi && null != msgObj){
-    		JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
-    		if(null != objCus){
-    			String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
-    			if(null != mStrVCamID && mStrVCamID.equals(strCamUID)){
-    				finish();
-    				return true;
-    			}
-    		}
+			JSONObject objCus = BeseyeJSONUtil.getJSONObject(msgObj, BeseyeJSONUtil.PS_CUSTOM_DATA);
+			if(null != objCus){
+				String strCamUID = BeseyeJSONUtil.getJSONString(objCus, BeseyeJSONUtil.PS_CAM_UID);
+				if(null != mStrVCamID && mStrVCamID.equals(strCamUID)){
+					finish();
+					return true;
+				}
+			}
 		}
 		return false;
-	 }
-	
-    @Override
+	}
+
+	@Override
 	protected void onResume() {
-    	if(DEBUG)
-    		Log.d(TAG, "WifiListActivity::onResume()");
+		if(DEBUG)
+			Log.d(TAG, "WifiListActivity::onResume()");
 		super.onResume();
 		updateUIByWifiStatus(NetworkMgr.getInstance().getWifiStatus());
 	}
-    
-    @Override
-	protected void onSessionComplete() {
-		super.onSessionComplete();
-		if(false == mbChangeWifi)
-			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
+
+	@Override
+	protected void onPause() {
+		if(DEBUG)
+			Log.d(TAG, "WifiListActivity::onPause()");
+		super.onPause();
 	}
-	
+
+//    @Override
+//	protected void onSessionComplete() {
+//		super.onSessionComplete();
+//		if(false == mbChangeWifi)
+//			monitorAsyncTask(new BeseyeAccountTask.GetVCamListTask(this), true);
+//	}
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		if(DEBUG)
@@ -185,7 +207,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 				dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 				dialog.setContentView(createKeyIdxDialog());
-				
+
 				if(null != dialog){
 					dialog.setCanceledOnTouchOutside(true);
 					dialog.setOnCancelListener(new OnCancelListener(){
@@ -196,17 +218,17 @@ public class WifiListActivity extends WifiControlBaseActivity
 					dialog.setOnDismissListener(new OnDismissListener(){
 						@Override
 						public void onDismiss(DialogInterface arg0) {
-							
+
 						}});
 				}
-            	break;
+				break;
 			}
 			case DIALOG_ID_WIFI_AP_SECU_PICKER:{
 				dialog = new Dialog(this);
 				dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 				dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 				dialog.setContentView(createSecuValDialog());
-				
+
 				if(null != dialog){
 					dialog.setCanceledOnTouchOutside(true);
 					dialog.setOnCancelListener(new OnCancelListener(){
@@ -217,10 +239,10 @@ public class WifiListActivity extends WifiControlBaseActivity
 					dialog.setOnDismissListener(new OnDismissListener(){
 						@Override
 						public void onDismiss(DialogInterface arg0) {
-							
+
 						}});
 				}
-            	break;
+				break;
 			}
 
 			default:
@@ -228,7 +250,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 		}
 		return dialog;
 	}
-	
+
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle bundle) {
 		Dialog dialog;
@@ -238,14 +260,14 @@ public class WifiListActivity extends WifiControlBaseActivity
 //				if(REDDOT_DEMO){
 //					mlstScanResult.clear();
 //					setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
-//				}else 
+//				}else
 				if(null != mChosenWifiAPInfo){
-					boolean bMaybeWrongPW = bundle.getBoolean(KEY_MAYBE_WRONG_PW);	
+					boolean bMaybeWrongPW = bundle.getBoolean(KEY_MAYBE_WRONG_PW);
 					dialog = new Dialog(this);
 					dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 					dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 					dialog.setContentView(createWifiAPInfoView(true, bMaybeWrongPW?R.string.dialog_wifi_incorrect_password_wep:R.string.dialog_wifi_incorrect_password));
-					
+
 					if(null != dialog){
 						dialog.setCanceledOnTouchOutside(true);
 						dialog.setOnCancelListener(new OnCancelListener(){
@@ -253,20 +275,20 @@ public class WifiListActivity extends WifiControlBaseActivity
 							public void onCancel(DialogInterface arg0) {
 								removeMyDialog(DIALOG_ID_WIFI_AP_INCORRECT_PW);
 							}});
-						
+
 						dialog.setOnDismissListener(new OnDismissListener(){
 							@Override
 							public void onDismiss(DialogInterface arg0) {
 								mWifiApPassword = null;
 							}});
 					}
-	            	break;
+					break;
 				}
 			}
 			default:
 				dialog = super.onCreateDialog(id, bundle);
 		}
-		
+
 		return dialog;
 	}
 
@@ -276,22 +298,22 @@ public class WifiListActivity extends WifiControlBaseActivity
 		if(null != inflater){
 			viewRet = (View)inflater.inflate(R.layout.wifi_ap_key_index_dialog, null);
 			if(null != viewRet){
-				ImageView[] ivKeyIdx = new ImageView[NetworkMgr.NUM_WEP_KEY_IDX]; 
+				ImageView[] ivKeyIdx = new ImageView[NetworkMgr.NUM_WEP_KEY_IDX];
 				if(null != ivKeyIdx){
 					ivKeyIdx[0] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_1_check);
 					ivKeyIdx[1] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_2_check);
 					ivKeyIdx[2] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_3_check);
 					ivKeyIdx[3] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_4_check);
 				}
-				
-				final ViewGroup[] vgKeyIdx = new ViewGroup[NetworkMgr.NUM_WEP_KEY_IDX];  
+
+				final ViewGroup[] vgKeyIdx = new ViewGroup[NetworkMgr.NUM_WEP_KEY_IDX];
 				if(null != vgKeyIdx){
 					vgKeyIdx[0] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_1_holder);
 					vgKeyIdx[1] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_2_holder);
 					vgKeyIdx[2] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_3_holder);
 					vgKeyIdx[3] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_4_holder);
 				}
-				
+
 				OnClickListener SecuValClick = new OnClickListener(){
 					@Override
 					public void onClick(View view) {
@@ -306,7 +328,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 							}
 						}
 					}};
-				
+
 				for(int idx = 0; idx < NetworkMgr.NUM_WEP_KEY_IDX;idx++){
 					ivKeyIdx[idx].setVisibility((idx == (mChosenWifiAPInfo.wepkeyIdx))?View.VISIBLE:View.INVISIBLE);
 					vgKeyIdx[idx].setOnClickListener(SecuValClick);
@@ -315,30 +337,30 @@ public class WifiListActivity extends WifiControlBaseActivity
 		}
 		return viewRet;
 	}
-	
+
 	private View createSecuValDialog(){
 		View viewRet = null;
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		if(null != inflater){
 			viewRet = (View)inflater.inflate(R.layout.wifi_ap_key_index_dialog, null);
 			if(null != viewRet){
-				ImageView[] ivSecuIdx = new ImageView[NetworkMgr.NUM_WIFI_SECU_TYPE]; 
+				ImageView[] ivSecuIdx = new ImageView[NetworkMgr.NUM_WIFI_SECU_TYPE];
 				if(null != ivSecuIdx){
 					ivSecuIdx[0] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_1_check);
 					ivSecuIdx[1] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_2_check);
 					ivSecuIdx[2] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_3_check);
 					ivSecuIdx[3] = (ImageView)viewRet.findViewById(R.id.iv_key_idx_4_check);
 				}
-				
-				final ViewGroup[] vgSecuIdx = new ViewGroup[NetworkMgr.NUM_WIFI_SECU_TYPE];  
+
+				final ViewGroup[] vgSecuIdx = new ViewGroup[NetworkMgr.NUM_WIFI_SECU_TYPE];
 				if(null != vgSecuIdx){
 					vgSecuIdx[0] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_1_holder);
 					vgSecuIdx[1] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_2_holder);
 					vgSecuIdx[2] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_3_holder);
 					vgSecuIdx[3] = (ViewGroup)viewRet.findViewById(R.id.vg_key_idx_4_holder);
 				}
-				
-				final TextView[] txtSecuIdx = new TextView[NetworkMgr.NUM_WIFI_SECU_TYPE];  
+
+				final TextView[] txtSecuIdx = new TextView[NetworkMgr.NUM_WIFI_SECU_TYPE];
 				if(null != txtSecuIdx){
 					txtSecuIdx[0] = (TextView)viewRet.findViewById(R.id.txt_key_idx_1);
 					BeseyeUtils.setText(txtSecuIdx[0] , NetworkMgr.translateCipherTypeToDesc(WifiListActivity.this, 0));
@@ -349,7 +371,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 					txtSecuIdx[3] = (TextView)viewRet.findViewById(R.id.txt_key_idx_4);
 					BeseyeUtils.setText(txtSecuIdx[3] , NetworkMgr.translateCipherTypeToDesc(WifiListActivity.this, 3));
 				}
-				
+
 				OnClickListener SecuValClick = new OnClickListener(){
 					@Override
 					public void onClick(View view) {
@@ -365,7 +387,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 							}
 						}
 					}};
-				
+
 				for(int idx = 0; idx < NetworkMgr.NUM_WEP_KEY_IDX;idx++){
 					ivSecuIdx[idx].setVisibility((idx == mChosenWifiAPInfo.iCipherIdx)?View.VISIBLE:View.INVISIBLE);
 					vgSecuIdx[idx].setOnClickListener(SecuValClick);
@@ -374,7 +396,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 		}
 		return viewRet;
 	}
-	
+
 	@Override
 	protected int getLayoutId() {
 		return R.layout.layout_wifi_list;
@@ -386,7 +408,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 			WifoInfoHolder info = (WifoInfoHolder)view.getTag();
 			if(null != info){
 				mChosenWifiAPInfo = (WifiAPInfo)info.mUserData;
-				
+
 				if(false ==mChosenWifiAPInfo.bIsOther)
 					showMyDialog(DIALOG_ID_WIFI_AP_INFO);
 				else
@@ -396,7 +418,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 			super.onClick(view);
 		}
 	}
-	
+
 	protected void updateUIByWifiStatus(int iWifiState){
 		super.updateUIByWifiStatus(iWifiState);
 		if(mbChangeWifi){
@@ -415,68 +437,68 @@ public class WifiListActivity extends WifiControlBaseActivity
 		}
 	}
 	private BeseyeCamBEHttpTask.GetWiFiSSIDListTask mGetWiFiSSIDListTask;
-	
+
 	private void loadWifiSSIDListFromCam(){
 		if(null == mGetWiFiSSIDListTask)
 			monitorAsyncTask(mGetWiFiSSIDListTask = new BeseyeCamBEHttpTask.GetWiFiSSIDListTask(this), true, mStrVCamID);
 	}
-	
+
 	protected void onWiFiScanComplete(){
-		refreshListView();	
+		refreshListView();
 	}
-	
+
 	private void refreshListView(){
 		if(mlvWifiList != null){
 			mlvWifiList.onRefreshComplete();
 			mlvWifiList.updateLatestTimestamp();
 		}
-		
+
 		if(null != mWifiInfoAdapter)
 			mWifiInfoAdapter.notifyDataSetChanged();
 	}
-	
-	protected void setWifiSettingState(WIFI_SETTING_STATE state){
-		if(DEBUG)
-			Log.i(TAG, "WifiListActivity::setWifiSettingState(), state:"+state);
-		WIFI_SETTING_STATE prevState = mWifiSettingState;
-		//mWifiSettingState = state;
-		switch(state){
-			case STATE_WIFI_AP_PICKING:{
-				break;
-			}
-			case STATE_WIFI_AP_SETTING:{
-				showMyDialog(DIALOG_ID_WIFI_SETTING);
-				break;
-			}
-			case STATE_WIFI_AP_SET_DONE:{
-				if(prevState == WIFI_SETTING_STATE.STATE_WIFI_AP_SETTING){
-					removeMyDialog(DIALOG_ID_WIFI_SETTING);
-					if(getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false)){
-						
-						finish();
-					}else{
-						Intent intent = new Intent();
-						intent.setClass(this, CameraViewActivity.class);
-						startActivity(intent);
-					}
-					setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE);
-					mWifiAPSetupDelegator = null;
-				}else{
-					Log.i(TAG, "setWifiSettingState(), invalid prestate "+prevState);
-				}
-				
-				break;
-			}
-			default:
-				super.setWifiSettingState(state);
-		}
-	}
+
+//	protected void setWifiSettingState(WIFI_SETTING_STATE state){
+//		if(DEBUG)
+//			Log.i(TAG, "WifiListActivity::setWifiSettingState(), state:"+state);
+//		WIFI_SETTING_STATE prevState = mWifiSettingState;
+//		//mWifiSettingState = state;
+//		switch(state){
+//			case STATE_WIFI_AP_PICKING:{
+//				break;
+//			}
+//			case STATE_WIFI_AP_SETTING:{
+//				showMyDialog(DIALOG_ID_WIFI_SETTING);
+//				break;
+//			}
+//			case STATE_WIFI_AP_SET_DONE:{
+//				if(prevState == WIFI_SETTING_STATE.STATE_WIFI_AP_SETTING){
+//					removeMyDialog(DIALOG_ID_WIFI_SETTING);
+//					if(getIntent().getBooleanExtra(WifiControlBaseActivity.KEY_CHANGE_WIFI_ONLY, false)){
+//
+//						finish();
+//					}else{
+//						Intent intent = new Intent();
+//						intent.setClass(this, CameraViewActivity.class);
+//						startActivity(intent);
+//					}
+//					setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE);
+//					mWifiAPSetupDelegator = null;
+//				}else{
+//					Log.i(TAG, "setWifiSettingState(), invalid prestate "+prevState);
+//				}
+//
+//				break;
+//			}
+//			default:
+//				super.setWifiSettingState(state);
+//		}
+//	}
 
 	@Override
 	public void onWifiApSetupStateChanged(WIFI_AP_SETUP_STATE curState, WIFI_AP_SETUP_STATE prevState) {
 		if(DEBUG)
 			Log.i(TAG, "onWifiApSetupStateChanged(), curState:"+curState+", prevState:"+prevState);
-		
+
 		if(curState.equals(WIFI_AP_SETUP_STATE.SETUP_DONE)){
 			setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_AP_SET_DONE);
 		}else if(curState.equals(WIFI_AP_SETUP_STATE.TARGET_AP_CONNECTED)){
@@ -485,10 +507,10 @@ public class WifiListActivity extends WifiControlBaseActivity
 			intent.putExtra(SoundPairingActivity.KEY_WIFI_INFO, mChosenWifiAPInfo);
 			intent.setClass(this, SoundPairingActivity.class);
 			intent.putExtra(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, getIntent().getBooleanExtra(SoundPairingActivity.KEY_CHANGE_WIFI_BEBEBE, false));
-			intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
-			intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
+//			intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, miOriginalVcamCnt);
+//			intent.putExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_ARR, miOriginalVcamArr);
 			startActivity(intent);
-			setResult(RESULT_OK);		
+			setResult(RESULT_OK);
 		}
 	}
 
@@ -522,7 +544,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 				showMyDialog(DIALOG_ID_WIFI_AP_INCORRECT_PW, b);
 				break;
 			}
-			
+
 			case ERROR_TARGET_AP_CONNECTIVITY_ERROR:
 			case ERROR_RELAY_AP_CONNECTIVITY_ERROR:
 			case ERROR_RELAY_AP_SETUP_FAILED:
@@ -531,7 +553,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 				Bundle b = new Bundle();
 				b.putString(KEY_WARNING_TEXT, String.format(getResources().getString(R.string.dialog_wifi_invalid_connectivity), null!= info?info.SSID:""));
 				showMyDialog(DIALOG_ID_WARNING, b);
-				
+
 				break;
 			}
 			case ERROR_RELAY_AP_NOT_FOUND:
@@ -555,10 +577,10 @@ public class WifiListActivity extends WifiControlBaseActivity
 			turnOnWifi();
 		}
 	}
-	
+
 	@Override
 	public void onErrorReport(AsyncTask<String, Double, List<JSONObject>> task, final int iErrType, String strTitle,
-			String strMsg) {
+							  String strMsg) {
 		if(task instanceof BeseyeCamBEHttpTask.GetWiFiSSIDListTask){
 			BeseyeUtils.postRunnable(new Runnable(){
 				@Override
@@ -568,7 +590,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 					b.putBoolean(KEY_WARNING_CLOSE, true);
 					showMyDialog(DIALOG_ID_WARNING, b);
 				}}, 0);
-			
+
 		}else
 			super.onErrorReport(task, iErrType, strTitle, strMsg);
 	}
@@ -593,7 +615,7 @@ public class WifiListActivity extends WifiControlBaseActivity
 						}
 					}
 				}
-			}else if(task instanceof BeseyeAccountTask.GetVCamListTask){
+			}/*else if(task instanceof BeseyeAccountTask.GetVCamListTask){
 				if(0 == iRetCode){
 					JSONArray arrCamList = new JSONArray();
 					int iVcamCnt = BeseyeJSONUtil.getJSONInt(result.get(0), BeseyeJSONUtil.ACC_VCAM_CNT);
@@ -618,11 +640,11 @@ public class WifiListActivity extends WifiControlBaseActivity
 					if(DEBUG)
 						Log.e(TAG, "onPostExecute(), "+task.getClass().getSimpleName()+", miOriginalVcamCnt="+miOriginalVcamCnt);
 				}
-			}else{
+			}*/else{
 				super.onPostExecute(task, result, iRetCode);
 			}
 		}
-		
+
 		if(task == mGetWiFiSSIDListTask){
 			mGetWiFiSSIDListTask = null;
 		}

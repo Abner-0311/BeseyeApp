@@ -14,6 +14,7 @@ import com.app.beseye.httptask.SessionMgr;
 import com.app.beseye.httptask.SessionMgr.SERVER_MODE;
 import com.app.beseye.pairing.PairingRemindActivity;
 import com.app.beseye.pairing.SoundPairingActivity;
+import com.app.beseye.util.BeseyeLocationMgr;
 import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.util.NetworkMgr;
 import com.app.beseye.util.NetworkMgr.ApManager;
@@ -23,7 +24,18 @@ import com.app.beseye.util.NetworkMgr.OnWifiStatusChangeCallback;
 import com.app.beseye.util.NetworkMgr.WifiAPInfo;
 import com.app.beseye.widget.BaseOneBtnDialog;
 import com.app.beseye.widget.BaseOneBtnDialog.OnOneBtnClickListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import android.app.Activity;
 import android.app.Dialog;
 
 import android.app.AlertDialog;
@@ -32,10 +44,12 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.graphics.drawable.ColorDrawable;
 import android.net.NetworkInfo.DetailedState;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v4.content.PermissionChecker;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -53,13 +67,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public abstract class WifiControlBaseActivity extends BeseyeBaseActivity 
 							  				  implements OnWifiScanResultAvailableCallback, 
 							  				  			 OnNetworkChangeCallback, 
 							  				  			 OnWifiStatusChangeCallback,
-							  				  			 OnWifiApSetupCallback{
+							  				  			 OnWifiApSetupCallback,
+														 GoogleApiClient.ConnectionCallbacks,
+														 GoogleApiClient.OnConnectionFailedListener{
 	
 	protected WIFI_SETTING_STATE mWifiSettingState = WIFI_SETTING_STATE.STATE_UNINIT; 
 	protected List<WifiAPInfo> mlstScanResult;
@@ -80,6 +97,9 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	protected int miOriginalVcamCnt = -1;
 	protected String miOriginalVcamArr = null;
 	static public final String KEY_CHANGE_WIFI_ONLY = "KEY_CHANGE_WIFI_ONLY";
+
+	final static protected long MAX_TIME_TO_WAIT_WIFI_RET = 60000L;
+	protected long mlBeginScanWiFiTimestamp = -1;
 	
 	//static private String sWiFiPasswordHistory = "";
 	
@@ -97,8 +117,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		
 		mbChangeWifi = getIntent().getBooleanExtra(KEY_CHANGE_WIFI_ONLY, false);
 		mlstScanResult = new ArrayList<WifiAPInfo>();
-		if(false == mbChangeWifi)
-			setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+//		if(false == mbChangeWifi)
+//			setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
 		
 		miOriginalVcamCnt = getIntent().getIntExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, 0);
 		if(DEBUG)
@@ -113,8 +133,13 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		if(false == mbChangeWifi){
 			NetworkMgr.getInstance().registerNetworkChangeCallback(this);
 			NetworkMgr.getInstance().registerWifiStatusChangeCallback(this);
-			if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
-				setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+			if(BeseyeLocationMgr.getInstance().isLocationPermissionGranted()){
+				if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
+					setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+				}
+				BeseyeLocationMgr.getInstance().requestGoogleApiClient(this, REQUEST_LOCATION);
+			}else {
+				BeseyeLocationMgr.getInstance().requestLocationPermission(this, REQUEST_LOCATION_PERM);
 			}
 		}	
 	}
@@ -318,23 +343,30 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		if(null != mlstScanResult){
 			NetworkMgr.getInstance().filterWifiAPInfo(mlstScanResult, NetworkMgr.getInstance().getWifiScanList());
 			onWiFiScanComplete();
-			if(null != mlstScanResult && 0 == mlstScanResult.size()){
-				BeseyeUtils.postRunnable(new Runnable(){
-					@Override
-					public void run() {
-						scanWifi(false);
-					}}, 2000);
+			if(null != mlstScanResult && 1 == mlstScanResult.size()){
+				if(this.MAX_TIME_TO_WAIT_WIFI_RET > (System.currentTimeMillis() - mlBeginScanWiFiTimestamp)) {
+					BeseyeUtils.postRunnable(new Runnable() {
+						@Override
+						public void run() {
+							scanWifi(false);
+						}
+					}, 1000);
+				}else{
+                    onWiFiScanFailed();
+				}
 			}
 		}
 	}
-	
+
+	protected void onWiFiScanFailed(){BeseyeLocationMgr.getInstance().requestGoogleApiClient(this, REQUEST_LOCATION);}
+
 	protected void onWiFiScanComplete(){}
 	
 	protected boolean scanWifi(boolean bForceShowDialog){
 		boolean bRet = false;
 		if(bRet = NetworkMgr.getInstance().scanWifiList(this)){
 			setWifiSettingState(WIFI_SETTING_STATE.STATE_WIFI_SCANNING);
-			if(bForceShowDialog || (null != mlstScanResult && 0 == mlstScanResult.size())){
+			if(bForceShowDialog || (null != mlstScanResult && 1 >= mlstScanResult.size())){
 				showMyDialog(DIALOG_ID_WIFI_SCANNING);
 			}else{
 				removeMyDialog(DIALOG_ID_WIFI_SCANNING);
@@ -418,6 +450,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				if(NetworkMgr.getInstance().getWifiStatus() == WifiManager.WIFI_STATE_ENABLED){
 					removeMyDialog(DIALOG_ID_TURN_ON_WIFI);
 					scanWifi(false);
+					mlBeginScanWiFiTimestamp = System.currentTimeMillis();
 				}else{
 					if(DEBUG)
 						Log.i(TAG, "WifiControlBaseActivity::setWifiSettingState(), can't scan due to wifi off");
@@ -894,5 +927,78 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		if(null != mVgKeyIndexHolder){
 			mVgKeyIndexHolder.setVisibility(View.GONE/*mChosenWifiAPInfo.iCipherIdx == WifiAPInfo.AUTHNICATION_KEY_WEP?View.VISIBLE:View.GONE*/);
 		}
+	}
+
+	final static int REQUEST_LOCATION_PERM = 124;
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		switch (requestCode) {
+			case REQUEST_LOCATION_PERM:
+				//if (grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED && grantResults[1] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+				if(BeseyeLocationMgr.getInstance().isLocationPermissionGranted()){
+					// Permission Granted
+					Log.i(TAG, getClass().getSimpleName()+"::onRequestPermissionsResult(),PERMISSION_GRANTED ");
+					if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
+						setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+					}
+				} else {
+					// Permission Denied
+					Log.i(TAG, getClass().getSimpleName()+"::onRequestPermissionsResult(),not PERMISSION_GRANTED ");
+					//Need Dialog
+				}
+				break;
+			default:
+				super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		}
+	}
+
+
+	final static int REQUEST_LOCATION = 199;
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		Log.d("onActivityResult()", Integer.toString(resultCode));
+
+		//final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+		switch (requestCode) {
+			case REQUEST_LOCATION :{
+				switch (resultCode) {
+					case Activity.RESULT_OK: {
+						// All required changes were successfully made
+						//Toast.makeText(this, "Location enabled by user!", Toast.LENGTH_LONG).show();
+						break;
+					}
+					case Activity.RESULT_CANCELED: {
+						// The user was asked to change settings, but chose not to
+						//Toast.makeText(this, "Location not enabled, user cancelled.", Toast.LENGTH_LONG).show();
+						Log.i(TAG, "Location not enabled, user cancelled.");
+						//Need Dialog
+						break;
+					}
+					default: {
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+		Log.i(TAG, "onConnectionFailed(), "+((null != connectionResult)?connectionResult.toString():""));
+	}
+
+	@Override
+	public void onConnected(Bundle bundle) {
+		Log.i(TAG, "onConnected(), "+((null != bundle)?bundle.toString():"null"));
+		BeseyeLocationMgr.getInstance().checkLocationService(this, REQUEST_LOCATION);
+	}
+
+	@Override
+	public void onConnectionSuspended(int arg0) {
+		Log.i(TAG, "onConnectionSuspended(), "+arg0);
+
 	}
 }
