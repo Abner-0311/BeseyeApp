@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/BeseyeApp" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/facebook" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/googleplayservices_lib" vcs="svn" />
-    <mapping directory="$PROJECT_DIR$/library" vcs="svn" />
   </component>
 </project>
