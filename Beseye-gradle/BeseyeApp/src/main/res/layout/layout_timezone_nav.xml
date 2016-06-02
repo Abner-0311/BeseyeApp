@@ -7,6 +7,7 @@
     <View
         android:id="@+id/vw_margin_left"
 	    android:layout_width="@dimen/signup_paring_nav_margin"
+		android:background="@color/signup_nav_bg_color"
     	android:layout_height="wrap_content"/>
     	
     <ImageView
@@ -15,6 +16,7 @@
     	android:layout_height="wrap_content"
 		android:src="@drawable/sl_nav_back_btn"
     	android:layout_toRightOf="@+id/vw_margin_left"
+		android:background="@color/signup_nav_bg_color"
     	android:layout_centerVertical="true">
     </ImageView>
     
