@@ -50,6 +50,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -727,5 +728,16 @@ public class BeseyeUtils {
 	
 	static public String getStringByResId(int iResId){
 		return BeseyeApplication.getApplication().getString(iResId);
+	}
+
+	static public void setToolbarPadding(View vNaviBar, int iBgColor){
+		if(null != vNaviBar){
+			Toolbar parent =(Toolbar) vNaviBar.getParent();
+			parent.setContentInsetsAbsolute(0,0);
+			parent.setPadding(0,0,0,0);
+			if(0 != iBgColor){
+				parent.setBackgroundColor(iBgColor);
+			}
+		}
 	}
 }

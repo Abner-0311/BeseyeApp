@@ -31,6 +31,7 @@ import com.app.beseye.httptask.BeseyeAccountTask;
 import com.app.beseye.httptask.BeseyeCamBEHttpTask;
 import com.app.beseye.util.BeseyeCamInfoSyncMgr;
 import com.app.beseye.util.BeseyeJSONUtil;
+import com.app.beseye.util.BeseyeUtils;
 import com.app.beseye.widget.BeseyeSwitchBtn;
 import com.app.beseye.widget.BeseyeSwitchBtn.OnSwitchBtnStateChangedListener;
 import com.app.beseye.widget.BeseyeSwitchBtn.SwitchState;
@@ -69,9 +70,7 @@ public class LocationAwareSettingActivity extends BeseyeBaseActivity
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
-			Toolbar parent =(Toolbar) mVwNavBar.getParent();
-			parent.setContentInsetsAbsolute(0,0);
-			parent.setPadding(0,0,0,0);
+			BeseyeUtils.setToolbarPadding(mVwNavBar, 0);
 		}
 		
 		try {

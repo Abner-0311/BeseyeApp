@@ -91,9 +91,7 @@ public class NotificationEventsSettingActivity extends BeseyeBaseActivity
 			
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
-			Toolbar parent =(Toolbar) mVwNavBar.getParent();
-			parent.setContentInsetsAbsolute(0,0);
-			parent.setPadding(0,0,0,0);
+			BeseyeUtils.setToolbarPadding(mVwNavBar, 0);
 		}
 		
 		try {

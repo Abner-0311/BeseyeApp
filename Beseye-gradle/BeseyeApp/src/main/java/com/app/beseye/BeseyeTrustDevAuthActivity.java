@@ -103,9 +103,7 @@ public class BeseyeTrustDevAuthActivity extends BeseyeBaseActivity {
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
-			Toolbar parent =(Toolbar) mVwNavBar.getParent();
-			parent.setContentInsetsAbsolute(0,0);
-			parent.setPadding(0,0,0,0);
+			BeseyeUtils.setToolbarPadding(mVwNavBar, 0);
 		}
 		
 		mBtnClear = (Button)findViewById(R.id.btn_pincode_num_clear);

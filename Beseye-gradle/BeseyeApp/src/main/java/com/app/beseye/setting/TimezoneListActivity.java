@@ -55,10 +55,10 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 		
 		getSupportActionBar().setDisplayOptions(0);
 		getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM);
-		getSupportActionBar().setIcon(R.drawable.sl_nav_back_btn);
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
-		getSupportActionBar().setHomeButtonEnabled(true);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		//getSupportActionBar().setIcon(R.drawable.sl_nav_back_btn);
+		//getSupportActionBar().setDisplayShowHomeEnabled(true);
+		//getSupportActionBar().setHomeButtonEnabled(true);
+		//getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		mStrCurTZ = getIntent().getStringExtra(KEY_TZ);
 		
@@ -74,7 +74,7 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 			ImageView mIvBack = (ImageView)mVwNavBar.findViewById(R.id.iv_nav_left_btn);
 			if(null != mIvBack){
 				mIvBack.setOnClickListener(this);
-				mIvBack.setVisibility(View.GONE);
+				//mIvBack.setVisibility(View.GONE);
 			}
 						
 			TextView txtTitle = (TextView)mVwNavBar.findViewById(R.id.txt_nav_title);
@@ -90,9 +90,7 @@ public class TimezoneListActivity extends BeseyeBaseActivity {
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
 			//mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
-			Toolbar parent =(Toolbar) mVwNavBar.getParent();
-			parent.setContentInsetsAbsolute(0,0);
-			parent.setPadding(0,0,0,0);
+			BeseyeUtils.setToolbarPadding(mVwNavBar, getResources().getColor(R.color.signup_nav_bg_color));
 		}
 
 		mlvTimezoneList = (PullToRefreshListView) findViewById(R.id.lst_timezone_list);

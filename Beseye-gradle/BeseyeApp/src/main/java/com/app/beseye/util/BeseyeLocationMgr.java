@@ -93,19 +93,21 @@ public class BeseyeLocationMgr {
 
     public void requestGoogleApiClient(final Activity act, final int iRequestCode){
         Log.i(TAG, getClass().getSimpleName()+"::requestGoogleApiClient()+++ ");
+        if ( android.os.Build.VERSION.SDK_INT >= 23) {
 
-        if(null == mGoogleApiClient){
-            mGoogleApiClient = new GoogleApiClient.Builder(act)
-                    .addApi(LocationServices.API)
-                    .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks)act)
-                    .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener)act).build();
-        }
+            if (null == mGoogleApiClient) {
+                mGoogleApiClient = new GoogleApiClient.Builder(act)
+                        .addApi(LocationServices.API)
+                        .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) act)
+                        .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) act).build();
+            }
 
-        if(null != mGoogleApiClient){
-            if(false == mGoogleApiClient.isConnected() && false == mGoogleApiClient.isConnecting()) {
-                mGoogleApiClient.connect();
-            }else if(mGoogleApiClient.isConnected()){
-                checkLocationService(act, iRequestCode);
+            if (null != mGoogleApiClient) {
+                if (false == mGoogleApiClient.isConnected() && false == mGoogleApiClient.isConnecting()) {
+                    mGoogleApiClient.connect();
+                } else if (mGoogleApiClient.isConnected()) {
+                    checkLocationService(act, iRequestCode);
+                }
             }
         }
     }
@@ -159,7 +161,7 @@ public class BeseyeLocationMgr {
 
     public boolean isLocationPermissionGranted(){
         boolean bRet = true;
-        //if ( android.os.Build.VERSION.SDK_INT >= 23) {
+        if ( android.os.Build.VERSION.SDK_INT >= 23) {
             Context context = mWrContext.get();
             if(null != context) {
 //                Log.i(TAG, getClass().getSimpleName() + "::isLocationPermissionGranted()" + PermissionChecker.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) +
@@ -173,7 +175,7 @@ public class BeseyeLocationMgr {
                     bRet = false;
                 }
             }
-        //}
+        }
         return bRet;
     }
 

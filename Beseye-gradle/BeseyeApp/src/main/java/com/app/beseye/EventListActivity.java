@@ -124,9 +124,7 @@ public class EventListActivity extends BeseyeBaseActivity implements IListViewSc
 			mNavBarLayoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 			mNavBarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
 	        getSupportActionBar().setCustomView(mVwNavBar, mNavBarLayoutParams);
-			Toolbar parent =(Toolbar) mVwNavBar.getParent();
-			parent.setContentInsetsAbsolute(0,0);
-			parent.setPadding(0,0,0,0);
+			BeseyeUtils.setToolbarPadding(mVwNavBar, 0);
 		}
 		
 		mIvCalendar = (ImageView)findViewById(R.id.iv_calendar_icon);

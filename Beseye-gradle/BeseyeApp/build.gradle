@@ -2,12 +2,15 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "21.1.2"
+    buildToolsVersion '24.0.0 rc4'
 
     defaultConfig {
         applicationId "com.app.beseye"
         minSdkVersion 11
         targetSdkVersion 14
+
+        // Enabling multidex support.
+        multiDexEnabled true
 
         ndk {
             moduleName "bdpush_V2_3"
@@ -90,7 +93,8 @@ android {
 
     sourceSets.main {
         jni.srcDirs = [] // This prevents the auto generation of Android.mk
-        jniLibs.srcDir 'src/main/jni/prebulit/armeabi' // This is not necessary unless you have precompiled libraries in your project.
+        jniLibs.srcDir 'src/main/jni/prebulit/armeabi'
+        // This is not necessary unless you have precompiled libraries in your project.
     }
 
     buildTypes {
@@ -120,6 +124,7 @@ dependencies {
     compile project(':library')
     //compile project(':googleplayservices_lib')
     compile project(':facebook')
+
     compile files('libs/HockeySDK-3.5.0.jar')
     compile files('libs/acra-4.9.0-RC-2.jar')
     compile files('libs/androidasync.jar')
@@ -128,10 +133,8 @@ dependencies {
     compile files('libs/httpcore-4.4.4.jar')
     compile files('libs/httpmime-4.5.2.jar')
     compile files('libs/httpclient-4.5.2.jar')
-
-    compile "com.android.support:appcompat-v7:23.0.+"
-    compile "com.google.android.gms:play-services-location:9.0.0"
-    compile "com.google.android.gms:play-services-maps:9.0.0"
-    compile "com.google.android.gms:play-services-gcm:9.0.0"
-
+    compile 'com.android.support:appcompat-v7:23.+'
+    compile 'com.google.android.gms:play-services-location:9.0.0'
+    compile 'com.google.android.gms:play-services-maps:9.0.0'
+    compile 'com.google.android.gms:play-services-gcm:9.0.0'
 }
