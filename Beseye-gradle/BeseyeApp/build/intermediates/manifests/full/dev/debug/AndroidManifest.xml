@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.beseye"
     android:installLocation="auto"
-    android:versionCode="191"
-    android:versionName="0.2.11" >
+    android:versionCode="192"
+    android:versionName="0.2.12" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -523,6 +523,17 @@
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="@string/facebook_provider_authority"
             android:exported="true" />
+
+        <activity
+            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <provider
+            android:name="com.google.firebase.provider.FirebaseInitProvider"
+            android:authorities="com.app.beseye.firebaseinitprovider"
+            android:exported="false"
+            android:initOrder="100" />
     </application>
 
 </manifest>

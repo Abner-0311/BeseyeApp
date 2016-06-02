@@ -6,18 +6,18 @@
                 "to": {
                     "startLine": 2,
                     "startColumn": 4,
-                    "startOffset": 105,
-                    "endColumn": 254,
-                    "endOffset": 355
+                    "startOffset": 55,
+                    "endColumn": 108,
+                    "endOffset": 159
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 2,
+                        "startLine": 4,
                         "startColumn": 4,
-                        "startOffset": 105,
-                        "endColumn": 254,
-                        "endOffset": 355
+                        "startOffset": 284,
+                        "endColumn": 108,
+                        "endOffset": 388
                     }
                 }
             },
@@ -25,18 +25,18 @@
                 "to": {
                     "startLine": 3,
                     "startColumn": 4,
-                    "startOffset": 360,
-                    "endColumn": 127,
-                    "endOffset": 483
+                    "startOffset": 164,
+                    "endColumn": 107,
+                    "endOffset": 267
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 3,
+                        "startLine": 5,
                         "startColumn": 4,
-                        "startOffset": 360,
-                        "endColumn": 127,
-                        "endOffset": 483
+                        "startOffset": 393,
+                        "endColumn": 107,
+                        "endOffset": 496
                     }
                 }
             },
@@ -44,18 +44,18 @@
                 "to": {
                     "startLine": 4,
                     "startColumn": 4,
-                    "startOffset": 488,
-                    "endColumn": 197,
-                    "endOffset": 681
+                    "startOffset": 272,
+                    "endColumn": 122,
+                    "endOffset": 390
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 4,
+                        "startLine": 6,
                         "startColumn": 4,
-                        "startOffset": 488,
-                        "endColumn": 197,
-                        "endOffset": 681
+                        "startOffset": 501,
+                        "endColumn": 122,
+                        "endOffset": 619
                     }
                 }
             },
@@ -63,18 +63,18 @@
                 "to": {
                     "startLine": 5,
                     "startColumn": 4,
-                    "startOffset": 686,
-                    "endColumn": 126,
-                    "endOffset": 808
+                    "startOffset": 395,
+                    "endColumn": 103,
+                    "endOffset": 494
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 5,
+                        "startLine": 7,
                         "startColumn": 4,
-                        "startOffset": 686,
-                        "endColumn": 126,
-                        "endOffset": 808
+                        "startOffset": 624,
+                        "endColumn": 103,
+                        "endOffset": 723
                     }
                 }
             },
@@ -82,18 +82,18 @@
                 "to": {
                     "startLine": 6,
                     "startColumn": 4,
-                    "startOffset": 813,
-                    "endColumn": 124,
-                    "endOffset": 933
+                    "startOffset": 499,
+                    "endColumn": 106,
+                    "endOffset": 601
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 6,
+                        "startLine": 8,
                         "startColumn": 4,
-                        "startOffset": 813,
-                        "endColumn": 124,
-                        "endOffset": 933
+                        "startOffset": 728,
+                        "endColumn": 106,
+                        "endOffset": 830
                     }
                 }
             },
@@ -101,18 +101,18 @@
                 "to": {
                     "startLine": 7,
                     "startColumn": 4,
-                    "startOffset": 938,
-                    "endColumn": 200,
-                    "endOffset": 1134
+                    "startOffset": 606,
+                    "endColumn": 86,
+                    "endOffset": 688
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 7,
+                        "startLine": 9,
                         "startColumn": 4,
-                        "startOffset": 938,
-                        "endColumn": 200,
-                        "endOffset": 1134
+                        "startOffset": 835,
+                        "endColumn": 86,
+                        "endOffset": 917
                     }
                 }
             },
@@ -120,18 +120,18 @@
                 "to": {
                     "startLine": 8,
                     "startColumn": 4,
-                    "startOffset": 1139,
-                    "endColumn": 205,
-                    "endOffset": 1340
+                    "startOffset": 693,
+                    "endColumn": 100,
+                    "endOffset": 789
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 8,
+                        "startLine": 10,
                         "startColumn": 4,
-                        "startOffset": 1139,
-                        "endColumn": 205,
-                        "endOffset": 1340
+                        "startOffset": 922,
+                        "endColumn": 100,
+                        "endOffset": 1018
                     }
                 }
             },
@@ -139,18 +139,18 @@
                 "to": {
                     "startLine": 9,
                     "startColumn": 4,
-                    "startOffset": 1345,
-                    "endColumn": 123,
-                    "endOffset": 1464
+                    "startOffset": 794,
+                    "endColumn": 122,
+                    "endOffset": 912
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 9,
+                        "startLine": 11,
                         "startColumn": 4,
-                        "startOffset": 1345,
-                        "endColumn": 123,
-                        "endOffset": 1464
+                        "startOffset": 1023,
+                        "endColumn": 122,
+                        "endOffset": 1141
                     }
                 }
             },
@@ -158,18 +158,18 @@
                 "to": {
                     "startLine": 10,
                     "startColumn": 4,
-                    "startOffset": 1469,
-                    "endColumn": 187,
-                    "endOffset": 1652
+                    "startOffset": 917,
+                    "endColumn": 79,
+                    "endOffset": 992
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 10,
+                        "startLine": 12,
                         "startColumn": 4,
-                        "startOffset": 1469,
-                        "endColumn": 187,
-                        "endOffset": 1652
+                        "startOffset": 1146,
+                        "endColumn": 79,
+                        "endOffset": 1221
                     }
                 }
             },
@@ -177,18 +177,18 @@
                 "to": {
                     "startLine": 11,
                     "startColumn": 4,
-                    "startOffset": 1657,
-                    "endColumn": 119,
-                    "endOffset": 1772
+                    "startOffset": 997,
+                    "endColumn": 105,
+                    "endOffset": 1098
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 11,
+                        "startLine": 13,
                         "startColumn": 4,
-                        "startOffset": 1657,
-                        "endColumn": 119,
-                        "endOffset": 1772
+                        "startOffset": 1226,
+                        "endColumn": 105,
+                        "endOffset": 1327
                     }
                 }
             },
@@ -196,18 +196,18 @@
                 "to": {
                     "startLine": 12,
                     "startColumn": 4,
-                    "startOffset": 1777,
-                    "endColumn": 164,
-                    "endOffset": 1937
+                    "startOffset": 1103,
+                    "endColumn": 101,
+                    "endOffset": 1200
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 12,
+                        "startLine": 14,
                         "startColumn": 4,
-                        "startOffset": 1777,
-                        "endColumn": 164,
-                        "endOffset": 1937
+                        "startOffset": 1332,
+                        "endColumn": 101,
+                        "endOffset": 1429
                     }
                 }
             },
@@ -215,18 +215,18 @@
                 "to": {
                     "startLine": 13,
                     "startColumn": 4,
-                    "startOffset": 1942,
-                    "endColumn": 117,
-                    "endOffset": 2055
+                    "startOffset": 1205,
+                    "endColumn": 96,
+                    "endOffset": 1297
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 13,
+                        "startLine": 15,
                         "startColumn": 4,
-                        "startOffset": 1942,
-                        "endColumn": 117,
-                        "endOffset": 2055
+                        "startOffset": 1434,
+                        "endColumn": 96,
+                        "endOffset": 1526
                     }
                 }
             },
@@ -234,18 +234,18 @@
                 "to": {
                     "startLine": 14,
                     "startColumn": 4,
-                    "startOffset": 2060,
-                    "endColumn": 129,
-                    "endOffset": 2185
+                    "startOffset": 1302,
+                    "endColumn": 108,
+                    "endOffset": 1406
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 14,
+                        "startLine": 16,
                         "startColumn": 4,
-                        "startOffset": 2060,
-                        "endColumn": 129,
-                        "endOffset": 2185
+                        "startOffset": 1531,
+                        "endColumn": 108,
+                        "endOffset": 1635
                     }
                 }
             },
@@ -253,18 +253,18 @@
                 "to": {
                     "startLine": 15,
                     "startColumn": 4,
-                    "startOffset": 2190,
-                    "endColumn": 171,
-                    "endOffset": 2357
+                    "startOffset": 1411,
+                    "endColumn": 98,
+                    "endOffset": 1505
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 15,
+                        "startLine": 17,
                         "startColumn": 4,
-                        "startOffset": 2190,
-                        "endColumn": 171,
-                        "endOffset": 2357
+                        "startOffset": 1640,
+                        "endColumn": 98,
+                        "endOffset": 1734
                     }
                 }
             },
@@ -272,18 +272,18 @@
                 "to": {
                     "startLine": 16,
                     "startColumn": 4,
-                    "startOffset": 2362,
-                    "endColumn": 130,
-                    "endOffset": 2488
+                    "startOffset": 1510,
+                    "endColumn": 109,
+                    "endOffset": 1615
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 16,
+                        "startLine": 18,
                         "startColumn": 4,
-                        "startOffset": 2362,
-                        "endColumn": 130,
-                        "endOffset": 2488
+                        "startOffset": 1739,
+                        "endColumn": 109,
+                        "endOffset": 1844
                     }
                 }
             },
@@ -291,18 +291,18 @@
                 "to": {
                     "startLine": 17,
                     "startColumn": 4,
-                    "startOffset": 2493,
-                    "endColumn": 180,
-                    "endOffset": 2669
+                    "startOffset": 1620,
+                    "endColumn": 120,
+                    "endOffset": 1736
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 17,
+                        "startLine": 19,
                         "startColumn": 4,
-                        "startOffset": 2493,
-                        "endColumn": 180,
-                        "endOffset": 2669
+                        "startOffset": 1849,
+                        "endColumn": 120,
+                        "endOffset": 1965
                     }
                 }
             },
@@ -310,18 +310,18 @@
                 "to": {
                     "startLine": 18,
                     "startColumn": 4,
-                    "startOffset": 2674,
-                    "endColumn": 126,
-                    "endOffset": 2796
+                    "startOffset": 1741,
+                    "endColumn": 102,
+                    "endOffset": 1839
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
-                        "startLine": 18,
+                        "startLine": 20,
                         "startColumn": 4,
-                        "startOffset": 2674,
-                        "endColumn": 126,
-                        "endOffset": 2796
+                        "startOffset": 1970,
+                        "endColumn": 102,
+                        "endOffset": 2068
                     }
                 }
             },
@@ -329,265 +329,18 @@
                 "to": {
                     "startLine": 19,
                     "startColumn": 4,
-                    "startOffset": 2801,
-                    "endColumn": 252,
-                    "endOffset": 3049
+                    "startOffset": 1844,
+                    "endColumn": 100,
+                    "endOffset": 1940
                 },
                 "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 19,
-                        "startColumn": 4,
-                        "startOffset": 2801,
-                        "endColumn": 252,
-                        "endOffset": 3049
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 20,
-                    "startColumn": 4,
-                    "startOffset": 3054,
-                    "endColumn": 241,
-                    "endOffset": 3291
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 20,
-                        "startColumn": 4,
-                        "startOffset": 3054,
-                        "endColumn": 241,
-                        "endOffset": 3291
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 21,
-                    "startColumn": 4,
-                    "startOffset": 3296,
-                    "endColumn": 120,
-                    "endOffset": 3412
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
+                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-gu-rIN/values-gu-rIN.xml",
                     "position": {
                         "startLine": 21,
                         "startColumn": 4,
-                        "startOffset": 3296,
-                        "endColumn": 120,
-                        "endOffset": 3412
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 22,
-                    "startColumn": 4,
-                    "startOffset": 3417,
-                    "endColumn": 109,
-                    "endOffset": 3522
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 22,
-                        "startColumn": 4,
-                        "startOffset": 3417,
-                        "endColumn": 109,
-                        "endOffset": 3522
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 23,
-                    "startColumn": 4,
-                    "startOffset": 3527,
-                    "endColumn": 194,
-                    "endOffset": 3717
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 23,
-                        "startColumn": 4,
-                        "startOffset": 3527,
-                        "endColumn": 194,
-                        "endOffset": 3717
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 24,
-                    "startColumn": 4,
-                    "startOffset": 3722,
-                    "endColumn": 126,
-                    "endOffset": 3844
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 24,
-                        "startColumn": 4,
-                        "startOffset": 3722,
-                        "endColumn": 126,
-                        "endOffset": 3844
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 25,
-                    "startColumn": 4,
-                    "startOffset": 3849,
-                    "endColumn": 201,
-                    "endOffset": 4046
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 25,
-                        "startColumn": 4,
-                        "startOffset": 3849,
-                        "endColumn": 201,
-                        "endOffset": 4046
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 26,
-                    "startColumn": 4,
-                    "startOffset": 4051,
-                    "endColumn": 134,
-                    "endOffset": 4181
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 26,
-                        "startColumn": 4,
-                        "startOffset": 4051,
-                        "endColumn": 134,
-                        "endOffset": 4181
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 27,
-                    "startColumn": 4,
-                    "startOffset": 4186,
-                    "endColumn": 179,
-                    "endOffset": 4361
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 27,
-                        "startColumn": 4,
-                        "startOffset": 4186,
-                        "endColumn": 179,
-                        "endOffset": 4361
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 28,
-                    "startColumn": 4,
-                    "startOffset": 4366,
-                    "endColumn": 89,
-                    "endOffset": 4451
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 28,
-                        "startColumn": 4,
-                        "startOffset": 4366,
-                        "endColumn": 89,
-                        "endOffset": 4451
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 29,
-                    "startColumn": 4,
-                    "startOffset": 4456,
-                    "endColumn": 95,
-                    "endOffset": 4547
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 29,
-                        "startColumn": 4,
-                        "startOffset": 4456,
-                        "endColumn": 95,
-                        "endOffset": 4547
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 30,
-                    "startColumn": 4,
-                    "startOffset": 4552,
-                    "endColumn": 111,
-                    "endOffset": 4659
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 30,
-                        "startColumn": 4,
-                        "startOffset": 4552,
-                        "endColumn": 111,
-                        "endOffset": 4659
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 31,
-                    "startColumn": 4,
-                    "startOffset": 4664,
-                    "endColumn": 101,
-                    "endOffset": 4761
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 31,
-                        "startColumn": 4,
-                        "startOffset": 4664,
-                        "endColumn": 101,
-                        "endOffset": 4761
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 32,
-                    "startColumn": 4,
-                    "startOffset": 4766,
-                    "endColumn": 93,
-                    "endOffset": 4855
-                },
-                "from": {
-                    "file": "/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/googleplayservices_lib/unspecified/res/values-gu-rIN/values-gu-rIN.xml",
-                    "position": {
-                        "startLine": 32,
-                        "startColumn": 4,
-                        "startOffset": 4766,
-                        "endColumn": 93,
-                        "endOffset": 4855
+                        "startOffset": 2073,
+                        "endColumn": 100,
+                        "endOffset": 2169
                     }
                 }
             }

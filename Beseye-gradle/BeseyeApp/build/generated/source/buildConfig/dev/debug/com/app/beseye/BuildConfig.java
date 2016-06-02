@@ -8,8 +8,8 @@ public final class BuildConfig {
   public static final String APPLICATION_ID = "com.app.beseye";
   public static final String BUILD_TYPE = "debug";
   public static final String FLAVOR = "dev";
-  public static final int VERSION_CODE = 191;
-  public static final String VERSION_NAME = "0.2.11";
+  public static final int VERSION_CODE = 192;
+  public static final String VERSION_NAME = "0.2.12";
   // Fields from product flavor: dev
   public static final boolean ALPHA_VER = false;
   public static final boolean BETA_VER = false;

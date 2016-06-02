@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <string msgid="4600421777120114993" name="abc_action_bar_home_description">"ホームへ移動"</string>
+    <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s、%2$s"</string>
+    <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s、%2$s、%3$s"</string>
+    <string msgid="1594238315039666878" name="abc_action_bar_up_description">"上へ移動"</string>
+    <string msgid="3588849162933574182" name="abc_action_menu_overflow_description">"その他のオプション"</string>
+    <string msgid="4076576682505996667" name="abc_action_mode_done">"完了"</string>
+    <string msgid="7468859129482906941" name="abc_activity_chooser_view_see_all">"すべて表示"</string>
+    <string msgid="2031811694353399454" name="abc_activitychooserview_choose_application">"アプリの選択"</string>
+    <string msgid="7723749260725869598" name="abc_search_hint">"検索…"</string>
+    <string msgid="3691816814315814921" name="abc_searchview_description_clear">"検索キーワードを削除"</string>
+    <string msgid="2550479030709304392" name="abc_searchview_description_query">"検索キーワード"</string>
+    <string msgid="8264924765203268293" name="abc_searchview_description_search">"検索"</string>
+    <string msgid="8928215447528550784" name="abc_searchview_description_submit">"検索キーワードを送信"</string>
+    <string msgid="893419373245838918" name="abc_searchview_description_voice">"音声検索"</string>
+    <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"共有"</string>
+    <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"%sと共有"</string>
+    <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"折りたたむ"</string>
     <string name="about_desc">Beseye について\nBeseye（ベスアイ）は、古代エジプトの家庭の守護女神で、家族のシンボルであるBes（ベス）に由来しています。\nベスは古代エジプトにおいて、家の守護神、特に、母子や出産における神として崇拝され、後に、すべての良き事を護り、そしてすべての悪しきことから護ってくれる神と考えられるように成りました。\nBeseye Cloud Security Co.（ベスアイ クラウドセキュリティー社）は、「ベスの目を通して」をモットーにご自宅とご家族を献身的に見守ります。 クラウドアップデートと監視テクノロジーを通じ、よりスマートで安全な生活をご提供いたします。\nご家庭でのセキュリティーに関する不安とリスクに対するお悩みから解消されたいですか。日に日に成長するお子さんを一瞬も見逃さずに見守りつづけたいですか。私たちはクラウドを活用し、あなたの愛する家族を見守り、ご自宅を護ります。\nベスアイカメラを活用し、家族との時間をお楽しみください！\nよりスマートに、より自由に!\nご家族とお子さんとの時間を大切に、進化したクラウドセキュリティーサービスの、刷新的なベスアイカメラがまもなくリリース予定！\nその革新的な特許でComputex d&amp;i award を受賞、ベスアイの新製品が世界を魅了！あなたにもきっと、ベスアイの新商品を気に入っていただけるはずです！</string>
     <string name="about_title">Beseye について</string>
     <string name="about_ver">Beseye バージョン%s</string>
@@ -119,35 +136,37 @@
     <string name="can_power_state_off">カメラの電源がオフです</string>
     <string name="cancel">キャンセル</string>
     <string name="close">閉じる</string>
-    <string msgid="2785372108150982144" name="common_google_play_services_api_unavailable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>には現在利用されていないGoogle Play開発者サービスが必要です。詳しくはデベロッパーにお問い合わせください。"</string>
-    <string msgid="7334167077229901382" name="common_google_play_services_enable_button">"Google Play開発者サービスを有効化"</string>
-    <string msgid="2016066508617425489" name="common_google_play_services_enable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>の実行には、Google Play開発者サービスの有効化が必要です。"</string>
-    <string msgid="4763733806837472840" name="common_google_play_services_enable_title">"Google Play開発者サービスの有効化"</string>
-    <string msgid="5765996826213593005" name="common_google_play_services_install_button">"Google Play開発者サービスを入手"</string>
-    <string msgid="1545874412485515659" name="common_google_play_services_install_text_phone">"<ns1:g id="APP_NAME">%1$s</ns1:g>の実行にはGoogle Play開発者サービスが必要ですが、お使いのスマートフォンにはインストールされていません。"</string>
-    <string msgid="2742131317258851812" name="common_google_play_services_install_text_tablet">"<ns1:g id="APP_NAME">%1$s</ns1:g>の実行にはGoogle Play開発者サービスが必要ですが、お使いのタブレットにはインストールされていません。"</string>
-    <string msgid="2110712637922504348" name="common_google_play_services_install_title">"Google Play開発者サービスの入手"</string>
-    <string msgid="8004809446015217370" name="common_google_play_services_invalid_account_text">"指定したアカウントはこの端末上に存在しません。別のアカウントを選択してください。"</string>
-    <string msgid="9894539456463288" name="common_google_play_services_invalid_account_title">"無効なアカウント"</string>
-    <string msgid="2602915190038884860" name="common_google_play_services_network_error_text">"Google Play開発者サービスに接続するには、データ接続が必要です。"</string>
-    <string msgid="5183831421651758225" name="common_google_play_services_network_error_title">"ネットワークエラー"</string>
-    <string msgid="3936796119014022295" name="common_google_play_services_notification_ticker">"Google Play開発者サービスのエラー"</string>
-    <string msgid="6951442375899151085" name="common_google_play_services_restricted_profile_text">"制限付きプロフィールからのアカウントへのアクセスはサポートされていません。"</string>
-    <string msgid="4958149393843193760" name="common_google_play_services_restricted_profile_title">"制限付きプロフィール"</string>
-    <string msgid="59739986196915578" name="common_google_play_services_sign_in_failed_text">"指定されたアカウントへのログイン中にエラーが発生しました。別のアカウントを選択してください。"</string>
-    <string msgid="8431204498860131150" name="common_google_play_services_sign_in_failed_title">"ログインできませんでした"</string>
-    <string msgid="7170719956698345984" name="common_google_play_services_unknown_issue">"「<ns1:g id="APP_NAME">%1$s</ns1:g>」でGoogle Play開発者サービスに問題が発生しています。問題が解決しない場合は、デベロッパーにお問い合わせください。"</string>
-    <string msgid="4291190028362992831" name="common_google_play_services_unsupported_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>に必要なGoogle Play開発者サービスは、お使いの端末ではサポートされていません。詳しくは端末メーカーにお問い合わせください。"</string>
-    <string msgid="909734065366822541" name="common_google_play_services_unsupported_title">"Google Play開発者サービス"</string>
-    <string msgid="2221302284291941971" name="common_google_play_services_update_button">"更新"</string>
-    <string msgid="6230553430311881723" name="common_google_play_services_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>の実行にはGoogle Play開発者サービスの更新が必要です。"</string>
-    <string msgid="2926201203597631481" name="common_google_play_services_update_title">"Google Play開発者サービスの更新"</string>
-    <string msgid="1576144479907495032" name="common_google_play_services_updating_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>の実行にはGoogle Play開発者サービスが必要ですが、このサービスは現在更新中です。"</string>
-    <string msgid="1604540693139938838" name="common_google_play_services_updating_title">"Google Play開発者サービスの更新中"</string>
-    <string msgid="8334920661858223093" name="common_google_play_services_wear_update_text">"Google Play開発者サービスの新しいバージョンが必要です。まもなく自動更新されます。"</string>
-    <string msgid="311697239335516384" name="common_open_on_phone">"スマートフォンで開く"</string>
-    <string msgid="3156914698180786012" name="common_signin_button_text">"ログイン"</string>
-    <string msgid="1483290677806110088" name="common_signin_button_text_long">"Googleにログイン"</string>
+    <string msgid="4770915072144378781" name="common_google_play_services_api_unavailable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>には現在利用されていないGoogle Play開発者サービスが必要です。詳しくはデベロッパーにお問い合わせください。"</string>
+    <string msgid="2050101795821476669" name="common_google_play_services_enable_button">"Play開発者サービスの有効化"</string>
+    <string msgid="7045129128108380659" name="common_google_play_services_enable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>の実行には、Google Play開発者サービスの有効化が必要です。"</string>
+    <string msgid="3147157405986503375" name="common_google_play_services_enable_title">"Google Play開発者サービスの有効化"</string>
+    <string msgid="7118643132557593940" name="common_google_play_services_install_button">"Google Play開発者サービスを入手"</string>
+    <string msgid="1666261992894286769" name="common_google_play_services_install_text_phone">"<ns1:g id="APP_NAME">%1$s</ns1:g>の実行にはGoogle Play開発者サービスが必要ですが、お使いのスマートフォンにはインストールされていません。"</string>
+    <string msgid="1701766622451829291" name="common_google_play_services_install_text_tablet">"<ns1:g id="APP_NAME">%1$s</ns1:g>の実行にはGoogle Play開発者サービスが必要ですが、お使いのタブレットにはインストールされていません。"</string>
+    <string msgid="7442193194585196676" name="common_google_play_services_install_title">"Google Play開発者サービスの入手"</string>
+    <string msgid="479501935061677276" name="common_google_play_services_invalid_account_text">"指定したアカウントはこの端末上に存在しません。別のアカウントを選択してください。"</string>
+    <string msgid="5775407690646375078" name="common_google_play_services_invalid_account_title">"無効なアカウント"</string>
+    <string msgid="6857745590248226927" name="common_google_play_services_network_error_text">"Google Play開発者サービスに接続するには、データ接続が必要です。"</string>
+    <string msgid="4183541461338112307" name="common_google_play_services_network_error_title">"ネットワークエラー"</string>
+    <string msgid="180394615667698242" name="common_google_play_services_notification_ticker">"Google Play開発者サービスのエラー"</string>
+    <string msgid="8897126254633757462" name="common_google_play_services_resolution_required_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>に必要な操作を完了してください。"</string>
+    <string msgid="7524004365913123453" name="common_google_play_services_resolution_required_title">"Google Play 開発者サービスで操作が必要"</string>
+    <string msgid="3111284987662714014" name="common_google_play_services_restricted_profile_text">"制限付きプロフィールからのアカウントへのアクセスはサポートされていません。"</string>
+    <string msgid="8137798410446890929" name="common_google_play_services_restricted_profile_title">"制限付きプロフィール"</string>
+    <string msgid="2431909537598981235" name="common_google_play_services_sign_in_failed_text">"指定されたアカウントへのログイン中にエラーが発生しました。別のアカウントを選択してください。"</string>
+    <string msgid="4402642931312190213" name="common_google_play_services_sign_in_failed_title">"ログインできませんでした"</string>
+    <string msgid="9089562800660647919" name="common_google_play_services_unknown_issue">"「<ns1:g id="APP_NAME">%1$s</ns1:g>」でGoogle Play開発者サービスに問題が発生しています。問題が解決しない場合は、デベロッパーにお問い合わせください。"</string>
+    <string msgid="1064791666906610763" name="common_google_play_services_unsupported_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>に必要なGoogle Play開発者サービスは、お使いの端末ではサポートされていません。詳しくは端末メーカーにお問い合わせください。"</string>
+    <string msgid="539866123733096737" name="common_google_play_services_unsupported_title">"Google Play開発者サービス"</string>
+    <string msgid="8172070149091615356" name="common_google_play_services_update_button">"更新"</string>
+    <string msgid="7773943415006962566" name="common_google_play_services_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>の実行にはGoogle Play開発者サービスの更新が必要です。"</string>
+    <string msgid="8706675115216073244" name="common_google_play_services_update_title">"Google Play開発者サービスの更新"</string>
+    <string msgid="7894275749778928941" name="common_google_play_services_updating_text">"<ns1:g id="APP_NAME">%1$s</ns1:g>の実行にはGoogle Play開発者サービスが必要ですが、このサービスは現在更新中です。"</string>
+    <string msgid="2270671469198016014" name="common_google_play_services_updating_title">"Google Play開発者サービスの更新中"</string>
+    <string msgid="2804989272736383918" name="common_google_play_services_wear_update_text">"Google Play開発者サービスの新しいバージョンが必要です。まもなく自動更新されます。"</string>
+    <string msgid="5201977337835724196" name="common_open_on_phone">"スマートフォンで開く"</string>
+    <string msgid="3441753203274453993" name="common_signin_button_text">"ログイン"</string>
+    <string msgid="669893613918351210" name="common_signin_button_text_long">"Googleにログイン"</string>
     <string name="confirm">完成させる</string>
     <string name="connect">接続</string>
     <string name="cont">次へ</string>
@@ -312,8 +331,8 @@
     <string name="pincode_verify_desc">アカウント保護のため、認証コードを別の認証済みデバイスか、メールで取得してください。デバイスはそれぞれ、一旦認証が必要です。</string>
     <string name="pincode_verify_resend">認証コードを再送</string>
     <string name="pincode_verify_title">デバイス認証</string>
-    <string msgid="2132213647576279742" name="place_autocomplete_clear_button">"検索をクリア"</string>
-    <string msgid="4600782048316473865" name="place_autocomplete_search_hint">"検索"</string>
+    <string msgid="1303870564366209730" name="place_autocomplete_clear_button">"検索をクリア"</string>
+    <string msgid="2809095107724486040" name="place_autocomplete_search_hint">"検索"</string>
     <string name="player_screenshot_capture_failed">カメラの画像を保存することができません。もう一度やり直してください。</string>
     <string name="player_screenshot_capture_ok">画像を保存されました</string>
     <string name="player_screenshot_capturing">画像を保存します</string>
@@ -370,6 +389,7 @@
     <string name="signup_watch_out_desc_speaker">デバイスのスピーカー</string>
     <string name="signup_watch_out_done">準備完了、次へ</string>
     <string name="signup_watch_out_title">注意</string>
+    <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
     <string name="streaming_error_low_mem">メモリー不足のため、アプリが不安定です。再起動してください。</string>
     <string name="streaming_error_no_network">ネットワーク接続を確認してください。</string>
     <string name="streaming_error_unknown">不明なエラーです、再実行してください。</string>
@@ -517,7 +537,6 @@
     <string name="update_title">カメラアップデート</string>
     <string name="user_account">アカウント</string>
     <string name="username">Eメール</string>
-    <string msgid="4184147110658930238" name="wallet_buy_button_place_holder">"Googleで購入"</string>
     <string name="watch_out_sound">通知音</string>
     <string name="yes">はい</string>
     <string name="zone_list_menu_sort_alphabetically">アルファベットで並び替え</string>
