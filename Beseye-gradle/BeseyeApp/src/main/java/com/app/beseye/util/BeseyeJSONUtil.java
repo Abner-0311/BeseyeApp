@@ -275,7 +275,7 @@ public class BeseyeJSONUtil {
 	public static final String ACC_SUBSCRIBE_VCAM_CNT 	= "SubscribedVcamsCnt";
 	public static final String ACC_SUBSCRIBE_VCAM_LST 	= "SubscribedVcams";
 	public static final String ACC_VCAM_PLAN 			= "Plan";
-	public static final String ACC_VCAM_HW_ID 			= "PhyCamHwSn";
+	public static final String ACC_VCAM_HW_ID 			= "CamHwUid";//"PhyCamHwSn";this field was deprecated from 2016/5/17
 	
 	public static final String ACC_SUBSC_CNT 			= "SubscribersCnt";
 	public static final String ACC_SUBSC_LST 			= "Subscribers";
