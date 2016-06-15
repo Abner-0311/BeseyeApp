@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class BeseyeConfig {
 	static public final String TAG = "BesEye";
-	public static final String HOCKEY_APP_ID = ""; //"3f241ef5b7fb32623b970d296f90fcb4"; 
+	public static final String HOCKEY_APP_ID = BuildConfig.HOCKEY_APP_ID; //"3f241ef5b7fb32623b970d296f90fcb4";
 	
 	static public final boolean DEBUG = BuildConfig.DEBUG_LVL;
 	static public final boolean ALPHA_VER = BuildConfig.ALPHA_VER;

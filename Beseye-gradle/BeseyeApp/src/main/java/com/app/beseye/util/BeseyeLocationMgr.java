@@ -91,7 +91,8 @@ public class BeseyeLocationMgr {
         }
     }
 
-    public void requestGoogleApiClient(final Activity act, final int iRequestCode){
+    public boolean requestGoogleApiClient(final Activity act, final int iRequestCode){
+        boolean bRet = false;
         Log.i(TAG, getClass().getSimpleName()+"::requestGoogleApiClient()+++ ");
         if ( android.os.Build.VERSION.SDK_INT >= 23) {
 
@@ -110,6 +111,8 @@ public class BeseyeLocationMgr {
                 }
             }
         }
+
+        return bRet;
     }
 
 
@@ -131,12 +134,16 @@ public class BeseyeLocationMgr {
                 final Status status = result.getStatus();
                 Log.i(TAG, "status.getStatusCode():"+status.getStatusCode());
                 //final LocationSettingsStates state = result.getLocationSettingsStates();
+                OnLocationRequestResultCB cb = (null != mOnLocationRequestResultCB)?mOnLocationRequestResultCB.get():null;
+
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can initialize location
                         // requests here.
                         //...
-
+                        if(null != cb){
+                            cb.onLocationRequestNoNeed();
+                        }
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         // Location settings are not satisfied. But could be fixed by showing the user
@@ -147,12 +154,24 @@ public class BeseyeLocationMgr {
                             status.startResolutionForResult(act, iRequestCode);
                         } catch (IntentSender.SendIntentException e) {
                             // Ignore the error.
+                            if(null != cb){
+                                cb.onLocationRequestFailed();
+                            }
+                            return;
                         }
+
+                        if(null != cb){
+                            cb.onLocationRequestSent();
+                        }
+
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                         // Location settings are not satisfied. However, we have no way to fix the
                         // settings so we won't show the dialog.
                         //...
+                        if(null != cb){
+                            cb.onLocationRequestFailed();
+                        }
                         break;
                 }
             }
@@ -183,5 +202,23 @@ public class BeseyeLocationMgr {
         if(null != act) {
             android.support.v4.app.ActivityCompat.requestPermissions(act, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION , android.Manifest.permission.ACCESS_FINE_LOCATION}, iRequestCode);
         }
+    }
+
+    private WeakReference<OnLocationRequestResultCB> mOnLocationRequestResultCB;
+
+    public void registerOnLocationRequestResultCB(OnLocationRequestResultCB cb){
+        if(null != cb){
+            mOnLocationRequestResultCB = new WeakReference<OnLocationRequestResultCB>(cb);
+        }
+    }
+
+    public void unregisterOnLocationRequestResultCB(){
+        mOnLocationRequestResultCB = null;
+    }
+
+    static public interface OnLocationRequestResultCB{
+        public void onLocationRequestSent();
+        public void onLocationRequestNoNeed();
+        public void onLocationRequestFailed();
     }
 }

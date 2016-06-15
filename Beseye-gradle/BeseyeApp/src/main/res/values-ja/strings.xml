@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><resources>
+  <!-- TODO: string name="app_name" -->
   <!-- action to connect to a wifi -->
   <string name="connect">接続</string>
   <string name="cancel">キャンセル</string>
@@ -692,4 +693,7 @@
   <string name="all_notifications">通知許可</string>
   <!--in notification page-->
   <string name="detections">検出</string>
+  <!--in WifiList page: failed to request loc service-->
+  <string name="request_grant_loc_service">カメラの取り付けを完成させるために、「%s」が本装置の位置情報のアクセスを許可し、無線LAN一覧を取得させてください。</string>
+  <string name="request_loc_turn_on">カメラの取り付けを完成させるために、GPSによる測位に同意し、無線LAN一覧を取得させてください。</string>
 </resources>

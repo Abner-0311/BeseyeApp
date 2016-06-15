@@ -16,7 +16,7 @@ public class BeseyeUpdateBEHttpTask  {
 		
 		@Override
 		protected List<JSONObject> doInBackground(String... strParams) {
-			return super.doInBackground(SessionMgr.getInstance().getUpdateHostUrl()+String.format(URL_APP_VERSION_CHECK, strParams[0]));
+			return super.doInBackground(SessionMgr.getInstance().getUpdateHostUrl().replace("https:", "http:")+String.format(URL_APP_VERSION_CHECK, strParams[0]));
 		}
 	}
 	

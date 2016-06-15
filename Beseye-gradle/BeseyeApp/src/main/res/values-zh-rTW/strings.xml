@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><resources>
+  <!-- TODO: string name="app_name" -->
   <!-- action to connect to a wifi -->
   <string name="connect">連線</string>
   <string name="cancel">取消</string>
@@ -691,4 +692,7 @@
   <string name="all_notifications">允許通知</string>
   <!--in notification page-->
   <string name="detections">偵測</string>
+  <!--in WifiList page: failed to request loc service-->
+  <string name="request_grant_loc_service">為順利完成攝影機安裝程序，請允許「%s」存取此裝置位置資訊以取得無線網路列表。</string>
+  <string name="request_loc_turn_on">為順利完成攝影機安裝程序，請同意使用GPS定位以取得無線網路列表。</string>
 </resources>

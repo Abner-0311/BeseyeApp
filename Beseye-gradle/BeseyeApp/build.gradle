@@ -16,7 +16,6 @@ android {
             moduleName "bdpush_V2_3"
         }
     }
-
     productFlavors {
         dev {
             applicationId "com.app.beseye"
@@ -26,8 +25,8 @@ android {
             buildConfigField 'boolean', 'PRODUCTION_VER', 'false'
             buildConfigField 'String', 'HOCKEY_APP_ID', '""'
 
-            versionName "0.2.12"
-            versionCode 192
+            versionName "0.2.13"
+            versionCode 193
         }
         alpha {
             applicationId "com.app.beseye.alpha"
@@ -37,8 +36,8 @@ android {
             buildConfigField 'boolean', 'PRODUCTION_VER', 'false'
             buildConfigField 'String', 'HOCKEY_APP_ID', '"1caf00210eb940171eb56a1904a204e8"'
 
-            versionName "0.2.12"
-            versionCode 192
+            versionName "0.2.13"
+            versionCode 193
         }
 
         beta {

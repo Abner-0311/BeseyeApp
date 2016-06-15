@@ -76,7 +76,8 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 							  				  			 OnWifiStatusChangeCallback,
 							  				  			 OnWifiApSetupCallback,
 														 GoogleApiClient.ConnectionCallbacks,
-														 GoogleApiClient.OnConnectionFailedListener{
+														 GoogleApiClient.OnConnectionFailedListener,
+														 BeseyeLocationMgr.OnLocationRequestResultCB{
 	
 	protected WIFI_SETTING_STATE mWifiSettingState = WIFI_SETTING_STATE.STATE_UNINIT; 
 	protected List<WifiAPInfo> mlstScanResult;
@@ -123,6 +124,14 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		miOriginalVcamCnt = getIntent().getIntExtra(SoundPairingActivity.KEY_ORIGINAL_VCAM_CNT, 0);
 		if(DEBUG)
 			Log.i(TAG, "WifiControlBaseActivity::onCreate(), miOriginalVcamCnt=>"+miOriginalVcamCnt);
+
+		BeseyeLocationMgr.getInstance().registerOnLocationRequestResultCB(this);
+	}
+
+	@Override
+	protected void onDestroy() {
+		BeseyeLocationMgr.getInstance().unregisterOnLocationRequestResultCB();
+		super.onDestroy();
 	}
 	
     @Override
@@ -133,14 +142,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		if(false == mbChangeWifi){
 			NetworkMgr.getInstance().registerNetworkChangeCallback(this);
 			NetworkMgr.getInstance().registerWifiStatusChangeCallback(this);
-			if(BeseyeLocationMgr.getInstance().isLocationPermissionGranted()){
-				if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
-					setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
-				}
-				BeseyeLocationMgr.getInstance().requestGoogleApiClient(this, REQUEST_LOCATION);
-			}else {
-				BeseyeLocationMgr.getInstance().requestLocationPermission(this, REQUEST_LOCATION_PERM);
-			}
+			checkLocationService();
 		}	
 	}
     
@@ -155,6 +157,43 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 			NetworkMgr.getInstance().unregisterWifiStatusChangeCallback(this);
 		}
 		super.onPause();
+	}
+
+	private boolean mbIsLocPermRequested = false;
+	private boolean mbIsLocGPSRequested = false;
+
+	private void checkLocationService(){
+		Log.i(TAG, "checkLocationService(), mbIsLocGPSRequested: "+mbIsLocGPSRequested+", mbIsLocPermRequested: "+mbIsLocPermRequested);
+		if(BeseyeLocationMgr.getInstance().isLocationPermissionGranted()){
+			if(false == mbIsLocGPSRequested) {
+				BeseyeLocationMgr.getInstance().requestGoogleApiClient(this, REQUEST_LOCATION);
+			}
+		}else if(false == mbIsLocPermRequested){
+			BeseyeLocationMgr.getInstance().requestLocationPermission(this, REQUEST_LOCATION_PERM);
+			mbIsLocPermRequested = true;
+		}
+	}
+
+	public void onLocationRequestSent(){
+		mbIsLocGPSRequested = true;
+	}
+
+	public void onLocationRequestNoNeed(){
+		mbIsLocGPSRequested = false;
+		if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
+			setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+		}
+	}
+
+	public void onLocationRequestFailed(){
+		mbIsLocGPSRequested = false;
+		if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
+			setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
+		}
+	}
+
+	public void onLocationRequestResult(boolean bRequestDone){
+		mbIsLocGPSRequested = bRequestDone;
 	}
 	
 	@Override
@@ -261,7 +300,59 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 				}
             	break;
             }
+			case DIALOG_ID_LOC_SEV_NOT_GRANT:{
+				dialog = new BaseOneBtnDialog(this);
+				BaseOneBtnDialog d = (BaseOneBtnDialog)dialog;
+				d.setBodyText(String.format(getString( R.string.request_grant_loc_service), BeseyeUtils.getAppName(this)));
+				d.setTitleText(getString(R.string.dialog_title_attention));
+				d.setPositiveBtnText(R.string.close);
+				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+					@Override
+					public void onBtnClick() {
+						mbIsLocPermRequested = false;
+						checkLocationService();
+					}});
 
+				d.setOnCancelListener(new OnCancelListener(){
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						mbIsLocPermRequested = false;
+						dialog.dismiss();
+						checkLocationService();
+					}});
+
+				if(null != dialog){
+					dialog.setCanceledOnTouchOutside(true);
+				}
+				break;
+			}
+			case DIALOG_ID_LOC_NOT_ON:{
+				dialog = new BaseOneBtnDialog(this);
+				BaseOneBtnDialog d = (BaseOneBtnDialog)dialog;
+				d.setBodyText(getString( R.string.request_loc_turn_on));
+				d.setTitleText(getString(R.string.dialog_title_attention));
+				d.setPositiveBtnText(R.string.close);
+				d.setOnOneBtnClickListener(new OnOneBtnClickListener(){
+
+					@Override
+					public void onBtnClick() {
+						mbIsLocGPSRequested = false;
+						checkLocationService();
+					}});
+
+				d.setOnCancelListener(new OnCancelListener(){
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						mbIsLocGPSRequested = false;
+						dialog.dismiss();
+						checkLocationService();
+					}});
+
+				if(null != dialog){
+					dialog.setCanceledOnTouchOutside(true);
+				}
+				break;
+			}
 			default:
 				dialog = super.onCreateDialog(id);
 		}
@@ -935,6 +1026,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 		switch (requestCode) {
 			case REQUEST_LOCATION_PERM:
+
 				//if (grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED && grantResults[1] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
 				if(BeseyeLocationMgr.getInstance().isLocationPermissionGranted()){
 					// Permission Granted
@@ -942,10 +1034,12 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 					if(getWifiSettingState().ordinal() <= WIFI_SETTING_STATE.STATE_WIFI_SCAN_DONE.ordinal()){
 						setWifiSettingState(WIFI_SETTING_STATE.STATE_INIT);
 					}
+					mbIsLocPermRequested = false;
 				} else {
 					// Permission Denied
-					Log.i(TAG, getClass().getSimpleName()+"::onRequestPermissionsResult(),not PERMISSION_GRANTED ");
+					Log.i(TAG, getClass().getSimpleName()+"::onRequestPermissionsResult(),not PERMISSION_GRANTED ...");
 					//Need Dialog
+					showMyDialog(DIALOG_ID_LOC_SEV_NOT_GRANT);
 				}
 				break;
 			default:
@@ -963,10 +1057,12 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 		//final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
 		switch (requestCode) {
 			case REQUEST_LOCATION :{
+
 				switch (resultCode) {
 					case Activity.RESULT_OK: {
 						// All required changes were successfully made
 						//Toast.makeText(this, "Location enabled by user!", Toast.LENGTH_LONG).show();
+						mbIsLocGPSRequested = false;
 						break;
 					}
 					case Activity.RESULT_CANCELED: {
@@ -974,6 +1070,7 @@ public abstract class WifiControlBaseActivity extends BeseyeBaseActivity
 						//Toast.makeText(this, "Location not enabled, user cancelled.", Toast.LENGTH_LONG).show();
 						Log.i(TAG, "Location not enabled, user cancelled.");
 						//Need Dialog
+						showMyDialog(DIALOG_ID_LOC_NOT_ON);
 						break;
 					}
 					default: {

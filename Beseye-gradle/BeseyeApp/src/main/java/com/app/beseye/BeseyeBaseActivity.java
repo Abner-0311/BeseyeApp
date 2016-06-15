@@ -683,9 +683,10 @@ public abstract class BeseyeBaseActivity extends ActionBarActivity implements On
 	static public final int DIALOG_ID_OTA_FORCE_UPDATE		= DIALOG_ID_WIFI_BASE+29; 
 	static public final int DIALOG_ID_OTA_WS_DISCONN		= DIALOG_ID_WIFI_BASE+30; 
 	static public final int DIALOG_ID_OTA_FORCE_CAM_LST		= DIALOG_ID_WIFI_BASE+31; 
-	static public final int DIALOG_ID_FAKE_APP_VER_CHK		= DIALOG_ID_WIFI_BASE+32; 
+	static public final int DIALOG_ID_FAKE_APP_VER_CHK		= DIALOG_ID_WIFI_BASE+32;
+	static public final int DIALOG_ID_LOC_SEV_NOT_GRANT		= DIALOG_ID_WIFI_BASE+33;
+	static public final int DIALOG_ID_LOC_NOT_ON			= DIALOG_ID_WIFI_BASE+34;
 
-	
 	@Override
 	protected Dialog onCreateDialog(int id, final Bundle bundle) {
 		Dialog dialog;

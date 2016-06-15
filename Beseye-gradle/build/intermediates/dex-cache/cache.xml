@@ -26,7 +26,7 @@
         jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/facebook/unspecified/jars/libs/bolts-android-1.1.2.jar"
         jumboMode="true"
         revision="24.0.0 rc4"
-        sha1="4f5e046a5d3f247017b18fa356928afab26e52f8">
+        sha1="90ee3ea939969aabf7e54b370d832211e00dc747">
         <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/8/bolts-android-1.1.2_9dd5e5547c54701bb4ad0692a43a3bc36b0a8ea5/classes.dex" />
     </item>
     <item
@@ -40,7 +40,7 @@
         jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/exploded-aar/Beseye-gradle/facebook/unspecified/jars/libs/annotations.jar"
         jumboMode="true"
         revision="24.0.0 rc4"
-        sha1="12b626e76269516f2e8bedabd9fb4f3f3883d419">
+        sha1="ef2cece9eebce0a474d56d809933446082071d8a">
         <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/8/annotations_578277199bcd98b3479edccc199902127da24d31/classes.dex" />
     </item>
     <item
@@ -110,14 +110,14 @@
         jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/incremental-runtime-classes/dev/debug/instant-run.jar"
         jumboMode="true"
         revision="24.0.0 rc4"
-        sha1="2a8ecf5c14d3d345bea4b78e7c239564f535dd0e">
+        sha1="5f0c73900f85532c780069e93c080e74bc2ab684">
         <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/10/instant-run_5feaed869b43533783618991bb4936597aca5fe1/classes.dex" />
     </item>
     <item
         jar="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/incremental-classes/dev/debug/instant-run-bootstrap.jar"
         jumboMode="true"
         revision="24.0.0 rc4"
-        sha1="4135d9f475eb5632a5c12840e7e92d7dddce7a35">
+        sha1="3f013ddad9312b32688b865be11521e10e50b6cb">
         <dex dex="/Users/Abner/Documents/Develop/Android_workspace/HomeSecurity_FE_Android/Beseye-gradle/BeseyeApp/build/intermediates/transforms/dex/dev/debug/folders/1000/10/instant-run-bootstrap_9a9137f590db1a20bb9651c674ea0ce1c1166ed6/classes.dex" />
     </item>
     <item

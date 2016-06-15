@@ -1164,20 +1164,13 @@ public class BeseyeNotificationService extends Service implements com.app.beseye
     
 	private static int siRequestCode = (int) (System.currentTimeMillis()%100000);
 	
-	private String getAppName(){
-		return (BeseyeConfig.ALPHA_VER?getText(R.string.app_name_alpha):
-			   (BeseyeConfig.BETA_VER?getText(R.string.app_name_beta):
-		       (BeseyeConfig.DEBUG?getText(R.string.app_name_dev):
-		        getText(R.string.app_name)))).toString();
-	}
-	
 	private void showNotification(int iNotifyId, Intent intent, CharSequence charSequence, CharSequence text, long lTs) {
 		PendingIntent contentIntent = PendingIntent.getActivity(this, siRequestCode++ , intent, 0);
 		
 		//Log.i(TAG, "showNotification(), mCam_obj:"+intent.getStringExtra(CameraListActivity.KEY_VCAM_OBJ));
 		if(null != contentIntent){	         
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(BeseyeNotificationService.this)
-			        .setContentTitle((null == charSequence)?getAppName():charSequence)  
+			        .setContentTitle((null == charSequence)?BeseyeUtils.getAppName(this):charSequence)
 			        .setContentText(text)
 			        .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
 			        .setWhen(lTs)

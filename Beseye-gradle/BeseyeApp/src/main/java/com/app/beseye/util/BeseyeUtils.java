@@ -740,4 +740,9 @@ public class BeseyeUtils {
 			}
 		}
 	}
+
+	static public String getAppName(Context context){
+		int iStringId = BeseyeConfig.ALPHA_VER?R.string.app_name_alpha:(BeseyeConfig.BETA_VER?R.string.app_name_beta:(BeseyeConfig.DEBUG?R.string.app_name_dev:R.string.app_name));
+		return context.getString(iStringId);
+	}
 }

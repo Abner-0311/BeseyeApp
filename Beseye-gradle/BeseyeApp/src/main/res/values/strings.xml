@@ -692,4 +692,7 @@
   <string name="all_notifications">Allow notifications</string>
   <!--in notification page-->
   <string name="detections">Detections</string>
+  <!--in WifiList page: failed to request loc service-->
+  <string name="request_grant_loc_service">To successfully complete the camera installation process, please allow 「%s」 to acquire location data of your device and access the list of Wi-Fi networks.</string>
+  <string name="request_loc_turn_on">To successfully complete the camera installation process, please allow GPS to access the list of Wi-Fi networks.</string>
 </resources>
